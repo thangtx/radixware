@@ -18,6 +18,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class ConfigFileParser {
@@ -100,7 +102,7 @@ public class ConfigFileParser {
         }
         //check for key-only (flag) value
         if (offset == line.length()) {
-            context.newEntry(new ConfigFileParsedEntry(context.currentLineOffset + keyStartOffset, context.currentLineOffset + keyStartOffset + key.length() - 1, key, null));
+            context.newEntry(new ConfigFileParsedEntry(context.currentLineOffset + keyStartOffset, context.currentLineOffset + keyStartOffset + key.length(), key, null));
             return;
         }
         //check for '=' presense
@@ -252,6 +254,7 @@ public class ConfigFileParser {
         }
 
         public void replaceEntry(final ConfigEntry newEntry) {
+            Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "Current entity: {0}, {1}", new Object[]{currentEntry.getKey(), currentEntry.getValue()});
             ensureEntry();
             ensureModification();
             if (currentModification.isRemoveLine()) {
@@ -439,6 +442,7 @@ public class ConfigFileParser {
                     throw new IllegalStateException("replaceEntry() and removeLine() can not be used together");
                 }
                 this.replaceText = replaceText;
+                Logger.getLogger(this.getClass().getSimpleName()).log(Level.WARNING, "ReplaceEntry: {0}", replaceText);
             }
 
             public String getReplaceText() {

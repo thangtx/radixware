@@ -23,6 +23,8 @@ public interface IRadFilter {
      * @return the condition
      */
     Sqml getCondition();
+    
+    Sqml getAdditionalFrom();
 
     RadSortingDef getDefaultSorting(final RadClassPresentationDef classPres);
 

@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.designer.common.dialogs.components.localizing;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -19,7 +21,10 @@ import org.openide.util.ChangeSupport;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 
 
-final class LocalizedTextField extends JTextField implements ILocalizedEditor {
+final class LocalizedTextField extends JTextField implements ILineLocalizedEditor {
+    private JLabel checkedInfoLable;
+    private JLabel agreedInfoLable;
+    private JButton openRichEditor;
     EIsoLanguage language;
     private ChangeSupport changeSupport = new ChangeSupport(this);
 
@@ -82,5 +87,31 @@ final class LocalizedTextField extends JTextField implements ILocalizedEditor {
     private void fireChangeEvent() {
         changeSupport.fireChange();
     }
+    
+    
+    @Override
+    public JLabel getCheckedInfoLable() {
+        return checkedInfoLable;
+    }
 
+    @Override
+    public void setCheckedInfoLable(JLabel checkedInfoLable) {
+        this.checkedInfoLable = checkedInfoLable;
+    }
+    
+    public void setAgreedInfoLable(JLabel agreedInfoLable) {
+        this.agreedInfoLable = agreedInfoLable;
+    }
+
+    public JLabel getAgreedInfoLable() {
+        return agreedInfoLable;
+    }
+   
+    public JButton getOpenRichEditor() {
+        return openRichEditor;
+    }
+
+    public void setOpenRichEditor(JButton openRichEditor) {
+        this.openRichEditor = openRichEditor;
+    }
 }

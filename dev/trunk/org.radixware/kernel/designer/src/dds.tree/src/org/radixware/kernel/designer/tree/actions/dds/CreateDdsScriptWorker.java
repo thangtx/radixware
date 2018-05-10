@@ -13,6 +13,8 @@ package org.radixware.kernel.designer.tree.actions.dds;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -34,6 +36,7 @@ import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseRadixObje
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseRadixObjectCfg;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
+import org.radixware.kernel.common.dialogs.db.DdsScriptUtils;
 
 
 class CreateDdsScriptWorker implements Runnable {
@@ -84,6 +87,15 @@ class CreateDdsScriptWorker implements Runnable {
                 ButtonGroup group = new ButtonGroup();
                 group.add(compatible);
                 group.add(incompatible);
+                incompatible.addItemListener(new ItemListener() {
+
+                    @Override
+                    public void itemStateChanged(ItemEvent e) {
+                        if (incompatible.isSelected() && !DdsScriptUtils.showCompatibleWarning()){
+                            compatible.setSelected(true);
+                        }
+                    }
+                });
 
                 ModalDisplayer displayer = new ModalDisplayer(panel, "Script compatibility") {
                     @Override

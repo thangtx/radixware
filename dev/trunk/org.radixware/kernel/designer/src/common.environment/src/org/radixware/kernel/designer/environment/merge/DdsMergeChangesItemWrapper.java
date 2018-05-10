@@ -12,25 +12,21 @@ package org.radixware.kernel.designer.environment.merge;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import javax.swing.Icon;
 import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.constants.FileNames;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
-import org.radixware.kernel.common.defs.dds.DdsModelManager;
 import org.radixware.kernel.common.defs.dds.DdsModule;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.svn.RadixSvnException;
 import org.radixware.kernel.common.svn.SVN;
 import org.radixware.kernel.common.svn.SvnEntryComparator;
-import org.radixware.kernel.common.svn.SvnPathUtils;
 import org.radixware.kernel.common.svn.client.ISvnFSClient;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.Reference;
 import org.radixware.kernel.common.utils.Utils;
-import org.radixware.kernel.designer.tree.actions.dds.DdsModuleCaptureAction;
 
 public class DdsMergeChangesItemWrapper {
 
@@ -133,14 +129,16 @@ public class DdsMergeChangesItemWrapper {
         equal = true;
     }
 
-    public String getFromPath() throws ISvnFSClient.SvnFsClientException, URISyntaxException {
+    public String getFromPath() throws ISvnFSClient.SvnFsClientException, URISyntaxException, RadixSvnException {
+        
         final String fromFileUrl = SVN.getFileUrl(options.getFsClient(), fromFile.getParentFile());
-        URI uri = new URI(fromFileUrl);
-        final String pathFromFile = SvnPathUtils.removeHead(uri.getPath()) + "/" + fromFile.getName();
-        return pathFromFile;
+        return fromFileUrl.substring(options.getRepository().getRepositoryRoot().length()) + "/" + fromFile.getName();  //RADIX-13491 
+//        URI uri = new URI(fromFileUrl);                                                                               //RADIX-13491
+//        final String pathFromFile = SvnPathUtils.removeHead(uri.getPath()) + "/" + fromFile.getName();                //RADIX-13491
+//        return pathFromFile;                                                                                          //RADIX-13491    
     }
 
-    public String getToPath() throws ISvnFSClient.SvnFsClientException, URISyntaxException {
+    public String getToPath() throws ISvnFSClient.SvnFsClientException, URISyntaxException, RadixSvnException {
         final String pathFromFile = getFromPath();
         final String pathToFile = options.getToPreffix() + pathFromFile.substring(options.getFromPreffix().length());
         return pathToFile;
@@ -225,9 +223,7 @@ public class DdsMergeChangesItemWrapper {
             srcChangesLevel = 0;
             return;
         }
-
-//        final SVNURL fromFileUrl = SVN.getFileUrl(fromFile.getParentFile());
-//        final String pathFromFile = SvnPathUtils.removeHead(fromFileUrl.getPath()) + "/" + fromFile.getName();
+        
         try {
             final String pathFromFile = getFromPath();
             final String pathToFile = getToPath();
@@ -240,16 +236,6 @@ public class DdsMergeChangesItemWrapper {
         } catch (URISyntaxException ex) {
             throw new IOException(ex);
         }
-
-        //SvnEntryComparator.EntrySizeAndEntrySha1Digest srcEntry = SvnEntryComparator.getEntrySizeAndEntrySha1DigestByString(srcFileAsStr);
-        //byte bytes[] = srcEntry.entryDigest;
-        //                           SvnEntryComparator.EntrySizeAndEntrySha1Digest fromEntrySha1Digest = SvnEntryComparator.getEntrySizeAndEntrySha1DigestByString(toXmlAsString);
-//                            SvnEntryComparator.EntrySizeAndEntrySha1Digest toEntrySha1Digest = SvnEntryComparator.getEntrySizeAndEntryTopSha1Digest(options.getRepository(), item.getToPath());        
-//        
-//        
-//        
-//        SvnEntryComparator.EntrySizeAndEntrySha1Digest toEntry = SvnEntryComparator.getEntrySizeAndEntryTopSha1Digest(options.getRepository(), lngItem.toPath);
-//        MergeUtils.canMergeAds();
     }
 
     public DdsModule getSrcDdsModule() {
@@ -309,12 +295,8 @@ public class DdsMergeChangesItemWrapper {
 
     boolean isLocale() {
         return FileNames.DDS_LOCALE_DIR.equals(fromFile.getParentFile().getName());
-        //return !Utils.equals(srcModule.getFile(), srcFile);
     }
 
-//    protected static void doWithFile(final DdsModule module, final List<DdsMergeChangesItemWrapper> addedItems, final List<File> incorrectFiles, final File destBranchFile, final boolean destBranchFormatIsNew) throws XmlException, IOException{
-//        //
-//    }
     private static File srcModureAsDir(final DdsModule srcModule) {
         final String modulePath = srcModule.getFile().getParentFile().getAbsolutePath();
         return new File(modulePath);
@@ -327,7 +309,11 @@ public class DdsMergeChangesItemWrapper {
     }
 
     private static boolean isCorrectSvnStatus(final ISvnFSClient repository, final File fileOrDir, final Reference<File> firstIncorrectFileOrDir) {
-        if (".svn".equals(fileOrDir.getName())) { // RADIX-10076
+        final String shortName = fileOrDir.getName();
+        if (".svn".equals(shortName)) { // RADIX-10076
+            return true;
+        }
+        if ("radixdoc.zip".equals(shortName)) { // RADIX-11260
             return true;
         }
 
@@ -383,41 +369,23 @@ public class DdsMergeChangesItemWrapper {
 
         final DdsMergeChangesItemWrapper wrapper = new DdsMergeChangesItemWrapper(module, srcModuleAsDir, destModuleAsDir, moduleToModel(module.getFile()), options.getFromBranchFile(), options.getToBranchFile(), options);
 
-        //wrapper.
         addedItems.add(wrapper);
 
         final File localeDir = new File(srcModuleAsDir.getAbsolutePath() + "/" + FileNames.DDS_LOCALE_DIR);
         if (localeDir.exists() && localeDir.isDirectory()) {
             for (File localeFile : localeDir.listFiles()) {
-                final DdsMergeChangesItemWrapper localeWrapper = new DdsMergeChangesItemWrapper(module, srcModuleAsDir, destModuleAsDir, localeFile, options.getFromBranchFile(), options.getToBranchFile(), options);
-                //if (localeWrapper.tryCaptureDestinationModule())
-                {
-                    addedItems.add(localeWrapper);
-                }
+                if (localeFile!=null && localeFile.isFile()){//RADIX-11624
+                    final String fileName = localeFile.getName();//RADIX-11624
+                    if (fileName!=null && fileName.toLowerCase().endsWith(".xml")){//RADIX-11624
+                        final DdsMergeChangesItemWrapper localeWrapper = new DdsMergeChangesItemWrapper(module, srcModuleAsDir, destModuleAsDir, localeFile, options.getFromBranchFile(), options.getToBranchFile(), options);
+                        //if (localeWrapper.tryCaptureDestinationModule())
+                        {
+                            addedItems.add(localeWrapper);
+                        }
+                    }
+                }                
             }
-
         }
-
-    }
-
-    protected boolean tryCaptureDestinationModule() throws IOException, XmlException {
-        if (!getDestModuleDir().exists()) {
-            return true;
-        }
-
-        if (isCapturedStructure(this.getDestModuleDir())) {
-            return true;
-        }
-
-        final File fixedModelFile = new File(getDestModuleDir().getAbsolutePath() + "/" + FileNames.DDS_MODEL_XML);
-        if (!fixedModelFile.exists()) {
-            return false;
-        }
-
-        final DdsModuleCaptureAction.Cookie Cookie = new DdsModuleCaptureAction.Cookie(DdsModelManager.Support.loadAndGetDdsModule(fixedModelFile));
-        Cookie.run();
-
-        return true;
-    }
+    } 
 
 }

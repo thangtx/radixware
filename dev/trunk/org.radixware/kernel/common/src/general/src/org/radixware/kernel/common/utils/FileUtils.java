@@ -11,6 +11,8 @@
 package org.radixware.kernel.common.utils;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
@@ -18,6 +20,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.lang.StringUtils;
+import org.radixware.kernel.common.exceptions.ShouldNeverHappenError;
 import org.radixware.kernel.common.repository.fs.JarFileDataProvider;
 
 public class FileUtils {
@@ -29,6 +33,10 @@ public class FileUtils {
     public static final String DIRECTORY_XML_FILE_NAME = "directory.xml";
     public static final String LICENSE_TXT_FILE_NAME = "license.txt";
     public static final String DEFINITIONS_XML_FILE_NAME = "definitions.xml";
+    public static final String SQML_DEFINITIONS_XML_FILE_NAME = "sqmldefs.xml";
+    public static final String LICENSES_XML_FILE_NAME = "licenses.xml";
+    private static final String JAVA_IO_TEMP_DIR_PROP_NAME = "java.io.tmpdir";
+    private static final String JAVA_IO_TEMP_DIR_PATH = System.getProperty(JAVA_IO_TEMP_DIR_PROP_NAME);
 
     public static List<File> getFilesList(final File directory) throws IOException {
         final List<File> list = new ArrayList();
@@ -807,23 +815,23 @@ public class FileUtils {
     static public void writeToFile(final File file, final String data) throws IOException {
         appendOrWriteToFile(file, data, false);
     }
-    
+
     static public void writeToFile(final File file, final String data, final String charset) throws IOException {
         appendOrWriteToFile(file, data, false, charset);
     }
 
     static public void appendToFile(final File file, final String data, final String charset) throws IOException {
         appendOrWriteToFile(file, data, true, charset);
-    }    
-    
+    }
+
     static public void appendToFile(final File file, final String data) throws IOException {
         appendOrWriteToFile(file, data, true);
     }
-    
+
     static private void appendOrWriteToFile(final File file, final String data, final boolean append, final String charset) throws IOException {
         BufferedWriter writer = null;
         try {
-            writer = new BufferedWriter( new OutputStreamWriter(new FileOutputStream(file, append), charset) );
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, append), charset));
             writer.write(data.toCharArray());
         } catch (IOException e) {
         } finally {
@@ -833,7 +841,7 @@ public class FileUtils {
                 }
             } catch (IOException e) {
             }
-        }        
+        }
     }
 
     static private void appendOrWriteToFile(final File file, final String data, final boolean append) throws IOException {
@@ -852,4 +860,36 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Use {@link FileUtils#createTempFileViaRadixLoader(String)} if you don't
+     * need suffix
+     *
+     * @param prefix file name before randomly generated name part
+     * @param suffix file extension
+     * @return
+     */
+    public static File createTempFile(final String prefix, String suffix) {
+        suffix = StringUtils.defaultIfBlank(suffix, "tmp");
+        final File tmpFile = new File(JAVA_IO_TEMP_DIR_PATH, prefix + "-" + UUID.randomUUID().toString() + "." + suffix);
+        return tmpFile;
+    }
+
+    public static File createTempFileViaRadixLoader(final String prefix) {
+        try {
+            Class<?> radixLoaderClass = Class.forName("org.radixware.kernel.starter.radixloader.RadixLoader");
+            Method getInstanceMethod = radixLoaderClass.getDeclaredMethod("getInstance");
+            Object radixLoader = getInstanceMethod.invoke(null);
+            if (radixLoader != null) {
+                Method createTempFileMethod = radixLoaderClass.getDeclaredMethod("createTempFile", String.class);
+                final File file = (File) createTempFileMethod.invoke(radixLoader, prefix);
+                return file;
+            } else {
+                final File file = File.createTempFile(prefix, "");
+                file.deleteOnExit();
+                return file;
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | IOException ex) {
+            throw new ShouldNeverHappenError(ex);
+        }
+    }
 }

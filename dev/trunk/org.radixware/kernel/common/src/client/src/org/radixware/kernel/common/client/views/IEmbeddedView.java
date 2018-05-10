@@ -15,13 +15,15 @@ import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.AdsPublication;
 import org.radixware.kernel.common.client.types.ViewRestrictions;
+import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.client.widgets.IModifableComponent;
 import org.radixware.kernel.common.client.widgets.IUIObject;
+import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
 
 
-public interface IEmbeddedView extends IUIObject, IModifableComponent {
+public interface IEmbeddedView extends IModifableComponent, IModelWidget, IUIObject, IWidget {
 
     public boolean isOpened();
 

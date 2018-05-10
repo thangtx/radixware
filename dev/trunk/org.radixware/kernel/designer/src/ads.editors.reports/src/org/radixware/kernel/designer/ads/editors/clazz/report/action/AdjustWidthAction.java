@@ -25,7 +25,7 @@ public class AdjustWidthAction extends AbstractAction {
     //private final JCheckBoxMenuItem adjustWidthItem;
 
     public AdjustWidthAction(final AdsReportFormDiagram diagram/*,JCheckBoxMenuItem adjustWidthItem*/) {
-        super("Adjust width",RadixWareIcons.REPORT.ADJUST_WIDTH.getIcon());
+        super("Adjust Width",RadixWareIcons.REPORT.ADJUST_WIDTH.getIcon());
         this.diagram = diagram;
         //this.adjustWidthItem=adjustWidthItem;
     }

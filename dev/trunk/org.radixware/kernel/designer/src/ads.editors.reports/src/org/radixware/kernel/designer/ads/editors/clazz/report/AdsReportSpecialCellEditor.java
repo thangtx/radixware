@@ -25,6 +25,7 @@ import javax.swing.JPanel;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportSpecialCell;
 import org.radixware.kernel.common.enums.EReportSpecialCellType;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.utils.Utils;
 
 
 class AdsReportSpecialCellEditor extends JPanel {
@@ -75,10 +76,14 @@ class AdsReportSpecialCellEditor extends JPanel {
                if (!updating) {
                     EReportSpecialCellType specislType=((Item) resultComboBox.getSelectedItem()).type;
                     AdsReportSpecialCell spesialCell=AdsReportSpecialCellEditor.this.cell;
+                    EReportSpecialCellType oldSpecislType = spesialCell.getSpecialType();
                     spesialCell.setSpecialType(specislType);
                     EValType type=(specislType==EReportSpecialCellType.GENERATION_TIME) ? EValType.DATE_TIME : EValType.INT;
                     spesialCell.getFormat().setUseDefaultFormat(true);
                     AdsReportSpecialCellEditor.this.formatPanel.open(spesialCell.getFormat(),type);
+                    if (!Utils.equals(oldSpecislType, specislType)){
+                        firePropertyChange(AdsReportWidgetNamePanel.CHANGE_NAME, false, true);
+                    }
                 }
             }
         });

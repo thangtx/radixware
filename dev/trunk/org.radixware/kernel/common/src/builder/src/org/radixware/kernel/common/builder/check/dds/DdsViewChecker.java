@@ -46,7 +46,7 @@ public class DdsViewChecker<T extends DdsViewDef> extends DdsTableChecker<T> {
     public void check(T view, IProblemHandler problemHandler) {
         super.check(view, problemHandler);
 
-        Sqml query = view.getQuery();
+        Sqml query = view.getSqml();
 
         for (DdsColumnDef column : view.getColumns().get(EScope.LOCAL_AND_OVERWRITE)) {
             boolean tagExistFlag = false;
@@ -90,7 +90,7 @@ public class DdsViewChecker<T extends DdsViewDef> extends DdsTableChecker<T> {
     }
 
     private void checkUsedTables(DdsViewDef view, DdsViewDef rootView, IProblemHandler problemHandler, List<DdsTableDef> path) {
-        List<DdsViewDef.UsedTableRef> usedTables = view.getUsedTables().getUsedTables();
+        List<DdsViewDef.UsedTableRef> usedTables = view.getUsedTables().list();
         for (DdsViewDef.UsedTableRef ref : usedTables) {
             DdsTableDef table = ref.findTable();
             if (table == null && view == rootView) {
@@ -108,20 +108,24 @@ public class DdsViewChecker<T extends DdsViewDef> extends DdsTableChecker<T> {
                     StringBuilder message = new StringBuilder();
                     message.append("Loops in used views detected: ");
                     boolean first = true;
-                    for (DdsTableDef t : path) {
-                        if (!first) {
-                            message.append(" -> ");
-                        }
-                        message.append(t.getQualifiedName());
+                    if (path  != null){
+                        for (DdsTableDef t : path) {
+                            if (!first) {
+                                message.append(" -> ");
+                            }
+                            message.append(t.getQualifiedName());
 
-                        if (t == table && !first) {
-                            break;
+                            if (t == table && !first) {
+                                break;
+                            }
+                            if (first) {
+                                first = false;
+                            }
                         }
-                        if (first) {
-                            first = false;
-                        }
+                        error(rootView, problemHandler, message.toString());
+                    } else {
+                        error(rootView, problemHandler, "Used tables contains this view");
                     }
-                    error(rootView, problemHandler, message.toString());
                     return;
                 }
                 realPath.add(table);

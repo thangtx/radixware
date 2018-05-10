@@ -10,10 +10,12 @@
  */
 package org.radixware.kernel.common.defs.ads.radixdoc;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.SearchResult;
@@ -22,7 +24,7 @@ import org.radixware.kernel.common.defs.ads.IInheritableTitledDefinition;
 import org.radixware.kernel.common.defs.ads.ITitledDefinition;
 import org.radixware.kernel.common.defs.ads.explorerItems.AdsExplorerItemDef;
 import org.radixware.kernel.common.defs.ads.radixdoc.TypeDocument.Entry;
-import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
+import org.radixware.kernel.common.defs.ads.xml.AdsXmlSchemeDef;
 import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
 import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.ERestriction;
@@ -40,8 +42,8 @@ import org.radixware.schemas.radixdoc.Page;
 import org.radixware.schemas.radixdoc.Ref;
 import org.radixware.schemas.radixdoc.Table;
 
-public abstract class AdsDefinitionRadixdoc<T extends AdsDefinition> extends RadixdocXmlPage<T> {
-
+public abstract class AdsDefinitionRadixdoc<T extends AdsDefinition> extends RadixdocXmlPage<T> {    
+    
     public static class AdsPageWriter<T extends AdsDefinition> extends PageWriter<T> {
 
         public AdsPageWriter(AdsDefinitionRadixdoc<T> page) {
@@ -60,8 +62,12 @@ public abstract class AdsDefinitionRadixdoc<T extends AdsDefinition> extends Rad
                         sb.delete(0, sb.length());
                     }
                     final Ref ref = root.addNewRef();
-                    ref.setPath(page.resolve(context, typeDocEntry.getDefinition()));
-                    addText(ref, typeDocEntry.getDefinition().getQualifiedName(context));
+                    ref.setPath(resolveTypeEntry(context, typeDocEntry));
+                    if (!typeDocEntry.hasName()) {
+                        addText(ref, typeDocEntry.getDefinition().getQualifiedName(context));
+                    } else {
+                        addText(ref, typeDocEntry.getString());
+                    }
                     ref.setTitle(typeDocEntry.getDeclaration().getQualifiedName(context));
                 }
             }
@@ -70,6 +76,16 @@ public abstract class AdsDefinitionRadixdoc<T extends AdsDefinition> extends Rad
                 addText(root, sb.toString());
                 sb.delete(0, sb.length());
             }
+        }
+        
+        protected String resolveTypeEntry(Definition context, Entry typeDocEntry) {
+            String ref = page.resolve(context, typeDocEntry.getDefinition());
+            
+            if (!(typeDocEntry.getDefinition() instanceof AdsXmlSchemeDef) || !typeDocEntry.hasName()) {
+                return ref;
+            } else {
+                return RadixdocUtils.resolveXsdNode(context, typeDocEntry, ref);
+            }           
         }
 
 //        protected final void documentType(ContentContainer root, AdsTypeDeclaration declaration, Definition context) {
@@ -89,7 +105,7 @@ public abstract class AdsDefinitionRadixdoc<T extends AdsDefinition> extends Rad
                         bundle = descriptionProvider.getDescriptionLocation().findExistingLocalizingBundle();
                     }
                     if (bundle != null) {
-                        addMslId(root, descriptionProvider, bundle.getId(), descriptionProvider.getDescriptionId());
+                        addMslId(root, descriptionProvider.getDescriptionLocation(), bundle.getId(), descriptionProvider.getDescriptionId());
                     } else {
                         addText(root, descriptionProvider.getDescription());
                     }
@@ -159,7 +175,7 @@ public abstract class AdsDefinitionRadixdoc<T extends AdsDefinition> extends Rad
             Table generalAttrsTable = addNewTable(detailBlock, new String[]{"General Attributes"}, new Integer[]{2});
             appendStyle(generalAttrsTable, DefaultStyle.GENERAL_ATTRIBUTES);
             return generalAttrsTable;
-        }
+        }                
 
         protected boolean isApiElement(AdsDefinition elem) {
             return elem.isPublished() && !elem.getAccessMode().isLess(EAccess.PROTECTED);
@@ -237,6 +253,16 @@ public abstract class AdsDefinitionRadixdoc<T extends AdsDefinition> extends Rad
                 addText(ref, refObject.getQualifiedName());
             }
         }
+        
+        public void addRefRow(Table detailsTable, String rowName, RadixObject refObject, Definition context) {
+            Table.Row parentPropRow = detailsTable.addNewRow();           
+            Ref ref = parentPropRow.addNewCell().addNewRef();
+            if (refObject != null) {
+                ref.setTitle(refObject.getQualifiedName());
+                ref.setPath(page.resolve(context, refObject));
+                addText(ref, refObject.getQualifiedName());
+            }
+        }
 
         public void addAllStrRow(Table detailsTable, String... values) {
             Table.Row newRow = detailsTable.addNewRow();
@@ -260,7 +286,8 @@ public abstract class AdsDefinitionRadixdoc<T extends AdsDefinition> extends Rad
         }
 
         public String boolAsStr(boolean boolVal) {
-            return boolVal ? "\u2714" : "\u2718";
+//            return boolVal ? "\u2714" : "\u2718";
+            return boolVal ? "Yes" : "No";
         }
 
         public String getRestrictionsAsStr(final long restrictionsMask) {

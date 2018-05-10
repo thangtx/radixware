@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
-  <AdsClassDefinition Id="pdcEntity____________________" Name="Entity" Type="3" Environment="server">
+  <AdsClassDefinition Id="pdcEntity____________________" Name="Entity" DescriptionId="mlsDACEHBPQZRABNP6WBIPN6BNIQQ" Type="3" Environment="server">
     <AccessRules IsAbstract="true">
       <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Entity"/>
     </AccessRules>
@@ -17,43 +17,86 @@
       <Src Name="Bodyadc6E6QI4EYAFBMNBPUMHDGNRV66Q">
         <xsc:Item>
           <xsc:Java>
+public void copyPropVal(final org.radixware.kernel.server.meta.clazzes.RadPropDef prop, final org.radixware.kernel.server.types.Entity src) {
+//#dirty hack
+if (src instanceof </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aicTWRSXHATKBBUDGOOQVOJZZDOIQ">
+            <xsc:Presentation>CfgManagement::ICfgReferencedObject</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) {
+    </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+            <xsc:Presentation>Id</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> extGuidPropId = ((</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aicTWRSXHATKBBUDGOOQVOJZZDOIQ">
+            <xsc:Presentation>CfgManagement::ICfgReferencedObject</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) src).</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aicTWRSXHATKBBUDGOOQVOJZZDOIQ mthTIFZEEQC2NEUNPFIRAGRH2B7EY" Invoke="true">
+            <xsc:Presentation>getCfgReferencePropId</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>();
+    if (java.util.Objects.equals(prop.getId(), extGuidPropId)) {
+        return;
+    }
+}
+super.copyPropVal(prop, src);
+//#dirty hack
+}
 </xsc:Java>
         </xsc:Item>
       </Src>
     </Bodies>
     <MethodGroup Id="cmgI7A6CJSVYRAFFJ6XC6CVVZ4OGU" Name="Root">
-      <Group Id="cmg4F7EQVZPMZFDRJ2TPWW4T7WIU4" Name="Data" Members="mthI3D7RBRK4FCBXGQGYBCWPHX6VM mth7X446DFQSTNRDDXBABIFNQAAAE mthMUQ4NQFMSTNRDDXBABIFNQAAAE mth5A5TVHUCNVHFXIT7FDJ75MILHE mth4WCFC7ABDRBJTDPVIKETNLSXHM mthYXHXCUYRXTNRDCJ3ABIFNQAABA mthQN7LVIA74TNRDC7HAAMPGXSZKU mth4RMKITY25DNRDOL4ABIFNQAABA mthFC5UU2I25DNRDOL4ABIFNQAABA mthJ66JVZJF57NRDIMQAAMPGXSZKU mthTJMTUS3Y6HNRDIMQAAMPGXSZKU mthQCGEEZOUAHOBDA26AAMPGXSZKU mthVAYKNE3RB3OBDNTPAAMPGXSZKU mthH452JGF3QLOBDBU2AAN7YHKUNI mthAVNGZFNZJFEM5F264QAIRSOHGE mthVGODV43DM5ARDDXWLZ2HCHRAPY mthSA7W2J3SYZGY5FPBMGO3BW627U mth5RIUNTEIFDORDM2AABIFNQAABA mthZ2YBPSBDODORDJIYABIFNQAABA mthTOCEDADAFLPBDLXAAAN7YHKUNI mthP2EWJ2PSAZGJVESQKCRACMBWKI mth37BJGQIJQZAMXIPNDIDMU45MJM mthEYS5WP6Y6NCGRHV55VXQTV6SLU mthUTPF5BWBTFC35IDCO6WZHM3DB4 mthWDCPS7A65NCT7KQDF4OZ62EB5U mthRPTTJ54JTJBUVN6OEHHDOAOXTQ"/>
+      <Group Id="cmg4F7EQVZPMZFDRJ2TPWW4T7WIU4" Name="Data" Members="mthI3D7RBRK4FCBXGQGYBCWPHX6VM mth7X446DFQSTNRDDXBABIFNQAAAE mthMUQ4NQFMSTNRDDXBABIFNQAAAE mth5A5TVHUCNVHFXIT7FDJ75MILHE mth4WCFC7ABDRBJTDPVIKETNLSXHM mthYXHXCUYRXTNRDCJ3ABIFNQAABA mthQN7LVIA74TNRDC7HAAMPGXSZKU mth4RMKITY25DNRDOL4ABIFNQAABA mthFC5UU2I25DNRDOL4ABIFNQAABA mthJ66JVZJF57NRDIMQAAMPGXSZKU mthTJMTUS3Y6HNRDIMQAAMPGXSZKU mthQCGEEZOUAHOBDA26AAMPGXSZKU mthVAYKNE3RB3OBDNTPAAMPGXSZKU mthH452JGF3QLOBDBU2AAN7YHKUNI mthAVNGZFNZJFEM5F264QAIRSOHGE mthVGODV43DM5ARDDXWLZ2HCHRAPY mthSA7W2J3SYZGY5FPBMGO3BW627U mth5RIUNTEIFDORDM2AABIFNQAABA mthZ2YBPSBDODORDJIYABIFNQAABA mthTOCEDADAFLPBDLXAAAN7YHKUNI mthP2EWJ2PSAZGJVESQKCRACMBWKI mth37BJGQIJQZAMXIPNDIDMU45MJM mthEYS5WP6Y6NCGRHV55VXQTV6SLU mthUTPF5BWBTFC35IDCO6WZHM3DB4 mthWDCPS7A65NCT7KQDF4OZ62EB5U mthRPTTJ54JTJBUVN6OEHHDOAOXTQ mth2ID6LLB4ORG75JFEH45HYYK75U mthPHNDFCSTMZG3ZJLTPNKQ56PLXA"/>
       <Group Id="cmgKN72O3CYFRFTDECIRLCGSNEGRI" Name="Events" Members="mth4D6ME6VX45BYVNJXZPBTAA7KP4 mthVQQNGEVQJBFIPIIJALJND4AQOY mthZJ672NR72ZEPJP2YHQ4KTL2VWY mthKNO5SF2TKZBYLK72NE4ZL3MS6I mthSBXPM6BYERBBLMYMFEVJQ7TRIE mthNJ3W3ED77ZD5PHLKMOOVAUZ4WE mthD77F2HBL2FGSVPJHR3SEAMPWMA mth6KS7LCP4W5AW5OCCJHH5KGO4YQ mthCVICCNQ5IJE25PKGOLZVB6Y54E mthPT5PMP2WVZGUDB7OTLOE2SBWKE mth5W3TRDKMDRCGFJYNWSP72FQKSE mthKNZ5Z7AS6RFRPIX6ZD5JDKEC34 mth2UCNHZSLQVGXPG7Z4SJQJPPSAY mthFMXUFM5J25E4TNM4PR73F6V3E4 mthBXCPIF3MHVDEFOSW67XOM5LQAY mthGZDY76GQDVEENNFB33JRO5ADCU mthAZ2HAURWXVB53HEDENC67YLQAU mth23RIMT3QYRALDCOPINDYKRUC5I mthIKSUJAGWQBHKFPQPE53AC7YD7Y mth3FB6HQRDY5A3JC2WXXCBSC6V5A mthMJ36OUASKZBYZBMQG6QJNNKLAM"/>
       <Group Id="cmg73WZKSCTTRH6JAUEQDVSCBYHXI" Name="Cache" Members="mthZXGNZ6V2G5DYXN4ADVHZWN2C24 mthBYOD4SHFVRFN5NST6R46OR4B7M mthYI2EJSKBMZEWJF2HWO5JJHUSTQ mthPOB2MIQLR5FBHODMKA2AWCPQQM mthIC7IDL6YHFFYPBBNNPYVLE2K6E"/>
       <Group Id="cmgLV3BNMV5VZEX5FKHLH5WHJCFQY" Name="Meta" Members="mth3VQXRGQW6PNRDA2JAAMPGXSZKU mthZ4HH5VYW6PNRDA2JAAMPGXSZKU mthNAAWAWQX6PNRDA2JAAMPGXSZKU mthJW53TRDZATOBDA26AAMPGXSZKU mthVPP424BCMBA5RALD2S7CGTZJ3I mthT7R5Q7D74ZA3NAKLGIGWEN5UYE mthPMV4LNLNNNHOBCBBDCS2P7CISA"/>
-      <Group Id="cmgTJEYQ3O5XBA3VKWKFMJD3Y43GU" Name="Misc" Members="mthDOE5EJA2LPPBDC5PABIFNQAABA mthJUPTNA7DLPPBDC5QABIFNQAABA"/>
+      <Group Id="cmgTJEYQ3O5XBA3VKWKFMJD3Y43GU" Name="Misc" Members="mthDOE5EJA2LPPBDC5PABIFNQAABA mthJUPTNA7DLPPBDC5QABIFNQAABA mth6PD7UT74UREYRPSXKLYRTUPPFI mthY6QJBWGAGREARHD4UFEMARAZHI mthTX7AFQWDNRDV5JJBAXUEYH43II"/>
       <Group Id="cmgUUQWDGILXRCV3F2IDLPXM5TR6A" Name="AccessControl" Members="mthPNPHJW3TBJBIVP4LH7MOAT2LRM mthUQQDNINZQPORDMNEABIFNQAABA mthYBR653Q2JNBH3FJB3NYQDQHA4I mthQM2TESGIL5A2NIBESHWPW6RI5A mth4J27D4EEXVEHNGEXYQ32YM2I2M mthLWKHHJQDHFFDBGVTSCDT6NEIHI"/>
-      <Group Id="cmgFW6OU2ETYBAYNL7ZYNWXSB5CLY" Name="State" Members="mthZC3AQRPUYRB5FL7FB4A7JGE46U mthXIWIUQAVFJFVXG4AEIGDKCBN2U mthE23L423YALPBDA2PABIFNQAABA mth4A25XVWOKTPBDNOBAAN7YHKUNI mthOPU3AAQWZPNRDB64AALOMT5GDM mthY7OUFFEVQBDJ3OJXQ45DW3TODU mth3ZCIEHV3MNDJHGQV64AG7HSIPE mthB6B4DAPRVJA5PIUOPJUE5VMLX4 mthAAZKIGKVHVA4JF5MNQBV4B7VLM"/>
+      <Group Id="cmgFW6OU2ETYBAYNL7ZYNWXSB5CLY" Name="State" Members="mthZC3AQRPUYRB5FL7FB4A7JGE46U mthXIWIUQAVFJFVXG4AEIGDKCBN2U mthE23L423YALPBDA2PABIFNQAABA mth4A25XVWOKTPBDNOBAAN7YHKUNI mthOPU3AAQWZPNRDB64AALOMT5GDM mthY7OUFFEVQBDJ3OJXQ45DW3TODU mth3ZCIEHV3MNDJHGQV64AG7HSIPE mthB6B4DAPRVJA5PIUOPJUE5VMLX4 mthAAZKIGKVHVA4JF5MNQBV4B7VLM mthVOCVGFPORBCZ5DTQ5NFRWXDMXQ"/>
     </MethodGroup>
     <PropertyGroup Id="cpg3N4WDLJB4RAGPAX5EIRTZQIXLQ" Name="Root"/>
     <Properties/>
     <Methods>
-      <Method Id="mth6KS7LCP4W5AW5OCCJHH5KGO4YQ" Name="afterCreate" Nature="0" IsOverride="false">
+      <Method Id="mth6KS7LCP4W5AW5OCCJHH5KGO4YQ" Name="afterCreate" DescriptionId="mlsM7IBL4VKDJDIVHR3VORR2GRHHI" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="afterCreate(Lorg.radixware.kernel.server.types.Entity;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="src" Id="mprK7A6YNBNHZDK3E7UBYFBHMM3FY">
+          <Parameter Name="src" DescriptionId="mlsNEMCWZSCHJBJRJNLTZ63UF5QM4" Id="mprK7A6YNBNHZDK3E7UBYFBHMM3FY">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mth2UCNHZSLQVGXPG7Z4SJQJPPSAY" Name="afterDelete" Nature="0" IsOverride="false">
+      <Method Id="mth2UCNHZSLQVGXPG7Z4SJQJPPSAY" Name="afterDelete" DescriptionId="mlsFJP2HCWA7JFZ7NLADPFF74ZBJQ" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="afterDelete()V"/>
         </AccessRules>
       </Method>
-      <Method Id="mthD77F2HBL2FGSVPJHR3SEAMPWMA" Name="afterInit" Nature="0" IsOverride="false">
+      <Method Id="mthD77F2HBL2FGSVPJHR3SEAMPWMA" Name="afterInit" DescriptionId="mlsUKVXTKLEJRHR5H773Z3HTBFHB4" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="afterInit(Lorg.radixware.kernel.server.types.Entity;Lorg.radixware.kernel.common.enums.EEntityInitializationPhase;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="src" Id="mprYBM42RGIJNFVHAVUCD2MUQ7LDI">
+          <Parameter Name="src" DescriptionId="mlsOUCEN4XLMVBFNFTBX5JL2AS4BI" Id="mprYBM42RGIJNFVHAVUCD2MUQ7LDI">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
           </Parameter>
           <Parameter Name="phase" Id="mpr2FOZBHF6EBFFDKIACTMINAWRBM">
@@ -61,149 +104,149 @@
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthCVICCNQ5IJE25PKGOLZVB6Y54E" Name="afterRead" Nature="0" IsOverride="false">
+      <Method Id="mthCVICCNQ5IJE25PKGOLZVB6Y54E" Name="afterRead" DescriptionId="mlsOGWG6DPOPVBG3LPE5JOMQVMYQE" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="afterRead()V"/>
         </AccessRules>
       </Method>
-      <Method Id="mthNJ3W3ED77ZD5PHLKMOOVAUZ4WE" Name="afterRollbackToSavepoint" Nature="0" IsOverride="false">
+      <Method Id="mthNJ3W3ED77ZD5PHLKMOOVAUZ4WE" Name="afterRollbackToSavepoint" DescriptionId="mlsSBNJAFZRKBA5ZKI3YEMMRZMY74" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="afterRollbackToSavepoint(Ljava.lang.String;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="savepointId" Id="mprRGZTPTFCGJAF7NGXYFMMAD5WIM">
+          <Parameter Name="savepointId" DescriptionId="mlsNFD6E2LX6NFZXASSI2GQO4VBBA" Id="mprRGZTPTFCGJAF7NGXYFMMAD5WIM">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mth5W3TRDKMDRCGFJYNWSP72FQKSE" Name="afterUpdate" Nature="0" IsOverride="false">
+      <Method Id="mth5W3TRDKMDRCGFJYNWSP72FQKSE" Name="afterUpdate" DescriptionId="mls6NRKQA4CQ5F2FILHPKVQGGF2FI" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="afterUpdate()V"/>
         </AccessRules>
       </Method>
-      <Method Id="mthAZ2HAURWXVB53HEDENC67YLQAU" Name="afterUpdatePropObject" Nature="0" IsOverride="false">
+      <Method Id="mthAZ2HAURWXVB53HEDENC67YLQAU" Name="afterUpdatePropObject" DescriptionId="mls2XKLL77QKVCYHGXHFSMCXPRJZY" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="afterUpdatePropObject(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.server.types.Entity;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="propId" Id="mprJVB7OOLAWFEHRN4U2UDHICY7MY">
+          <Parameter Name="propId" DescriptionId="mlsMY2OQEO7C5FGXD3B2PANM24DFQ" Id="mprJVB7OOLAWFEHRN4U2UDHICY7MY">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
-          <Parameter Name="propVal" Id="mprZAEUKYXRRBB5FDLBRFKG2NL5TA">
+          <Parameter Name="propVal" DescriptionId="mlsJDU5T6ZFEZGIDKOTEACGCY6FTY" Id="mprZAEUKYXRRBB5FDLBRFKG2NL5TA">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthBXCPIF3MHVDEFOSW67XOM5LQAY" Name="beforeAutoUpdate" Nature="0" IsOverride="false">
+      <Method Id="mthBXCPIF3MHVDEFOSW67XOM5LQAY" Name="beforeAutoUpdate" DescriptionId="mls52P6HPP3K5H5VLAOU7436QAQCM" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="beforeAutoUpdate(Lorg.radixware.kernel.common.enums.EAutoUpdateReason;)Z"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="arg0" Id="mprH4F65YLVWRGOLAZ7TSW3VR3YLA">
+          <Parameter Name="arg0" DescriptionId="mlsRCAC3LJHP5D5XLO5AEPNGRMNVU" Id="mprH4F65YLVWRGOLAZ7TSW3VR3YLA">
             <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EAutoUpdateReason"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsFD7TF5E3BZEYRGNHNLTY4D7AME"/>
       </Method>
-      <Method Id="mthFMXUFM5J25E4TNM4PR73F6V3E4" Name="beforeCreate" Nature="0" IsOverride="false">
+      <Method Id="mthFMXUFM5J25E4TNM4PR73F6V3E4" Name="beforeCreate" DescriptionId="mls4NF3FW3UTZA35LNHUDE25Z3S4U" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="beforeCreate(Lorg.radixware.kernel.server.types.Entity;)Z"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="src" Id="mpr2BFR2MGVIFBJRB27WWRNA4D2UA">
+          <Parameter Name="src" DescriptionId="mlsBEYLSPEGOZBEZPHRJNHO3W6PBU" Id="mpr2BFR2MGVIFBJRB27WWRNA4D2UA">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsQDEKBYUM4NBQPEIFALK7PMBBBQ"/>
       </Method>
-      <Method Id="mthKNZ5Z7AS6RFRPIX6ZD5JDKEC34" Name="beforeDelete" Nature="0" IsOverride="false">
+      <Method Id="mthKNZ5Z7AS6RFRPIX6ZD5JDKEC34" Name="beforeDelete" DescriptionId="mlsGWJXPOMLJJEE7MSACDFJKBDQBA" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="beforeDelete()Z"/>
         </AccessRules>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsCIDK7J3ABZA5DEZWSCLBY4B3NA"/>
       </Method>
-      <Method Id="mthGZDY76GQDVEENNFB33JRO5ADCU" Name="beforeInit" Nature="0" IsOverride="false">
+      <Method Id="mthGZDY76GQDVEENNFB33JRO5ADCU" Name="beforeInit" DescriptionId="mlsN33A25RF4FALFIGOKPUSODX324" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="beforeInit(Lorg.radixware.kernel.server.types.PropValHandlersByIdMap;Lorg.radixware.kernel.server.types.Entity;Lorg.radixware.kernel.common.enums.EEntityInitializationPhase;)Z"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="initPropValsById" Id="mprCDI6ZVMJ4JGAJL4MZFSJG35DY4">
+          <Parameter Name="initPropValsById" DescriptionId="mlsQHZXYVRXPRBGBLEGEZ2BCR5NUY" Id="mprCDI6ZVMJ4JGAJL4MZFSJG35DY4">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandlersByIdMap"/>
           </Parameter>
-          <Parameter Name="src" Id="mprZ6BDV6KH4JHFNE6MDKPWHZCNXM">
+          <Parameter Name="src" DescriptionId="mlsQ7SQECOZI5EAPFV4ZKGD65H6DI" Id="mprZ6BDV6KH4JHFNE6MDKPWHZCNXM">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
           </Parameter>
-          <Parameter Name="phase" Id="mprFIIA3HDN4BGGJKIACGU2OWOWBQ">
+          <Parameter Name="phase" DescriptionId="mlsBP5ADFOTPRGMRLK5AVBCSF3UPI" Id="mprFIIA3HDN4BGGJKIACGU2OWOWBQ">
             <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsQQFALKOR3FAAJIO7AOWWG3FWL4"/>
       </Method>
-      <Method Id="mthSBXPM6BYERBBLMYMFEVJQ7TRIE" Name="beforeRollbackToSavepoint" Nature="0" IsOverride="false">
+      <Method Id="mthSBXPM6BYERBBLMYMFEVJQ7TRIE" Name="beforeRollbackToSavepoint" DescriptionId="mlsUE7LGQ3ZUJFPDPYSKYY55MDAQE" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="beforeRollbackToSavepoint(Ljava.lang.String;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="savepointId" Id="mprMPR6IPDRBFCRHAPBDO4P6LF52M">
+          <Parameter Name="savepointId" DescriptionId="mlsPUDRZVWNDVER5OL4JKHTVKRT7I" Id="mprMPR6IPDRBFCRHAPBDO4P6LF52M">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthPT5PMP2WVZGUDB7OTLOE2SBWKE" Name="beforeUpdate" Nature="0" IsOverride="false">
+      <Method Id="mthPT5PMP2WVZGUDB7OTLOE2SBWKE" Name="beforeUpdate" DescriptionId="mlsW7XR67FSAZDCNLJUTA5E24JEIY" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="beforeUpdate()Z"/>
         </AccessRules>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsBNDBSB22DVGYPJI5VE63F2T3NM"/>
       </Method>
-      <Method Id="mthI3D7RBRK4FCBXGQGYBCWPHX6VM" Name="create" Nature="0" IsOverride="false">
+      <Method Id="mthI3D7RBRK4FCBXGQGYBCWPHX6VM" Name="create" DescriptionId="mlsJKRKUIVCCVDPHDKPWMKWSZG6TY" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="create(Lorg.radixware.kernel.server.types.Entity;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="src" Id="mprP5VBEE4JT5E2TATX7YXR53BY7A">
+          <Parameter Name="src" DescriptionId="mls6XG5POXCG5EZJNAVTWH5P772II" Id="mprP5VBEE4JT5E2TATX7YXR53BY7A">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mth4WCFC7ABDRBJTDPVIKETNLSXHM" Name="delete" Nature="0" IsOverride="false">
+      <Method Id="mth4WCFC7ABDRBJTDPVIKETNLSXHM" Name="delete" DescriptionId="mlsZIBK5T5RXREUHN5KEN4H7DDSLU" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="delete()V"/>
         </AccessRules>
       </Method>
-      <Method Id="mthBYOD4SHFVRFN5NST6R46OR4B7M" Name="discard" Nature="0" IsOverride="false">
+      <Method Id="mthBYOD4SHFVRFN5NST6R46OR4B7M" Name="discard" DescriptionId="mlsDG6K2ZVYIFFBTKIVDVU2NZD5SQ" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="discard()V"/>
         </AccessRules>
       </Method>
-      <Method Id="mthSA7W2J3SYZGY5FPBMGO3BW627U" Name="init" Nature="0" IsOverride="false">
+      <Method Id="mthSA7W2J3SYZGY5FPBMGO3BW627U" Name="init" DescriptionId="mlsTNYH75IBLZEBJDOHJKJWSB2WBI" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="init(Lorg.radixware.kernel.server.types.PropValHandlersByIdMap;Lorg.radixware.kernel.server.types.Entity;Lorg.radixware.kernel.common.enums.EEntityInitializationPhase;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="initPropValsById" Id="mpr2PNQX7RBJVCBNM44OR4VEEDWGA">
+          <Parameter Name="initPropValsById" DescriptionId="mlsN3CJSSSUYRA5REQTAGIRI22FFM" Id="mpr2PNQX7RBJVCBNM44OR4VEEDWGA">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandlersByIdMap"/>
           </Parameter>
-          <Parameter Name="src" Id="mprPNFEXBQEEZHCND3OE2J7RQNWXY">
+          <Parameter Name="src" DescriptionId="mls4UQ7SU7CHNEWHJMX5A5D77IGH4" Id="mprPNFEXBQEEZHCND3OE2J7RQNWXY">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
           </Parameter>
-          <Parameter Name="phase" Id="mprDQGAHTYBLFGD7NGFX5SOYVP4RM">
+          <Parameter Name="phase" DescriptionId="mlsAC7IAAAX7RF6PGHY622UO64DWM" Id="mprDQGAHTYBLFGD7NGFX5SOYVP4RM">
             <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthZXGNZ6V2G5DYXN4ADVHZWN2C24" Name="keepInCache" Nature="0" IsOverride="false">
+      <Method Id="mthZXGNZ6V2G5DYXN4ADVHZWN2C24" Name="keepInCache" DescriptionId="mlsCHM5ZOITP5EDRHCEAPA6IH4GRA" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="keepInCache(Ljava.lang.Long;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="maxAgeInSeconds" Id="mpr4SDCDZ6G7JFJRIT6BX5AE22FEI">
+          <Parameter Name="maxAgeInSeconds" DescriptionId="mlsL674I6FI3JGABBHV6C2JR2QJFU" Id="mpr4SDCDZ6G7JFJRIT6BX5AE22FEI">
             <Type TypeId="2"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Name="getClassDefinitionId" Nature="0" IsOverride="false">
+      <Method Id="mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Name="getClassDefinitionId" DescriptionId="mlsQ36QNGVCKFEOTMAFKE6F3VWYOA" Nature="0" IsOverride="false">
         <AccessRules/>
-        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU" DescriptionId="mls3BH5M2IDG5GNJIUP3YPKADJ2QY"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -212,7 +255,7 @@
           </Src>
         </Sources>
       </Method>
-      <Method Id="mth4RMKITY25DNRDOL4ABIFNQAABA" Name="read" Nature="0" IsOverride="false">
+      <Method Id="mth4RMKITY25DNRDOL4ABIFNQAABA" Name="read" DescriptionId="mls6XALT7GGVJCXTM35SH2HSNI2MM" Nature="0" IsOverride="false">
         <AccessRules/>
         <Sources>
           <Src>
@@ -225,17 +268,17 @@
           </Src>
         </Sources>
       </Method>
-      <Method Id="mth5RIUNTEIFDORDM2AABIFNQAABA" Name="load" Nature="0" IsOverride="false">
+      <Method Id="mth5RIUNTEIFDORDM2AABIFNQAABA" Name="load" DescriptionId="mls6TFDSZOY3VBKFBH4YJ6BQ5NYFI" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true"/>
         <Parameters>
-          <Parameter Name="entityId" Id="mprRJIMAW7RSNF4VBDJF4KJNPW2PU">
+          <Parameter Name="entityId" DescriptionId="mlsSCWEEINZVVDSDF3NCL7DPERDTI" Id="mprRJIMAW7RSNF4VBDJF4KJNPW2PU">
             <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
           </Parameter>
-          <Parameter Name="pidStr" Id="mprMA422ATNBJGBLEJKCENETSYHGY">
+          <Parameter Name="pidStr" DescriptionId="mlsEOPWE3AFXBFAFBKEUXFMJOVO4M" Id="mprMA422ATNBJGBLEJKCENETSYHGY">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="411" Path="pdcEntity____________________"/>
+        <ReturnType TypeId="411" Path="pdcEntity____________________" DescriptionId="mlsTP77IOP4FNDADFIK2IKAAGPI7M"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -243,38 +286,50 @@
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthYY6FOOADRTNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthYY6FOOADRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getEntityObject</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcPid_______________________ mthKCMJGSZYFREVLCWPBDG5YROTDE" Invoke="true"/>
+              <xsc:IdReference Path="pdcPid_______________________ mthKCMJGSZYFREVLCWPBDG5YROTDE" Invoke="true">
+                <xsc:Presentation>Pid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), entityId, pidStr));    
 } catch(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axc6Y6UT7DZNRET3ECFL7DJVPMK6U"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6Y6UT7DZNRET3ECFL7DJVPMK6U">
+                <xsc:Presentation>Exceptions::EntityObjectNotExistsError</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e) {
@@ -284,7 +339,7 @@
           </Src>
         </Sources>
       </Method>
-      <Method Id="mth7X446DFQSTNRDDXBABIFNQAAAE" Name="create" Nature="0" IsOverride="false">
+      <Method Id="mth7X446DFQSTNRDDXBABIFNQAAAE" Name="create" DescriptionId="mlsH5ZEHU46OFGM5GEALSRSTDFSRY" Nature="0" IsOverride="false">
         <AccessRules/>
         <Sources>
           <Src>
@@ -294,10 +349,10 @@
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthDOE5EJA2LPPBDC5PABIFNQAABA" Name="modifyUserPropList" Nature="0" IsOverride="false">
+      <Method Id="mthDOE5EJA2LPPBDC5PABIFNQAABA" Name="modifyUserPropList" CompilerWarnings="67108967" DescriptionId="mlsXSXL4R34YRCB7ODYS4LLJFYAX4" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="userProps" Id="mprXBBMT5LHN5HVPMVBESFZ2CWB2Y">
+          <Parameter Name="userProps" DescriptionId="mls37HQ4TL7FVEEDKPKNCG2WJBOOA" Id="mprXBBMT5LHN5HVPMVBESFZ2CWB2Y">
             <Type TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProps"/>
           </Parameter>
         </Parameters>
@@ -307,7 +362,9 @@
               <xsc:Java>for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp">
+                <xsc:Presentation>Common::CommonXsd:UserProp</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> up : userProps.UserPropList) {
@@ -315,15 +372,19 @@
         this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthZ2YBPSBDODORDJIYABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthZ2YBPSBDODORDJIYABIFNQAABA" Invoke="true">
+                <xsc:Presentation>setPropAsStr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(up.getId(), up.Value);
+              <xsc:Java>(up.getId(), up.SafeValue == null ? up.Value : up.SafeValue);
     else
         this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthAVNGZFNZJFEM5F264QAIRSOHGE" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthAVNGZFNZJFEM5F264QAIRSOHGE" Invoke="true">
+                <xsc:Presentation>setPropHasOwnVal</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(up.getId(), false);
@@ -333,13 +394,13 @@
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthFC5UU2I25DNRDOL4ABIFNQAABA" Name="readAndLock" Nature="0" IsOverride="false">
+      <Method Id="mthFC5UU2I25DNRDOL4ABIFNQAABA" Name="readAndLock" DescriptionId="mlsIRR43RWOMFHY5MOWCUTJ44CGZE" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="waitTime" Id="mpr7P7CK44FMVDAVGDRXRW52LJEB4">
+          <Parameter Name="waitTime" DescriptionId="mlsW4K4OIB4QFAPXFA5ARXSMXFXDQ" Id="mpr7P7CK44FMVDAVGDRXRW52LJEB4">
             <Type TypeId="2"/>
           </Parameter>
-          <Parameter Name="sessional" Id="mprUJEB4SMBPRAHXLVGH7ABF2PC4A">
+          <Parameter Name="sessional" DescriptionId="mlsZSQV66JFRFAW3ENGD4ZJOJFQZY" Id="mprUJEB4SMBPRAHXLVGH7ABF2PC4A">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
@@ -352,13 +413,13 @@
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthH452JGF3QLOBDBU2AAN7YHKUNI" Name="lock" Nature="0" IsOverride="false">
+      <Method Id="mthH452JGF3QLOBDBU2AAN7YHKUNI" Name="lock" DescriptionId="mls3YQLQYKVEZB2ZCKV5KRTOLQ2TY" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="waitTime" Id="mprBDG6RKXKTVCNFMCTPA5RAL3UIU">
+          <Parameter Name="waitTime" DescriptionId="mls7OYJSPXOUFF2DH4VQHP275F7JY" Id="mprBDG6RKXKTVCNFMCTPA5RAL3UIU">
             <Type TypeId="2"/>
           </Parameter>
-          <Parameter Name="sessional" Id="mprABSOPZHCD5DRTLDSPNYOJQOOYM">
+          <Parameter Name="sessional" DescriptionId="mlsQZ5DFJEBUNGA3FERYNFN4W4TBI" Id="mprABSOPZHCD5DRTLDSPNYOJQOOYM">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
@@ -371,9 +432,9 @@
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthJ66JVZJF57NRDIMQAAMPGXSZKU" Name="getPid" Nature="0" IsOverride="false">
+      <Method Id="mthJ66JVZJF57NRDIMQAAMPGXSZKU" Name="getPid" DescriptionId="mlsLHRCTMXDF5BP5AM4ZYNL7KVYFM" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true"/>
-        <ReturnType TypeId="411" Path="pdcPid_______________________"/>
+        <ReturnType TypeId="411" Path="pdcPid_______________________" DescriptionId="mlsDDHRLSNVGBAWDJRPMTMIOQHUFE"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -383,7 +444,7 @@
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthJUPTNA7DLPPBDC5QABIFNQAABA" Name="readUserPropList" Nature="0" IsOverride="false">
+      <Method Id="mthJUPTNA7DLPPBDC5QABIFNQAABA" Name="readUserPropList" CompilerWarnings="67108967" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
           <Parameter Name="rqUserProps" Id="mprU24CZNCUBRC2JME47ZPLYLPL4U">
@@ -403,13 +464,17 @@
               <xsc:Java>java.util.List&lt; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp">
+                <xsc:Presentation>Common::CommonXsd:UserProp</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> userProps = new java.util.ArrayList&lt; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp">
+                <xsc:Presentation>Common::CommonXsd:UserProp</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>>();
@@ -417,30 +482,39 @@
 for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp">
+                <xsc:Presentation>Common::CommonXsd:UserProp</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> rqProp : rqUserProps.UserPropList) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp">
+                <xsc:Presentation>Common::CommonXsd:UserProp</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> rsProp = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="UserProp">
+                <xsc:Presentation>Common::CommonXsd:UserProp</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) rqProp.copy();
     rsProp.Value = this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthTOCEDADAFLPBDLXAAAN7YHKUNI" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthTOCEDADAFLPBDLXAAAN7YHKUNI" Invoke="true">
+                <xsc:Presentation>getPropAsStr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(rqProp.Id);
+    rsProp.SafeValue = rsProp.Value;
 
     userProps.add(rsProp);
 }
@@ -451,9 +525,9 @@ return userProps;
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthJW53TRDZATOBDA26AAMPGXSZKU" Name="getClassDefinitionTitle" Nature="0" IsOverride="false">
+      <Method Id="mthJW53TRDZATOBDA26AAMPGXSZKU" Name="getClassDefinitionTitle" DescriptionId="mlsCX2FZ3SNDZDKDI4ATXS4YFEMIE" Nature="0" IsOverride="false">
         <AccessRules/>
-        <ReturnType TypeId="21"/>
+        <ReturnType TypeId="21" DescriptionId="mlsM3CMZOCZHJEQ5GF3XH4H7ERQNU"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -463,18 +537,22 @@ return userProps;
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthMUQ4NQFMSTNRDDXBABIFNQAAAE" Name="init" Nature="0" IsOverride="false">
+      <Method Id="mthMUQ4NQFMSTNRDDXBABIFNQAAAE" Name="init" DescriptionId="mlsZN2TSEE4Y5DV3EYTRGMCSOTVAI" Nature="0" IsOverride="false">
         <AccessRules/>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthSA7W2J3SYZGY5FPBMGO3BW627U" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthSA7W2J3SYZGY5FPBMGO3BW627U" Invoke="true">
+                <xsc:Presentation>init</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(null, null, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFV7PLD4FGVERHCQY634YDPEQQY aciRSS2ETLQYZAZPOON3BCLJBUX5Y" Invoke="true"/>
+              <xsc:IdReference Path="acsFV7PLD4FGVERHCQY634YDPEQQY aciRSS2ETLQYZAZPOON3BCLJBUX5Y" Invoke="true">
+                <xsc:Presentation>EntityInitializationPhase:PROGRAMMED_CREATION</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);</xsc:Java>
@@ -482,9 +560,9 @@ return userProps;
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthNAAWAWQX6PNRDA2JAAMPGXSZKU" Name="getClassDefinitionName" Nature="0" IsOverride="false">
+      <Method Id="mthNAAWAWQX6PNRDA2JAAMPGXSZKU" Name="getClassDefinitionName" DescriptionId="mlsBUHNHR644FAJPFRXASRO7UX5TA" Nature="0" IsOverride="false">
         <AccessRules/>
-        <ReturnType TypeId="21"/>
+        <ReturnType TypeId="21" DescriptionId="mlsUCXFD5FGHNC7DHGBXWULE3UK6M"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -493,9 +571,9 @@ return userProps;
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthQCGEEZOUAHOBDA26AAMPGXSZKU" Name="calcTitle" Nature="0" IsOverride="false">
+      <Method Id="mthQCGEEZOUAHOBDA26AAMPGXSZKU" Name="calcTitle" DescriptionId="mlsSD4MIVK2HBA7PB5GLN4KTZDZKU" Nature="0" IsOverride="false">
         <AccessRules/>
-        <ReturnType TypeId="21"/>
+        <ReturnType TypeId="21" DescriptionId="mlsLPOLD655AZHDHLDGE5SQHP2Z3E"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -504,13 +582,13 @@ return userProps;
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthQN7LVIA74TNRDC7HAAMPGXSZKU" Name="rereadAndLock" Nature="0" IsOverride="false">
+      <Method Id="mthQN7LVIA74TNRDC7HAAMPGXSZKU" Name="rereadAndLock" DescriptionId="mlsRATMGQVCWREVLIROS4VSYNH56U" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="waitTime" Id="mpr4AEJGK7365FLRAPY5KAFLNDFWY">
+          <Parameter Name="waitTime" DescriptionId="mlsNYHW266ITRFSLNFDX6NGZU7OSA" Id="mpr4AEJGK7365FLRAPY5KAFLNDFWY">
             <Type TypeId="2"/>
           </Parameter>
-          <Parameter Name="sessional" Id="mpr64GFWWRAMZGDJOIZ7JCFNF3Y54">
+          <Parameter Name="sessional" DescriptionId="mlsAO6746XTAFF67LFWAGDBQZST6U" Id="mpr64GFWWRAMZGDJOIZ7JCFNF3Y54">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
@@ -523,14 +601,14 @@ return userProps;
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthTJMTUS3Y6HNRDIMQAAMPGXSZKU" Name="load" Nature="0" IsOverride="false">
+      <Method Id="mthTJMTUS3Y6HNRDIMQAAMPGXSZKU" Name="load" DescriptionId="mlsDYJYNWSHSRCA5EFN54WRCBFFAQ" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true"/>
         <Parameters>
-          <Parameter Name="pid" Id="mprX2XH3F7G3BAP3EBVFW7QC3TEMI">
+          <Parameter Name="pid" DescriptionId="mlsGBQ37GXCFVHEFCSYSLIRN3JNL4" Id="mprX2XH3F7G3BAP3EBVFW7QC3TEMI">
             <Type TypeId="411" Path="pdcPid_______________________"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="411" Path="pdcEntity____________________"/>
+        <ReturnType TypeId="411" Path="pdcEntity____________________" DescriptionId="mls5IWOTYBFYVA2VIWIKE3JTBSUUU"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -538,20 +616,26 @@ return userProps;
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthYY6FOOADRTNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthYY6FOOADRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getEntityObject</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(pid);
 } catch(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axc6Y6UT7DZNRET3ECFL7DJVPMK6U"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6Y6UT7DZNRET3ECFL7DJVPMK6U">
+                <xsc:Presentation>Exceptions::EntityObjectNotExistsError</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e) {
@@ -561,14 +645,14 @@ return userProps;
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthTOCEDADAFLPBDLXAAAN7YHKUNI" Name="getPropAsStr" Nature="0" IsOverride="false">
+      <Method Id="mthTOCEDADAFLPBDLXAAAN7YHKUNI" Name="getPropAsStr" DescriptionId="mlsIOQY7QIKAJCFJAMVHSS5EYOU74" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="propId" Id="mpr5ICSGG5ZG5GCLOCEGQ4ZH5J46Q">
+          <Parameter Name="propId" DescriptionId="mlsGBOMVK674VDXREKFVMWWOMJBIQ" Id="mpr5ICSGG5ZG5GCLOCEGQ4ZH5J46Q">
             <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="21"/>
+        <ReturnType TypeId="21" DescriptionId="mlsNY24OZYBCNBSJCHOKQLMC7L4G4"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -580,7 +664,7 @@ return org.radixware.kernel.server.utils.SrvValAsStr.toStr(getArte(), getProp(pr
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthVAYKNE3RB3OBDNTPAAMPGXSZKU" Name="releaseSessionalLock" Nature="0" IsOverride="false">
+      <Method Id="mthVAYKNE3RB3OBDNTPAAMPGXSZKU" Name="releaseSessionalLock" DescriptionId="mlsEN5XAORHRFEW3DFHZHHZ7NEPEQ" Nature="0" IsOverride="false">
         <AccessRules/>
         <Sources>
           <Src>
@@ -590,7 +674,7 @@ return org.radixware.kernel.server.utils.SrvValAsStr.toStr(getArte(), getProp(pr
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthYXHXCUYRXTNRDCJ3ABIFNQAABA" Name="reread" Nature="0" IsOverride="false">
+      <Method Id="mthYXHXCUYRXTNRDCJ3ABIFNQAABA" Name="reread" DescriptionId="mls6LVCQA7FIZGC3K45IBYZCULURM" Nature="0" IsOverride="false">
         <AccessRules/>
         <Sources>
           <Src>
@@ -601,13 +685,13 @@ reread( org.radixware.kernel.common.enums.EEntityLockMode.NONE, null );</xsc:Jav
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthZ2YBPSBDODORDJIYABIFNQAABA" Name="setPropAsStr" Nature="0" IsOverride="false">
+      <Method Id="mthZ2YBPSBDODORDJIYABIFNQAABA" Name="setPropAsStr" DescriptionId="mlsDSSTIAEIYJD7XJLAGP5P3RXKZA" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="propId" Id="mprOYKW6UTUD5CD3HHEXGIVZ2E7J4">
+          <Parameter Name="propId" DescriptionId="mlsSR5ZEASTNJAPBH7OIHTCZQRWRE" Id="mprOYKW6UTUD5CD3HHEXGIVZ2E7J4">
             <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
           </Parameter>
-          <Parameter Name="valAsStr" Id="mprLIBSZ37PTFHGRFJWOBVHCQ2WOA">
+          <Parameter Name="valAsStr" DescriptionId="mlsRKIRISBVPRCENIVUMWLJWZDMJA" Id="mprLIBSZ37PTFHGRFJWOBVHCQ2WOA">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
@@ -621,26 +705,34 @@ final Object val = org.radixware.kernel.server.utils.SrvValAsStr.fromStr( getArt
 if (val instanceof </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>){//RADIX-5484
     setProp(propId, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthYY6FOOADRTNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthYY6FOOADRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getEntityObject</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>((</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)val));
@@ -651,9 +743,9 @@ if (val instanceof </xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthZ4HH5VYW6PNRDA2JAAMPGXSZKU" Name="getEntityDefinitionId" Nature="0" IsOverride="false">
+      <Method Id="mthZ4HH5VYW6PNRDA2JAAMPGXSZKU" Name="getEntityDefinitionId" DescriptionId="mlsHFFYGBUIGRC3DEWRN24AZQG4BE" Nature="0" IsOverride="false">
         <AccessRules/>
-        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <ReturnType TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU" DescriptionId="mlsCJ32VTZU7JAZJJEJ7MDZ5JQHWY"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -662,140 +754,140 @@ if (val instanceof </xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthZJ672NR72ZEPJP2YHQ4KTL2VWY" Name="onCalcEditorPresentation" Nature="0" IsOverride="false">
+      <Method Id="mthZJ672NR72ZEPJP2YHQ4KTL2VWY" Name="onCalcEditorPresentation" DescriptionId="mlsL4MDH2BOQBAD5NVZXMQQ77C4DY" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="onCalcEditorPresentation(Lorg.radixware.kernel.common.types.Id;)Lorg.radixware.kernel.common.types.Id;"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="presentationId" Id="mprFX4OIHIUS5GGBFY5S3EQLRIDP4">
+          <Parameter Name="presentationId" DescriptionId="mlsOZLPBLORXBGHHFTPVN7D7RZNHY" Id="mprFX4OIHIUS5GGBFY5S3EQLRIDP4">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id" DescriptionId="mls2KWX3TC6DJCTXGOVZILWXA6XIQ"/>
       </Method>
-      <Method Id="mth4D6ME6VX45BYVNJXZPBTAA7KP4" Name="onCalcTitle" Nature="0" IsOverride="false">
+      <Method Id="mth4D6ME6VX45BYVNJXZPBTAA7KP4" Name="onCalcTitle" DescriptionId="mlsBARUVRMSP5DKBCEHQCAGOQR7VU" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="onCalcTitle(Ljava.lang.String;)Ljava.lang.String;"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="title" Id="mprLMUWH6DNB5CY7HQRMHYA6SOXIA">
+          <Parameter Name="title" DescriptionId="mlsYMF2IC2EJZDODAVLWFBXLHIZKI" Id="mprLMUWH6DNB5CY7HQRMHYA6SOXIA">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="21"/>
+        <ReturnType TypeId="21" DescriptionId="mlsCZVZ4LBWT5FXNFCWZ3ZAPDO4BY"/>
       </Method>
-      <Method Id="mthVQQNGEVQJBFIPIIJALJND4AQOY" Name="execCommand" Nature="0" IsOverride="false">
+      <Method Id="mthVQQNGEVQJBFIPIIJALJND4AQOY" Name="execCommand" DescriptionId="mlsEQRYKMZSORB6PI7HUEVN2HJATA" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="execCommand(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.common.types.Id;Lorg.apache.xmlbeans.XmlObject;Lorg.radixware.kernel.server.types.PropValHandlersByIdMap;Lorg.apache.xmlbeans.XmlObject;)Lorg.radixware.kernel.server.types.FormHandler.NextDialogsRequest;"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="cmdId" Id="mprAQKOKGM6CRBI5G3QMXIUJHXTY4">
+          <Parameter Name="cmdId" DescriptionId="mlsSWRRZHS3LZHR7MNDKOVCOPNXM4" Id="mprAQKOKGM6CRBI5G3QMXIUJHXTY4">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
-          <Parameter Name="propId" Id="mprXG6EDW6NBJBA5HSP4E6EDKXMG4">
+          <Parameter Name="propId" DescriptionId="mls6MDIV7TSQREKZHT5NUBZ72YGWI" Id="mprXG6EDW6NBJBA5HSP4E6EDKXMG4">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
-          <Parameter Name="input" Id="mprRLEVP4IS3FDQFPMMBA4MHQYTW4">
+          <Parameter Name="input" DescriptionId="mlsGSQYMNPGXFBKLDIJAAF7TJGUHY" Id="mprRLEVP4IS3FDQFPMMBA4MHQYTW4">
             <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
           </Parameter>
-          <Parameter Name="newPropValsById" Id="mpr2HIHVCCQ7BGEPFTVS56V5J2Z7Q">
+          <Parameter Name="newPropValsById" DescriptionId="mlsXGQXLJOPMJDLBN6EECRI2FSZRY" Id="mpr2HIHVCCQ7BGEPFTVS56V5J2Z7Q">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.PropValHandlersByIdMap"/>
           </Parameter>
-          <Parameter Name="output" Id="mprWKQUBHIAHRBVXIRS2SQDHR3UT4">
+          <Parameter Name="output" DescriptionId="mlsEE3NR72F7ZBRRODAVKORGOVOWE" Id="mprWKQUBHIAHRBVXIRS2SQDHR3UT4">
             <Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest" DescriptionId="mlsH46BVJW3YRGQHGJNMHNAZDHSOY"/>
         <ThrownExceptions>
           <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.AppException"/>
           <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
         </ThrownExceptions>
       </Method>
-      <Method Id="mthKNO5SF2TKZBYLK72NE4ZL3MS6I" Name="onSetSavepoint" Nature="0" IsOverride="false">
+      <Method Id="mthKNO5SF2TKZBYLK72NE4ZL3MS6I" Name="onSetSavepoint" DescriptionId="mlsZYRJ4LAQLZGA7B25PLS6WPH6XE" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="onSetSavepoint(Ljava.lang.String;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="savepointId" Id="mpr3LP3KCIB3JGETEX3EQLMHRJCYM">
+          <Parameter Name="savepointId" DescriptionId="mlsJHBJVS4TIJHYJO464I2OD6LIAU" Id="mpr3LP3KCIB3JGETEX3EQLMHRJCYM">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthVGODV43DM5ARDDXWLZ2HCHRAPY" Name="setIsAutoUpdateEnabled" Nature="0" IsOverride="false">
+      <Method Id="mthVGODV43DM5ARDDXWLZ2HCHRAPY" Name="setIsAutoUpdateEnabled" DescriptionId="mlsJX7AHNU4EJAKBGVEK2HMKEA4WQ" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="setIsAutoUpdateEnabled(Z)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="isEnabled" Id="mprXQTBAX6T5VB2BK6JUZ5HA2PIFM">
+          <Parameter Name="isEnabled" DescriptionId="mlsFPOGO5DP4FGT7H2UOIOC2P2ZJE" Id="mprXQTBAX6T5VB2BK6JUZ5HA2PIFM">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthAVNGZFNZJFEM5F264QAIRSOHGE" Name="setPropHasOwnVal" Nature="0" IsOverride="false">
+      <Method Id="mthAVNGZFNZJFEM5F264QAIRSOHGE" Name="setPropHasOwnVal" DescriptionId="mlsGRS6C7YNLBEQZA62T2XYI5SWSA" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="setPropHasOwnVal(Lorg.radixware.kernel.common.types.Id;Z)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="id" Id="mprPIHKPMWG7NGVVL3A3FCAQASURE">
+          <Parameter Name="id" DescriptionId="mlsWGVEGBQ33ZGX3N2HOSQC44H3OE" Id="mprPIHKPMWG7NGVVL3A3FCAQASURE">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
-          <Parameter Name="x" Id="mprSVWKMNGINRAANHH3IZT4TNIZJI">
+          <Parameter Name="x" DescriptionId="mlsJOFJGY773ZBETMGJ6QKCP5HVRM" Id="mprSVWKMNGINRAANHH3IZT4TNIZJI">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mth5A5TVHUCNVHFXIT7FDJ75MILHE" Name="update" Nature="0" IsOverride="false">
+      <Method Id="mth5A5TVHUCNVHFXIT7FDJ75MILHE" Name="update" DescriptionId="mlsYTZW2RUHIBFSJEDLGRAUSHAFFQ" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="update()V"/>
         </AccessRules>
       </Method>
-      <Method Id="mthVPP424BCMBA5RALD2S7CGTZJ3I" Name="getDdsMeta" Nature="0" IsOverride="false">
+      <Method Id="mthVPP424BCMBA5RALD2S7CGTZJ3I" Name="getDdsMeta" DescriptionId="mls2PRJAGAUZJGZ3KIOJUZPOP3LTE" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="getDdsMeta()Lorg.radixware.kernel.common.defs.dds.DdsTableDef;"/>
         </AccessRules>
-        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.defs.dds.DdsTableDef"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.defs.dds.DdsTableDef" DescriptionId="mlsSCNOSNR6BRCH3AOL4C6ER6OGJ4"/>
       </Method>
-      <Method Id="mthT7R5Q7D74ZA3NAKLGIGWEN5UYE" Name="getPresentationMeta" Nature="0" IsOverride="false">
+      <Method Id="mthT7R5Q7D74ZA3NAKLGIGWEN5UYE" Name="getPresentationMeta" DescriptionId="mlsAYXHWKDM75EKVM5SUKVEXURUE4" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="getPresentationMeta()Lorg.radixware.kernel.server.meta.presentations.RadClassPresentationDef;"/>
         </AccessRules>
-        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.meta.presentations.RadClassPresentationDef"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.meta.presentations.RadClassPresentationDef" DescriptionId="mls2JRJZ33OXJHSDA3HH6XDML3W6Y"/>
       </Method>
-      <Method Id="mthP2EWJ2PSAZGJVESQKCRACMBWKI" Name="getProp" Nature="0" IsOverride="false">
+      <Method Id="mthP2EWJ2PSAZGJVESQKCRACMBWKI" Name="getProp" DescriptionId="mls4O74GYTMLBFN7H6IYTUERHQ6WM" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="getProp(Lorg.radixware.kernel.common.types.Id;)Ljava.lang.Object;"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="id" Id="mprUGJFOUBEHFCIXF643XF44GL4SI">
+          <Parameter Name="id" DescriptionId="mlsXQMKTQYXIZFCVGENOE7HDEKJ7Q" Id="mprUGJFOUBEHFCIXF643XF44GL4SI">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <ReturnType TypeId="400" extStr="java.lang.Object" DescriptionId="mlsXN44EVUVCFHIXD4YMIYYFR5CF4"/>
       </Method>
-      <Method Id="mthYI2EJSKBMZEWJF2HWO5JJHUSTQ" Name="purgePropCache" Nature="0" IsOverride="false">
+      <Method Id="mthYI2EJSKBMZEWJF2HWO5JJHUSTQ" Name="purgePropCache" DescriptionId="mlsTLT7S7TJE5ENRMYIUIRITBC32M" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="purgePropCache()V"/>
         </AccessRules>
       </Method>
-      <Method Id="mth37BJGQIJQZAMXIPNDIDMU45MJM" Name="setProp" Nature="0" IsOverride="false">
+      <Method Id="mth37BJGQIJQZAMXIPNDIDMU45MJM" Name="setProp" DescriptionId="mls4GBCIRYMYBFLNED456GKC3BHGQ" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="setProp(Lorg.radixware.kernel.common.types.Id;Ljava.lang.Object;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="id" Id="mpr5XZCNIEO7NCMJOTZ74YAKQY744">
+          <Parameter Name="id" DescriptionId="mls74LADWENGFHH3JTAW4S7MEGA2Q" Id="mpr5XZCNIEO7NCMJOTZ74YAKQY744">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
-          <Parameter Name="x" Id="mprVWKZU74YZNAOBLHIDICNOC3AQI">
+          <Parameter Name="x" DescriptionId="mlsB65I5Q7BSFGJZIF7W7P6CU3JB4" Id="mprVWKZU74YZNAOBLHIDICNOC3AQI">
             <Type TypeId="400" extStr="java.lang.Object"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthEYS5WP6Y6NCGRHV55VXQTV6SLU" Name="setProps" Nature="0" IsOverride="false">
+      <Method Id="mthEYS5WP6Y6NCGRHV55VXQTV6SLU" Name="setProps" DescriptionId="mlsNVXP5ZLIKREORFBLG6YAB5BS7E" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="setProps(Ljava.util.Map&lt;Lorg.radixware.kernel.common.types.Id;Ljava.lang.Object;>;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="propValsById" Id="mprYZCP6G6CJNAGBFT4FC6F722GWM">
+          <Parameter Name="propValsById" DescriptionId="mlsOKY6R4DNEJCBFPTS2ZM2VLZ5AQ" Id="mprYZCP6G6CJNAGBFT4FC6F722GWM">
             <Type TypeId="400" extStr="java.util.Map">
               <xsc:GenericArguments>
                 <xsc:Argument Alias="?">
@@ -809,11 +901,11 @@ if (val instanceof </xsc:Java>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthPNPHJW3TBJBIVP4LH7MOAT2LRM" Name="getCurUserApplicableRoleIds" Nature="0" IsOverride="false">
+      <Method Id="mthPNPHJW3TBJBIVP4LH7MOAT2LRM" Name="getCurUserApplicableRoleIds" DescriptionId="mlsBVQMYQO4QVB2ZN4Z33BBQCOXW4" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="getCurUserApplicableRoleIds()Ljava.util.List&lt;Lorg.radixware.kernel.common.types.Id;>;"/>
         </AccessRules>
-        <ReturnType TypeId="400" extStr="java.util.List">
+        <ReturnType TypeId="400" extStr="java.util.List" DescriptionId="mls6HLM4D2JFNEKFHNHPYHANGVEGU">
           <xsc:GenericArguments>
             <xsc:Argument Alias="?">
               <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
@@ -821,14 +913,14 @@ if (val instanceof </xsc:Java>
           </xsc:GenericArguments>
         </ReturnType>
       </Method>
-      <Method Id="mthUQQDNINZQPORDMNEABIFNQAABA" Name="isCurUserHasRole" Nature="0" IsOverride="false">
+      <Method Id="mthUQQDNINZQPORDMNEABIFNQAABA" Name="isCurUserHasRole" DescriptionId="mls66RUFW6L3ZBH3B2KX2WQJ2AIK4" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="roleId" Id="mprN6KFJVTIWJAHJA5BN5IL6UPYNU">
+          <Parameter Name="roleId" DescriptionId="mls7TWWR7654JE6LBL6DJTE7YDO6Y" Id="mprN6KFJVTIWJAHJA5BN5IL6UPYNU">
             <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsV4VTTBJBCBCARKVE5ESKLPSXEQ"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -837,7 +929,9 @@ if (val instanceof </xsc:Java>
 java.util.List&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> l = getCurUserApplicableRoleIds();
@@ -845,7 +939,9 @@ java.util.List&lt;</xsc:Java>
 return l.contains(roleId) || l.contains(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="rolSUPER_ADMIN_______________"/>
+              <xsc:IdReference Path="rolSUPER_ADMIN_______________">
+                <xsc:Presentation>Arte::SuperAdmin</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);</xsc:Java>
@@ -853,27 +949,31 @@ return l.contains(roleId) || l.contains(</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthYBR653Q2JNBH3FJB3NYQDQHA4I" Name="isCurUserHasRole" Nature="0" IsOverride="false">
+      <Method Id="mthYBR653Q2JNBH3FJB3NYQDQHA4I" Name="isCurUserHasRole" DescriptionId="mlsR5WF2VGUPJE4RAUE73QN4CROHU" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="roleGuid" Id="mprUJHXCHGCXRAHXEBTMY4NXI5EZE">
+          <Parameter Name="roleGuid" DescriptionId="mlsBZJDTN5K5JFLTLZW7WGH5MLTZE" Id="mprUJHXCHGCXRAHXEBTMY4NXI5EZE">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsPPFOD5B4SFF4VGTGF45BDYT6UM"/>
         <Sources>
           <Src>
             <xsc:Item>
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthUQQDNINZQPORDMNEABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthUQQDNINZQPORDMNEABIFNQAABA" Invoke="true">
+                <xsc:Presentation>isCurUserHasRole</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                <xsc:Presentation>Id.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.loadFrom(roleGuid));</xsc:Java>
@@ -881,10 +981,10 @@ return l.contains(roleId) || l.contains(</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthQM2TESGIL5A2NIBESHWPW6RI5A" Name="isCurUserHasAnyRole" Nature="0" IsOverride="false">
+      <Method Id="mthQM2TESGIL5A2NIBESHWPW6RI5A" Name="isCurUserHasAnyRole" DescriptionId="mlsFE7GXAVIAJAENHPHCYRX4QWOV4" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="roleGuids" Id="mprMMTYJMUZPNCL7OKUH34SRKMYTQ">
+          <Parameter Name="roleGuids" DescriptionId="mlsBO6ZAL5ZZZDUJOULGOFXVJL6FM" Id="mprMMTYJMUZPNCL7OKUH34SRKMYTQ">
             <Type TypeId="400" extStr="java.util.Collection">
               <xsc:GenericArguments>
                 <xsc:Argument Alias="?">
@@ -894,7 +994,7 @@ return l.contains(roleId) || l.contains(</xsc:Java>
             </Type>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsTPF53NCGVRHKLPJUQFMVUVTUMY"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -903,27 +1003,35 @@ return l.contains(roleId) || l.contains(</xsc:Java>
         return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthUQQDNINZQPORDMNEABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthUQQDNINZQPORDMNEABIFNQAABA" Invoke="true">
+                <xsc:Presentation>isCurUserHasRole</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="rolSUPER_ADMIN_______________"/>
+              <xsc:IdReference Path="rolSUPER_ADMIN_______________">
+                <xsc:Presentation>Arte::SuperAdmin</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
     for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> roleGuid : roleGuids) {
         if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthUQQDNINZQPORDMNEABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthUQQDNINZQPORDMNEABIFNQAABA" Invoke="true">
+                <xsc:Presentation>isCurUserHasRole</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(roleGuid)){
@@ -936,10 +1044,10 @@ return false;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mth4J27D4EEXVEHNGEXYQ32YM2I2M" Name="isCurUserHasAnyRole" Nature="0" IsOverride="false">
+      <Method Id="mth4J27D4EEXVEHNGEXYQ32YM2I2M" Name="isCurUserHasAnyRole" DescriptionId="mlsRK6EH6MO7VCKRCWMHBHE73TUF4" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="roleGuids" Id="mpr5MBVMNMLM5ADZK5ZOQPWBMRDCE">
+          <Parameter Name="roleGuids" DescriptionId="mlsE332NHNXQZF27JAFFLAJD2KMAM" Id="mpr5MBVMNMLM5ADZK5ZOQPWBMRDCE">
             <Type TypeId="400" extStr="java.util.Collection">
               <xsc:GenericArguments>
                 <xsc:Argument Alias="?">
@@ -949,7 +1057,7 @@ return false;</xsc:Java>
             </Type>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mls2IONR7PLJNF2NA2NGZZPR6UJCE"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -958,13 +1066,17 @@ return false;</xsc:Java>
         return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthUQQDNINZQPORDMNEABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthUQQDNINZQPORDMNEABIFNQAABA" Invoke="true">
+                <xsc:Presentation>isCurUserHasRole</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="rolSUPER_ADMIN_______________"/>
+              <xsc:IdReference Path="rolSUPER_ADMIN_______________">
+                <xsc:Presentation>Arte::SuperAdmin</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -972,7 +1084,9 @@ return false;</xsc:Java>
         if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthYBR653Q2JNBH3FJB3NYQDQHA4I" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthYBR653Q2JNBH3FJB3NYQDQHA4I" Invoke="true">
+                <xsc:Presentation>isCurUserHasRole</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(roleGuid)){
@@ -985,107 +1099,111 @@ return false;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthUTPF5BWBTFC35IDCO6WZHM3DB4" Name="init" Nature="0" IsOverride="false">
+      <Method Id="mthUTPF5BWBTFC35IDCO6WZHM3DB4" Name="init" DescriptionId="mlsG5HFPMI275BMTHKULIQ5RBBGXQ" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="initPropValsById" Id="mprEZ4FQNMOFBHOZESGYSFRZSDBLI">
+          <Parameter Name="initPropValsById" DescriptionId="mls7Y73CFGCIBGEPBVVZJFTXARCHI" Id="mprEZ4FQNMOFBHOZESGYSFRZSDBLI">
             <Type TypeId="411" Path="adcP4A3ZAD7BVDU7GEAW5QCJQXLTQ"/>
           </Parameter>
-          <Parameter Name="src" Id="mprI55CMBGB2FCSPFVBBH3ZXMRPYI">
+          <Parameter Name="src" DescriptionId="mlsTXCMA4A45BFJNLR373A67LOQ2Y" Id="mprI55CMBGB2FCSPFVBBH3ZXMRPYI">
             <Type TypeId="411" Path="pdcEntity____________________"/>
           </Parameter>
         </Parameters>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthSA7W2J3SYZGY5FPBMGO3BW627U" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthSA7W2J3SYZGY5FPBMGO3BW627U" Invoke="true">
+                <xsc:Presentation>init</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(initPropValsById, src, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFV7PLD4FGVERHCQY634YDPEQQY aciRSS2ETLQYZAZPOON3BCLJBUX5Y" Invoke="true"/>
+              <xsc:IdReference Path="acsFV7PLD4FGVERHCQY634YDPEQQY aciRSS2ETLQYZAZPOON3BCLJBUX5Y" Invoke="true">
+                <xsc:Presentation>EntityInitializationPhase:PROGRAMMED_CREATION</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>);</xsc:Java>
+              <xsc:Java>);
+</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mth23RIMT3QYRALDCOPINDYKRUC5I" Name="onCalcParentTitle" Nature="0" IsOverride="false">
+      <Method Id="mth23RIMT3QYRALDCOPINDYKRUC5I" Name="onCalcParentTitle" DescriptionId="mlsR5AKFUJRNBHZDJLQ7BDGU6WYWE" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="onCalcParentTitle(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.server.types.Entity;Ljava.lang.String;)Ljava.lang.String;"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="ptPropId" Id="mprMDOCUZRWNFER7OGVW6K5CAPDLU">
+          <Parameter Name="ptPropId" DescriptionId="mlsSJFCEWE5QZASTHJY3BRXXV6DPE" Id="mprMDOCUZRWNFER7OGVW6K5CAPDLU">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
-          <Parameter Name="parent" Id="mprLJY2WXKT3RBLNEL4X4L5P7WGNM">
+          <Parameter Name="parent" DescriptionId="mlsZZH43HXEFJBJ5AMRWO3MHDG2ZQ" Id="mprLJY2WXKT3RBLNEL4X4L5P7WGNM">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
           </Parameter>
-          <Parameter Name="parentTitle" Id="mprYH3LWGSWYND7DHJCEWIADGE5RI">
+          <Parameter Name="parentTitle" DescriptionId="mlsFWOKXYX24VDSRGGMTARADS22RQ" Id="mprYH3LWGSWYND7DHJCEWIADGE5RI">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="21"/>
+        <ReturnType TypeId="21" DescriptionId="mlsGEZU2LHM45E4ZKTDPEQAGJCWXU"/>
       </Method>
-      <Method Id="mthPOB2MIQLR5FBHODMKA2AWCPQQM" Name="isDiscarded" Nature="0" IsOverride="false">
+      <Method Id="mthPOB2MIQLR5FBHODMKA2AWCPQQM" Name="isDiscarded" DescriptionId="mls2BVTPATF5FCZJEEMSTDZ4XZCCA" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="isDiscarded()Z"/>
         </AccessRules>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsMNFKRAIJUBC27FDIXLW5W54SXE"/>
       </Method>
-      <Method Id="mthIKSUJAGWQBHKFPQPE53AC7YD7Y" Name="beforeUpdatePropObject" Nature="0" IsOverride="false">
+      <Method Id="mthIKSUJAGWQBHKFPQPE53AC7YD7Y" Name="beforeUpdatePropObject" DescriptionId="mlsOLAXWK2QDBFWPAXZ6Z3KLE66LA" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="beforeUpdatePropObject(Lorg.radixware.kernel.common.types.Id;Lorg.radixware.kernel.server.types.Entity;)Z"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="propId" Id="mprYLR5WJO74FGATLLY574Y4QTH4M">
+          <Parameter Name="propId" DescriptionId="mlsX2RPVTTDANBB5PIOZRN56HRA2Q" Id="mprYLR5WJO74FGATLLY574Y4QTH4M">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
-          <Parameter Name="propVal" Id="mprC5NP3R2ZIRHE3JQ2C7OOD2Q2OA">
+          <Parameter Name="propVal" DescriptionId="mlsKDJ6QJOAIJGAVMMCNYJJBZTFCA" Id="mprC5NP3R2ZIRHE3JQ2C7OOD2Q2OA">
             <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsY2GMIHL64ZCYVLNK6HQ2N6ODTQ"/>
       </Method>
-      <Method Id="mth3FB6HQRDY5A3JC2WXXCBSC6V5A" Name="onAutonomousStoreAfterRollback" Nature="0" IsOverride="false">
+      <Method Id="mth3FB6HQRDY5A3JC2WXXCBSC6V5A" Name="onAutonomousStoreAfterRollback" DescriptionId="mlsJONNMIL5FJBMRHZD62UZ3MBODU" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="onAutonomousStoreAfterRollback(Ljava.lang.String;)Z"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="savePointId" Id="mpr4B4GAWVPGJB2ZPXSD6OJ62MX4E">
+          <Parameter Name="savePointId" DescriptionId="mlsSVVHIW4QNZEIXHSGLYNGA546OI" Id="mpr4B4GAWVPGJB2ZPXSD6OJ62MX4E">
             <Type TypeId="21"/>
-            <Description>null on full rollback</Description>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsLMUQU22AJ5DTNC5JJTZ6AN4F6M"/>
       </Method>
-      <Method Id="mthZC3AQRPUYRB5FL7FB4A7JGE46U" Name="isLocked" Nature="0" IsOverride="false">
+      <Method Id="mthZC3AQRPUYRB5FL7FB4A7JGE46U" Name="isLocked" DescriptionId="mlsKLUYBRRJ3JGKRA5ORZUWLW6KRE" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="isLocked(Lorg.radixware.kernel.common.enums.EEntityLockMode;)Z"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="lockMode" Id="mprKZD36TR3JNEKTBPYHMDG5DNBSI">
+          <Parameter Name="lockMode" DescriptionId="mlsYGTMEEHQWZA4ZDRQOLOVAFF3YE" Id="mprKZD36TR3JNEKTBPYHMDG5DNBSI">
             <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityLockMode"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsPD3ZCVLU2NCLVOARGOZBDVDG2Q"/>
       </Method>
-      <Method Id="mthXIWIUQAVFJFVXG4AEIGDKCBN2U" Name="isCreatedAfterSavePoint" Nature="0" IsOverride="false">
+      <Method Id="mthXIWIUQAVFJFVXG4AEIGDKCBN2U" Name="isCreatedAfterSavePoint" DescriptionId="mlsEJUISV5GFZGH7MLLDSONT5MBQU" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="isCreatedAfterSavePoint(Ljava.lang.String;)Z"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="spId" Id="mprQVRC6UKJWBFY5AFHPKCTONW65E">
+          <Parameter Name="spId" DescriptionId="mlsD7H6X25FIBCIXJQCIA5E2YCOZE" Id="mprQVRC6UKJWBFY5AFHPKCTONW65E">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsLECAT3E275DWVEIQPZKAKOMVXQ"/>
       </Method>
-      <Method Id="mthE23L423YALPBDA2PABIFNQAABA" Name="isModified" Nature="0" IsOverride="false">
+      <Method Id="mthE23L423YALPBDA2PABIFNQAABA" Name="isModified" DescriptionId="mls6EY6SPFEMJFGRMPT3Q4T2CPJMQ" Nature="0" IsOverride="false">
         <AccessRules/>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsJKDBGLHQGRGZNDE6UZ7XA6UYKQ"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -1094,14 +1212,14 @@ return false;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mth4A25XVWOKTPBDNOBAAN7YHKUNI" Name="isLocked" Nature="0" IsOverride="false">
+      <Method Id="mth4A25XVWOKTPBDNOBAAN7YHKUNI" Name="isLocked" DescriptionId="mlsODQ2FITIR5FR5KIIEX3GAJRWBY" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="sessional" Id="mprTIVKIFF2FFBW7J4W63CCOZIAFU">
+          <Parameter Name="sessional" DescriptionId="mlsGFCBI76JYFAANGLA2VCCXXO4RM" Id="mprTIVKIFF2FFBW7J4W63CCOZIAFU">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsU4JTPSECSFE2JKWZKPO6VIDAGY"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -1110,14 +1228,14 @@ return false;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthOPU3AAQWZPNRDB64AALOMT5GDM" Name="isInDatabase" Nature="0" IsOverride="false">
+      <Method Id="mthOPU3AAQWZPNRDB64AALOMT5GDM" Name="isInDatabase" DescriptionId="mlsQPQ5OFNO65ELRMONNBMTTEEWOU" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="doSelect" Id="mprLFXWA3UKDJC77M2O4L66GSJYCI">
+          <Parameter Name="doSelect" DescriptionId="mlsDVI7FTYBOVD63PKVOCI34FXVVA" Id="mprLFXWA3UKDJC77M2O4L66GSJYCI">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsAO3PSL6IE5HGZBOJYL2MIFW5WQ"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -1126,19 +1244,19 @@ return false;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthIC7IDL6YHFFYPBBNNPYVLE2K6E" Name="purgePropCacheOnRollback" Nature="0" IsOverride="false">
+      <Method Id="mthIC7IDL6YHFFYPBBNNPYVLE2K6E" Name="purgePropCacheOnRollback" DescriptionId="mlsH7KD6DRPKVHJXLBEJTMZYKXIWQ" Nature="0" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="purgePropCacheOnRollback(Ljava.lang.String;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="savepointId" Id="mprJ4PIJGKWUBCSJGAYCHZY4O5TGY">
+          <Parameter Name="savepointId" DescriptionId="mlsVTVJ4CCEDRC4PBXOMVFVQBW2LE" Id="mprJ4PIJGKWUBCSJGAYCHZY4O5TGY">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthY7OUFFEVQBDJ3OJXQ45DW3TODU" Name="isInited" Nature="0" IsOverride="false">
+      <Method Id="mthY7OUFFEVQBDJ3OJXQ45DW3TODU" Name="isInited" DescriptionId="mlsWZA6WH6QO5AI5JAID7USW65OKM" Nature="0" IsOverride="false">
         <AccessRules/>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsO54YDTFLJRAT5BSKU5D536VANU"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -1147,9 +1265,9 @@ return false;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mth3ZCIEHV3MNDJHGQV64AG7HSIPE" Name="isDeleted" Nature="0" IsOverride="false">
+      <Method Id="mth3ZCIEHV3MNDJHGQV64AG7HSIPE" Name="isDeleted" DescriptionId="mlsZSFNUE4DOZBCRBLHOEK7YN7UOY" Nature="0" IsOverride="false">
         <AccessRules/>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsSWVILSPSINENVC4DB5RMDVDB4M"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -1158,9 +1276,9 @@ return false;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthB6B4DAPRVJA5PIUOPJUE5VMLX4" Name="isNewObject" Nature="0" IsOverride="false">
+      <Method Id="mthB6B4DAPRVJA5PIUOPJUE5VMLX4" Name="isNewObject" DescriptionId="mlsLWZIEMMFZZHTJFWXXOE5GXBJZU" Nature="0" IsOverride="false">
         <AccessRules/>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsQHSHC6VADVD3HCO4RRIDK2OGMQ"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -1169,9 +1287,9 @@ return false;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthPMV4LNLNNNHOBCBBDCS2P7CISA" Name="getClassDefinition" Nature="0" IsOverride="false">
+      <Method Id="mthPMV4LNLNNNHOBCBBDCS2P7CISA" Name="getClassDefinition" DescriptionId="mlsJNMC7DRCDFBKTEGEADM6WOG7PA" Nature="0" IsOverride="false">
         <AccessRules/>
-        <ReturnType TypeId="411" Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y"/>
+        <ReturnType TypeId="411" Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y" DescriptionId="mlsBQC5QQHKUFAEZE5CUIO4V23WOQ"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -1180,30 +1298,30 @@ return false;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthMJ36OUASKZBYZBMQG6QJNNKLAM" Name="afterCommit" Nature="0" IsOverride="false">
+      <Method Id="mthMJ36OUASKZBYZBMQG6QJNNKLAM" Name="afterCommit" DescriptionId="mlsOYUEUCMEOVECXPUWTPDKBXDJTA" Nature="0" IsOverride="false">
         <AccessRules Access="1">
           <Transparence Extendable="false" PublishedName="afterCommit(Z)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="isNewObject" Id="mprDWP2GKZEHNGVBEFLJZGWEGKUX4">
+          <Parameter Name="isNewObject" DescriptionId="mlsSWEZP2CYFZG53OUDYBUBK6VXSU" Id="mprDWP2GKZEHNGVBEFLJZGWEGKUX4">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthLWKHHJQDHFFDBGVTSCDT6NEIHI" Name="getAcsCoordinatesAsString" Nature="0" IsOverride="false">
+      <Method Id="mthLWKHHJQDHFFDBGVTSCDT6NEIHI" Name="getAcsCoordinatesAsString" DescriptionId="mlsFSQPNAZ2W5GUFMAPOLLFPJ7UOU" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="getAcsCoordinatesAsString()Ljava.lang.String;"/>
         </AccessRules>
-        <ReturnType TypeId="21"/>
+        <ReturnType TypeId="21" DescriptionId="mlsWKLDVEINQVAYNOPX6N5YX23BZ4"/>
       </Method>
-      <Method Id="mthAAZKIGKVHVA4JF5MNQBV4B7VLM" Name="isPersistentPropModified" Nature="0" IsOverride="false">
+      <Method Id="mthAAZKIGKVHVA4JF5MNQBV4B7VLM" Name="isPersistentPropModified" DescriptionId="mls2OTIFGGAEJCNJFTVSN2QTYHR6Y" Nature="0" IsOverride="false">
         <AccessRules/>
         <Parameters>
-          <Parameter Name="propId" Id="mprI4MBYHM345FA7FKIH2YJGKVLXQ">
+          <Parameter Name="propId" DescriptionId="mlsDQ4OKW6QBNE4RGUQZXZWLL3BOU" Id="mprI4MBYHM345FA7FKIH2YJGKVLXQ">
             <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mls5LHOQBPDFJCRLEKP7VISC7GNGQ"/>
         <Sources>
           <Src>
             <xsc:Item>
@@ -1212,32 +1330,137 @@ return false;</xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthWDCPS7A65NCT7KQDF4OZ62EB5U" Name="setPropHasOwnVal" Nature="0" IsOverride="false">
-        <AccessRules>
+      <Method Id="mthWDCPS7A65NCT7KQDF4OZ62EB5U" Name="setPropHasOwnVal" DescriptionId="mlsFQH3X3LQNNBEHCUNBUNU3XINUU" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="setPropHasOwnVal(Lorg.radixware.kernel.common.types.Id;ZLjava.lang.Object;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="id" Id="mprE2P7YQDPFNBXJIUDID3SWC3KLM">
+          <Parameter Name="id" DescriptionId="mlsTUTWMOWEB5EPJPZUWN5DSIGL5I" Id="mprE2P7YQDPFNBXJIUDID3SWC3KLM">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
-          <Parameter Name="x" Id="mprMVVXO45RURG5FB25FI6IQE5HR4">
+          <Parameter Name="x" DescriptionId="mlsBFRBDBRQU5EWTBD7WXDSBH5CF4" Id="mprMVVXO45RURG5FB25FI6IQE5HR4">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
-          <Parameter Name="val" Id="mprM6ZUK6VJN5CDBLRYBC7W7JND64">
+          <Parameter Name="val" DescriptionId="mlsA2M3R4CDBVF5DOCDEVGTADKQYQ" Id="mprM6ZUK6VJN5CDBLRYBC7W7JND64">
             <Type TypeId="400" extStr="java.lang.Object"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthRPTTJ54JTJBUVN6OEHHDOAOXTQ" Name="getPropHasOwnVal" Nature="0" IsOverride="false">
-        <AccessRules>
+      <Method Id="mthRPTTJ54JTJBUVN6OEHHDOAOXTQ" Name="getPropHasOwnVal" DescriptionId="mlsU6KLWV4URRBC3GIDXY4V5IBESU" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="getPropHasOwnVal(Lorg.radixware.kernel.common.types.Id;)Z"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="id" Id="mprA45CC3M3U5CAHHLNDIZSOGDKNQ">
+          <Parameter Name="id" DescriptionId="mlsC2YF4CKMNNEWTB7653KW6LC7AA" Id="mprA45CC3M3U5CAHHLNDIZSOGDKNQ">
             <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
           </Parameter>
         </Parameters>
+        <ReturnType TypeId="401" extStr="boolean" DescriptionId="mlsUVDFXKZBTJG63GZNRKLKQ7JNN4"/>
+      </Method>
+      <Method Id="mth2ID6LLB4ORG75JFEH45HYYK75U" Name="copyPropVal" DescriptionId="mls6GEM3SYKMBCZNO6V674JXJZWGA" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="copyPropVal(Lorg.radixware.kernel.server.meta.clazzes.RadPropDef;Lorg.radixware.kernel.server.types.Entity;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="prop" DescriptionId="mlsFOCB6XU3LJEL7EG33FKSXBUYDI" Id="mprWU3DVEFJ4FCAVGCILF5JX4Q74Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.meta.clazzes.RadPropDef"/>
+          </Parameter>
+          <Parameter Name="src" DescriptionId="mlsO6Y5AFOSAZGTBFLUYX5AXWN5DU" Id="mprD7Y3NPD2VRHNTMUZAVILIKCLSE">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVOCVGFPORBCZ5DTQ5NFRWXDMXQ" Name="markAsDeleted" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="markAsDeleted()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthPHNDFCSTMZG3ZJLTPNKQ56PLXA" Name="setPropHasOwnValAsStr" DescriptionId="mlsGC65IDAPS5ENZBSQANGQOFPULU" Nature="0" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="propId" DescriptionId="mlsQU436M7YPBCLDJZFENERZBTJGQ" Id="mprOYKW6UTUD5CD3HHEXGIVZ2E7J4">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+          <Parameter Name="x" DescriptionId="mls4AI4TRECONC2HPSAP6TNWFTV2Y" Id="mpr3CDF7MBVJVCGNHYGFLVANSDTH4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="valAsStr" DescriptionId="mlsDQ4BVVQQQZDBDKAXZCN22W54UQ" Id="mprLIBSZ37PTFHGRFJWOBVHCQ2WOA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>org.radixware.kernel.server.meta.clazzes.RadPropDef dacProp = getRadMeta().getPropById(propId);
+
+Object val = org.radixware.kernel.server.utils.SrvValAsStr.fromStr( getArte(), valAsStr, dacProp.getValType()) ;
+if (val instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>){//RADIX-5484
+    val = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthYY6FOOADRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getEntityObject</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)val);
+}
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthWDCPS7A65NCT7KQDF4OZ62EB5U" Invoke="true">
+                <xsc:Presentation>setPropHasOwnVal</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(propId, x, val);
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6PD7UT74UREYRPSXKLYRTUPPFI" Name="isAfterCommitRequired" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="isAfterCommitRequired()Z"/>
+        </AccessRules>
         <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthY6QJBWGAGREARHD4UFEMARAZHI" Name="calcDescriptiveTitle" DescriptionId="mlsOLZA3GMDYNH23HWZEKO4BQIPRY" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="calcDescriptiveTitle()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthTX7AFQWDNRDV5JJBAXUEYH43II" Name="getDescriptiveOwner" DescriptionId="mls44UT2VW6JNF5VE6EJ2I7IN57CA" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDescriptiveOwner()Lorg.radixware.kernel.server.types.Entity;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
       </Method>
     </Methods>
   </AdsClassDefinition>

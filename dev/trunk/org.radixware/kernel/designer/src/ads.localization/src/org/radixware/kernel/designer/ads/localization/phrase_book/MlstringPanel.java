@@ -86,7 +86,7 @@ public class MlstringPanel extends AbstractTablePanel {
             return;
         }
         final RowString row = tableUi.getRowString(row_index);
-        final boolean status = row.needsCheck(layerLangs);
+        final boolean status = row.isNeedsCheck(layerLangs);
         for (EIsoLanguage lang : layerLangs) {
             final String str = row.getValue(lang);
             if ((str != null) && (!str.equals(""))) {

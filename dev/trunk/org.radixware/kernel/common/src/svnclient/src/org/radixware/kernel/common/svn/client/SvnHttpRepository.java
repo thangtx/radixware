@@ -20,6 +20,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import javax.net.ssl.X509TrustManager;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.radixware.kernel.common.svn.RadixSvnException;
 import org.radixware.kernel.common.svn.client.impl.SvnPlainConnector;
 
@@ -49,52 +51,41 @@ public class SvnHttpRepository extends SvnRepository {
     }
 
     @Override
-    public SvnEntry getDir(String path, long revision, boolean wantProps, boolean wantContents, boolean wantInheritedProps, SvnEntryHandler handler) throws RadixSvnException {
+    public SvnEntry getDir(final String requestedPath, long revision, boolean wantProps, boolean wantContents, boolean wantInheritedProps, SvnEntryHandler handler) throws RadixSvnException {
         final SvnEntry[] parent = new SvnEntry[1];
         final String[] parentVCC = new String[1];
         try {
             connect();
-            path = getPathRelativeToMine(path);
-            path = SvnPath.uriEncode(path);
+            String path = SvnPath.uriEncode(getPathRelativeToMine(requestedPath));
             final String inititalPath = path;
+
+            int rootPathSegments = 0;
 
             SvnHttpConnection connection = (SvnHttpConnection) getConnection();
             if (revision >= 0) {
                 DAV.BaselineInfo info = getBaselineInfo(connection, this, "", revision, false, true, null);
                 path = SvnPath.append(SvnPath.append(info.baselineBase, info.baselinePath), path);
+            } else {
+                rootPathSegments = SvnPath.getSegmentsCount(getRootUrl()) - 3;// -3 for xxx://location
             }
             while (path.endsWith("/")) {
                 path = SvnPath.removeTail(path);
             }
-            final int parentPathSegments = SvnPath.getSegmentsCount(path);
 
-            DAV.Element[] dirProperties = new DAV.Element[]{
-                DAV.Element.VERSION_CONTROLLED_CONFIGURATION,
-                DAV.Element.VERSION_NAME,
-                DAV.Element.GET_CONTENT_LENGTH,
-                DAV.Element.RESOURCE_TYPE,
-                DAV.Element.CREATOR_DISPLAY_NAME,
-                DAV.Element.CREATION_DATE};
+            final int parentPathSegments = rootPathSegments + SvnPath.getSegmentsCount(path);
 
             Map<String, DAV.Properties> dirEntsMap = new HashMap<>();
 
             getProperties(connection, path, 1, null, null, dirEntsMap);
             SvnEntry thisEntry = null;
-            for (Iterator dirEnts = dirEntsMap.keySet().iterator(); dirEnts.hasNext();) {
-                String url = (String) dirEnts.next();
+            for (String url : dirEntsMap.keySet()) {
                 DAV.Properties child = (DAV.Properties) dirEntsMap.get(url);
                 String href = child.getURL();
                 if (href.endsWith("/")) {
                     href = SvnPath.removeTail(href);
                 }
-                String asPath = href;
                 boolean isThis = false;
-//                if (asPath.endsWith("/")) {
-//                    asPath = SvnPath.removeTail(asPath);
-//                    if (Objects.equals(asPath, path)) {//ignore self
-//                        
-//                    }
-//                }
+
                 String name = "";
                 if (parentPathSegments != SvnPath.getSegmentsCount(href)) {
                     name = SvnPath.uriDecode(SvnPath.tail(href));
@@ -133,7 +124,11 @@ public class SvnHttpRepository extends SvnRepository {
                 Date date = dateValue != null ? SvnUtil.parseDate(dateValue.getString()) : null;
                 String repositoryRoot = getRootUrl();
                 String repositoryPath = SvnPath.append(SvnPath.append(repositoryRoot, inititalPath), name);
-                SvnEntry entry = new SvnEntry(SvnPath.append(inititalPath, name), name, repositoryPath, author, lastRevision, date, size, kind,
+
+                final String _path = SvnUtil.urlDecode(SvnPath.append(inititalPath, name));
+                final String _name = SvnUtil.urlDecode(name);
+                final String _repositoryPath = SvnUtil.urlDecode(repositoryPath);
+                SvnEntry entry = new SvnEntry(_path, _name, _repositoryPath, author, lastRevision, date, size, kind,
                         child.getProperties() == null ? "" : String.valueOf(child.getProperties().get("comment"))
                 );
                 if (isThis) {
@@ -234,7 +229,7 @@ public class SvnHttpRepository extends SvnRepository {
         String repositoryRoot = getRootUrl();
         String name = SvnPath.tail(entryPath);
 
-        return new SvnEntry(entryPath, name, SvnPath.append(repositoryRoot, entryPath), author, lastRevision, date, size, kind, "");
+        return new SvnEntry(entryPath, name, SvnPath.append(repositoryRoot, getPathRelativeToMine(entryPath)), author, lastRevision, date, size, kind, "");
     }
 
     private void getProperties(SvnHttpConnection connection, String path, int depth, String label, DAV.Element[] properties, Map<String, DAV.Properties> result) throws RadixSvnException {
@@ -430,6 +425,9 @@ public class SvnHttpRepository extends SvnRepository {
         try {
             connect();
 
+            if (path == null) {
+                path = "";
+            }
             SvnHttpConnection connection = (SvnHttpConnection) getConnection();
             path = SvnPath.uriEncode(path);
             while (path.endsWith("/")) {
@@ -438,7 +436,7 @@ public class SvnHttpRepository extends SvnRepository {
             path = getPathRelativeToMine(path);
             if (revision >= 0) {
                 DAV.BaselineInfo info = getBaselineInfo(connection, this, "", revision, false, true, null);
-                path = SvnPath.append(SvnPath.append(info.baselineBase, info.baselinePath), path);                
+                path = SvnPath.append(SvnPath.append(info.baselineBase, info.baselinePath), path);
             }
             try {
                 DAV.BaselineInfo info = getBaselineInfo(connection, this, path, revision, true, false, null);
@@ -518,14 +516,49 @@ public class SvnHttpRepository extends SvnRepository {
         return fileRevision;
     }
 
+    public void changeFileProperty(final String workingURL, final String propertyName, final SvnProperties.Value value) throws RadixSvnException {
+        try {
+            connect();
+            final SvnHttpConnection connection = (SvnHttpConnection) getConnection();
+            final String request = SvnHttpConnection.generatePropertyRequest(propertyName, value).toString();
+            connection.propPatch(null, workingURL, request);
+        } finally {
+            disconnect();
+        }
+    }
+
     @Override
-    public void replay(long lowRevision, long highRevision, boolean sendDeltas, SvnEditor editor) throws RadixSvnException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void replay(final long lowRevision, final long highRevision, final boolean sendDeltas, final SvnEditor editor) throws RadixSvnException {
+        try {
+            connect();
+            final SvnHttpConnection connection = (SvnHttpConnection) getConnection();
+            final StringBuilder request = SvnHttpConnection.generateReplayRequest(highRevision, lowRevision, sendDeltas);
+            final StringEntity stringEntity = new StringEntity(request.toString(), ContentType.TEXT_XML);
+            final String locationPath = SvnPath.uriEncode(getLocation().getPath());
+            connection.report(locationPath, stringEntity, new SvnHttpReplayHandler(editor));
+        } finally {
+            disconnect();
+        }
     }
 
     @Override
     public void setRevisionPropertyValue(long revision, String propertyName, SvnProperties.Value value) throws RadixSvnException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (revision < 0) {
+            throw new RadixSvnException("Invalid revision " + revision);
+        }
+
+        try {
+            connect();
+            final SvnHttpConnection connection = (SvnHttpConnection) getConnection();
+            StringBuilder request = SvnHttpConnection.generatePropertyRequest(propertyName, value);
+            String locationPath = SvnPath.uriEncode(getLocation().getPath());
+            DAV.BaselineInfo info = getBaselineInfo(connection, this, locationPath, revision, false, false, null);
+            String path = info.baseline;
+            connection.propPatch(null, path, request.toString());
+
+        } finally {
+            disconnect();
+        }
     }
 
     @Override
@@ -595,7 +628,7 @@ public class SvnHttpRepository extends SvnRepository {
 
     @Override
     public SvnEditor getEditor(String logMessage) throws RadixSvnException {
-        return new SvnHttpEditor(this);
+        return new SvnHttpEditor(this, logMessage);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -16,13 +16,13 @@ import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.sql.Blob;
-import java.sql.DatabaseMetaData;
 import java.util.List;
 import org.radixware.kernel.server.arte.Arte;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -49,16 +49,19 @@ import org.radixware.kernel.common.utils.ByteBufferInputStream;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.common.utils.Utils;
-import org.radixware.kernel.server.RadixLoaderActualizer;
 import org.radixware.kernel.server.SrvRunParams;
 import org.radixware.kernel.server.arte.ArteProfiler;
 import org.radixware.kernel.server.arte.ArteTransactionParams;
 import org.radixware.kernel.server.arte.RoleLoadError;
 import org.radixware.kernel.server.exceptions.DatabaseError;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.meta.presentations.RadContextlessCommandDef;
 import org.radixware.kernel.server.meta.presentations.RadExplorerRootDef;
+import org.radixware.kernel.starter.meta.RevisionMeta;
 import org.radixware.kernel.starter.radixloader.RadixLoader;
-import org.radixware.kernel.starter.radixloader.RadixLoaderException;
 import org.radixware.kernel.starter.radixloader.RadixSVNLoader;
 import org.radixware.schemas.eas.*;
 import org.radixware.schemas.eas.CreateSessionRs.ContextlessCommands;
@@ -67,6 +70,7 @@ import org.radixware.schemas.eas.CreateSessionRs.ExplorerRoots.Item;
 import org.radixware.schemas.eas.CreateSessionRs.ServerResources;
 import org.radixware.schemas.easWsdl.CreateSessionDocument;
 import org.radixware.schemas.easWsdl.GetSecurityTokenDocument;
+import org.radixware.schemas.types.MapStrStr;
 
 final class CreateSessionRequest extends EasRequest {
 
@@ -78,76 +82,118 @@ final class CreateSessionRequest extends EasRequest {
         public final boolean sessionsLimitExceed;
         public final int maxSessionsNumber;
         public final String masterSessionKey;
+        public final String pwdHashAlgo;
 
         public LoginResult(final int sessionId,
                 final boolean mustChangePassword,
                 final boolean canChangePassword,
                 final boolean sessionsLimitExceed,
                 final int maxSessionsNumber,
-                final String masterSessionKey) {
+                final String masterSessionKey,
+                final String pwdHashAlgo) {
             this.sessionId = sessionId;
             this.passwordExpired = mustChangePassword;
             this.canChangePassword = canChangePassword;
             this.sessionsLimitExceed = sessionsLimitExceed;
             this.maxSessionsNumber = maxSessionsNumber;
             this.masterSessionKey = masterSessionKey;
+            this.pwdHashAlgo = pwdHashAlgo;
         }
     }
 
-    //Queries
+    //Queries    
+    private static final String certAttrTypeQryStmtSQL = "select CERTATTRFORUSERLOGIN from RDX_SYSTEM where RDX_SYSTEM.ID=1";
+    private static final Stmt certAttrTypeQryStmt = new Stmt(certAttrTypeQryStmtSQL);
     private final PreparedStatement certAttrTypeQry;
-    private final PreparedStatement prepareCreateQry;
+    
+    private static final String checkSessionsLimitSqlExpl = "(case when "
+            + "(u.SESSIONSLIMIT = 0 AND (sys.LIMITEASSESSIONSPERUSR is NULL or sys.LIMITEASSESSIONSPERUSR < 1 or ( select count(*) from RDX_EASSESSION where RDX_EASSESSION.USERNAME = u.Name AND RDX_EASSESSION.ISINTERACTIVE = 1 AND (RDX_EASSESSION.USERCERTIFICATE is null OR dbms_lob.getlength(RDX_EASSESSION.USERCERTIFICATE)=0) ) < sys.LIMITEASSESSIONSPERUSR))"
+            + " OR "
+            + "(u.SESSIONSLIMIT !=0 AND (u.SESSIONSLIMIT is NULL or u.SESSIONSLIMIT < 1 or ( select count(*) from RDX_EASSESSION where RDX_EASSESSION.USERNAME = u.Name AND RDX_EASSESSION.ISINTERACTIVE = 1 AND (RDX_EASSESSION.USERCERTIFICATE is null OR dbms_lob.getlength(RDX_EASSESSION.USERCERTIFICATE)=0) ) < u.SESSIONSLIMIT))"
+            + " then 1 else 0 end) ";
+
+    private static final String prepareCreateQryStmtSQL = "select SQN_RDX_EasSessionId.nextval as ID,"
+            + "(case when ((sysdate - u.lastpwdchangetime > u.pwdexpirationperiod) or (sysdate - u.lastpwdchangetime > sys.pwdexpirationperiod)) then 1 else u.MUSTCHANGEPWD end) MUSTCHANGEPWD,"
+            + " u.INVALIDLOGONCNT, (sysdate - u.lastpwdchangetime) PASSWORD_USE_DAYS, "
+            + "(select count(*) from dual where u.LOCKED != 0 or (u.INVALIDLOGONCNT >= sys.BLOCKUSERINVALIDLOGONCNT AND u.INVALIDLOGONTIME + sys.BLOCKUSERINVALIDLOGONMINS/24/60 > sysdate))  USERLOCKED, "
+            + "(case when  (u.MUSTCHANGEPWD !=0 and (u.temporaryPwdStartTime is not NULL) and sys.temporaryPwdExpirationPeriod>0 and (u.temporaryPwdStartTime+sys.temporaryPwdExpirationPeriod/24<sysdate)) then 1 else 0 end) TMPPWDEXPIRED,"
+            + " u.PWDHASH, "
+            + " u.PWDHASHALGO, "
+            + "(case when u.AUTHTYPES is NULL or u.AUTHTYPES like ? then 1 else 0 end) AUTH_TYPE_ACCESSIBLE, "
+            + "(case when u.AUTHTYPES is NULL or u.AUTHTYPES like '%" + EAuthType.PASSWORD.getValue() + "%' then 1 else 0 end) PASSWORD_AUTH_ENABLED, "
+            + "(case when u.AUTHTYPES is NULL or u.AUTHTYPES like '%" + EAuthType.CERTIFICATE.getValue() + "%' then 1 else 0 end) CERTIFICATE_AUTH_ENABLED, "
+            + "decode(u.CheckStation, 1, (select count(*) from RDX_USER2STATION u2s where u2s.UserName = u.Name and u2s.StationName = ? and ROWNUM<2), 1) as STOK, "
+            + "(case when "
+            + "(logonScheduleId is not null AND RDX_JS_IntervalSchedule.isIn(logonScheduleId,sysdate)>0) "
+            + "OR (logonScheduleId is null "
+            + "   AND (not exists (select NULL from RDX_AC_USER2USERGROUP, RDX_AC_USERGROUP where RDX_AC_USER2USERGROUP.USERNAME=u.Name and RDX_AC_USERGROUP.NAME = RDX_AC_USER2USERGROUP.GROUPNAME)"
+            + "        OR exists  (select NULL from RDX_AC_USER2USERGROUP, RDX_AC_USERGROUP where RDX_AC_USER2USERGROUP.USERNAME=u.Name and RDX_AC_USERGROUP.NAME = RDX_AC_USER2USERGROUP.GROUPNAME and (RDX_AC_USERGROUP.LOGONSCHEDULEID is null OR RDX_JS_IntervalSchedule.isIn(RDX_AC_USERGROUP.LOGONSCHEDULEID,sysdate)>0))"
+            + "       )"
+            + "   )"
+            + " then 1 else 0 end) as LOGON_TIME_OK, "
+            + checkSessionsLimitSqlExpl+" as SESSIONSLIMIT_OK, "
+            + "(case when u.SESSIONSLIMIT = 0 then NVL(sys.LIMITEASSESSIONSPERUSR,0) else NVL(u.SESSIONSLIMIT,0) end) as SESSIONSLIMIT "
+            + "from RDX_AC_user u, RDX_SYSTEM sys where u.Name = ? and sys.id = 1";
+    private static final Stmt prepareCreateQryStmt = new Stmt(prepareCreateQryStmtSQL, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR);
+    private final PreparedStatement prepareCreateQry;   
+
+    private static final String createQryStmtSQL = "insert into RDX_EasSession columns (ID, USERNAME, STATIONNAME, LANGUAGE, COUNTRY, ENVIRONMENT, CHALLENGE, SERVERKEY, CLIENTKEY, USERCERTIFICATE, ISINTERACTIVE, LASTCONNECTTIME) "
+            + "values  ( ?,         ?,           ?,        ?,       ?,           ?,         ?,         ?,         ?,               ?,             ?, SYSDATE)";
+    private static final Stmt createQryStmt = new Stmt(createQryStmtSQL, Types.BIGINT, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.VARCHAR, Types.BLOB, Types.INTEGER);
     private final PreparedStatement createQry;
+
+    private static final String scpQryStmtSQL = "select ScpName from rdx_station where name = ?";
+    private static final Stmt scpQryStmt = new Stmt(scpQryStmtSQL, Types.VARCHAR);
     private final PreparedStatement scpQry;
+
+    private static final String masterSessionQryStmtSQL = "select SERVERKEY from RDX_EASSESSION "
+            + "where ID = ? AND ISINTERACTIVE = 1 AND (USERCERTIFICATE is null OR dbms_lob.getlength(USERCERTIFICATE)=0) "
+            + " AND USERNAME = ? AND STATIONNAME = ?";
+    private static final Stmt masterSessionQryStmt = new Stmt(masterSessionQryStmtSQL, Types.BIGINT, Types.VARCHAR, Types.VARCHAR);
     private final PreparedStatement masterSessionQry;
+    
+    private static final String deletePreviousSessionQryStmtSQL = "delete from RDX_EASSESSION where ID = ? AND USERNAME = ?";
+    private static final Stmt deletePreviousSessionQryStmt = new Stmt(deletePreviousSessionQryStmtSQL, Types.BIGINT, Types.VARCHAR);
+    private final PreparedStatement deletePreviousSessionQry;
+    
+    private static final String checkSessionsLimitQryStmtSQL = "select "
+            + checkSessionsLimitSqlExpl+" as SESSIONSLIMIT_OK "
+            + "from RDX_AC_user u, RDX_SYSTEM sys where u.Name = ? and sys.id = 1";
+    private static final Stmt checkSessionsLimitQryStmt = new Stmt(checkSessionsLimitQryStmtSQL, Types.VARCHAR);
+    private final PreparedStatement checkSessionsLimitQry;    
+
+    private static final String productInstallationOptionsQryStmtSQL = "Select LAYERURI||'\\'||NAME as name, VALUE as val from RDX_DDSOPTION";
+    private static final Stmt productInstallationOptionsQryStmt = new Stmt(productInstallationOptionsQryStmtSQL);
+    private final PreparedStatement productInstallationOptionsQry;
+            
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
+
+    private CreateSessionRequest() {
+        certAttrTypeQry = null;
+        prepareCreateQry = null;
+        createQry = null;
+        scpQry = null;
+        masterSessionQry = null;
+        deletePreviousSessionQry = null;
+        checkSessionsLimitQry = null;
+        productInstallationOptionsQry = null;
+    }
 
     CreateSessionRequest(final ExplorerAccessService presenter) {
         super(presenter);
-        final ArteProfiler profiler = getArte().getProfiler();
         final java.sql.Connection dbConnection = getArte().getDbConnection().get();
-        profiler.enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
-        try {
-            certAttrTypeQry = dbConnection.prepareStatement(
-                    "select CERTATTRFORUSERLOGIN from RDX_SYSTEM where RDX_SYSTEM.ID=1");
-            prepareCreateQry = dbConnection.prepareStatement(
-                    "select SQN_RDX_EasSessionId.nextval as ID,"
-                    + "(case when ((sysdate - u.lastpwdchangetime > u.pwdexpirationperiod) or (sysdate - u.lastpwdchangetime > sys.pwdexpirationperiod)) then 1 else u.MUSTCHANGEPWD end) MUSTCHANGEPWD,"
-                    + " u.INVALIDLOGONCNT, (sysdate - u.lastpwdchangetime) PASSWORD_USE_DAYS, "
-                    + "(select count(*) from dual where u.LOCKED != 0 or (u.INVALIDLOGONCNT >= sys.BLOCKUSERINVALIDLOGONCNT AND u.INVALIDLOGONTIME + sys.BLOCKUSERINVALIDLOGONMINS/24/60 > sysdate))  USERLOCKED, "
-                    + " u.PWDHASH, "
-                    + "(case when u.AUTHTYPES is NULL or u.AUTHTYPES like ? then 1 else 0 end) AUTH_TYPE_ACCESSIBLE, "
-                    + "(case when u.AUTHTYPES is NULL or u.AUTHTYPES like '%" + EAuthType.PASSWORD.getValue() + "%' then 1 else 0 end) PASSWORD_AUTH_ENABLED, "
-                    + "(case when u.AUTHTYPES is NULL or u.AUTHTYPES like '%" + EAuthType.CERTIFICATE.getValue() + "%' then 1 else 0 end) CERTIFICATE_AUTH_ENABLED, "
-                    + "decode(u.CheckStation, 1, (select count(*) from RDX_USER2STATION u2s where u2s.UserName = u.Name and u2s.StationName = ? and ROWNUM<2), 1) as STOK, "
-                    + "(case when "
-                    + "(logonScheduleId is not null AND RDX_JS_IntervalSchedule.isIn(logonScheduleId,sysdate)>0) "
-                    + "OR (logonScheduleId is null "
-                    + "   AND (not exists (select NULL from RDX_AC_USER2USERGROUP, RDX_AC_USERGROUP where RDX_AC_USER2USERGROUP.USERNAME=u.Name and RDX_AC_USERGROUP.NAME = RDX_AC_USER2USERGROUP.GROUPNAME)"
-                    + "        OR exists  (select NULL from RDX_AC_USER2USERGROUP, RDX_AC_USERGROUP where RDX_AC_USER2USERGROUP.USERNAME=u.Name and RDX_AC_USERGROUP.NAME = RDX_AC_USER2USERGROUP.GROUPNAME and (RDX_AC_USERGROUP.LOGONSCHEDULEID is null OR RDX_JS_IntervalSchedule.isIn(RDX_AC_USERGROUP.LOGONSCHEDULEID,sysdate)>0))"
-                    + "       )"
-                    + "   )"
-                    + " then 1 else 0 end) as LOGON_TIME_OK, "
-                    + "(case when "
-                    + "(u.SESSIONSLIMIT = 0 AND (sys.LIMITEASSESSIONSPERUSR is NULL or sys.LIMITEASSESSIONSPERUSR < 1 or ( select count(*) from RDX_EASSESSION where RDX_EASSESSION.USERNAME = u.Name AND RDX_EASSESSION.ISINTERACTIVE = 1 AND (RDX_EASSESSION.USERCERTIFICATE is null OR dbms_lob.getlength(RDX_EASSESSION.USERCERTIFICATE)=0) ) < sys.LIMITEASSESSIONSPERUSR))"
-                    + " OR "
-                    + "(u.SESSIONSLIMIT !=0 AND (u.SESSIONSLIMIT is NULL or u.SESSIONSLIMIT < 1 or ( select count(*) from RDX_EASSESSION where RDX_EASSESSION.USERNAME = u.Name AND RDX_EASSESSION.ISINTERACTIVE = 1 AND (RDX_EASSESSION.USERCERTIFICATE is null OR dbms_lob.getlength(RDX_EASSESSION.USERCERTIFICATE)=0) ) < u.SESSIONSLIMIT))"
-                    + " then 1 else 0 end) as SESSIONSLIMIT_OK, "
-                    + "(case when u.SESSIONSLIMIT = 0 then NVL(sys.LIMITEASSESSIONSPERUSR,0) else NVL(u.SESSIONSLIMIT,0) end) as SESSIONSLIMIT "
-                    + "from RDX_AC_user u, RDX_SYSTEM sys where u.Name = ? and sys.id = 1");
-            createQry = dbConnection.prepareStatement(
-                    "insert into RDX_EasSession columns (ID, USERNAME, STATIONNAME, LANGUAGE, COUNTRY, ENVIRONMENT, CHALLENGE, SERVERKEY, CLIENTKEY, USERCERTIFICATE, ISINTERACTIVE, LASTCONNECTTIME) "
-                    + "values  ( ?,         ?,           ?,        ?,       ?,           ?,         ?,         ?,         ?,               ?,             ?, SYSDATE)");
-            scpQry = dbConnection.prepareStatement(
-                    "select ScpName from rdx_station where name = ?");
-            masterSessionQry = dbConnection.prepareStatement(
-                    "select SERVERKEY from RDX_EASSESSION "
-                    + "where ID = ? AND ISINTERACTIVE = 1 AND (USERCERTIFICATE is null OR dbms_lob.getlength(USERCERTIFICATE)=0) "
-                    + " AND USERNAME = ? AND STATIONNAME = ?"
-            );
+        try (final ArteProfiler.TimingSection section = getArte().getProfiler().startTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE)) {
+            certAttrTypeQry = ((RadixConnection) dbConnection).prepareStatement(certAttrTypeQryStmt);
+            prepareCreateQry = ((RadixConnection) dbConnection).prepareStatement(prepareCreateQryStmt);
+            createQry = ((RadixConnection) dbConnection).prepareStatement(createQryStmt);
+            scpQry = ((RadixConnection) dbConnection).prepareStatement(scpQryStmt);
+            masterSessionQry = ((RadixConnection) dbConnection).prepareStatement(masterSessionQryStmt);
+            deletePreviousSessionQry = ((RadixConnection) dbConnection).prepareStatement(deletePreviousSessionQryStmt);
+            checkSessionsLimitQry = ((RadixConnection) dbConnection).prepareStatement(checkSessionsLimitQryStmt);
+            productInstallationOptionsQry = ((RadixConnection) dbConnection).prepareStatement(productInstallationOptionsQryStmt);
         } catch (SQLException e) {
             throw new DatabaseError("Can't init EAS service DB query: " + ExceptionTextFormatter.getExceptionMess(e), e);
-        } finally {
-            profiler.leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
+
         }
     }
 
@@ -156,6 +202,7 @@ final class CreateSessionRequest extends EasRequest {
             final byte[] challenge,
             final EAuthType authType,
             final X509Certificate[] clientCertificates,
+            final Long replacedSessionId,
             final Long parentSessionId) throws ServiceProcessFault {
         try {
             prepareCreateQry.setString(1, "%" + authType.getValue() + "%");
@@ -178,8 +225,11 @@ final class CreateSessionRequest extends EasRequest {
                 final boolean passwordExpired;
                 if (userNameIsOk) {
                     if (authType == EAuthType.PASSWORD) {
-                        final String pwdTockenHex = getPwdToken(challenge);
+                        final String pwdTockenHex = getPwdToken(challenge, rs.getString("PWDHASHALGO"));
                         presenter.checkPwd(user, rs.getString("PWDHASH"), Hex.encode(challenge), pwdTockenHex, rs.getInt("INVALIDLOGONCNT") > 0);
+                        if (rs.getInt("TMPPWDEXPIRED") == 1) {
+                            throw EasFaults.newTemporaryPasswordExpiredFault();
+                        }
                         passwordExpired
                                 = presenter.pwdExpired(rs.getInt("MUSTCHANGEPWD") != 0, rs.getInt("PASSWORD_USE_DAYS"));
                     } else if (clientCertificates != null) {
@@ -207,12 +257,26 @@ final class CreateSessionRequest extends EasRequest {
                 } else {
                     masterSessionKey = verifyMasterSession(parentSessionId, user, station, authType);
                 }
+                boolean sessionsLimitExceed = rs.getInt("SESSIONSLIMIT_OK") == 0;
+                if (replacedSessionId!=null){
+                    closeReplacedSession(replacedSessionId, user, authType);
+                    if (sessionsLimitExceed){//recheck sessions limit
+                        checkSessionsLimitQry.setString(1, user);                        
+                        try(final ResultSet qryRs = checkSessionsLimitQry.executeQuery()){
+                            if (!qryRs.next()) {
+                                throw new ServiceProcessServerFault(ExceptionEnum.SERVER_MALFUNCTION.toString(), "Unable to check sessions limit for user "+user, null, null);
+                            }
+                            sessionsLimitExceed = qryRs.getInt("SESSIONSLIMIT_OK") == 0;
+                        }
+                    }
+                }
                 return new LoginResult(rs.getInt("ID"),
                         passwordExpired,
                         rs.getInt("PASSWORD_AUTH_ENABLED") > 0,
-                        rs.getInt("SESSIONSLIMIT_OK") == 0,
+                        sessionsLimitExceed,
                         rs.getInt("SESSIONSLIMIT"),
-                        masterSessionKey);
+                        masterSessionKey,
+                        rs.getString("PWDHASHALGO"));
             }
         } catch (SQLException e) {
             final String preprocessedExStack = ExceptionTextFormatter.exceptionStackToString(e);
@@ -220,14 +284,16 @@ final class CreateSessionRequest extends EasRequest {
         }
     }
 
-    private String getPwdToken(final byte[] challenge) {
+    private String getPwdToken(final byte[] challenge, final String hashAlgo) {
         final GetSecurityTokenDocument doc = GetSecurityTokenDocument.Factory.newInstance();
-        doc.addNewGetSecurityToken().addNewGetSecurityTokenRq().setInputToken(challenge);
+        final GetSecurityTokenRq request = doc.addNewGetSecurityToken().addNewGetSecurityTokenRq();
+        request.setInputToken(challenge);
+        request.setHashAlgorithm(HashAlgorithmEnum.Enum.forString(hashAlgo));
         try {
             final GetSecurityTokenMess mess = (GetSecurityTokenMess) getArte().getArteSocket().invokeResource(doc, GetSecurityTokenMess.class, 20);//20 seconds
             return Hex.encode(mess.getGetSecurityTokenRs().getOutToken());
         } catch (ResourceUsageException | ResourceUsageTimeout | InterruptedException exception) {
-            throw new ServiceProcessServerFault(ExceptionEnum.SERVER_MALFUNCTION.toString(), "Can't get client credentials", exception, null);
+            throw new ServiceProcessServerFault(ExceptionEnum.NO_CREDENTIALS.toString(), "Can't get client credentials", exception, null);
         }
     }
 
@@ -291,7 +357,23 @@ final class CreateSessionRequest extends EasRequest {
             final String preprocessedExStack = ExceptionTextFormatter.exceptionStackToString(e);
             throw new ServiceProcessServerFault(ExceptionEnum.SERVER_MALFUNCTION.toString(), "Can't verify master session: " + ExceptionTextFormatter.getExceptionMess(e), e, preprocessedExStack);
         }
-
+    }
+    
+    private void closeReplacedSession(final long sessionId, final String userName, final EAuthType authType){
+        try{
+            deletePreviousSessionQry.setLong(1, sessionId);
+            deletePreviousSessionQry.setString(2, userName);
+            if (deletePreviousSessionQry.executeUpdate()!=1){
+                final SessionRestorePolicy.Enum restorePolicy = 
+                        ExplorerAccessService.getSessionRestorePolicy(getArte(), authType);
+                if (restorePolicy==SessionRestorePolicy.PASSWORD_MUST_BE_ENTERED){
+                    throw EasFaults.newSessionDoesNotExist(restorePolicy);
+                }
+            }
+        }catch(SQLException e){
+            final String preprocessedExStack = ExceptionTextFormatter.exceptionStackToString(e);
+            throw new ServiceProcessServerFault(ExceptionEnum.SERVER_MALFUNCTION.toString(), "Failed to delete previous session: " + ExceptionTextFormatter.getExceptionMess(e), e, preprocessedExStack);
+        }
     }
 
     private void create(final long id,
@@ -326,7 +408,7 @@ final class CreateSessionRequest extends EasRequest {
             if (createQry.executeUpdate() != 1) {
                 throw new ServiceProcessServerFault(ExceptionEnum.SERVER_MALFUNCTION.toString(), "Can't register new session", null, null);
             }
-            if (isInteractive &&  meansThisIsLogin) {
+            if (isInteractive && meansThisIsLogin) {
                 presenter.udpateUserLastLogonTime(user);
             }
         } catch (SQLException e) {
@@ -366,13 +448,6 @@ final class CreateSessionRequest extends EasRequest {
         }
     }
 
-    private void throwKerberosDisabled(final String stationName) {
-        final String reason = Messages.REASON_KERBEROS_DISABLED;
-        final ArrStr loginTraceDetails = new ArrStr(stationName, String.valueOf(getArte().getArteSocket().getRemoteAddress()), reason);
-        getArte().getTrace().put(EEventSeverity.EVENT, Messages.MLS_ID_UNABLE_AUTH_USER_VIA_KERBEROS_WITH_REASON, loginTraceDetails, EEventSource.APP_AUDIT.getValue());
-        throw new ServiceProcessClientFault(ExceptionEnum.KERBEROS_AUTHENTICATION_FAILED.toString(), null, null, null);//do not send stack or error reason to client        
-    }
-
     public final CreateSessionDocument process(final CreateSessionMess request) throws ServiceProcessFault, InterruptedException {
         final CreateSessionRq rqParams = request.getCreateSessionRq();
         final String stationName = rqParams.getStationName();
@@ -409,7 +484,7 @@ final class CreateSessionRequest extends EasRequest {
                 try {
                     if (getArte().getArteSocket().getUnit().getEasKerberosAuthPolicy() == EClientAuthentication.None
                             || getArte().getInstance().getKerberosServiceCredentials() == null) {
-                        throwKerberosDisabled(stationName);
+                        presenter.throwKerberosDisabled(stationName);
                     }
                     gssHandshakeResult
                             = GSSHandshaker.getInstance().doHandshake(getArte(),
@@ -434,6 +509,9 @@ final class CreateSessionRequest extends EasRequest {
                 gssHandshakeResult = null;
         }
         try {
+            
+            final RevisionMeta curRevMeta = getArte().getDefManager().getReleaseCache().getRelease().getRevisionMeta();
+            
             EIsoLanguage clientLanguage = getArte().getServerLanguage();
 
             final Long easSessionId;
@@ -441,32 +519,41 @@ final class CreateSessionRequest extends EasRequest {
             if (rqParams.getPlatform() == null) {
                 throw EasFaults.newParamRequiedFault("Platform", rqParams.getDomNode().getNodeName());
             }
-            if (SrvRunParams.getIsEasVerChecksOn()
-                    && !isCompatibleUri(rqParams.getPlatform().getRepositoryUri())) {
-                throw new ServiceProcessClientFault(ExceptionEnum.INVALID_PLATFORM_VERSION.toString(), "Server's repository URI: " + RadixLoader.getInstance().getRepositoryUri() + "\nClient's repository URI: " + String.valueOf(rqParams.getPlatform().getRepositoryUri()), null, null);
-            }
 
             if (!Utils.equals(rqParams.getPlatform().getTopLayerUri(), getTopLayerUri())) {
                 throw new ServiceProcessClientFault(ExceptionEnum.INVALID_PLATFORM_VERSION.toString(), "Server's top layer URIs: " + String.valueOf(getTopLayerUri()) + "\nClient's top layer URIs: " + String.valueOf(rqParams.getPlatform().getTopLayerUri()), null, null);
             }
 
             if (SrvRunParams.getIsEasVerChecksOn()) {
-                final long explorerDefVer = rqParams.getPlatform().getDefinitionsVer();
-                if (explorerDefVer > getDefVer() && getArte().getInstance().getAutoActualizeVer()) {
-                    try {
-                        RadixLoaderActualizer.getInstance().actualize(getArte().getDbConnection().get(), null, false);
-                    } catch (RadixLoaderException ex) {
-                        throw new ServiceProcessServerFault(ExceptionEnum.SERVER_EXCEPTION.toString(), ex.getMessage(), ex, getArte().getTrace().exceptionStackToString(ex));
+                if (rqParams.getPlatform().getKernelVersion() != null && rqParams.getPlatform().getAppVersion() != null) {
+                    if (!rqParams.getPlatform().getKernelVersion().equals(curRevMeta.getKernelLayerVersionsString())) {
+                        throw new ServiceProcessClientFault(ExceptionEnum.INVALID_PLATFORM_VERSION.toString(), "Server's kernel version: " + curRevMeta.getKernelLayerVersionsString() + "\nClient's kernel version: " + rqParams.getPlatform().getKernelVersion(), null, null);
                     }
+                    if (!rqParams.getPlatform().getAppVersion().equals(curRevMeta.getAppLayerVersionsString())) {
+                        throw new ServiceProcessClientFault(ExceptionEnum.INVALID_PLATFORM_VERSION.toString(), "Server's application version: " + curRevMeta.getAppLayerVersionsString() + "\nClient's application version: " + rqParams.getPlatform().getAppVersion(), null, null);
+                    }
+                } else if (!isCompatibleUri(rqParams.getPlatform().getRepositoryUri())) {
+                    throw new ServiceProcessClientFault(ExceptionEnum.INVALID_PLATFORM_VERSION.toString(), "Server's repository URI: " + RadixLoader.getInstance().getRepositoryUri() + "\nClient's repository URI: " + String.valueOf(rqParams.getPlatform().getRepositoryUri()), null, null);
                 }
-                if (explorerDefVer > getDefVer()) {
-                    throw new ServiceProcessClientFault(ExceptionEnum.INVALID_PLATFORM_VERSION.toString(), "Server's kernel definitions version: " + String.valueOf(getDefVer()) + "\nClient's kernel definitions version: " + String.valueOf(explorerDefVer), null, null);
+            }
+
+            if (SrvRunParams.getIsEasVerChecksOn()) {
+                final long explorerDefVer = rqParams.getPlatform().getDefinitionsVer();
+                if (explorerDefVer > curRevMeta.getNum()) {//should not happen because now request will be dumped earlier in ARTE unit (Server.Busy fault will be sent)
+                    throw new ServiceProcessClientFault(ExceptionEnum.INVALID_PLATFORM_VERSION.toString(), "Server's kernel definitions version: " + String.valueOf(curRevMeta.getNum()) + "\nClient's kernel definitions version: " + String.valueOf(explorerDefVer), null, null);
                 }
-                if (explorerDefVer != getDefVer()) {
+                if (explorerDefVer != curRevMeta.getNum()) {
                     throw new ServiceProcessClientFault(
                             ExceptionEnum.INVALID_DEFINITION_VERSION.toString(),
-                            String.valueOf(getDefVer()), null, null);
+                            String.valueOf(curRevMeta.getNum()), null, null);
                 }
+            }
+            
+            if (!SrvRunParams.getAllowWebDriverForEas()
+                && rqParams.isSetWebDriverEnabled()
+                && rqParams.getWebDriverEnabled()){
+                throw new ServiceProcessClientFault(
+                        ExceptionEnum.WEB_DRIVER_IS_NOT_ALLOWED.toString(),null, null, null);
             }
 
             if (rqParams.isSetLanguage()) {
@@ -500,16 +587,23 @@ final class CreateSessionRequest extends EasRequest {
             } else {
                 parentSessionId = null;
             }
+            final Long replacedSessionId;
+            if (request.getCreateSessionRq().isSetReplacedSessionId()){
+                replacedSessionId = request.getCreateSessionRq().getReplacedSessionId();
+            }else{
+                replacedSessionId = null;
+            }
             final LoginResult loginResult = login(userName,
                     stationName,
                     presenter.getChallenge(request, 0, false, null),
                     authType,
                     userCertificatesChain,
+                    replacedSessionId,
                     parentSessionId
             );
-            easSessionId = Long.valueOf(loginResult.sessionId);
-            final ArteTransactionParams transactionParams = 
-                new ArteTransactionParams(getArte().getActualVersion(), easSessionId, userName, stationName, clientLanguage, clientCountry, clientEnvironment, null);
+            easSessionId = (long) loginResult.sessionId;
+            final ArteTransactionParams transactionParams
+                    = new ArteTransactionParams(getArte().getActualVersion(), easSessionId, null, userName, stationName, clientLanguage, clientCountry, clientEnvironment, null, null, null);
             getArte().startTransaction(transactionParams);
             getArte().onFinishRequestExecution();// перерегистрируем RequestExecution, так как без startTran регистрация прошла не до конца
             getArte().onStartRequestExecution(Arte.genUserRequestExecutorId(getArte().getUserName()));
@@ -519,6 +613,9 @@ final class CreateSessionRequest extends EasRequest {
             rsStruct.setSessionId(easSessionId.longValue());
             rsStruct.setUserDefVer(getArte().getVersion().longValue());
             rsStruct.setUser(userName);
+            if (loginResult.canChangePassword) {
+                rsStruct.setHashAlgorithm(HashAlgorithmEnum.Enum.forString(loginResult.pwdHashAlgo));
+            }
             final ExplorerRoots rootsXml = rsStruct.addNewExplorerRoots();
             final Id requestedExplorerRootId = rqParams.isSetExplorerRoot() ? rqParams.getExplorerRoot().getId() : null;
             int rootCount = 0;
@@ -661,7 +758,7 @@ final class CreateSessionRequest extends EasRequest {
             }
             rsStruct.setChallenge(challenge);
             writeSrvTimeZoneInfo(rsStruct.addNewServerTimeZone(), getArte().getClientLocale());
-            writeDbInfo(rsStruct.addNewDatabaseInfo());
+            writeProductInstallationOptions(rsStruct.addNewProductInstallationOptions());
             return res;
         } catch (ServiceProcessClientFault flt) {
             if (ExceptionEnum.INVALID_AUTH_TYPE.toString().equals(flt.reason)) {
@@ -669,7 +766,7 @@ final class CreateSessionRequest extends EasRequest {
                 throw flt;
             }
             final ArrStr loginTraceDetails = new ArrStr(userName, stationName, String.valueOf(getArte().getArteSocket().getRemoteAddress()));
-            final String reasonDescription = Messages.getReasonForException(flt.reason);
+            final String reasonDescription = Messages.getReasonForException(getArte(), flt.reason);
             if (reasonDescription != null) {
                 loginTraceDetails.add(reasonDescription);
                 getArte().getTrace().put(EEventSeverity.EVENT, Messages.MLS_ID_USER_FAILED_TO_OPEN_SESSION_WITH_REASON, loginTraceDetails, EEventSource.APP_AUDIT.getValue());
@@ -695,19 +792,13 @@ final class CreateSessionRequest extends EasRequest {
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        return process((CreateSessionMess) rq);
-    }
-
-    @Override
-    void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
-    }
-
-    private long getDefVer() throws InterruptedException {
-        try {
-            return RadixLoader.getInstance().getCurrentRevision();
-        } catch (RadixLoaderException ex) {
-            throw EasFaults.exception2Fault(getArte(), ex, "Can't get kernel definitions version");
+        CreateSessionDocument doc = null;
+        try{
+            doc = process((CreateSessionMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getCreateSession().getCreateSessionRs());
         }
+        return doc;
     }
 
     private String trimLastSlash(final String str) {
@@ -775,7 +866,7 @@ final class CreateSessionRequest extends EasRequest {
             visibleItems.addNewItem().setId(explorerItemId);
         }
     }
-    
+
     private void writeSrvTimeZoneInfo(final org.radixware.schemas.eas.TimeZone timeZoneInfo, final Locale locale) {
         final TimeZone timeZone = TimeZone.getDefault();
         timeZoneInfo.setId(timeZone.getID());
@@ -787,50 +878,25 @@ final class CreateSessionRequest extends EasRequest {
         timeZoneInfo.setOffsetMills(c.get(Calendar.ZONE_OFFSET));
         timeZoneInfo.setDstOffsetMills(c.get(Calendar.DST_OFFSET));
         timeZoneInfo.setTimestamp(new Timestamp(c.getTimeInMillis()));
-    }    
+    }
     
-    private void writeDbInfo(CreateSessionRs.DatabaseInfo databaseInfo) {
-        final DatabaseMetaData dbMeta;
-        try{
-            dbMeta = getArte().getDbConnection().get().getMetaData();
-        }catch(SQLException exception){
-            traceGetDbInfoException("database information", exception);
-            return;
-        }
-        try{
-            databaseInfo.setProductName(dbMeta.getDatabaseProductName());
-        }catch(SQLException exception){
-            traceGetDbInfoException("database product name", exception);
-        }
-        try{
-            databaseInfo.setProductVersion(dbMeta.getDatabaseProductVersion());
-        }catch(SQLException exception){
-            traceGetDbInfoException("database product version", exception);
-        }
-        try{
-            databaseInfo.setDriverName(dbMeta.getDriverName());
-        }catch(SQLException exception){
-            traceGetDbInfoException("database driver name", exception);
-        }
-        try{
-            databaseInfo.setDriverVersion(dbMeta.getDriverVersion());
-        }catch(SQLException exception){
-            traceGetDbInfoException("database driver version", exception);
+    private void writeProductInstallationOptions(final MapStrStr xmlMap){
+        try (ResultSet rs = productInstallationOptionsQry.executeQuery()) {
+            final boolean userNameIsOk;
+            MapStrStr.Entry xmlMapEntry;
+            while (rs.next()) {
+                xmlMapEntry = xmlMap.addNewEntry();
+                xmlMapEntry.setKey(rs.getString("name"));
+                xmlMapEntry.setValue(rs.getString("val"));
+            }
+        }catch (SQLException e) {
+            final String preprocessedExStack = ExceptionTextFormatter.exceptionStackToString(e);
+            throw new ServiceProcessServerFault(ExceptionEnum.SERVER_MALFUNCTION.toString(), "Failed to read product installation options: " + ExceptionTextFormatter.getExceptionMess(e), e, preprocessedExStack);
         }
     }
-        
-    private void traceGetDbInfoException(final String name, final SQLException exception){
-        final StringBuilder traceMessage = new StringBuilder("Failed to get ");
-        traceMessage.append(name);
-        traceMessage.append(": ");
-        traceMessage.append(ExceptionTextFormatter.getExceptionMess(exception));
-        traceMessage.append('\n');
-        traceMessage.append(ExceptionTextFormatter.exceptionStackToString(exception));
-        getArte().getTrace().put(EEventSeverity.WARNING, traceMessage.toString(), EEventSource.APP_DB);
-    }
-
+    
     private void fillInvalidRolesWarnings(final CreateSessionRs rs) {
-        final List<Id> userAllRoles = getArte().getRights().getCurUserAllRolesInAllAreas();
+        final List<Id> userAllRoles = getCurUserAllRolesInAllAreas();
         final StringBuilder sb = new StringBuilder();
         for (Id roleId : userAllRoles) {
             final RoleLoadError error = getArte().getDefManager().getRoleLoadError(roleId);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2017, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -23,8 +23,10 @@ import java.util.logging.Logger;
 import javax.net.ssl.SSLContext;
 import org.radixware.kernel.common.enums.EClientAuthentication;
 import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.enums.EPortSecurityProtocol;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.trace.LocalTracer;
+import org.radixware.kernel.common.utils.Utils;
 
 /**
  * SocketChannelServerSeance
@@ -66,11 +68,12 @@ public class SocketChannelServer implements EventHandler {
             final LocalTracer tracer, 
             final InetSocketAddress myAddress, 
             final int maxSeanceCount, 
-            final String recvFrameFormat, 
+            final String recvFrameFormat,
             final String sendFrameFormat, 
             final SSLContext sslContext, 
-            final EClientAuthentication sslClientAuth,
-            final Collection<String> cipherSuites) {
+            final EClientAuthentication sslClientAuth, 
+            final Collection<String> cipherSuites, 
+            final EPortSecurityProtocol securityProtocol) {
         
         
         this.tracer = tracer;
@@ -82,6 +85,7 @@ public class SocketChannelServer implements EventHandler {
         this.sslContext = sslContext;
         this.sslClientAuth = sslClientAuth;
         this.cipherSuites = cipherSuites;
+        this.securityProtocol = sslContext == null ? EPortSecurityProtocol.NONE : Utils.nvlOf(securityProtocol, EPortSecurityProtocol.SSL);
         
     }
 
@@ -107,7 +111,7 @@ public class SocketChannelServer implements EventHandler {
     public SocketChannelServerSeance createSeance(final SocketChannel acceptedSocket) throws IOException {
         final SocketChannelServerSeance s = new SocketChannelServerSeance(this, acceptedSocket);
         if (sslContext != null) {
-            s.initSsl(sslContext, false, sslClientAuth, cipherSuites);
+            s.initSsl(sslContext, false, sslClientAuth, cipherSuites, securityProtocol);
         }
         return s;
     }
@@ -123,6 +127,7 @@ public class SocketChannelServer implements EventHandler {
     private final SSLContext sslContext;
     private final EClientAuthentication sslClientAuth;
     private final Collection<String> cipherSuites;
+    private final EPortSecurityProtocol securityProtocol;
 
     @Override
     public void onEvent(Event event) {

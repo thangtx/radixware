@@ -22,6 +22,7 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.InputMap;
 import javax.swing.JPopupMenu;
@@ -190,6 +191,10 @@ public class TreeView extends JScrollPane {
 
         public void clear() {
             removeAllChildren();
+            reload();
+        }
+        
+        public void reload(){
             final DefaultTreeModel model = findModel();
             if (model != null) {
                 model.reload(this);
@@ -213,6 +218,8 @@ public class TreeView extends JScrollPane {
                 return null;
             }
         }
+        
+        protected void beforePaint(){}
     }
 
     private static Node getNode(TreePath path) {
@@ -255,7 +262,7 @@ public class TreeView extends JScrollPane {
 
             if (value instanceof Node) {
                 final Node node = (Node) value;
-
+                node.beforePaint();
                 final String text = node.getDisplayName();
                 final Icon icon = node.getIcon();
                 final Color color = node.getColor();
@@ -323,9 +330,15 @@ public class TreeView extends JScrollPane {
                 if (!tree.isPathSelected(treePath)) {
                     tree.setSelectionPath(treePath);
                 }
-                final JPopupMenu popupMenu = getPopupMenu();
-                if (popupMenu != null) {
-                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                if (treePath == null) {
+                    return;
+                }
+                Object object = treePath.getLastPathComponent();
+                if (object != null && object instanceof Node){
+                    final JPopupMenu popupMenu = getPopupMenu((Node) object);
+                    if (popupMenu != null) {
+                        popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                    }
                 }
             }
         }
@@ -404,6 +417,10 @@ public class TreeView extends JScrollPane {
     public JPopupMenu getPopupMenu() {
         return null;
     }
+    
+    public JPopupMenu getPopupMenu(Node node) {
+        return getPopupMenu();
+    }
 
     @Override
     public synchronized void addMouseListener(MouseListener l) {
@@ -438,5 +455,14 @@ public class TreeView extends JScrollPane {
         final List<TreePath> paths = new ArrayList<TreePath>();
         fillPaths(rootNode, paths, userObjects);
         tree.setSelectionPaths(paths.toArray(new TreePath[0]));
+    }
+    
+    public void setRootVisible(boolean rootVisible) {
+        tree.setRootVisible(rootVisible);
+    }
+    
+    protected void addAction(Action a, String name, String key) {
+        tree.getActionMap().put(name, a);
+        tree.getInputMap().put(KeyStroke.getKeyStroke(key), name);
     }
 }

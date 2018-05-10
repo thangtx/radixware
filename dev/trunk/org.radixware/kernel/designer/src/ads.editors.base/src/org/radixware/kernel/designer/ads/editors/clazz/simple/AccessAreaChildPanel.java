@@ -703,7 +703,7 @@ public class AccessAreaChildPanel extends javax.swing.JPanel {
             }
 
             if (clazz.getAccessAreas().getType().equals(EAccessAreaType.INHERITED)) {
-                //if ( this.parent != null)
+                if ( this.parent != null)
                 {
                     Object[] parentVals = this.parent.getRowEx().getValues();
 

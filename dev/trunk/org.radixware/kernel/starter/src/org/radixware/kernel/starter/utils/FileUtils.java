@@ -17,8 +17,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import org.radixware.kernel.starter.radixloader.RadixLoaderException;
@@ -138,5 +141,21 @@ public class FileUtils {
             }
         }
         return null;
+    }
+    
+    public static void unpackZipStream(InputStream zipData, File dir, Collection<String> entries) throws IOException {
+        try (java.util.zip.ZipInputStream zis = new java.util.zip.ZipInputStream(zipData)) {
+            java.util.zip.ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                entries.add(entry.getName());
+                if (entry.isDirectory()) {
+                    continue;
+                }
+                
+                final File output = new java.io.File(dir, entry.getName());
+                output.getParentFile().mkdirs();
+                Files.copy(zis, output.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+        }
     }
 }

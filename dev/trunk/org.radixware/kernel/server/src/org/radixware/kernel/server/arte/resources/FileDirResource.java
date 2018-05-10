@@ -32,12 +32,18 @@ import org.radixware.schemas.eas.FileDirReadItem;
 import org.radixware.schemas.eas.FileDirReadMess;
 import org.radixware.schemas.eas.FileDirReadRq;
 import org.radixware.schemas.eas.FileDirSelectMess;
+import org.radixware.schemas.eas.TestIfDirExistsMess;
 import org.radixware.schemas.eas.FileDirSelectRq;
+import org.radixware.schemas.eas.FileDirGetUserHomeMess;
+import org.radixware.schemas.eas.GetUserDownloadsDirMess;
 import org.radixware.schemas.easWsdl.FileDirCreateDocument;
 import org.radixware.schemas.easWsdl.FileDirDeleteDocument;
+import org.radixware.schemas.easWsdl.FileDirGetUserHomeDocument;
 import org.radixware.schemas.easWsdl.FileDirMoveDocument;
 import org.radixware.schemas.easWsdl.FileDirReadDocument;
 import org.radixware.schemas.easWsdl.FileDirSelectDocument;
+import org.radixware.schemas.easWsdl.GetUserDownloadsDirDocument;
+import org.radixware.schemas.easWsdl.TestIfDirExistsDocument;
 
 /**
  * Класс для удаленной работы с каталогами.
@@ -185,4 +191,57 @@ public class FileDirResource extends Resource {
         rq.setNewName(newName);
         arte.getArteSocket().invokeResource( fdmDoc, FileDirMoveMess.class, timeout);                        
     }    
+    
+    /**
+     * Получение пути к домашнему каталогу пользователя на клиенте.
+     * @param arte инстанция ARTE. Не может быть <code>null</code>.
+     * @param timeout ограничение времени на ожидание ответа в секундах. Значение 0 интерпретируется как бесконечное ожидание.
+     * @return путь к домашней директории пользователя
+     * @throws ResourceUsageException при выполнении запроса на клиенте произошла ошибка или случилась ошибка связи
+     * @throws ResourceUsageTimeout истекло время ожидания
+     * @throws InterruptedException выполнение запроса было прервано
+     */
+    public static String getUserHomeDirPath(final Arte arte, final int timeout) throws ResourceUsageException, ResourceUsageTimeout, InterruptedException{
+        final FileDirGetUserHomeDocument document = FileDirGetUserHomeDocument.Factory.newInstance();
+        document.addNewFileDirGetUserHome().addNewFileDirGetUserHomeRq();
+        final FileDirGetUserHomeMess answer = (FileDirGetUserHomeMess)arte.getArteSocket().invokeResource(document, FileDirGetUserHomeMess.class, timeout);
+        return answer.getFileDirGetUserHomeRs().getDirName();
+    }
+    
+    /**
+     * Получение пути к каталогу Downloads на клиенте.
+     * Для desktop клиента, который запущен в О.С. Windows метод вернет значение ключа реестра
+     * HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\{374DE290-123F-4565-9164-39C4925E467B}.
+     * В остальных случаях метод вернет результат конкатенации путь к директории Downloads внутри домашней директории пользователя.
+     * @param arte инстанция ARTE. Не может быть <code>null</code>.
+     * @param timeout ограничение времени на ожидание ответа в секундах. Значение 0 интерпретируется как бесконечное ожидание.
+     * @return путь к директории Downloads на клиенте
+     * @throws ResourceUsageException при выполнении запроса на клиенте произошла ошибка или случилась ошибка связи
+     * @throws ResourceUsageTimeout истекло время ожидания
+     * @throws InterruptedException выполнение запроса было прервано
+     */
+    public static String getUserDownloadsDirPath(final Arte arte, final int timeout) throws ResourceUsageException, ResourceUsageTimeout, InterruptedException{
+        final GetUserDownloadsDirDocument document = GetUserDownloadsDirDocument.Factory.newInstance();
+        document.addNewGetUserDownloadsDir().addNewGetUserDownloadsDirRq();
+        final GetUserDownloadsDirMess answer = (GetUserDownloadsDirMess)arte.getArteSocket().invokeResource(document, GetUserDownloadsDirMess.class, timeout);
+        return answer.getGetUserDownloadsDirRs().getDirName();
+    }
+    
+    /**
+     * Проверяет, что на клиенте существует директория, путь к которой указан в параметре <code>path<code>.
+     * Если указанный путь является путем к файлу, а не к директории, то метод вернет <code>false<code>.
+     * @param arte инстанция ARTE. Не может быть <code>null</code>.
+     * @param path путь к директории на клиенте
+     * @param timeout ограничение времени на ожидание ответа в секундах. Значение 0 интерпретируется как бесконечное ожидание.
+     * @return <code>true</code> если указанная директория существует, <code>false<code> в противном случае
+     * @throws ResourceUsageException при выполнении запроса на клиенте произошла ошибка или случилась ошибка связи
+     * @throws ResourceUsageTimeout истекло время ожидания
+     * @throws InterruptedException выполнение запроса было прервано
+     */
+    public static boolean isExists(final Arte arte, final String path, final int timeout) throws ResourceUsageException, ResourceUsageTimeout, InterruptedException{
+        final TestIfDirExistsDocument document = TestIfDirExistsDocument.Factory.newInstance();
+        document.addNewTestIfDirExists().addNewTestIfDirExistsRq().setDirPath(path);
+        final TestIfDirExistsMess answer = (TestIfDirExistsMess)arte.getArteSocket().invokeResource(document, TestIfDirExistsMess.class, timeout);
+        return answer.getTestIfDirExistsRs().getIsExists();
+    }      
 }

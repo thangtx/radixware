@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.wps;
 
 import org.radixware.kernel.common.client.IClientEnvironment;
@@ -17,13 +16,13 @@ import org.radixware.kernel.common.client.trace.ClientTraceItem;
 import org.radixware.kernel.common.client.trace.TraceBuffer;
 import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.wps.rwt.ToolButton;
 import org.radixware.wps.rwt.UIObject;
 
+class TraceTrayItem extends ToolButton implements ITrayItem {
 
-class TraceTrayItem extends ToolButton implements ITrayItem{
-    
-    private class TraceBufferListener implements TraceBuffer.TraceBufferListener<ClientTraceItem>{
+    private class TraceBufferListener implements TraceBuffer.TraceBufferListener<ClientTraceItem> {
 
         @Override
         public void newItemInBuffer(final ClientTraceItem traceItem) {
@@ -32,41 +31,54 @@ class TraceTrayItem extends ToolButton implements ITrayItem{
 
         @Override
         public void maxSeverityChanged(final EEventSeverity eventSeverity) {
-            if (eventSeverity==EEventSeverity.NONE){
-                setIcon(environment.getApplication().getImageManager().getIcon(ClientIcon.TraceLevel.DEBUG));
-            }else{
+            if (eventSeverity == EEventSeverity.NONE) {
+                setVisible(false);
+            } else {
+                setVisible(true);
                 setIcon(ClientIcon.TraceLevel.findEventSeverityIcon(eventSeverity, environment));
-            }            
+                String traceMinSeverity = TraceTrayItem.this.environment.getRunParams().getTraceMinSeverity();
+            if (traceMinSeverity != null) {
+                try {
+                    if (eventSeverity.getValue() < EEventSeverity.getForName(traceMinSeverity).getValue()) {
+                        TraceTrayItem.this.html.setAttr("blink", false);
+                    } else {
+                        TraceTrayItem.this.html.setAttr("blink", true);
+                    }
+                } catch (NoConstItemWithSuchValueError ex) {
+                }
+            }   
+            }
         }
 
         @Override
-        public void cleared() {            
+        public void cleared() {
             setIcon(environment.getApplication().getImageManager().getIcon(ClientIcon.TraceLevel.DEBUG));
-        }        
+        }
     }
-    
+
     private final TraceBufferListener bufferListener = new TraceBufferListener();
     private final WpsEnvironment environment;
-    
-    public TraceTrayItem(final WpsEnvironment environment){
+
+    public TraceTrayItem(final WpsEnvironment environment) {
         super();
-        this.environment = environment;           
+        this.environment = environment;
+        this.html.layout("$RWT.traceTrayItem.layout");
         addClickHandler(new ClickHandler() {
             @Override
             public void onClick(final IButton source) {
                 environment.showTraceAction.trigger();
             }
         });
+
         setIconSize(15, 15);
         setTop(2);
         getHtml().setCss("position", "relative");
         setSizePolicy(SizePolicy.MINIMUM_EXPAND, UIObject.SizePolicy.MINIMUM_EXPAND);
         final TraceBuffer traceBuffer = environment.getTracer().getBuffer();
-        traceBuffer.addTraceBufferListener(bufferListener);        
-        if (traceBuffer.isEmpty()){            
-            setVisible(false);            
-        }
-        else{
+        traceBuffer.addTraceBufferListener(bufferListener);
+        if (traceBuffer.isEmpty()) {
+            setVisible(false);
+        } else {
             setIcon(ClientIcon.TraceLevel.findEventSeverityIcon(traceBuffer.getMaxSeverity(), environment));
         }
     }
@@ -75,9 +87,9 @@ class TraceTrayItem extends ToolButton implements ITrayItem{
     public IClientEnvironment getEnvironment() {
         return environment;
     }
-            
+
     @Override
-    public void onTrayClose(){
+    public void onTrayClose() {
         environment.getTracer().getBuffer().removeTraceBufferListener(bufferListener);
     }
 }

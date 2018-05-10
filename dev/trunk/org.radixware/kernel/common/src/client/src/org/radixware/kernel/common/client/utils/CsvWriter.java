@@ -33,6 +33,9 @@ import org.radixware.kernel.common.utils.Base64;
 
 public class CsvWriter {
     
+    public static String UTF_8_WITH_BOM = "UTF-8 with BOM character";
+    private static char BOM = '\ufeff';
+    
     public static class FormatOptions{
 
         private final String encoding;
@@ -68,21 +71,29 @@ public class CsvWriter {
     private final PrintWriter writer;
     private final int fieldsCount;
     private int fieldIndex=1;
+    private boolean needToWriteBom;
     
     public CsvWriter(final File file, final FormatOptions formatOptions, final int fieldsCount) throws FileNotFoundException, UnsupportedEncodingException{
-        writer = new PrintWriter(file, formatOptions.getEncoding());        
+        final String encoding = formatOptions.getEncoding();
+        if (UTF_8_WITH_BOM.equals(encoding)){
+            writer = new PrintWriter(file, "UTF-8");
+            needToWriteBom = true;
+        }else{
+            writer = new PrintWriter(file, encoding);
+        }
+        
         this.fieldsCount = fieldsCount;
     }
-    
+        
     private void beforeWriteFieldText(){
         if (fieldIndex>1){
-            writer.append(SEP);
+            write(SEP);
         }
     }
     
     private void afterWriteFieldText(){        
         if (fieldIndex==fieldsCount){
-            writer.append(EOR);
+            write(EOR);
             fieldIndex=1;
         }else{
             fieldIndex++;
@@ -91,7 +102,7 @@ public class CsvWriter {
     
     public void writeSafeStringField(final String text){
         beforeWriteFieldText();
-        writer.append(text);            
+        write(text);            
         afterWriteFieldText();
     }
     
@@ -102,15 +113,15 @@ public class CsvWriter {
     
     public void writeUnsafeStringField(final String text){
         beforeWriteFieldText();
-        writer.append(DQUOTE);
+        write(DQUOTE);
         for (int i=0; i<text.length(); i++){
             final char curChar = text.charAt(i);
             if (curChar==DQUOTE.charValue()){
-                writer.append(DQUOTE);
+                write(DQUOTE);
             }
-            writer.append(curChar);
+            write(curChar);
         }
-        writer.append(DQUOTE);
+        write(DQUOTE);
         afterWriteFieldText();
     }
     
@@ -213,4 +224,21 @@ public class CsvWriter {
     public void close(){
         writer.close();
     }
+    
+    private void write(final char c){
+        if (needToWriteBom){
+            writer.append(BOM);
+            needToWriteBom = false;
+        }            
+        writer.append(c);
+    }
+    
+    private void write(final CharSequence string){
+        if (needToWriteBom){
+            writer.append(BOM);
+            needToWriteBom = false;
+        }            
+        writer.append(string);
+    }
+    
 }

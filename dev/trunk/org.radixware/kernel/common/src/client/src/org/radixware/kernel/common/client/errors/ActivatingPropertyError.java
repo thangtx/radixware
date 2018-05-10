@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.errors;
 
+import java.util.Objects;
 import org.radixware.kernel.common.client.localization.DefaultMessageProvider;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.RadPropertyDef;
@@ -71,4 +72,40 @@ public final class ActivatingPropertyError extends RuntimeException implements I
     public String getMessage() {
         return getLocalizedMessage(DefaultMessageProvider.getInstance());
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 73 * hash + Objects.hashCode(this.modelInfo);
+        hash = 73 * hash + Objects.hashCode(this.definitionInfo);
+        hash = 73 * hash + Objects.hashCode(this.definitionClassInfo);
+        hash = 73 * hash + Objects.hashCode(this.propertyInfo);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ActivatingPropertyError other = (ActivatingPropertyError) obj;
+        if (!Objects.equals(this.modelInfo, other.modelInfo)) {
+            return false;
+        }
+        if (!Objects.equals(this.definitionInfo, other.definitionInfo)) {
+            return false;
+        }
+        if (!Objects.equals(this.definitionClassInfo, other.definitionClassInfo)) {
+            return false;
+        }
+        if (!Objects.equals(this.propertyInfo, other.propertyInfo)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

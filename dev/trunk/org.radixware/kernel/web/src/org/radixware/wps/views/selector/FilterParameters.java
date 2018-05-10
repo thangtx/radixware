@@ -103,6 +103,7 @@ public class FilterParameters extends AbstractContainer implements IView, IFilte
             cell.setVCoverage(100);
             cell.add(customPropertiesGrid);
         }
+        setObjectName("rx_filter_params_view_"+filter.getId().toString());
     }
 
     @Override
@@ -209,4 +210,30 @@ public class FilterParameters extends AbstractContainer implements IView, IFilte
     protected void fireViewClosed() {
         viewSupport.fireViewClosed();
     }
+
+    @Override
+    public void collapse() {
+        
+    }
+
+    @Override
+    public void expand() {
+        
+    }
+
+    @Override
+    public boolean isCollapsed() {
+        return false;
+    }
+
+    @Override
+    public boolean isCollapsable() {
+        return false;
+    }
+
+    @Override
+    public void setCollapsable(boolean collapsable) {
+    }
+    
+    
 }

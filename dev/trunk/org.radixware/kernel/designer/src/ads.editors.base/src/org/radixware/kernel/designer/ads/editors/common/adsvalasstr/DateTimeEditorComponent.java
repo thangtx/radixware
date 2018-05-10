@@ -25,20 +25,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
+import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.radixware.kernel.common.defs.ads.AdsValAsStr;
+import org.radixware.kernel.common.dialogs.datetimepicker.DateAndTimePicker;
+import org.radixware.kernel.common.dialogs.RadixImageDistributor;
 
 
 public class DateTimeEditorComponent extends BaseEditorComponent<DateTimeEditorComponent.LocalModel> {
-
+/*
     public static final class LocalModel extends BaseEditorComponent.BaseEditorModel<Date> {
-
-//        void updateValue(Date value) {
-//            setLocalValue(value, true);
-//        }
 
         @Override
         protected Date toLocal(AdsValAsStr value) {
@@ -65,8 +64,8 @@ public class DateTimeEditorComponent extends BaseEditorComponent<DateTimeEditorC
             Date value = (Date) params[0];
             setLocalValue(value, true);
         }
-    }
-
+    }*/
+/*
     private static final class AdvanceSpinnerDateModel extends SpinnerDateModel {
 
         private boolean undefined;
@@ -88,8 +87,8 @@ public class DateTimeEditorComponent extends BaseEditorComponent<DateTimeEditorC
                 undefined = false;
             }
         }
-    }
-
+    }*/
+/*
     private static final class AdvanceDateTimeSpinner extends JSpinner {
 
         public AdvanceDateTimeSpinner() {
@@ -122,18 +121,97 @@ public class DateTimeEditorComponent extends BaseEditorComponent<DateTimeEditorC
             return (AdvanceSpinnerDateModel) super.getModel();
         }
     }
-    private AdvanceDateTimeSpinner spinner;
+    */
     private JFormattedTextField editor;
     private static final DateFormat VAL_AS_STR_DATE_FORMATTER = new SimpleDateFormat(AdsValAsStr.DefaultPresenter.VAL_AS_STR_DATE_FORMAT);
     public static final DateFormat PRESENTATION_DATE_FORMATTER = new SimpleDateFormat(AdsValAsStr.DefaultPresenter.DATE_FORMAT);
     private final DocumentListener listener;
     private final FocusListener focusListener;
+    private DateAndTimePicker dateAndTimePicker;
+    
+    
+    public static final class LocalModel extends BaseEditorComponent.BaseEditorModel<Date> {
+
+        @Override
+        protected Date toLocal(AdsValAsStr value) {
+            try {
+                if (value != null) {
+                    return VAL_AS_STR_DATE_FORMATTER.parse(value.toString());
+                }
+                return null;
+            } catch (ParseException ex) {
+                return null;
+            }
+        }
+
+        @Override
+        protected AdsValAsStr toExternal(Date local) {
+            if (local != null) {
+                return AdsValAsStr.Factory.newInstance(VAL_AS_STR_DATE_FORMATTER.format(local));
+            }
+            return AdsValAsStr.NULL_VALUE;
+        }
+
+        @Override
+        public void updateValue(Object... params) {
+            
+            Date value = (Date) params[0];
+            setLocalValue(value, true);
+        }
+    }
 
     public DateTimeEditorComponent() {
         super(new LocalModel());
+        
+        dateAndTimePicker = new DateAndTimePicker(new RadixImageDistributor());
+        editor = dateAndTimePicker.getEditor();
 
+        listener = new DocumentListener() {
 
-        spinner = new AdvanceDateTimeSpinner();
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                changedUpdate(e);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                notifyComponentChanged();
+            }
+        };
+        
+        focusListener = new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (!getModel().isSetValue()) {
+
+                    lockModelChange();
+                    updateEditorComponent();
+                    unLockModelChange();
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!getModel().isSetValue()) {
+                    
+                    lockModelChange();
+                    editor.getFocusListeners()[0].focusLost(e);
+                    getModel().updateValue(dateAndTimePicker.getDateAndTime());
+                    dateAndTimePicker.setDate(getModel().getLocalValue());
+                    updateEditorComponent();
+                    unLockModelChange();
+                }
+            }
+        };
+       
+        
+       /* spinner = new AdvanceDateTimeSpinner();
 
         editor = ((JSpinner.DateEditor) spinner.getEditor()).getTextField();
         editor.setFocusLostBehavior(JFormattedTextField.PERSIST);
@@ -177,28 +255,39 @@ public class DateTimeEditorComponent extends BaseEditorComponent<DateTimeEditorC
                     unLockModelChange();
                 }
             }
-        };
+        };*/
     }
 
     @Override
     protected void updateModelValue() {
         Date currValue;
-        try {
-            currValue = (Date) editor.getFormatter().stringToValue(editor.getText());
+       /*try {
+            //currValue = (Date) editor.getFormatter().stringToValue(editor.getText());
+            currValue = dateAndTimePicker.getDate();
         } catch (ParseException ex) {
             currValue = (Date) editor.getValue();
         }
-
-        getModel().updateValue(currValue);
+        currValue = dateAndTimePicker.getDate();
+        if(currValue == null) {
+            
+        } else {
+            getModel().updateValue(currValue);
+        }*/
+        currValue = dateAndTimePicker.getDateAndTime();
+        if(currValue != null) {
+            getModel().updateValue(currValue);
+        }
     }
 
     @Override
     protected void updateEditorComponent() {
         if (getModel().getLocalValue() != null) {
-            editor.setValue(getModel().getLocalValue());
+            //editor.setValue(getModel().getLocalValue()); //simpleDateF.format()
+            dateAndTimePicker.setDate(getModel().getLocalValue());
+            //getModel().updateValue(dateAndTimePicker.getDateAndTime()); //.setValue(AdsValAsStr.NULL_VALUE);
         } else {
             editor.setValue(null);
-            if (isFocusOwner()) {
+            if (isFocusOwner()) { //! setT only
                 editor.setText("");
             } else {
                 editor.setText(AdsValAsStr.NULL_VALUE.toString());
@@ -207,8 +296,8 @@ public class DateTimeEditorComponent extends BaseEditorComponent<DateTimeEditorC
     }
 
     @Override
-    public JSpinner getEditorComponent() {
-        return spinner;
+    public JPanel getEditorComponent() {
+        return dateAndTimePicker;
     }
 
     @Override
@@ -225,7 +314,7 @@ public class DateTimeEditorComponent extends BaseEditorComponent<DateTimeEditorC
 
     @Override
     public int getBaseline(int width, int height) {
-        return editor.getBaseline(width, height);
+        return dateAndTimePicker.getBaseline(width, height);
     }
 
     @Override

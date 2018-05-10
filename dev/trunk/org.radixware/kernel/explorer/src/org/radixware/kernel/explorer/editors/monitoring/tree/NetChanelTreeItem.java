@@ -22,37 +22,29 @@ import org.radixware.kernel.explorer.env.ExplorerIcon;
 
 public class NetChanelTreeItem extends TreeItem {
 
-    final String SORT_BY_NAME = System.getProperty("rdx.dashboard.sort.netchannels.by.name");
     private final Boolean isListener;
 
-    public NetChanelTreeItem(UnitsWidget.IdsGetter idsGetter, final MetricInfoGetter.ChannelInfo channelInfo, final Model groupModel) {
-        super(idsGetter, channelInfo, groupModel);
+    public NetChanelTreeItem(UnitsWidget.IdsGetter idsGetter, final MetricInfoGetter.ChannelInfo channelInfo, final Model groupModel, QTreeWidgetItem parent) {
+        super(idsGetter, channelInfo, groupModel, parent);
         this.isListener = channelInfo.isListener();
-        calcItemText(channelInfo);
+        calcItemText(channelInfo); 
     }
 
     @Override
     public boolean operator_less(QTreeWidgetItem qtwi) {
         if (qtwi instanceof TreeItem) {
-            if (SORT_BY_NAME == null || getMetricInfo() == null || ((TreeItem) qtwi).getMetricInfo() == null) {
-                return super.operator_less(qtwi);
-            }
-            String thisName = getMetricInfo().getPureTitle();
-            if (thisName == null) {
-                thisName = "";
-            }
-            String otherName = ((TreeItem) qtwi).getMetricInfo().getPureTitle();
-            if (otherName == null) {
-                otherName = "";
-            }
-            int result = thisName.compareToIgnoreCase(otherName);
-            if (SORT_BY_NAME.toLowerCase().equals("desc")) {
-                return result < 0;
-            } else {
-                return result > 0;
+            if(((UnitNetPortHandlerTreeItem) parent()).isSortByName()) {
+                TreeItem otherItem = (TreeItem) qtwi;
+                if(getMetricInfo() != null && otherItem.getMetricInfo() != null) {
+                    return getPureTitle(this).compareToIgnoreCase(getPureTitle(otherItem)) > 0;
+                }
             }
         }
         return super.operator_less(qtwi);
+    }
+    
+    private String getPureTitle(TreeItem item) {
+        return item.getMetricInfo().getPureTitle() == null ? "" : item.getMetricInfo().getPureTitle();
     }
 
     @Override
@@ -117,15 +109,6 @@ public class NetChanelTreeItem extends TreeItem {
             md.setType(MetricData.Type.TEXT);
             setItemConnectText(md, val == null ? null : val.doubleValue());
         }
-        /*}else {
-         boolean writeConnectState=channelInfo.isWriteConnectState();
-         if(writeConnectState){
-         Boolean isConnected=channelInfo.isConnected(); 
-         md = new MetricData(MetricData.Type.TEXT, null, null);                
-         Double val = isConnected ? 1.0 : 0;
-         setItemConnectText(md, val);
-         }
-         } */
         return md;
     }
 

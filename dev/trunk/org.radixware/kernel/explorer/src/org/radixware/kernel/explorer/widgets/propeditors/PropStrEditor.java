@@ -12,6 +12,7 @@ package org.radixware.kernel.explorer.widgets.propeditors;
 
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskFilePath;
 import org.radixware.kernel.common.client.meta.mask.EditMaskStr;
@@ -84,19 +85,19 @@ public class PropStrEditor extends PropEditor {
         if (property.getEditMask() instanceof EditMaskStr) {
             setupMemo(property);
         }
-        if (property.getEditMask() instanceof EditMaskFilePath) {
-            if (((EditMaskFilePath) property.getEditMask()).getStoreLastPathInConfig()) {
-                ((ValFilePathEditor) getValEditor()).valueChanged.connect(this, "storeLastPathInConfig()");
-                readPathFromConfig(property);
-            }
+        if (getPropertyEditMask() instanceof EditMaskFilePath) {
+            setupInitialPathConfigKey();
         }
-    }
+    }        
 
     @Override
     void setProperty(final Property property) {
         super.setProperty(property);
         if (property != null) {
             setupMemo(property);
+            if (getPropertyEditMask() instanceof EditMaskFilePath) {
+                setupInitialPathConfigKey();
+            }
         }
     }
 
@@ -109,23 +110,16 @@ public class PropStrEditor extends PropEditor {
             }
         }
     }
-
-    private void readPathFromConfig(final Property prop) {
-        if (prop != null) {
-            String path = getEnvironment().getConfigStore().readString("last_property_path_" + prop.getId().toString(), null);
-            if (path != null) {
-                ((ValFilePathEditor) getValEditor()).setInitialPath(path);
-            }
+    
+    private void setupInitialPathConfigKey(){        
+        if (((EditMaskFilePath) getPropertyEditMask()).getStoreLastPathInConfig()){
+            final String configKey = "last_property_path_" + getProperty().getId().toString();
+            ((ValFilePathEditor) getValEditor()).setInitialPathConfigKey(configKey);        
         }
     }
-
-    @SuppressWarnings("unused")
-    private void storeLastPathInConfig() {
-        if (getProperty() != null && getPropertyEditMask() instanceof EditMaskFilePath) {
-            EditMaskFilePath mask = (EditMaskFilePath) getPropertyEditMask();
-            if (mask.getStoreLastPathInConfig()) {
-                getEnvironment().getConfigStore().writeString("last_property_path_" + getProperty().getId().toString(), ((ValFilePathEditor) getValEditor()).getInitialPath());
-            }
-        }
-    }
+    
+    @Override
+    public final EWidgetMarker getWidgetMarker() {
+        return EWidgetMarker.STR_PROP_EDITOR;
+    }     
 }

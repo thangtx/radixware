@@ -27,8 +27,11 @@
             <xs:enumeration value="InvalidUser"/>
             <xs:enumeration value="InvalidStation"/>
             <xs:enumeration value="InvalidCredentials"/>
+            <xs:enumeration value="NoCredentials"/>
+            <xs:enumeration value="WebDriverIsNotAllowed"/>
             <xs:enumeration value="LogonTimeRestrictionViolation"/>
             <xs:enumeration value="UserAccountLocked"/>
+            <xs:enumeration value="TemporaryPasswordExpired"/>
             <xs:enumeration value="InvalidSorting"/>
             <xs:enumeration value="InvalidPassword"/>
             <xs:enumeration value="InvalidAuthType"/>
@@ -110,6 +113,12 @@
             <xs:enumeration value="AccessDenied"/>
         </xs:restriction>
     </xs:simpleType>
+    <xs:simpleType name="HashAlgorithmEnum">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="SHA-1"/>
+            <xs:enumeration value="SHA-256"/>
+        </xs:restriction>
+    </xs:simpleType>
     <!--    -->
     <!--                  Types    -->
     <xs:complexType name="Definition">
@@ -122,6 +131,20 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+    <xs:complexType name="ObjectReference">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element name="Title" type="types:SafeStr"/>
+                <xs:element name="BrokenRef" type="types:SafeStr"/>
+            </xs:choice>
+            <xs:choice minOccurs="0" maxOccurs="1">
+                <xs:element name="TableId" type="types:Id"/>
+                <xs:element name="ClassId" type="types:Id"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="PID" type="types:SafeStr" use="optional"/>
+        <xs:attribute name="AllowedActionsBitMask" type="xs:int" default="15"/>        
+    </xs:complexType>   
     <xs:complexType name="Property" abstract="false" mixed="true">
         <xs:annotation>
             <xs:documentation>ReadOnly - Заполняется клиентом в CurrentData
@@ -140,16 +163,8 @@
                         <xs:element name="Int" type="types:Int" nillable="true"/>
                         <xs:element name="Num" type="types:Num" nillable="true"/>
                         <xs:element name="Xml" type="xs:anyType" nillable="true"/>
-                        <xs:element name="Ref" nillable="true">
-                            <xs:complexType>
-                                <xs:choice>
-                                    <xs:element name="Title" type="types:SafeStr" minOccurs="0"/>
-                                    <xs:element name="BrokenRef" type="types:SafeStr" minOccurs="0"/>
-                                </xs:choice>
-                                <xs:attribute name="PID" type="types:SafeStr" use="optional"/>
-                                <xs:attribute name="AllowedActionsBitMask" type="xs:int" default="15"/>
-                            </xs:complexType>
-                        </xs:element>
+                        <xs:element name="Ref" type="mess:ObjectReference" nillable="true"/>
+                        <xs:element name="Obj" type="mess:PresentableObject" nillable="true"/>
                         <xs:element name="ArrBin" nillable="true">
                             <xs:complexType>
                                 <xs:sequence>
@@ -195,16 +210,9 @@
                         <xs:element name="ArrRef" nillable="true">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="Item" nillable="true" minOccurs="0" maxOccurs="unbounded">
-                                        <xs:complexType>
-                                            <xs:choice>
-                                                <xs:element name="Title" type="types:SafeStr" minOccurs="0"/>
-                                                <xs:element name="BrokenRef" type="types:SafeStr" minOccurs="0"/>
-                                            </xs:choice>
-                                            <xs:attribute name="PID" type="types:SafeStr" use="optional"/>
-                                        </xs:complexType>
-                                    </xs:element>
+                                    <xs:element name="Item" type="mess:ObjectReference" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
                                 </xs:sequence>
+                                <xs:attribute name="TableId" type="types:Id"/>
                             </xs:complexType>
                         </xs:element>
                     </xs:choice>
@@ -235,17 +243,7 @@
                                                                 </xs:complexContent>
                                                             </xs:complexType>
                                                         </xs:element>
-                                                        <xs:element name="ReferenceValue">
-                                                            <xs:complexType>
-                                                                <xs:complexContent>
-                                                                    <xs:extension base="mess:ObjectRef">
-                                                                        <xs:sequence>
-                                                                            <xs:element name="Title" type="types:SafeStr" minOccurs="0"/>
-                                                                        </xs:sequence>
-                                                                    </xs:extension>
-                                                                </xs:complexContent>
-                                                            </xs:complexType>
-                                                        </xs:element>
+                                                        <xs:element name="ReferenceValue" type="mess:ObjectReference"/>
                                                     </xs:sequence>
                                                 </xs:complexType>
                                             </xs:element>
@@ -327,6 +325,30 @@
             </xs:simpleType>
         </xs:attribute>        
     </xs:complexType>
+    <xs:complexType name="PresentableObject">
+        <xs:complexContent>
+            <xs:extension base="mess:Object">
+                 <xs:sequence>
+                     <xs:element name="Presentation" type="mess:Presentation" minOccurs="0"/>
+                     <xs:element name="DisabledActions" type="mess:Actions" minOccurs="0">
+                         <xs:annotation>
+                             <xs:documentation>Действия, запрещенные сервером для выполнения над этим объектом</xs:documentation>
+                         </xs:annotation>
+                     </xs:element>
+                     <xs:element name="EnabledEditorPages" type="mess:EditorPages" minOccurs="0">
+                         <xs:annotation>
+                             <xs:documentation>Список разрешенных вкладок</xs:documentation>
+                         </xs:annotation>
+                     </xs:element>
+                     <xs:element name="AccessibleExplorerItems" type="mess:ExplorerItemList" minOccurs="0">
+                         <xs:annotation>
+                             <xs:documentation>Список разрешенных элементов проводника</xs:documentation>
+                         </xs:annotation>                        
+                     </xs:element>                                                                                                                
+                 </xs:sequence>
+             </xs:extension>
+         </xs:complexContent>
+    </xs:complexType>    
     <xs:complexType name="Context">
         <xs:sequence>
             <xs:choice>
@@ -357,7 +379,21 @@
                                     </xs:complexType>
                                 </xs:element>
                             </xs:choice>
-                            <xs:element name="Filter" type="mess:Filter" minOccurs="0" maxOccurs="1"/>
+                            <xs:element name="FilterList" minOccurs="0" maxOccurs="1">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Filter"  minOccurs="1" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:complexContent>
+                                                    <xs:extension base="mess:Filter">
+                                                        <xs:attribute name="ExplorerItemId" type="types:Id" use="optional"/>
+                                                    </xs:extension>
+                                                </xs:complexContent>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
@@ -421,10 +457,6 @@
             <xs:element name="GroupProperties" type="mess:PropertyList" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="ObjectRef">
-        <xs:attribute name="ClassId" type="types:Id" use="required"/>
-        <xs:attribute name="PID" type="types:SafeStr" use="required"/>
-    </xs:complexType>
     <xs:complexType name="ObjectList">
         <xs:sequence>
             <xs:element name="Rows" minOccurs="0">
@@ -433,32 +465,7 @@
                         <xs:element name="Item" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:choice>
-                                    <xs:element name="Object">
-                                        <xs:complexType>
-                                            <xs:complexContent>
-                                                <xs:extension base="mess:Object">
-                                                    <xs:sequence>
-                                                        <xs:element name="Presentation" type="mess:Presentation" minOccurs="0"/>
-                                                        <xs:element name="DisabledActions" type="mess:Actions" minOccurs="0">
-                                                            <xs:annotation>
-                                                                <xs:documentation>Действия, запрещенные сервером для выполнения над этим объектом</xs:documentation>
-                                                            </xs:annotation>
-                                                        </xs:element>
-                                                        <xs:element name="EnabledEditorPages" type="mess:EditorPages" minOccurs="0">
-                                                            <xs:annotation>
-                                                                <xs:documentation>Список разрешенных вкладок</xs:documentation>
-                                                            </xs:annotation>
-                                                        </xs:element>
-                                                        <xs:element name="AccessibleExplorerItems" type="mess:ExplorerItemList">
-                                                            <xs:annotation>
-                                                                <xs:documentation>Список разрешенных элементов проводника</xs:documentation>
-                                                            </xs:annotation>                        
-                                                        </xs:element>                                                                                                                
-                                                    </xs:sequence>
-                                                </xs:extension>
-                                            </xs:complexContent>
-                                        </xs:complexType>
-                                    </xs:element>
+                                    <xs:element name="Object" type="mess:PresentableObject"/>
                                     <xs:element name="Exception">
                                         <xs:complexType>
                                             <xs:complexContent>
@@ -490,24 +497,6 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-    <xs:complexType name="FilterParamValue" abstract="false" mixed="true">
-        <xs:choice>
-            <xs:element name="Bool" type="xs:boolean" nillable="false"/>
-            <xs:element name="Str" type="xs:string" nillable="true"/>
-            <xs:element name="DateTime" type="types:DateTime" nillable="true"/>
-            <xs:element name="Int" type="xs:long" nillable="true"/>
-            <xs:element name="Num" type="xs:decimal" nillable="true"/>
-            <xs:element name="PID" nillable="true">
-                <xs:complexType>
-                    <xs:simpleContent>
-                        <xs:extension base="xs:string">
-                            <xs:attribute name="EntityId" type="types:Id" use="required"/>
-                        </xs:extension>
-                    </xs:simpleContent>
-                </xs:complexType>
-            </xs:element>
-        </xs:choice>
-    </xs:complexType>
     <xs:complexType name="Filter">
         <xs:annotation>
             <xs:documentation>Применяемый фильтр</xs:documentation>
@@ -518,24 +507,7 @@
                     <xs:documentation>Уточняющее условие</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="Parameters" minOccurs="0">
-                <xs:annotation>
-                    <xs:documentation>Значения параметров фильтра, должны быть заполнены атрибут Name и Value</xs:documentation>
-                </xs:annotation>
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:complexContent>
-                                    <xs:extension base="mess:FilterParamValue">
-                                        <xs:attribute name="Id" type="types:Id" use="required"/>
-                                    </xs:extension>
-                                </xs:complexContent>
-                            </xs:complexType>
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+            <xs:element name="Parameters" type="mess:PropertyList" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="Id" type="types:Id"/>
         <xs:attribute name="LastUpdateTime" type="types:Int" use="optional">
@@ -543,7 +515,7 @@
                 <xs:documentation>Используется только для общего фильтра. Время последнего изменения для проверки актуальности</xs:documentation>
             </xs:annotation>                
         </xs:attribute>
-    </xs:complexType>
+    </xs:complexType>    
     <xs:complexType name="ColorScheme">        
         <xs:attribute name="Id" type="types:Id" use="required"/>
         <xs:attribute name="TableId" type="types:Id" use="required"/>
@@ -567,7 +539,17 @@
         <xs:sequence>
             <xs:element name="Item" type="mess:CommonFilter" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-    </xs:complexType>           
+    </xs:complexType>
+    <xs:complexType name="ClassFilters">
+        <xs:sequence>
+            <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="classId" type="types:Id" use="required"/>
+                    <xs:attribute name="includeDescendants" type="xs:boolean" use="optional" default="false"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
     <xs:complexType name="Sorting">
         <xs:sequence>
             <xs:element name="AdditionalSortingColumns" minOccurs="0">
@@ -773,14 +755,24 @@
         </xs:complexType>
     </xs:element>
     <xs:complexType name="PasswordRequirements">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="MinLen" type="xs:int"/>
-                <xs:attribute name="AlphabeticCharsRequired" type="xs:boolean" use="optional" default="false"/>
-                <xs:attribute name="NumericCharsRequired" type="xs:boolean" use="optional" default="false"/>
-                <xs:attribute name="PwdMustDifferFromName" type="xs:boolean" use="optional" default="false"/>            
-            </xs:extension>
-        </xs:simpleContent>
+        <xs:sequence>
+            <xs:element name="BlackList" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Запрещенные к использованию пароли</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Item" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="MinLen" type="xs:int"/>
+        <xs:attribute name="AlphabeticCharsRequired" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="AlphabeticCharsInMixedCaseRequired" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="NumericCharsRequired" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="SpecialCharsRequired" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="PwdMustDifferFromName" type="xs:boolean" use="optional" default="false"/>
     </xs:complexType>
     <xs:element name="PasswordRequirements" type="mess:PasswordRequirements"/>
     <xs:complexType name="SelectedObjects">
@@ -812,6 +804,28 @@
                             <xs:element name="Exception" type="fd:Exception"/>
                         </xs:choice>
                     </xs:sequence>                        
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AggregateFunctions">
+        <xs:sequence>
+            <xs:element name="FunctionCall" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Result" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    </xs:sequence>                    
+                    <xs:attribute name="ColumnId" type="types:Id" use="optional"/>
+                    <xs:attribute name="FunctionName" use="required">
+                        <xs:simpleType>
+                            <xs:annotation>
+                                <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                    <types:class>org.radixware.kernel.common.enums.EAggregateFunction</types:class>
+                                </xs:appinfo>
+                            </xs:annotation>
+                            <xs:restriction base="types:StrEnum"/>
+                        </xs:simpleType>
+                    </xs:attribute>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
@@ -926,6 +940,39 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+    <xs:complexType name="GroupRequest">
+        <xs:complexContent>
+            <xs:extension base="mess:ClassRequest">
+                <xs:sequence>
+                    <xs:element name="Presentation" type="mess:Definition" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Презентация (по умолчанию берется из контекста)</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>                    
+                    <xs:element name="Filter" type="mess:Filter" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Фильтрация</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="ClassFilters" type="mess:ClassFilters" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Фильтрация по колонке classGuid</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="Condition" type="xscml:Sqml" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Дополнительное  условие</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>
+                    <xs:element name="GroupProperties" type="mess:PropertyList" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Свойства группы, устанавливаемые и анализируемые прикладным кодом</xs:documentation>
+                        </xs:annotation>
+                    </xs:element>                    
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
     <xs:complexType name="ObjectOrGroupRequest">
         <xs:complexContent>
             <xs:extension base="mess:ClassRequest">
@@ -945,6 +992,16 @@
                             <xs:element name="Filter" type="mess:Filter" minOccurs="0">
                                 <xs:annotation>
                                     <xs:documentation>Фильтрация</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="ClassFilters" type="mess:ClassFilters" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Фильтрация по колонке classGuid</xs:documentation>
+                                </xs:annotation>
+                            </xs:element>
+                            <xs:element name="Sorting" type="mess:Sorting" minOccurs="0">
+                                <xs:annotation>
+                                    <xs:documentation>Использовать сортировку</xs:documentation>
                                 </xs:annotation>
                             </xs:element>
                             <xs:element name="ColorScheme" type="mess:ColorScheme" minOccurs="0">
@@ -1031,6 +1088,8 @@
                     <xs:documentation>Серверу для проверки совместимости версий. При несовпадении версий - Exception InvalidPlatformVersion</xs:documentation>
                 </xs:annotation>
                 <xs:complexType>
+                    <xs:attribute name="AppVersion" type="xs:string" use="required"/>
+                    <xs:attribute name="KernelVersion" type="xs:string" use="required"/>
                     <xs:attribute name="RepositoryUri" type="xs:string" use="required"/>
                     <xs:attribute name="DefinitionsVer" type="xs:long" use="required"/>
                     <xs:attribute name="TopLayerUri" type="xs:string" use="required"/>
@@ -1104,6 +1163,14 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
+            <xs:element name="ReplacedSessionId" type="xs:long" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>
+                        Если происходит перезапуск приложения, то здесь указывается идентификатор сессии, которая
+                        была в предыдущем сеансе работы
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
             <xs:element name="SessionsToTerminate">
                 <xs:annotation>
                     <xs:documentation>
@@ -1117,6 +1184,11 @@
                 </xs:complexType>    
             </xs:element>                        
         </xs:sequence>
+        <xs:attribute name="WebDriverEnabled" type="xs:boolean" use="optional" default="false">
+            <xs:annotation>
+                <xs:documentation>Признак, что клиент управляется через протокол WebDriver</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>        
     </xs:complexType>
     <xs:complexType name="CreateSessionRs">
         <xs:sequence>
@@ -1140,17 +1212,21 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
+            <xs:element name="HashAlgorithm" type="mess:HashAlgorithmEnum" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Алгоритм, который должен использовать клиент для получения хэша пароля пользователя</xs:documentation>
+                </xs:annotation>
+            </xs:element>
             <xs:element name="User" type="types:SafeStr">
                 <xs:annotation>
                     <xs:documentation>Пользователь, для которого создана сессия</xs:documentation>
                 </xs:annotation>
-            </xs:element>                        
+            </xs:element>
             <xs:element name="UserDefVer" type="xs:long">
                 <xs:annotation>
                     <xs:documentation>Текущая версия релиза пользовательских дефиниций на сервере в соответствии с  режимом сессии</xs:documentation>
                 </xs:annotation>
-            </xs:element>
-            
+            </xs:element>            
             <xs:element name="ExplorerRoots">
                 <xs:annotation>
                     <xs:documentation>Список доступных ExplorerRoots</xs:documentation>
@@ -1226,19 +1302,7 @@
                     <xs:documentation>Информация о часовом поясе сервера</xs:documentation>
                 </xs:annotation>                
             </xs:element>
-            <xs:element name="DatabaseInfo">
-                <xs:annotation>
-                    <xs:documentation>Информация о Б.Д. которая используется сервером</xs:documentation>
-                </xs:annotation>
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="ProductName" type="xs:string" minOccurs="0" maxOccurs="1"/>
-                        <xs:element name="ProductVersion" type="xs:string" minOccurs="0" maxOccurs="1"/>
-                        <xs:element name="DriverName" type="xs:string" minOccurs="0" maxOccurs="1"/>
-                        <xs:element name="DriverVersion" type="xs:string" minOccurs="0" maxOccurs="1"/>
-                    </xs:sequence>
-                </xs:complexType>
-            </xs:element>
+            <xs:element name="ProductInstallationOptions" type="types:MapStrStr" minOccurs="1" maxOccurs="1"/>
             <xs:element name="PasswordRequirements" type="mess:PasswordRequirements"  minOccurs="0" maxOccurs="1">
                 <xs:annotation>
                     <xs:documentation>Password requirements when "ShouldChangePassword" attribute is true</xs:documentation>
@@ -1375,6 +1439,7 @@
                                         <xs:restriction base="types:StrEnum"/>
                                     </xs:simpleType>
                                 </xs:attribute>
+                                <xs:attribute name="AadcMemberId" type="types:Int" use="optional"/>
                                 <xs:attribute name="Priority" type="types:Int" use="required"/>
                                 <xs:attribute name="ConnectTimeout" type="types:Int" default="10"/>
                                 <xs:attribute name="BlockingPeriod" type="types:Int" default="600"/>
@@ -1395,8 +1460,8 @@
                         </xs:annotation>
                         <xs:simpleType>
                             <xs:restriction base="xs:hexBinary">
-                                <xs:minLength value="32"/>
-                                <xs:maxLength value="32"/>
+                                <xs:minLength value="68"/>
+                                <xs:maxLength value="100"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:element>
@@ -1436,41 +1501,16 @@
     <!--                  Main      -->
     <xs:complexType name="SelectRq">
         <xs:complexContent>
-            <xs:extension base="mess:ContextRequest">
+            <xs:extension base="mess:GroupRequest">
                 <xs:sequence>
-                    <xs:element name="Class" type="mess:Definition" minOccurs="0">
-                        <xs:annotation>
-                            <xs:documentation>Обязательный параметр в Select и SelectParent</xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
-                    <xs:element name="Presentation" type="mess:Definition">
-                        <xs:annotation>
-                            <xs:documentation>??? Только если нет контекста, иначе сервер определяет из контекста</xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
-                    <xs:element name="Filter" type="mess:Filter" minOccurs="0">
-                        <xs:annotation>
-                            <xs:documentation>Использовать фильтр</xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
-                    <xs:element name="Condition" type="xscml:Sqml" minOccurs="0">
-                        <xs:annotation>
-                            <xs:documentation>Дополнительное SQML условие</xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
-                    <xs:element name="GroupProperties" type="mess:PropertyList" minOccurs="0">
-                        <xs:annotation>
-                            <xs:documentation>Свойства группы, устанавливаемые и анализируемые прикладным кодом</xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
                     <xs:element name="Sorting" type="mess:Sorting" minOccurs="0">
                         <xs:annotation>
                             <xs:documentation>Использовать сортировку</xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="ColorScheme" type="mess:ColorScheme" minOccurs="0">
+                    <xs:element name="PreviousObjectReference" type="mess:ObjectReference" minOccurs="0">
                         <xs:annotation>
-                            <xs:documentation>Использовать цветовую схему</xs:documentation>
+                            <xs:documentation>Ссылка на последний объект из предыдущего списка (Должны быть заданы PID и ClassId)</xs:documentation>
                         </xs:annotation>
                     </xs:element>
                     <xs:element name="StartIndex" type="xs:long" default="1" minOccurs="0">
@@ -1648,7 +1688,6 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
-    
     <xs:complexType name="Warnings">
         <xs:sequence>
             <xs:element name="Warning">
@@ -1684,27 +1723,7 @@
         <xs:complexContent>
             <xs:extension base="mess:Response">
                 <xs:sequence>
-                    <xs:element name="Data" type="mess:Object"/>
-                    <xs:element name="Presentation" type="mess:Presentation" minOccurs="0">
-                        <xs:annotation>
-                            <xs:documentation>Презентация, использованная сервером; возвращается если в запросе Read презентация не указана или сервер использовал другую презентацию</xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
-                    <xs:element name="DisabledActions" type="mess:Actions" minOccurs="0">
-                        <xs:annotation>
-                            <xs:documentation>Действия, запрещенные сервером для выполнения над этим объектом</xs:documentation>
-                        </xs:annotation>
-                    </xs:element>                    
-                    <xs:element name="EnabledEditorPages" type="mess:EditorPages" minOccurs="0">
-                        <xs:annotation>
-                            <xs:documentation>Список разрешенных вкладок</xs:documentation>
-                        </xs:annotation>
-                    </xs:element>
-                    <xs:element name="AccessibleExplorerItems" type="mess:ExplorerItemList">
-                        <xs:annotation>
-                            <xs:documentation>Список разрешенных элементов проводника</xs:documentation>
-                        </xs:annotation>                        
-                    </xs:element>
+                    <xs:element name="Data" type="mess:PresentableObject"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -1785,19 +1804,14 @@
     </xs:complexType>    
     <xs:complexType name="PrepareCreateRq">
         <xs:complexContent>
-            <xs:extension base="mess:ClassRequest">
+            <xs:extension base="mess:ContextRequest">
                 <xs:sequence>
-                    <xs:element name="Data" minOccurs="0">
+                    <xs:element name="ObjectTemplate" type="mess:Object" minOccurs="1" maxOccurs="unbounded">
                         <xs:annotation>
                             <xs:documentation>Начальные значения полейсоздаваемого объекта</xs:documentation>
                         </xs:annotation>
-                        <xs:complexType>
-                            <xs:complexContent>
-                                <xs:extension base="mess:Object"/>
-                            </xs:complexContent>
-                        </xs:complexType>
                     </xs:element>
-                    <xs:element name="Presentations">
+                    <xs:element name="Presentations" minOccurs="0" maxOccurs="1">
                         <xs:annotation>
                             <xs:documentation>Список желаемых презентаций.  По умолчанию сервер определяет из контекста</xs:documentation>
                         </xs:annotation>
@@ -1813,7 +1827,11 @@
     </xs:complexType>
     <xs:complexType name="PrepareCreateRs">
         <xs:complexContent>
-            <xs:extension base="mess:ReadRs"/>
+            <xs:extension base="mess:Response">
+                <xs:sequence>
+                    <xs:element name="Object" type="mess:PresentableObject" minOccurs="1"  maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:extension> 
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="CreateRq">
@@ -1825,15 +1843,10 @@
                             <xs:documentation>??? По умолчанию сервер определяет из контекста</xs:documentation>
                         </xs:annotation>
                     </xs:element>
-                    <xs:element name="Data">
+                    <xs:element name="Data" type="mess:Object" minOccurs="1"  maxOccurs="1">
                         <xs:annotation>
                             <xs:documentation>Свойства создаваемого объекта: список элементов PropertyXXX, тип (XXX) и имя каждого можно определить для данной сущности по XDBP. . У каждого элемента PropertyXXX должны быть заданы значения атрибутов Name ID и Value</xs:documentation>
                         </xs:annotation>
-                        <xs:complexType>
-                            <xs:complexContent>
-                                <xs:extension base="mess:Object"/>
-                            </xs:complexContent>
-                        </xs:complexType>
                     </xs:element>
                 </xs:sequence>
             </xs:extension>
@@ -1941,7 +1954,7 @@
                         </xs:complexType>
                     </xs:element>                    
                     <xs:choice minOccurs="0">
-                        <xs:element name="Input" type="xs:anyType">
+                                    <xs:element name="Input" type="xs:anyType">
                             <xs:annotation>
                                 <xs:documentation>Входные параметры команды. Структура может быть определена в прикладной XML Scheme</xs:documentation>
                             </xs:annotation>
@@ -2067,6 +2080,41 @@
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
+    <xs:complexType name="CalcSelectionStatisticRq">
+        <xs:complexContent>
+            <xs:extension base="mess:GroupRequest">
+                <xs:sequence>
+                    <xs:element name="AggregateFunctions" type="mess:AggregateFunctions" minOccurs="1" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="CalcSelectionStatisticRs">
+        <xs:complexContent>
+            <xs:extension base="mess:Response">
+                <xs:sequence>
+                    <xs:element name="AggregateFunctions" type="mess:AggregateFunctions" minOccurs="1" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="GetDatabaseInfoRq">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="GetDatabaseInfoRs">
+        <xs:complexContent>
+            <xs:extension base="mess:Response">
+                <xs:sequence>
+                    <xs:element name="ProductName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="ProductVersion" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="DriverName" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="DriverVersion" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>    
     <!-- Resources-->
     <xs:complexType name="DialogButtonsList">
         <xs:sequence>
@@ -2106,6 +2154,7 @@
         <xs:attribute name="Cancellable" type="xs:boolean" use="required"/>
         <xs:attribute name="ShowTrace" type="xs:boolean" use="optional" default="false"/>
         <xs:attribute name="ShowPercent" type="xs:boolean" use="optional" default="true"/>
+        <xs:attribute name="CancelButtonTitle" type="types:SafeStr" use="optional"/>
     </xs:complexType>
     <xs:complexType name="ProgressDialogStartProcessRs">
         <xs:attribute name="Id" type="xs:string" use="required"/>
@@ -2123,6 +2172,7 @@
         <xs:attribute name="Title" type="types:SafeStr" use="optional"/>
         <xs:attribute name="Progress" type="xs:float" use="optional"/>
         <xs:attribute name="Cancellable" type="xs:boolean" use="optional"/>
+        <xs:attribute name="CancelButtonTitle" type="types:SafeStr" use="optional"/>
     </xs:complexType>
     <xs:complexType name="ProgressDialogSetRs">
         <xs:annotation>
@@ -2252,6 +2302,26 @@
         </xs:annotation>
         <xs:attribute name="Id" type="xs:string" use="required"/>
     </xs:complexType>
+    <xs:complexType name="FileTransitRq">
+        <xs:attribute name="FileName" type="xs:string" use="required"/>
+        <xs:attribute name="MimeType" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EMimeType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="OpenAfterTransit" type="xs:boolean" use="optional" default="false"/>
+    </xs:complexType>
+    <xs:complexType name="FileTransitRs">
+        <xs:annotation>
+            <xs:documentation>Атрибут ID - Ид. открытого файла</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="Id" type="xs:string" use="required"/>
+    </xs:complexType>    
     <xs:complexType name="FileCloseRq">
         <xs:annotation>
             <xs:documentation>Атрибут ID - Ид. открытого файла</xs:documentation>
@@ -2341,6 +2411,26 @@
             <xs:documentation>Если DirName == NULL, не выбрано</xs:documentation>
         </xs:annotation>
         <xs:attribute name="DirName" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="FileDirGetUserHomeRq"/>
+    <xs:complexType name="FileDirGetUserHomeRs">
+        <xs:attribute name="DirName" type="xs:string" use="optional"/>
+    </xs:complexType>    
+    <xs:complexType name="GetUserDownloadsDirRq"/>
+    <xs:complexType name="GetUserDownloadsDirRs">
+        <xs:attribute name="DirName" type="xs:string" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="TestIfFileExistsRq">
+        <xs:attribute name="FilePath" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="TestIfFileExistsRs">
+        <xs:attribute name="IsExists" type="xs:boolean" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="TestIfDirExistsRq">
+        <xs:attribute name="DirPath" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="TestIfDirExistsRs">
+        <xs:attribute name="IsExists" type="xs:boolean" use="required"/>
     </xs:complexType>
     <xs:complexType name="FileDirCreateRq">
         <xs:attribute name="DirName" type="xs:string" use="required"/>
@@ -2445,6 +2535,11 @@
     <xs:complexType name="GetSecurityTokenRq">
         <xs:all>
             <xs:element name="InputToken" type="xs:hexBinary" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="HashAlgorithm" type="mess:HashAlgorithmEnum" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Алгоритм, который должен использовать клиент для получения хэша пароля пользователя</xs:documentation>
+                </xs:annotation>
+            </xs:element>            
         </xs:all>
     </xs:complexType>
     <xs:complexType name="GetSecurityTokenRs">
@@ -2572,6 +2667,18 @@
             <xs:element name="GetObjectTitlesRq" type="mess:GetObjectTitlesRq"/>
         </xs:choice>
     </xs:complexType>
+    <xs:complexType name="CalcSelectionStatisticMess">
+        <xs:choice>
+            <xs:element name="CalcSelectionStatisticRs" type="mess:CalcSelectionStatisticRs"/>
+            <xs:element name="CalcSelectionStatisticRq" type="mess:CalcSelectionStatisticRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="GetDatabaseInfoMess">
+        <xs:choice>
+            <xs:element name="GetDatabaseInfoRs" type="mess:GetDatabaseInfoRs"/>
+            <xs:element name="GetDatabaseInfoRq" type="mess:GetDatabaseInfoRq"/>
+        </xs:choice>
+    </xs:complexType>
     <xs:complexType name="CloseSessionMess">
         <xs:choice>
             <xs:element name="CloseSessionRs" type="mess:CloseSessionRs"/>
@@ -2627,6 +2734,12 @@
             <xs:element name="FileAccessRq" type="mess:FileAccessRq"/>
         </xs:choice>
     </xs:complexType>
+    <xs:complexType name="FileTransitMess">
+        <xs:choice>
+            <xs:element name="FileTransitRs" type="mess:FileTransitRs"/>
+            <xs:element name="FileTransitRq" type="mess:FileTransitRq"/>
+        </xs:choice>
+    </xs:complexType>    
     <xs:complexType name="FileOpenMess">
         <xs:choice>
             <xs:element name="FileOpenRs" type="mess:FileOpenRs"/>
@@ -2685,6 +2798,30 @@
         <xs:choice>
             <xs:element name="FileDirSelectRs" type="mess:FileDirSelectRs"/>
             <xs:element name="FileDirSelectRq" type="mess:FileDirSelectRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="FileDirGetUserHomeMess">
+        <xs:choice>
+            <xs:element name="FileDirGetUserHomeRs" type="mess:FileDirGetUserHomeRs"/>
+            <xs:element name="FileDirGetUserHomeRq" type="mess:FileDirGetUserHomeRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="GetUserDownloadsDirMess">
+        <xs:choice>
+            <xs:element name="GetUserDownloadsDirRs" type="mess:GetUserDownloadsDirRs"/>
+            <xs:element name="GetUserDownloadsDirRq" type="mess:GetUserDownloadsDirRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="TestIfFileExistsMess">
+        <xs:choice>
+            <xs:element name="TestIfFileExistsRs" type="mess:TestIfFileExistsRs"/>
+            <xs:element name="TestIfFileExistsRq" type="mess:TestIfFileExistsRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="TestIfDirExistsMess">
+        <xs:choice>
+            <xs:element name="TestIfDirExistsRs" type="mess:TestIfDirExistsRs"/>
+            <xs:element name="TestIfDirExistsRq" type="mess:TestIfDirExistsRq"/>
         </xs:choice>
     </xs:complexType>
     <xs:complexType name="FileDirCreateMess">

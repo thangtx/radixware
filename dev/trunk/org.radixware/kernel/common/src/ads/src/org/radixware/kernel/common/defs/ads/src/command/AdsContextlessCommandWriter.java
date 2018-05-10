@@ -21,6 +21,7 @@ import org.radixware.kernel.common.enums.ECommandNature;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.jml.LicenseCodeGenSupport;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 
 
 public class AdsContextlessCommandWriter extends AdsCommandWriter<AdsContextlessCommandDef> {
@@ -96,7 +97,7 @@ public class AdsContextlessCommandWriter extends AdsCommandWriter<AdsContextless
             case COMMON_CLIENT:
                 WriterUtils.writePackageDeclaration(printer, def, usagePurpose);
                 printer.print("public class ");
-                printer.print(def.getId());
+                printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
                 printer.print(" extends ");
                 printer.print(EXPLORER_COMMAND_CLASS_NAME);
 
@@ -125,8 +126,7 @@ public class AdsContextlessCommandWriter extends AdsCommandWriter<AdsContextless
                 WriterUtils.writePackageDeclaration(printer, def, usagePurpose);
                 printer.println();
                 printer.print("public final class ");
-                printer.print(def.getId());
-                printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
+                printer.print(JavaSourceSupport.getMetaName(def, printer instanceof IHumanReadablePrinter));
                 printer.println("{");
                 printer.enterBlock();
 
@@ -210,12 +210,15 @@ public class AdsContextlessCommandWriter extends AdsCommandWriter<AdsContextless
                 printer.printComma();
                 printer.println();
                 if (nature != ECommandNature.FORM_IN_OUT && nature != ECommandNature.LOCAL) {
-                    printer.print("new InternalExecutor());\n");
-                    printer.leaveBlock();
-                    printer.println('}');
+                    printer.print("new InternalExecutor()");
                 } else {
-                    printer.print("null);\n}\n");
+                    printer.print("null");
                 }
+                printer.printComma();
+                printer.print(def.getPresentation().isTraceGuiActivity());
+                printer.print(");");
+                printer.leaveBlock();
+                printer.println('}');
                 printer.leaveBlock(3);
                 printer.println();
                 //RADIX-1831>>>>>>>>>
@@ -228,8 +231,7 @@ public class AdsContextlessCommandWriter extends AdsCommandWriter<AdsContextless
                 WriterUtils.writePackageDeclaration(printer, def, usagePurpose);
 
                 printer.print("public class ");
-                printer.print(def.getId());
-                printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
+                printer.print(JavaSourceSupport.getMetaName(def, printer instanceof IHumanReadablePrinter));
                 printer.enterBlock(1);
                 printer.println('{');
                 printer.print("public static final ");

@@ -39,7 +39,7 @@ public class MqAasClient extends SingleSeanceAasClient<MqAasInvokeItem> {
     @Override
     protected void onInvokeResponseImpl(InvokeRs rs) {
         try {
-            mqUnit.onResponse(getItem().getMqMessage(), (MqProcessRs) SoapFormatter.getInnerContent(rs.getReturnValue().getXml()));
+            mqUnit.onResponse(getItem().getMqMessage(), (MqProcessRs) SoapFormatter.getInnerContent(rs.getReturnValue().getXml()), getLastInvokeDurationMillis());
         } catch (IOException ex) {
             tracer.put(EEventSeverity.ERROR, "Got unexpected empty response from AAS: " + ExceptionTextFormatter.throwableToString(ex), null, null, false);
         }
@@ -50,7 +50,7 @@ public class MqAasClient extends SingleSeanceAasClient<MqAasInvokeItem> {
         if (exception instanceof ServiceCallSendException || exception instanceof ServiceConnectTimeout) {
             mqUnit.onFailToSendAasRequest(getItem().getMqMessage(), exception);
         } else {
-            mqUnit.onAasException(getItem().getMqMessage(), exception);
+            mqUnit.onAasException(getItem().getMqMessage(), exception, getLastInvokeDurationMillis());
         }
     }
 }

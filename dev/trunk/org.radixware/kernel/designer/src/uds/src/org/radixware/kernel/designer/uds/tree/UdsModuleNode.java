@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.designer.uds.tree;
 
+import java.awt.datatransfer.Transferable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +34,8 @@ import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.actions.SystemAction;
+import org.openide.util.datatransfer.ExTransferable;
+import org.openide.util.datatransfer.PasteType;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObject.RemovedEvent;
 import org.radixware.kernel.common.defs.RadixObjects.ContainerChangedEvent;
@@ -40,7 +43,9 @@ import org.radixware.kernel.common.defs.RadixObjects.ContainerChangesListener;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
+import org.radixware.kernel.common.defs.uds.module.UdsFiles;
 import org.radixware.kernel.common.defs.uds.module.UdsModule;
+import org.radixware.kernel.common.defs.uds.report.UdsExchangeReport;
 import org.radixware.kernel.common.defs.uds.userfunc.UdsUserFuncDef;
 import org.radixware.kernel.designer.ads.build.actions.AbstractBuildAction.BuildCookie;
 import org.radixware.kernel.designer.ads.build.actions.BuildAction;
@@ -53,20 +58,20 @@ import org.radixware.kernel.designer.common.general.creation.ICreatureGroup.ICre
 import org.radixware.kernel.designer.common.general.nodes.INodeFactory;
 import org.radixware.kernel.designer.common.general.nodes.NodesManager;
 import org.radixware.kernel.designer.common.tree.RadixObjectNode;
+import org.radixware.kernel.designer.uds.creation.UdsDirectoryCreature;
 import org.radixware.kernel.designer.uds.creation.UdsReportCreature;
 import org.radixware.kernel.designer.uds.creation.UdsUserFuncCreature;
-import org.radixware.kernel.designer.uds.tree.actions.CreateFileStorageAction;
-import org.radixware.kernel.designer.uds.tree.actions.ImportUdsAction;
+import org.radixware.kernel.designer.uds.tree.actions.ImportFileAction;
 
 
 public class UdsModuleNode extends RadixObjectNode {
 
-    private static final class Key {
+    protected static final class Key {
 
-        private AdsDefinition def;
+        private RadixObject def;
         private String fsDirName;
 
-        public Key(AdsDefinition def) {
+        public Key(RadixObject def) {
             this.def = def;
         }
 
@@ -147,9 +152,10 @@ public class UdsModuleNode extends RadixObjectNode {
         public UdsModuleNodeChildren(UdsModule module) {
             this.module = module;
             this.module.getDefinitions().getContainerChangesSupport().addEventListener(moduleListener);
+            this.module.getUdsFiles().getContainerChangesSupport().addEventListener(moduleListener);
             try {
                 modileDirObject = FileUtil.createFolder(module.getDirectory());
-                modileDirObject.addRecursiveListener(FileUtil.weakFileChangeListener(listener, listener));
+//                modileDirObject.addRecursiveListener(FileUtil.weakFileChangeListener(listener, listener));
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -167,15 +173,22 @@ public class UdsModuleNode extends RadixObjectNode {
                         cache.put(t, node);
 
                     } else if (t == ETC) {
-                        DataObject data = getEtcDataObject();
-                        node = data.getNodeDelegate();
-                        node.setDisplayName("Files");
+//                        DataObject data = getEtcDataObject();
+//                        node = data.getNodeDelegate();
+//                        UdsDirectoryNode folderNode = new UdsDirectoryNode(node);
+//                        folderNode.setDisplayName("Files");
+//                        
+//                        return new Node[]{folderNode};
                     } else if (t.def instanceof AdsDefinition && !(t.def instanceof AdsLocalizingBundleDef)) {
                         if (t.def instanceof AdsReportClassDef) {
                             node = new UserReportNode((AdsReportClassDef) t.def);
                         } else {
                             node = NodesManager.findOrCreateNode(t.def);
                         }
+                        t.def.getRemoveSupport().addEventListener(removeListener);
+                        cache.put(t, node);
+                    } else if (t.def instanceof RadixObject || t.def instanceof UdsExchangeReport){
+                        node = NodesManager.findOrCreateNode(t.def);
                         t.def.getRemoveSupport().addEventListener(removeListener);
                         cache.put(t, node);
                     }
@@ -202,7 +215,7 @@ public class UdsModuleNode extends RadixObjectNode {
             return null;
         }
 
-        private boolean keyExists(AdsDefinition def) {
+        private boolean keyExists(RadixObject def) {
             for (Key key : cache.keySet()) {
                 if (key.def == def) {
                     return true;
@@ -211,8 +224,9 @@ public class UdsModuleNode extends RadixObjectNode {
             return false;
         }
 
-        private void updateKeys() {
-            final List<AdsDefinition> defs = module.getDefinitions().list();
+        private void updateKeys() {//module.getDefinitions().list()
+            final List<RadixObject> defs = new ArrayList<RadixObject>();
+            defs.addAll(module.getUdsFiles().list());
             List<Key> updatedKeys = new ArrayList<Key>();
             synchronized (cache) {
                 final List<Key> toRemove = new LinkedList<Key>();
@@ -225,19 +239,19 @@ public class UdsModuleNode extends RadixObjectNode {
                 for (Key key : toRemove) {
                     cache.remove(key);
                 }
-                for (AdsDefinition def : defs) {
+                for (RadixObject def : defs) {
                     if (!keyExists(def)) {
                         cache.put(new Key(def), null);
                     }
                 }
-                DataObject data = getEtcDataObject();
-                if (data == null) {
-                    cache.remove(ETC);
-                } else {
-                    if (!cache.containsKey(ETC)) {
-                        cache.put(ETC, null);
-                    }
-                }
+//                DataObject data = getEtcDataObject();
+//                if (data == null) {
+//                    cache.remove(ETC);
+//                } else {
+//                    if (!cache.containsKey(ETC)) {
+//                        cache.put(ETC, null);
+//                    }
+//                }
 
                 updatedKeys.addAll(cache.keySet());
                 Collections.sort(updatedKeys, new Comparator<Key>() {
@@ -258,16 +272,15 @@ public class UdsModuleNode extends RadixObjectNode {
                         }
                     }
                 });
+                setKeys(updatedKeys);
             }
-            setKeys(updatedKeys);
         }
     }
 
     public UdsModuleNode(UdsModule radixObject) {
         super(radixObject, new UdsModuleNodeChildren(radixObject));
-        addCookie(new ImportUdsAction.Cookie(radixObject));
         addCookie(new BuildCookie(radixObject));
-        addCookie(new CreateFileStorageAction.Cookie(radixObject));
+        addCookie(new ImportFileAction.Cookie(radixObject.getUdsFiles()));
     }
 
     public UdsModule getModule() {
@@ -283,9 +296,24 @@ public class UdsModuleNode extends RadixObjectNode {
                 groups.add(new ICreatureGroup() {
                     @Override
                     public List<ICreature> getCreatures() {
+                        UdsFiles udsFiles = getModule().getUdsFiles();
                         return Arrays.asList(new ICreature[]{
-                            new UdsUserFuncCreature(getModule().getDefinitions()),
-                            new UdsReportCreature(getModule())
+                            new UdsDirectoryCreature(udsFiles)
+                        });
+                    }
+
+                    @Override
+                    public String getDisplayName() {
+                        return "Uds Files";
+                    }
+                });
+                groups.add(new ICreatureGroup() {
+                    @Override
+                    public List<ICreature> getCreatures() {
+                        UdsFiles udsFiles = getModule().getUdsFiles();
+                        return Arrays.asList(new ICreature[]{
+                            new UdsUserFuncCreature(udsFiles),
+                            new UdsReportCreature(udsFiles)
                         });
                     }
 
@@ -312,13 +340,23 @@ public class UdsModuleNode extends RadixObjectNode {
     @Override
     public void addCustomActions(List<Action> actions) {
         super.addCustomActions(actions);
-        actions.add(SystemAction.get(ImportUdsAction.class));
+        actions.add(SystemAction.get(ImportFileAction.class));
         actions.add(null);
         actions.add(SystemAction.get(BuildAction.class));
         actions.add(SystemAction.get(CleanAndBuildAction.class));
         actions.add(SystemAction.get(CleanAction.class));
         actions.add(null);
-        actions.add(SystemAction.get(CreateFileStorageAction.class));
+        //actions.add(SystemAction.get(CreateFileStorageAction.class));
 
+    }
+
+    @Override
+    protected void createPasteTypes(final Transferable transferable, final List<PasteType> pasteTypes) {
+        pasteTypes.add(new PasteType() {
+            @Override
+            public Transferable paste() throws IOException {
+                return ExTransferable.EMPTY;
+            }
+        });
     }
 }

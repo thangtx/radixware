@@ -21,8 +21,6 @@ import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
-import com.trolltech.qt.core.Qt.Alignment;
-import com.trolltech.qt.core.Qt.AlignmentFlag;
 import com.trolltech.qt.core.Qt.FocusPolicy;
 import com.trolltech.qt.core.Qt.KeyboardModifier;
 import com.trolltech.qt.core.Qt.WidgetAttribute;
@@ -43,12 +41,13 @@ import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QFontMetrics;
 import com.trolltech.qt.gui.QFrame;
 import com.trolltech.qt.gui.QHBoxLayout;
+import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QKeyEvent;
 import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QLayout;
+import com.trolltech.qt.gui.QLayoutItemInterface;
 import com.trolltech.qt.gui.QLineEdit;
-import com.trolltech.qt.gui.QLineEdit.TextMargins;
 import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QMouseEvent;
 import com.trolltech.qt.gui.QPaintEvent;
@@ -70,17 +69,22 @@ import com.trolltech.qt.gui.QValidator;
 import com.trolltech.qt.gui.QValidator.QValidationData;
 import com.trolltech.qt.gui.QValidator.State;
 import com.trolltech.qt.gui.QWidget;
+import com.trolltech.qt.gui.QWidgetItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.dialogs.IListDialog;
 import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.env.ClientIcon;
+import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskConstSet;
 import org.radixware.kernel.common.client.meta.mask.EditMaskDateTime;
@@ -102,13 +106,20 @@ import org.radixware.kernel.common.client.text.ITextOptionsProvider;
 import org.radixware.kernel.common.client.text.MergedTextOptionsProvider;
 import org.radixware.kernel.common.client.types.EditingHistoryException;
 import org.radixware.kernel.common.client.types.IEditingHistory;
+import org.radixware.kernel.common.client.types.PriorityArray;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
+import org.radixware.kernel.common.client.views.IDialog;
+import org.radixware.kernel.common.client.widgets.IListWidget;
+import org.radixware.kernel.common.client.widgets.ListWidgetItem;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.utils.SystemTools;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
+import org.radixware.kernel.explorer.inspector.Inspectable;
+import org.radixware.kernel.explorer.inspector.InspectablePropertySetter;
 import org.radixware.kernel.explorer.text.ExplorerFont;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
+import org.radixware.kernel.explorer.types.Margins;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.widgets.ExplorerFrame;
 import org.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider;
@@ -142,11 +153,22 @@ import org.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider;
  *
  */
 public class ValEditor<T> extends ExplorerFrame {
+    
+    public final static int DEFAULT_BUTTON_PRIORITY = PriorityArray.DEFAULT_PRIORITY;
+    
+    protected final static String MAX_ITEMS_IN_DD_LIST_SETTING_KEY = 
+        SettingNames.SYSTEM+"/"+SettingNames.EDITOR_GROUP+"/"+SettingNames.Editor.COMMON_GROUP+"/"+SettingNames.Editor.Common.DROP_DOWN_LIST_ITEMS_LIMIT;    
 
     public static enum EReactionToIntermediateInput {
         NONE,
         SHOW_WARNING,
         DISCARD_INPUT
+    }
+    
+    private final static class SetFocusEvent extends QEvent{        
+        public SetFocusEvent(){
+            super(QEvent.Type.User);
+        }
     }
     
     protected final static QStyle COMMON_STYLE = new QCommonStyle();
@@ -157,31 +179,292 @@ public class ValEditor<T> extends ExplorerFrame {
     }
 
     protected static class DefaultWidthHintCalculator implements IWidthHintCalculator {
+        
+        private final static class WidthCache{
+            
+            private final Map<String,Integer> widthForString = new HashMap<>();
+            private final QFontMetrics fontMetrics;
+            
+            public WidthCache(final QFontMetrics fontMetrics){
+                this.fontMetrics = fontMetrics;
+            }
+            
+            public int getWidth(final String s){
+                Integer width = widthForString.get(s);
+                if (width==null){
+                    width = fontMetrics.width(s);
+                    widthForString.put(s, width);
+                }
+                return width;
+            }            
+        }
+        
+        private final Map<QFontMetrics, WidthCache> cache = new HashMap<>();
 
         private DefaultWidthHintCalculator() {
-        }
+        }        
+        
         public static final DefaultWidthHintCalculator INSTANCE = new DefaultWidthHintCalculator();
 
         @Override
         public int getWidthHint(final QFontMetrics fontMetrics, final EditMask editMask, final IClientEnvironment environment) {
-            final int minWidth = fontMetrics.width("x") * 10;
+            WidthCache widthCache = cache.get(fontMetrics);
+            if (widthCache==null){
+                widthCache = new WidthCache(fontMetrics);
+                cache.put(fontMetrics, widthCache);
+            }            
+            final int minWidth = widthCache.getWidth("x") * 10;
             if (editMask == null) {
                 return minWidth;
             } else {
-                return Math.max(minWidth, fontMetrics.width(editMask.toStr(environment, null)));
+                return Math.max(minWidth, widthCache.getWidth(editMask.toStr(environment, null)));
             }
         }
     }
+    
+    private static final class ValEditorLayout extends QHBoxLayout{                
+        
+        private static final class AdditionalWidgetItem extends QWidgetItem{            
+            
+            private final static QRect NULL_RECT = new QRect(0, 0, 0, 0);
+            private final static QSize NULL_SIZE = new QSize(0, 0);
+            private final static Qt.Orientations NULL_ORIENTATIONS = new Qt.Orientations(0);            
+            
+            private boolean isVisible = true;            
+            private final QWidget widget;
 
+            public AdditionalWidgetItem(final QWidget qw, final Qt.Alignment alignment) {
+                super(qw);
+                this.widget = qw;
+                setAlignment(alignment);
+            }
+
+            @Override
+            public QWidget widget() {                
+                return isVisible ? super.widget() : null;
+            }
+
+            @Override
+            public boolean isEmpty() {
+                return isVisible ? super.isEmpty() : false;
+            }
+
+            @Override
+            public QSize sizeHint() {
+                return isVisible ? super.sizeHint() : NULL_SIZE;
+            }
+
+            @Override
+            public QSize minimumSize() {
+                return isVisible ? super.minimumSize() : NULL_SIZE;
+            }
+
+            @Override
+            public int minimumHeightForWidth(int width) {
+                return isVisible ? super.minimumHeightForWidth(width) : 0;
+            }
+
+            @Override
+            public QSize maximumSize() {
+                return isVisible ? super.maximumSize() : NULL_SIZE;
+            }
+
+            @Override
+            public int heightForWidth(final int width) {
+                return isVisible ? super.heightForWidth(width) : 0;
+            }
+
+            @Override
+            public boolean hasHeightForWidth() {
+                return isVisible ? super.hasHeightForWidth() : false;
+            }
+
+            @Override
+            public QRect geometry() {
+                return isVisible ? super.geometry() : NULL_RECT;
+            }
+
+            @Override
+            public void setGeometry(final QRect qrect) {
+                if (isVisible){
+                    super.setGeometry(qrect);
+                }
+            }            
+
+            @Override
+            public Qt.Orientations expandingDirections() {
+                return isVisible ? super.expandingDirections() : NULL_ORIENTATIONS;
+            }                        
+            
+            public void setVisible(final boolean isVisible){
+                this.isVisible = isVisible;
+            }
+            
+            public boolean isVisible(){
+                return isVisible;
+            }
+            
+            public QWidget getWidget(){
+                return widget;
+            }
+        }
+        
+        private static final Qt.Alignment LEFT_ALIGNMENT = new Qt.Alignment(Qt.AlignmentFlag.AlignLeft, Qt.AlignmentFlag.AlignVCenter);
+        private static final Qt.Alignment RIGHT_ALIGNMENT = new Qt.Alignment(Qt.AlignmentFlag.AlignRight, Qt.AlignmentFlag.AlignVCenter);
+        private final static EnumSet<QEvent.Type> PROHIBITED_EVENTS = EnumSet.of(QEvent.Type.Shortcut,
+                                                                             QEvent.Type.ShortcutOverride,
+                                                                             QEvent.Type.Wheel,
+                                                                             QEvent.Type.KeyPress,
+                                                                             QEvent.Type.KeyRelease,
+                                                                             QEvent.Type.Enter,
+                                                                             QEvent.Type.Leave,
+                                                                             QEvent.Type.MouseButtonPress,
+                                                                             QEvent.Type.MouseButtonDblClick,
+                                                                             QEvent.Type.MouseButtonRelease,
+                                                                             QEvent.Type.Paint
+                                                                             );
+                
+        private final QEventFilter paintBlocker = new QEventFilter(this);
+        private int primaryWidgetIndex = -1;
+        private boolean isAdditionalWidgetsVisible = true; 
+        private static int CREATE_COUNT  = 0;
+        private static int REMOVE_COUNT  = 0;
+        
+        public ValEditorLayout(final QWidget parent){
+            super(parent);
+            setSpacing(0);
+            setMargin(0);
+            setAlignment(LEFT_ALIGNMENT);
+            setSizeConstraint(QLayout.SizeConstraint.SetNoConstraint);
+            paintBlocker.setProhibitedEventTypes(PROHIBITED_EVENTS);
+        }
+        
+        public void setPrimaryWidget(final QWidget widget){
+            if (primaryWidgetIndex>0){
+                final QLayoutItemInterface item = itemAt(primaryWidgetIndex);
+                if (item instanceof QWidgetItem){
+                    removeItem(item);
+                }else{
+                    primaryWidgetIndex = 0;
+                }
+            }else{
+                primaryWidgetIndex = 0;
+            }
+            insertWidget(primaryWidgetIndex,widget);            
+        }
+        
+        public void insertAdditionalWidget(final int index, final QWidget widget){            
+            if (widget==null || widget.nativeId()==0)
+                return;
+            addChildWidget(widget);
+            if (index < 0){
+                insertItem(count(), new AdditionalWidgetItem(widget,RIGHT_ALIGNMENT));
+            }else{
+                final Qt.Alignment alignment;
+                if (index<=primaryWidgetIndex){
+                    primaryWidgetIndex++;
+                    alignment = LEFT_ALIGNMENT;
+                }else{
+                    alignment = RIGHT_ALIGNMENT;
+                }
+                insertItem(index, new AdditionalWidgetItem(widget, alignment));
+            }
+            CREATE_COUNT++;
+        }
+        
+        public void removeAdditionalWidget(final QWidget widget){
+            if (widget!=null && widget.nativeId()!=0){
+                if (!isAdditionalWidgetsVisible){
+                    widget.removeEventFilter(paintBlocker);
+                }
+                removeWidget(widget);
+                REMOVE_COUNT++;
+            }
+        }
+
+        public void setAdditionalWidgetsVisible(final boolean isVisible){
+            if (isVisible!=isAdditionalWidgetsVisible){
+                isAdditionalWidgetsVisible = isVisible;
+                QLayoutItemInterface layoutItem;
+                AdditionalWidgetItem widgetItem;
+                QWidget widget;
+                for (int i=0,count=count(); i<count; i++){
+                    layoutItem = itemAt(i);
+                    if (layoutItem instanceof AdditionalWidgetItem){
+                        widgetItem = (AdditionalWidgetItem)layoutItem;
+                        widget = widgetItem.getWidget();
+                        if (widget!=null && widget.nativeId()!=0){
+                            widgetItem.setVisible(isVisible);
+                            if (isVisible){
+                                widget.removeEventFilter(paintBlocker);
+                            }else{
+                                widget.installEventFilter(paintBlocker);
+                            }                      
+                        }
+                    }
+                }
+                invalidate();
+            }
+        }
+        
+        public boolean isAdditionalWidgetsVisible(){
+            return isAdditionalWidgetsVisible;
+        }
+        
+        public int getPrimaryWidgetIndex(){
+            return primaryWidgetIndex;
+        }
+    }
+    
+    private static final class ValEditorLayoutWrapper{//this class is used to protect from direct call some QHBoxLayout method
+        
+        private final ValEditorLayout layout;
+        
+        public ValEditorLayoutWrapper(final QWidget widget){
+            layout = new ValEditorLayout(widget);
+        }
+                
+        public void setPrimaryWidget(final QWidget widget){
+            layout.setPrimaryWidget(widget);
+        }
+        
+        public void insertAdditionalWidget(final int index, final QWidget widget){            
+            layout.insertAdditionalWidget(index, widget);
+        }
+        
+        public void removeAdditionalWidget(final QWidget widget){
+            layout.removeAdditionalWidget(widget);
+        }
+
+        public void setAdditionalWidgetsVisible(final boolean isVisible){
+            layout.setAdditionalWidgetsVisible(isVisible);
+        }
+        
+        public boolean isAdditionalWidgetsVisible(){
+            return layout.isAdditionalWidgetsVisible;
+        }
+        
+        public int itemsCount(){
+            return layout.count();
+        }
+        
+        public int getFirstButtonIndex(){
+            return layout.getPrimaryWidgetIndex()+1;
+        }
+    }
+            
     private final class InternalLineEdit extends QLineEdit {
 
         private final static String TOOLTIP_STYLESHEET = "QToolTip { background-color: palegoldenrod; "
-                + "border-color: red; border-width: 2px; border-style: solid; padding: 3px; "
+                + "border-color: red; border-width: 2px; border-style: solid; "
                 + "border-radius: 4px;}";
         private final static int ICON_MARGIN = 2;
         private final static int VERTICAL_MARGIN = 1;//from qlineedit.cpp: #define verticalMargin 1
         private final static int HORIZONTAL_MARGIN = 1;//from qlineedit.cpp: #define horizontalMargin 2        
         private final QLabel lbInvalidValueIcon = new QLabel(this);
+        private Margins textMargins = Margins.EMPTY;
+        private final QStyleOptionFrame frameOptions = new QStyleOptionFrameV2();
+        private final QSize temporarySize = new QSize();
         private int toolTipTimerId;
         private IWidthHintCalculator widthHintCalculator = DefaultWidthHintCalculator.INSTANCE;
 
@@ -211,6 +494,7 @@ public class ValEditor<T> extends ExplorerFrame {
         public void showInvalidValueIcon(final String toolTip) {
             final int rightMargin = lbInvalidValueIcon.sizeHint().width() + ICON_MARGIN * 2;
             setTextMargins(0, 0, rightMargin, 0);
+            textMargins = new Margins(0, 0, rightMargin, 0);
             lbInvalidValueIcon.setVisible(true);
             lbInvalidValueIcon.setToolTip(toolTip);
         }
@@ -222,6 +506,7 @@ public class ValEditor<T> extends ExplorerFrame {
         public void hideInvalidValueIcon() {
             lbInvalidValueIcon.setVisible(false);
             setTextMargins(0, 0, 0, 0);
+            textMargins = Margins.EMPTY;
             lbInvalidValueIcon.setToolTip("");
         }
 
@@ -233,8 +518,7 @@ public class ValEditor<T> extends ExplorerFrame {
             //sizeHint перекрыт т.о. чтобы все время использовался один и тот же стиль (QCommonStyle).
             //Написано на основе перекрытого метода в qlineedit.cpp:            
             ensurePolished();
-            final QContentsMargins margins = this.getContentsMargins();
-            final TextMargins textMargins = this.getTextMargins();
+            final QContentsMargins margins = this.getContentsMargins();            
             final ExplorerFont font = ExplorerFont.Factory.getFont(font());
             final QFontMetrics fm = font.getQFontMetrics();
             final int h = Math.max(fm.lineSpacing(), 14) + 2 * VERTICAL_MARGIN
@@ -244,12 +528,13 @@ public class ValEditor<T> extends ExplorerFrame {
                     + 2 * HORIZONTAL_MARGIN
                     + textMargins.left + textMargins.right
                     + margins.left + margins.right; // "some"
-            QStyleOptionFrame opt = new QStyleOptionFrameV2();
-            initStyleOption(opt);
+            initStyleOption(frameOptions);
+            final QSize globalStrut = QApplication.globalStrut();
+            temporarySize.setHeight(Math.max(h, globalStrut.height()));
+            temporarySize.setWidth(Math.max(w, globalStrut.width()));
             final QSize sizeHint =
-                    COMMON_STYLE.sizeFromContents(QStyle.ContentsType.CT_LineEdit, opt, new QSize(w, h).
-                    expandedTo(QApplication.globalStrut()), this);
-            sizeHint.setWidth(sizeHint.width() - getTextMargins().right);
+                COMMON_STYLE.sizeFromContents(QStyle.ContentsType.CT_LineEdit, frameOptions, temporarySize, this);
+            sizeHint.setWidth(sizeHint.width() - textMargins.right);
             return sizeHint;
         }
 
@@ -290,17 +575,24 @@ public class ValEditor<T> extends ExplorerFrame {
 
         @Override
         protected void mouseDoubleClickEvent(final QMouseEvent event) {
-            onMouseDoubleClick();
-        }
+            if (!onMouseDoubleClick()){
+                super.mouseDoubleClickEvent(event);
+            }            
+        }        
 
         @Override
         protected void contextMenuEvent(final QContextMenuEvent event) {
             QMenu menu = createStandardContextMenu();
             final List<QAction> actions = menu.actions();
-            if (isReadOnly() && actions.size()>0){
+            if (actions.size()>0){
                 actions.get(0).triggered.disconnect();
                 actions.get(0).triggered.connect(this,"copyToClipboard()");
-            }else if (actions.size()>5){                
+                if (isReadOnly()){
+                    for (int i=actions.size()-1; i>=1; i--){
+                        menu.removeAction(actions.get(i));
+                    }
+                }
+            }else if (actions.size()>5){
                 actions.get(3).triggered.disconnect();
                 actions.get(3).triggered.connect(this,"cutToClipboard()");
                 actions.get(4).triggered.disconnect();
@@ -354,29 +646,27 @@ public class ValEditor<T> extends ExplorerFrame {
                 event.accept();
                 return;
             }
-            if (event.matches(QKeySequence.StandardKey.Cut)){
-                cutToClipboard();
-                event.accept();
-                return;
-            }
-            if (event.matches(QKeySequence.StandardKey.DeleteEndOfLine)){
-                if (echoMode()==EchoMode.Normal && !isReadOnly()){                                        
+            if (!isReadOnly()){
+                if (event.matches(QKeySequence.StandardKey.Cut)){
+                    cutToClipboard();
+                    event.accept();
+                    return;
+                }else if (event.matches(QKeySequence.StandardKey.DeleteEndOfLine) && echoMode()==EchoMode.Normal){
                     setSelection(cursorPosition(), displayText().length()-1);
                     cutToClipboard();
                     event.accept();
                     return;
-                }
-            }
-            if (event.matches(QKeySequence.StandardKey.Paste)){
-                QClipboard.Mode mode = QClipboard.Mode.Clipboard;
-                if (SystemTools.isUnix()){
-                    if (event.modifiers().isSet(Qt.KeyboardModifier.ControlModifier,Qt.KeyboardModifier.ShiftModifier)
-                        && event.key() == Qt.Key.Key_Insert.value()){
-                        mode = QClipboard.Mode.Selection;
+                }else if (event.matches(QKeySequence.StandardKey.Paste)){
+                    QClipboard.Mode mode = QClipboard.Mode.Clipboard;
+                    if (SystemTools.isUnix()){
+                        if (event.modifiers().isSet(Qt.KeyboardModifier.ControlModifier,Qt.KeyboardModifier.ShiftModifier)
+                            && event.key() == Qt.Key.Key_Insert.value()){
+                            mode = QClipboard.Mode.Selection;
+                        }
+                        pasteFromClipboard(mode);
+                        event.accept();
+                        return;
                     }
-                    pasteFromClipboard(mode);
-                    event.accept();
-                    return;
                 }
             }
             super.keyPressEvent(event);
@@ -477,7 +767,7 @@ public class ValEditor<T> extends ExplorerFrame {
                             }
                         }
                     }
-                    showInvalidValueToolTip(result.getInvalidValueReason().toString());
+                    showInvalidValueToolTip(result.getInvalidValueReason().getMessage(getEnvironment().getMessageProvider(), InvalidValueReason.EMessageType.Value));
                     return State.Invalid;
                 }
             }
@@ -595,18 +885,21 @@ public class ValEditor<T> extends ExplorerFrame {
     private ValidationResult internalValueStatus = ValidationResult.ACCEPTABLE, externalValueStatus = ValidationResult.ACCEPTABLE;
     private ExplorerTextOptions textOptions, scheduledToApplyOptions;
     private long sheduledApplyOptionsEventId = 0;
+    private long scheduledFocusInEventId = 0;
     private EnumSet<ETextOptionsMarker> textOptionsMarkers = EnumSet.of(ETextOptionsMarker.EDITOR);
     private CustomTextOptions customTextOptions;
     private ITextOptionsProvider customTextOptionsProvider;
     private ITextOptionsProvider provider;
     private int leftMargin = 2;
-    private boolean inGrid = false;
+    private boolean inGrid = false;    
+    private boolean widthByContentMode;
     private boolean isHighlightedFrame = false;
     private final int frameWidth;
-    protected final List<QPushButton> pButtons = new ArrayList<>();
-    private final List<QToolButton> buttons = new ArrayList<>();
-    private final QHBoxLayout layout = WidgetUtils.createHBoxLayout(this);
-    protected final QToolButton clearBtn, editingHistoryBtn, predefValuesBtn;
+    protected final List<QPushButton> pButtons = new ArrayList<>();        
+    private final PriorityArray<QWidget> additionalWidgets = new PriorityArray<>(false,false);
+    private final ValEditorLayoutWrapper layout = new ValEditorLayoutWrapper(this);
+    protected final QToolButton clearBtn, editingHistoryBtn;    
+    private final QToolButton predefValuesBtn;
     //private final InternalLineEdit lineEdit;
     private final InternalLineEdit internalLineEdit;
     private final QLineEdit actualLineEdit;
@@ -621,6 +914,8 @@ public class ValEditor<T> extends ExplorerFrame {
     private int lastKey;
     private boolean wasClosed;
     private UnacceptableInput unacceptableInput;
+    private String dialogTitle;
+    private int maxPredefinedValuesInPopup = -1;    
     
     protected final QEventFilter inputEventListener = new QEventFilter(this){
         @Override
@@ -671,11 +966,8 @@ public class ValEditor<T> extends ExplorerFrame {
         actualLineEdit.textChanged.connect(this, "onTextChanged(String)");
         actualLineEdit.selectionChanged.connect(this, "onSelectionChanged()");
         inputEventListener.setProcessableEventTypes(EnumSet.of(QEvent.Type.KeyPress, QEvent.Type.Resize));
-        actualLineEdit.installEventFilter(this);
-        layout.setAlignment(new Qt.Alignment(new Qt.AlignmentFlag[]{AlignmentFlag.AlignLeft, AlignmentFlag.AlignVCenter}));
-        layout.addWidget(actualLineEdit);
-
-        layout.setSizeConstraint(QLayout.SizeConstraint.SetNoConstraint);
+        actualLineEdit.installEventFilter(this);        
+        layout.setPrimaryWidget(actualLineEdit);
 
         setFrameShadow(QFrame.Shadow.Sunken);
         setFrameShape(QFrame.Shape.StyledPanel);
@@ -685,42 +977,20 @@ public class ValEditor<T> extends ExplorerFrame {
         setSizePolicy(Policy.Expanding, Policy.Fixed);
         setFocusPolicy(Qt.FocusPolicy.StrongFocus);//Необходимо для смены фокуса по клавише Tab
         setFocusProxy(actualLineEdit);//Необходимо для программной установки фокуса
-
         {
-            final QAction action = new QAction(this);
-            action.triggered.connect(this, "showCompletitions()");
-            action.setToolTip(environment.getMessageProvider().translate("Value", "Show Editing History"));
-            action.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.EDITING_HISTORY));
-            editingHistoryBtn = WidgetUtils.createEditorButton(this, action);
-            setupToolButton(editingHistoryBtn);
-            getLayout().addWidget(editingHistoryBtn, 0, new Alignment(Qt.AlignmentFlag.AlignRight));
-            editingHistoryBtn.pressed.connect(actualLineEdit, "setFocus()");
-            editingHistoryBtn.setObjectName("btnEditingHistory");
-            editingHistoryBtn.setVisible(false);
-        }
-
-        {
-            final QAction action = new QAction(this);
-            action.triggered.connect(this, "clear()");
-            action.setToolTip(environment.getMessageProvider().translate("Value", "Clear Value"));
-            action.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.CLEAR));
-            clearBtn = WidgetUtils.createEditorButton(this, action);
-            setupToolButton(clearBtn);
-            getLayout().addWidget(clearBtn, 0, new Alignment(Qt.AlignmentFlag.AlignRight));
-            clearBtn.pressed.connect(actualLineEdit, "setFocus()");
-            clearBtn.setObjectName("btnClear");
-            clearBtn.setVisible(false);
+            editingHistoryBtn = 
+                createPredefinedButton(environment.getMessageProvider().translate("Value", "Show Editing History"), 
+                                           ClientIcon.CommonOperations.EDITING_HISTORY, "showCompletitions()", "editing_history");
         }
         {
-            final QAction action = new QAction(this);
-            action.triggered.connect(this, "showPredefinedValues()");
-            action.setToolTip(environment.getMessageProvider().translate("Value", "Show predefined values"));
-            action.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.FAVORITES));
-            predefValuesBtn = WidgetUtils.createEditorButton(this, action);
-            setupToolButton(predefValuesBtn);
-            getLayout().addWidget(predefValuesBtn, 0, new Alignment(Qt.AlignmentFlag.AlignRight));
-            predefValuesBtn.pressed.connect(actualLineEdit, "setFocus()");
-            predefValuesBtn.setVisible(false);
+            clearBtn = 
+                createPredefinedButton(environment.getMessageProvider().translate("Value", "Clear Value"), 
+                                           ClientIcon.CommonOperations.CLEAR, "clear()","clear_value");
+        }
+        {
+            predefValuesBtn = 
+                createPredefinedButton(environment.getMessageProvider().translate("Value", "Show predefined values"), 
+                                           ClientIcon.CommonOperations.FAVORITES_POPUP, "showPredefinedValues()", "predefined_values");
         }
         completionModelHistory = new CompletionModel(this);
         completionModelPredef = new QStringListModel(this);
@@ -734,6 +1004,24 @@ public class ValEditor<T> extends ExplorerFrame {
             textOptionsMarkers.add(ETextOptionsMarker.MANDATORY_VALUE);
         }
         refreshTextOptions();
+    }
+    
+    private final QToolButton createPredefinedButton(final String toolTip, 
+                                                                               final ClientIcon icon, 
+                                                                               final String clickHandler,
+                                                                               final String objectName){
+        final QAction action = new QAction(this);
+        action.triggered.connect(this, clickHandler);
+        action.setToolTip(toolTip);
+        action.setIcon(ExplorerIcon.getQIcon(icon));
+        final QToolButton button = WidgetUtils.createEditorButton(this, action);
+        setupToolButton(button);
+        final int buttonIndex = additionalWidgets.addWithLowestPriority(button)+layout.getFirstButtonIndex();
+        layout.insertAdditionalWidget(buttonIndex, button);
+        button.pressed.connect(actualLineEdit, "setFocus()");
+        button.setVisible(false);
+        button.setObjectName("rx_tbtn_"+objectName);
+        return button;
     }
 
     @SuppressWarnings("unused")
@@ -852,10 +1140,12 @@ public class ValEditor<T> extends ExplorerFrame {
         updateReadOnlyMarker();
     }
 
+    @Inspectable(delegate = "org.radixware.kernel.explorer.inspector.delegates.EditMaskDelegate" ,name = "editMask")
     public final EditMask getEditMask() {
         return EditMask.newCopy(editMask);
     }
 
+    @InspectablePropertySetter(name = "editMask")
     public void setEditMask(final EditMask editMask) {
         this.editMask = EditMask.newCopy(editMask);
         // update noValueString
@@ -888,13 +1178,49 @@ public class ValEditor<T> extends ExplorerFrame {
     public final boolean isValidationOnInputEnabled() {
         return reactionToIntermediateInput == EReactionToIntermediateInput.DISCARD_INPUT;
     }
-
-    protected final QHBoxLayout getLayout() {
-        return layout;
+    
+    protected final boolean addWidget(final QWidget widget, final int priority) {
+        final int widgetIndex = additionalWidgets.addWithPriority(widget, priority);
+        if (widgetIndex>=0){
+            layout.insertAdditionalWidget(widgetIndex+layout.getFirstButtonIndex(), widget);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     protected final void addWidget(final QWidget widget) {
-        getLayout().insertWidget(/*getLayout().count() - */1, widget);
+        final int widgetIndex = additionalWidgets.addWithHighestPriority(widget);
+        if (widgetIndex>=0){
+            layout.insertAdditionalWidget(widgetIndex+layout.getFirstButtonIndex(), widget);
+        }
+    }
+    
+    protected final void insertWidgetToFront(final QWidget widget){
+        layout.insertAdditionalWidget(0, widget);
+    }
+    
+    @Deprecated//use insertWidgetToFront or addWidget with priority instead
+    protected final void insertWidget(final int index, final QWidget widget){
+        if (index>=layout.getFirstButtonIndex()){
+            if (additionalWidgets.addWithLowestPriority(widget)<0){
+                return;
+            }
+        }
+        layout.insertAdditionalWidget(index, widget);
+    }
+    
+    protected final void removeWidget(final QWidget widget){
+        additionalWidgets.remove(widget);
+        layout.removeAdditionalWidget(widget);
+    }
+    
+    protected final int widgetsCount(){
+        return layout.itemsCount();
+    }
+    
+    protected final void setPrimaryWidget(final QWidget widget){
+        layout.setPrimaryWidget(widget);
     }
 
     public final QLineEdit getLineEdit() {
@@ -928,6 +1254,18 @@ public class ValEditor<T> extends ExplorerFrame {
             setFocusPolicy(Qt.FocusPolicy.ClickFocus);
         }
         inGrid = true;
+        setAdjustWidthByContentModeEnabled(true);
+    }
+    
+    public final void setAdjustWidthByContentModeEnabled(final boolean enabled){
+        if (widthByContentMode!=enabled){
+            widthByContentMode = enabled;
+            updateGeometry();
+        }
+    }
+    
+    public final boolean isAdjustWidthByContentModeEnabled(){
+        return widthByContentMode;
     }
 
     public final void setHighlightedFrame(final boolean isHighlighted) {
@@ -1072,11 +1410,12 @@ public class ValEditor<T> extends ExplorerFrame {
             toolTipHtml.append("</th></tr>");
         }
         toolTipHtml.append("<tr><td width=\"80%\">");
-        final String comment = getValidationResult().getInvalidValueReason().toString();
+        final String comment = 
+            getValidationResult().getInvalidValueReason().getMessage(getEnvironment().getMessageProvider(), InvalidValueReason.EMessageType.Value);
         if (comment == null || comment.isEmpty()) {
             toolTipHtml.append(getEnvironment().getMessageProvider().translate("Value", "Current value is invalid"));
         } else {
-            toolTipHtml.append(getValidationResult().getInvalidValueReason().toString());
+            toolTipHtml.append(comment);
         }
         toolTipHtml.append("</td>");
         toolTipHtml.append("<td width=\"10%\"></td><td width=\"10%\"></td></tr>");
@@ -1187,8 +1526,13 @@ public class ValEditor<T> extends ExplorerFrame {
 
     @Override
     protected void customEvent(final QEvent event) {
-        if (event instanceof ApplyTextOptionsEvent) {
+        if (event instanceof ApplyTextOptionsEvent) {            
             event.accept();
+            if (sheduledApplyOptionsEventId==0){
+                return;
+            }else{
+                sheduledApplyOptionsEventId = 0;
+            }
             if (isVisible()) {
                 final ExplorerTextOptions newOptions = ((ApplyTextOptionsEvent) event).getOptions();
                 if (nativeId() != 0 && getLineEdit().nativeId() != 0 && scheduledToApplyOptions != null && !wasClosed) {
@@ -1198,6 +1542,21 @@ public class ValEditor<T> extends ExplorerFrame {
                     } catch (RuntimeException exception) {
                         getEnvironment().getTracer().error(exception);
                     }
+                }
+            }
+        } else if (event instanceof SetFocusEvent){            
+            event.accept();
+            if (scheduledFocusInEventId==0){
+                return;
+            }else{
+                scheduledFocusInEventId = 0;
+            }
+            if (!wasClosed() && isVisible() && isEnabled()){
+                final QLineEdit lineEdit = getLineEdit();
+                if (lineEdit==null){
+                    setFocus();                    
+                }else{
+                    lineEdit.setFocus();
                 }
             }
         } else {
@@ -1219,7 +1578,7 @@ public class ValEditor<T> extends ExplorerFrame {
     public QSize sizeHint() {
         final QSize size = super.sizeHint();
         size.setHeight(getLineEdit().sizeHint().height() + frameWidth);
-        if (isInGrid()) {
+        if (isAdjustWidthByContentModeEnabled()) {
             size.setWidth(getWidthForCurrentValue() + 8);
         }
         return size;
@@ -1396,31 +1755,36 @@ public class ValEditor<T> extends ExplorerFrame {
         addButton(button);
         return button;
     }
-
+    
     public final void addButton(final QToolButton button) {
+        addButton(button, DEFAULT_BUTTON_PRIORITY);
+    }
+
+    public final void addButton(final QToolButton button, final int priority) {
         setupToolButton(button);
-        buttons.add(button);
-        final int index = getLayout().count() - 2;//Кнопки очистить и история редактирования всегда последнии
-        getLayout().insertWidget(index, button, 0, new Alignment(Qt.AlignmentFlag.AlignRight));
-        button.pressed.connect(getLineEdit(), "setFocus()");
-        updateReadOnlyMarker();
+        if (addWidget(button, priority)){
+            button.pressed.connect(getLineEdit(), "setFocus()");
+            updateReadOnlyMarker();            
+        }
     }
     
     public final void addFirstButton(final QToolButton button){
-        final int index = getLayout().count() - buttons.size();
-        setupToolButton(button);
-        buttons.add(0,button);
-        getLayout().insertWidget(index, button, 0, new Alignment(Qt.AlignmentFlag.AlignRight));
-        button.pressed.connect(getLineEdit(), "setFocus()");
-        updateReadOnlyMarker();        
+        addButton(button, Integer.MAX_VALUE);
     }
-
+    
     public final void removeButton(final QToolButton button) {
-        buttons.remove(button);
-        getLayout().removeWidget(button);
-        button.setParent(null);
-        button.close();
-        updateReadOnlyMarker();
+        removeButton(button, true);
+    }
+    
+    public final void removeButton(final QToolButton button, final boolean dispose){
+        if (additionalWidgets.remove(button)){
+            layout.removeAdditionalWidget(button);
+            button.setParent(null);
+            if (dispose){
+                button.close();
+            }
+            updateReadOnlyMarker();
+        }
     }
 
     private void setupToolButton(final QToolButton button) {
@@ -1466,10 +1830,17 @@ public class ValEditor<T> extends ExplorerFrame {
     protected QMenu createCustomContextMenu(final QMenu standardMenu) {
         return standardMenu;
     }
-
+    
     protected static QAction createAction(final Object parent, final String methodName) {
         final QAction action = new QAction(null);
-        action.triggered.connect(parent, "onChangeValueClick()");
+        action.triggered.connect(parent, methodName);
+        return action;        
+    }
+
+    protected static QAction createAction(final Object parent, final String methodName, final String objectName) {
+        final QAction action = new QAction(null);
+        action.triggered.connect(parent, methodName);        
+        action.setObjectName(objectName);
         return action;
     }
 
@@ -1505,12 +1876,9 @@ public class ValEditor<T> extends ExplorerFrame {
 
     private boolean userCanChangeValue() {
         if (isReadOnly()) {
-            final List<QToolButton> allButtons = new LinkedList<>(buttons);
-            allButtons.add(clearBtn);
-            allButtons.add(predefValuesBtn);
-            allButtons.add(editingHistoryBtn);
-            for (QToolButton button : allButtons) {
-                if (isButtonCanChangeValue(button)) {
+            for (QWidget widget : additionalWidgets) {
+                if (widget instanceof QToolButton
+                    && isButtonCanChangeValue((QToolButton)widget)){
                     return true;
                 }
             }
@@ -1562,7 +1930,7 @@ public class ValEditor<T> extends ExplorerFrame {
             if (customTextOptions == null) {
                 provider = mergedProvider;
             } else {
-                provider = new MergedTextOptionsProvider(mergedProvider, customTextOptions, manager);
+                provider = new MergedTextOptionsProvider(customTextOptions, mergedProvider, manager);
             }
         }
     }
@@ -1623,7 +1991,6 @@ public class ValEditor<T> extends ExplorerFrame {
                     Application.removeScheduledEvent(sheduledApplyOptionsEventId);
                     sheduledApplyOptionsEventId = 0;
                 }
-                QApplication.removePostedEvents(this, QEvent.Type.User.value());
                 scheduledToApplyOptions = null;
                 applyTextOptionsInternal(calculateTextOptions(textOptionsMarkers));
             } else {
@@ -1652,6 +2019,9 @@ public class ValEditor<T> extends ExplorerFrame {
             }
             traceMessage.append("]\nText options provider is ");
             traceMessage.append(provider.getClass().getName());
+            traceMessage.append("\nCurrent settings group is '");
+            traceMessage.append(getEnvironment().getConfigStore().group());
+            traceMessage.append('\'');
             getEnvironment().getTracer().warning(traceMessage.toString());
         }
         return options;
@@ -1670,7 +2040,6 @@ public class ValEditor<T> extends ExplorerFrame {
                 Application.removeScheduledEvent(sheduledApplyOptionsEventId);
                 sheduledApplyOptionsEventId = 0;
             }
-            QApplication.removePostedEvents(this, QEvent.Type.User.value());
             scheduledToApplyOptions = newOptions;
             sheduledApplyOptionsEventId =
                     Application.processEventWhenEasSessionReady(this, new ApplyTextOptionsEvent(newOptions));
@@ -1795,10 +2164,14 @@ public class ValEditor<T> extends ExplorerFrame {
         if (getLineEdit() != null) {
             final int buttonHeight = getLineEdit().sizeHint().height();
             final int buttonWidth = Math.max(buttonHeight, MIN_BUTTON_WIDTH);
-            for (QToolButton button : buttons) {
-                button.setFixedHeight(buttonHeight);
-                button.setFixedWidth(buttonWidth);
-                updateButtonIconSize(button);
+            QToolButton button;
+            for (QWidget widget : additionalWidgets) {
+                if (widget instanceof QToolButton){
+                    button = (QToolButton)widget;
+                    button.setFixedHeight(buttonHeight);
+                    button.setFixedWidth(buttonWidth);
+                    updateButtonIconSize(button);
+                }
             }
             clearBtn.setFixedHeight(buttonHeight);
             clearBtn.setFixedWidth(buttonWidth);
@@ -1828,13 +2201,20 @@ public class ValEditor<T> extends ExplorerFrame {
     protected void onMouseClick() {
     }
 
-    protected void onMouseDoubleClick() {
-        for (QToolButton button : buttons) {
-            if (button.isVisible()) {
-                button.click();
-                return;
+    protected boolean onMouseDoubleClick() {
+        if (isEnabled() && isEmbeddedWidgetsVisible()){
+            QToolButton button;
+            for (QWidget widget : additionalWidgets) {
+                if (widget instanceof QToolButton && widget!=clearBtn){
+                    button = (QToolButton)widget;
+                    if (button.isVisible()) {
+                        button.click();
+                        return true;
+                    }
+                }
             }
         }
+        return false;
     }
 
     public void clear() {
@@ -1844,12 +2224,16 @@ public class ValEditor<T> extends ExplorerFrame {
     @Override
     protected void closeEvent(QCloseEvent event) {
         pButtons.clear();
-        buttons.clear();
+        additionalWidgets.clear();
         QApplication.clipboard().disconnect(internalLineEdit);
         wasClosed = true;
         if (sheduledApplyOptionsEventId != 0) {
             Application.removeScheduledEvent(sheduledApplyOptionsEventId);
             sheduledApplyOptionsEventId = 0;
+        }
+        if (scheduledFocusInEventId != 0){
+            Application.removeScheduledEvent(scheduledFocusInEventId);
+            scheduledFocusInEventId = 0;
         }
         QApplication.removePostedEvents(this, QEvent.Type.User.value());
         scheduledToApplyOptions = null;
@@ -2029,7 +2413,7 @@ public class ValEditor<T> extends ExplorerFrame {
             }
 
         }
-        predefValuesBtn.setHidden(predefinedValues == null || predefinedValues.isEmpty() || isReadOnly());
+        refreshShowPredefinedValuesButton();        
     }
 
     public List<T> getPredefinedValues() {
@@ -2050,15 +2434,29 @@ public class ValEditor<T> extends ExplorerFrame {
 
     @SuppressWarnings("unused")
     private void showPredefinedValues() {
-        final QCompleter completer = getLineEdit().completer();
-        if (!isReadOnly() && completer != null) {
-            completer.activatedIndex.disconnect();
-            completer.activatedIndex.connect(this, "onPredefValueSelect(QModelIndex)");
-            completionModelPredef.setStringList(getPredefinedValuesTitles());
-            completer.setModel(completionModelPredef);
-            setCompleterUnfiltered(true);
-            setFocus();
-            completer.complete();
+        if (!isReadOnly() && predefinedValues!=null){
+            if (predefinedValues.size()>getMaxPredefinedValuesInDropDownList()){
+                final List<String> titles = getPredefinedValuesTitles();
+                final List<ListWidgetItem> items = new LinkedList<>();
+                for (String title: titles){
+                    items.add(new ListWidgetItem(title));
+                }
+                final int selectedItemIndex = selectItem(items, -1);
+                if (selectedItemIndex>=0){
+                    choosePredefinedValue(selectedItemIndex);
+                }
+            }else{
+                final QCompleter completer = getLineEdit().completer();
+                if (completer != null) {
+                    completer.activatedIndex.disconnect();                    
+                    completer.activatedIndex.connect(this, "onPredefValueSelect(QModelIndex)");                    
+                    completionModelPredef.setStringList(getPredefinedValuesTitles());
+                    completer.setModel(completionModelPredef);
+                    setCompleterUnfiltered(true);
+                    setFocus();
+                    completer.complete();
+                }
+            }            
         }
     }
 
@@ -2067,16 +2465,94 @@ public class ValEditor<T> extends ExplorerFrame {
         if (index != null) {
             final QStringListModel model = (QStringListModel) getLineEdit().completer().model();
             final int valueIndex = model.stringList().indexOf((String) index.data());
-            final T newValue = predefinedValues.get(valueIndex);
-
-
-            setOnlyValue(newValue);
-            if (!inModificationState()) {
-                updateHistory();
-            }
+            choosePredefinedValue(valueIndex);
         }
     }
-
+    
+    private void choosePredefinedValue(final int valueIndex){
+        final T newValue = predefinedValues.get(valueIndex);
+        setOnlyValue(newValue);
+        if (!inModificationState()) {
+            updateHistory();
+        }        
+    }
+    
+    public final void refreshShowPredefinedValuesButton(){
+        final boolean isButtonVisible = predefinedValues != null && !predefinedValues.isEmpty() && !isReadOnly();
+        predefValuesBtn.setHidden(!isButtonVisible);
+        if (isButtonVisible){
+            final QIcon btnIcon;
+            if (predefinedValues.size()>getMaxPredefinedValuesInDropDownList()){
+                btnIcon = ExplorerIcon.getQIcon(ClientIcon.CommonOperations.FAVORITES);                
+            }else{
+                btnIcon = ExplorerIcon.getQIcon(ClientIcon.CommonOperations.FAVORITES_POPUP);
+            }
+            predefValuesBtn.setIcon(btnIcon);
+        }
+    }
+    
+    public final int getMaxPredefinedValuesInDropDownList(){
+        if (maxPredefinedValuesInPopup<0){
+            return getEnvironment().getConfigStore().readInteger(MAX_ITEMS_IN_DD_LIST_SETTING_KEY);
+        }else{
+            return maxPredefinedValuesInPopup;
+        }
+    }
+    
+    public final void setMaxPredefinedValuesInDropDownList(final int max){
+        if (maxPredefinedValuesInPopup!=max){
+            maxPredefinedValuesInPopup = max;
+            refreshShowPredefinedValuesButton();
+        }
+    }
+    
+    public final boolean isEmbeddedWidgetsVisible(){
+        return layout.isAdditionalWidgetsVisible();
+    }
+    
+    public final void setEmbeddedWidgetsVisible(final boolean isVisible){
+        if (isVisible!=layout.isAdditionalWidgetsVisible()){
+            layout.setAdditionalWidgetsVisible(isVisible);
+            updateGeometry();
+            repaint();
+        }
+    }
+    
+    public final String getDialogTitle(){
+        return dialogTitle;
+    }
+    
+    public final void setDialogTitle(final String title){
+        dialogTitle = title;
+    }        
+    
+    protected void beforeShowSelectValueDialog(final IListDialog dialog){
+        
+    }
+            
+    protected String getSelectValueDialogConfigPrefix(){
+        return getClass().getName();
+    }    
+    
+    protected final int selectItem(final List<ListWidgetItem> items, final int currentIndex){
+        final IListDialog dialog = 
+            getEnvironment().getApplication().getDialogFactory().newListDialog(getEnvironment(), this, getSelectValueDialogConfigPrefix());
+        dialog.setItems(items);
+        dialog.setFeatures(EnumSet.of(IListWidget.EFeatures.FILTERING, IListWidget.EFeatures.MANUAL_SORTING));
+        if (dialogTitle!=null){
+            dialog.setWindowTitle(dialogTitle);
+        }
+        if (currentIndex>=0){
+            dialog.setCurrentRow(currentIndex);
+        }
+        beforeShowSelectValueDialog(dialog);
+        if (dialog.execDialog(this)==IDialog.DialogResult.ACCEPTED){
+            return dialog.getCurrentRow();
+        }else{
+            return -1;
+        }
+    }
+    
     protected QAbstractItemModel getHistoryModel() {
         return completionModelHistory;
     }
@@ -2092,6 +2568,12 @@ public class ValEditor<T> extends ExplorerFrame {
         }
         updateGeometry();
     }
+            
+    public void scheduleSetFocus(){
+        if (scheduledFocusInEventId==0){
+            scheduledFocusInEventId = Application.processEventWhenEasSessionReady(this, new SetFocusEvent());
+        }
+    }      
 
     protected final int getLastKey() {
         return lastKey;
@@ -2123,9 +2605,9 @@ public class ValEditor<T> extends ExplorerFrame {
                 //lineEdit.setText(unacceptableInput.getText());
             }        
         }
-    }
+    }      
     
     protected final boolean isInGrid(){
         return inGrid;
-    }
+    }        
 }

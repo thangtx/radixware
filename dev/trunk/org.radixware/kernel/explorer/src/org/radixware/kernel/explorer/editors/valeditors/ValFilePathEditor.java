@@ -10,35 +10,36 @@
  */
 package org.radixware.kernel.explorer.editors.valeditors;
 
+import java.util.Objects;
 import com.trolltech.qt.gui.QFileDialog;
-import com.trolltech.qt.gui.QFileDialog.Filter;
 import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QWidget;
 import java.io.File;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.EnumSet;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
+import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskFilePath;
 import org.radixware.kernel.common.client.meta.mask.validators.IInputValidator;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
+import org.radixware.kernel.common.enums.EFileDialogOpenMode;
 import org.radixware.kernel.common.enums.EFileSelectionMode;
 import org.radixware.kernel.common.enums.EMimeType;
+import org.radixware.kernel.common.utils.SystemTools;
 import static org.radixware.kernel.explorer.editors.valeditors.ValEditor.createAction;
 
 import org.radixware.kernel.explorer.env.ExplorerIcon;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 public final class ValFilePathEditor extends ValEditor<String> {
     
     private static class InputValidator implements IInputValidator{
         
-        private final EFileSelectionMode selectionMode;
         private final boolean checkIfPathExists;
         
-        public InputValidator(final EFileSelectionMode mode, final boolean checkIfExists){
-            selectionMode = mode;
+        public InputValidator(final boolean checkIfExists){
             checkIfPathExists = checkIfExists;
         }
 
@@ -52,63 +53,70 @@ public final class ValFilePathEditor extends ValEditor<String> {
             if (input == null) {
                 return ValidationResult.ACCEPTABLE;
             }
-            if (checkIfPathExists) {
-                if (selectionMode == EFileSelectionMode.SELECT_DIRECTORY) {
-                    final Path path = Paths.get(input);
-                    if (path.toFile().exists() && path.toFile().isDirectory()) {
-                        return ValidationResult.ACCEPTABLE;
-                    }
-                } else {
-                    //if path contains Windows forbidden file name symbols mark value as invalid
-                    if (input.contains("[<\">?*\']")) {
-                        return ValidationResult.INVALID;
-                    }
-                    try {
-                        final Path path = Paths.get(input);
-                        if (path.toFile().exists() && path.toFile().isFile()) {
-                            return ValidationResult.ACCEPTABLE;
-                        }
-                    } catch (InvalidPathException e) {
-                        return ValidationResult.INVALID;
-                    }
-                }
+            if (checkIfPathExists && SystemTools.isWindows && input.contains("[<\">?*\']")) {
+                return ValidationResult.INVALID;
             } else {
                 return ValidationResult.ACCEPTABLE;
-            }
-            return ValidationResult.INVALID;            
-        }
-        
+            }    
+        }        
     }
+    
+    private final static String DEFAULT_INITIAL_PATH_CONFIG_SETTING = SettingNames.SYSTEM+"/last_select_file_path";
 
-    private String initPath;
-    private boolean handleInput;
-    private String dialogTitle;    
-    private EFileSelectionMode selectionMode;
-    private final QToolButton dialogBtn = addButton(null, createAction(this, "onChangeValueClick()"));
+    private final QToolButton dialogBtn = addButton(null, createAction(this, "onChangeValueClick()","edit"));
     private boolean showFileNameOnly;
-    private boolean checkIfPathExists;
+    private String initialPathConfigSetting;
+    private String lastUsedPath;
 
     public ValFilePathEditor(final IClientEnvironment env, final QWidget parent, final EditMaskFilePath editMask, final boolean mandatory, final boolean readOnly) {
         super(env, parent, editMask, mandatory, readOnly);
         if (editMask == null) {
             setEditMask(new EditMaskFilePath());
         }
-        initPath = ""; //get from config 
-        afterUpdateEditMask();
+        afterUpdateEditMask(getEditMaskFilePath());
         dialogBtn.setToolTip(env.getMessageProvider().translate("ValFilePathEditor", "Edit"));
         dialogBtn.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.OPEN));
-        dialogBtn.setDisabled(readOnly);       
+        dialogBtn.setDisabled(readOnly);
     }
 
     public ValFilePathEditor(final IClientEnvironment env, final QWidget parent) {
         this(env, parent, new EditMaskFilePath(), true, false);
+    }
+    
+    public void setInitialPathConfigKey(final String setting){
+        lastUsedPath = null;
+        initialPathConfigSetting = setting;
+    }        
+    
+    public String getInitialPathConfigKey(){
+        return initialPathConfigSetting;
+    }
+    
+    private String getActualInitialPathConfigSetting(){
+        if (initialPathConfigSetting==null || initialPathConfigSetting.isEmpty()){
+            return DEFAULT_INITIAL_PATH_CONFIG_SETTING;
+        }else{
+            return initialPathConfigSetting;
+        }
+    }    
+    
+    private String getActualInitialPath(){
+        if (lastUsedPath==null || lastUsedPath.isEmpty()){
+            final String path = getInitialPath();
+            if ((path==null || path.isEmpty()) && getEditMaskFilePath().getStoreLastPathInConfig()){
+                return getEnvironment().getConfigStore().readString(getActualInitialPathConfigSetting(), null);
+            }
+            return path;
+        }else{
+            return lastUsedPath;
+        }
     }
 
     @Override
     protected void onFocusIn() {
         if (!isReadOnly()) {
             final String val = this.getValue();
-            final EditMaskFilePath mask = (EditMaskFilePath) getEditMask();
+            final EditMaskFilePath mask = getEditMaskFilePath();
             if (mask.isSpecialValue(val)) {
                 setOnlyText("", "");
             } else {
@@ -135,104 +143,116 @@ public final class ValFilePathEditor extends ValEditor<String> {
     @Override
     public void setEditMask(final EditMask editMask) {
         super.setEditMask(editMask);
-        getLineEdit().setReadOnly(!((EditMaskFilePath) editMask).getHandleInputAvailable() || isReadOnly());
-        afterUpdateEditMask();        
+        lastUsedPath = null;
+        final EditMaskFilePath mask = (EditMaskFilePath) editMask;
+        getLineEdit().setReadOnly(!mask.getHandleInputAvailable() || isReadOnly());
+        afterUpdateEditMask(mask);
     }
     
-    private void afterUpdateEditMask(){
-        final EditMaskFilePath mask = (EditMaskFilePath) getEditMask();
-        handleInput = mask.getHandleInputAvailable();
-        dialogTitle = mask.getFileDialogTitleAsStr() != null ? mask.getFileDialogTitleAsStr() : "File";
-        selectionMode = mask.getSelectionMode();
-
-        checkIfPathExists = mask.getCheckIfPathExists();
-        setInputValidator(new InputValidator(selectionMode, checkIfPathExists));
-        getLineEdit().setReadOnly(isReadOnly() || !handleInput);
+    private void afterUpdateEditMask(final EditMaskFilePath mask){
+        final String title = mask.getFileDialogTitle(getEnvironment().getDefManager());
+        if (title==null){
+            setDialogTitle(getEnvironment().getMessageProvider().translate("ValFilePathEditor", "Select File"));
+        }else{
+            setDialogTitle(title);
+        }
+        setInputValidator(new InputValidator(mask.getCheckIfPathExists()));
+        getLineEdit().setReadOnly(isReadOnly() || !mask.getHandleInputAvailable());
     }
 
     @Override
     public void setReadOnly(final boolean readOnly) {
-        getLineEdit().setReadOnly(readOnly || !handleInput);
+        getLineEdit().setReadOnly(readOnly || !getEditMaskFilePath().getHandleInputAvailable());
         dialogBtn.setDisabled(readOnly);
         super.setReadOnly(readOnly);
     }
-
-    public void setDialogTitle(final String newTitle) {
-        dialogTitle = newTitle;
-    }
-
-    public String getDialogTitle() {
-        return dialogTitle;
-    }
-
-    private String buildFileFilter(final EMimeType type) {
-        if (type==null){
-            return null;
+    
+    private void storeInitialPath(final String initialPath){
+        if (initialPath!=null && !initialPath.isEmpty()){
+            lastUsedPath = initialPath;
+            if (getEditMaskFilePath().getStoreLastPathInConfig()){
+                getEnvironment().getConfigStore().writeString(getActualInitialPathConfigSetting(), initialPath);
+            }
         }
-        final StringBuilder filterBuilder = new StringBuilder(type.getTitle());
-        filterBuilder.append("  (*.");
-        filterBuilder.append(type.getExt());
-        filterBuilder.append(')');
-        return filterBuilder.toString();
+        
     }
 
     public void setInitialPath(final String initialPath) {
-        if (initialPath == null || initialPath.isEmpty()) {
-            initPath = System.getProperty("user.home");            
-        } else {
-            initPath = Paths.get(initialPath).normalize().toString();
-        }
+        final EditMaskFilePath mask = getEditMaskFilePath();
+        if (!Objects.equals(initialPath, mask.getInitialPath())){
+            mask.setInitialPath(initialPath);
+            setEditMask(mask);
+        }        
     }
 
     public String getInitialPath() {
-        return initPath;
+        return getEditMaskFilePath().getInitialPath();
+    }
+    
+    private EditMaskFilePath getEditMaskFilePath(){
+        return (EditMaskFilePath)getEditMask();
     }
 
     public void showFileNameOnly(final boolean fullPath) {
         this.showFileNameOnly = fullPath;
     }
 
-    public boolean getIsFileNameOnlyShows() {
+    public boolean getIsFileNameOnlyShows() {        
         return this.showFileNameOnly;
     }
 
     public void setCheckIfPathExists(final boolean check) {
-        this.checkIfPathExists = check;
+        final EditMaskFilePath mask = getEditMaskFilePath();
+        if (mask.getCheckIfPathExists()!=check){
+            mask.setCheckIfPathExists(check);
+            setEditMask(mask);
+        }
     }
 
     public boolean getCheckIfPathExists() {
-        return checkIfPathExists;
+        return getEditMaskFilePath().getCheckIfPathExists();
     }
 
     @SuppressWarnings("unused")
     private void onChangeValueClick() {
-        final EditMaskFilePath mask = (EditMaskFilePath) getEditMask();
-        final EMimeType mimeType;        
+        final EditMaskFilePath mask = getEditMaskFilePath();        
 
-        selectionMode = mask.getSelectionMode();
+        final EFileSelectionMode selectionMode = mask.getSelectionMode();
+        final boolean checkIfPathExists = mask.getCheckIfPathExists();
         final String fileName;
+        final EnumSet<EMimeType> mimeTypes;
+        String initialPath = getActualInitialPath();
+        if (initialPath==null || initialPath.isEmpty()){
+            initialPath = System.getProperty("user.home");            
+        } else {
+            initialPath = Paths.get(initialPath).normalize().toString();
+        }
+        
         if (selectionMode == EFileSelectionMode.SELECT_DIRECTORY) {
-            mimeType = null;
-            fileName = QFileDialog.getExistingDirectory(this, getDialogTitle(), getInitialPath(), QFileDialog.Option.ShowDirsOnly);
-        } else if (checkIfPathExists){
-            mimeType = mask.getMimeType();
-            final QFileDialog.Filter filter = mimeType==null ? null : new QFileDialog.Filter(buildFileFilter(mimeType));
-            fileName = QFileDialog.getOpenFileName(this, getDialogTitle(), getInitialPath(), filter);
+            mimeTypes = null;
+            fileName = QFileDialog.getExistingDirectory(this, getDialogTitle(), initialPath, QFileDialog.Option.ShowDirsOnly);
+        } else if (mask.getDialogMode()==EFileDialogOpenMode.LOAD){
+            mimeTypes = mask.getMimeTypes();
+            final QFileDialog.Filter filter = 
+                mimeTypes==null ? null : new QFileDialog.Filter(WidgetUtils.getQtFileDialogFilter(mimeTypes, getEnvironment().getMessageProvider()));
+            fileName = QFileDialog.getOpenFileName(this, getDialogTitle(), initialPath, filter);
         } else{
-            mimeType = mask.getMimeType();
-            final QFileDialog.Filter filter = mimeType==null ? null : new QFileDialog.Filter(buildFileFilter(mimeType));
-            fileName = QFileDialog.getSaveFileName(this, getDialogTitle(), getInitialPath(), filter);
+            mimeTypes = mask.getMimeTypes();
+            final QFileDialog.Filter filter = 
+                mimeTypes==null ? null : new QFileDialog.Filter(WidgetUtils.getQtFileDialogFilter(mimeTypes, getEnvironment().getMessageProvider()));
+            fileName = QFileDialog.getSaveFileName(this, getDialogTitle(), initialPath, filter);
         }
         if (fileName != null && !fileName.isEmpty()) {
             final File file = new File(fileName);
             final boolean isFileExists = file.exists();
-            if (!checkIfPathExists || isFileExists) {                
+            if (!checkIfPathExists || isFileExists) {
                 if (file.isDirectory()) {
-                    setInitialPath(file.getAbsolutePath());
+                    storeInitialPath(file.getAbsolutePath());
                 } else {
-                    setInitialPath(file.getParent());
+                    storeInitialPath(file.getParent());
                 }
-                if (isFileExists || mimeType==null || fileName.endsWith("."+mimeType.getExt())){
+                final EMimeType mimeType = mimeTypes==null || mimeTypes.isEmpty() ? null : mimeTypes.iterator().next();                
+                if (isFileExists || mimeType==null || mimeType==EMimeType.ALL_FILES || mimeType==EMimeType.ALL_SUPPORTED || fileName.endsWith("."+mimeType.getExt())){
                     setValue(file.getAbsolutePath());
                 }else{
                     setValue(file.getAbsolutePath()+"."+mimeType.getExt());

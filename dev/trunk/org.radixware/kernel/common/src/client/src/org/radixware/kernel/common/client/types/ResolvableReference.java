@@ -23,43 +23,40 @@ public final class ResolvableReference extends Reference{
     private static final long serialVersionUID = 1099334629308466759L;
     
     private final Id editorPresentationId;
-    private final Id classId;    
     
     public ResolvableReference(final EntityModel entityModel){
         super(entityModel);
         editorPresentationId = entityModel.getEditorPresentationDef().getId();
-        classId = entityModel.getEditorPresentationDef().getClassPresentation().getId();
     }
     
     public ResolvableReference(final ResolvableReference reference){        
         super(reference);
         editorPresentationId = reference.editorPresentationId;
-        classId = reference.classId;
     }    
 
     public ResolvableReference(final Pid pid, final Id classId, final Id editorPresentationId) {
-        super(pid);
-        this.editorPresentationId = editorPresentationId;
-        this.classId = classId;
+        super(pid, null, null, null, classId);
+        this.editorPresentationId = editorPresentationId;        
     }
             
     public Id getEditorPresentationId(){
         return editorPresentationId;
-    }
-    
-    public Id getClassPresentationId(){
-        return classId;
-    }
+    }    
     
     public EntityModel resolve(final IClientEnvironment environment) throws ServiceClientException, InterruptedException{
-        return EntityModel.openContextlessModel(environment, getPid(), classId, editorPresentationId);
+        return EntityModel.openContextlessModel(environment, getPid(), getClassId(), editorPresentationId);
     }
     
     @Override
     public String toValAsStr(){
         return new ArrStr(getPid().getTableId().toString(), 
                           getPid().toString(), 
-                          classId.toString(), 
+                          getClassId().toString(), 
                           editorPresentationId.toString()).toString();
+    }
+    
+    @Override
+    public Reference actualizeTitle(final IClientEnvironment environment, final Id tableId) throws InterruptedException, ServiceClientException{
+        return super.actualizeTitle(environment, tableId, editorPresentationId);
     }
 }

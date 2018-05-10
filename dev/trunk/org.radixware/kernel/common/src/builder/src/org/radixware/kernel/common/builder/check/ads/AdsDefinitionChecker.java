@@ -23,6 +23,9 @@ import org.radixware.kernel.common.defs.SearchResult;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionProblems;
 import org.radixware.kernel.common.defs.ads.IClientDefinition;
+import org.radixware.kernel.common.defs.ads.clazz.IAccessible;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumItemDef;
@@ -185,6 +188,11 @@ public abstract class AdsDefinitionChecker<T extends AdsDefinition> extends Defi
                         problemHandler.accept(RadixProblem.Factory.newError(AdsDefinitionProblems.INVALID_OVERWRITE_FLAG, definition));
                     }
                 }
+            }
+        }
+        if (definition instanceof IAccessible && definition.isDeprecated()) {
+            if (definition instanceof AdsMethodDef || definition instanceof AdsPropertyDef) {
+                CheckUtils.checkExpirationRelease(definition, ((IAccessible) definition).getAccessFlags(), problemHandler);
             }
         }
 //        checkDescription(definition, problemHandler);

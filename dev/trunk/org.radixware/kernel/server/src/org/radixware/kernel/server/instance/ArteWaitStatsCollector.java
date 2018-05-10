@@ -13,9 +13,7 @@ package org.radixware.kernel.server.instance;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
-import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.instance.arte.ArteInstance;
-import org.radixware.kernel.server.jdbc.RadixConnection;
 
 
 public class ArteWaitStatsCollector extends Thread {

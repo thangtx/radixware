@@ -19,4 +19,8 @@ public class InvalidState extends IllegalUsageError {
 	public InvalidState(final String mess) {
 		super(mess);
 	}
+    
+    public InvalidState(final String mess, final Throwable cause) {
+        super(mess, cause);
+    }
 }

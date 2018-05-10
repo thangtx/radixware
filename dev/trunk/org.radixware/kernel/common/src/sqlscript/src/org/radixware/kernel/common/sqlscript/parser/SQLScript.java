@@ -21,16 +21,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.CancellationException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.radixware.kernel.common.components.ICancellable;
+import org.radixware.kernel.common.enums.EDatabaseType;
+import org.radixware.kernel.common.repository.Layer;
+import org.radixware.kernel.common.repository.Layer.DatabaseOption;
 import org.radixware.kernel.common.sqlscript.connection.SQLConnection;
 import org.radixware.kernel.common.sqlscript.parser.SQLConstants.StatementType;
 import org.radixware.kernel.common.sqlscript.parser.SQLConstants.TokenType;
 import org.radixware.kernel.common.sqlscript.parser.spi.SQLDialogHandler;
 import org.radixware.kernel.common.sqlscript.parser.spi.SQLMonitor;
 import org.radixware.kernel.common.sqlscript.parser.spi.VariablesProvider;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 
 
 public class SQLScript extends SQLPreprocessor {
+    private static final String POSITION_MARK = "Position: ";
 
     final private String dbUrl;
     final private SQLDialogHandler dialogHandler;
@@ -42,12 +49,12 @@ public class SQLScript extends SQLPreprocessor {
     private String defaultUser;
     private int loops;
     final private SQLConnection con;
-        
+    
+    private final SQLPragmasOwner pragmasOwner = new SQLPragmasOwner();
     
     private boolean viewOnlyMode = false;
     
-    public SQLScript(SQLConnection con, String dbUrl, String script, String fileName,
-            VariablesProvider variables, SQLDialogHandler dialogHandler, SQLMonitor monitor) {
+    public SQLScript(SQLConnection con, String dbUrl, String script, String fileName, VariablesProvider variables, SQLDialogHandler dialogHandler, SQLMonitor monitor) {
         super(preformatScript(script), fileName, variables);
         this.con = con;
         this.dbUrl = dbUrl;
@@ -89,6 +96,7 @@ public class SQLScript extends SQLPreprocessor {
     
     public void execute(final ICancellable isCancelled, final SQLAdditionParserOptions  additionParserOptions) throws SQLScriptException, IOException {        
         final SQLParser parser = new SQLParser(reader, fileName, variablesProvider, false);
+        
         if (additionParserOptions!=null){
             parser.setAdditionOptions(additionParserOptions);
         }
@@ -132,15 +140,17 @@ public class SQLScript extends SQLPreprocessor {
     private boolean processBlock(final int deepLevel, SQLParser parser, BlockType blockType, SkipState skipState, ICancellable isCancelled) throws SQLScriptException, IOException {
         boolean breaked = false;
         SQLParseStatement st;
+        
         for (;;) {
             if (isCancelled!=null && isCancelled.wasCancelled()) {//cancelled while executing statement
                 throw new CancellationException();
             }
             SQLPosition oldPos = new SQLPosition(parser.getPosition());
             st = parser.getStatement(skipState == SkipState.NO);
+            
             if (st == null) {
                 if (blockType != BlockType.SCRIPT) {
-                    throw new SQLScriptException("Unexpected EOF in Ora script : Ora script statement is not complete", parser.getPosition());
+                    throw new SQLScriptException("Unexpected EOF in SQL script : script statement is not complete", parser.getPosition());
                 }
                 return true;
             }
@@ -151,11 +161,9 @@ public class SQLScript extends SQLPreprocessor {
             if (isCancelled!=null && isCancelled.wasCancelled()) {//cancelled while waiting for next step
                 throw new CancellationException();
             }
-            
             if (parser.getAdditionOptions()!=null && parser.getAdditionOptions().getAfterProcessBlock()!=null){                    
                 parser.getAdditionOptions().getAfterProcessBlock().afterProcess(st, deepLevel, parser);
             }
-            
             if (st.getType() == StatementType.ST_SCRIPT) {
                 SQLScriptStatement stat = (SQLScriptStatement) st;
                 if (stat.getTokens().isEmpty()) {
@@ -172,7 +180,7 @@ public class SQLScript extends SQLPreprocessor {
                                     break;
                                 } else {
                                     if (stat.hasMoreTokens()) {
-                                        throw new SQLScriptException("Invalid token in Ora script statement", stat.nextToken().getPosition());
+                                        throw new SQLScriptException("Invalid token in SQL script statement", stat.nextToken().getPosition());
                                     }
                                     SQLPosition block_start = parser.getPosition().fork();
                                     if (!processBlock(deepLevel + 1, parser, BlockType.WHILE, SkipState.NO, isCancelled)) {
@@ -246,7 +254,7 @@ public class SQLScript extends SQLPreprocessor {
                             stat.setIndex(stat.getIndex() - 1);
                             getRightValue(stat, false);
                             if (stat.hasMoreTokens()) {
-                                throw new SQLScriptException("Invalid token in Ora script statement", stat.nextToken().getPosition());
+                                throw new SQLScriptException("Invalid token in SQL script statement", stat.nextToken().getPosition());
                             }
                         }
                     }
@@ -270,6 +278,11 @@ public class SQLScript extends SQLPreprocessor {
                     case ST_DEFINE: {
                         SQLParseDefinetStatement stat = (SQLParseDefinetStatement) st;
                         variablesProvider.putVariable(stat.getVar(), new SQLScriptValue(stat.getValue()));
+                        break;
+                    }
+                    case ST_PRAGMA: {
+                        final SQLParsePragmaStatement stat = (SQLParsePragmaStatement) st;
+                        pragmasOwner.processStatement(stat);
                         break;
                     }
                     case ST_CONNECT: {
@@ -327,9 +340,13 @@ public class SQLScript extends SQLPreprocessor {
                                     monitor.setCurrentLine(stat.getPosition().getLine());
                                 }
                                 if (!isViewOnlyMode()){
-                                    con.execute(stat.getCommand());
+                                    final String command = stat != null ? ExcludeCommentsIfNeeded(stat.getCommand()) : "";
+                                    con.execute(command);
                                 }
-                            } catch (SQLException ex) {
+                            } catch (SQLException ex) {                                
+                                if (this.pragmasOwner.canIgnore(ex.getMessage())) {
+                                    continue;
+                                }
                                 parser.setPosition(oldPos.fork());
                                 stat = (SQLParseCommandStatement) parser.getStatement(skipState == SkipState.NO);
                                 if (stat == null) {//RADIX-6267
@@ -337,8 +354,16 @@ public class SQLScript extends SQLPreprocessor {
                                         stat = (SQLParseCommandStatement) st;
                                     }
                                 }
-
-                                String msg = "Error of the command executing : \"" + (stat != null && stat.getCommand() != null ? stat.getCommand() : "") + "\" : " + ex.toString();
+                                String command = stat != null ? ExcludeCommentsIfNeeded(stat.getCommand()) : "";
+                                final int pos = ex.getMessage().indexOf(POSITION_MARK);
+                                
+                                if (pos >= 0) {
+                                    int endpos = ex.getMessage().indexOf(' ',POSITION_MARK.length()+1);
+                                    int inside = Integer.valueOf(endpos < 0 ? ex.getMessage().substring(pos+POSITION_MARK.length()) : ex.getMessage().substring(pos+POSITION_MARK.length(),endpos))-1;
+                                    command = command.substring(0,inside)+"!!!!!"+command.substring(inside);
+                                }
+                                final String msg = "Error of the command executing : \"" + command + "\" : " + ex.toString();
+                                
                                 if (stat != null && (stat.isIgnoreSQLErrors() || isErrorInIgnoreList(ex.getErrorCode()))) {
                                     try {
                                         if (!isViewOnlyMode()){
@@ -356,13 +381,14 @@ public class SQLScript extends SQLPreprocessor {
                                         monitor.printErrors(Arrays.asList(new String[]{"IGNORED: " + ex.getMessage()}));
                                     }
                                 } else {
-                                    throw new SQLScriptException(msg, st.getPosition());
+                                    throw new SQLScriptException(msg + "(" + command + ")", st.getPosition());
                                 }
                             } catch (Exception ex) {
+                                final String fullStack = "\nFull stack:\n" + ExceptionTextFormatter.throwableToString(ex) + "\n";//RADIXMANAGER-476
                                 if (stat == null) {
-                                    throw new SQLScriptException("Error of the command executing : \"" + ex.toString(), st.getPosition());
+                                    throw new SQLScriptException("Error of the command executing : \"" + ex.toString() + fullStack, st.getPosition());
                                 } else {
-                                    throw new SQLScriptException("Error of the command executing : \"" + stat.getCommand() + "\" : " + ex.toString() + " : " + stat.getPosition().toStringLC(),
+                                    throw new SQLScriptException("Error of the command executing : \"" + stat.getCommand() + "\" : " + ex.toString() + " : " + stat.getPosition().toStringLC() + fullStack,
                                             st.getPosition());
                                 }
                             } finally {
@@ -384,7 +410,9 @@ public class SQLScript extends SQLPreprocessor {
                                     if (!isViewOnlyMode()){
                                         con.showErrors(stat.getNewObjectType().toUpperCase(), stat.getNewObjectName().toUpperCase(), newErrors, parser.getNewObjectLine(stat.getNewObjectName()), errorPosition);
                                     }
-                                    monitor.printErrors(newErrors);
+                                    if (newErrors.size() > 0) {
+                                        monitor.printErrors(newErrors);
+                                    }
                                 } catch (Exception ex) {
                                     throw new SQLScriptException("Error of the errors retrieving : " + ex.toString(), st.getPosition());
                                 }
@@ -418,10 +446,10 @@ public class SQLScript extends SQLPreprocessor {
                         break;
                     }
                     case ST_INCLUDE: {
-                        throw new SQLScriptException("Including of another Ora files is not supported now", st.getPosition());
+                        throw new SQLScriptException("Including of another SQL files is not supported now", st.getPosition());
                     }
                     default: {
-                        throw new SQLScriptException("Invalid Ora statement");
+                        throw new SQLScriptException("Invalid SQL statement");
                     }
                 }
             }
@@ -438,5 +466,38 @@ public class SQLScript extends SQLPreprocessor {
             }
         }
         return false;
+    }
+
+    String ExcludeCommentsIfNeeded(final String string) {
+        try{final SQLScriptValue dbType = variablesProvider.getVariable(DatabaseOption.TARGET_DB_TYPE);
+            
+            if (dbType == null) {
+                return string;
+            }
+            else {
+                try{switch (EDatabaseType.valueOf(dbType.getString().trim())) {
+                        case ORACLE :
+                        case ENTERPRISEDB : 
+                            return string;
+                        case POSTGRESQL :
+                            final StringBuilder sb = new StringBuilder();
+                            int from = 0, start, end;
+
+                            while ((start = string.indexOf("/*",from)) >= 0) {
+                                end = string.indexOf("*/",start);
+                                sb.append(string.substring(from,start));
+                                from = end + 2;
+                            }
+                            sb.append(string.substring(from).trim());
+                            return sb.toString();
+                        default : throw new UnsupportedOperationException("Database type ["+dbType+"] is not supported yet");
+                    }
+                } catch (IllegalArgumentException exc) {
+                    return string;
+                }
+            }
+        } catch (SQLScriptException ex) {
+            return string;
+        }
     }
 }

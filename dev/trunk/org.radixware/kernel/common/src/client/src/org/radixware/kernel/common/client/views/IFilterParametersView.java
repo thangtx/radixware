@@ -13,4 +13,9 @@ package org.radixware.kernel.common.client.views;
 
 
 public interface IFilterParametersView extends IView {
+    void collapse();
+    void expand();
+    boolean isCollapsed();
+    boolean isCollapsable();
+    void setCollapsable(final boolean collapsable);
 }

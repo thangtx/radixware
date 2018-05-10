@@ -67,6 +67,9 @@ public final class ClassHierarchyIterator extends HierarchyIterator<AdsClassDef>
             if (this.next == null && this.current != null) {
                 availableOverwrites.clear();
                 for (AdsClassDef clazz : this.current) {
+                    if (clazz == null) {
+                        continue;
+                    }
                     clazz.getHierarchy().findOverwritten().iterate(new SearchResult.Acceptor<AdsClassDef>() {
 
                         @Override

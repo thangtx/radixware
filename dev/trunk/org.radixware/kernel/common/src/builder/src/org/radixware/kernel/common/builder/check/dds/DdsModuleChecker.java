@@ -70,13 +70,18 @@ public class DdsModuleChecker<T extends DdsModule> extends ModuleChecker<T> {
         DdsTableDef u2r = null;
         DdsTableDef ug2r = null;
         Layer layer = module.getSegment().getLayer();
-
+        if (layer.isLocalizing()) {
+            return;
+        }
 
 //        while (true) {
         Layer.HierarchyWalker.walk(layer, new Layer.HierarchyWalker.Acceptor<Object>() {
 
             @Override
             public void accept(HierarchyWalker.Controller<Object> controller, Layer layer) {
+                if (layer.isLocalizing()){
+                    return;
+                }
                 Modules<? extends Module> modules = layer.getDds().getModules();
                 for (Module m : modules) {
                     DdsModule ddsModule = (DdsModule) m;

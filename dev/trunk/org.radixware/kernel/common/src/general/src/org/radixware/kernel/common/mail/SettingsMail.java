@@ -10,23 +10,23 @@
  */
 package org.radixware.kernel.common.mail;
 
-import org.radixware.kernel.common.mail.enums.EAuthentication;
-import org.radixware.kernel.common.mail.enums.ESecureConnection;
+import org.radixware.kernel.common.mail.enums.EMailAuthentication;
+import org.radixware.kernel.common.mail.enums.EMailSecureConnection;
 
 public abstract class SettingsMail {
 
     protected String host;
     protected int port;
-    protected ESecureConnection secureConnection;
-    protected EAuthentication authentication;
+    protected EMailSecureConnection secureConnection;
+    protected EMailAuthentication authentication;
     protected String user;
     protected boolean rememberPassword;
     protected boolean cryptPassword;
     protected String password;
 
     protected SettingsMail() {
-        secureConnection = ESecureConnection.NONE;
-        authentication = EAuthentication.NONE;
+        secureConnection = EMailSecureConnection.NONE;
+        authentication = EMailAuthentication.NONE;
         rememberPassword = false;
     }
 
@@ -46,15 +46,15 @@ public abstract class SettingsMail {
         this.port = port;
     }
 
-    public ESecureConnection getSecureconnection() {
+    public EMailSecureConnection getSecureconnection() {
         return secureConnection;
     }
 
-    public void setSecureconnection(ESecureConnection secureConnection) {
+    public void setSecureconnection(EMailSecureConnection secureConnection) {
         this.secureConnection = secureConnection;
     }
     
-    public EAuthentication getAuthentiication() {
+    public EMailAuthentication getAuthentiication() {
         return authentication;
     }
 

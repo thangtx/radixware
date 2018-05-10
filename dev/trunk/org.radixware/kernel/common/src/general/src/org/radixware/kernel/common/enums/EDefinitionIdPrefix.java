@@ -167,6 +167,7 @@ public enum EDefinitionIdPrefix implements IKernelStrEnum, Serializable {
     CUSTOM_WIDGET("wdc"),
     SIGNAL("sig"),
     XML_SCHEME("xsd"),
+    EDITOR_PAGE_PROP_GROUP("ppg"),
     /*
      * Workflow
      */
@@ -186,7 +187,15 @@ public enum EDefinitionIdPrefix implements IKernelStrEnum, Serializable {
     REPORT("rpt"),
     REPORT_LINK("rpl"),
     REPORTS_GROUP("rpg"),
-    USER_DEFINED_REPORT("rpu");
+    USER_DEFINED_REPORT("rpu"),
+    REPORT_COLUMN("rpc"),
+    REPORT_CELL("rcl"),
+    /*
+     * Technical Documentation
+     */
+    TECHNICAL_DOCUMENTATION_MAP("map"),
+    TECHNICAL_DOCUMENTATION_TOPIC("top");
+    
     private static final long serialVersionUID = 1L;
     private String val;
     private EDefinitionIdPrefix[] envLinks = null;

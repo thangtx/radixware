@@ -4,8 +4,8 @@
  */
 
 var radixdoc = {
-    initCollapsible: function() {
-        var expand = function(object) {
+    initCollapsible: function () {
+        var expand = function (object) {
             var content = $(object).parent().parent().parent().children('.content');
             if (content.css('display') === 'block') {
                 content.css('display', 'none');
@@ -16,39 +16,50 @@ var radixdoc = {
             }
         };
 
-        $(document).ready(function() {
-            $('div.collapsible div.title div.action a').click(function() {
+        $(document).ready(function () {
+            $('div.collapsible div.title div.action a').click(function () {
                 expand(this);
             });
         });
     },
-    createIndex: function() {
+    createIndex: function () {
 
-        var loadUnit = function(unit, path) {
+        var loadUnit = function (unit, path) {
 
             var unitDiv = $('<div class="layerUnit"/>');
             var unitUl = $('<ul/>');
             unitDiv.append($('<h2>All definitions</h2>'));
-            unitDiv.append(unitUl);
             $('.definitions').empty();
             $('.definitions').append(unitDiv);
 
+            appendUnitChildren(unit, path, unitDiv);
+        };
+
+        var appendUnitChildren = function (unit, path, parentElement) {
+            if (unit.children != null) {
+                var ul = $('<ul/>');
+                parentElement.append(ul);
+            }
+
             for (var d in unit.children) {
                 var definition = unit.children[d];
-                var li = $('<li>' + '<img src="' + path + '/resources/' + definition.icon + '"/>' + definition.title + '</li>');
-                var ref = path + '/' + definition.ref;
-                li.bind('click', function(ref) {
-                    return function() {
-                        $('.definitions li.selected').attr('class', null);
-                        $(this).attr('class', 'selected');
-                        openPage(ref, true);
-                    };
-                }(ref));
-                unitUl.append(li);
+                var li = definition.icon == "" ? $('<li><div class="definitionTypeItem">' + definition.title + '</div></li>') : $('<li class="definitionItem">' + '<img src="' + path + '/resources/' + definition.icon + '"/>' + definition.title + '</li>');
+                if (definition.ref != null) {
+                    var ref = path + '/' + definition.ref;
+                    li.bind('click', function (ref) {
+                        return function () {
+                            $('.definitions li.selected').attr('class', null);
+                            $(this).attr('class', 'selected');
+                            openPage(ref, true);
+                        };
+                    }(ref));
+                }
+                ul.append(li);
+                appendUnitChildren(definition, path, li);
             }
         };
 
-        var openPage = function(ref, history) {
+        var openPage = function (ref, history) {
 
             var frame = document.getElementById("documentationFrame");
             frame.contentWindow.location.replace(ref + ".html");
@@ -58,7 +69,7 @@ var radixdoc = {
             }
         };
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             for (var l in units) {
                 var layer = units[l];
                 var layerDiv = $('<div class="layerUnit"/>');
@@ -72,8 +83,8 @@ var radixdoc = {
                     var path = layer.subPath + '/' + unit.subPath;
                     var li = $('<li>' + '<img src="' + path + '/resources/' + unit.icon + '"/>' + unit.title + '</li>');
 
-                    li.bind('click', function(unit, path) {
-                        return function() {
+                    li.bind('click', function (unit, path) {
+                        return function () {
                             $('.units li.selected').attr('class', null);
                             $(this).attr('class', 'selected');
                             loadUnit(unit, path);
@@ -91,7 +102,7 @@ var radixdoc = {
                 openPage(hash.substring(1, hash.length));
             }
 
-            window.onpopstate = function(event) {
+            window.onpopstate = function (event) {
                 var hash = window.location.hash;
                 if (hash) {
                     openPage(hash.substring(1, hash.length));
@@ -100,8 +111,3 @@ var radixdoc = {
         });
     }
 };
-
-
-
-
-

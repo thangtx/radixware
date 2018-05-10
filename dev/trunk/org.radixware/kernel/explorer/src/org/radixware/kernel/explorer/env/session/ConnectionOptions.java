@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.explorer.env.session;
 
 import com.trolltech.qt.core.Qt;
@@ -26,10 +25,12 @@ import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.LocaleManager;
 import org.radixware.kernel.common.client.exceptions.FileException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
-import org.radixware.kernel.common.client.meta.mask.EditMaskList;
+import org.radixware.kernel.common.client.meta.RadEnumPresentationDef;
+
 import org.radixware.kernel.common.client.meta.mask.EditMaskStr;
 import org.radixware.kernel.common.client.types.ExplorerRoot;
 import org.radixware.kernel.common.enums.*;
+import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.types.Id;
@@ -37,7 +38,6 @@ import org.radixware.kernel.common.utils.SystemTools;
 import org.radixware.kernel.common.utils.ValueFormatter;
 import org.radixware.kernel.explorer.dialogs.*;
 import org.radixware.kernel.explorer.dialogs.certificates.CertificateManager;
-import org.radixware.kernel.explorer.editors.valeditors.ValListEditor;
 import org.radixware.kernel.explorer.editors.valeditors.ValStrEditor;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
@@ -56,9 +56,9 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
     public ConnectionOptions(final IClientEnvironment environment, final String connectionName) {
         super(environment, connectionName);
     }
-    
+
     private ConnectionOptions(final IClientEnvironment environment, final org.radixware.kernel.common.client.eas.connections.ConnectionOptions source, final String connectionName, final boolean isReadOnly) {
-        super(environment, source, connectionName,isReadOnly);
+        super(environment, source, connectionName, isReadOnly);
     }
 
     public ConnectionOptions(final IClientEnvironment environment, final org.radixware.kernel.common.client.eas.connections.ConnectionOptions source, final String connectionName) {
@@ -87,57 +87,69 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
         result.id = id;
         return result;
     }
-    
+
     private ConnectionOptions copy() {
         final ConnectionOptions result = new ConnectionOptions(getEnvironment(), this, null, false);
         result.id = id;
         return result;
-    }    
+    }
 
     /**
      * диалог редактирования параметров подключения
      *
      */
     private static class ConnectionEditorDialog extends ExplorerDialog {
-        private enum AuthType { 
+        
+        private final Id ISO_LANGUAGE_CONST_ID = Id.Factory.loadFrom("acs2G44GBNBE5D7RO2QHQSVRZNLG4");
+
+        private enum AuthType {
+
             PASSWORD(0), CERTIFICATE(1), KERBEROS(2);
-            
+
             public final int index;
+
             AuthType(int index) {
                 this.index = index;
             }
         };
-        
+
         private static final int FlagsRole = Qt.ItemDataRole.UserRole - 1;
-        
+
         private final Ui_ConnectionEditor ui = new Ui_ConnectionEditor();
         private final ValStrEditor commentData;
         private final ValStrEditor addressData;
-        private final ValListEditor countryData;
+        private final ValStrEditor countryData;
         private final LazyComboBox<Id> explorerRootsData;
         private final QToolButton tbEditAddresses = new QToolButton();
-        private final ConnectionOptions options;        
+        private final QToolButton tbEditCountry = new QToolButton();
+        private final ConnectionOptions options;
         private final SslOptions savedSslOptions;
         private final List<String> connectionNames;
+        private final List<EIsoCountry> countriesList;
+        private CountrySelectDialog countrySelectDialog;
+        private String currentCountryIso2Code;
 
         public ConnectionEditorDialog(final IClientEnvironment environment, final ConnectionOptions connectionOptions, final List<String> existingConnections) {
             super(environment, Application.getMainWindow(), null);
-            
+
             final EditMaskStr editMask = new EditMaskStr();
             editMask.setNoValueStr("");
             commentData = new ValStrEditor(environment, this, editMask, true, false);
             commentData.addMemo();
             addressData = new ValStrEditor(environment, this, editMask, true, false);
-            countryData = new ValListEditor(environment, this, Collections.<EditMaskList.Item>emptyList());
-            countryData.setMandatory(false);
+            EditMaskStr countryDataEditMask = new EditMaskStr();
+            String noValString = getEnvironment().getMessageProvider().translate("ConnectionOptions", "<default>");
+            countryDataEditMask.setNoValueStr(noValString);
+            countryData = new ValStrEditor(environment, this, countryDataEditMask, false, true);
+            countriesList = new LinkedList<>();
             options = connectionOptions;
-            connectionNames = existingConnections;            
+            connectionNames = existingConnections;
             setupUi();
             explorerRootsData = initExplorerRootsEditor();
             initTabOrder();
-            savedSslOptions = options.getSslOptions()==null ? null : new SslOptions(options.getSslOptions());
+            savedSslOptions = options.getSslOptions() == null ? null : new SslOptions(options.getSslOptions());
             final ConnectionOptions optionsCopy = //To get saved user name instead of connected user name
-                new ConnectionOptions(environment, options, options.getName());
+                    new ConnectionOptions(environment, options, options.getName());
             readOptions(optionsCopy);
         }
 
@@ -151,13 +163,17 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
             tbEditAddresses.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.EDIT));
             tbEditAddresses.clicked.connect(this, "onEditAddresses()");
             addressData.addButton(tbEditAddresses);
-                        
+
+            tbEditCountry.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.EDIT));
+            tbEditCountry.clicked.connect(this, "onEditCountry()");
+            countryData.addButton(tbEditCountry);
+
             ui.optionsLayout.addWidget(countryData, 6, 1, 1, 1);
             ui.countryLabel.setBuddy(countryData);
-            
+
             ui.optionsLayout.addWidget(commentData, 9, 1, 1, 1);
-            ui.commentLabel.setBuddy(commentData);                        
-            
+            ui.commentLabel.setBuddy(commentData);
+
             ((QHBoxLayout) ui.manifestWidget.layout()).setSpacing(2);
             ((QVBoxLayout) layout()).insertWidget(0, ui.tabWidget);
             ((QVBoxLayout) layout()).insertWidget(0, ui.connectionNameWidget);
@@ -167,25 +183,38 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
 
             int currentLng = 0;
             final List<EIsoLanguage> supportedLanguages = getEnvironment().getSupportedLanguages();
+            RadEnumPresentationDef enumDef = null;
+            if (getEnvironment().getApplication().isReleaseRepositoryAccessible()){
+                try{
+                    enumDef = getEnvironment().getDefManager().getEnumPresentationDef(ISO_LANGUAGE_CONST_ID);
+                }catch(DefinitionError error){
+                    getEnvironment().getTracer().error(error);
+                }            
+            }
             for (EIsoLanguage lng : supportedLanguages) {
-                ui.languageData.addItem(lng.getName(), lng);
+                final RadEnumPresentationDef.Item lngPres = enumDef==null ? null : enumDef.findItemForConstant(lng);
+                if (lngPres==null){
+                    ui.languageData.addItem(lng.getName(), lng);
+                }else{
+                    ui.languageData.addItem(lngPres.getTitle(lng), lng);
+                }
                 if (lng == options.getLanguage()) {
                     ui.languageData.setCurrentIndex(currentLng);
                 }
                 currentLng++;
             }
-            
+
             ui.languageData.activatedIndex.connect(this, "onLanguageChanged()");
-            onLanguageChanged();            
-                                    
+            onLanguageChanged();
+
             ui.pbCertificateManager.setIcon(ExplorerIcon.getQIcon(ClientIcon.Connection.CERTIFICATE_MANAGER));
             onKeyStoreTypeChanged();
 
             ui.rbFileKeyStore.toggled.connect(this, "onKeyStoreTypeChanged()");
             ui.rbPKCS11KeyStore.toggled.connect(this, "onKeyStoreTypeChanged()");
             ui.pbCertificateManager.clicked.connect(this, "onCertificatesClick()");
-            ui.pbPkcs11Config.clicked.connect(this, "onPkcs11ConfigClick()");           
-            
+            ui.pbPkcs11Config.clicked.connect(this, "onPkcs11ConfigClick()");
+
             final MessageProvider msgProvider = getEnvironment().getMessageProvider();
             ui.cmbAuthType.addItem(msgProvider.translate("ConnectionEditor", "Password"), AuthType.PASSWORD);
             ui.cmbAuthType.addItem(msgProvider.translate("ConnectionEditor", "Certificate"), AuthType.CERTIFICATE);
@@ -193,37 +222,37 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
             ui.cmbAuthType.currentIndexChanged.connect(this, "onAuthTypeChanged(Integer)");
             ui.sslGroupBox.toggled.connect(this, "setCertAuthEnabled(boolean)");
             setCertAuthEnabled(ui.sslGroupBox.isChecked());
-            
+
             dialogLayout().setSizeConstraint(SizeConstraint.SetFixedSize);
             ui.connectionNameData.setFocus();
         }
-        
-        private LazyComboBox<Id> initExplorerRootsEditor(){
+
+        private LazyComboBox<Id> initExplorerRootsEditor() {
             final LazyComboBox<Id> lazyComboBox;
-            if (RadixLoader.getInstance()==null){
-                final LazyComboBox.ItemsProvider<Id> itemsProvider = new LazyComboBox.ItemsProvider<Id>(){
+            if (RadixLoader.getInstance() == null) {
+                final LazyComboBox.ItemsProvider<Id> itemsProvider = new LazyComboBox.ItemsProvider<Id>() {
 
                     @Override
                     public List<Item<Id>> getItems() {
                         return Collections.<Item<Id>>emptyList();
-                    }                    
+                    }
                 };
-                lazyComboBox = 
-                    new LazyComboBox<>(itemsProvider,null,false,getEnvironment().getDefManager(),this);
-                lazyComboBox.setEnabled(false);                
-            }else{
-                final String noExplorerRootTitle = 
-                    getEnvironment().getMessageProvider().translate("ConnectionEditor", "<Select later>");
-                final LazyComboBox.ItemsProvider<Id> itemsProvider = new LazyComboBox.ItemsProvider<Id>(){
+                lazyComboBox
+                        = new LazyComboBox<>(itemsProvider, null, false, getEnvironment().getDefManager(), this);
+                lazyComboBox.setEnabled(false);
+            } else {
+                final String noExplorerRootTitle
+                        = getEnvironment().getMessageProvider().translate("ConnectionEditor", "<Select later>");
+                final LazyComboBox.ItemsProvider<Id> itemsProvider = new LazyComboBox.ItemsProvider<Id>() {
                     @Override
                     public List<LazyComboBox.Item<Id>> getItems() {
                         final List<LazyComboBox.Item<Id>> items = new LinkedList<>();
-                        items.add(new LazyComboBox.Item<Id>(noExplorerRootTitle,(ClientIcon)null,null));
+                        items.add(new LazyComboBox.Item<Id>(noExplorerRootTitle, (ClientIcon) null, null));
                         final List<ExplorerRoot> explorerRoots = options.updateExplorerRoots();
-                        for (ExplorerRoot explorerRoot: explorerRoots){                            
-                            if (explorerRoot.getIconId()==null){
+                        for (ExplorerRoot explorerRoot : explorerRoots) {
+                            if (explorerRoot.getIconId() == null) {
                                 items.add(new LazyComboBox.Item<>(explorerRoot.getTitle(), ClientIcon.Definitions.TREE, explorerRoot.getId()));
-                            }else{
+                            } else {
                                 items.add(new LazyComboBox.Item<>(explorerRoot.getTitle(), explorerRoot.getIconId(), explorerRoot.getId()));
                             }
                         }
@@ -231,67 +260,83 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
                     }
                 };
                 final LazyComboBox.Item<Id> initialItem;
-                if (options.getExplorerRootId(null)==null){
-                    initialItem = new LazyComboBox.Item<>(noExplorerRootTitle,(ClientIcon)null,null);                        
-                }else{
-                    initialItem = 
-                        new LazyComboBox.Item<>(getEnvironment().getMessageProvider().translate("ConnectionEditor", "<Loading...>"),(ClientIcon)null,null);
+                if (options.getExplorerRootId(null) == null) {
+                    initialItem = new LazyComboBox.Item<>(noExplorerRootTitle, (ClientIcon) null, null);
+                } else {
+                    initialItem
+                            = new LazyComboBox.Item<>(getEnvironment().getMessageProvider().translate("ConnectionEditor", "<Loading...>"), (ClientIcon) null, null);
                 }
-                lazyComboBox = new LazyComboBox<>(itemsProvider,initialItem,true,getEnvironment().getDefManager(),this);
-                lazyComboBox.lineEdit().setStyleSheet("color: "+QColor.gray.name()+";");
+                lazyComboBox = new LazyComboBox<>(itemsProvider, initialItem, true, getEnvironment().getDefManager(), this);
+                lazyComboBox.lineEdit().setStyleSheet("color: " + QColor.gray.name() + ";");
                 final QFont font = new QFont(lazyComboBox.font());
                 font.setItalic(true);
                 lazyComboBox.lineEdit().setFont(font);
             }
-            
-            ui.optionsLayout.addWidget(lazyComboBox, 8, 1, 1, 1);            
+
+            ui.optionsLayout.addWidget(lazyComboBox, 8, 1, 1, 1);
             ui.explorerRootLabel.setBuddy(lazyComboBox);
             ui.explorerRootLabel.setEnabled(lazyComboBox.isEnabled());
-            final String waitingText = 
-                getEnvironment().getMessageProvider().translate("Wait Dialog", "Please Wait...");
+            final String waitingText
+                    = getEnvironment().getMessageProvider().translate("Wait Dialog", "Please Wait...");
             lazyComboBox.setWaitingText(waitingText);
-            lazyComboBox.loadingFinished.connect(this,"onExplorerRootsLoaded()");
-            lazyComboBox.currentIndexChanged.connect(this,"onExplorerRootChanged()");
+            lazyComboBox.loadingFinished.connect(this, "onExplorerRootsLoaded()");
+            lazyComboBox.currentIndexChanged.connect(this, "onExplorerRootChanged()");
             return lazyComboBox;
         }
-        
-        private void initTabOrder(){
+
+        private void initTabOrder() {
             QWidget.setTabOrder(ui.userNameData, addressData);
             QWidget.setTabOrder(addressData, ui.stationNameData);
             QWidget.setTabOrder(ui.languageData, countryData);
             QWidget.setTabOrder(countryData, ui.eventSeverityData);
             QWidget.setTabOrder(explorerRootsData, commentData);
-            QWidget.setTabOrder(commentData, ui.tabWidget);            
+            QWidget.setTabOrder(commentData, ui.sapDiscoveryEnabledCheckBox);
+            QWidget.setTabOrder(ui.sapDiscoveryEnabledCheckBox, ui.tabWidget);
         }
-        
-        private void onLanguageChanged(){
+
+        private void onLanguageChanged() {
+            countriesList.clear();
+            boolean isEmpty = true;
             final int languageIndex = ui.languageData.currentIndex();
-            final EditMaskList editMask = new EditMaskList();
             String currentCountry = null;
-            editMask.setNoValueStr(getEnvironment().getMessageProvider().translate("ConnectionEditor", "<default>"));
-            if (languageIndex>-1){
-                final EIsoLanguage language = (EIsoLanguage)ui.languageData.itemData(languageIndex);                
+            if (languageIndex > -1) {
+                final EIsoLanguage language = (EIsoLanguage) ui.languageData.itemData(languageIndex);
                 final EIsoCountry defaultCountry = LocaleManager.getDefaultCountry(language);
-                currentCountry = defaultCountry==null ? null : defaultCountry.getValue();
-                final EnumSet<EIsoCountry> countries = LocaleManager.getCountriesForLanguage(language);                                
-                for (EIsoCountry country: countries){
-                     editMask.addItem(country.getName(), country.getValue());                     
-                     if (country==options.getCountry()){
-                         currentCountry = country.getValue();
-                     }
+                currentCountry = LocaleManager.getLocalizedCountryName(defaultCountry, getEnvironment());
+                currentCountryIso2Code = defaultCountry == null ? null : defaultCountry.getAlpha2Code();
+                final EnumSet<EIsoCountry> countries = LocaleManager.getCountriesForLanguage(language);
+                if (!countries.isEmpty()) {
+                    isEmpty = false;
+                    for (EIsoCountry country : countries) {
+                        countriesList.add(country);
+                        if (country == options.getCountry()) {
+                            currentCountry = LocaleManager.getLocalizedCountryName(country, getEnvironment());
+                            currentCountryIso2Code = country.getAlpha2Code();
+                        }
+                    }
+                    if (currentCountry == null) {
+                        EIsoCountry isoCountry = countriesList.get(0);
+                        currentCountry = LocaleManager.getLocalizedCountryName(isoCountry, getEnvironment());
+                        currentCountryIso2Code = isoCountry.getAlpha2Code();
+                    }
                 }
             }
-            countryData.setEditMask(editMask);            
-            countryData.setValue(currentCountry);
+            if (!isEmpty) {
+                countryData.setValue(currentCountry);
+                tbEditCountry.show();
+            } else {
+                tbEditCountry.hide();
+                countryData.setValue(null);
+            }
         }
-        
+
         @SuppressWarnings("unused")
-        private void onExplorerRootsLoaded(){
-            if (!explorerRootsData.isPopupActive()){
+        private void onExplorerRootsLoaded() {
+            if (!explorerRootsData.isPopupActive()) {
                 final Id explorerRootId = options.getExplorerRootId(null);
-                if (explorerRootId!=null){
-                    for (int i=1, count=explorerRootsData.count(); i<count; i++){
-                        if (explorerRootId.equals(explorerRootsData.getItemValue(i))){
+                if (explorerRootId != null) {
+                    for (int i = 1, count = explorerRootsData.count(); i < count; i++) {
+                        if (explorerRootId.equals(explorerRootsData.getItemValue(i))) {
                             explorerRootsData.setCurrentIndex(i);
                             break;
                         }
@@ -299,15 +344,15 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
                 }
             }
         }
-        
+
         @SuppressWarnings("unused")
-        private void onExplorerRootChanged(){
-            if (explorerRootsData.getCurrentItemValue()==null){
-                explorerRootsData.lineEdit().setStyleSheet("color: "+QColor.gray.name()+";");
+        private void onExplorerRootChanged() {
+            if (explorerRootsData.getCurrentItemValue() == null) {
+                explorerRootsData.lineEdit().setStyleSheet("color: " + QColor.gray.name() + ";");
                 final QFont font = new QFont(explorerRootsData.font());
                 font.setItalic(true);
-                explorerRootsData.lineEdit().setFont(font);                                
-            }else{                
+                explorerRootsData.lineEdit().setFont(font);
+            } else {
                 explorerRootsData.lineEdit().setStyleSheet(null);
                 explorerRootsData.lineEdit().setFont(null);
             }
@@ -344,14 +389,30 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
             }
         }
 
+        @SuppressWarnings("unused")
+        private void onEditCountry() {
+            countrySelectDialog = new CountrySelectDialog(getEnvironment(), this, countriesList, currentCountryIso2Code, ((EIsoLanguage) ui.languageData.itemData(ui.languageData.currentIndex())).getValue());
+            countrySelectDialog.accepted.connect(this, "countrySelectDialogAccepted()");
+            countrySelectDialog.show();
+        }
+
+        @SuppressWarnings("unused")
+        private void countrySelectDialogAccepted() {
+            final EIsoCountry selectedCountry = countrySelectDialog.getCurrentValue();
+            if (selectedCountry!=null){
+                currentCountryIso2Code = selectedCountry.getAlpha2Code();
+                countryData.setValue(LocaleManager.getLocalizedCountryName(selectedCountry, getEnvironment()));
+            }
+        }
+
         private EKeyStoreType getCurrentKeyStoreType() {
-            return  ui.rbFileKeyStore.isChecked() ? EKeyStoreType.FILE : EKeyStoreType.PKCS11;
+            return ui.rbFileKeyStore.isChecked() ? EKeyStoreType.FILE : EKeyStoreType.PKCS11;
         }
 
         @SuppressWarnings("unused")
         private void onKeyStoreTypeChanged() {
             final EKeyStoreType ksType = getCurrentKeyStoreType();
-            if(ksType == EKeyStoreType.FILE) {
+            if (ksType == EKeyStoreType.FILE) {
                 ui.pbCertificateManager.setEnabled(true);
                 ui.pbPkcs11Config.setEnabled(false);
             } else {
@@ -361,53 +422,53 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
                     ui.pbPkcs11Config.setEnabled(true);
                 } catch (ClassNotFoundException ex) {
                     ui.pbPkcs11Config.setEnabled(false);
-                } 
+                }
             }
-        }        
+        }
 
         @SuppressWarnings("unused")
         private void onCertificatesClick() {
-            List<InetSocketAddress> addresses = addressData.getValue() == null ? null : parseAddresses(addressData.getValue());         
+            List<InetSocketAddress> addresses = addressData.getValue() == null ? null : parseAddresses(addressData.getValue());
             ConnectionOptions currentOptions = options.copy();
             writeOptions(addresses, currentOptions);
             final CertificateManager dialog;
-            try{
+            try {
                 dialog = CertificateManager.newCertificateManager(getEnvironment(), this, currentOptions);
-            }catch(KeystoreControllerException ex){
+            } catch (KeystoreControllerException ex) {
                 getEnvironment().processException(ex);
                 return;
-            }catch(InterruptedException ex){
+            } catch (InterruptedException ex) {
                 return;
             }
             dialog.exec();
         }
-        
+
         @SuppressWarnings("unused")
-        private void onPkcs11ConfigClick(){
+        private void onPkcs11ConfigClick() {
             final String configFilePath = options.getPkcs11ConfigFilePath();
             final SslOptions sslOptions;
-            if (options.getSslOptions()==null){
+            if (options.getSslOptions() == null) {
                 sslOptions = new SslOptions();
-            }else{
-                sslOptions = new SslOptions(options.getSslOptions());                
+            } else {
+                sslOptions = new SslOptions(options.getSslOptions());
             }
             sslOptions.setKeyStoreType(EKeyStoreType.PKCS11);
-            final Pkcs11EditorDialog dialog = 
-                new Pkcs11EditorDialog(getEnvironment(), this, configFilePath, sslOptions);
-            if (dialog.exec()==DialogCode.Accepted.value()){
+            final Pkcs11EditorDialog dialog
+                    = new Pkcs11EditorDialog(getEnvironment(), this, configFilePath, sslOptions);
+            if (dialog.exec() == DialogCode.Accepted.value()) {
                 options.setSslOptions(sslOptions);
             }
         }
-        
+
         @SuppressWarnings("unused")
         private void onReject() {
             options.setSslOptions(savedSslOptions);
-            if (savedSslOptions==null || savedSslOptions.getKeyStoreType()!=EKeyStoreType.PKCS11){
-                final Path configFilePath = 
-                    Paths.get(getEnvironment().getWorkPath(), options.getId().toString()+".pkcs11");
-                try{
+            if (savedSslOptions == null || savedSslOptions.getKeyStoreType() != EKeyStoreType.PKCS11) {
+                final Path configFilePath
+                        = Paths.get(getEnvironment().getWorkPath(), options.getId().toString() + ".pkcs11");
+                try {
                     Files.deleteIfExists(configFilePath);
-                }catch(IOException ex){                
+                } catch (IOException ex) {
                     getEnvironment().getTracer().error(new FileException(getEnvironment(), FileException.EExceptionCode.CANT_DELETE, configFilePath.toString(), ex));
                 }
             }
@@ -477,29 +538,29 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
             }
             if (ui.cmbAuthType.currentIndex() == AuthType.KERBEROS.index) {
                 final String spn = ui.leEasPrincipalName.text();
-                if (spn.isEmpty()){
+                if (spn.isEmpty()) {
                     getEnvironment().messageError(msgProvider.translate("ConnectionEditor", "EAS Principal Name Was Not Specified!"),
                             msgProvider.translate("ConnectionEditor", "Please enter EAS principal name"));
                     ui.leEasPrincipalName.setFocus();
-                    return;                    
+                    return;
                 }
                 final KerberosPrincipal krbPrinc;
-                try{
+                try {
                     krbPrinc = new KerberosPrincipal(spn, KerberosPrincipal.KRB_NT_SRV_INST);
-                }catch(IllegalArgumentException exception){
-                    final String message = msgProvider.translate("ConnectionEditor","Wrong Format of EAS Principal Name");
+                } catch (IllegalArgumentException exception) {
+                    final String message = msgProvider.translate("ConnectionEditor", "Wrong Format of EAS Principal Name");
                     final String title = msgProvider.translate("ConnectionEditor", "Wrong Format of EAS Principal Name");
-                    getEnvironment().messageError(title,message);
+                    getEnvironment().messageError(title, message);
                     ui.tabWidget.setCurrentIndex(1);
                     ui.leEasPrincipalName.setFocus();
                     return;
                 }
-                for (char letter: krbPrinc.getRealm().toCharArray()){
-                    if (Character.isLowerCase(letter)){
-                        final String message = msgProvider.translate("ConnectionEditor","Kerberos realm name is usually in uppercase.\nDo you want to continue?");
-                        if (getEnvironment().messageConfirmation(msgProvider.translate("ConnectionEditor", "Confirm to Use this Options"),message)){
+                for (char letter : krbPrinc.getRealm().toCharArray()) {
+                    if (Character.isLowerCase(letter)) {
+                        final String message = msgProvider.translate("ConnectionEditor", "Kerberos realm name is usually in uppercase.\nDo you want to continue?");
+                        if (getEnvironment().messageConfirmation(msgProvider.translate("ConnectionEditor", "Confirm to Use this Options"), message)) {
                             break;
-                        }else{
+                        } else {
                             ui.tabWidget.setCurrentIndex(1);
                             ui.leEasPrincipalName.setFocus();
                             return;
@@ -515,28 +576,29 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
             ui.connectionNameData.setText(readFrom.getName());
             ui.stationNameData.setText(readFrom.getStationName());
             addressData.setValue(readFrom.getInitialAddressesAsStr());
+            ui.sapDiscoveryEnabledCheckBox.setChecked(readFrom.isSapDiscoveryEnabled());
             ui.userNameData.setText(readFrom.getUserName());
             ui.stationNameData.setText(readFrom.getStationName());
             ui.eventSeverityData.setCurrentIndex(readFrom.getEventSeverity().getValue().intValue());
             commentData.setValue(readFrom.getComment());
             if (readFrom.getSslOptions() != null) {
                 ui.sslGroupBox.setChecked(true);
-                if (readFrom.getSslOptions().useSSLAuth()){
+                if (readFrom.getSslOptions().useSSLAuth()) {
                     ui.cmbAuthType.setCurrentIndex(AuthType.CERTIFICATE.index);
                     final EKeyStoreType keyStoreType = readFrom.getSslOptions().getKeyStoreType();
-                    ui.rbFileKeyStore.setChecked(keyStoreType==EKeyStoreType.FILE);
-                    ui.rbPKCS11KeyStore.setChecked(keyStoreType==EKeyStoreType.PKCS11);
-                }else{
+                    ui.rbFileKeyStore.setChecked(keyStoreType == EKeyStoreType.FILE);
+                    ui.rbPKCS11KeyStore.setChecked(keyStoreType == EKeyStoreType.PKCS11);
+                } else {
                     ui.rbFileKeyStore.setChecked(true);
                     ui.rbPKCS11KeyStore.setEnabled(false);
                 }
             }
-            if(readFrom.getKerberosOptions() != null) {
+            if (readFrom.getKerberosOptions() != null) {
                 ui.cmbAuthType.setCurrentIndex(AuthType.KERBEROS.index);
-                if (readFrom.getKerberosOptions().getServicePrincipalName()==null || 
-                    readFrom.getKerberosOptions().getServicePrincipalName().isEmpty()){
+                if (readFrom.getKerberosOptions().getServicePrincipalName() == null
+                        || readFrom.getKerberosOptions().getServicePrincipalName().isEmpty()) {
                     ui.leEasPrincipalName.setText(KerberosOptions.getDefaultEasPN());
-                }else{
+                } else {
                     ui.leEasPrincipalName.setText(readFrom.getKerberosOptions().getServicePrincipalName());
                 }
                 ui.leEasPrincipalName.home(false);
@@ -549,6 +611,7 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
                 writeTo.setInitialAddressesAsStr(addressData.getValue());
                 writeTo.setInitialAddresses(addresses);
             }
+            writeTo.setSapDiscoveryEnabled(ui.sapDiscoveryEnabledCheckBox.isChecked());
             writeTo.setUserName(ui.userNameData.text());
             if (!ui.stationNameData.text().isEmpty()) {
                 writeTo.setStationName(ui.stationNameData.text());
@@ -557,9 +620,9 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
 
             writeTo.setEventSeverity(EEventSeverity.getForValue(Long.valueOf(ui.eventSeverityData.currentIndex())));
             writeTo.setLanguage((EIsoLanguage) ui.languageData.itemData(ui.languageData.currentIndex()));
-            final String country = (String) countryData.getValue();
-            writeTo.setCountry(country==null ? null : EIsoCountry.getForValue(country));            
-            if (explorerRootsData.itemsLoaded()){
+
+            writeTo.setCountry(EIsoCountry.getForValue(currentCountryIso2Code));
+            if (explorerRootsData.itemsLoaded()) {
                 writeTo.setExplorerRootId(explorerRootsData.getCurrentItemValue());
             }
             writeTo.setComment(commentData.getValue());
@@ -573,18 +636,18 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
             } else {
                 writeTo.setSslOptions(null);
             }
-            
+
             final AuthType selectedType = (AuthType) ui.cmbAuthType.itemData(ui.cmbAuthType.currentIndex(), Qt.ItemDataRole.UserRole);
-            switch(selectedType) {
+            switch (selectedType) {
                 case PASSWORD:
                     writeTo.setKerberosOptions(null);
-                    if (writeTo.getSslOptions() != null){
+                    if (writeTo.getSslOptions() != null) {
                         writeTo.getSslOptions().setUseSSLAuth(false);
                     }
                     break;
                 case CERTIFICATE:
                     writeTo.setKerberosOptions(null);
-                    if (writeTo.getSslOptions() == null){
+                    if (writeTo.getSslOptions() == null) {
                         writeTo.setSslOptions(new SslOptions());
                         writeTo.getSslOptions().setKeyStoreType(EKeyStoreType.FILE);
                     }
@@ -593,9 +656,9 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
                 case KERBEROS:
                     writeTo.setKerberosOptions(new KerberosOptions());
                     writeTo.getKerberosOptions().setServicePrincipalName(ui.leEasPrincipalName.text());
-                    if(writeTo.getSslOptions() != null){
+                    if (writeTo.getSslOptions() != null) {
                         writeTo.getSslOptions().setUseSSLAuth(false);
-                    }        
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown authentication type");
@@ -606,18 +669,18 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
         public void done(int result) {
             explorerRootsData.close();
             super.done(result);
-        }          
-        
+        }
+
         @SuppressWarnings("unused")
         private void onAuthTypeChanged(final Integer index) {
             final AuthType selectedType = (AuthType) ui.cmbAuthType.itemData(index, Qt.ItemDataRole.UserRole);
-            switch(selectedType) {
+            switch (selectedType) {
                 case PASSWORD:
                     ui.krbGroupBox.setEnabled(false);
                     updateUserName(true);
                     ui.rbFileKeyStore.setChecked(true);
-                    ui.rbPKCS11KeyStore.setChecked(false);                    
-                    if (ui.sslGroupBox.isChecked()){
+                    ui.rbPKCS11KeyStore.setChecked(false);
+                    if (ui.sslGroupBox.isChecked()) {
                         ui.rbPKCS11KeyStore.setEnabled(false);
                     }
                     break;
@@ -629,14 +692,14 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
                     break;
                 case KERBEROS:
                     ui.krbGroupBox.setEnabled(true);
-                    if (ui.leEasPrincipalName.text().isEmpty()){
+                    if (ui.leEasPrincipalName.text().isEmpty()) {
                         ui.leEasPrincipalName.setText(KerberosOptions.getDefaultEasPN());
                         ui.leEasPrincipalName.home(false);
                     }
                     updateUserName(!SystemTools.isWindows);
                     ui.rbFileKeyStore.setChecked(true);
-                    ui.rbPKCS11KeyStore.setChecked(false);                    
-                    if (ui.sslGroupBox.isChecked()){
+                    ui.rbPKCS11KeyStore.setChecked(false);
+                    if (ui.sslGroupBox.isChecked()) {
                         ui.rbPKCS11KeyStore.setEnabled(false);
                     }
                     break;
@@ -644,34 +707,34 @@ public final class ConnectionOptions extends org.radixware.kernel.common.client.
                     throw new IllegalArgumentException("Unknown authentication type");
             }
         }
-        
+
         private void updateUserName(final boolean isEnabled) {
             if (isEnabled) {
                 if (!ui.userNameData.isEnabled()) {
                     ui.userNameData.setEnabled(true);
                     ui.userNameLabel.setEnabled(true);
                     ui.userNameData.setText(options.getUserName());
-                }                
+                }
             } else {
                 ui.userNameData.clear();
                 ui.userNameData.setEnabled(false);
-                ui.userNameLabel.setEnabled(false);                
+                ui.userNameLabel.setEnabled(false);
             }
-        }        
-        
+        }
+
         private void setCertAuthEnabled(final boolean isEnabled) {
-            if(!isEnabled && ui.cmbAuthType.currentIndex() == AuthType.CERTIFICATE.index) {
+            if (!isEnabled && ui.cmbAuthType.currentIndex() == AuthType.CERTIFICATE.index) {
                 ui.cmbAuthType.setCurrentIndex(AuthType.PASSWORD.index);
-            }else if (isEnabled){
-                if (ui.cmbAuthType.currentIndex() == AuthType.CERTIFICATE.index){
+            } else if (isEnabled) {
+                if (ui.cmbAuthType.currentIndex() == AuthType.CERTIFICATE.index) {
                     ui.rbPKCS11KeyStore.setEnabled(true);
-                }else{
+                } else {
                     ui.rbFileKeyStore.setChecked(true);
-                    ui.rbPKCS11KeyStore.setChecked(false);                    
+                    ui.rbPKCS11KeyStore.setChecked(false);
                     ui.rbPKCS11KeyStore.setEnabled(false);
                 }
             }
-            
+
         }
     }
 }

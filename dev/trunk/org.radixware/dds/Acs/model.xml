@@ -4,7 +4,7 @@
     <AccessPartitionFamily Id="apf1ZOQHCO35XORDCV2AANE2UAFXA" HeadId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4"/>
   </AccessPartitionFamilies>
   <Tables>
-    <Table Id="tblM7J46MP6F3PBDIJEABQAQH3XQ4" Name="AppRole" DescriptionId="mlsPXRMIKMWKRHKRCMI4MZKM7ZMJA" DbName="RDX_AC_APPROLE" AuditMask="7">
+    <Table Id="tblM7J46MP6F3PBDIJEABQAQH3XQ4" Name="AppRole" DescriptionId="mlsPXRMIKMWKRHKRCMI4MZKM7ZMJA" DbName="RDX_AC_APPROLE" AuditMask="7" UserExtMask="32">
       <Columns>
         <Column Id="col6FMTUQ76F3PBDIJEABQAQH3XQ4" Name="guid" DescriptionId="mls5OUHKZOL3FHKHDGEPNSRU7G6DY" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="GUID"/>
         <Column Id="colMFRUYXP6F3PBDIJEABQAQH3XQ4" Name="title" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="TITLE" AuditMask="7"/>
@@ -22,7 +22,7 @@
         <UniqueConstraint Id="unqM7J46MP6F3PBDIJEABQAQH3XQ4" DbName="PK_RDX_AC_APPROLE" Rely="true"/>
       </PrimaryKey>
       <Triggers>
-        <Trigger Id="trgBXBRBC5P6ZF2BDIMNZJLS5B6XA" Name="AuditUpdate" DbName="atuM7J46MP6F3PBDIJEABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colMFRUYXP6F3PBDIJEABQAQH3XQ4" Disabled="true">
+        <Trigger Id="trgBXBRBC5P6ZF2BDIMNZJLS5B6XA" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuM7J46MP6F3PBDIJEABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colMFRUYXP6F3PBDIJEABQAQH3XQ4" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -146,7 +146,7 @@
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgJOANAR2BDFAL3HE2EJV5SXRWHI" Name="AuditInsert" DbName="atiM7J46MP6F3PBDIJEABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgJOANAR2BDFAL3HE2EJV5SXRWHI" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiM7J46MP6F3PBDIJEABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -270,7 +270,7 @@
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trg4XGJV3E6RRHNRCBDCKT3U24GXU" Name="AuditDelete" DbName="atdM7J46MP6F3PBDIJEABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trg4XGJV3E6RRHNRCBDCKT3U24GXU" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdM7J46MP6F3PBDIJEABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -285,7 +285,7 @@
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -464,6 +464,15 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
+        <Trigger Id="trgB33XGH3BNJCFRCBEPBVHUMM5BM" Name="UserPropOwn" DbName="UPO_M7J46MP6F3PBDIJEABQAQH3XQ4" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblM7J46MP6F3PBDIJEABQAQH3XQ4', RDX_ENTITY.PackPIDStr(:old.GUID));
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
       </Triggers>
       <Placement PosX="38" PosY="75"/>
     </Table>
@@ -488,11 +497,17 @@ end;</xsc:Sql>
             <com:Value>90</com:Value>
           </DefaultVal>
         </Column>
-        <Column Id="col53PYQMVBCDNRDHQQABQAQH3XQ4" Name="pwdHash" ValType="21" Length="32" DbType="VARCHAR2(32 char)" NotNull="false" DbName="PWDHASH" Hidden="true">
+        <Column Id="col53PYQMVBCDNRDHQQABQAQH3XQ4" Name="pwdHash" ValType="21" Length="64" DbType="VARCHAR2(64 char)" NotNull="false" DbName="PWDHASH" Hidden="true">
           <InitialValues>
             <Value>254574647F11D2A029040C7B692D5F53</Value>
           </InitialValues>
         </Column>
+        <Column Id="colEPMFRZB2GRF2LLE2QNMNOSTTTM" Name="pwdHashAlgo" ValType="21" Length="16" DbType="VARCHAR2(16 char)" NotNull="false" DbName="PWDHASHALGO">
+          <DefaultVal Type="ValAsStr">
+            <com:Value>SHA-1</com:Value>
+          </DefaultVal>
+        </Column>
+        <Column Id="colO3BCFXYVBNH65NBW7YHFNUX7BA" Name="temporaryPwdStartTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="TEMPORARYPWDSTARTTIME"/>
         <Column Id="colDZ5HBUOKRVBUXB5LM7WNIBBFP4" Name="authTypes" ValType="221" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="AUTHTYPES"/>
         <Column Id="colYVFZTZ7ZJBAKBIB77ZUF2OYSGY" Name="pwdHashHistory" ValType="221" Length="0" DbType="CLOB" NotNull="false" DbName="PWDHASHHISTORY"/>
         <Column Id="colRC2TN7IYY3NBDGMCABQAQH3XQ4" Name="checkStation" ValType="1" Length="1" Precision="1" DbType="NUMBER(1,0)" NotNull="true" DbName="CHECKSTATION" AuditMask="3">
@@ -502,15 +517,13 @@ end;</xsc:Sql>
         </Column>
         <Column Id="colWXQAHXB5V3OBDCLVAALOMT5GDM" Name="email" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="EMAIL" AuditMask="3"/>
         <Column Id="colW3QAHXB5V3OBDCLVAALOMT5GDM" Name="mobilePhone" ValType="21" Length="20" DbType="VARCHAR2(20 char)" NotNull="false" DbName="MOBILEPHONE" AuditMask="3"/>
-        <Column Id="colNF6GYZT3FVFLLKTBIOC7F7IN3A" Name="lastLogonTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="LASTLOGONTIME">
-          <DefaultVal Type="SysDate"/>
-        </Column>
+        <Column Id="colNF6GYZT3FVFLLKTBIOC7F7IN3A" Name="lastLogonTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="LASTLOGONTIME"/>
         <Column Id="colJZIYRXEXNJFLFIZGTXRUSIM4AE" Name="invalidLogonCnt" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="INVALIDLOGONCNT">
           <DefaultVal Type="ValAsStr">
             <com:Value>0</com:Value>
           </DefaultVal>
         </Column>
-        <Column Id="colNBBMGSDE5BF5FODR4F5TE2UAD4" Name="invalidLogonTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="INVALIDLOGONTIME">
+        <Column Id="colNBBMGSDE5BF5FODR4F5TE2UAD4" Name="invalidLogonTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="INVALIDLOGONTIME">
           <InitialValues>
             <Value>2016-01-27T00:00:00.000</Value>
           </InitialValues>
@@ -555,7 +568,7 @@ end;</xsc:Sql>
         </Index>
       </Indices>
       <Triggers>
-        <Trigger Id="trgOS7Z5V4JGBE7THNQPUGN3ZFINE" Name="AuditUpdate" DbName="atuSY4KIOLTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colQ62TN7IYY3NBDGMCABQAQH3XQ4 col3FYUIAY5J3NRDJIRACQMTAIZT4 colNMVAZDYYY3NBDGMCABQAQH3XQ4 colPUPBTVQYY3NBDGMCABQAQH3XQ4 col5XNCT3QYY3NBDGMCABQAQH3XQ4 colRC2TN7IYY3NBDGMCABQAQH3XQ4 colWXQAHXB5V3OBDCLVAALOMT5GDM colW3QAHXB5V3OBDCLVAALOMT5GDM colANJQ6ZDT6FALRCPTTSR3UUR5VQ" Disabled="true">
+        <Trigger Id="trgOS7Z5V4JGBE7THNQPUGN3ZFINE" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuSY4KIOLTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colQ62TN7IYY3NBDGMCABQAQH3XQ4 col3FYUIAY5J3NRDJIRACQMTAIZT4 colNMVAZDYYY3NBDGMCABQAQH3XQ4 colPUPBTVQYY3NBDGMCABQAQH3XQ4 col5XNCT3QYY3NBDGMCABQAQH3XQ4 colRC2TN7IYY3NBDGMCABQAQH3XQ4 colWXQAHXB5V3OBDCLVAALOMT5GDM colW3QAHXB5V3OBDCLVAALOMT5GDM colANJQ6ZDT6FALRCPTTSR3UUR5VQ" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -775,7 +788,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgQEHQ5XECKVAEXFGTM64TYSBNSM" Name="AuditInsert" DbName="atiSY4KIOLTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgQEHQ5XECKVAEXFGTM64TYSBNSM" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiSY4KIOLTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -995,7 +1008,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trg2MEGOQRMLVASVDPPS3PELEARDY" Name="AuditDelete" DbName="atdSY4KIOLTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trg2MEGOQRMLVASVDPPS3PELEARDY" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdSY4KIOLTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1010,7 +1023,7 @@ end;</xsc:Sql>
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -1124,7 +1137,8 @@ end;</xsc:Sql>
             </xsc:Item>
             <xsc:Item>
               <xsc:Sql> := sysdate;
-    :new.</xsc:Sql>
+    if not UPDATING ('MUSTCHANGEPWD') then
+        :new.</xsc:Sql>
             </xsc:Item>
             <xsc:Item>
               <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colANJQ6ZDT6FALRCPTTSR3UUR5VQ" Owner="NONE">
@@ -1132,7 +1146,8 @@ end;</xsc:Sql>
               </xsc:PropSqlName>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql> := 0; 
+              <xsc:Sql> := 0;
+    end if;
 end;</xsc:Sql>
             </xsc:Item>
           </Body>
@@ -1145,10 +1160,12 @@ end;</xsc:Sql>
         <Column Id="col3FF7Q3S6CPOBDHYRABQAQH3XQ4" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqnGYUQGTO7F3OBDHZTABQAQH3XQ4">
           <InitialValues>
             <Value>0</Value>
+            <Value>1</Value>
           </InitialValues>
         </Column>
         <Column Id="colCN3XEDKAZDNBDGMDABQAQH3XQ4" Name="userName" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="USERNAME" AuditMask="7">
           <InitialValues>
+            <Value>ADMINISTRATOR</Value>
             <Value>ADMINISTRATOR</Value>
           </InitialValues>
         </Column>
@@ -1156,9 +1173,14 @@ end;</xsc:Sql>
           <DefaultVal Type="ValAsStr">
             <com:Value>1</com:Value>
           </DefaultVal>
+          <InitialValues>
+            <Value>1</Value>
+            <Value>0</Value>
+          </InitialValues>
         </Column>
         <Column Id="colFXSCOJCAZDNBDGMDABQAQH3XQ4" Name="roleId" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="ROLEID" AuditMask="7">
           <InitialValues>
+            <Value>rolSUPER_ADMIN_______________</Value>
             <Value>rolSUPER_ADMIN_______________</Value>
           </InitialValues>
         </Column>
@@ -1168,6 +1190,7 @@ end;</xsc:Sql>
           </DefaultVal>
         </Column>
         <Column Id="colD7VLPHOA3VC4XL3QOLTWZLUHJI" Name="apUserGroupKey" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="PA$$1ZOQHCO35XORDCV2AANE2UAFXA" AutoDbName="false" AuditMask="7"/>
+        <Column Id="colKME6XFPIUNEH5GKQJ3BV7URGSE" Name="apUserGroupPartGroupId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PG$$1ZOQHCO35XORDCV2AANE2UAFXA" AutoDbName="false"/>
         <Column Id="colMYZDS2RAS5BTVCUSKEF5DYCAP4" Name="isNew" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="false" DbName="ISNEW">
           <DefaultVal Type="ValAsStr">
             <com:Value>0</com:Value>
@@ -1182,6 +1205,7 @@ end;</xsc:Sql>
           </DefaultVal>
         </Column>
         <Column Id="colDLFSFTKCUZCPLFUHOOIEVJ34XY" Name="apDashConfigKey" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="PA$$4PQ4U65VK5HFVJ32XCUORBKRJM" AutoDbName="false"/>
+        <Column Id="colLJEJTFC3YFHDZCAUPC5FTWL3CI" Name="apDashConfigPartGroupId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PG$$4PQ4U65VK5HFVJ32XCUORBKRJM" AutoDbName="false"/>
       </Columns>
       <PrimaryKey Id="idxXBBU6BCAZDNBDGMDABQAQH3XQ4" Name="PrimaryKey" DbName="PK_RDX_AC_USER2ROLE" Unique="true">
         <Columns>
@@ -1218,7 +1242,7 @@ end;</xsc:Sql>
         </Index>
       </Indices>
       <Triggers>
-        <Trigger Id="trgXKE2IICFEVETVH4UR6MQMUXK5A" Name="AuditUpdate" DbName="atu42K4K2TTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colCN3XEDKAZDNBDGMDABQAQH3XQ4 colDC3DKGLHPDNRDHTWABQAQH3XQ4 colFXSCOJCAZDNBDGMDABQAQH3XQ4 col4T2IAH72O5E6RNZPX3MNT44CQE colD7VLPHOA3VC4XL3QOLTWZLUHJI" Disabled="true">
+        <Trigger Id="trgXKE2IICFEVETVH4UR6MQMUXK5A" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atu42K4K2TTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colCN3XEDKAZDNBDGMDABQAQH3XQ4 colDC3DKGLHPDNRDHTWABQAQH3XQ4 colFXSCOJCAZDNBDGMDABQAQH3XQ4 col4T2IAH72O5E6RNZPX3MNT44CQE colD7VLPHOA3VC4XL3QOLTWZLUHJI" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1390,7 +1414,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgRH5A4WNCGVA5XCXWW4WSCRRWDM" Name="AuditInsert" DbName="ati42K4K2TTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgRH5A4WNCGVA5XCXWW4WSCRRWDM" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="ati42K4K2TTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1562,7 +1586,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgNDHCHTY2A5HZPD5FTQEN2TFQLU" Name="AuditDelete" DbName="atd42K4K2TTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgNDHCHTY2A5HZPD5FTQEN2TFQLU" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atd42K4K2TTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1577,7 +1601,7 @@ end;</xsc:Sql>
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -1769,7 +1793,7 @@ end;</xsc:Sql>
         <UniqueConstraint Id="unqDYWJCJTTGLNRDHRZABQAQH3XQ4" DbName="PK_RDX_AC_USER2USERGROUP" Rely="true"/>
       </PrimaryKey>
       <Triggers>
-        <Trigger Id="trgAZWTORJWNNATRONQXQGXDBCQBM" Name="AuditInsert" DbName="atiDYWJCJTTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgAZWTORJWNNATRONQXQGXDBCQBM" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiDYWJCJTTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1873,7 +1897,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgX2LT5T6GYJE6RKWFOUI3M27NMM" Name="AuditDelete" DbName="atdDYWJCJTTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgX2LT5T6GYJE6RKWFOUI3M27NMM" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdDYWJCJTTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1888,7 +1912,7 @@ end;</xsc:Sql>
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -1990,7 +2014,7 @@ end;</xsc:Sql>
           </Body>
         </Trigger>
       </Triggers>
-      <Placement PosX="431" PosY="611"/>
+      <Placement PosX="366" PosY="634"/>
     </Table>
     <Table Id="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" Name="UserGroup" DbName="RDX_AC_USERGROUP" AuditMask="7">
       <Columns>
@@ -2006,7 +2030,7 @@ end;</xsc:Sql>
         <UniqueConstraint Id="unqQ23AYDTTGLNRDHRZABQAQH3XQ4" DbName="PK_RDX_AC_USERGROUP" Rely="true"/>
       </PrimaryKey>
       <Triggers>
-        <Trigger Id="trgSUXAXU2J4BEZZCM4Y76WUFATI4" Name="AuditUpdate" DbName="atuQ23AYDTTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colIX2QYPQMY3NBDGMCABQAQH3XQ4" Disabled="true">
+        <Trigger Id="trgSUXAXU2J4BEZZCM4Y76WUFATI4" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuQ23AYDTTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colIX2QYPQMY3NBDGMCABQAQH3XQ4" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2130,7 +2154,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgKHRPAABKARH3HCJVA6CVAQMXEI" Name="AuditInsert" DbName="atiQ23AYDTTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgKHRPAABKARH3HCJVA6CVAQMXEI" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiQ23AYDTTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2254,7 +2278,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgPYAEZ6RP5NG67L3Q5IQ3FL3VJY" Name="AuditDelete" DbName="atdQ23AYDTTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgPYAEZ6RP5NG67L3Q5IQ3FL3VJY" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdQ23AYDTTGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2269,7 +2293,7 @@ end;</xsc:Sql>
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -2371,7 +2395,7 @@ end;</xsc:Sql>
           </Body>
         </Trigger>
       </Triggers>
-      <Placement PosX="565" PosY="423"/>
+      <Placement PosX="622" PosY="462"/>
     </Table>
     <Table Id="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" Name="UserGroup2Role" DbName="RDX_AC_USERGROUP2ROLE" AuditMask="7">
       <Columns>
@@ -2384,6 +2408,7 @@ end;</xsc:Sql>
           </DefaultVal>
         </Column>
         <Column Id="colDWXM6MYALRBC3OYCWTWRGS4DIE" Name="apUserGroupKey" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="PA$$1ZOQHCO35XORDCV2AANE2UAFXA" AutoDbName="false" AuditMask="7"/>
+        <Column Id="colPKXDOCYI6FER5AUL5GCC6AXNB4" Name="apUserGroupPartGroupId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PG$$1ZOQHCO35XORDCV2AANE2UAFXA" AutoDbName="false"/>
         <Column Id="colC3327E6VZNB3RBSQSYPLWSO5KI" Name="isNew" ValType="1" Length="1" DbType="NUMBER(1,0)" NotNull="false" DbName="ISNEW">
           <DefaultVal Type="ValAsStr">
             <com:Value>0</com:Value>
@@ -2398,6 +2423,7 @@ end;</xsc:Sql>
           </DefaultVal>
         </Column>
         <Column Id="colGSIQQZWQVJCPBMVNAD6ECFBO6E" Name="apDashConfigKey" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="PA$$4PQ4U65VK5HFVJ32XCUORBKRJM" AutoDbName="false"/>
+        <Column Id="colCPNBR6TCPNGUBMULAM34ZPN3CU" Name="apDashConfigPartGroupId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PG$$4PQ4U65VK5HFVJ32XCUORBKRJM" AutoDbName="false"/>
       </Columns>
       <PrimaryKey Id="idxKTQ6FDJRY3NBDGMCABQAQH3XQ4" Name="PrimaryKey" DbName="PK_RDX_AC_USERGROUP2ROLE" Unique="true">
         <Columns>
@@ -2434,7 +2460,7 @@ end;</xsc:Sql>
         </Index>
       </Indices>
       <Triggers>
-        <Trigger Id="trgR5MOHHERSZGPZE5XK7AMZFAQWE" Name="AuditUpdate" DbName="atuFJAEQT3TGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colXDHHLFZRY3NBDGMCABQAQH3XQ4 colQNEGZPZRY3NBDGMCABQAQH3XQ4 colAULGQS3XVFDL5DE7L3MW46URPQ colDWXM6MYALRBC3OYCWTWRGS4DIE" Disabled="true">
+        <Trigger Id="trgR5MOHHERSZGPZE5XK7AMZFAQWE" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuFJAEQT3TGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colXDHHLFZRY3NBDGMCABQAQH3XQ4 colQNEGZPZRY3NBDGMCABQAQH3XQ4 colAULGQS3XVFDL5DE7L3MW46URPQ colDWXM6MYALRBC3OYCWTWRGS4DIE" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2594,7 +2620,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgCJROF6ULURHJ5IGYCLLGK7ZL5I" Name="AuditInsert" DbName="atiFJAEQT3TGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgCJROF6ULURHJ5IGYCLLGK7ZL5I" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiFJAEQT3TGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2754,7 +2780,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgHLJOEWWYJVGADOJSU56UXMZEUE" Name="AuditDelete" DbName="atdFJAEQT3TGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgHLJOEWWYJVGADOJSU56UXMZEUE" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdFJAEQT3TGLNRDHRZABQAQH3XQ4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2769,7 +2795,7 @@ end;</xsc:Sql>
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -2927,15 +2953,30 @@ end;</xsc:Sql>
           </Body>
         </Trigger>
       </Triggers>
-      <Placement PosX="725" PosY="62"/>
+      <Placement PosX="913" PosY="75"/>
+    </Table>
+    <Table Id="tblLNMBHO73GNE2LF5TXFR7QEMICM" Name="PartitionGroup" DbName="RDX_AC_PARTITIONGROUP" UserExtMask="65536">
+      <Columns>
+        <Column Id="colAAOGHMLKGBD27BI24WSAXF3OFI" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnOR2RFHC5RJBY7AJSGFN5J2PDWY"/>
+        <Column Id="colWFLWOFUZMJG4HJ6TOPSJAERLLU" Name="title" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="true" DbName="TITLE"/>
+        <Column Id="col4LTOC32FKFEO5MREJS6HD7I2MQ" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
+        <Column Id="colIDPIK7BQQREGBLDSYFORHOMRRQ" Name="partitions" ValType="27" Length="0" DbType="CLOB" NotNull="false" DbName="PARTITIONS"/>
+      </Columns>
+      <PrimaryKey Id="idxJC5HWCZVRJBC3BLI3645S33WVA" Name="PrimaryKey" DbName="PK_RDX_AC_PARTITIONGROUP" Unique="true">
+        <Columns>
+          <Column ColumnId="colAAOGHMLKGBD27BI24WSAXF3OFI" Order="Asc"/>
+        </Columns>
+        <UniqueConstraint Id="unqKFB4CTXSRRF7XOBHNWNEZOT4KM" DbName="PK_RDX_AC_PARTITIONGROUP" Rely="true"/>
+      </PrimaryKey>
+      <Placement PosX="617" PosY="198"/>
     </Table>
   </Tables>
   <ExtTables>
     <ExtTable Id="tbeGHMXEDFWZNF3RJUKNMEM62M4FM" TableId="tblVGSKITRX4FHZJAGAQ7V7VGZUJY">
-      <Placement PosX="518" PosY="128"/>
+      <Placement PosX="612" PosY="74"/>
     </ExtTable>
     <ExtTable Id="tbeLXIBDDV3LVAGJDY5DJPXJTCPAY" TableId="tblZBS5MS2BI3OBDCIOAALOMT5GDM">
-      <Placement PosX="591" PosY="757"/>
+      <Placement PosX="641" PosY="821"/>
     </ExtTable>
   </ExtTables>
   <References>
@@ -3004,13 +3045,36 @@ end;</xsc:Sql>
         <Item ChildColumnId="colDGIMFGI2VFC65ALDT35HHU32C4" ParentColumnId="colDHYHOUSBI3OBDCIOAALOMT5GDM"/>
       </Columns>
     </Reference>
+    <Reference Id="refNSX4XZZSYVAOLNVRFRA7JIEO6Q" AutoDbName="false" DbName="FK_RDX_USR2ROLE_PARTGROUP_DASH" Type="LINK" ChildTableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" ParentTableId="tblLNMBHO73GNE2LF5TXFR7QEMICM" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqKFB4CTXSRRF7XOBHNWNEZOT4KM">
+      <Columns>
+        <Item ChildColumnId="colLJEJTFC3YFHDZCAUPC5FTWL3CI" ParentColumnId="colAAOGHMLKGBD27BI24WSAXF3OFI"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refEP72BBGGHBEY3FH2S5BRH7OD34" AutoDbName="false" DbName="FK_RDX_USR2ROLE_PARTGROUP_USGR" Type="LINK" ChildTableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" ParentTableId="tblLNMBHO73GNE2LF5TXFR7QEMICM" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqKFB4CTXSRRF7XOBHNWNEZOT4KM">
+      <Columns>
+        <Item ChildColumnId="colKME6XFPIUNEH5GKQJ3BV7URGSE" ParentColumnId="colAAOGHMLKGBD27BI24WSAXF3OFI"/>
+      </Columns>
+    </Reference>
+    <Reference Id="refL45VCCIBKJCIVBMDIIMAMHO5AU" AutoDbName="false" DbName="FK_RDX_GRP2ROLE_PARTGROUP_DASH" Type="LINK" ChildTableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" ParentTableId="tblLNMBHO73GNE2LF5TXFR7QEMICM" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqKFB4CTXSRRF7XOBHNWNEZOT4KM">
+      <Columns>
+        <Item ChildColumnId="colCPNBR6TCPNGUBMULAM34ZPN3CU" ParentColumnId="colAAOGHMLKGBD27BI24WSAXF3OFI"/>
+      </Columns>
+    </Reference>
+    <Reference Id="ref2IWGTUOZ25CQLJCD5UD4VWO7Q4" AutoDbName="false" DbName="FK_RDX_GRP2ROLE_PARTGROUP_USGR" Type="LINK" ChildTableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" ParentTableId="tblLNMBHO73GNE2LF5TXFR7QEMICM" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqKFB4CTXSRRF7XOBHNWNEZOT4KM">
+      <Columns>
+        <Item ChildColumnId="colPKXDOCYI6FER5AUL5GCC6AXNB4" ParentColumnId="colAAOGHMLKGBD27BI24WSAXF3OFI"/>
+      </Columns>
+    </Reference>
   </References>
   <Sequences>
-    <Sequence Id="sqnGYUQGTO7F3OBDHZTABQAQH3XQ4" Name="User2RoleID" DbName="SQN_RDX_AC_USER2ROLEID" StartWith="1" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
-      <Placement PosX="205" PosY="-9"/>
+    <Sequence Id="sqnGYUQGTO7F3OBDHZTABQAQH3XQ4" Name="User2RoleID" DbName="SQN_RDX_AC_USER2ROLEID" StartWith="2" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="321" PosY="-7"/>
     </Sequence>
     <Sequence Id="sqnMRHLHY66F3OBDHZTABQAQH3XQ4" Name="UserGroup2RoleID" DbName="SQN_RDX_AC_USERGROUP2ROLEID" StartWith="1" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
-      <Placement PosX="25" PosY="-12"/>
+      <Placement PosX="901" PosY="-2"/>
+    </Sequence>
+    <Sequence Id="sqnOR2RFHC5RJBY7AJSGFN5J2PDWY" Name="PartitionGroupId" DbName="SQN_RDX_AC_PARTITIONGROUPID" StartWith="1" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="607" PosY="-1"/>
     </Sequence>
   </Sequences>
   <Packages>
@@ -3020,12 +3084,24 @@ end;</xsc:Sql>
           <CustomText Id="dtxXPJL2NASZTORDIFLABQAQH3XQ4" Name="const">
             <Text>
               <xsc:Item>
-                <xsc:Sql>cRight_unbounded   constant integer := 0;
-cRight_bounded     constant integer := 1;
-cRight_prohibited  constant integer := 2;</xsc:Sql>
+                <xsc:Sql>cRight_unbounded       constant integer := 0;
+cRight_boundedByPart   constant integer := 1;
+cRight_prohibited      constant integer := 2;
+cRight_boundedByGroup  constant integer := 3;
+cRight_boundedByUser   constant integer := 4;
+
+Type long_str_list IS TABLE OF VARCHAR2(32767);
+--type int_list_type  is table of integer index BY BINARY_INTEGER;
+Type int_list_type IS TABLE OF integer;</xsc:Sql>
               </xsc:Item>
             </Text>
           </CustomText>
+        </Item>
+        <Item>
+          <Prototype Id="dpr2ZKRMMBHIFERRACLCCWGQPVKKU" FunctionId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprYVBVCUL5JVFFBLOBGASM3I6RGM" FunctionId="dfnHBHTIG4G6FDAHM5BS6WEE4KFN4"/>
         </Item>
         <Item>
           <CustomText Id="dtxIQIWPX2M2LORDIF4ABQAQH3XQ4" Name="-----------------------------------------------">
@@ -3046,23 +3122,6 @@ cRight_prohibited  constant integer := 2;</xsc:Sql>
 */</xsc:Sql>
               </xsc:Item>
             </Text>
-          </CustomText>
-        </Item>
-        <Item>
-          <Prototype Id="dpr6UZTLHT2YDORDIE4ABQAQH3XQ4" FunctionId="dfn6UZTLHT2YDORDIE4ABQAQH3XQ4"/>
-        </Item>
-        <Item>
-          <Prototype Id="dpr7EZTLHT2YDORDIE4ABQAQH3XQ4" FunctionId="dfn7EZTLHT2YDORDIE4ABQAQH3XQ4"/>
-        </Item>
-        <Item>
-          <Prototype Id="dpr3MZTLHT2YDORDIE4ABQAQH3XQ4" FunctionId="dfn3MZTLHT2YDORDIE4ABQAQH3XQ4"/>
-        </Item>
-        <Item>
-          <Prototype Id="dpr34ZTLHT2YDORDIE4ABQAQH3XQ4" FunctionId="dfn34ZTLHT2YDORDIE4ABQAQH3XQ4"/>
-        </Item>
-        <Item>
-          <CustomText Id="dtxVNQNXGSN2LORDIF4ABQAQH3XQ4" Name="-----------------------------------------------">
-            <Text/>
           </CustomText>
         </Item>
         <Item>
@@ -3123,17 +3182,6 @@ cRight_prohibited  constant integer := 2;</xsc:Sql>
           <Prototype Id="dprBI2DLHT2YDORDIE4ABQAQH3XQ4" FunctionId="dfnBI2DLHT2YDORDIE4ABQAQH3XQ4"/>
         </Item>
         <Item>
-          <CustomText Id="dtxASM46QDI2LORDIF4ABQAQH3XQ4" Name="-----------------------------------------------">
-            <Text/>
-          </CustomText>
-        </Item>
-        <Item>
-          <Prototype Id="dpr2UZTLHT2YDORDIE4ABQAQH3XQ4" FunctionId="dfn2UZTLHT2YDORDIE4ABQAQH3XQ4"/>
-        </Item>
-        <Item>
-          <Prototype Id="dpr2MZTLHT2YDORDIE4ABQAQH3XQ4" FunctionId="dfn2MZTLHT2YDORDIE4ABQAQH3XQ4"/>
-        </Item>
-        <Item>
           <CustomText Id="dtxGRL4IE3L2LORDIF4ABQAQH3XQ4" Name="-----------------------------------------------">
             <Text/>
           </CustomText>
@@ -3167,10 +3215,10 @@ cRight_prohibited  constant integer := 2;</xsc:Sql>
           </CustomText>
         </Item>
         <Item>
-          <Prototype Id="dprJSGHDS3FUNBPRJJPFR3VASB2DY" FunctionId="dfn3XXTXJVTQDPBDCQRAAQYKZSZXU"/>
+          <Prototype Id="dprMARIANMCQFFYBPBARIEXJUVV44" FunctionId="dfnN236TVVDC5CGLLVKFF4GH27GUQ"/>
         </Item>
         <Item>
-          <Prototype Id="dpr6CFPBI3WOFD3PECIDS77ONULAY" FunctionId="dfnN236TVVDC5CGLLVKFF4GH27GUQ"/>
+          <Prototype Id="dprJSGHDS3FUNBPRJJPFR3VASB2DY" FunctionId="dfn3XXTXJVTQDPBDCQRAAQYKZSZXU"/>
         </Item>
         <Item>
           <CustomText Id="dtxWLXY2NLSJ5EKBHU3RKF4ZWMB5M" Name="-----------------------------------------------">
@@ -3235,21 +3283,54 @@ cRight_prohibited  constant integer := 2;</xsc:Sql>
         <Item>
           <Prototype Id="dprLUODTCCEEZCTLABEBP7HXH53LQ" FunctionId="dfnP63U5BFPCBGOPPMSIM6YMB53ZE"/>
         </Item>
+        <Item>
+          <Prototype Id="dprZCB62KXG6ZDENAT4SHHYAFFXRY" FunctionId="dfnFEX4WNPMGVCAVARCIMLGFNLMCA"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprMNB5PM5LL5DRFLZOX7PYYYTYF4" FunctionId="dfnPC6IUR27B5ADJLW6G5RCDMU5TY"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprM3JMUDZP5FCYFJJ5WF5KOAJ3SA" FunctionId="dfnGG5L3CMQZBFNVL5HF5BG67UZFU"/>
+        </Item>
       </Header>
       <Body>
         <Item>
-          <CustomText Id="dtxN2MKFRC6OJF4LC66YHLIODCUQI" Name="const">
+          <CustomText Id="dtxN2MKFRC6OJF4LC66YHLIODCUQI" Name="types">
             <Text>
               <xsc:Item>
-                <xsc:Sql>sysSuperAdminRoleId  constant varchar2(30) := 'rolSUPER_ADMIN_______________';
-error_Message constant varchar2(30) := 'Incorrect input string - ';
-
-Type TIdRecord IS RECORD (IdValue varchar(50));
+                <xsc:Sql>Type TIdRecord IS RECORD (IdValue varchar(50));
 Type TIdRecordList is table of TIdRecord index by binary_integer;
+
+type str_list_type  is table of varchar2(50) index BY BINARY_INTEGER;
+
 </xsc:Sql>
               </xsc:Item>
             </Text>
           </CustomText>
+        </Item>
+        <Item>
+          <Function Id="dfnQ7DZURQBRVDABHS5N6PZCHDTPM" Name="constSuperAdminRoleId" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    return 'rolSUPER_ADMIN_______________';
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnHBHTIG4G6FDAHM5BS6WEE4KFN4" Name="constErrorMessage" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    return 'Incorrect input string - ';
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
         </Item>
         <Item>
           <Function Id="dfnMME66KCHIZBPLM3TE6SC667A7Y" Name="packAccessPartitionValue" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="21">
@@ -3518,31 +3599,6 @@ begin
           </Function>
         </Item>
         <Item>
-          <Function Id="dfn6UZTLHT2YDORDIE4ABQAQH3XQ4" Name="userHasRoleForObjectInternal" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-begin
-  return </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn7EZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.userHasRoleForObjectInternal</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(pUser , pRole , pArea , 1, null, null);
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpHMGTC2XB6RDSPM4YQGGYVA5TY4" Name="pUser" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfpL6OK7AOKBJCEHMAFZZ2HWCUZE4" Name="pRole" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfpNTIOFRUSDRBXVCDLTEJBPOBS74" Name="pArea" DbType="TRdxAcsArea" Direction="0" ValType="50"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
           <Function Id="dfnYUE3TIB32VHNZKNYHOE4CUENOA" Name="strToArea" ResultDbType="TRdxAcsArea" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="50">
             <Body>
               <xsc:Item>
@@ -3579,7 +3635,15 @@ begin
 --
 
 if SubStr(str, pos, 1)&lt;>'(' then
-  RAISE_APPLICATION_ERROR (-20100, error_Message);
+  RAISE_APPLICATION_ERROR (-20100, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnHBHTIG4G6FDAHM5BS6WEE4KFN4">
+                  <xsc:Sql>RDX_ACS.constErrorMessage</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
 end if; 
 pos:=pos+1;
 res := </xsc:Sql>
@@ -3598,14 +3662,22 @@ res := </xsc:Sql>
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql><![CDATA[());
-<<lbl1>>while(true)
+                <xsc:Sql>());
+&lt;&lt;lbl1>>while(true)
     loop
       if SubStr(str , pos, 1)=')' then
          exit lbl1;
       end if;
-      if SubStr(str , pos, 1)<>'(' then
-         RAISE_APPLICATION_ERROR (-20100, error_Message || str);
+      if SubStr(str , pos, 1)&lt;>'(' then
+         RAISE_APPLICATION_ERROR (-20100, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnHBHTIG4G6FDAHM5BS6WEE4KFN4">
+                  <xsc:Sql>RDX_ACS.constErrorMessage</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> || str);
       end if;
       pos:=pos+1;
       if SubStr(str , pos, 1)='0' then
@@ -3614,23 +3686,55 @@ res := </xsc:Sql>
         if SubStr(str , pos, 1)='1' then
            prohibited := 1;
         else
-           RAISE_APPLICATION_ERROR (-20100, error_Message || str);
+           RAISE_APPLICATION_ERROR (-20100, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnHBHTIG4G6FDAHM5BS6WEE4KFN4">
+                  <xsc:Sql>RDX_ACS.constErrorMessage</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> || str);
         end if;
       end if;
       pos:=pos+1;
-      if SubStr(str , pos, 1)<>',' then
-         RAISE_APPLICATION_ERROR (-20100, error_Message || str);
+      if SubStr(str , pos, 1)&lt;>',' then
+         RAISE_APPLICATION_ERROR (-20100, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnHBHTIG4G6FDAHM5BS6WEE4KFN4">
+                  <xsc:Sql>RDX_ACS.constErrorMessage</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> || str);
       end if;
       pos:=pos+1;
       accessPartitionKey := SubStr(str, pos,29); 
       pos:=pos+29;
-      if SubStr(str, pos, 1)<>',' then
-         RAISE_APPLICATION_ERROR (-20100, error_Message || str);
+      if SubStr(str, pos, 1)&lt;>',' then
+         RAISE_APPLICATION_ERROR (-20100, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnHBHTIG4G6FDAHM5BS6WEE4KFN4">
+                  <xsc:Sql>RDX_ACS.constErrorMessage</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> || str);
       end if;
       pos := pos+1;
       newPos:=InStr(str, ')', pos);
       if newPos = 0 then
-         RAISE_APPLICATION_ERROR (-20100, error_Message || str);
+         RAISE_APPLICATION_ERROR (-20100, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnHBHTIG4G6FDAHM5BS6WEE4KFN4">
+                  <xsc:Sql>RDX_ACS.constErrorMessage</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql><![CDATA[ || str);
       end if;      
       if newPos = pos then
          accessPartitionValue := null;
@@ -3688,342 +3792,6 @@ end;</xsc:Sql>
             <Params>
               <Param Id="dfp4WYVLWIFDJFAFBPLURD6OESQRY" Name="str" DbType="varchar2" Direction="0" ValType="21"/>
               <Param Id="dfpEKIIB4XPQZABFBDOAPYSTFYNH4" Name="pos" DbType="integer" Direction="2" ValType="2"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfn7EZTLHT2YDORDIE4ABQAQH3XQ4" Name="userHasRoleForObjectInternal" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-    Area </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
-                  <xsc:Sql>TRdxAcsArea</xsc:Sql>
-                </xsc:DbName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>;
-    exceptingID1 integer;
-    exceptingID2 integer;
-begin 
-     exceptingID1 := nvl(exceptingID1_, -1);
-     exceptingID2 := nvl(exceptingID2_, -1);
-     
-   -- if (exceptingID1 is not null)then
-      begin       
-      --if (checkInheritGroupRights&lt;>0)then
-          begin   
-          for ind in (Select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>
-                     where
-                      --(checkOnlyOld=0 or (checkOnlyOld&lt;>0 and isNew=0)) and 
-                      isNew=0 and
-                      (checkInheritGroupRights&lt;>0 or (checkInheritGroupRights=0 and isOwn &lt;> 0)) and
-                      exceptingID1&lt;>Id and 
-                      exceptingID2&lt;>Id and 
-                      userName = pUser and  
-                      pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-             loop
-                 Area := </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnELULCECZJLOBDH2FABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS_UTILS.buildAssignedAccessAreaU2R</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(ind);
-                 if </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnZAZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.containsPointInArea2</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(Area, pArea) then
-                    return 1;
-                 end if;
-             end loop;
-          end;
-          
-         /* 
-      else
-          begin
-          for ind in (Select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>
-                     where isNew=0 and exceptingID1&lt;>Id and exceptingID2&lt;>Id and isOwn &lt;> 0 and userName = pUser and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-             loop
-                 Area := </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnELULCECZJLOBDH2FABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS_UTILS.buildAssignedAccessAreaU2R</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(ind);
-                 if </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnZAZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.containsPointInArea2</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(Area, pArea) then
-                    return 1;
-                 end if;
-             end loop;
-          end;
-      end if;
-      */
-      end;
-    /*  
-    else
-      begin  
-      if (checkInheritGroupRights&lt;>0)then
-          begin   
-          for ind in (Select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>
-                     where  userName = pUser and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-             loop
-                 Area := </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnELULCECZJLOBDH2FABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS_UTILS.buildAssignedAccessAreaU2R</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(ind);
-                 if </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnZAZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.containsPointInArea2</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(Area, pArea) then
-                    return 1;
-                 end if;
-             end loop;
-          end;
-      else
-          begin
-          for ind in (Select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>
-                     where isNew=0 and isOwn &lt;> 0 and userName = pUser and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-             loop         
-                 Area := </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnELULCECZJLOBDH2FABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS_UTILS.buildAssignedAccessAreaU2R</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(ind);
-                 if </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnZAZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.containsPointInArea2</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(Area, pArea) then
-                    return 1;
-                 end if;
-             end loop;
-          end;
-      end if;
-      end;               
-    end if;
-    */
-    return 0;
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpPOP5IQKBO5DAJM5ATEO3AQUPQU" Name="pUser" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfpMRI32E6OZ5GPVALLA7QSF752TE" Name="pRole" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfpQZBG67LFTZBPXGMZNZXHAKGZTU" Name="pArea" DbType="TRdxAcsArea" Direction="0" ValType="50"/>
-              <Param Id="dfpVSIUNIZHCJDHRI5JMHPC64WUPQ" Name="checkInheritGroupRights" DbType="integer" Direction="0" ValType="2"/>
-              <Param Id="dfp2PCWCTPE5BGAZCJNVKRHCV7U4Q" Name="exceptingID1_" DbType="integer" Direction="0" ValType="2"/>
-              <Param Id="dfpS57MNGDRGRFM7K7EBHQEDKEIUA" Name="exceptingID2_" DbType="integer" Direction="0" ValType="2"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfn3MZTLHT2YDORDIE4ABQAQH3XQ4" Name="groupHasRoleForObjectInternal" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is      
-begin          
-    return </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn34ZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.groupHasRoleForObjectInternal</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(pGroup , pRole , pArea ,null, null);
-end;           
-</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpRDGN2FQZKBFB7HF3ITTKO6P2WY" Name="pGroup" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfpYYBLX2VFUFH6JF7GOLSSX3A37U" Name="pRole" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfpJ64VHRIXABEUBGT2ITJ2K7OC3E" Name="pArea" DbType="TRdxAcsArea" Direction="0" ValType="50"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfn34ZTLHT2YDORDIE4ABQAQH3XQ4" Name="groupHasRoleForObjectInternal" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is      
-    Area </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
-                  <xsc:Sql>TRdxAcsArea</xsc:Sql>
-                </xsc:DbName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>;   
-    exceptingID1 integer;
-    exceptingID2 integer;
-begin 
-     exceptingID1 := nvl(exceptingID1_, -1);
-     exceptingID2 := nvl(exceptingID2_, -1);
-
-    --if (exceptingID1 is not null) then
-    
-      begin
-      for ind in (Select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USERGROUP2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>
-                 where 
-                    --(checkOnlyOld=0 or (checkOnlyOld&lt;>0 and isNew=0)) and 
-                    isNew=0 and
-                    exceptingID1&lt;>id and 
-                    exceptingID2&lt;>id and 
-                    groupName = pGroup and  
-                    pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-         loop
-             Area := </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2F5E2XRDK3OBDH2RABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS_UTILS.buildAssignedAccessAreaG2R</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(ind);
-             if </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnZAZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.containsPointInArea2</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(Area, pArea) then
-                return 1;
-             end if;
-         end loop;     
-      end;
-    
-    /*  
-    else
-      begin
-      for ind in (Select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USERGROUP2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>
-                   where isNew=0 and  groupName = pGroup and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
-           loop
-               Area := </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2F5E2XRDK3OBDH2RABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS_UTILS.buildAssignedAccessAreaG2R</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(ind);
-               if </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnZAZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.containsPointInArea2</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(Area, pArea) then
-                  return 1;
-               end if;
-           end loop;
-      end;
-    end if;
-    */
-    return 0;
-end;           
-</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpR7GCZ7LCO5AR7PZF5A2DJMXP5M" Name="pGroup" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfpRMVK7JGJXBHJHPMTQF5MK6IIS4" Name="pRole" DbType="varchar2" Direction="0" ValType="21"/>
-              <Param Id="dfp4VTSU5S2S5HA5NMLSENFDPPPRU" Name="pArea" DbType="TRdxAcsArea" Direction="0" ValType="50"/>
-              <Param Id="dfpARP7WMQDFNDTNAHKNKQ7HDY2L4" Name="exceptingID1_" DbType="integer" Direction="0" ValType="2"/>
-              <Param Id="dfpEWCKGGCKTZDBXM6IYUX7PJ5RRQ" Name="exceptingID2_" DbType="integer" Direction="0" ValType="2"/>
             </Params>
           </Function>
         </Item>
@@ -4086,7 +3854,7 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>
-             where isNew=0 and  userName = pUser and  pRole = roleId)
+             where isNew=0 and isOwn=0 and userName = pUser and  pRole = roleId)
      loop
        if flag then
           return 1;  
@@ -4161,6 +3929,15 @@ end;
                 <xsc:Sql>; 
     flag boolean;
     dd integer;
+    cSuperAdminRoleId constant varchar2(30) := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM">
+                  <xsc:Sql>RDX_ACS.constSuperAdminRoleId</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
 begin 
     flag := pPointList is null or pPointList.COUNT()=0;  
     for ind in (Select * from </xsc:Sql>
@@ -4172,7 +3949,7 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>
-             where isNew=0 and  userName = pUser and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
+             where isNew=0 and isOwn=0 and userName = pUser and  pRole || cSuperAdminRoleId LIKE '%' || roleId || '%')
      loop
        if flag then
           return 1;  
@@ -4278,7 +4055,15 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(sysSuperAdminRoleId, pPointList);
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM">
+                  <xsc:Sql>RDX_ACS.constSuperAdminRoleId</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, pPointList);
     end if;
     return 0;
 end;</xsc:Sql>
@@ -4337,7 +4122,15 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(sysSuperAdminRoleId, pPointList);
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM">
+                  <xsc:Sql>RDX_ACS.constSuperAdminRoleId</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, pPointList);
     end if;
     return 0;
 end;</xsc:Sql>
@@ -4398,6 +4191,15 @@ end;
               <xsc:Item>
                 <xsc:Sql>; 
     flag boolean;
+    cSuperAdminRoleId constant varchar2(30) := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM">
+                  <xsc:Sql>RDX_ACS.constSuperAdminRoleId</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
 begin 
     flag := pPointList is null or pPointList.COUNT()=0;  
     for ind in (Select * from </xsc:Sql>
@@ -4409,7 +4211,7 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>
-             where isNew=0 and userName = pUser and  pRole || sysSuperAdminRoleId LIKE '%' || roleId || '%')
+             where isNew=0  and isOwn=0 and userName = pUser and  pRole || cSuperAdminRoleId LIKE '%' || roleId || '%')
      loop
        if flag then
           return 1;  
@@ -4496,7 +4298,15 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(sysSuperAdminRoleId, pPointList);
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM">
+                  <xsc:Sql>RDX_ACS.constSuperAdminRoleId</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, pPointList);
     end if;
     return 0;
 end;</xsc:Sql>
@@ -4556,7 +4366,15 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(sysSuperAdminRoleId, pPointList);
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM">
+                  <xsc:Sql>RDX_ACS.constSuperAdminRoleId</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, pPointList);
     end if;
     return 0;
 end;</xsc:Sql>
@@ -4710,38 +4528,668 @@ end;</xsc:Sql>
           </Function>
         </Item>
         <Item>
+          <Function Id="dfnH7BX3G5MQZD2FKEHUIAUVYYPAI" Name="writeToClob" Deterministic="false" CacheResult="false" PurityLevelMask="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+ x VARCHAR2(32767);
+begin
+  x := val  || CHR(13);
+  DBMS_LOB.writeappend(clob_, length(x), x);    
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpZXSZCZSQEFBU7HAGISFO6JYW5Y" Name="clob_" DbType="clob" Direction="2" ValType="50"/>
+              <Param Id="dfpGNG3FLX565HABBX74CUVXWW5DI" Name="val" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnGTJ3P2PX2ZDSJCYTURKQUUPJNA" Name="fillCompileRightsBody" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+  x varchar2(32767);
+  n     integer;
+begin
+    n := str_list0.count();
+
+    For i in 1 .. n
+    loop
+        writeToClob(body_, prefix_ || ' if (' || index_main || '.MA$$' || str_list0(i) || ' = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_boundedByUser) then');
+        if (exists_Package(i) = 1) then    
+            writeToClob(body_, prefix_ || '    partitionsList' || to_char(i) || '.delete();');
+            writeToClob(body_, prefix_ || '    partitionsList' || to_char(i) || '.extend(1);');
+            writeToClob(body_, prefix_ || '    partitionsList' || to_char(i) || '(1):=ACS$' || str_list0(i) || '.getUserAssignment(RDX_Arte.getUserName());');
+            writeToClob(body_, prefix_ || '    mode' || to_char(i) || ':=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_boundedByPart;');
+        else    
+            writeToClob(body_, prefix_ || '    raise_application_error(-20000, ''' || 
+                               'System rights package ACS$' || str_list0(i) || 
+                               ' not found, but found </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_boundedByUser bounding mode (Table=' || 
+                               srcTableName || ', Id = '' || ' || index_main || '.Id || '').'');');
+        end if; 
+
+        writeToClob(body_, prefix_ || ' else');
+        writeToClob(body_, prefix_ || '    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnFEX4WNPMGVCAVARCIMLGFNLMCA">
+                  <xsc:Sql>RDX_ACS.fillPartitions</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(' || index_main || '.MA$$' || str_list0(i) || ', ' ||
+                                                     'mode' || to_char(i)  || ', ' || 
+                                                     '' || index_main || '.PA$$' || str_list0(i) || ', ' ||
+                                                     'partitionsList' || to_char(i) || ', ' || 
+                                                     '' || index_main || '.PG$$' || str_list0(i) || 
+                                                     ');');
+        writeToClob(body_, prefix_ || ' end if;');
+    end loop;
+    
+    For i in 1 .. n
+    loop
+        x := LPAD(' ', i);
+        writeToClob(body_, prefix_ || x || 'for i' || to_char(i) || 
+                 ' in partitionsList' || to_char(i) || '.first() .. partitionsList' || to_char(i) || '.last()');  
+        writeToClob(body_, prefix_ || x || 'loop'); 
+    end loop;     
+    
+        x := LPAD(' ', n) || '   INSERT INTO </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(userName, isOwn, RoleId, ID';
+        For i in 1 .. n
+        loop 
+            x := x || ', PA$$' || str_list0(i) || ', MA$$' || str_list0(i);
+        end loop; 
+        x:= x || ')';
+        writeToClob(body_, prefix_ || x);
+
+        x := LPAD(' ', n) || '   VALUES (' || userName_ || ', 0, ' || index_main || '.RoleId, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:SequenceDbName SequenceId="sqnGYUQGTO7F3OBDHZTABQAQH3XQ4" Postfix="NONE">
+                  <xsc:Sql>SQN_RDX_AC_USER2ROLEID</xsc:Sql>
+                </xsc:SequenceDbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.NEXTVAL';
+        For i in 1 .. n
+        loop 
+            x := x || ', partitionsList' || to_char(i) || '(i' || to_char(i) || '), mode' || to_char(i);
+        end loop;     
+        x:= x || ');';
+        writeToClob(body_, prefix_ || x);
+    
+    For i in 1 .. n
+    loop
+        x := LPAD(' ', n - i + 1);
+        writeToClob(body_, prefix_ || x || 'end loop;'); 
+    end loop;       
+    
+end;
+
+ </xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp477GNLRRPBHKTFH5BKMEL2OCSE" Name="body_" DbType="clob" Direction="2" ValType="50"/>
+              <Param Id="dfpC2V564LRFND4FBDGDVHA4V6Q4U" Name="prefix_" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp3BVZPMN7EREJNPZXKVYN2FWCBA" Name="str_list0" DbType="str_list_type" Direction="0" ValType="50"/>
+              <Param Id="dfp4PWBS7OGJZEUJHCU5C7O2RQVOM" Name="exists_Package" DbType="int_list_type" Direction="0" ValType="50"/>
+              <Param Id="dfpOWAH4SBNIZFAVIDMQ5VSWCFZZE" Name="index_main" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp2DRVJULHKRFJZPXEXXRAJJNMG4" Name="srcTableName" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfp6IEOJQZJ3BD5DNRENREDHVZXTQ" Name="userName_" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnCLI3HQFIOJCEXC2FQDTB5ZTABE" Name="existsPackage" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+ rez integer;
+begin
+ SELECT count(*) into rez FROM USER_OBJECTS WHERE OBJECT_TYPE = 'PACKAGE' and OBJECT_NAME = 'ACS$' || upper(postfix_) ;
+ return rez;  
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpIYKF3SAWFBCETJNCY27RK45BSE" Name="postfix_" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnFEX4WNPMGVCAVARCIMLGFNLMCA" Name="fillPartitions" Deterministic="false" CacheResult="false" PurityLevelMask="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    flag boolean;
+    partitionVals clob;
+    arr RDX_Array.ARR_STR;
+    partitionVal VARCHAR2(32767);
+begin
+    partitionsOut_.delete();
+    if (modeIn_ = RDX_ACS.cRight_unbounded) or (modeIn_ = RDX_ACS.cRight_prohibited) then
+         modeOut_:=modeIn_;
+         partitionsOut_.Extend(1);
+         partitionsOut_(1):=null;
+
+    elsif (modeIn_ = RDX_ACS.cRight_boundedByPart) then
+         modeOut_:=modeIn_;
+         partitionsOut_.Extend(1);
+         partitionsOut_(1):=partitionIn_;
+
+    elsif (modeIn_ = RDX_ACS.cRight_boundedByGroup) then
+         flag := partitionGroupId_ is not null;
+         if flag then
+            Select PARTITIONS into partitionVals from RDX_AC_PARTITIONGROUP where partitionGroupId_ = id;
+            flag := (partitionVals is not null) and (dbms_lob.getlength(partitionVals)&lt;>0) and (partitionVals&lt;>'[0]');
+         end if;
+         
+        if flag then        
+            modeOut_:=RDX_ACS.cRight_boundedByPart;
+            arr :=  RDX_Array.fromStr(partitionVals);
+            partitionsOut_.Extend(arr.count());
+            for i in arr.first() .. arr.last() 
+            loop
+                partitionVal:=arr(i);
+                if (partitionVal is not null) and length(partitionVal)>31 then
+                  partitionVal:= </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnJBWTT7YFOJFKTOW4W6L6IUHSAE">
+                  <xsc:Sql>RDX_Entity.unpackPidStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(substr(partitionVal, 31));
+                else
+                  partitionVal:=null;
+                end if;
+                partitionsOut_(i) := partitionVal;
+            end loop;
+        else
+            modeOut_:=RDX_ACS.cRight_prohibited;
+            partitionsOut_.Extend(1);
+            partitionsOut_(1):=null;
+        end if;
+    else
+        raise_application_error(-20000, 'Detected invalid partition mode: ' || to_char(modeIn_)); 
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpCZ22P2EBCRESBC7UOC7ZKP6XRA" Name="modeIn_" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpCA7L4KHE4BDM3MYDXSZB2L2OHQ" Name="modeOut_" DbType="integer" Direction="1" ValType="2"/>
+              <Param Id="dfpRHQBEZRRHBA4BBGJGBELE2LQNY" Name="partitionIn_" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpV7MEYLFPUJFNXJXALXRHSVUKVM" Name="partitionsOut_" DbType="long_str_list" Direction="2" ValType="50"/>
+              <Param Id="dfpH44LIJSA3ZFMVPFL57D4S7WDBE" Name="partitionGroupId_" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnRFL6WVKR6BE33HZIZQ7NI4FCFY" Name="fillCompileDefineValues" Deterministic="true" CacheResult="false" PurityLevelMask="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+For i in 1 .. n
+    loop
+        writeToClob(body_, '  partitionsList' || to_char(i) || ' </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.long_str_list;');
+        writeToClob(body_, '  mode' || to_char(i) || ' integer;');
+    end loop;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpHFBS3RDXYZB6JOBLP4WEWW3R34" Name="body_" DbType="clob" Direction="2" ValType="50"/>
+              <Param Id="dfpXCOXBTJVJFGDZN65YX6QGHK7MI" Name="n" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnOPVKOOF75RBUXPIWDGOINB5GDQ" Name="fillCompileInitValues" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    For i in 1 .. n
+    loop        
+        writeToClob(body_, '  partitionsList' || to_char(i) || ' := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.long_str_list();');
+    end loop;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpASCLCWGSWZHOHFFLHHLQ5XXDNE" Name="body_" DbType="clob" Direction="2" ValType="50"/>
+              <Param Id="dfpOYALI4EW4JHRTJBBMREAHF5MVM" Name="n" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnRZPZ5S7DENGHDORN7DAC4UDGAI" Name="fillLongCycle" Deterministic="false" CacheResult="false" PurityLevelMask="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    n  integer;
+    x varchar2(32767);
+    x2 varchar2(32767);
+begin
+n := str_list0.COUNT();
+
+writeToClob(body_, 'n:=calculatedList1.count;');
+
+writeToClob(body_, 'if (n=0) then');
+    writeToClob(body_, '  return 0;');
+    writeToClob(body_, 'end if;');
+    
+    For i in 1 .. n loop
+        x := LPAD(' ', i);
+        writeToClob(body_, x || 'for i' || to_char(i) || ' in partitionsList' || to_char(i) || '.first() .. partitionsList' || to_char(i) || '.last()');         
+        writeToClob(body_, x || 'loop');
+        writeToClob(body_, x || 'partition' || to_char(i) || ' := partitionsList' || to_char(i) || '(i' || to_char(i) || ');');
+    end loop;
+    
+    x := LPAD(' ', n);
+        
+    writeToClob(body_, x || 'ok_ := false;');
+    writeToClob(body_, x || 'for i in 1..n loop');    
+      For i in 1 .. n loop
+      writeToClob(body_, x || '  calcPartition' || to_char(i) || ' := calculatedList' || to_char(i) || '(i);');
+      writeToClob(body_, x || '  calcMode' || to_char(i) || ' := calculatedMode' || to_char(i) || '(i);');
+      end loop;
+      writeToClob(body_, x || '  if(');
+      
+      For i in 1 .. n loop
+      x2 := x || '  ((mode' || to_char(i) || ' = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_prohibited) or ' ||
+                     '(calcMode' || to_char(i) || ' = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_unbounded) or ' ||
+                            '(mode' || to_char(i) || ' = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_boundedByPart and ' ||
+                            'calcMode' || to_char(i) || ' = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_boundedByPart and ' ||
+                            '</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.equalPartition(partition' || to_char(i) || ', calcPartition' || to_char(i) || ') = 1))';
+      if (i!=n) then
+        x2 := x2 || ' and';
+      else  
+        x2 := x2 || ') then';
+      end if;                            
+       writeToClob(body_, x || x2);      
+      end loop;
+    writeToClob(body_, x || ' ok_ := true;');
+    writeToClob(body_, x || ' exit;');
+     
+    writeToClob(body_, x || 'end if;');
+      
+    writeToClob(body_, x || 'end loop;');
+    
+    writeToClob(body_, x || 'if (not ok_) then');
+    writeToClob(body_, x || '  return 0;');
+    writeToClob(body_, x || 'end if;');
+    
+    
+    
+    
+    For i in 1 .. n loop
+        x := LPAD(' ', n - i + 1);
+        writeToClob(body_, x || 'end loop;');
+    end loop;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpIXV64FIXRRE7TMAYXKBPU7AOJ4" Name="body_" DbType="clob" Direction="2" ValType="50"/>
+              <Param Id="dfp2ZWK4S77W5FE5L3SIANVQCQ4DY" Name="str_list0" DbType="str_list_type" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnDNQQOJ634BCYFMEMDTJHCS56WA" Name="fillRights2Table" Deterministic="false" CacheResult="false" PurityLevelMask="1">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    n  integer;
+    x varchar2(32767);
+    
+    cSuperAdminRoleId constant varchar2(32) := '''' || </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM">
+                  <xsc:Sql>RDX_ACS.constSuperAdminRoleId</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> || '''';
+begin
+
+    n := str_list0.COUNT();
+
+    writeToClob(body_, 'function ' || func_ || '(user_ in varchar2, id_ in integer) return integer');
+    writeToClob(body_, 'is');
+    For i in 1 .. n loop
+       writeToClob(body_, ' partition' || to_char(i) || ' VARCHAR2(32767);');
+       writeToClob(body_, ' mode' || to_char(i) || ' integer;');
+       writeToClob(body_, ' calcMode' || to_char(i) || ' integer;');
+       writeToClob(body_, ' groupId' || to_char(i) || ' integer;');
+       writeToClob(body_, ' partitionsList' || to_char(i) || ' RDX_ACS.long_str_list;');
+       writeToClob(body_, ' calculatedList' || to_char(i) || ' RDX_ACS.long_str_list;');
+       writeToClob(body_, ' calculatedMode' || to_char(i) || ' RDX_ACS.int_list_type;');
+       writeToClob(body_, ' calcPartition' || to_char(i) || ' VARCHAR2(32767);');
+              
+    end loop;
+    writeToClob(body_, ' roleId_ varchar(50);');
+    writeToClob(body_, ' i integer;');
+    writeToClob(body_, ' n integer;');
+    writeToClob(body_, ' ok_ boolean;');
+    writeToClob(body_, 'begin');
+    
+    x := '  select roleId';
+    For i in 1 .. n loop
+      x := x || ', MA$$' || str_list0(i) || ', PA$$' || str_list0(i) || ', PG$$' || str_list0(i);      
+    end loop;
+    x := x || ' into roleId_';
+    For i in 1 .. n loop
+      x := x || ', mode' || to_char(i) || ', partition' || to_char(i) || ', groupId' || to_char(i);
+    end loop;    
+    writeToClob(body_,  x || ' from ' || table_ || ' where id = id_;');
+        
+    For i in 1 .. n
+    loop        
+        writeToClob(body_, ' partitionsList' || to_char(i) || ' := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.long_str_list();');
+        writeToClob(body_, ' calculatedList' || to_char(i) || ' := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.long_str_list();');
+        writeToClob(body_, ' calculatedMode' || to_char(i) || ' := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.int_list_type();');        
+
+    end loop;
+
+    For i in 1 .. n
+    loop    
+        writeToClob(body_, '  if (mode' || to_char(i) ||  ' = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_boundedByUser) then');
+        if (exists_Package(i) = 1) then    
+            writeToClob(body_, '    partitionsList' || to_char(i) || '.delete();');
+            writeToClob(body_, '    partitionsList' || to_char(i) || '.extend(1);');
+            writeToClob(body_, '    partitionsList' || to_char(i) || '(1):=ACS$' || str_list0(i) || '.getUserAssignment(RDX_Arte.getUserName());');
+            writeToClob(body_, '    mode' || to_char(i) || ':=</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_boundedByPart;');
+        else    
+            writeToClob(body_, '    raise_application_error(-20000, ''' || 
+                               'System rights package ACS$' || str_list0(i) || 
+                               ' not found, but found </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_boundedByUser bounding mode (Table=' || 
+                               table_ || ', Id = '' || id_ || '').'');');
+        end if; 
+
+        writeToClob(body_, '  else');
+        writeToClob(body_, '    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnFEX4WNPMGVCAVARCIMLGFNLMCA">
+                  <xsc:Sql>RDX_ACS.fillPartitions</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(mode' || to_char(i)  || ', calcMode' || to_char(i) || ', ' ||
+                                                     'partition' || to_char(i) || ', ' ||
+                                                     'partitionsList' || to_char(i) || ', ' || 
+                                                     'groupId' || to_char(i)|| 
+                                                     ');');
+        writeToClob(body_, '  end if;');
+    end loop;
+    
+      writeToClob(body_, '  i:=1;');
+      writeToClob(body_, '  for ind in (Select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where isNew=0 and isOwn = 0 and userName = user_ and ');
+      writeToClob(body_, '                       (roleId_ = roleId or roleId = ' || cSuperAdminRoleId || ') )');
+      writeToClob(body_, '  loop');
+      
+    For i in 1 .. n      
+    loop
+      writeToClob(body_, '    calculatedList' || to_char(i) || '.Extend();');
+      writeToClob(body_, '    calculatedMode' || to_char(i) || '.Extend();');
+         
+      writeToClob(body_, '    calculatedList' || to_char(i) || '(i):=ind.PA$$' || str_list0(i) || ';');
+      writeToClob(body_, '    calculatedMode' || to_char(i) || '(i):=ind.MA$$' || str_list0(i) || ';');
+    end loop;      
+      writeToClob(body_, '    i:=i+1;');
+      writeToClob(body_, '  end loop;');
+    
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRZPZ5S7DENGHDORN7DAC4UDGAI">
+                  <xsc:Sql>RDX_ACS.fillLongCycle</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, str_list0);
+    
+    writeToClob(body_, '  return 1;');
+    writeToClob(body_, 'end;');
+
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpTO5HDLEGXFBKJIBJGFFY47I4VU" Name="table_" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpTDSRQEAUZJGEHELXNO4Q5ZC64U" Name="func_" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpBCUGMTXP5FDE7GC4ONIUAP6YWU" Name="body_" DbType="clob" Direction="2" ValType="50"/>
+              <Param Id="dfpIO332WXEWFHTPMO7XSIPG5B6XY" Name="str_list0" DbType="str_list_type" Direction="0" ValType="50"/>
+              <Param Id="dfpUIRKOLV2QZGT7O74UKBLNPJISI" Name="exists_Package" DbType="int_list_type" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnN236TVVDC5CGLLVKFF4GH27GUQ" Name="isGroupExist" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+rez INTEGER;
+begin
+ rez := 0;
+ SELECT COUNT(*) INTO rez FROM </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USERGROUP</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> WHERE ROWNUM &lt;= 1 AND name_ = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" PropId="colV2XEAGILY3NBDGMCABQAQH3XQ4" Owner="NONE">
+                  <xsc:Sql>NAME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
+ return rez;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpYGGERAL2AZGZNFZK2QRUMTQGTM" Name="name_" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
           <Function Id="dfn3XXTXJVTQDPBDCQRAAQYKZSZXU" Name="acsUtilsBuild" Deterministic="false" CacheResult="false" PurityLevelMask="0">
             <Body>
               <xsc:Item>
                 <xsc:Sql>is 
-    type str_list_type  is table of varchar2(50) index BY BINARY_INTEGER;
-    str_list str_list_type;
-    str_list2 str_list_type;
- 
+
+    str_list0 str_list_type;
+    exists_Package int_list_type;
+
     cur_index  integer;
     n  integer;
     i  integer;
 
     cursor_name INTEGER;
-    cursor_name2 INTEGER;
     ret	    INTEGER;
 
     x varchar2(32767);
+    x2 varchar2(32767);
 
-    --head_ clob;
     body_ clob;
-
-    t1 varchar2(32767);
-    t2 varchar2(32767);
+    
+    cSuperAdminRoleId constant varchar2(32) := '''' || </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM">
+                  <xsc:Sql>RDX_ACS.constSuperAdminRoleId</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> || '''';
  
 begin
 
     cur_index := 1;
-    --dbms_lob.createTemporary(head_, false, dbms_lob.SESSION);
     dbms_lob.createTemporary(body_, false, dbms_lob.SESSION);
-
-
-    for ind in (select * from user_tab_columns where  
+    
+    exists_Package := int_list_type();
+     
+    for ind in (select DISTINCT table_name, column_name from user_tab_columns where  
                   table_name = '</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -4755,27 +5203,31 @@ begin
                   length(column_name) = 30 
                 and 
                   column_name like 'PA$$%'
+                  order by column_name 
                )                  
     loop
         x:=ind.column_name;
-        x:= SUBSTR(x, 2);
-        str_list(cur_index):=x;
-
-        x:=ind.column_name;
-        x:= 'apf' || SUBSTR(x, 5);
-        str_list2(cur_index):=x;
-
+        x:= SUBSTR(x, 5);        
+        str_list0(cur_index):=x;        
+        exists_Package.EXTEND();
+        exists_Package(cur_index):= </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnCLI3HQFIOJCEXC2FQDTB5ZTABE">
+                  <xsc:Sql>RDX_ACS.existsPackage</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(x);
         cur_index := cur_index+1;
     end loop;
  
 
 
     -- body_ 
-    n := str_list.COUNT();
-
-
-
-    x:='CREATE OR REPLACE package body </xsc:Sql>
+    n := str_list0.COUNT();
+    
+    writeToClob(body_, 'create or replace package </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbName Path="pkgGKLDTS2YJLOBDH2FABQAQH3XQ4">
@@ -4783,128 +5235,85 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> as' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
+                <xsc:Sql> as');
+    writeToClob(body_, 'function buildAssignedAccessAreaU2R(row_ in RDX_AC_User2Role%ROWTYPE) return TRdxAcsArea;');
+    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (buildAssignedAccessAreaU2R, WNDS);');
+    writeToClob(body_, 'function buildAssignedAccessAreaG2R(row_ in RDX_AC_UserGroup2Role%ROWTYPE) return TRdxAcsArea;');    
+    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (buildAssignedAccessAreaG2R, WNDS);');
+    writeToClob(body_, 'procedure compileRights;');
+    writeToClob(body_, 'procedure compileRightsForGroup(pUserGroup in varchar2);');
+    writeToClob(body_, 'procedure compileRightsForUser(pUser in varchar2);');
 
-    -- compileRights
-    t1 := '        INSERT INTO </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> ( userName, isOwn, RoleId, ID';
-    t2 := '               VALUES ( ind2.userName, 0, ind1.RoleId, </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:SequenceDbName SequenceId="sqnGYUQGTO7F3OBDHZTABQAQH3XQ4" Postfix="NONE">
-                  <xsc:Sql>SQN_RDX_AC_USER2ROLEID</xsc:Sql>
-                </xsc:SequenceDbName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>.NEXTVAL';
-
-    For i in 1 .. n
-    loop 
-        t1 := t1 || ', P' || str_list(i) || ', M' || str_list(i);
-        t2 := t2 || ', IND1.P' || str_list(i) || ', IND1.M' || str_list(i);
+    writeToClob(body_, 'procedure moveRightsFromUserToGroup(user_ in varchar2, group_ in varchar2);');
+    
+    x := '';
+    For i in 1 .. n loop
+        x := x || ', mode' || to_char(i) || ' integer, partitions' || to_char(i) || ' clob';
     end loop;
-
-
-    x:='procedure compileRights' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='is' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='begin' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='delete from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> u2r where u2r.isOwn = 0;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='for ind1 in (Select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USERGROUP2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> where isNew&lt;>1)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='   loop' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='      for ind2 in (select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2USERGROUP</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> where GroupName=ind1.GroupName and state&lt;>1)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='        loop' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-
-    x:='        ' || t1 || ')' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x); 
-    x:='        ' || t2 || ');' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x); 
-
-    x:='        end loop;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='   end loop;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='end;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-
-
-
-    --compileRightsForGroup
-
-    t1 := '        INSERT INTO </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> ( userName, isOwn, RoleId, ID';
-    t2 := '               VALUES ( ind1.userName, 0, ind3.RoleId, </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:SequenceDbName SequenceId="sqnGYUQGTO7F3OBDHZTABQAQH3XQ4" Postfix="NONE">
-                  <xsc:Sql>SQN_RDX_AC_USER2ROLEID</xsc:Sql>
-                </xsc:SequenceDbName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>.NEXTVAL';
-
-    For i in 1 .. n
-    loop 
-        t1 := t1 || ', P' || str_list(i) || ', M' || str_list(i);
-        t2 := t2 || ', IND3.P' || str_list(i) || ', IND3.M' || str_list(i);
-    null;
+    
+    writeToClob(body_, 'function existsRightsOnArea(user_ in varchar2, role_ in varchar2 ' || x || ') return integer;');
+    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (existsRightsOnArea, WNDS);');
+    
+    writeToClob(body_, 'function existsRightsOnUser2Role(user_ in varchar2, id_ in integer) return integer;');
+    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (existsRightsOnUser2Role, WNDS);');
+    
+    writeToClob(body_, 'function existsRightsOnGroup2Role(user_ in varchar2, id_ in integer) return integer;');
+    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (existsRightsOnGroup2Role, WNDS);');
+    
+    writeToClob(body_, 'function isSuperAdmin(user_ in varchar2) return integer;');
+    writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (isSuperAdmin, WNDS);');
+        
+    For i in 1 .. n loop
+        writeToClob(body_, 'function gup_' || str_list0(i) || '(user_ in varchar2) return clob;');
+        --writeToClob(body_, 'PRAGMA RESTRICT_REFERENCES (gup_' || str_list0(i) || ', WNDS);');
     end loop;
+    
+    
+    writeToClob(body_, 'end;');
+  
+  
+  
+    cursor_name := DBMS_SQL.OPEN_CURSOR;
+    DBMS_SQL.PARSE ( cursor_name, body_, DBMS_SQL.NATIVE );
+    ret := DBMS_SQL.EXECUTE ( cursor_name );
+    DBMS_SQL.CLOSE_CURSOR ( cursor_name );  
 
-    x:='procedure compileRightsForGroup(' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='   pUserGroup    in varchar2)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='is' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='begin' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='</xsc:Sql>
+
+    
+    dbms_lob.createTemporary(body_, false, dbms_lob.SESSION);
+  
+
+    writeToClob(body_, 'CREATE  OR REPLACE package body </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgGKLDTS2YJLOBDH2FABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS_UTILS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> as');
+    
+    
+    For i in 1 .. n loop
+    writeToClob(body_, '/*get unbounded partitions*/');
+        writeToClob(body_, 'function gup_' || str_list0(i) || '(user_ in varchar2) return clob');
+        writeToClob(body_, 'is');
+        writeToClob(body_, ' p </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgZAFHHIAD2PORDKBMABIFNQAABA">
+                  <xsc:Sql>RDX_Array</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.ARR_STR;');
+        writeToClob(body_, ' i integer;');
+        writeToClob(body_, 'begin');
+        
+        x:='';
+        For j in 1 .. n loop
+            if (i&lt;>j) then
+                x:= x || ' and MA$$' || str_list0(j) || '= </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
@@ -4912,33 +5321,123 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>.ClearInheritRights(pUserGroup);' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='for ind1 in (select * from </xsc:Sql>
+                <xsc:Sql>.cRight_unbounded';
+            end if;    
+        end loop;
+        
+        writeToClob(body_, 'p := </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TableSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2USERGROUP</xsc:Sql>
+                <xsc:DbName Path="pkgZAFHHIAD2PORDKBMABIFNQAABA">
+                  <xsc:Sql>RDX_Array</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.ARR_STR();');
+        writeToClob(body_, 'i := 1;');
+        
+        writeToClob(body_, 'for ind in (select PA$$' || str_list0(i) ||
+                     ' from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> where GroupName=pUserGroup and state&lt;>1)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='loop' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='for ind2 in (select * from </xsc:Sql>
+                <xsc:Sql> where roleId = ' || cSuperAdminRoleId || ' and isNew = 0 and isOwn = 0 and userName = user_' 
+                      || ' and MA$$' || str_list0(i) || '= </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TableSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2USERGROUP</xsc:Sql>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_boundedByPart' || x || ')'
+                     );
+        writeToClob(body_, ' loop');
+        writeToClob(body_, '  p.extend();');
+        writeToClob(body_, '  p(i) := ind.PA$$' || str_list0(i) || ';');
+        writeToClob(body_, '  i := i+1;');
+        writeToClob(body_, ' end loop;');
+        
+        
+        writeToClob(body_, ' return </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnKH5JAEYNJZHTLGXV6MUNXTIRBA">
+                  <xsc:Sql>RDX_Array.fromArrStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(p);');
+        writeToClob(body_, 'end;');    
+    end loop;
+    
+    
+ 
+    writeToClob(body_, 'function isSuperAdmin(user_ in varchar2) return integer');
+    writeToClob(body_, 'is');
+    writeToClob(body_, ' count_ integer;');
+    writeToClob(body_, 'begin');
+    
+    x := '';
+    For i in 1 .. n loop
+        x := x || ' and MA$$' || str_list0(i) || '= </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_unbounded';
+    end loop;
+    writeToClob(body_, ' select count(*) into count_ from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> where UserName=ind1.UserName and state&lt;>1)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='  loop' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='   for ind3 in (Select * from </xsc:Sql>
+                <xsc:Sql> where roleId = ' || cSuperAdminRoleId || ' and isNew = 0 and isOwn = 0 and userName = user_' || x || ';');
+    writeToClob(body_, ' if count_ > 0 then');
+    writeToClob(body_, '   return 1;');
+    writeToClob(body_, ' end if;');
+    
+    writeToClob(body_, ' return 0;');
+    writeToClob(body_, 'end;');
+
+   
+    
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnDNQQOJ634BCYFMEMDTJHCS56WA">
+                  <xsc:Sql>RDX_ACS.fillRights2Table</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>('</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>', 'existsRightsOnUser2Role', body_, str_list0, exists_Package);
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnDNQQOJ634BCYFMEMDTJHCS56WA">
+                  <xsc:Sql>RDX_ACS.fillRights2Table</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>('</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
@@ -4946,28 +5445,430 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> where GroupName = ind2.GroupName and isNew&lt;>1)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='     loop' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
+                <xsc:Sql>', 'existsRightsOnGroup2Role', body_, str_list0, exists_Package);
+    
 
-    x:='        ' || t1 || ')' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x); 
-    x:='        ' || t2 || ');' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x); 
 
-    x:='   end loop;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='  end loop;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='end loop;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='end;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
+
+    x := '';
+    For i in 1 .. n loop
+        x := x || ', mode' || to_char(i) || ' integer, partitions' || to_char(i) || ' clob';
+    end loop;
+
+    
+
+    --existsRightsOnArea
+    writeToClob(body_, 'function existsRightsOnArea(user_ in varchar2, role_ in varchar2 ' || x || ') return integer');
+    writeToClob(body_, 'is');
+    For i in 1 .. n loop
+       writeToClob(body_, ' partition' || to_char(i) || ' VARCHAR2(32767);');
+       writeToClob(body_, ' calcPartition' || to_char(i) || ' VARCHAR2(32767);');
+       writeToClob(body_, ' calcMode' || to_char(i) || ' integer;');
+       writeToClob(body_, ' partitionsList' || to_char(i) || ' </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgZAFHHIAD2PORDKBMABIFNQAABA">
+                  <xsc:Sql>RDX_Array</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.ARR_STR;');
+       writeToClob(body_, ' calculatedList' || to_char(i) || ' </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgZAFHHIAD2PORDKBMABIFNQAABA">
+                  <xsc:Sql>RDX_Array</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.ARR_STR;');
+       writeToClob(body_, ' calculatedMode' || to_char(i) || ' </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.int_list_type;');
+    end loop;
+    writeToClob(body_, ' i integer;');
+    writeToClob(body_, ' n integer;');
+    writeToClob(body_, ' ok_ boolean;');
+    
+    writeToClob(body_, 'begin');
+        
+    For i in 1 .. n loop
+        writeToClob(body_, ' if mode' || to_char(i) ||' = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_prohibited then');
+        writeToClob(body_, '  partitionsList' || to_char(i) || ':= </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnFHKO2R5HIJAZRB3YAD5P45DTUY">
+                  <xsc:Sql>RDX_Array.fromStr</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(partitions' || to_char(i) || ');');
+        writeToClob(body_, ' else');
+        writeToClob(body_, '  partitionsList' || to_char(i) || ':= </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgZAFHHIAD2PORDKBMABIFNQAABA">
+                  <xsc:Sql>RDX_Array</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.ARR_STR();');
+        writeToClob(body_, '  partitionsList' || to_char(i) || '.Extend(1);');
+        writeToClob(body_, '  partitionsList' || to_char(i) || '(1):=null;');       
+        writeToClob(body_, ' end if;');
+        writeToClob(body_, ' calculatedList' || to_char(i) || ':= </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgZAFHHIAD2PORDKBMABIFNQAABA">
+                  <xsc:Sql>RDX_Array</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.ARR_STR();');
+        writeToClob(body_, ' calculatedMode' || to_char(i) || ':= </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.int_list_type();');
+    end loop;
+    
+    writeToClob(body_, 'i:=1;');
+    writeToClob(body_, 'for ind in (Select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where isNew=0 and isOwn = 0 and userName = user_ and ');
+    writeToClob(body_, '           (role_ = roleId or roleId = ' || cSuperAdminRoleId || ') )');
+    writeToClob(body_, 'loop');
+    For i in 1 .. n loop
+        writeToClob(body_, '   calculatedList' || to_char(i) || '.Extend();');
+        writeToClob(body_, '   calculatedMode' || to_char(i) || '.Extend();');
+        
+        writeToClob(body_, '   calculatedList' || to_char(i) || '(i):=ind.PA$$' || str_list0(i) || ';');
+        writeToClob(body_, '   calculatedMode' || to_char(i) || '(i):=ind.MA$$' || str_list0(i) || ';');
+    end loop;
+    writeToClob(body_, '   i:=i+1;');
+    writeToClob(body_, 'end loop;');
+    
+     
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRZPZ5S7DENGHDORN7DAC4UDGAI">
+                  <xsc:Sql>RDX_ACS.fillLongCycle</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, str_list0);
+    
+    
+    writeToClob(body_, ' return 1;');
+    writeToClob(body_, 'end;');
+    
+    --writeToClob(body_, 'function existsRightsOnUser2Role(user_ in varchar2, id_ in integer) return integer;');
+    
+    --compileRights
+    writeToClob(body_, 'procedure compileRights');    
+    writeToClob(body_, 'is');
+
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRFL6WVKR6BE33HZIZQ7NI4FCFY">
+                  <xsc:Sql>RDX_ACS.fillCompileDefineValues</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, n);
+    
+    writeToClob(body_, 'begin');
+    
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnOPVKOOF75RBUXPIWDGOINB5GDQ">
+                  <xsc:Sql>RDX_ACS.fillCompileInitValues</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, n);
+    
+    writeToClob(body_, '/*clear all inherit rights*/');--comment    
+    writeToClob(body_, 'delete from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> u2r where u2r.isOwn=0;');    
+    
+    writeToClob(body_, '');
+    writeToClob(body_, '/*collect rights from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>*/');--comment
+    writeToClob(body_, 'for ind1 in (Select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where isOwn=1 and isNew&lt;>1)');
+    writeToClob(body_, 'loop');
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnGTJ3P2PX2ZDSJCYTURKQUUPJNA">
+                  <xsc:Sql>RDX_ACS.fillCompileRightsBody</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, '', str_list0, exists_Package, 'ind1', '</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>', 'ind1.userName');
+    writeToClob(body_, 'end loop;');
+        
+    writeToClob(body_, '');
+    writeToClob(body_, '/*collect rights from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USERGROUP2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>*/');--comment
+    writeToClob(body_, 'for ind1 in (Select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USERGROUP2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where isNew&lt;>1)');
+    writeToClob(body_, 'loop');
+    writeToClob(body_, '  for ind2 in (Select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2USERGROUP</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where GroupName=ind1.GroupName and state&lt;>1)');
+    writeToClob(body_, '  loop');
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnGTJ3P2PX2ZDSJCYTURKQUUPJNA">
+                  <xsc:Sql>RDX_ACS.fillCompileRightsBody</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, '  ', str_list0, exists_Package, 'ind1', '</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USERGROUP2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>', 'ind2.userName');
+    writeToClob(body_, '  end loop;');
+    writeToClob(body_, 'end loop;');
+  
+    writeToClob(body_, 'end;');
+
+
+    --compileRightsForGroup     
+    
+    writeToClob(body_, 'procedure compileRightsForGroup(pUserGroup in varchar2)');
+    writeToClob(body_, 'is');
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRFL6WVKR6BE33HZIZQ7NI4FCFY">
+                  <xsc:Sql>RDX_ACS.fillCompileDefineValues</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, n);
+    
+    writeToClob(body_, 'begin');
+    
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnOPVKOOF75RBUXPIWDGOINB5GDQ">
+                  <xsc:Sql>RDX_ACS.fillCompileInitValues</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, n);
+    
+    writeToClob(body_, '</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.ClearInheritRights(pUserGroup);');
+    
+    writeToClob(body_, 'for ind1 in (select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2USERGROUP</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where GroupName=pUserGroup and state&lt;>1)');
+    writeToClob(body_, 'loop');
+    
+
+    --from this user
+    writeToClob(body_, '    for ind2 in (Select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where isOwn=1 and isNew&lt;>1 and userName = ind1.userName)');
+    writeToClob(body_, '    loop');
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnGTJ3P2PX2ZDSJCYTURKQUUPJNA">
+                  <xsc:Sql>RDX_ACS.fillCompileRightsBody</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, '    ', str_list0, exists_Package, 'ind2', '</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>', 'ind1.userName');
+    writeToClob(body_, '    end loop;');
+    writeToClob(body_, '');    
+    
+    
+    --writeToClob(body_, '  for ind2 in (select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2USERGROUP</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where UserName=ind1.UserName and state&lt;>1)');
+    --writeToClob(body_, '  loop');
+                    
+    --from groups
+    writeToClob(body_, '    for ind2 in (Select * from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USERGROUP2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where GroupName = ind1.GroupName and isNew&lt;>1)');
+    writeToClob(body_, '    loop');
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnGTJ3P2PX2ZDSJCYTURKQUUPJNA">
+                  <xsc:Sql>RDX_ACS.fillCompileRightsBody</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, '    ', str_list0, exists_Package, 'ind2', '</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USERGROUP2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>', 'ind1.UserName');
+    writeToClob(body_, '    end loop;');
+    --writeToClob(body_, '  end loop;');
+    writeToClob(body_, 'end loop;');
+    
+    writeToClob(body_, 'end;');
 
 
     --compileRightsForUser 
-    t1 := '      INSERT INTO </xsc:Sql>
+    writeToClob(body_, 'procedure compileRightsForUser(pUser in varchar2)');
+    writeToClob(body_, 'is');
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRFL6WVKR6BE33HZIZQ7NI4FCFY">
+                  <xsc:Sql>RDX_ACS.fillCompileDefineValues</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, n);
+    
+    writeToClob(body_, 'begin');
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnOPVKOOF75RBUXPIWDGOINB5GDQ">
+                  <xsc:Sql>RDX_ACS.fillCompileInitValues</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, n);
+
+    writeToClob(body_, 'delete from </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
@@ -4975,33 +5876,9 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> ( userName, isOwn, RoleId, ID';
-    t2 := '               VALUES (pUser, 0, ind3.RoleId, </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:SequenceDbName SequenceId="sqnGYUQGTO7F3OBDHZTABQAQH3XQ4" Postfix="NONE">
-                  <xsc:Sql>SQN_RDX_AC_USER2ROLEID</xsc:Sql>
-                </xsc:SequenceDbName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>.NEXTVAL';
-
-    For i in 1 .. n
-    loop 
-        t1 := t1 || ', P' || str_list(i) || ', M' || str_list(i);
-        t2 := t2 || ', IND3.P' || str_list(i) || ', IND3.M' || str_list(i);
-    null;
-    end loop;
-
-    x:='procedure compileRightsForUser(' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='   pUser in varchar2)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='is' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='begin' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='delete from </xsc:Sql>
+                <xsc:Sql> u2r where u2r.isOwn = 0 and username = pUser and isNew&lt;>1;');
+    
+    writeToClob(body_, 'for ind1 in (select * from </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
@@ -5009,9 +5886,28 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> u2r where u2r.isOwn = 0 and username = pUser and isNew&lt;>1;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='for ind1 in (select * from </xsc:Sql>
+                <xsc:Sql> where username = pUser and isOwn=1 and isNew&lt;>1)');
+    writeToClob(body_, 'loop');
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnGTJ3P2PX2ZDSJCYTURKQUUPJNA">
+                  <xsc:Sql>RDX_ACS.fillCompileRightsBody</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, '', str_list0, exists_Package, 'ind1', '</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>', 'pUser');
+    writeToClob(body_, 'end loop;');
+                                                                        
+    writeToClob(body_, 'for ind1 in (select * from </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:TableSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4">
@@ -5019,11 +5915,9 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> where UserName=pUser and state&lt;>1)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='loop' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='    for ind3 in (Select * from </xsc:Sql>
+                <xsc:Sql> where UserName=pUser and state&lt;>1)');
+    writeToClob(body_, 'loop');
+    writeToClob(body_, '  for ind2 in (Select * from </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
@@ -5031,26 +5925,45 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> where GroupName = ind1.GroupName and isNew&lt;>1)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='    loop' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-
-    x:='        ' || t1 || ')' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x); 
-    x:='        ' || t2 || ');' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x); 
-
-    x:='    end loop;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='end loop;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='end;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-
-
-
+                <xsc:Sql> where GroupName = ind1.GroupName and isNew&lt;>1)');
+    writeToClob(body_, '  loop');   
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnGTJ3P2PX2ZDSJCYTURKQUUPJNA">
+                  <xsc:Sql>RDX_ACS.fillCompileRightsBody</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(body_, '  ', str_list0, exists_Package, 'ind2', '</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
+                  <xsc:Sql>RDX_AC_USERGROUP2ROLE</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>', 'pUser');
+    writeToClob(body_, '  end loop;');    
+    writeToClob(body_, 'end loop;');
+    writeToClob(body_, 'end;');
+    
+    
+    
+    
     -- procedure compileRightsForGrpBeforeDel
+    
+    /*
+    writeToClob(body_, 'procedure compileRightsForGrpBeforeDel(pUserGroup in varchar2)');
+    writeToClob(body_, 'is');
+    writeToClob(body_, 'begin');
+    writeToClob(body_, 'null;');
+    writeToClob(body_, 'raise_application_error(-20000, ''Not realized yet'');');
+    writeToClob(body_, 'end;');
+    */
+    
+    
+    /*
     t1 := '      INSERT INTO </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -5147,6 +6060,7 @@ begin
     DBMS_LOB.writeappend(body_, length(x), x);
     x:='end;' || CHR(13);
     DBMS_LOB.writeappend(body_, length(x), x);
+    */
 
 
     for i in 1 .. 2 
@@ -5168,7 +6082,7 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>' || CHR(13);
+                <xsc:Sql>';
        else
           x:='function buildAssignedAccessAreaG2R(row_ in </xsc:Sql>
               </xsc:Item>
@@ -5186,13 +6100,12 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>' || CHR(13);
+                <xsc:Sql>';
        end if;
-       DBMS_LOB.writeappend(body_, length(x), x);
+       writeToClob(body_, x);
 
-       x:='Is' || CHR(13);
-       DBMS_LOB.writeappend(body_, length(x), x);
-       x:='res </xsc:Sql>
+       writeToClob(body_, 'is');
+       writeToClob(body_, 'res </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
@@ -5200,11 +6113,9 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>;' || CHR(13);
-       DBMS_LOB.writeappend(body_, length(x), x);
-       x:='Begin' || CHR(13);
-       DBMS_LOB.writeappend(body_, length(x), x);
-       x:='res := </xsc:Sql>
+                <xsc:Sql>;');
+       writeToClob(body_, 'Begin');
+       writeToClob(body_, 'res := </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
@@ -5220,12 +6131,11 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>());' || CHR(13);
-       DBMS_LOB.writeappend(body_, length(x), x);
-
+                <xsc:Sql>());');
+       
        for cur_index in 1 .. n 
        loop 
-            x:='      if row_.M' || str_list(cur_index) || '&lt;></xsc:Sql>
+            writeToClob(body_, '      if row_.MA$$' || str_list0(cur_index) || '&lt;></xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
@@ -5233,11 +6143,9 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>.cRight_unbounded then' || CHR(13);
-            DBMS_LOB.writeappend(body_, length(x), x);
-            x:='        res.boundaries.EXTEND();' || CHR(13);
-            DBMS_LOB.writeappend(body_, length(x), x);
-            x:='        if row_.M' || str_list(cur_index) || ' = </xsc:Sql>
+                <xsc:Sql>.cRight_unbounded then');
+            writeToClob(body_, '        res.boundaries.EXTEND();');
+            writeToClob(body_, '        if row_.MA$$' || str_list0(cur_index) || ' = </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
@@ -5245,9 +6153,8 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>.cRight_prohibited  then' || CHR(13);
-            DBMS_LOB.writeappend(body_, length(x), x);
-            x:='            res.boundaries(res.boundaries.Count()):=</xsc:Sql>
+                <xsc:Sql>.cRight_prohibited  then');
+            writeToClob(body_, '            res.boundaries(res.boundaries.Count()):=</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbName Path="dbt6FL3Q4TS2DNRDHWMABQAQH3XQ4">
@@ -5255,11 +6162,18 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(1, ' || CHR(39) || str_list2(cur_index) || CHR(39) || ', null);' || CHR(13);
-            DBMS_LOB.writeappend(body_, length(x), x);
-            x:='        else' || CHR(13);
-            DBMS_LOB.writeappend(body_, length(x), x);
-            x:='            res.boundaries(res.boundaries.Count()):=</xsc:Sql>
+                <xsc:Sql>(1, ''apf'  || 
+                               str_list0(cur_index) ||  ''', null);');
+            writeToClob(body_, '        elsif row_.MA$$' || str_list0(cur_index) || ' = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkgYQZTLHT2YDORDIE4ABQAQH3XQ4">
+                  <xsc:Sql>RDX_ACS</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cRight_boundedByPart then');
+            writeToClob(body_, '            res.boundaries(res.boundaries.Count()):=</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbName Path="dbt6FL3Q4TS2DNRDHWMABQAQH3XQ4">
@@ -5267,34 +6181,23 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(0, ' || CHR(39) || str_list2(cur_index) || CHR(39) || ', row_.P' || str_list(cur_index) || ');' || CHR(13);
-            DBMS_LOB.writeappend(body_, length(x), x);
-            x:='        end if;' || CHR(13);
-            DBMS_LOB.writeappend(body_, length(x), x);
-            x:='      end if;' || CHR(13);
-            DBMS_LOB.writeappend(body_, length(x), x);
+                <xsc:Sql>(0, ''apf'  || 
+                               str_list0(cur_index) ||  ''', row_.PA$$' || str_list0(cur_index) ||');');
+            writeToClob(body_, '        else');
+            writeToClob(body_, '            raise_application_error(-20000, ''Invalid argument'');');
+            writeToClob(body_, '        end if;');
+            writeToClob(body_, '      end if;');
        end loop;
-       x:=' return res;' || CHR(13);
-       DBMS_LOB.writeappend(body_, length(x), x);
-
-       x:='end;' || CHR(13);
-       DBMS_LOB.writeappend(body_, length(x), x);
-
+       writeToClob(body_, ' return res;');
+       writeToClob(body_, ' end;');
     end loop;
     
     
     --moveRightsFromUserToGroup
-    x:='procedure moveRightsFromUserToGroup(' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='	user_ in varchar2,' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='	group_ in varchar2)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='is' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='begin' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:=' INSERT INTO  </xsc:Sql>
+    writeToClob(body_, 'procedure moveRightsFromUserToGroup(user_ in varchar2, group_ in varchar2)');
+    writeToClob(body_, 'is');
+    writeToClob(body_, 'begin');
+    writeToClob(body_, ' INSERT INTO </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:TableSqlName TableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4">
@@ -5302,9 +6205,8 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>  (name) VALUES (group_);' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:=' INSERT INTO  </xsc:Sql>
+                <xsc:Sql> (name) VALUES (group_);');
+    writeToClob(body_, ' INSERT INTO </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:TableSqlName TableId="tblDYWJCJTTGLNRDHRZABQAQH3XQ4">
@@ -5312,9 +6214,9 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>  (userName, groupName) VALUES (user_, group_);' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:=' for ind in (Select * from  </xsc:Sql>
+                <xsc:Sql> (userName, groupName) VALUES (user_, group_);');
+     
+    writeToClob(body_, '  for ind in (Select * from  </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
@@ -5322,12 +6224,15 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> where userName = User_ and  isOwn = 1 and isNew&lt;>1)' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='     loop' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
+                <xsc:Sql> where userName = User_ and  isOwn = 1 and isNew&lt;>1)');
+    writeToClob(body_, '     loop');
     
-    t1:='INSERT INTO </xsc:Sql>
+    x:='';
+    For i in 1 .. n
+    loop 
+        x := x || ', PA$$' || str_list0(i) || ', MA$$' || str_list0(i) || ', PG$$' || str_list0(i);
+    end loop;
+    writeToClob(body_, '      INSERT INTO </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
@@ -5335,8 +6240,14 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> (ID, GroupName, roleId';
-    t2:=') VALUES ( </xsc:Sql>
+                <xsc:Sql> (ID, GroupName, roleId' || x || ')');
+        
+    x:='';
+    For i in 1 .. n
+    loop 
+        x := x || ', IND.PA$$' || str_list0(i) || ', IND.MA$$' || str_list0(i) || ', IND.PG$$' || str_list0(i);
+    end loop;
+    writeToClob(body_, '      VALUES ( </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:SequenceDbName SequenceId="sqnMRHLHY66F3OBDHZTABQAQH3XQ4" Postfix="NONE">
@@ -5344,28 +6255,16 @@ begin
                 </xsc:SequenceDbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>.NEXTVAL, group_, IND.roleId';
+                <xsc:Sql>.NEXTVAL, group_, IND.roleId' || x || ');');
+
+    writeToClob(body_, '      DELETE FROM RDX_AC_USER2ROLE WHERE id=ind.id;');
     
-    For i in 1 .. n
-    loop 
-        t1 := t1 || ', P' || str_list(i) || ', M' || str_list(i);
-        t2 := t2 || ', IND.P' || str_list(i) || ', IND.M' || str_list(i);
-    end loop;
-    x:= t1 || t2 || ');' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);    
+    writeToClob(body_, '     end loop;');
+    writeToClob(body_, 'end;');
     
-    x:='      DELETE FROM RDX_AC_USER2ROLE WHERE id=ind.id;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
-    x:='     end loop;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);    
-    
-    x:='end;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
     ----------------------------
     
-
-    x:='End;' || CHR(13);
-    DBMS_LOB.writeappend(body_, length(x), x);
+    writeToClob(body_, 'end;');
 
    
 
@@ -5436,7 +6335,7 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> where isNew=0 and  username = pUser)
+                <xsc:Sql> where isNew=0  and isOwn=0 and  username = pUser)
        loop
           if vRoles is NULL then
              vRoles := ind.ROLEID;
@@ -5520,7 +6419,7 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> where isNew=0 and  username = pUser)
+                <xsc:Sql> where isNew=0  and isOwn=0 and  username = pUser)
        loop
            if (</xsc:Sql>
               </xsc:Item>
@@ -5554,7 +6453,7 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> where isNew=0 and  userName = pUser )
+                <xsc:Sql> where isNew=0 and isOwn=0 and userName = pUser )
         loop
         Area := </xsc:Sql>
               </xsc:Item>
@@ -5612,198 +6511,6 @@ end;
             <Params>
               <Param Id="dfpINPELHJKCFFEDDVW55FLA2JDVU" Name="pUser" DbType="varchar2" Direction="0" ValType="21"/>
               <Param Id="dfpAIZMGKHLKNAP3NAAZO2T6GP6BA" Name="pPointList" DbType="TRdxAcsAreaList" Direction="0" ValType="50"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfn2UZTLHT2YDORDIE4ABQAQH3XQ4" Name="curUserHasRightsU2RId" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
-            <com:Description> Имеет ли текущий пользователь права не меньшие чем запись в таблице User2Role с заданным идом</com:Description>
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-    Area </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
-                  <xsc:Sql>TRdxAcsArea</xsc:Sql>
-                </xsc:DbName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>;
-    Area2 </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
-                  <xsc:Sql>TRdxAcsArea</xsc:Sql>
-                </xsc:DbName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>;
-begin
-    for ind in (select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> where id = id_)
-        loop
-          Area := </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnELULCECZJLOBDH2FABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS_UTILS.buildAssignedAccessAreaU2R</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(ind);
-          for ind2 in (select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> where 
-                       isNew=0 and userName = </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
-                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>() and               
-                       (roleid = ind.roleid or roleid = sysSuperAdminRoleId)
-                      )
-            loop
-                Area2 := </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnELULCECZJLOBDH2FABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS_UTILS.buildAssignedAccessAreaU2R</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(ind2);
-                if </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnZAZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.containsPointInArea2</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(Area2, Area) then
-                    return 1;
-                end if;
-            end loop;   
-        end loop;
-    return 0;
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpYGTLC7MLC5HMXCDSIFAB2SPJAM" Name="ID_" DbType="integer" Direction="0" ValType="2"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
-          <Function Id="dfn2MZTLHT2YDORDIE4ABQAQH3XQ4" Name="curUserHasRightsG2RId" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
-            <com:Description> Имеет ли текущий пользователь права не меньшие чем запись в таблице UserGroup2Role с заданным идом</com:Description>
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-    Area </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
-                  <xsc:Sql>TRdxAcsArea</xsc:Sql>
-                </xsc:DbName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>;
-    Area2 </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbName Path="dbtWEYKFDDS2DNRDHWMABQAQH3XQ4">
-                  <xsc:Sql>TRdxAcsArea</xsc:Sql>
-                </xsc:DbName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>;
-begin       
-    for ind in (select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USERGROUP2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> where id = id_)
-        loop
-          Area :=  </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2F5E2XRDK3OBDH2RABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS_UTILS.buildAssignedAccessAreaG2R</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(ind);
-          for ind2 in (select * from </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USER2ROLE</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> where 
-                       isNew=0 and userName = </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
-                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>() and               
-                       (roleid = ind.roleid or roleid = sysSuperAdminRoleId)
-                      )
-            loop
-                Area2 := </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnELULCECZJLOBDH2FABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS_UTILS.buildAssignedAccessAreaU2R</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(ind2);
-                if </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnZAZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.containsPointInArea2</xsc:Sql>
-                </xsc:DbFuncCall>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>(Area2, Area) then
-                   return 1;
-                end if;
-            end loop;   
-        end loop;
-    return 0;
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpY4UCT2PHTJCWDDLVO4K7LMAO7M" Name="ID_" DbType="integer" Direction="0" ValType="2"/>
             </Params>
           </Function>
         </Item>
@@ -5870,7 +6577,15 @@ begin
               <xsc:Item>
                 <xsc:Sql>();
     if SubStr(str, pos_, 1)&lt;>'(' then
-        RAISE_APPLICATION_ERROR (-20100, error_Message || str );
+        RAISE_APPLICATION_ERROR (-20100, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnHBHTIG4G6FDAHM5BS6WEE4KFN4">
+                  <xsc:Sql>RDX_ACS.constErrorMessage</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> || str );
     end if;
     pos_:=pos_+1;
     &lt;&lt;lbl>>while (SubStr(str, pos_, 1)&lt;>')')
@@ -5931,40 +6646,6 @@ end;</xsc:Sql>
           </Function>
         </Item>
         <Item>
-          <Function Id="dfnN236TVVDC5CGLLVKFF4GH27GUQ" Name="isGroupExist" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-rez INTEGER;
-begin
- rez := 0;
- SELECT COUNT(*) INTO rez FROM </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4">
-                  <xsc:Sql>RDX_AC_USERGROUP</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> WHERE ROWNUM &lt;= 1 AND name_ = </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblQ23AYDTTGLNRDHRZABQAQH3XQ4" PropId="colV2XEAGILY3NBDGMCABQAQH3XQ4" Owner="NONE">
-                  <xsc:Sql>NAME</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>;
- return rez;
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpYGGERAL2AZGZNFZK2QRUMTQGTM" Name="name_" DbType="varchar2" Direction="0" ValType="21"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
           <Function Id="dfnNISNZTDXEJHHHBUA23ZFXDS7EA" Name="isCurUserHaveUserRights" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
             <Body>
               <xsc:Item>
@@ -6019,6 +6700,16 @@ groupArea </xsc:Sql>
               <xsc:Item>
                 <xsc:Sql>;
 flag boolean;
+
+cSuperAdminRoleId constant varchar2(30) := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM">
+                  <xsc:Sql>RDX_ACS.constSuperAdminRoleId</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
   
 begin
   for g2r_row in (select DISTINCT  * from </xsc:Sql>
@@ -6050,8 +6741,8 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> U2R where isNew=0 and username = user_ and
-                            (g2r_row.roleId = U2R.roleId or U2R.roleId = sysSuperAdminRoleId))
+                <xsc:Sql> U2R where isNew=0 and isOwn=0 and username = user_ and
+                            (g2r_row.roleId = U2R.roleId or U2R.roleId = cSuperAdminRoleId))
             loop      
               userArea := </xsc:Sql>
               </xsc:Item>
@@ -6114,6 +6805,16 @@ lowerUserArea </xsc:Sql>
               <xsc:Item>
                 <xsc:Sql>;
 flag boolean;
+
+cSuperAdminRoleId constant varchar2(30) := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnQ7DZURQBRVDABHS5N6PZCHDTPM">
+                  <xsc:Sql>RDX_ACS.constSuperAdminRoleId</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>;
   
 begin
   for u2r_row1 in (select DISTINCT * from </xsc:Sql>
@@ -6124,7 +6825,7 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> where isNew=0 and username = user2_)
+                <xsc:Sql> where isNew=0 and isOwn=0 and username = user2_)
     loop                                                     
     flag := false;
     lowerUserArea := </xsc:Sql>
@@ -6144,8 +6845,8 @@ begin
                 </xsc:TableSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> U2R where isNew=0 and username = user_ and
-                            (u2r_row1.roleId = U2R.roleId or U2R.roleId = sysSuperAdminRoleId))
+                <xsc:Sql> U2R where isNew=0 and isOwn=0 and username = user_ and
+                            (u2r_row1.roleId = U2R.roleId or U2R.roleId = cSuperAdminRoleId))
             loop
               userArea := </xsc:Sql>
               </xsc:Item>
@@ -6282,7 +6983,7 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>
-             where isNew=0 and userName = </xsc:Sql>
+             where isNew=0 and isOwn=0 and userName = </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
@@ -6325,7 +7026,7 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>.cRight_bounded and 
+                <xsc:Sql>.cRight_boundedByPart and 
              ind.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -6372,7 +7073,7 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>
-             where isNew=0 and  userName = </xsc:Sql>
+             where isNew=0 and isOwn=0 and userName = </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
@@ -6415,7 +7116,7 @@ begin
                 </xsc:DbName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>.cRight_bounded and 
+                <xsc:Sql>.cRight_boundedByPart and 
              ind.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -6878,12 +7579,20 @@ if (userTable=1) then
                     if (</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2UZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.curUserHasRightsU2RId</xsc:Sql>
+                <xsc:DbFuncCall FuncId="dfnMJRKHFD5QZBTRDFRZQYO4IJY74">
+                  <xsc:Sql>RDX_ACS_UTILS.existsRightsOnUser2Role</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(item.</xsc:Sql>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(), item.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" PropId="col3FF7Q3S6CPOBDHYRABQAQH3XQ4" Owner="NONE">
@@ -6942,12 +7651,20 @@ if (userTable=1) then
                     if (</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2UZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.curUserHasRightsU2RId</xsc:Sql>
+                <xsc:DbFuncCall FuncId="dfnMJRKHFD5QZBTRDFRZQYO4IJY74">
+                  <xsc:Sql>RDX_ACS_UTILS.existsRightsOnUser2Role</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(item.</xsc:Sql>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(), item.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" PropId="colLLSKGT66EBE4XAS7CB3DODAAM4" Owner="NONE">
@@ -7018,12 +7735,20 @@ if (userTable=1) then
                          </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2UZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.curUserHasRightsU2RId</xsc:Sql>
+                <xsc:DbFuncCall FuncId="dfnMJRKHFD5QZBTRDFRZQYO4IJY74">
+                  <xsc:Sql>RDX_ACS_UTILS.existsRightsOnUser2Role</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(item.</xsc:Sql>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(), item.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" PropId="colLLSKGT66EBE4XAS7CB3DODAAM4" Owner="NONE">
@@ -7036,12 +7761,20 @@ if (userTable=1) then
                          </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2UZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.curUserHasRightsU2RId</xsc:Sql>
+                <xsc:DbFuncCall FuncId="dfnMJRKHFD5QZBTRDFRZQYO4IJY74">
+                  <xsc:Sql>RDX_ACS_UTILS.existsRightsOnUser2Role</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(item.</xsc:Sql>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(), item.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tbl42K4K2TTGLNRDHRZABQAQH3XQ4" PropId="col3FF7Q3S6CPOBDHYRABQAQH3XQ4" Owner="NONE">
@@ -7681,12 +8414,20 @@ null;
                     if (</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2MZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.curUserHasRightsG2RId</xsc:Sql>
+                <xsc:DbFuncCall FuncId="dfnCDX47RTNAVDMTANWTJRWJQB2H4">
+                  <xsc:Sql>RDX_ACS_UTILS.existsRightsOnGroup2Role</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(item.</xsc:Sql>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(), item.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" PropId="colFF2PCUS6CPOBDHYRABQAQH3XQ4" Owner="NONE">
@@ -7745,12 +8486,20 @@ null;
                     if (</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2MZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.curUserHasRightsG2RId</xsc:Sql>
+                <xsc:DbFuncCall FuncId="dfnCDX47RTNAVDMTANWTJRWJQB2H4">
+                  <xsc:Sql>RDX_ACS_UTILS.existsRightsOnGroup2Role</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(item.</xsc:Sql>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(), item.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" PropId="col4D2WF3YC4JAPNHBZJWHR4O53BA" Owner="NONE">
@@ -7822,12 +8571,20 @@ null;
                          </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2MZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.curUserHasRightsG2RId</xsc:Sql>
+                <xsc:DbFuncCall FuncId="dfnCDX47RTNAVDMTANWTJRWJQB2H4">
+                  <xsc:Sql>RDX_ACS_UTILS.existsRightsOnGroup2Role</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(item.</xsc:Sql>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(), item.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" PropId="col4D2WF3YC4JAPNHBZJWHR4O53BA" Owner="NONE">
@@ -7840,12 +8597,20 @@ null;
                          </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfn2MZTLHT2YDORDIE4ABQAQH3XQ4">
-                  <xsc:Sql>RDX_ACS.curUserHasRightsG2RId</xsc:Sql>
+                <xsc:DbFuncCall FuncId="dfnCDX47RTNAVDMTANWTJRWJQB2H4">
+                  <xsc:Sql>RDX_ACS_UTILS.existsRightsOnGroup2Role</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(item.</xsc:Sql>
+                <xsc:Sql>(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU">
+                  <xsc:Sql>RDX_Arte.getUserName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(), item.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblFJAEQT3TGLNRDHRZABQAQH3XQ4" PropId="colFF2PCUS6CPOBDHYRABQAQH3XQ4" Owner="NONE">
@@ -9025,6 +9790,72 @@ end;</xsc:Sql>
             </Body>
           </Function>
         </Item>
+        <Item>
+          <Function Id="dfnPC6IUR27B5ADJLW6G5RCDMU5TY" Name="equalPartition" ResultDbType="integer" Deterministic="true" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+ if (part1 is null) and (part2 is null) then 
+  return 1;
+ end if;
+ if (part1 is not null) and (part2 is not null) and (part1 = part2) then 
+  return 1;
+ end if;
+ return 0; 
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpA6PA7CMMNZEG7LQPX4JDF6TZFM" Name="part1" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpF4F55RZIERHQLJGP3IQ5ZBAXEU" Name="part2" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnGG5L3CMQZBFNVL5HF5BG67UZFU" Name="readPartitions" ResultDbType="clob" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="50">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+ rez clob;
+begin
+ select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblLNMBHO73GNE2LF5TXFR7QEMICM" PropId="colIDPIK7BQQREGBLDSYFORHOMRRQ" Owner="NONE">
+                  <xsc:Sql>PARTITIONS</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> into rez from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblLNMBHO73GNE2LF5TXFR7QEMICM">
+                  <xsc:Sql>RDX_AC_PARTITIONGROUP</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblLNMBHO73GNE2LF5TXFR7QEMICM" PropId="colAAOGHMLKGBD27BI24WSAXF3OFI" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = partitionGroupId;
+ return rez;
+exception 
+ when NO_DATA_FOUND then
+ return null; 
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpSYT76DEQKJHGPL67SF7K7JNIZQ" Name="partitionGroupId" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
       </Body>
     </Package>
     <Package Id="pkgGKLDTS2YJLOBDH2FABQAQH3XQ4" Name="RDX_ACS_UTILS" PurityLevelMask="0">
@@ -9045,10 +9876,16 @@ end;</xsc:Sql>
           <Prototype Id="dprSOFVPGN7WJEG5OXB2GKM5U5E74" FunctionId="dfn27VVWJVI75DGLPWGUBHNW6BJZ4"/>
         </Item>
         <Item>
-          <Prototype Id="dprYWLW5EXGRFGE3GSAIH2NCYG4KU" FunctionId="dfnRGO7Z3QIXVAERLAAAFJQPBDDRM"/>
+          <Prototype Id="dprJY4Q7CK2KRFYFJOTOOPGR776NU" FunctionId="dfnZTUMPLQX5NAYTPJP6ML3J6ATW4"/>
         </Item>
         <Item>
-          <Prototype Id="dprJY4Q7CK2KRFYFJOTOOPGR776NU" FunctionId="dfnZTUMPLQX5NAYTPJP6ML3J6ATW4"/>
+          <Prototype Id="dprPNPOEJPLEVFJNN2WQPK52Y4SDE" FunctionId="dfnMJRKHFD5QZBTRDFRZQYO4IJY74"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprNMB3WWBYJFD6BM7HQQPU72L2WU" FunctionId="dfnCDX47RTNAVDMTANWTJRWJQB2H4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprKXWZE6BUGBCO3PLQNOV2CJUDUQ" FunctionId="dfn3SVAEFFYNBAMRM25E5KG3DYCBU"/>
         </Item>
       </Header>
       <Body>
@@ -9125,21 +9962,6 @@ end;</xsc:Sql>
           </Function>
         </Item>
         <Item>
-          <Function Id="dfnRGO7Z3QIXVAERLAAAFJQPBDDRM" Name="compileRightsForGrpBeforeDel" Deterministic="false" CacheResult="false" PurityLevelMask="0">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-begin
-null;
-end;</xsc:Sql>
-              </xsc:Item>
-            </Body>
-            <Params>
-              <Param Id="dfpD6CGYH7XTJBVTMCRKOUEJE3QDI" Name="pUserGroup" DbType="varchar2" Direction="0" ValType="21"/>
-            </Params>
-          </Function>
-        </Item>
-        <Item>
           <Function Id="dfnZTUMPLQX5NAYTPJP6ML3J6ATW4" Name="moveRightsFromUserToGroup" Deterministic="false" CacheResult="false" PurityLevelMask="0">
             <Body>
               <xsc:Item>
@@ -9206,6 +10028,53 @@ end;</xsc:Sql>
             <Params>
               <Param Id="dfpGXZG5ZYLVNCSXFD2UIILJ3MW7M" Name="user_" DbType="varchar2" Direction="0" ValType="21"/>
               <Param Id="dfpX2NBZVFLNRBA7BYXCIRTDCXSWA" Name="group_" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnMJRKHFD5QZBTRDFRZQYO4IJY74" Name="existsRightsOnUser2Role" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+ return 0;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpQPUDW4DFQNBJRJTI2ROBCXWDCU" Name="user_" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpQXPE3MDQ6VHTDDTC4ECVYLSAJA" Name="id_" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnCDX47RTNAVDMTANWTJRWJQB2H4" Name="existsRightsOnGroup2Role" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+ return 0;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpAMQNJKJ7ZZBD5ID2Q2KEHASMYQ" Name="user_" DbType="varchar2" Direction="0" ValType="21"/>
+              <Param Id="dfpBXZILNSIEREAXE2L26WCIPLNNY" Name="id_" DbType="integer" Direction="0" ValType="2"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfn3SVAEFFYNBAMRM25E5KG3DYCBU" Name="isSuperAdmin" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="1" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+ return 0;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfp2VWYQEVBOJE5NBRUNEJNLHO6TI" Name="user_" DbType="integer" Direction="0" ValType="2"/>
             </Params>
           </Function>
         </Item>

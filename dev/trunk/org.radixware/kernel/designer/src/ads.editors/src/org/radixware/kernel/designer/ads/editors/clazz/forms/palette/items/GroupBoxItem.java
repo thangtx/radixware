@@ -51,7 +51,7 @@ public class GroupBoxItem extends Item {
         String label = getTextById(node, title.getStringId());
 
         if (label.length() > 0) {
-            return new Dimension(defaultSize.width, DrawUtil.DEFAULT_FONT_METRICS.getHeight() + defaultSize.height);
+            return new Dimension(defaultSize.width, DrawUtil.getFontMetrics().getHeight() + defaultSize.height);
         }
 
         return defaultSize;
@@ -63,8 +63,8 @@ public class GroupBoxItem extends Item {
         AdsUIProperty.LocalizedStringRefProperty title = (AdsUIProperty.LocalizedStringRefProperty) AdsUIUtil.getUiProperty(node, "title");
         String label = getTextById(node, title.getStringId());
         if (label.length() > 0) {
-            r.y += DrawUtil.DEFAULT_FONT_METRICS.getHeight() - DrawUtil.DEFAULT_FONT_METRICS.getDescent() - 1;
-            r.height -= DrawUtil.DEFAULT_FONT_METRICS.getHeight() - DrawUtil.DEFAULT_FONT_METRICS.getDescent() - 1;
+            r.y += DrawUtil.getFontMetrics().getHeight() - DrawUtil.getFontMetrics().getDescent() - 1;
+            r.height -= DrawUtil.getFontMetrics().getHeight() - DrawUtil.getFontMetrics().getDescent() - 1;
         }
         return r;
     }

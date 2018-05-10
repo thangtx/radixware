@@ -270,6 +270,28 @@
           <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsX7JZJY3NXNBJLMPBLUSHC2BNVA"/>
         </ThrownExceptions>
       </Method>
+      <Method Id="mthDLXS67SIRNASPJSJVFMZTTGF3A" Name="isExists" DescriptionId="mls3XVSN3ZVCNEBBPQIUINPEB2QPM" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="isExists(Lorg.radixware.kernel.server.arte.Arte;Ljava.lang.String;I)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arte" DescriptionId="mls2LNRJN5GCVHRTJZDU7G3Z4VXAY" Id="mprTVYGXYVIFFG6BASETCHUZNIA3M">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.arte.Arte"/>
+          </Parameter>
+          <Parameter Name="path" DescriptionId="mls52MABRSFHFHKRJIPWK5JRDKWJI" Id="mprKODRE6XOIZGALKZ62DH3DRZGO4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="timeout" DescriptionId="mlsIGPN5XHAKRDVRGPMLYNYCV2JWA" Id="mprK3HXVAX4IFA43FDQQ4UNPW3P2I">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException" DescriptionId="mlsLC72IG625RHEXJBCKDIXG7MFKQ"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException" DescriptionId="mlsHWBTI67M4BEUNEEC5SZZVHEX7Y"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mls5ZBETGWT7NFNFBKK7S5QRYKV4E"/>
+        </ThrownExceptions>
+      </Method>
     </Methods>
   </AdsClassDefinition>
 </AdsDefinition>

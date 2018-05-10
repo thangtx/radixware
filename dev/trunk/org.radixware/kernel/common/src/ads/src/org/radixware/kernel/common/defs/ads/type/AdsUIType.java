@@ -30,17 +30,17 @@ public class AdsUIType extends AdsDefinitionType {
         return new TypeJavaSourceSupport(this) {
 
             @Override
-            public char[][] getPackageNameComponents(final UsagePurpose env) {
-                return JavaSourceSupport.getPackageNameComponents(AdsUIType.this.source, env);
+            public char[][] getPackageNameComponents(final UsagePurpose env, boolean isHumanReadable) {
+                return JavaSourceSupport.getPackageNameComponents(AdsUIType.this.source, isHumanReadable, env);
             }
 
             @Override
-            public char[] getLocalTypeName(final UsagePurpose env) {
+            public char[] getLocalTypeName(final UsagePurpose env, boolean isHumanReadable) {
                 if (env.getEnvironment() == ERuntimeEnvironmentType.EXPLORER || env.getEnvironment() == ERuntimeEnvironmentType.WEB) {
 //                    if (AdsUIType.this.source instanceof AdsCustomPageEditorDef) {
 //                        return (AdsUIType.this.source.getId().toString() + "_" + ((AdsCustomPageEditorDef) AdsUIType.this.source).getOwnerEditorPage().getOwnerDef().getId()).toCharArray();
 //                    } else {
-                    return AdsUIType.this.source.getId().toCharArray();
+                    return JavaSourceSupport.getName(source, isHumanReadable);
                     //}
                 } else {
                     return "???".toCharArray();

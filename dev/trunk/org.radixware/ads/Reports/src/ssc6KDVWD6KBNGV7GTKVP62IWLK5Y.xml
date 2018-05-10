@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="ssc6KDVWD6KBNGV7GTKVP62IWLK5Y" Name="ReportParamDeleteChildsStmt" Type="9">
+    <AccessRules Access="4" IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headerssc6KDVWD6KBNGV7GTKVP62IWLK5Y"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyssc6KDVWD6KBNGV7GTKVP62IWLK5Y"/>
+    </Bodies>
+    <MethodGroup Id="cmg6XQFGC4OJ5E3LI74T5N2PSTWRA" Name="Root"/>
+    <PropertyGroup Id="cpgZZTTNTQGSZHXNAAVUFFNCZVGLQ" Name="Root"/>
+    <Properties>
+      <Property Id="prm65YVR6JBLRBRNPXYZUVWCCJXQU" Name="parentId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parentId" Id="mpr65YVR6JBLRBRNPXYZUVWCCJXQU">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType/>
+      </Method>
+      <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="size" Id="mprSize______________________">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_sendBatch___________" Name="sendBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>delete from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M" PropId="colPAEUQ3ALXFDFLIZDLKK52LKUKA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm65YVR6JBLRBRNPXYZUVWCCJXQU"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.Statement"/>
+  </AdsClassDefinition>
+</AdsDefinition>

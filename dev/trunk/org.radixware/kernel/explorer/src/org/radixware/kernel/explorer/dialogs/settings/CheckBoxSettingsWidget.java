@@ -15,10 +15,10 @@ import com.trolltech.qt.gui.QCheckBox;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 
-public class CheckBoxSettingsWidget extends SettingsWidget {
+class CheckBoxSettingsWidget extends SettingsWidget {
 
     protected final QCheckBox bSaveCheckBox;
     private final Boolean defaultvalue;
@@ -46,14 +46,14 @@ public class CheckBoxSettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(IExplorerSettings src) {
         final boolean value = src.readBoolean(getSettingCfgName(), defaultvalue);
         bSaveCheckBox.setChecked(value);
         onChangeCheckBox();
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
         dst.writeBoolean(getSettingCfgName(), bSaveCheckBox.isChecked());
     }
 

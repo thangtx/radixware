@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdIFR4ZWWEF5H37ICZMZ3BCBY4IY" Name="ImpExpXsd" TargetNamespace="http://schemas.radixware.org/persocomm-impexp.xsd" NeedsDoc="false" Environment="common"><ads:AccessRules IsPublished="false"/><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdMPH3WOW4SHOBDCKSAALOMT5GDM" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdXBC3TNLZQ3NRDCINABIFNQAABA" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.radixware.org/persocomm-impexp.xsd" elementFormDefault="qualified" attributeFormDefault="qualified" xmlns="http://schemas.radixware.org/persocomm-impexp.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:comm="http://schemas.radixware.org/common.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:cmd="http://schemas.radixware.org/commonCommands.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/commonCommands.xsd" schemaLocation="commonCommands.xsd"/>
+    <xs:simpleType name="ChannelKind">
+        <xs:annotation>
+            <xs:documentation>Enum ChannelKind</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <t:class classId="acsZ5EEISSCVXOBDCLUAALOMT5GDM">org.radixware.ads.mdlU6XJ2RXD4ZAJPBS2QB6WDAD3JQ.common.acsZ5EEISSCVXOBDCLUAALOMT5GDM</t:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="t:StrEnum"/>
+    </xs:simpleType>
+    <xs:simpleType name="LimitPeriodKind">
+        <xs:annotation>
+            <xs:documentation>Enum LimitPeriodKind</xs:documentation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <t:class classId="acsS2G5HB3SZVBMTND5FBKRD7LXGU">org.radixware.ads.mdlU6XJ2RXD4ZAJPBS2QB6WDAD3JQ.common.acsS2G5HB3SZVBMTND5FBKRD7LXGU</t:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="t:StrEnum"/>
+    </xs:simpleType>
+    <xs:complexType name="EventSubscriptionCode">
+        <xs:attribute name="Code" type="t:Str"/>
+    </xs:complexType>
+    <xs:complexType name="EventSubscription">
+        <xs:sequence>
+            <xs:element name="ChannelKind" type="ChannelKind" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="SubjectTemplate" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="RoutingKey" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="BodyTemplate" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="BeforeSendFunc" type="comm:UserFunc" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="LimitPeriodKind" type="LimitPeriodKind" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="LimitMessSubjectTemplate" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="LimitMessBodyTemplate" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="EventSubscriptionCode" type="EventSubscriptionCode" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="Title" type="t:Str"/>
+        <xs:attribute name="EventSource" type="cmd:EventSource"/>
+        <xs:attribute name="IsActive" type="t:Bool" default="true"/>
+        <xs:attribute name="ExtGuid" type="t:Str" use="required"/>
+        <xs:attribute name="UserGroupName" type="t:Str" use="required"/>
+        <xs:attribute name="ToStoreInHist" type="t:Bool" default="false"/>
+        <xs:attribute name="MinEventSeverity" type="cmd:EventSeverity" default="3"/><!--default: Error-->
+        <xs:attribute name="LowImportanceMaxSev" type="cmd:EventSeverity" default="1"/><!--default: Event-->
+        <xs:attribute name="NormalImportanceMaxSev" type="cmd:EventSeverity" default="2"/><!--default: Warning-->
+        <xs:attribute name="LimitCnt" type="t:Int"/>
+        <xs:attribute name="Language" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:documentation>Language</xs:documentation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <t:class classId="acs2G44GBNBE5D7RO2QHQSVRZNLG4">org.radixware.kernel.common.enums.EIsoLanguage</t:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="t:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:element name="EventSubscription" type="EventSubscription"/>
+    <xs:element name="EventSubscriptionGroup">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Item" type="EventSubscription" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

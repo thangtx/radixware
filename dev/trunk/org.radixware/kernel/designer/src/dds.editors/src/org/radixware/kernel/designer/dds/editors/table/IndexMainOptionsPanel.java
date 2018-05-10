@@ -37,7 +37,7 @@ import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.designer.common.dialogs.sqlscript.actions.ShowReCreateScriptAction;
 import org.radixware.kernel.designer.common.dialogs.utils.NameAcceptorFactory;
 import org.radixware.kernel.designer.dds.script.defs.DdsIndexScriptGenerator;
-import org.radixware.kernel.designer.dds.script.defs.DdsScriptGeneratorUtils;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 
 
 public class IndexMainOptionsPanel extends javax.swing.JPanel implements IUpdateable {

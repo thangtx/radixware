@@ -67,10 +67,14 @@ public class DesignerBuildEnvironment implements IBuildEnvironment {
     }
 
     public DesignerBuildEnvironment(boolean suicideMode, EBuildActionType actionType) {
+        this(suicideMode, actionType, null);
+    }
+    
+    public DesignerBuildEnvironment(boolean suicideMode, EBuildActionType actionType, IFlowLogger logger) {
         this.actionType = actionType;
         this.suicideMode = suicideMode && actionType != EBuildActionType.RELEASE;
         if (actionType != EBuildActionType.RELEASE) {
-            this.logger = FlowLoggerFactory.newBuildLogger(actionType);
+            this.logger = logger != null ? logger : FlowLoggerFactory.newBuildLogger(actionType);
         }
     }
 
@@ -87,7 +91,7 @@ public class DesignerBuildEnvironment implements IBuildEnvironment {
         }
         return new CheckOptions(false, true, null);
     }
-    private BuildOptions configuredOptions = null;
+    protected volatile BuildOptions configuredOptions = null;
 
     @Override
     public BuildOptions getBuildOptions() {

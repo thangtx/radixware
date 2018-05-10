@@ -27,12 +27,12 @@ import org.radixware.kernel.common.utils.Utils;
 class RadFilterInheritedParamDef extends RadFilterParamDef implements ISqmlParameter {
 
     private final RadFilterParamDef baseParam;
-    private boolean wasModified;
+    private final boolean canDefinePersistentValue;
+    private boolean wasModified;    
     private ISqmlParameterPersistentValue persistentValue;
 
-    public RadFilterInheritedParamDef(final RadFilterParamDef baseFilterParamDef) {
-        super(
-                baseFilterParamDef.getId(),
+    public RadFilterInheritedParamDef(final RadFilterParamDef baseFilterParamDef, final boolean canDefinePersistentValue) {
+        super(baseFilterParamDef.getId(),
                 baseFilterParamDef.getName(), //собственное имя
                 null, //если перекрыт заголовок - идентификатор строки
                 baseFilterParamDef.getOwnerClassId(), //идентификатор класса (aec), в котором определен фильтр
@@ -52,12 +52,14 @@ class RadFilterInheritedParamDef extends RadFilterParamDef implements ISqmlParam
                 baseFilterParamDef.isMemo(),
                 //Parent selector
                 baseFilterParamDef.getParentSelectorPresentationClassId(),
-                baseFilterParamDef.getParentSelectorPresentationId());
+                baseFilterParamDef.getParentSelectorPresentationId(),
+                baseFilterParamDef.useDropDownList);
         baseParam = baseFilterParamDef;
+        this.canDefinePersistentValue = canDefinePersistentValue;
     }
 
     public RadFilterInheritedParamDef copy() {
-        final RadFilterInheritedParamDef result = new RadFilterInheritedParamDef(baseParam);
+        final RadFilterInheritedParamDef result = new RadFilterInheritedParamDef(baseParam, canDefinePersistentValue);
         if (persistentValue != null) {
             result.persistentValue = persistentValue.copy();
         }
@@ -73,6 +75,11 @@ class RadFilterInheritedParamDef extends RadFilterParamDef implements ISqmlParam
     protected RadPropertyDef getTargetProperty() {
         return baseParam.getTargetProperty();
     }
+
+    @Override
+    public String getTitle(final IClientEnvironment environment) {
+        return baseParam.getTitle(environment);
+    }        
 
     @Override
     public String getTitle() {
@@ -156,7 +163,7 @@ class RadFilterInheritedParamDef extends RadFilterParamDef implements ISqmlParam
 
     @Override
     public boolean canHavePersistentValue() {
-        return true;
+        return canDefinePersistentValue || persistentValue!=null;
     }
 
     @Override

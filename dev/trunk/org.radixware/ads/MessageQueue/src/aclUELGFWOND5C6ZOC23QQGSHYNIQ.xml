@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclUELGFWOND5C6ZOC23QQGSHYNIQ" Name="MessageQueue.Producer.Jms" DescriptionId="mls644UK5MIHRAFDBP66C6EIVJDPA" Type="2" ClientEnvironment="explorer">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderaclUELGFWOND5C6ZOC23QQGSHYNIQ">
+        <xsc:Item>
+          <xsc:Java>import java.io.IOException;
+import javax.jms.BytesMessage;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import org.radixware.kernel.server.units.mq.JmsDelegate;
+import org.radixware.schemas.messagequeue.MqMessageBody;
+import org.radixware.schemas.messagequeue.MqMessageMeta;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclUELGFWOND5C6ZOC23QQGSHYNIQ">
+        <xsc:Item>
+          <xsc:Java>private static class MqJmsProducer implements </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aicLETQUUSVHZCSLOGKIII4M6EDU4">
+            <xsc:Presentation>IMqProducer</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, JmsDelegate.JmsUnit {
+    
+    private final JmsDelegate delegate;
+    
+    @Override
+    public void logDebug(String mess) {
+        </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+            <xsc:Presentation>Arte::Trace</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true">
+            <xsc:Presentation>debug</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(mess, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SDSE7MFJRBNJOQS77VGBYNLGM" Invoke="true">
+            <xsc:Presentation>Arte::EventSource:MqHandlerUnit</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    }
+    
+    @Override
+    public void logEvent(String mess) {
+        </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+            <xsc:Presentation>Arte::Trace</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="pdcTrace_____________________ mthQ63BL22SRPNRDCISABIFNQAABA" Invoke="true">
+            <xsc:Presentation>event</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(mess, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SDSE7MFJRBNJOQS77VGBYNLGM" Invoke="true">
+            <xsc:Presentation>Arte::EventSource:MqHandlerUnit</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    }
+    
+    @Override
+    public void logError(String mess) {
+        </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+            <xsc:Presentation>Arte::Trace</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+            <xsc:Presentation>error</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(mess, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci7SDSE7MFJRBNJOQS77VGBYNLGM" Invoke="true">
+            <xsc:Presentation>Arte::EventSource:MqHandlerUnit</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+    }
+
+    public MqJmsProducer(final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aclUELGFWOND5C6ZOC23QQGSHYNIQ">
+            <xsc:Presentation>MessageQueue.Producer.Jms</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> entity, final Str cacheItemId) throws </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="axc7PXEO3TYR5CCFH7362MPE6KFAY">
+            <xsc:Presentation>MessageQueueException</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> {
+        
+        delegate = new JmsDelegate(this, cacheItemId);
+    
+        try {
+            delegate.createJndiContext(entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colS6KAB3VU5RBUXA5HJVMUCA44VY" Invoke="true">
+            <xsc:Presentation>jndiInitialContextFactory</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colDXGGXKN2HNC4NJ6JA35SXHXNCY" Invoke="true">
+            <xsc:Presentation>jndiProviderUrl</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ prdGHZ3HNAUO5BN5BJCMGVFWYNBRI" Invoke="true">
+            <xsc:Presentation>jndiOptionsMap</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+            delegate.createConnectionFactory(entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aclUELGFWOND5C6ZOC23QQGSHYNIQ colYVAS3VBW75FNFOLW2XDBRG7ZZA" Invoke="true">
+            <xsc:Presentation>jndiConnFactoryLookupName</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aclUELGFWOND5C6ZOC23QQGSHYNIQ colJBAOT5IAUVFOJKJWMIMZ3STNDM" Invoke="true">
+            <xsc:Presentation>connFactoryClassName</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aclUELGFWOND5C6ZOC23QQGSHYNIQ prd7AIDU772ABDKDLZAV4TQEMLUQI" Invoke="true">
+            <xsc:Presentation>connFactoryOptionsMap</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+            
+            delegate.startAntiFreeze();
+            delegate.createConnection(entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colMMPJ3MOF5NEEFB4MEBKFURZTMQ" Invoke="true">
+            <xsc:Presentation>login</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colPRWBAX2DZJDFLL5RB6UKQPNJCM" Invoke="true">
+            <xsc:Presentation>password</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, null);
+            delegate.createSession();
+            delegate.createTopic(entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colMNST2OY3VRBFTHZDJPS34GEHEU" Invoke="true">
+            <xsc:Presentation>jndiQueueLookupName</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTRIHVJKCKNDNVESJUPLUFKPVQA" Invoke="true">
+            <xsc:Presentation>queueName</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>);
+            delegate.createProducer();
+        } catch (Exception ex) {
+            delegate.closeSilent();
+            throw new </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="axc7PXEO3TYR5CCFH7362MPE6KFAY mthRNDG5BMZZNBGNJFGCI4Z73RS5E" Invoke="true">
+            <xsc:Presentation>MessageQueueException</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>("MqJmsProducer creation failed", ex);
+        } finally {
+            delegate.stopAntiFreeze();
+        }
+    }
+    
+    private Message createJmsMessage(MqMessageMeta meta, MqMessageBody body) throws JMSException {
+        Message message = null;
+        if (body.isSetStrBody()) {
+            message = delegate.session.createTextMessage(body.StrBody);
+        } else {
+            message = delegate.session.createBytesMessage();
+            ((BytesMessage)message).writeBytes(</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY mth56WVCYEEBJABFNT7W6EIYN7CCA" Invoke="true">
+            <xsc:Presentation>getSendBytes</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(meta, body));
+        }
+        if (meta.getJmsSpecific() != null) {
+            if (meta.getJmsSpecific().isSetCorrelationID()) {
+                message.setJMSCorrelationID(meta.getJmsSpecific().getCorrelationID());
+            }
+            if (meta.getJmsSpecific().isSetType()) {
+                message.setJMSType(meta.getJmsSpecific().getType());
+            }
+        }
+        return message;
+    }
+    
+    @Override
+    public String </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aicLETQUUSVHZCSLOGKIII4M6EDU4 mthQNCU3KWJG5EXLGIVD6MODPGVSE" Invoke="true">
+            <xsc:Presentation>send</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(MqMessageMeta meta, MqMessageBody body) throws IOException {
+        try {
+            Message message = createJmsMessage(meta, body);
+            delegate.startAntiFreeze();
+            delegate.producer.send(message);
+        } catch (JMSException ex) {
+            logError("ARTE JMS send: exception: \n" + </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U">
+            <xsc:Presentation>Utils::ExceptionTextFormatter</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true">
+            <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(ex));
+            throw new IOException("Error while sending message to queue", ex);
+        } finally {
+            delegate.stopAntiFreeze();
+        }
+        
+        return meta.getMessageId();
+    }
+    
+    @Override
+    public void close() throws Exception {
+        delegate.close();
+    }
+    
+    @Override
+    public boolean </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aicLETQUUSVHZCSLOGKIII4M6EDU4 mthKAFZ2NE2MVHP5OLVFX5KT5APDA" Invoke="true">
+            <xsc:Presentation>isConnected</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>() {
+        return true;
+    }
+}
+</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Bodies>
+    <MethodGroup Id="cmg35MMNUZHRNHNPMAS3IFPTIHZW4" Name="Root"/>
+    <PropertyGroup Id="cpgMH4USFJHSNCOXJA7URVB7NI2AE" Name="Root">
+      <Group Id="cpgRESYKAQMCBGV5HJKKMQ744RYCQ" Name="Detail Props" Members="colJBAOT5IAUVFOJKJWMIMZ3STNDM colBWSVD6WMBRARBCGP6U4BAQOM2Q colYVAS3VBW75FNFOLW2XDBRG7ZZA"/>
+      <Group Id="cpgQYQYJZNIVFDMVHZF7T7PYBAKQM" Name="Overriden Props" Members="col7PCH7MSGLZFSNNDIFYF6WQLWDI colOPGPZBRRSZFCFP6DSBBECKFM74 colTRIHVJKCKNDNVESJUPLUFKPVQA colMNST2OY3VRBFTHZDJPS34GEHEU"/>
+      <Group Id="cpg73J6RDWBINC2XM2SNEH7BFGZEI" Name="Dynamic Props" Members="prd7AIDU772ABDKDLZAV4TQEMLUQI"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="colJBAOT5IAUVFOJKJWMIMZ3STNDM" Name="connFactoryClassName" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colXEEGEA3QQ5AQBIDZ337YOJMX54" DetailRefId="refXBMINQMSFJFZDK2KWYNYZO2YSQ">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsWS4C2KMKBRGEFINCAJJYAXABCQ" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colBWSVD6WMBRARBCGP6U4BAQOM2Q" Name="connFactoryOptions" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colDI2FT42XDRHXLHWGDXUNSOBGJM" DetailRefId="refXBMINQMSFJFZDK2KWYNYZO2YSQ">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsQJDLVFLLDJFSPENVP6DUD22XS4" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colYVAS3VBW75FNFOLW2XDBRG7ZZA" Name="jndiConnFactoryLookupName" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="col25LWK27XTVD3XAFUNUWWTB7ARU" DetailRefId="refXBMINQMSFJFZDK2KWYNYZO2YSQ">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsVX4M6YRW3NF5LFSDXAQMDDPY6E" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="col7PCH7MSGLZFSNNDIFYF6WQLWDI" Name="queueKind" Nature="0" IsConst="false" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="21" Path="acsIXEVYI6PORHVNOJ2X4FJ4BGBE4"/>
+        <InitialValue>
+          <ValAsStr>JMS</ValAsStr>
+        </InitialValue>
+        <Presentation InheritanceMask="63"/>
+      </Property>
+      <Property Id="prd7AIDU772ABDKDLZAV4TQEMLUQI" Name="connFactoryOptionsMap" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.radixware.kernel.common.utils.Maps.fromKeyValuePairsString(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclUELGFWOND5C6ZOC23QQGSHYNIQ colBWSVD6WMBRARBCGP6U4BAQOM2Q" Invoke="true">
+                <xsc:Presentation>connFactoryOptions</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="colOPGPZBRRSZFCFP6DSBBECKFM74" Name="brokerAddress" Nature="0" IsConst="false" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <InitialValue>
+          <ValAsStr>not_required</ValAsStr>
+        </InitialValue>
+        <Presentation InheritanceMask="63"/>
+      </Property>
+      <Property Id="colTRIHVJKCKNDNVESJUPLUFKPVQA" Name="queueName" Nature="0" IsConst="false" IsOverride="true" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mls4AHVKFJ3EJGRJHCZPA26JOKYRU" InheritanceMask="62"/>
+      </Property>
+      <Property Id="colMNST2OY3VRBFTHZDJPS34GEHEU" Name="jndiQueueLookupName" Nature="0" IsConst="false" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsOVRNRKRBQNFCJHZ3V3MGJWMZPQ" InheritanceMask="62"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthWXVEL5SYNRBVVP2ICAI7TF6DLI" Name="getSender" DescriptionId="mlsKFWMEYRECZFRLNN42EVSLTGCCU" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="cacheItemId" Id="mprN5SZ76QGTJDYVCCTDPI3CNGCOE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aicLETQUUSVHZCSLOGKIII4M6EDU4"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axc7PXEO3TYR5CCFH7362MPE6KFAY"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new MqJmsProducer(this, cacheItemId);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMHUN7KMMONHPNKHBVVHMAKTH4M" Name="prepareMeta" DescriptionId="mls2IWVIFVIZ5G77EJH3EABXLOYR4" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="meta" Id="mprA6BXU7G23RCYZGXG4CSLSXSBWI">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta"/>
+          </Parameter>
+          <Parameter Name="body" Id="mpr5ROHOPA27JF55BPAYVDGQ7PUHE">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageBody"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (meta == null) {
+    meta = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta.Factory">
+                <xsc:Presentation>MessageQueueXsd:MqMessageMeta.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+}
+
+if (meta.getEncoding() == null) {
+    meta.setEncoding("UTF-8");
+}
+
+if (meta.getQueueName() == null) {
+    meta.setQueueName(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTRIHVJKCKNDNVESJUPLUFKPVQA" Invoke="true">
+                <xsc:Presentation>queueName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+if (meta.getMessageId() == null) {
+    meta.setMessageId(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY mthM4PBBRBTZZELDPJI23LNLXDO5Y" Invoke="true">
+                <xsc:Presentation>calcDefaultMessId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+}
+
+meta.setDebugKey(meta.getMessageId());
+
+return meta;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBGYR2KUAUNERPM2M3LOHS4Z3UA" Name="getPartition" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="meta" Id="mprNCOIEIM44ZFGXDYI235V45E2NQ">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta"/>
+          </Parameter>
+          <Parameter Name="body" Id="mprTNWQ6KNAYREVVGGDYDBX6ODZTI">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageBody"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY mthBGYR2KUAUNERPM2M3LOHS4Z3UA" Invoke="true">
+                <xsc:Presentation>getSafPartition</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(meta, body);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblQZ2AJHN3PFDWXC5BT6I66OS5PQ" AllowedDetailReferences="refXBMINQMSFJFZDK2KWYNYZO2YSQ"/>
+    <Presentations ObjectTitleId="mlsIHDLEWVSUNHFJL3YMXLWLE35DI">
+      <ClassCatalogs>
+        <ClassCatalog Id="ecc5NBNQ63LAFHETGGWPERIR4Y6GI" Name="Producers">
+          <AccessRules IsPublished="false"/>
+          <ClassRef Order="21.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprWRCU5UZMVNDOFJESEXOUPTAXKE" Name="Edit" BasePresentationId="epr7JNXRJQ3R5BDBMFTUG72M2JTXE" InheritanceMask="101552" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="epr7JNXRJQ3R5BDBMFTUG72M2JTXE">
+          <AccessRules IsPublished="false"/>
+          <Model Id="aemWRCU5UZMVNDOFJESEXOUPTAXKE" Name="Edit:Model" Type="15">
+            <AccessRules IsPublished="false"/>
+            <Headers>
+              <Src Name="HeaderaemWRCU5UZMVNDOFJESEXOUPTAXKE"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaemWRCU5UZMVNDOFJESEXOUPTAXKE"/>
+            </Bodies>
+            <MethodGroup Id="cmg32IIN6ODZBEARO3NN67NU5TYQQ" Name="Root"/>
+            <PropertyGroup Id="cpgTS6R2NEIXVAZXNILR7XTZV5BDE" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Name="setVisibility" Nature="0" Environment="common-client" IsOverride="true">
+                <AccessRules/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY epr7JNXRJQ3R5BDBMFTUG72M2JTXE aem7JNXRJQ3R5BDBMFTUG72M2JTXE mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Invoke="true">
+                        <xsc:Presentation>setVisibility</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colOPGPZBRRSZFCFP6DSBBECKFM74" Invoke="true">
+                        <xsc:Presentation>brokerAddress</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(false);</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgAMVYH3HK25A63OVVFY6XZWLH3A" Name="Additional" TitleId="mlsXBKMYTRLNRAU7KVPC77UAMOBYU" Type="1">
+              <Properties>
+                <Property Id="colJBAOT5IAUVFOJKJWMIMZ3STNDM" Row="1" Column="0"/>
+                <Property Id="colBWSVD6WMBRARBCGP6U4BAQOM2Q" Row="2" Column="0"/>
+                <Property Row="0" Column="0">
+                  <PropertyGroup Id="ppgP7KTV4VXUZEI7MKXIX5ER6DLLM" Name="JNDI" TitleId="mlsMO3Q4ZI7BVGA3CHBB2WFOFBGUA" ShowFrame="true">
+                    <EditorPageItem Id="colS6KAB3VU5RBUXA5HJVMUCA44VY" Row="0" Column="0"/>
+                    <EditorPageItem Id="colDXGGXKN2HNC4NJ6JA35SXHXNCY" Row="1" Column="0"/>
+                    <EditorPageItem Id="colYVAS3VBW75FNFOLW2XDBRG7ZZA" Row="2" Column="0"/>
+                    <EditorPageItem Id="colMNST2OY3VRBFTHZDJPS34GEHEU" Row="3" Column="0"/>
+                    <EditorPageItem Id="colPESXTKOHY5BGBAXHNVMC5JUKCE" Row="4" Column="0"/>
+                  </PropertyGroup>
+                </Property>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgSSMUGGSOLNEENDZTYAGQ7AIZ5I" Level="1"/>
+              <Item PageId="epgAMVYH3HK25A63OVVFY6XZWLH3A" Level="1"/>
+              <Item PageId="epgN2YU55HZT5C5DFTUAJJYAOIW2Q" Level="1"/>
+              <Item PageId="epg6V4MMAXFZBDL5DFMVK7EVVGFUQ" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfE7PSDO6FJJHUJCWPIBMWJGPDZY"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprOHHGMQIHARERZNM5I6FK33DHFA" Name="Create" BasePresentationId="eprWRCU5UZMVNDOFJESEXOUPTAXKE" InheritanceMask="105648" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprJFYEPXEXLFAGXCM3U26EA7AJ4I">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfAZ3EE374AZAIHMZKGBEGCSC7Q4"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY"/>
+  </AdsClassDefinition>
+</AdsDefinition>

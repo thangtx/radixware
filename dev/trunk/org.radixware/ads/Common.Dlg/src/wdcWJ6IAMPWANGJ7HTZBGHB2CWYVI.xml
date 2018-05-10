@@ -79,11 +79,15 @@ import com.trolltech.qt.gui.*;</xsc:Java>
       <Bodies>
         <Src Name="BodyadcLQHRGUF2BFBMVFBZLZ4AALOHEI" Environment="explorer">
           <xsc:Item>
-            <xsc:Java>private boolean searchStarted = false;</xsc:Java>
+            <xsc:Java>private boolean searchStarted = false;
+private boolean addBlankLinesToResultOfSearch = true;
+private java.util.List&lt;Integer> searchColumns = new java.util.ArrayList&lt;Integer>(java.util.Arrays.asList(0));</xsc:Java>
           </xsc:Item>
         </Src>
       </Bodies>
-      <MethodGroup Id="cmgESHOER5SUZDLXHM65E47R6ZKTQ" Name="Root"/>
+      <MethodGroup Id="cmgESHOER5SUZDLXHM65E47R6ZKTQ" Name="Root">
+        <Group Id="cmgLHRGW2EWNVDIJLS5LRKH2ECDBU" Name="SearchAPI" Members="mthU4FFCONA4BA67PZNDT7P2QBRTI mth5MV2VEVAJRCR3OPL4WDEMNH3G4 mth7TIES4AWTZF2VFPQDCCQT45ESQ mth2PJBCIZYXZDBNPAVQ6KPPVW23M mthHXMOAZOGOREIXMNMSNU3QPYGHA"/>
+      </MethodGroup>
       <PropertyGroup Id="cpgL6FWOXQ5NND7LK4KNFM4OUXRII" Name="Root"/>
       <Properties>
         <Property Id="prd3N2TT53JNZASRLBTIWTQO7H26U" Name="tree" Nature="2" IsConst="false" Environment="explorer" IsOverride="false">
@@ -95,14 +99,18 @@ import com.trolltech.qt.gui.*;</xsc:Java>
                 <xsc:Java>if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true" extStr="#STD_PROP_VALUE#">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>==null){
+                <xsc:Java> == null) {
     for (QObject child : </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgQJFTYDM7UZDIHEMEXA3ZVWFTH4" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgQJFTYDM7UZDIHEMEXA3ZVWFTH4" Invoke="true">
+                  <xsc:Presentation>SearchLineWidget:Widget</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.parent().children()){
@@ -110,10 +118,12 @@ import com.trolltech.qt.gui.*;</xsc:Java>
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true" extStr="#STD_PROP_VALUE#">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java> = (QTreeWidget)child;
+                <xsc:Java> = (QTreeWidget) child;
             break;
         }
     }
@@ -122,7 +132,9 @@ import com.trolltech.qt.gui.*;</xsc:Java>
 return </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true" extStr="#STD_PROP_VALUE#"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true" extStr="#STD_PROP_VALUE#">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>;
@@ -134,7 +146,7 @@ return </xsc:Java>
       </Properties>
       <Methods>
         <Method Id="mthNKHWEXLM2JE7NCMFCUIOOBNGME" Name="searchWidget_textEdited" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="param0" Id="mprOB7NFWLW3JDAFGX5UXK5SOD7P4">
               <Type TypeId="21"/>
@@ -148,27 +160,35 @@ return </xsc:Java>
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI mthLZVAEM2ZN5AENOHPL3NMJFU5JA" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI mthLZVAEM2ZN5AENOHPL3NMJFU5JA" Invoke="true">
+                  <xsc:Presentation>updateTree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
 }catch(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+                <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                  <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java> ex){
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+                <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                  <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+                </xsc:TypeDeclaration>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true"/>
+                <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true">
+                  <xsc:Presentation>processException</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(ex);
@@ -178,109 +198,152 @@ return </xsc:Java>
           </Sources>
         </Method>
         <Method Id="mthLZVAEM2ZN5AENOHPL3NMJFU5JA" Name="updateTree" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Sources>
             <Src>
               <xsc:Item>
                 <xsc:Java>final String pattern = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true">
+                  <xsc:Presentation>SearchLineWidget:Widget:searchWidget</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.text();
 // pattern can be large, for example, erronerous paste from clipboard, it is required to calc lower case only one time
-final String patternInLowerCase = (pattern!=null ? pattern.toLowerCase() : "");
+final String patternInLowerCase = pattern != null ? pattern.toLowerCase() : "";
 
-for (int i=0; i&lt;</xsc:Java>
+for (int i = 0; i &lt; </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthDDOZWGZEVNA6PG2VFQDMU5TPFY" Invoke="true"/>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthDDOZWGZEVNA6PG2VFQDMU5TPFY" Invoke="true">
+                  <xsc:Presentation>topLevelItemCount</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(); i++) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI mthC4PWPHYY25BN3CJOPRY62GBELQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI mthC4PWPHYY25BN3CJOPRY62GBELQ" Invoke="true">
+                  <xsc:Presentation>updateTree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthXPV35WRW7NFOJFCYEAR635G3IQ" Invoke="true"/>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthXPV35WRW7NFOJFCYEAR635G3IQ" Invoke="true">
+                  <xsc:Presentation>topLevelItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(i), patternInLowerCase);
+                <xsc:Java>(i), patternInLowerCase, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthPLU4YBXGH5ACDKYB6KIV3DRUZM" Invoke="true">
+                  <xsc:Presentation>columnCount</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>());
 }
-
 
 QTreeWidgetItem current = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthGERGZ5FBABDGZFKFY6NR4IZGDU" Invoke="true"/>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthGERGZ5FBABDGZFKFY6NR4IZGDU" Invoke="true">
+                  <xsc:Presentation>currentItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>();
-if (current!=null &amp;&amp; current.</xsc:Java>
+if (current != null &amp;&amp; current.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mth353K63FC7ZGFXCWTLVFGW4SQCE" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mth353K63FC7ZGFXCWTLVFGW4SQCE" Invoke="true">
+                  <xsc:Presentation>isHidden</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>()) {
     current = null;
 }
 
-if (current==null) {
-    for (int i=0; i&lt;</xsc:Java>
+if (current == null) {
+    for (int i = 0; i &lt; </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthDDOZWGZEVNA6PG2VFQDMU5TPFY" Invoke="true"/>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthDDOZWGZEVNA6PG2VFQDMU5TPFY" Invoke="true">
+                  <xsc:Presentation>topLevelItemCount</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(); i++){
         final QTreeWidgetItem topItem = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthXPV35WRW7NFOJFCYEAR635G3IQ" Invoke="true"/>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthXPV35WRW7NFOJFCYEAR635G3IQ" Invoke="true">
+                  <xsc:Presentation>topLevelItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(i);
         if (!topItem.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mth353K63FC7ZGFXCWTLVFGW4SQCE" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mth353K63FC7ZGFXCWTLVFGW4SQCE" Invoke="true">
+                  <xsc:Presentation>isHidden</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>()){
@@ -288,7 +351,9 @@ if (current==null) {
             </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setCurrentItem(current);
@@ -297,17 +362,21 @@ if (current==null) {
     }
 }
 
-if (current!=null) {
+if (current != null) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthFYQBAA5ISJGN3P7GFY7OREHYK4" Invoke="true"/>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthFYQBAA5ISJGN3P7GFY7OREHYK4" Invoke="true">
+                  <xsc:Presentation>scrollToItem</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(current);
@@ -315,7 +384,9 @@ if (current!=null) {
     </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setCurrentItem(current); // clear selection to disable ok button in a dialog
@@ -326,13 +397,16 @@ if (current!=null) {
           </Sources>
         </Method>
         <Method Id="mthC4PWPHYY25BN3CJOPRY62GBELQ" Name="updateTree" Nature="0" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="item" Id="mprVTQN3TUTOJAELKYY42ZAZIZPJ4">
               <Type TypeId="411" Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE"/>
             </Parameter>
             <Parameter Name="patternInLowerCase" Id="mpr5N2G2IQOQVGOJERODQABCDEIYA">
               <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="columnCount" Id="mprF4UFKR6ES5DEPG7HNDZTWRNLNI">
+              <Type TypeId="401" extStr="int"/>
             </Parameter>
           </Parameters>
           <ReturnType TypeId="401" extStr="boolean"/>
@@ -341,44 +415,96 @@ if (current!=null) {
               <xsc:Item>
                 <xsc:Java>boolean visible = false;
 
-for (int i=0; i&lt;item.</xsc:Java>
+for (int i = 0; i &lt; item.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthK53U3PGXXFE33FZUXFW6YHZCRA" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthK53U3PGXXFE33FZUXFW6YHZCRA" Invoke="true">
+                  <xsc:Presentation>childCount</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(); i++){
-    final QTreeWidgetItem child = item.child(i);
+                <xsc:Java>(); i++) {
     if (</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI mthC4PWPHYY25BN3CJOPRY62GBELQ" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI mthC4PWPHYY25BN3CJOPRY62GBELQ" Invoke="true">
+                  <xsc:Presentation>updateTree</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>(child, patternInLowerCase)) {
+                <xsc:Java>(item.child(i), patternInLowerCase, columnCount)) {
         visible = true;
     }
 }
 
-if (!visible) {
-    final String text = item.</xsc:Java>
+visible = visible || searchColumns.isEmpty();
+
+for (int i = 0; !visible &amp;&amp; i &lt; searchColumns.size(); i++) {
+    visible = </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthGD5G2BPFSJHWFORBGS2FBQY7F4" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI mthXC3THSKS5FASRHO4IK2BGIMYQ4" Invoke="true">
+                  <xsc:Presentation>isVisible</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthGD5G2BPFSJHWFORBGS2FBQY7F4" Invoke="true">
+                  <xsc:Presentation>text</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(searchColumns.get(i).intValue()), addBlankLinesToResultOfSearch, patternInLowerCase);
+}
+
+//if (!visible) {
+//    for (int i = 0; i &lt; columnCount &amp;&amp; !visible; i++) {
+//        String text = item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthGD5G2BPFSJHWFORBGS2FBQY7F4" Invoke="true">
+                  <xsc:Presentation>text</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(0);
-    visible = (
-            patternInLowerCase.isEmpty() || 
-            text==null || 
-            text.isEmpty() || 
-            text.toLowerCase().contains(patternInLowerCase));
-}
+//        visible = text == null || text.isEmpty()
+//                ? addBlankLinesToResultOfSearch : patternInLowerCase.isEmpty() || text.toLowerCase().contains(patternInLowerCase);
+//    }
+//
+//    final String textColumn1 = item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthGD5G2BPFSJHWFORBGS2FBQY7F4" Invoke="true">
+                  <xsc:Presentation>text</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(0);
+//
+//    visible = textColumn1 == null || textColumn1.isEmpty() ? addBlankLinesToResultOfSearch : patternInLowerCase.isEmpty() || textColumn1.toLowerCase().contains(patternInLowerCase);
+//    if (sortByMultipleColumns) {
+//        final String textColumn2 = item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mthGD5G2BPFSJHWFORBGS2FBQY7F4" Invoke="true">
+                  <xsc:Presentation>text</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(1);
+//        visible = visible || (textColumn2 == null || textColumn2.isEmpty() ? addBlankLinesToResultOfSearch : patternInLowerCase.isEmpty() || textColumn2.toLowerCase().contains(patternInLowerCase));
+//    }
+//}
 
 item.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mth62UGIYCNUNH37A63DWKQDLAT3E" Invoke="true"/>
+                <xsc:IdReference Path="adc4NCBFAWNKRCQ3EQ2XGFGSABZSE mth62UGIYCNUNH37A63DWKQDLAT3E" Invoke="true">
+                  <xsc:Presentation>setHidden</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(!visible);
@@ -389,7 +515,7 @@ return visible;
           </Sources>
         </Method>
         <Method Id="mth4V4FQPVGGJBQRCW6F3IHLER7DI" Name="Widget_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false">
-          <AccessRules Access="2" IsPublished="false"/>
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
           <Parameters>
             <Parameter Name="widget" Id="mprBABYQGDU3NFLBMUPZ2CTRNTZTY">
               <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
@@ -398,10 +524,12 @@ return visible;
           <Sources>
             <Src>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true">
+                  <xsc:Presentation>SearchLineWidget:Widget:searchWidget</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Java>.setText(</xsc:Java>
+                <xsc:Java>.setPlaceholderText(</xsc:Java>
               </xsc:Item>
               <xsc:Item>
                 <xsc:LocalizedString StringId="mlsOBWVUJXGZZB4NP5VWFHH3UGY7M"/>
@@ -411,37 +539,164 @@ return visible;
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true">
+                  <xsc:Presentation>SearchLineWidget:Widget:searchWidget</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.setStyleSheet("color: gray;");
-//</xsc:Java>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true"/>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Java>.selectAll();
-
 </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true">
+                  <xsc:Presentation>SearchLineWidget:Widget:searchWidget</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>.</xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A mthC56LCJPNERENHEZLJLIBC4GMKI" Invoke="true"/>
+                <xsc:IdReference Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A mthC56LCJPNERENHEZLJLIBC4GMKI" Invoke="true">
+                  <xsc:Presentation>installEventFilter</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(new </xsc:Java>
               </xsc:Item>
               <xsc:Item>
-                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI adc7ZAVQXGFINAQ3MVEMC2EB35VH4 mth6OPTX46YMRCQTOLV26KWZXZUPM" Invoke="true"/>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI adc7ZAVQXGFINAQ3MVEMC2EB35VH4 mth6OPTX46YMRCQTOLV26KWZXZUPM" Invoke="true">
+                  <xsc:Presentation>KeyEventListener</xsc:Presentation>
+                </xsc:IdReference>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Java>(widget));</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthU4FFCONA4BA67PZNDT7P2QBRTI" Name="setAddBlankLinesToResultOfSearch" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="isAddBlankLinesToResultOfSearch" Id="mprOR2WLQNDVZEFXJHLWREY52Z6GQ">
+              <Type TypeId="401" extStr="boolean"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>addBlankLinesToResultOfSearch = isAddBlankLinesToResultOfSearch;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth5MV2VEVAJRCR3OPL4WDEMNH3G4" Name="makeSearchAllColumns" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>searchColumns.clear();
+for(int i = 0; i &lt; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthPLU4YBXGH5ACDKYB6KIV3DRUZM" Invoke="true">
+                  <xsc:Presentation>columnCount</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(); i++) {
+    searchColumns.add(i);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth7TIES4AWTZF2VFPQDCCQT45ESQ" Name="clearListSearchColumns" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>searchColumns.clear();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth2PJBCIZYXZDBNPAVQ6KPPVW23M" Name="disableSearchByColumn" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="columnIndex" Id="mprQ3O62PCSA5EX3O6G4VDF5CZNLY">
+              <Type TypeId="401" extStr="int"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if(searchColumns.contains(columnIndex)) {
+    searchColumns.remove(columnIndex);
+}
+</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthHXMOAZOGOREIXMNMSNU3QPYGHA" Name="addSearchByColumn" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="columnIndex" Id="mprC2MXZUZ45ZBRTK7GUCOKHGVT6Y">
+              <Type TypeId="401" extStr="int"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if(!searchColumns.contains(columnIndex) &amp;&amp; columnIndex &lt; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                  <xsc:Presentation>tree</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthPLU4YBXGH5ACDKYB6KIV3DRUZM" Invoke="true">
+                  <xsc:Presentation>columnCount</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>() &amp;&amp; columnIndex > -1) {
+    searchColumns.add(columnIndex);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthXC3THSKS5FASRHO4IK2BGIMYQ4" Name="isVisible" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="1" IsPublished="false" IsStatic="true"/>
+          <Parameters>
+            <Parameter Name="text" Id="mprH7F4RVO5GZFFNHQNKO2Y4NIXGE">
+              <Type TypeId="21"/>
+            </Parameter>
+            <Parameter Name="addBlankLinesToResultOfSearch" Id="mpr2SS2WBF4XJDDJDIENELW7XDQF4">
+              <Type TypeId="401" extStr="boolean"/>
+            </Parameter>
+            <Parameter Name="patternInLowerCase" Id="mprVZMN7QD5ZZDV7L3AP26Y27DW2E">
+              <Type TypeId="21"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>return text == null || text.isEmpty() ? addBlankLinesToResultOfSearch : patternInLowerCase.isEmpty() || text.toLowerCase().contains(patternInLowerCase);</xsc:Java>
               </xsc:Item>
             </Src>
           </Sources>
@@ -477,48 +732,55 @@ return visible;
                 <Src>
                   <xsc:Item>
                     <xsc:Java>try {
-    if (event.type()==QEvent.Type.KeyPress){
-        if (!searchStarted){
+    if (event.type() == QEvent.Type.KeyPress) {
+        if (!searchStarted) {
             </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true"/>
+                    <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true">
+                      <xsc:Presentation>SearchLineWidget:Widget:searchWidget</xsc:Presentation>
+                    </xsc:IdReference>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>.setText("");
             </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true"/>
+                    <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI wdgTNWSMDDYARGOLHR345RMGESW3U" Invoke="true">
+                      <xsc:Presentation>SearchLineWidget:Widget:searchWidget</xsc:Presentation>
+                    </xsc:IdReference>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>.setStyleSheet("");
         }
-        if (event instanceof QKeyEvent){
-            final QKeyEvent keyEvent =(QKeyEvent) event;
+        if (event instanceof QKeyEvent) {
+            final QKeyEvent keyEvent = (QKeyEvent) event;
             Qt.Key key = null;
-            try{
+            try {
                 key = Qt.Key.resolve(keyEvent.key());
-            }catch(com.trolltech.qt.QNoSuchEnumValueException ex){
+            } catch (com.trolltech.qt.QNoSuchEnumValueException ex) {
                 // бывает
             }
-            if (key==Qt.Key.Key_Up ||
-                    key==Qt.Key.Key_Down ||
-                    key==Qt.Key.Key_PageUp ||
-                    key==Qt.Key.Key_PageDown ||
-                    key==Qt.Key.Key_Plus ||
-                    key==Qt.Key.Key_Minus
-                    ){
+            if (key == Qt.Key.Key_Up
+                    || key == Qt.Key.Key_Down
+                    || key == Qt.Key.Key_PageUp
+                    || key == Qt.Key.Key_PageDown
+                    || key == Qt.Key.Key_Plus
+                    || key == Qt.Key.Key_Minus) {
                 </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true"/>
+                    <xsc:IdReference Path="wdcWJ6IAMPWANGJ7HTZBGHB2CWYVI admWJ6IAMPWANGJ7HTZBGHB2CWYVI prd3N2TT53JNZASRLBTIWTQO7H26U" Invoke="true">
+                      <xsc:Presentation>tree</xsc:Presentation>
+                    </xsc:IdReference>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>.</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthAPADMPPPRFFNPFJYR2CYUWPKZE" Invoke="true"/>
+                    <xsc:IdReference Path="adcZSKMPF5G3VD63BMVKNKCVGNL3A mthAPADMPPPRFFNPFJYR2CYUWPKZE" Invoke="true">
+                      <xsc:Presentation>event</xsc:Presentation>
+                    </xsc:IdReference>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>(event);
@@ -526,23 +788,29 @@ return visible;
             }
         }
     }
-}catch(</xsc:Java>
+} catch (</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+                    <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                      <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+                    </xsc:TypeDeclaration>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:Java> ex){
+                    <xsc:Java> ex) {
     </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                      <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+                    </xsc:TypeDeclaration>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>.</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true"/>
+                    <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true">
+                      <xsc:Presentation>processException</xsc:Presentation>
+                    </xsc:IdReference>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>(ex);

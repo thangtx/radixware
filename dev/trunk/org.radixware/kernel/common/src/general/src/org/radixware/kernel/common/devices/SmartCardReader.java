@@ -14,6 +14,7 @@ package org.radixware.kernel.common.devices;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.smartcardio.ATR;
 import javax.smartcardio.Card;
 import javax.smartcardio.CardChannel;
@@ -51,6 +52,7 @@ public final class SmartCardReader implements ISmartCardReader{
             }
             return Collections.<String>unmodifiableList(terminalNames);
         }catch(javax.smartcardio.CardException exception){
+            logException("getNames()",exception);
             throw convertException(exception);
         }
     }
@@ -70,6 +72,11 @@ public final class SmartCardReader implements ISmartCardReader{
             }
             return false;
         }catch(javax.smartcardio.CardException exception){
+            if (name==null){
+                logException("open(name=null)",exception);
+            }else{
+                logException("open(name=\""+name+"\")",exception);
+            }
             throw convertException(exception);
         }
     }
@@ -93,6 +100,7 @@ public final class SmartCardReader implements ISmartCardReader{
             }
             return cardTerminal.isCardPresent();
         }catch(javax.smartcardio.CardException exception){
+            logException("isCardPresent()",exception);
             throw convertException(exception);
         }
     }
@@ -105,6 +113,7 @@ public final class SmartCardReader implements ISmartCardReader{
             }
             return cardTerminal.waitForCardAbsent(timeout);
         }catch(javax.smartcardio.CardException exception){
+            logException("waitForCardAbsent(timeout="+String.valueOf(timeout)+")",exception);
             throw convertException(exception);
         }
     }
@@ -117,6 +126,7 @@ public final class SmartCardReader implements ISmartCardReader{
             }
             return cardTerminal.waitForCardPresent(timeout);
         }catch(javax.smartcardio.CardException exception){
+            logException("waitForCardPresent(timeout="+String.valueOf(timeout)+")",exception);
             throw convertException(exception);
         }
     }
@@ -138,6 +148,9 @@ public final class SmartCardReader implements ISmartCardReader{
             }
             return false;
         }catch(javax.smartcardio.CardException exception){
+            final String nameValue = name==null ? "null" : "\""+name+"\"";
+            final String protocolValue = protocol==null ? "null" : "\""+protocol+"\"";
+            logException("connect(name="+nameValue+", protocol="+protocolValue+")",exception);
             throw convertException(exception);
         }
     }
@@ -152,6 +165,7 @@ public final class SmartCardReader implements ISmartCardReader{
             card = null;
             channel = null;
         }catch(javax.smartcardio.CardException exception){
+            logException("disconnect(reset="+String.valueOf(reset)+")",exception);
             throw convertException(exception);
         }
     }
@@ -164,6 +178,7 @@ public final class SmartCardReader implements ISmartCardReader{
             }        
             card.beginExclusive();
         }catch(javax.smartcardio.CardException exception){
+            logException("beginExclusive()",exception);
             throw convertException(exception);
         }
     }
@@ -176,6 +191,7 @@ public final class SmartCardReader implements ISmartCardReader{
             }        
             card.endExclusive();
         }catch(javax.smartcardio.CardException exception){
+            logException("endExclusive()",exception);
             throw convertException(exception);
         }
     }
@@ -201,16 +217,23 @@ public final class SmartCardReader implements ISmartCardReader{
             final ResponseAPDU response = channel.transmit(new CommandAPDU(command));
             return response==null ? null : response.getBytes();
         }catch(javax.smartcardio.CardException exception){
+            final String commandValue = command==null ? "null" : "{length="+command.length+"}";
+            logException("transmit("+commandValue+")",exception);
             throw convertException(exception);
         }
     }
     
-    private static CardException convertException(final javax.smartcardio.CardException exception){//javax.smartcardio is not present in IBM java
-        if (exception instanceof javax.smartcardio.CardNotPresentException){
+    private static CardException convertException(final javax.smartcardio.CardException exception){//javax.smartcardio is not present in IBM java        
+        if (exception instanceof javax.smartcardio.CardNotPresentException){            
             return new CardNotPresentException(exception.getMessage());
         }else{
             return new CardException(exception.getMessage());
         }
+    }
+    
+    private static void logException(final String method, final javax.smartcardio.CardException exception){
+        final String className = SmartCardReader.class.getName();
+        Logger.getLogger(className).throwing(className, method, exception);
     }
     
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="6">
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
   <AdsClassDefinition Id="aecORSQ5ZLT2FGPXOYAV5PIR47XIY" Name="LicenseReportLog" Type="1">
-    <AccessRules IsFinal="true" IsPublished="false"/>
+    <AccessRules IsFinal="true"/>
     <Headers>
       <Src Name="HeaderaecVMV52FA6HRH2ZFPFNAR3IX2BFI"/>
     </Headers>
@@ -14,41 +14,41 @@
     </PropertyGroup>
     <Properties>
       <Property Id="colSUT7LCU475AEDKU453I6ZZMHQE" Name="createDate" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
-        <AccessRules IsPublished="false"/>
+        <AccessRules/>
         <Type TypeId="12"/>
         <Presentation TitleId="mlsMMGTSEVY5BBUFLYIJDJ2RYNFHA" InheritanceMask="4">
           <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
         </Presentation>
       </Property>
       <Property Id="colQW42UQ7FCZDP3JWHECUGWWYTRM" Name="id" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
-        <AccessRules IsPublished="false"/>
+        <AccessRules/>
         <Type TypeId="2"/>
-        <Presentation InheritanceMask="4">
+        <Presentation TitleId="mls6LFUGGPPZBDLVM736AGP4TWJPE" InheritanceMask="4">
           <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
         </Presentation>
       </Property>
       <Property Id="colKWM74XGC2ZBZZMZ2E3CBD7ZBRY" Name="reportHtml" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
-        <AccessRules IsPublished="false"/>
+        <AccessRules/>
         <Type TypeId="27"/>
         <Presentation InheritanceMask="4">
           <Editing EditPossibility="1" IsDuplicatesEnabled="true" ReadSeparately="true"/>
         </Presentation>
       </Property>
       <Property Id="colNX4TCQYC3FEDZHADFCGYD2SU6I" Name="reportXml" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
-        <AccessRules IsPublished="false"/>
+        <AccessRules/>
         <Type TypeId="27"/>
-        <Presentation InheritanceMask="4" IsPresentable="false">
+        <Presentation InheritanceMask="4">
           <Editing EditPossibility="1" IsDuplicatesEnabled="true" ReadSeparately="true"/>
         </Presentation>
       </Property>
       <Property Id="colBMCYNNDJK5AUPHZCX4EV4NYFJQ" Name="sent" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
-        <AccessRules IsPublished="false"/>
+        <AccessRules/>
         <Type TypeId="1"/>
         <InitialValue>
           <ValAsStr>0</ValAsStr>
         </InitialValue>
         <Presentation TitleId="mls7V4DD67XDRCT3FDLUFBHAATP74" InheritanceMask="4">
-          <Editing EditPossibility="4" IsDuplicatesEnabled="true"/>
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
         </Presentation>
       </Property>
     </Properties>
@@ -56,19 +56,114 @@
     <Entity EntityId="tblORSQ5ZLT2FGPXOYAV5PIR47XIY">
       <AccessAreas Type="None"/>
     </Entity>
-    <Presentations ObjectTitleId="mlsXA23ERRO6RBOVAO2NIMH4J7A4A" EntityTitleId="mlsHW5PJEJYDVHA3FSYFWQ6AQEWAY" Restrictions="0">
+    <Presentations ObjectTitleId="mlsXA23ERRO6RBOVAO2NIMH4J7A4A" EntityTitleId="mlsHW5PJEJYDVHA3FSYFWQ6AQEWAY" DefaultSelectorPresentationId="sprRADEYZWTJ5DS3EXFSEEIZHPPRM" IconId="imgATYWXSAVABBCRH5RIYCAZQXGQQ" Restrictions="0">
       <ObjectTitleFormat Id="etfKL43IIL4NVDKNDZ3IN5MX7XY2U"/>
+      <Sortings>
+        <Sorting Id="srtHEDBAMWKRFHTXHFRQFK5WN2YDI" Name="Id" TitleId="mlsJ2YSAWCVTJE6TIEE72ZAHDUTXI">
+          <AccessRules IsPublished="false"/>
+          <OrderBy Desc="true" PropId="colQW42UQ7FCZDP3JWHECUGWWYTRM"/>
+          <Hint/>
+        </Sorting>
+      </Sortings>
       <Commands>
-        <Command Id="cmdECUAEHRTQ5G6HJVE2ETMZMFAZ4" Name="viewHtml" Nature="0" IsVisible="true" IsConfirmationRequired="false" Accessibility="0" Scope="3">
+        <Command Id="cmdECUAEHRTQ5G6HJVE2ETMZMFAZ4" Name="viewHtml" TitleId="mlsZHGWMSNKRJGNHICAMQ5UUYLDLQ" Nature="0" IconId="imgUFP5QOZN6JDGHIOY2PHWN35JKE" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="3">
           <AccessRules IsPublished="false"/>
         </Command>
-        <Command Id="cmd4VPW6YABEZDSXIQ6RZVND33NZI" Name="viewXml" Nature="0" IsVisible="true" IsConfirmationRequired="false" Accessibility="0" Scope="3">
+        <Command Id="cmd4VPW6YABEZDSXIQ6RZVND33NZI" Name="viewXml" TitleId="mlsMQSDEYAUQBABJFZKHYMTRT2I7U" Nature="0" IconId="imgY6YKZHRPDBETZKXA5VJ5X2LQZE" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="3">
           <AccessRules IsPublished="false"/>
         </Command>
       </Commands>
       <EditorPresentations>
-        <EditorPresentation Id="eprV2PETTK5IREUFN5DZSO4GWKAM4" Name="Edit" InheritanceMask="2192" Restrictions="0" EnabledCommandIds="" RightsInheritanceMode="0">
+        <EditorPresentation Id="eprV2PETTK5IREUFN5DZSO4GWKAM4" Name="Edit" InheritanceMask="2192" Restrictions="39" EnabledCommandIds="" RightsInheritanceMode="0">
           <AccessRules IsPublished="false"/>
+          <Model Id="aemV2PETTK5IREUFN5DZSO4GWKAM4" Name="Edit:Model" Type="15">
+            <AccessRules IsPublished="false"/>
+            <Headers>
+              <Src Name="HeaderaemV2PETTK5IREUFN5DZSO4GWKAM4"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaemV2PETTK5IREUFN5DZSO4GWKAM4"/>
+            </Bodies>
+            <MethodGroup Id="cmgUA7DYWL7XJHLDNOH3GTVBGTZZY" Name="Root"/>
+            <PropertyGroup Id="cpgJ6FELPLFKFDQLIDYGBWCCE7ISI" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mthcmdECUAEHRTQ5G6HJVE2ETMZMFAZ4" Name="onCommand_viewHtml" Nature="1" Environment="explorer" IsOverride="false">
+                <AccessRules Access="4" IsPublished="false"/>
+                <Parameters>
+                  <Parameter Name="command" Id="mprE7VVMTIONZGGJJNNSFGGC5NRMY">
+                    <Type TypeId="411" Path="aecORSQ5ZLT2FGPXOYAV5PIR47XIY cmdECUAEHRTQ5G6HJVE2ETMZMFAZ4"/>
+                  </Parameter>
+                </Parameters>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1">
+                        <xsc:Presentation>Common.Dlg::ClientUtils</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1 mthMM34DTILVNEMPIKI6PNYO3Y7V4" Invoke="true">
+                        <xsc:Presentation>viewText</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecORSQ5ZLT2FGPXOYAV5PIR47XIY colKWM74XGC2ZBZZMZ2E3CBD7ZBRY" Invoke="true">
+                        <xsc:Presentation>reportHtml</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value, "Report");
+</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+              <Method Id="mthcmd4VPW6YABEZDSXIQ6RZVND33NZI" Name="onCommand_viewXml" Nature="1" Environment="explorer" IsOverride="false">
+                <AccessRules Access="4" IsPublished="false"/>
+                <Parameters>
+                  <Parameter Name="command" Id="mprVMEO64IALZGAPFHUHLLSAYFXVU">
+                    <Type TypeId="411" Path="aecORSQ5ZLT2FGPXOYAV5PIR47XIY cmd4VPW6YABEZDSXIQ6RZVND33NZI"/>
+                  </Parameter>
+                </Parameters>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1">
+                        <xsc:Presentation>Common.Dlg::ClientUtils</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1 mthY25OHYEXINB57PE6IVAFJB32NA" Invoke="true">
+                        <xsc:Presentation>viewXml</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecORSQ5ZLT2FGPXOYAV5PIR47XIY colNX4TCQYC3FEDZHADFCGYD2SU6I" Invoke="true">
+                        <xsc:Presentation>reportXml</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value, "Report");
+</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
           <ChildExplorerItems/>
           <ObjectTitleFormat Id="etfQE2KVF6GVJFHDKQ4BNZP3OZ5Y4"/>
         </EditorPresentation>
@@ -80,10 +175,11 @@
             <ConditionWhere/>
             <ConditionFrom/>
           </Condition>
-          <Addons AnyBaseFilterEnabled="false" AnyBaseSortingEnabled="false" CustomFilterEnabled="false" CustomSortingEnabled="false" FilterIsObligatory="false">
+          <Addons AnyBaseFilterEnabled="true" AnyBaseSortingEnabled="true" CustomFilterEnabled="true" CustomSortingEnabled="false" FilterIsObligatory="false" DefaultSortingId="srtHEDBAMWKRFHTXHFRQFK5WN2YDI">
             <DefaultHint/>
           </Addons>
           <SelectorColumns>
+            <Column Align="-1" PropId="colQW42UQ7FCZDP3JWHECUGWWYTRM" Visibility="1" SizePolicy="0"/>
             <Column Align="-1" PropId="colSUT7LCU475AEDKU453I6ZZMHQE" Visibility="1" SizePolicy="0"/>
             <Column Align="-1" PropId="colBMCYNNDJK5AUPHZCX4EV4NYFJQ" Visibility="1" SizePolicy="0"/>
           </SelectorColumns>

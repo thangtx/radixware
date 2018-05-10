@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="adcZPJX2XEVDRCKFDQD7FZFMVINUU" Name="AbstractPropEditor" Type="3" Environment="web">
-    <AccessRules IsPublished="false" IsAbstract="true">
+    <AccessRules IsAbstract="true">
       <Transparence Extendable="false" PublishedName="org.radixware.wps.views.editor.property.AbstractPropEditor"/>
     </AccessRules>
     <Headers>
@@ -108,6 +108,22 @@
         <AccessRules Access="1" IsAbstract="true">
           <Transparence Extendable="false" PublishedName="updateSettings()V"/>
         </AccessRules>
+      </Method>
+      <Method Id="mth4S5GWZ25QBFRXJD7BFFHQYEPFY" Name="addCommandButtons" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="addCommandButtons(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.widgets.ICommandToolButton;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="buttons" Id="mprSQMCBTGZI5F6RGQKUVIAYD7AU4">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ICommandToolButton"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
       </Method>
     </Methods>
   </AdsClassDefinition>

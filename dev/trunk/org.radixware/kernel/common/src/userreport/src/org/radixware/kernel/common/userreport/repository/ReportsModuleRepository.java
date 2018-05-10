@@ -31,6 +31,7 @@ import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.clazz.AdsLibUserFuncWrapper;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsUserReportClassDef;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.EValType;
@@ -43,6 +44,7 @@ import org.radixware.kernel.common.repository.fs.JarFileDataProvider;
 import org.radixware.kernel.common.repository.fs.RepositoryInjection;
 import org.radixware.kernel.common.types.Bin;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.defs.utils.changelog.ChangeLog;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.XmlFormatter;
 import org.radixware.kernel.common.userreport.common.UserExtensionManagerCommon;
@@ -59,12 +61,7 @@ import org.radixware.schemas.xscml.TypeDeclaration;
 
 
 public class ReportsModuleRepository extends FSRepositoryAdsModule {
-
-    private final UserExtADSSegmentRepository segment;
-    private String name;
-    private final Id id;
-    //private Map<Id, ReportVersionDefinitionRepository> reports = null;
-//    public static final Id REPORTS_SELECTOR_ID = Id.Factory.loadFrom("sprM4F3WGRWD5DTDOI2VXY4IAWHTU");
+    
     public static final Id LIST_REPORTS_WITH_PARAM_COMMAND_ID = Id.Factory.loadFrom("cmdIKNO6UWG5FFDFIXMLZAQGBNNKM");
     public static final Id LIST_REPORTS_COMMAND_ID = Id.Factory.loadFrom("clc5VOFMBGOGZAH5J25FDBJTWAD2U");
     public static final Id REPORT_MODULE_CLASS_ID = Id.Factory.loadFrom("aecN7LNYTJYXBDC7MTGOI4IP2THFA");
@@ -78,53 +75,17 @@ public class ReportsModuleRepository extends FSRepositoryAdsModule {
     public static final Id REPORT_VERSION_REPORT_ID_PROP_ID = Id.Factory.loadFrom("col443263VQHJDJTPL4VY3PNWTNCE");
     public static final Id REPORT_VERSION_USER_CLASS_GUID_PROP_ID = Id.Factory.loadFrom("colFCOKOL7E3JD3PDNES4EAW35XTE");
     public static final Id REPORT_VERSION_VERSION_PROP_ID = Id.Factory.loadFrom("colT7D35GBIUBGHLHVAUNSMFGFCJM");
-    public static final Id REPORT_VERSION_SRC_PROP_ID = Id.Factory.loadFrom("col3FPD27GEFBBTPFKKRBBVO5ODS4");
     public static final Id REPORT_MODULE_IMAGES_PROP_ID = Id.Factory.loadFrom("colTD5STVFJWZCWTAEXMFGIDXXUHU");
     public static final Id REPORT_MODULE_FORMAT_VERSION_PROP_ID = Id.Factory.loadFrom("colJIQZ4KJI75DQVKCF22MJY6QZMQ");
     public static final Id REPORT_CLASS_REPORT_MODULE_PROP_ID = Id.Factory.loadFrom("colIE7QFFHT6VAJZMYY6E5NAFR57M");
     public static final long CURRENT_FORMAT_VERSION = 1;
+
+    private final UserExtADSSegmentRepository segment;
+    private String name;
+    private final Id id;
+    private boolean readed = false;
+    private boolean loaded = false;    
     private final Object uploadLock = new Object();
-
-   /* public static ReportsModuleRepository createNew(final UserExtADSSegmentRepository segment, final ReportsModule module) {
-        final ReportsModuleRepository[] result = new ReportsModuleRepository[1];
-        final CountDownLatch lock = new CountDownLatch(1);
-        UserExtensionManagerCommon.getInstance().getRequestExecutor().submitAction(new RequestExecutor.ExplorerAction() {
-            @Override
-            public void execute(final IClientEnvironment env) {
-
-                try {
-                    final Map<Id, Object> initVals = new HashMap<>();
-                    initVals.put(REPORT_MODULE_ID_PROP_ID, module.getId().toString());
-                    initVals.put(REPORT_MODULE_TITLE_PROP_ID, module.getName());
-                    EntityModel model = EntityModel.openPrepareCreateModel(REPORT_MODULE_CLASS_ID, REPORT_MODULE_EDITOR_ID, REPORT_MODULE_CLASS_ID, null, initVals, new IContext.ContextlessCreating(env));
-                    if (model.create() == EEntityCreationResult.SUCCESS) {
-                        result[0] = (ReportsModuleRepository) segment.getModuleRepository(module);
-                    }
-                } catch (ModelException | ServiceClientException | InterruptedException ex) {
-
-                    env.processException(ex);
-
-                } catch (final Throwable e) {
-                    //SwingUtilities.invokeLater(new Runnable() {
-                    //    @Override
-                    //    public void run() {
-                            //UserExtensionManagerCommon.getInstance().getEnvironment().processException(e);
-                            //Exceptions.printStackTrace(e);
-                     //   }
-                    //});
-
-                    System.out.println(e.getMessage());
-                } finally {
-                    lock.countDown();
-                }
-            }
-        });
-        try {
-            lock.await();
-        } catch (InterruptedException ex) {
-        }
-        return result[0];
-    }*/
 
     public ReportsModuleRepository(UserExtADSSegmentRepository segment, File preparedDir, Id id, String name) {
         super(preparedDir);
@@ -175,61 +136,12 @@ public class ReportsModuleRepository extends FSRepositoryAdsModule {
         }
 
         UserExtensionManagerCommon.getInstance().getUFRequestExecutor().updateModuleRepository(module,content,images);
-       // content = FileUtils.readTextFile(getDescriptionFile(), FileUtils.XML_ENCODING);
-       /* UserExtensionManagerCommon.getInstance().getUFRequestExecutor().updateModuleRepository();//submitAction(new RequestExecutor.ExplorerAction() {
-            @Override
-            public void execute(IClientEnvironment env) {
-                try {
-
-                    Pid modulePid = new Pid(REPORT_MODULE_CLASS_ID, id.toString());
-                    EntityModel model = EntityModel.openContextlessModel(UserExtensionManagerCommon.getInstance().getEnvironment(), modulePid, REPORT_MODULE_CLASS_ID, REPORT_MODULE_EDITOR_ID);
-                    model.getProperty(REPORT_MODULE_TITLE_PROP_ID).setValueObject(getName());
-                    if (content != null) {
-                        model.getProperty(REPORT_MODULE_DESC_PROP_ID).setValueObject(content);
-                    }
-                    if (images != null) {
-                        model.getProperty(REPORT_MODULE_IMAGES_PROP_ID).setValueObject(images);
-                    }
-                    model.getProperty(REPORT_MODULE_FORMAT_VERSION_PROP_ID).setValueObject(CURRENT_FORMAT_VERSION);
-                    model.update();
-                } catch (ObjectNotFoundError e) {
-                    return;
-                } catch (ModelException | ServiceClientException | InterruptedException ex) {
-                    UserExtensionManagerCommon.getInstance().getEnvironment().processException(ex);
-                }
-            }
-        });*/
     }
 
     void deleteModule() {
         UserExtensionManagerCommon.getInstance().getUserReportManager().deleteModule(id);
-       /* UserExtensionManagerCommon.getInstance().getRequestExecutor().submitAction(new RequestExecutor.ExplorerAction() {
-            @Override
-            public void execute(IClientEnvironment env) {
-                Pid modulePid = new Pid(REPORT_MODULE_CLASS_ID, id.toString());
-                EntityModel model;
-                try {
-                    model = EntityModel.openContextlessModel(env, modulePid, REPORT_MODULE_CLASS_ID, REPORT_MODULE_EDITOR_ID);
-                    model.delete(true);
-                } catch (ServiceClientException | InterruptedException ex) {
-                    env.processException(ex);
-                }
-
-            }
-        });*/
     }
-
-    void reset() {
-        synchronized (uploadLock) {
-            // this.reports = null;
-        }
-    }
-//    public IClientEnvironment getEnvironment() {
-//        return segment.getLayerRepository().getEnvironment();
-//    }
-    private boolean readed = false;
-    private boolean loaded = false;
-
+    
     void upload() {
         readHeadersIfNesessary();
     }
@@ -241,46 +153,13 @@ public class ReportsModuleRepository extends FSRepositoryAdsModule {
                     return false;
                 }
 
-                //load images if any
                 final UserReportListRsDocument rs =UserExtensionManagerCommon.getInstance().getUFRequestExecutor().listReports(getId());
-
-             /*   final UserReportListRsDocument rs[] = new UserReportListRsDocument[1];
-                //final CountDownLatch lock = new CountDownLatch(1);
-                //UserExtensionManagerCommon.getInstance().getRequestExecutor().submitAction(new RequestExecutor.ExplorerAction() {
-                //    @Override
-                 //   public void execute(final IClientEnvironment env) {
-                        try {
-                            //GroupModel group = GroupModel.openTableContextlessSelectorModel(env, REPORTS_CLASS_ID, REPORTS_SELECTOR_ID);
-                            UserReportListRqDocument requestDoc = UserReportListRqDocument.Factory.newInstance();
-                            UserReportListRq rq = requestDoc.addNewUserReportListRq();
-                            rq.setModuleId(getId());
-                            XmlObject output = UserExtensionManagerCommon.getInstance().getEnvironment().getEasSession().executeContextlessCommand(LIST_REPORTS_COMMAND_ID, requestDoc, UserReportListRsDocument.class);
-                            if (output == null) {
-                                return false;
-                            }
-                            rs[0] = XmlObjectProcessor.cast(getClass().getClassLoader(), output, UserReportListRsDocument.class);
-                        } catch (ServiceClientException | InterruptedException ex) {
-                             UserExtensionManagerCommon.getInstance().getEnvironment().processException(ex);
-                        } finally {
-                            //lock.countDown();
-                        }
-                 //   }
-                //});
-                //try {
-               //     lock.await();
-               // } catch (InterruptedException ex) {
-               // }
-               // if (rs[0] == null) {
-               //     return false;
-               // }
-               * */
                 final UserReports registry = UserExtensionManagerCommon.getInstance().getUserReports();
                 for (UserReportHeader h : rs.getUserReportListRs().getReportList()) {
                     try {
                         AdsTypeDeclaration paramType = h.getContextParamType() == null ? null : AdsTypeDeclaration.Factory.loadFrom(h.getContextParamType());
                         registry.registerReport(getId(), h.getId(), h.getName(), h.getDescription(), h.getCurrentVersion(), h.getCurrentOrder(), paramType, h.getFormatVersion());
                     } catch (IOException ex) {
-                        //Exceptions.printStackTrace(ex);
                         UserExtensionManagerCommon.getInstance().getUFRequestExecutor().processException(ex);
                     }
 
@@ -293,45 +172,11 @@ public class ReportsModuleRepository extends FSRepositoryAdsModule {
         }
     }
 
-    //private class ReportData {
-
-    //    AdsUserReportDefinitionDocument xml;
-    //    Id lastRuntimeId;
-    //}
-
     private ReportDataInfo loadReportData(final Id reportId, final long version) {
-        
         return UserExtensionManagerCommon.getInstance().getUFRequestExecutor().loadReportData(reportId,version);
-        //final ReportDataInfo result = new ReportDataInfo();
-        //result.xml = info.getXml();
-        //result.lastRuntimeId = info.getLastRuntimeId();
-        /*final CountDownLatch lock = new CountDownLatch(1);
-        UserExtensionManagerCommon.getInstance().getRequestExecutor().submitAction(new RequestExecutor.ExplorerAction() {
-            @Override
-            public void execute(final IClientEnvironment env) {
-                try {
-                    EntityModel model = UserReport.openReportVersionModel(UserExtensionManagerCommon.getInstance().getEnvironment(), reportId, version);
-                    Object reportData = model.getProperty(REPORT_VERSION_SRC_PROP_ID).getValueObject();
-
-                    result.xml = XmlObjectProcessor.cast(getClass().getClassLoader(), (XmlObject) reportData, AdsUserReportDefinitionDocument.class);
-                    result.lastRuntimeId = Id.Factory.loadFrom((String) model.getProperty(REPORT_VERSION_USER_CLASS_GUID_PROP_ID).getValueObject());
-                } catch (ObjectNotFoundError ex) {
-                    result.xml = null;//not found, so not loading
-                } catch (ServiceClientException | InterruptedException ex) {
-                    UserExtensionManagerCommon.getInstance().getEnvironment().processException(ex);
-                } finally {
-                    lock.countDown();
-                }
-            }
-        });
-        try {
-            lock.await();
-        } catch (InterruptedException e) {
-        }*/
-        //return result;
     }
 
-    private class VersionInfo {
+    private static class VersionInfo {
 
         File file;
         Id lastRuntimeId;
@@ -345,90 +190,56 @@ public class ReportsModuleRepository extends FSRepositoryAdsModule {
     private VersionInfo loadAndStoreReportVersion(Id reportId, long version, boolean isCurrentVersion) throws IOException {
         ReportDataInfo data = loadReportData(reportId, version);
         AdsUserReportDefinitionDocument xReportDoc = data.getXml();
-        if (xReportDoc != null) {
-            UserReportDefinitionType xReportDef = xReportDoc.getAdsUserReportDefinition();
-            if (xReportDef != null) {
-                File srcDir = new File(getDirectory(), "src");
-                srcDir.mkdirs();
+        if (xReportDoc != null && xReportDoc.getAdsUserReportDefinition() != null) {
+            UserReportDefinitionType xReportWithCorrectIds = AdsUserReportClassDef.getReportDefWithCorrectIds(
+                    xReportDoc.getAdsUserReportDefinition(),reportId, version, isCurrentVersion);
+            File srcDir = new File(getDirectory(), "src");
+            srcDir.mkdirs();
 
-                AdsDefinitionDocument xDefDoc = AdsDefinitionDocument.Factory.newInstance();
-                xDefDoc.addNewAdsDefinition().setAdsClassDefinition(xReportDef.getReport());
-                xDefDoc.getAdsDefinition().setFormatVersion(AdsSqlClassDef.FORMAT_VERSION);
-                Id localId;
-                if (isCurrentVersion) {
-                    localId = reportId;
-                } else {
-                    localId = UserReport.ReportVersion.buildReportVersion(reportId, version);
-                }
-                xDefDoc.getAdsDefinition().getAdsClassDefinition().setId(reportId);
-                TypeDeclaration superType = TypeDeclaration.Factory.newInstance();
-                superType.setTypeId(EValType.USER_CLASS);
-                superType.setPath(Arrays.asList(AdsReportClassDef.PREDEFINED_ID));
-                xDefDoc.getAdsDefinition().getAdsClassDefinition().setExtends(superType);
+            AdsDefinitionDocument xDefDoc = AdsDefinitionDocument.Factory.newInstance();
+            xDefDoc.addNewAdsDefinition().setAdsClassDefinition(xReportWithCorrectIds.getReport());
+            xDefDoc.getAdsDefinition().setFormatVersion(AdsSqlClassDef.FORMAT_VERSION);
+            TypeDeclaration superType = TypeDeclaration.Factory.newInstance();
+            superType.setTypeId(EValType.USER_CLASS);
+            superType.setPath(Arrays.asList(AdsReportClassDef.PREDEFINED_ID));
+            xDefDoc.getAdsDefinition().getAdsClassDefinition().setExtends(superType);
 
-                if (!isCurrentVersion) {//replace original id to version id;
-                    String text = xDefDoc.xmlText();
-                    String currentId = reportId.toString();
-                    String newId = localId.toString();
-                    String oldText;
-                    do {
-                        oldText = text;
-                        text = oldText.replace(newId, currentId);
-                    } while (text != oldText);
+            File result = new File(srcDir, xReportWithCorrectIds.getReport().getId().toString() + ".xml");
+            XmlFormatter.save(xDefDoc, result);
 
-                    text = text.replace(currentId, newId);
-                    try {
-                        xDefDoc = AdsDefinitionDocument.Factory.parse(text);
-                    } catch (XmlException ex) {
-                    }
-                } else {
-                    Id possibleVersionId = UserReport.ReportVersion.buildReportVersion(reportId, version);
-                    String text = xDefDoc.xmlText();
-                    String currentId = possibleVersionId.toString();
-                    String newId = localId.toString();
-                    text = text.replace(currentId, newId);
-                    try {
-                        xDefDoc = AdsDefinitionDocument.Factory.parse(text);
-                    } catch (XmlException ex) {
-                    }
-                }
-                File result = new File(srcDir, localId.toString() + ".xml");
-                XmlFormatter.save(xDefDoc, result);
+            File localeDir = new File(getDirectory(), "locale");
+            if (!localeDir.isDirectory()) {
+                localeDir.mkdirs();
+            }
 
-                File localeDir = new File(getDirectory(), "locale");
-                if (!localeDir.isDirectory()) {
-                    localeDir.mkdirs();
-                }
-                Id mlbId = Id.Factory.loadFrom("mlb" + reportId.toString());
-
-                localId = Id.Factory.loadFrom("mlb" + localId.toString());
+            if (xReportWithCorrectIds.getStrings() != null) {
                 List<LocalizedString> emptyStrs = new ArrayList<>();
-                Map<EIsoLanguage, LocalizingBundleDefinition> mapMlStrings = getSortMlStringsByLangs(xReportDef.getStrings(), emptyStrs);
-                for (EIsoLanguage lang : mapMlStrings.keySet()) {
-                    File langDir = new File(localeDir, lang.getValue());
+                Map<EIsoLanguage, LocalizingBundleDefinition> mapMlStrings = 
+                        getSortMlStringsByLangs(xReportWithCorrectIds.getStrings(), emptyStrs);
+                if (!emptyStrs.isEmpty()) {
+                    for (EIsoLanguage lang : segment.getLayerRepository().getLayer().getLanguages()) {
+                        if (!mapMlStrings.containsKey(lang)) {
+                            mapMlStrings.put(lang, LocalizingBundleDefinition.Factory.newInstance());
+                        }
+                    }
+                }
+
+                final Id mlbId = xReportWithCorrectIds.getStrings().getId();
+                for (Map.Entry<EIsoLanguage, LocalizingBundleDefinition> strInfo : mapMlStrings.entrySet()) {
+                    File langDir = new File(localeDir, strInfo.getKey().getValue());
                     if (!langDir.isDirectory()) {
                         langDir.mkdirs();
                     }
                     xDefDoc = AdsDefinitionDocument.Factory.newInstance();
-                    LocalizingBundleDefinition xLocalDef = mapMlStrings.get(lang);
+                    LocalizingBundleDefinition xLocalDef = strInfo.getValue();
                     xLocalDef.getStringList().addAll(emptyStrs);
                     xDefDoc.addNewAdsDefinition().setAdsLocalizingBundleDefinition(xLocalDef);
                     xDefDoc.getAdsDefinition().setFormatVersion(0);
                     xDefDoc.getAdsDefinition().getAdsLocalizingBundleDefinition().setId(mlbId);
-                    if (!isCurrentVersion) {//replace original id to version id;
-                        String text = xDefDoc.xmlText();
-                        String currentId = mlbId.toString();
-                        String newId = localId.toString();
-                        text = text.replace(currentId, newId);
-                        try {
-                            xDefDoc = AdsDefinitionDocument.Factory.parse(text);
-                        } catch (XmlException ex) {
-                        }
-                    }
-                    XmlFormatter.save(xDefDoc, new File(langDir, localId.toString() + ".xml"));
+                    XmlFormatter.save(xDefDoc, new File(langDir, mlbId.toString() + ".xml"));
                 }
-                return new VersionInfo(result, data.getLastRuntimeId());
             }
+            return new VersionInfo(result, data.getLastRuntimeId());
         }
         return null;
     }
@@ -587,79 +398,6 @@ public class ReportsModuleRepository extends FSRepositoryAdsModule {
                         FileUtils.deleteFile(tmp);
                     }
                 }
-                /*final CountDownLatch lock = new CountDownLatch(1);
-                UserExtensionManagerCommon.getInstance().getRequestExecutor().submitAction(new RequestExecutor.ExplorerAction() {
-                    @Override
-                    public void execute(IClientEnvironment env) {
-                        try {
-                            Pid modulePid = new Pid(REPORT_MODULE_CLASS_ID, id.toString());
-                            EntityModel model = EntityModel.openContextlessModel(env, modulePid, REPORT_MODULE_CLASS_ID, REPORT_MODULE_EDITOR_ID);
-                            try {
-                                Object fv = model.getProperty(REPORT_MODULE_FORMAT_VERSION_PROP_ID).getValueObject();
-                                long formatVersion = 0;
-                                if (fv instanceof Long) {
-                                    formatVersion = ((Long) fv).longValue();
-                                }
-
-                                byte[] bytes = null;
-                                if (formatVersion > 0) {
-                                    Bin imgZip = (Bin) model.getProperty(REPORT_MODULE_IMAGES_PROP_ID).getValueObject();
-                                    if (imgZip != null) {
-                                        bytes = imgZip.get();
-                                    }
-                                } else {
-                                    String imgZipAsBase64 = (String) model.getProperty(REPORT_MODULE_DESC_PROP_ID).getValueObject();
-                                    if (imgZipAsBase64 != null) {
-                                        bytes = Base64.decode(imgZipAsBase64);
-                                    }
-                                }
-                                if (bytes != null) {
-                                    File tmp = File.createTempFile("aaa", "aaa");
-                                    FileUtils.writeBytes(tmp, bytes);
-                                    File imgDir = getImagesDirectory();
-                                    imgDir.mkdirs();
-                                    ZipFile zip = new ZipFile(tmp);
-                                    try {
-                                        Enumeration<? extends ZipEntry> entries = zip.entries();
-                                        while (entries.hasMoreElements()) {
-                                            ZipEntry e = entries.nextElement();
-                                            InputStream in = zip.getInputStream(e);
-                                            try {
-                                                File out = new File(imgDir, e.getName());
-                                                FileOutputStream outStream = new FileOutputStream(out);
-                                                try {
-                                                    FileUtils.copyStream(in, outStream);
-                                                } finally {
-                                                    outStream.close();
-                                                }
-                                            } finally {
-                                                in.close();
-                                            }
-                                        }
-                                    } finally {
-                                        zip.close();
-                                        FileUtils.deleteFile(tmp);
-                                    }
-                                }
-
-                            } catch (Exception e) {
-                                //ignore
-                            }
-                        } catch (ObjectNotFoundError e) {
-                        } catch (ServiceClientException ex) {
-                            env.processException(ex);
-                        } catch (InterruptedException ex) {
-                            env.processException(ex);
-                        } finally {
-                            lock.countDown();
-                        }
-                    }
-                });
-                try {
-                    lock.await();
-                } catch (InterruptedException ex) {
-                    //Exceptions.printStackTrace(ex);
-                }*/
             } catch (IOException ex) {
                 Logger.getLogger(ReportsModuleRepository.class.getName()).log(Level.SEVERE, null, ex);
             } finally {

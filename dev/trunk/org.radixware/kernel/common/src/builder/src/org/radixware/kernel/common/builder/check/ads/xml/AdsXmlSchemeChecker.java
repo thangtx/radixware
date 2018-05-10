@@ -26,6 +26,7 @@ import org.radixware.kernel.common.builder.check.ads.AdsDefinitionChecker;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.builder.check.common.RadixObjectCheckerRegistration;
 import org.radixware.kernel.common.check.ProblemAnnotationFactory;
+import org.radixware.kernel.common.check.XsdCheckHistory;
 
 @RadixObjectCheckerRegistration
 public class AdsXmlSchemeChecker extends AdsDefinitionChecker<AdsXmlSchemeDef> {
@@ -62,6 +63,16 @@ public class AdsXmlSchemeChecker extends AdsDefinitionChecker<AdsXmlSchemeDef> {
             }
         } else {
             problemHandler.accept(RadixProblem.Factory.newError(scheme, "Can not find XML content"));
+        }
+
+        XmlCheckUtils.checkLinkedSchemas(scheme, problemHandler);
+        XmlCheckUtils.checkNamespacePrefix(scheme, problemHandler);
+        
+        XsdCheckHistory xsdCheckHistory = XsdCheckHistory.getOrCreate(getHistory().getMap());
+        XmlCheckUtils.checkSchemeForCyclicImport(scheme, problemHandler, xsdCheckHistory);
+
+        if (scheme.needsDocumentation()) {
+            XmlCheckUtils.checkUndocumentedNodes(scheme, problemHandler);
         }
     }
 }

@@ -41,14 +41,17 @@ import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObjectIcon;
 import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.VisitorProviderFactory;
+import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
 import org.radixware.kernel.common.defs.ads.clazz.algo.AdsAlgoClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.algo.object.AdsAppObject;
 import org.radixware.kernel.common.defs.ads.clazz.algo.object.AdsIncludeObject;
 import org.radixware.kernel.common.defs.ads.clazz.algo.object.AdsVarObject;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsDynamicPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsFilterDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsFilterDef.Parameter;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
 import org.radixware.kernel.common.defs.ads.common.AdsVisitorProviders;
 import org.radixware.kernel.common.defs.ads.type.AdsClassType.EntityObjectType;
@@ -220,6 +223,15 @@ public class SqmlTopLevelActions {
             return null;
 
         }
+        
+        private AdsFilterDef getAdsFilterDef() {
+            final Scml scml = getEditor().getPane().getScml();
+            if (scml.getDefinition() instanceof AdsFilterDef) {
+                return (AdsFilterDef) scml.getDefinition();
+            }
+            return null;
+
+        }
 
         @Override
         public Component getToolbarPresenter() {
@@ -230,11 +242,19 @@ public class SqmlTopLevelActions {
                 @Override
                 public void setPopupMenuVisible(final boolean aFlag) {
                     removeAll();
-                    AdsSqlClassDef sqlClass = getSqlClass();
-                    IFilter<AdsPropertyDef> paramsFilter = AdsSqlClassVisitorProviderFactory.newPropertyForPreprocessorTag();
-                    for (AdsPropertyDef property : sqlClass.getProperties().getLocal().list(paramsFilter)) {
-                        JMenuItem presenter = createIfByParameterPresenter(property);
-                        this.add(presenter);
+                    final AdsFilterDef filterDef = getAdsFilterDef();
+                    if (filterDef != null) {
+                        for (Parameter parameter : filterDef.getParameters().list()) {
+                            JMenuItem presenter = createIfByParameterPresenter(parameter);
+                            this.add(presenter);
+                        }
+                    } else {
+                        AdsSqlClassDef sqlClass = getSqlClass();
+                        IFilter<AdsPropertyDef> paramsFilter = AdsSqlClassVisitorProviderFactory.newPropertyForPreprocessorTag();
+                        for (AdsPropertyDef property : sqlClass.getProperties().getLocal().list(paramsFilter)) {
+                            JMenuItem presenter = createIfByParameterPresenter(property);
+                            this.add(presenter);
+                        }
                     }
                     super.setPopupMenuVisible(aFlag);
                 }
@@ -247,13 +267,22 @@ public class SqmlTopLevelActions {
                 }
 
                 private void updateParamteresSubMenuState() {
+                    final AdsFilterDef filterDef = getAdsFilterDef();
+                    if (filterDef == null) {
+                        updateAdsSqlClassParamteresSubMenuState();
+                    } else {
+                        subMenuForParamters.setEnabled(!filterDef.getParameters().isEmpty());
+                    }
+                }
+                
+                private void updateAdsSqlClassParamteresSubMenuState(){
                     final AdsSqlClassDef sqlClass = getSqlClass();
                     if (sqlClass == null) {
                         return;
                     }
                     boolean classHasPropertyParams = false;
                     for (AdsPropertyDef property : sqlClass.getProperties().getLocal().list()) {
-                        if (property instanceof AdsParameterPropertyDef) {
+                        if (property instanceof AdsParameterPropertyDef || property instanceof AdsDynamicPropertyDef) {
                             classHasPropertyParams = true;
                             break;
                         }
@@ -267,7 +296,7 @@ public class SqmlTopLevelActions {
             subMenuForParamters.setText(NbBundle.getMessage(SqmlTopLevelActions.class, "if-by-parameter"));
             subMenuForParamters.setIcon(RadixWareIcons.DEBUG.IF.getIcon());
 
-            if (getSqlClass() != null) {
+            if (getAdsFilterDef() != null || getSqlClass() != null) {
                 popupMenu.add(subMenuForParamters);
             }
             popupMenu.add(new InsertElseIfTagAction(getEditor()).getPopupPresenter());
@@ -307,7 +336,7 @@ public class SqmlTopLevelActions {
             return presenter;
         }
 
-        private JMenuItem createIfByParameterPresenter(final AdsPropertyDef property) {
+        private JMenuItem createIfByParameterPresenter(final AdsDefinition property) {
             final JMenuItem item = new JMenuItem();
             item.setText(property.getName());
             item.setIcon(property.getIcon().getIcon());
@@ -902,10 +931,14 @@ public class SqmlTopLevelActions {
                 final ChooseDefinitionCfg cfg = ChooseDefinitionCfg.Factory.newInstance(filterDef.getParameters().list());
                 final Definition paramDef = ChooseDefinition.chooseDefinition(cfg);
                 if (paramDef != null) {
+                    AdsFilterDef.Parameter filterParamDef = null; 
                     if (paramDef instanceof AdsFilterDef.Parameter) {
-                        final AdsFilterDef.Parameter filterParamDef = (AdsFilterDef.Parameter) paramDef;
-                        if (filterParamDef.getType().getTypeId() == EValType.PARENT_REF || filterParamDef.getType().getTypeId() == EValType.OBJECT) {
+                        filterParamDef = (AdsFilterDef.Parameter) paramDef;
+                        if (filterParamDef.getType().getTypeId() == EValType.PARENT_REF || filterParamDef.getType().getTypeId() == EValType.OBJECT || filterParamDef.getType().getTypeId() == EValType.ARR_REF) {
                             final EntityRefParameterTag tag = EntityRefParameterTag.Factory.newInstance();
+                            if (filterParamDef.getType().getTypeId().isArrayType()) {
+                                tag.setExpressionList(true);
+                            }
                             final AdsType type = filterParamDef.getType().resolve(filterParamDef).get();
                             if (type instanceof EntityObjectType) {
                                 tag.setReferencedTableId(((EntityObjectType) type).getSourceEntityId());
@@ -921,6 +954,11 @@ public class SqmlTopLevelActions {
                     }
                     final ParameterTag tag = ParameterTag.Factory.newInstance();
                     tag.setParameterId(paramDef.getId());
+                    if (filterParamDef != null) {
+                        if (filterParamDef.getType().getTypeId().isArrayType()) {
+                            tag.setExpressionList(true);
+                        }
+                    }
                     tags.add(tag);
                 }
             }

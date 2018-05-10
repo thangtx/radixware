@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for RadixWare Starter -->
+<jnlp
+  spec="1.0+"
+  codebase="file:///home/dsafonov/git/radix/dev/trunk"
+  href="explorer.jnlp">
+  <information>
+    <title>TranzAxiz RBS Explorer</title>
+    <vendor>Compass Plus</vendor>
+    <offline-allowed/>
+  </information>
+  <security>
+      <all-permissions/>
+  </security>
+  <resources>
+    <j2se version="1.6+" max-heap-size="1536M"/>
+    <jar href="org.radixware/kernel/starter/bin/dist/starter.jar"/>
+  </resources>
+  <application-desc main-class="org.radixware.kernel.starter.Starter">
+	<argument>-workDir=/home/dsafonov/git/radix/dev/trunk</argument>
+    <argument>-topLayerUri=org.radixware</argument> 
+    <argument>-showSplashScreen=Explorer</argument>
+	<argument>org.radixware.kernel.explorer.Explorer</argument>
+  </application-desc>
+</jnlp> 

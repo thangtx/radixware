@@ -37,7 +37,7 @@ public class SvnCredentials {
     private final ISvnPasswordProvider passwordGetter;
     private static final Map<String, int[]> credentialsCache = new HashMap<>();
     private String myrealm;
-    private static Class[] classes = new Class[]{SvnCredentials.class,
+    private static final Class[] classes = new Class[]{SvnCredentials.class,
         SvnRepository.class,
         SvnRARepository.class};
 
@@ -96,7 +96,7 @@ public class SvnCredentials {
         this.privateKey = null;
     }
 
-    private static int mask = ((new Random().nextInt(3)) ^ SvnCredentials.class.hashCode());
+    private static final int mask = ((new Random().nextInt(3)) ^ SvnCredentials.class.hashCode());
 
     public SvnAuthType getAuthType() {
         return authType;
@@ -122,6 +122,18 @@ public class SvnCredentials {
 
         }
     }
+    
+    public static boolean searchCachedPassword(final String realm) {
+        return credentialsCache.containsKey(realm);
+    }
+
+    public static void tryRemoveCachedPassword(final String realm) {
+        credentialsCache.remove(realm);
+    }
+    
+    public static char[] findCachedPassword(final String realm) {
+        return restore(realm);
+    }
 
     private static int getMask() {
         if (mask < 0) {
@@ -129,8 +141,8 @@ public class SvnCredentials {
         }
         return mask;
     }
-
-    char[] restore(String realm) {
+    
+    protected static char[] restore(String realm) {
         int[] data = credentialsCache.get(realm);
         if (data == null) {
             return null;

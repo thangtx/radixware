@@ -22,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CheckHistory {
 
-    private final Map<Class, Object> historyItems = new ConcurrentHashMap<Class, Object>();
+    private final Map<Object, Object> historyItems = new ConcurrentHashMap<Object, Object>();
 
     @SuppressWarnings("unchecked")
     public <T> T findItemByClass(Class<T> cl) {
@@ -42,6 +42,22 @@ public class CheckHistory {
         synchronized (historyItems) {
             historyItems.clear();
         }
+    }
+    
+    public Object get(Object key) {
+        synchronized (historyItems) {
+            return historyItems.get(key);
+        }
+    }
+    
+    public void put(Object key, Object value) {
+        synchronized (historyItems) {
+            historyItems.put(key, value);
+        }
+    }
+    
+    public Map<Object, Object> getMap() {
+        return historyItems;
     }
 
     protected CheckHistory() {

@@ -1,0 +1,4 @@
+alter table RDX_MESSAGEQUEUE
+	add LASTSAFCHANGETIME DATE default SYSDATE not null
+/
+

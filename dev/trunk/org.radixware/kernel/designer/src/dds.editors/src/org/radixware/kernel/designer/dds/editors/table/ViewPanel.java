@@ -30,7 +30,7 @@ public class ViewPanel extends javax.swing.JPanel {
         inherited = view.findOverwritten() != null;
         this.splitter.setLeftComponent(viewTablesPanel = new ViewTablesPanel());
         viewTablesPanel.open(view);
-        sqmlEditorPanel.open(view.getQuery());
+        sqmlEditorPanel.open(view.getSqml());
     }
     
     public void setReadOnly(boolean readOnly) {

@@ -27,7 +27,7 @@ final class ZipGenerator extends HtmlRadixdocGenerator {
 
     private ZipOutputStreamWraper streamWraper;
 
-    public ZipGenerator(RadixdocOptions options, IProgressHandle progressHandle, ICancellable cancellable) {
+    public ZipGenerator(IRadixdocOptions options, IProgressHandle progressHandle, ICancellable cancellable) {
         super(options, progressHandle, cancellable);
     }
 

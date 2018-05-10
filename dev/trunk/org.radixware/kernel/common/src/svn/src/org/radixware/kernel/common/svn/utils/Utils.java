@@ -16,14 +16,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -154,7 +158,7 @@ class Utils {
         public LayerInfo getLayer() {
             return layer;
         }
-
+        
         protected File checkOutBinaryFile(ERuntimeEnvironmentType env) {
             try {
 
@@ -269,17 +273,17 @@ class Utils {
     static class FileInfo {
 
         File file;
-        List<String> entries;
+        Set<String> entries;
 
         public FileInfo(File file) {
             this.file = file;
         }
 
         protected void ensureInitialized() {
-            entries = new LinkedList<String>();
+            entries = new LinkedHashSet<String>();
         }
 
-        public List<String> entries() {
+        public Set<String> entries() {
             if (entries != null) {
                 return entries;
             }
@@ -311,6 +315,7 @@ class Utils {
         }
     }
     private static final FileInfo NO_FILE = new FileInfo(null);
+    private static final FileInfo NEED_LOAD = new FileInfo(null);
 
     static class Lib {
 
@@ -348,19 +353,32 @@ class Utils {
             }
             jreJars = null;
         }
-
+        
         private void list() {
             if (jars == null) {
-                jars = new HashMap<String, FileInfo>();
-                for (String bin : new String[]{"bin", "lib"}) {
-                    loadFromModule(env.getValue(), bin);
-                }
-                if (env == ERuntimeEnvironmentType.COMMON && layer.getURI().equals("org.radixware")) {
-                    loadFromModule("starter", "bin");
+                jars = new ConcurrentHashMap<>();
+                if (layer.getKernelDirectoryXmlFiles(env) != null) {
+                    for (String path : layer.getKernelDirectoryXmlFiles(env)) {
+                        String dir = path.substring(path.lastIndexOf('/') + 1);
+                        loadFromModule(dir, "bin");
+                        loadFromModule(dir, "lib");
+                    }
                 }
             }
         }
-
+        
+        public void upload(ExecutorService exec) {
+            list();
+            for (final String path : new ArrayList<>(jars.keySet())) {
+                exec.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        getLibFile(path);
+                    }
+                });
+            }
+        }
+        
         private String getDirPathInBranch(String fullPath) {
             String result;
             if (fullPath.startsWith(layer.branchPath)) {
@@ -453,7 +471,7 @@ class Utils {
                                 if (layer.upgradeFileKernelJars != null && layer.upgradeFileKernelJars.contains(jarFilePathInBranch)) {
                                     jars.put(jarFilePathInBranch, new ZipFileInfo(upgradeFile, upgradeFilePath, jarFilePathInBranch));
                                 } else {
-                                    jars.put(SvnPath.append(path, svnde.getName()), null);
+                                    jars.put(SvnPath.append(path, svnde.getName()), NEED_LOAD);
                                 }
                             }
                         } else if (svnde.getKind() == SvnEntry.Kind.DIRECTORY) {
@@ -503,7 +521,7 @@ class Utils {
             if (uploaded == NO_FILE) {
                 return null;
             }
-            if (uploaded == null) {
+            if (uploaded == null || uploaded == NEED_LOAD) {
                 try {
                     File tmp = File.createTempFile("rdx4", "rdx4");
                     SVN.getFile(layer.repository, path, layer.revision, tmp);
@@ -521,7 +539,7 @@ class Utils {
         private byte[] findClassBytesBySlashSeparatedName(FileInfo file, String name) throws ClassNotFoundException {
             ZipFile zip = null;
             try {
-                List<String> entries = file.entries();
+                Set<String> entries = file.entries();
                 String entryName = name + ".class";
                 if (entries.contains(entryName)) {
                     zip = new ZipFile(file.file);
@@ -547,6 +565,7 @@ class Utils {
     static class LayerInfo implements ClassLinkageAnalyzer.LayerInfo {
 
         public final String uri;
+        private final String releaseNumber;
         public final List<String> prevLayerUris = new LinkedList<>();
         ;
         public final boolean hasKernel;
@@ -565,10 +584,12 @@ class Utils {
         private final Lib commonLib;
         Map<Id, ModuleInfo> modules = null;
         List<String> upgradeFileKernelJars;
+        private Map<ERuntimeEnvironmentType, List<String>> directoryXmlFilesByEnv;
 
-        public LayerInfo(String name, String uri, List<String> prevLayerUri, boolean hasKernel, boolean hasDds, boolean hasAds, List<String> removedFiles, ZipFile upgradeFile, String upgradeFilePath, List<String> upgradeKernelPathes) {
-            this.name = name;
-            this.uri = uri;
+        public LayerInfo(org.radixware.schemas.product.Layer xDef, List<String> prevLayerUri, boolean hasKernel, boolean hasDds, boolean hasAds, List<String> removedFiles, ZipFile upgradeFile, String upgradeFilePath, List<String> upgradeKernelPathes) {
+            this.name = xDef.getName();
+            this.uri = xDef.getUri();
+            this.releaseNumber = xDef.getReleaseNumber();
             if (prevLayerUri != null) {
                 this.prevLayerUris.addAll(prevLayerUri);
             }
@@ -583,9 +604,33 @@ class Utils {
             this.upgradeFileKernelJars = upgradeKernelPathes.isEmpty() ? null : new LinkedList<String>(upgradeKernelPathes);
         }
 
+        public String getReleaseNumber() {
+            return releaseNumber;
+        }
+
         @Override
         public String getURI() {
             return uri;
+        }
+        
+        List<String> getKernelDirectoryXmlFiles(ERuntimeEnvironmentType e) {
+            if (!hasKernel) {
+                return null;
+            }
+            if (directoryXmlFilesByEnv == null) {
+                final DirectoryXmlParser parser = new DirectoryXmlParser(this, true);
+                final String layerBase = SvnPath.append(SvnPath.append(branchPath, uri), "kernel");
+                directoryXmlFilesByEnv = parser.getAllDirectoryXmlFilesByEnv(layerBase);
+            }
+            return directoryXmlFilesByEnv.get(e);
+        }
+        
+        NoizyVerifier getVerifier() {
+            return verifier;
+        }
+        
+        byte[] getFile(String path) throws RadixSvnException {
+            return SVN.getFile(repository, path, revision);
         }
 
         Lib getLib(ERuntimeEnvironmentType e) {
@@ -803,10 +848,11 @@ class Utils {
                             prevLayers.addAll(xDef.getBaseLayerURIs());
                         }
 
-                        LayerInfo info = new LayerInfo(xDef.getName(), xDef.getUri(), prevLayers, flags[0], flags[1], flags[2], removedFiles, upgradeFile, upgradeFilePath, layerSpecificKernelJars);
+                        LayerInfo info = new LayerInfo(xDef, prevLayers, flags[0], flags[1], flags[2], removedFiles, upgradeFile, upgradeFilePath, layerSpecificKernelJars);
                         info.repository = repository;
                         info.branchPath = branchPath;
                         info.revision = revision;
+                        info.verifier = context;
                         infos.add(info);
                         if (verbose && context != null) {
                             context.message("Layer found: " + info.name + " (" + info.uri + ")");
@@ -871,7 +917,7 @@ class Utils {
             ZipFile useZipFile = null;
 
             if (skipDevelopmentLayers) {
-                if (baseDevLayerURI == NO_BASE_DEVELOPMENT_LAYER_SPECIFIED) {
+                if (NO_BASE_DEVELOPMENT_LAYER_SPECIFIED.equals(baseDevLayerURI)) {
                     ByteArrayInputStream in = null;
                     try {
                         byte[] bytes = SVN.getFile(repository, SvnPath.append(branchPath, Branch.BRANCH_XML_FILE_NAME), revision);
@@ -985,10 +1031,11 @@ class Utils {
                             prevLayers.addAll(xDef.getBaseLayerURIs());
                         }
 
-                        LayerInfo info = new LayerInfo(xDef.getName(), xDef.getUri(), prevLayers, flags[0], flags[1], flags[2], removedFiles, upgradeFile, upgradeFilePath, layerSpecificKernelJars);
+                        LayerInfo info = new LayerInfo(xDef, prevLayers, flags[0], flags[1], flags[2], removedFiles, upgradeFile, upgradeFilePath, layerSpecificKernelJars);
                         info.repository = repository;
                         info.branchPath = branchPath;
                         info.revision = revision;
+                        info.verifier = context;
                         infos.add(info);
                         if (verbose && context != null) {
                             context.message("Layer found: " + info.name + " (" + info.uri + ")");
@@ -1257,18 +1304,15 @@ class Utils {
         if (verbose && context != null) {
             context.message("Reading upgrade package...");
         }
-        ZipFile tmpZipFile = zipFile;
-        try {
-            if (tmpZipFile == null) {
-                if (zipFilePath == null) {//
-                    if (context != null) {
-                        context.message("No upgrade file specified. Skipping injections");
-                    }
-                    return true;
+        if (zipFile == null) {
+            if (zipFilePath == null) {//
+                if (context != null) {
+                    context.message("No upgrade file specified. Skipping injections");
                 }
-                tmpZipFile = new ZipFile(zipFilePath);
+                return true;
             }
-
+        }
+        try (ZipFile tmpZipFile = zipFile == null ? new ZipFile(zipFilePath) : zipFile) {
             ZipEntry e = tmpZipFile.getEntry("upgrade.xml");
             boolean isNormalUpgrade = true;
             if (e == null) {
@@ -1376,16 +1420,6 @@ class Utils {
                 context.error(new RadixError("Unable to read modules from upgrade file", ex));
             }
             return false;
-        } finally {
-            if (zipFile == null) {
-                if (tmpZipFile != null) {
-                    try {
-                        tmpZipFile.close();
-                    } catch (IOException ex) {
-                        //
-                    }
-                }
-            }
         }
     }
 
@@ -1545,11 +1579,7 @@ class Utils {
                 return null;
             }
             String entryPath = getModuleEntryPath() + entryName;
-            ZipFile zip = zipFile;
-            try {
-                if (zip == null) {
-                    zip = new ZipFile(zipFilePath);
-                }
+            try (ZipFile zip = zipFile == null ? new ZipFile(zipFilePath) : zipFile) {
                 Enumeration<? extends ZipEntry> entries = zip.entries();
 
                 while (entries.hasMoreElements()) {
@@ -1581,16 +1611,6 @@ class Utils {
                     }
                 }
             } catch (IOException ex) {
-            } finally {
-                if (zipFile == null) {
-                    if (zip != null) {
-                        try {
-                            zip.close();
-                        } catch (IOException ex) {
-                            //
-                        }
-                    }
-                }
             }
             return super.checkOutBinaryFile(env);
         }
@@ -1643,5 +1663,124 @@ class Utils {
             }
         }
         return topLayers;
+    }
+    
+    static List<LayerInfo> sortAllLayers(Collection<LayerInfo> allLayers) {
+        final Map<String, LayerInfo> allLayersByUri = new HashMap<>();
+        for (LayerInfo layer : allLayers) {
+            allLayersByUri.put(layer.uri, layer);
+        }
+        LinkedList<LayerInfo> result = new LinkedList<>();
+        for (LayerInfo l : allLayersByUri.values()) {
+            if (result.contains(l)) {
+                continue;
+            }
+            int index = -1;
+            for (int i = 0; i < result.size(); i++) {
+                LayerInfo added = result.get(i);
+                if (isBaseLayer(allLayersByUri, l, added)) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index < 0 || index >= result.size()) {
+                result.add(l);
+            } else {
+                result.add(index, l);
+            }
+        }
+        return result;
+    }
+
+    private static boolean isBaseLayer(Map<String, LayerInfo> allLayers, LayerInfo candidate, LayerInfo target) {
+        if (target != null && candidate != null && target.prevLayerUris != null) {
+            for (String baseUri : target.prevLayerUris) {
+                if (baseUri.equals(candidate.getURI()) || isBaseLayer(allLayers, candidate, allLayers.get(baseUri))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+        
+    static String toSourceForm(String type, String sig) {
+        String sourceType = toSourceType(type);
+        if (sig == null) {
+            return sourceType;
+        }
+        int hash = sig.indexOf('#');
+        if (hash != -1) {
+            return toSourceType(CharBuffer.wrap(sig, hash + 1, sig.length())) + " " + sourceType + "." + sig.substring(0, hash);
+        }
+        int lparen = sig.indexOf('(');
+        if (lparen != -1) {
+            int rparen = sig.indexOf(')');
+            if (rparen != -1) {
+                StringBuilder b = new StringBuilder();
+                String returnType = sig.substring(rparen + 1);
+                if (returnType.equals("V")) {
+                    b.append("void");
+                } else {
+                    b.append(toSourceType(CharBuffer.wrap(returnType)));
+                }
+                b.append(' ');
+                b.append(sourceType);
+                b.append('.');
+                b.append(sig.substring(0, lparen));
+                b.append('(');
+                boolean first = true;
+                CharBuffer args = CharBuffer.wrap(sig, lparen + 1, rparen);
+                while (args.hasRemaining()) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        b.append(", ");
+                    }
+                    b.append(toSourceType(args));
+                }
+                b.append(')');
+                return b.toString();
+            }
+        }
+        return "{" + type + ":" + sig + "}";
+    }
+
+    private static String toSourceType(CharBuffer type) {
+        switch (type.get()) {
+            case 'L':
+                for (int i = type.position(); i < type.limit(); i++) {
+                    if (type.get(i) == ';') {
+                        String text = type.subSequence(0, i - type.position()).toString();
+                        type.position(i + 1);
+                        return toSourceType(text);
+                    }
+                }
+                return "{" + type + "}"; // ??
+            case '[':
+                return toSourceType(type) + "[]";
+            case 'B':
+                return "byte";
+            case 'C':
+                return "char";
+            case 'D':
+                return "double";
+            case 'F':
+                return "float";
+            case 'I':
+                return "int";
+            case 'J':
+                return "long";
+            case 'S':
+                return "short";
+            case 'Z':
+                return "boolean";
+            default:
+                return "{" + type + "}";
+        }
+    }
+
+    private static String toSourceType(String text) {
+        return text.replaceFirst("^java/lang/([^/]+)$", "$1").replace('/', '.').replace('$', '.');
     }
 }

@@ -39,9 +39,9 @@ public class CustomParagEditor extends Container implements IParagraphEditor {
     private final AbstractViewController controller;
     private final List<RwtParagraphEditorListener> listeners = new LinkedList<>();
 
-    public interface RwtParagraphEditorListener {
-
-        public void opened();
+    public static abstract class RwtParagraphEditorListener {
+        public void opened(){};
+        public void closed(){};
     }
 
     public CustomParagEditor(IClientEnvironment env) {
@@ -63,17 +63,21 @@ public class CustomParagEditor extends Container implements IParagraphEditor {
         }
     }
 
-    protected void fireOpened() {
-        final List<RwtParagraphEditorListener> lss;
-        synchronized (listeners) {
-            lss = new ArrayList<>(listeners);
-        }
+    protected final void fireOpened() {
+        final List<RwtParagraphEditorListener> lss = new ArrayList<>(listeners);
         for (RwtParagraphEditorListener l : lss) {
             l.opened();
         }
     }
+    
+    protected final void fireClosed(){
+        final List<RwtParagraphEditorListener> lss = new ArrayList<>(listeners);
+        for (RwtParagraphEditorListener l : lss) {
+            l.closed();
+        }        
+    }
 
-    public void addParagraphListener(RwtParagraphEditorListener listener) {
+    public void addParagraphListener(final RwtParagraphEditorListener listener) {
         synchronized (listeners) {
             if (!listeners.contains(listener)) {
                 listeners.add(listener);
@@ -81,7 +85,7 @@ public class CustomParagEditor extends Container implements IParagraphEditor {
         }
     }
 
-    public void removeParagraphListener(RwtParagraphEditorListener listener) {
+    public void removeParagraphListener(final RwtParagraphEditorListener listener) {
         synchronized (listeners) {
             listeners.remove(listener);
         }
@@ -92,13 +96,17 @@ public class CustomParagEditor extends Container implements IParagraphEditor {
     }
 
     @Override
-    public boolean setFocusedProperty(Id id) {
+    public boolean setFocusedProperty(final Id id) {
         return false;
     }
 
     @Override
-    public boolean close(boolean forced) {
-        return forced || model.canSafelyClean(CleanModelController.DEFAULT_INSTANCE);
+    public boolean close(final boolean forced) {
+        if (forced || model.canSafelyClean(CleanModelController.DEFAULT_INSTANCE)){
+            fireClosed();
+            return true;
+        }
+        return false;
     }
 
     @Override

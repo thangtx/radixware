@@ -13,6 +13,8 @@ package org.radixware.kernel.server.dbq.sqml;
 
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.check.RadixProblem;
+import org.radixware.kernel.common.defs.ExtendableDefinitions;
+import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
@@ -87,22 +89,32 @@ class PropSqlNameTagTranslator<T extends PropSqlNameTag> extends QueryTagTransla
 
     private void translateContextPropSqlName(final PropSqlNameTag tag, final CodePrinter cp) {
         final EOwnerType owner = tag.getOwnerType();
-        if (tag.getPropId().getPrefix() != EDefinitionIdPrefix.ADS_GROUP_PROP
+        final SqlBuilder builder = getQueryBuilder();
+        final SqlBuilder.EQueryContextType contextType = builder.getQueryCntxType();
+        final Id propId = tag.getPropId();
+        if (propId.getPrefix() != EDefinitionIdPrefix.ADS_GROUP_PROP
                 && (owner == PropSqlNameTag.EOwnerType.THIS
-                || (getQueryBuilder().getQueryCntxType() == SqlBuilder.EQueryContextType.PARENT_SELECTOR) && owner == PropSqlNameTag.EOwnerType.PARENT
-                || (getQueryBuilder().getQueryCntxType() == SqlBuilder.EQueryContextType.OTHER) && owner == PropSqlNameTag.EOwnerType.CHILD)) {
+                || (contextType == SqlBuilder.EQueryContextType.PARENT_SELECTOR) && owner == PropSqlNameTag.EOwnerType.PARENT
+                || (contextType == SqlBuilder.EQueryContextType.OTHER) && owner == PropSqlNameTag.EOwnerType.CHILD)) {
             //this table column
             final String tabAlias = tag.isTableAliasDefined() ? tag.getTableAlias() : null;
-            printPropSqlPres(cp, getQueryBuilder(), tag.getPropId(), tabAlias, tag);
+            if (tag.getPropOwnerId().getPrefix()==EDefinitionIdPrefix.DDS_TABLE 
+                && !builder.getTable().getColumns().findById(propId, ExtendableDefinitions.EScope.ALL).isEmpty()//it may be column in detail table
+                ){
+                final DdsColumnDef ddsProp = builder.getTable().getColumns().getById(propId, ExtendableDefinitions.EScope.ALL);
+                printColumnSqlPres(cp, builder, ddsProp, tabAlias);
+            }else{
+                printPropSqlPres(cp, builder, propId, tabAlias, tag);
+            }
         } else if ( //group or context property
-                tag.getPropId().getPrefix() == EDefinitionIdPrefix.ADS_GROUP_PROP
-                || (getQueryBuilder().getQueryCntxType() == SqlBuilder.EQueryContextType.PARENT_SELECTOR && owner == PropSqlNameTag.EOwnerType.CHILD)
-                || (getQueryBuilder().getQueryCntxType() == SqlBuilder.EQueryContextType.OTHER && owner == PropSqlNameTag.EOwnerType.PARENT)) {
+                propId.getPrefix() == EDefinitionIdPrefix.ADS_GROUP_PROP
+                || (contextType == SqlBuilder.EQueryContextType.PARENT_SELECTOR && owner == PropSqlNameTag.EOwnerType.CHILD)
+                || (contextType == SqlBuilder.EQueryContextType.OTHER && owner == PropSqlNameTag.EOwnerType.PARENT)) {
             RadPropDef propDef = null;
             RadClassDef classDef = null;
             if (tag.getPropOwnerId().getPrefix() != EDefinitionIdPrefix.DDS_TABLE) {
-                classDef = getQueryBuilder().getArte().getDefManager().getClassDef(tag.getPropOwnerId());
-                propDef = classDef.getPropById(tag.getPropId());
+                classDef = builder.getArte().getDefManager().getClassDef(tag.getPropOwnerId());
+                propDef = classDef.getPropById(propId);
             }
             if ((propDef instanceof IRadRefPropertyDef) && ((IRadRefPropertyDef) propDef).getReference() != null) {
                 cp.print('(');
@@ -115,18 +127,18 @@ class PropSqlNameTagTranslator<T extends PropSqlNameTag> extends QueryTagTransla
                     cp.print("?");
                     Id fkPropId = refProp.getChildColumnId();
                     if (propDef instanceof RadDetailParentRefPropDef) {
-                        fkPropId = getQueryBuilder().getArte().getDefManager().
+                        fkPropId = builder.getArte().getDefManager().
                                 getMasterPropIdByDetailPropId(
                                 ((RadDetailParentRefPropDef) propDef).getDetailReference(),
                                 classDef,
                                 fkPropId);
                     }
-                    if (tag.getPropId().getPrefix() == EDefinitionIdPrefix.ADS_GROUP_PROP) {
-                        getQueryBuilder().addParameter(new DbQuery.InputGroupPropParam(tag.getPropId()));
+                    if (propId.getPrefix() == EDefinitionIdPrefix.ADS_GROUP_PROP) {
+                        builder.addParameter(new DbQuery.InputGroupPropParam(propId));
                     } else if (owner == PropSqlNameTag.EOwnerType.PARENT) {
-                        getQueryBuilder().addParameter(new DbQuery.InputParentPropParam(fkPropId));
+                        builder.addParameter(new DbQuery.InputParentPropParam(fkPropId));
                     } else {
-                        getQueryBuilder().addParameter(new DbQuery.InputChildPropParam(fkPropId));
+                        builder.addParameter(new DbQuery.InputChildPropParam(fkPropId));
                     }
                     isFirst = false;
                 }
@@ -134,11 +146,11 @@ class PropSqlNameTagTranslator<T extends PropSqlNameTag> extends QueryTagTransla
             } else {
                 cp.print("?");
                 if (tag.getPropId().getPrefix() == EDefinitionIdPrefix.ADS_GROUP_PROP) {
-                    getQueryBuilder().addParameter(new DbQuery.InputGroupPropParam(tag.getPropId()));
+                    builder.addParameter(new DbQuery.InputGroupPropParam(propId));
                 } else if (owner == PropSqlNameTag.EOwnerType.PARENT) {
-                    getQueryBuilder().addParameter(new DbQuery.InputParentPropParam(tag.getPropId()));
+                    builder.addParameter(new DbQuery.InputParentPropParam(propId));
                 } else {
-                    getQueryBuilder().addParameter(new DbQuery.InputChildPropParam(tag.getPropId()));
+                    builder.addParameter(new DbQuery.InputChildPropParam(propId));
                 }
             }
         } else {

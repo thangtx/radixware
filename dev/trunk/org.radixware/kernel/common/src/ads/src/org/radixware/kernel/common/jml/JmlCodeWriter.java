@@ -15,10 +15,12 @@ import org.radixware.kernel.common.compiler.core.ast.RadixObjectLocator;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.CodeWriter;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
+import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 
 
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.scml.CommentsAnalizer;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.scml.Scml.Tag;
 import org.radixware.kernel.common.scml.Scml.Text;
 import org.radixware.kernel.common.scml.ScmlProcessor;
@@ -41,13 +43,17 @@ class JmlCodeWriter extends CodeWriter {
         @Override
         protected void processTag(Tag tag) {
             if (tag instanceof Jml.Tag) {
+                WriterUtils.enterHumanUnreadableBlock(printer);
                 printer.print(Jml.Tag.TAG_LEAD_MARKER);
                 printer.print(itemIdx);
                 printer.print(Jml.Tag.TAG_MARKER_TAIL);
+                WriterUtils.leaveHumanUnreadableBlock(printer);
                 writeCode(printer, (Jml.Tag) tag, jml.getOwnerDef());
+                WriterUtils.enterHumanUnreadableBlock(printer);
                 printer.print(Jml.Tag.TAG_TAIL_MARKER);
                 printer.print(itemIdx);
                 printer.print(Jml.Tag.TAG_MARKER_TAIL);
+                WriterUtils.leaveHumanUnreadableBlock(printer);
                 itemIdx++;
             } else {
                 printer.printError();
@@ -104,12 +110,14 @@ class JmlCodeWriter extends CodeWriter {
 
     @Override
     public boolean writeCode(CodePrinter printer) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         printer.print(Jml.Tag.TAG_LEAD_MARKER);
         printer.print(-1);
         printer.print(Jml.Tag.TAG_MARKER_TAIL);
         printer.print(Jml.Tag.TAG_TAIL_MARKER);
         printer.print(-1);
         printer.print(Jml.Tag.TAG_MARKER_TAIL);
+       WriterUtils.leaveHumanUnreadableBlock(printer);
         new JmlCodeProcessor(printer).process(jml);
         return true;
     }

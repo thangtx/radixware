@@ -20,6 +20,8 @@ import org.radixware.kernel.common.exceptions.ServiceClientException;
 public class AboveReaderController extends AbstractReaderController {
     
     private final GroupModel groupModel;
+    private boolean rowLimitExceeded;
+    private boolean hasMore;
             
     public AboveReaderController(final GroupModel groupModel) {
         super();
@@ -30,17 +32,29 @@ public class AboveReaderController extends AbstractReaderController {
         super(maxRowsCount);
         this.groupModel = groupModel;
     }
+
+    @Override
+    protected boolean updateEntities(final GroupModelData selectResult) {        
+        if (groupModel.getEntitiesCount()==0){
+            hasMore = selectResult.hasMore();
+            getLastEntities().clear();
+            getLastEntities().addAll(selectResult.getEntityModels());
+            return false;
+        }else{
+            hasMore = groupModel.hasMoreRows();
+            return super.updateEntities(selectResult);
+        }
+    } 
         
     @Override
     public boolean hasMore(final EntityModel newModel) {
-        try{
-            return !groupModel.isEmpty() && !groupModel.getEntity(0).getPid().equals(newModel.getPid());
-        } catch(ServiceClientException | InterruptedException e) {
-            //never thrown if !groupModel.isEmpty()
-            return false;
-        } catch(BrokenEntityObjectException exception) {
-            return exception.getPid().equals(newModel.getPid());
-        }
+            try{
+                return !groupModel.isEmpty() && !groupModel.getEntity(0).getPid().equals(newModel.getPid());
+            } catch(ServiceClientException | InterruptedException e) {
+                return false;//do not expect this exceptions here
+            } catch(BrokenEntityObjectException exception) {
+                return !exception.getPid().equals(newModel.getPid());
+            }
     }
 
     @Override
@@ -53,7 +67,8 @@ public class AboveReaderController extends AbstractReaderController {
             resultModels.addAll(currentModels);            
             final int size = resultModels.size();
             final int maxSize = getMaxRowsCount();
-            if (size > maxSize) {
+            rowLimitExceeded = size > maxSize;
+            if (rowLimitExceeded) {
                 resultModels.subList(maxSize,size).clear();
             }
             return resultModels;
@@ -64,4 +79,16 @@ public class AboveReaderController extends AbstractReaderController {
     public ScrollPosition scrollPosition() {
         return IReaderController.ScrollPosition.TOP;
     }   
+
+    @Override
+    public boolean hasMoreAfterMerge() {
+        return hasMore || rowLimitExceeded || groupModel.hasMoreRows();
+    }    
+    
+    @Override
+    protected void clear() {
+        rowLimitExceeded = false;
+        hasMore = false;
+        super.clear();
+    }
 }

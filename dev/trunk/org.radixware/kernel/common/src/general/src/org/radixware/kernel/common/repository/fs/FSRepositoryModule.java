@@ -162,4 +162,8 @@ public abstract class FSRepositoryModule<T extends Module> implements IRepositor
         }
         return files;
     }
+
+    @Override
+    public void setModule(T module) {
+    }
 }

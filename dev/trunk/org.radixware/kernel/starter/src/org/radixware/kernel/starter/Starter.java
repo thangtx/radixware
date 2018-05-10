@@ -16,7 +16,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.security.Provider;
 import java.security.Security;
@@ -29,21 +28,33 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.logging.LogFactory;
+import org.radixware.kernel.starter.config.ConfigFileAccessor;
 import org.radixware.kernel.starter.log.SafeLogger;
 import org.radixware.kernel.starter.log.StarterLog;
+import org.radixware.kernel.starter.meta.LayerMeta;
+import org.radixware.kernel.starter.meta.RevisionMeta;
 import org.radixware.kernel.starter.radixloader.*;
 import org.radixware.kernel.starter.radixloader.RadixLoader.LocalFiles;
 import org.radixware.kernel.starter.url.UrlFactory;
 import org.radixware.kernel.starter.utils.KerberosConfig;
 import org.radixware.kernel.starter.utils.SystemTools;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
 public class Starter {
 
     public static final String STARTER_APP_DATA_ROOT = "radixware.org/starter";
+    private static final String VERSION_FOR_RESTART_PROP = "rdx.starter.version.for.restart";
+    private static final String APP_STATE_FOR_RESTART_PROP = "rdx.starter.app.state.for.restart";
+    private static final String AUTH_PASSWORD_INTERACTIVE_PROP = "rdx.starter.auth.password.interactive";
+    private static final String SSH_KEY_PASSWORD_INTERACTIVE_PROP = "rdx.starter.ssh.key.password.interactive";
+    private static final String STARTER_CONFIG_FILE = "rdx.starter.config.file";
     private static DateFormat SHUTDOWN_LOG_DATE_FORMAT = new SimpleDateFormat("HH-mm-dd-MM-yyyy");
     private volatile static String[] restartParameters;
-    public static final String VERSION = "1.33";
+    public static final String VERSION = "1.41";
     private static volatile Runnable cleanupHook = null;
     private static final AtomicBoolean cleanupLaunched = new AtomicBoolean(false);
     private static final CountDownLatch cleanupIsDoneLatch = new CountDownLatch(1);
@@ -54,6 +65,16 @@ public class Starter {
     private static volatile Thread starterMainThread = null;
     private static volatile StarterArguments starterArgs;
     private static volatile String productName;
+    private static volatile Integer restartExitCode;
+    private static volatile boolean restartByExitCodeRequired;
+    private static volatile byte[] appRestartState;
+    private static volatile long restartVersion;
+    private static volatile boolean restartByNewProcess;
+    //XXX: do not rename, used via reflection
+    private static volatile Map<String, String> restartedProcessState;
+    private static volatile String[] mainArgs;
+    private static volatile long targetVer = -1;
+    private static volatile int aadcMemberId = 0;
 
     static {
         System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
@@ -106,7 +127,7 @@ public class Starter {
 
     static void use() {
         System.err.println("Use:\n"
-                + "1) Starter <[-svnHomeUrl=<url> [-downloadServer] [-downloadExplorer] [-downloadWeb]] | [-workDir=<dir>]> -topLayerUri=<uri1,uri2,...> [-localFileCacheDir=<path>] [-authUser=<user>] [-authPassword=<password>] [-authPasswordInreractive] [-krbParams=<params>] [-sshKeyFile=<file>] [-sshKeyPassword=<pwd>] [-sshKeyPasswordInteractive] [-svnServerCertFile=<path>] [-svnLog] [-noRestart] [-showSplashScreen[=<title>]] class [arguments]\n"
+                + "1) Starter <[-svnHomeUrl=<url> [-downloadServer] [-downloadExplorer] [-downloadWeb]] | [-workDir=<dir>]> -topLayerUri=<uri1,uri2,...> [-localFileCacheDir=<path>] [-authUser=<user>] [-authPassword=<password>] [-authPasswordInreractive] [-krbParams=<params>] [-sshKeyFile=<file>] [-sshKeyPassword=<pwd>] [-sshKeyPasswordInteractive] [-svnServerCertFile=<path>] [-svnLog] [-noRestart] [-showSplashScreen[=<title>]] <[-localFileList=<path>] | [-localReplacementDir=<path>]> class [arguments]\n"
                 + "2) Starter -configFile <path-to-file>"
                 + "3) Starter <[-svnHomeUrl=<url> [-authUser=<user>] [-authPassword=<password>] [-authPasswordInreractive] [-krbParams=<params>] [-sshKeyFile=<file>] [-sshKeyPassword=<pwd>] [-sshKeyPasswordInteractive] [-svnServerCertFile=<path>] [-svnLog] export <filename>\n"
                 + "4) Starter -configFile <path-to-file> export <filepath> [destname]");
@@ -143,6 +164,9 @@ public class Starter {
             }
             throw ex;
         }
+        if (restartByExitCodeRequired) {
+            System.exit(restartExitCode);
+        }
     }
 
     private static boolean isRootStarter_TrickyButGuaranteed() {
@@ -165,14 +189,16 @@ public class Starter {
         }
         try {
             System.setSecurityManager(null);
+            mainArgs = args;
             starterArgs = StarterCommandLineParser.parse(args);
             if (starterArgs.isFromConfigFile()) {
                 args = getArgs(starterArgs);
+                System.setProperty(STARTER_CONFIG_FILE, starterArgs.getConfigFileName());
             }
             final Map<String, String> starterParameters = starterArgs.getStarterParameters();
             final List<String> appParameters = starterArgs.getAppParameters();
             final int countOfStarterParams = args.length - appParameters.size() + 1;//+1  for class to start
-            final String svnHomeUrl = starterParameters.get(StarterArguments.SVN_HOME_URL);
+            final String svnHomeUrl = trimLastSlash(starterParameters.get(StarterArguments.SVN_HOME_URL));
             final String workDir = starterParameters.get(StarterArguments.WORK_DIR);
             File localFileCacheDirFile = null;
             productName = starterParameters.get(StarterArguments.PRODUCT_NAME);
@@ -195,7 +221,18 @@ public class Starter {
             final boolean isExplorerOnMac = isExplorerOnMac(appParameters.get(0));//for workaround of JDK-8017776
             if (isRoot) {
                 tricksOnRootStarterInitializaton(isExplorerOnMac);
+                if (starterArgs.getStarterParameters().containsKey(StarterArguments.RESTART_EXIT_CODE)) {
+                    restartExitCode = Integer.parseInt(starterArgs.getStarterParameters().get(StarterArguments.RESTART_EXIT_CODE));
+                } else if (System.getenv(StarterArguments.RESTART_EXIT_CODE_ENV_VARIABLE) != null) {
+                    restartExitCode = Integer.parseInt(System.getenv(StarterArguments.RESTART_EXIT_CODE_ENV_VARIABLE));
+                }
             }
+            readRestartState();
+
+            if (targetVer == -1 && starterParameters.containsKey(StarterArguments.START_VERSION)) {
+                targetVer = Long.parseLong(starterParameters.get(StarterArguments.START_VERSION));
+            }
+
             int restartedCount = 0;
             if (starterParameters.containsKey(StarterArguments.RESTARTED_COUNT)) {
                 restartedCount = Integer.parseInt(starterParameters.get(StarterArguments.RESTARTED_COUNT));
@@ -203,11 +240,16 @@ public class Starter {
             final String authUser = starterParameters.get(StarterArguments.AUTH_USER);
             String authPassword;
             if (starterParameters.containsKey(StarterArguments.AUTH_PASSWORD_INTERACTIVE)) {
-                if (System.console() == null) {
-                    throw new IllegalArgumentException("'" + StarterArguments.AUTH_PASSWORD_INTERACTIVE + "' parameter is not supported in environments without command prompt");
+                if (restartedProcessState != null && restartedProcessState.containsKey(AUTH_PASSWORD_INTERACTIVE_PROP)) {
+                    authPassword = restartedProcessState.get(AUTH_PASSWORD_INTERACTIVE_PROP);
+                } else {
+                    if (System.console() == null) {
+                        throw new IllegalArgumentException("'" + StarterArguments.AUTH_PASSWORD_INTERACTIVE + "' parameter is not supported in environments without command prompt");
+                    }
+                    System.out.print("Enter user password: ");
+                    authPassword = new String(System.console().readPassword());
                 }
-                System.out.print("Enter user password: ");
-                authPassword = new String(System.console().readPassword());
+                System.setProperty(AUTH_PASSWORD_INTERACTIVE_PROP, "true");
             } else {
                 authPassword = starterParameters.get(StarterArguments.AUTH_PASSWORD);
             }
@@ -217,8 +259,13 @@ public class Starter {
             final String sshKeyFile = starterParameters.get(StarterArguments.SSH_KEY_FILE);
             final String sshKeyPwd;
             if (starterParameters.containsKey(StarterArguments.SSH_KEY_PASSWORD_INTERACTIVE)) {
-                System.out.print("Enter SSH key password: ");
-                sshKeyPwd = new String(System.console().readPassword());
+                if (restartedProcessState != null && restartedProcessState.containsKey(SSH_KEY_PASSWORD_INTERACTIVE_PROP)) {
+                    sshKeyPwd = restartedProcessState.get(SSH_KEY_PASSWORD_INTERACTIVE_PROP);
+                } else {
+                    System.out.print("Enter SSH key password: ");
+                    sshKeyPwd = new String(System.console().readPassword());
+                }
+                System.setProperty(SSH_KEY_PASSWORD_INTERACTIVE_PROP, "true");
             } else {
                 sshKeyPwd = starterParameters.get(StarterArguments.SSH_KEY_PASSWORD);
             }
@@ -263,10 +310,24 @@ public class Starter {
             LogFactory.releaseAll();
             //actualize() -> lock -> load LogFactory.class -> getFile() -> lock again -> exception
             SafeLogger.getInstance();
+            LogFactory.getLog(Starter.class);
+            SAXParserFactory.newInstance().newSAXParser();
 
-            final List<String> topLayerUris = urisString != null ? Arrays.asList(urisString.split(",")) : null;
+            final List<String> topLayerUris;
+            if (isExport) {
+                topLayerUris = new ArrayList<>();
+            } else {
+                topLayerUris = urisString != null ? Arrays.asList(urisString.split(",")) : null;
+            }
             final String localFileListPath = starterParameters.get(StarterArguments.LOCAL_FILE_LIST_PATH);
-            final LocalFiles localFiles = RadixLoader.LocalFiles.getInstance(isExport ? null : localFileListPath);
+            final String localReplacementDir = starterParameters.get(StarterArguments.LOCAL_REPLACEMENT_DIR_PATH);
+            if (localFileListPath != null && localReplacementDir != null) {
+                System.err.println("ERROR: Parameters -localFileList and -localReplacementDir can't be used at same time");
+                copyright();
+                use();
+                return;
+            }
+            final LocalFiles localFiles = RadixLoader.LocalFiles.getInstance(isExport ? null : localFileListPath, isExport ? null : localReplacementDir);
             if (svnHomeUrl != null) {
                 final String svnServerCertFile = starterParameters.get(StarterArguments.SVN_SERVER_CERT_FILE);
                 final String additionalSvnUrlsString = starterParameters.get(StarterArguments.ADDITIONAL_SVN_URLS);
@@ -293,10 +354,28 @@ public class Starter {
                         dstName = srcName.substring(nameStartIdx + 1);
                     }
                 }
-                final Path path = Files.write(new File(dstName).toPath(), RadixLoader.getInstance().export(appParameters.get(1), -1));
-                SafeLogger.getInstance().eventFromSource("Export", "Exported '" + srcName + "' to '" + path.toFile().getAbsolutePath() + "'" );
+                final IRepositoryEntry entry = RadixLoader.getInstance().exportFile(appParameters.get(1), -1);
+                final Path path = Files.write(new File(dstName).toPath(), entry.getData());
+                SafeLogger.getInstance().eventFromSource("Export", "Exported '" + srcName + "' to '" + path.toFile().getAbsolutePath() + "', revision " + entry.getRevisionNum() + " from " + new Date(entry.getRevisionCreationTimeMillis()));
                 return;
             }
+
+            long aadcStickedVer = -1;
+            if (starterParameters.containsKey(StarterArguments.AADC_MEMBER_ID)) {
+                aadcMemberId = Integer.parseInt(starterParameters.get(StarterArguments.AADC_MEMBER_ID));
+                if (aadcMemberId < 1 || aadcMemberId > 2) {
+                    throw new RadixLoaderException("AADC member id should be 1 or 2 (actual " + aadcMemberId + ")");
+                }
+                aadcStickedVer = readAadcStickedVersions()[aadcMemberId - 1];
+            }
+
+            if (aadcStickedVer != -1) {
+                if (targetVer != -1 && aadcStickedVer != targetVer) {
+                    throw new RadixLoaderException("Unable to start in requested revision '" + targetVer + "': AADC sticked revision is present ('" + aadcStickedVer + "') and differs");
+                }
+                targetVer = aadcStickedVer;
+            }
+
             boolean showSplash = false;
             String splashTitle = null;
             if (starterParameters.containsKey(StarterArguments.SHOW_SPLASH_SCREEN)) {
@@ -333,7 +412,6 @@ public class Starter {
             }
 
             ShutdownHooks.init();
-            registerCleanupShutdownHook();
 
             try {
                 final ClassLoader startersClassLoader = getRootStarterClassLoader();
@@ -360,7 +438,7 @@ public class Starter {
                                 clVer = null;
                             }
                             if (!VERSION.equals(clVer)) {
-                                System.err.println(String.format("Local starter version (%s) doesn't correspond to repository starter version (%s)", VERSION, clVer));
+                                System.err.println(String.format("Version of the local starter (%s) does not correspond to the version available in the repository (%s)", VERSION, clVer));
                             }
                             final Method method = cl.getMethod("main", String[].class);
 
@@ -386,6 +464,10 @@ public class Starter {
                                 if (restart_params == null) {
                                     break;
                                 }
+                                if (restartExitCode != null) {
+                                    restartByExitCodeRequired = true;
+                                    break;
+                                }
                                 final String[] restart_args = new String[countOfStarterParams + restart_params.length];
                                 for (int i = 0; i < countOfStarterParams; i++) {
                                     restart_args[i] = args[i];
@@ -402,6 +484,9 @@ public class Starter {
                         }
                     }
                 } else {
+                    if (isRoot() && showSplash) {
+                        StarterSplashScreen.show(splashTitle);
+                    }
                     if (svnHomeUrl != null) {//RADIX-4315
                         final RadixSVNLoader l = (RadixSVNLoader) RadixLoader.getInstance();
                         if (starterParameters.containsKey("downloadExplorer")) {
@@ -415,6 +500,11 @@ public class Starter {
                         }
                     }
                     tryActualizeLoader();
+                    final String configFileName = System.getProperty(STARTER_CONFIG_FILE);
+                    if (configFileName != null && starterArgs.getStarterParameters().containsKey(StarterArguments.START_VERSION)) {
+                        ConfigFileAccessor fileAccessor = ConfigFileAccessor.get(configFileName, StarterArguments.STARTER_SECTION);
+                        fileAccessor.update(Collections.singletonList(StarterArguments.START_VERSION), null);
+                    }
                     final Set<String> group_set = new HashSet<>();
                     group_set.add("KernelCommon");
                     group_set.add("KernelClient");
@@ -439,7 +529,26 @@ public class Starter {
                             final Method method = cl.getMethod("main", String[].class);
                             appParameters.remove(0);
                             StarterSplashScreen.hide();
+                            if (restartedProcessState != null && restartedProcessState.containsKey(APP_STATE_FOR_RESTART_PROP)) {
+                                appRestartState = Hex.decodeHex(restartedProcessState.remove(APP_STATE_FOR_RESTART_PROP).toCharArray());
+                            }
                             method.invoke(null, (Object) appParameters.toArray(new String[0]));
+                            if (restartByNewProcess) {
+                                final Map<String, String> state = new HashMap<>();
+                                if (Boolean.getBoolean(AUTH_PASSWORD_INTERACTIVE_PROP)) {
+                                    state.put(AUTH_PASSWORD_INTERACTIVE_PROP, authPassword);
+                                }
+                                if (Boolean.getBoolean(SSH_KEY_PASSWORD_INTERACTIVE_PROP)) {
+                                    state.put(SSH_KEY_PASSWORD_INTERACTIVE_PROP, sshKeyPwd);
+                                }
+                                if (appRestartState != null) {
+                                    state.put(APP_STATE_FOR_RESTART_PROP, Hex.encodeHexString(appRestartState));
+                                }
+                                if (restartVersion != -1) {
+                                    state.put(VERSION_FOR_RESTART_PROP, String.valueOf(restartVersion));
+                                }
+                                ProcessRestarter.launchRestarter(state, restartVersion);
+                            }
                         } finally {
                             Thread.currentThread().setContextClassLoader(prevContextClassLoader);
                         }
@@ -449,7 +558,6 @@ public class Starter {
                 }
             } finally {
                 cleanup(RadixLoader.getInstance());
-                unregisterCleanupShutdownHook();
                 SafeLogger.interrupt();
             }
         } catch (InvalidUsageException e) {
@@ -457,11 +565,78 @@ public class Starter {
         }
     }
 
+    public static long getAadcMemberId() {
+        return aadcMemberId;
+    }
+
+    public static long[] readAadcStickedVersions() throws RadixLoaderException {
+        byte[] aboutData = findAboutXml();
+        if (aboutData != null && aboutData.length > 0) {
+            try {
+                final Document doc = LayerMeta.getDocumentBuilder().parse(new ByteArrayInputStream(aboutData));
+                return new long[]{getAadcStickedVersion(1, doc), getAadcStickedVersion(2, doc)};
+            } catch (Exception ex) {
+                throw new RadixLoaderException("Unable to determine stick revision for aadc memeber: " + ex.getMessage(), ex);
+            }
+        }
+        return new long[]{-1l, -1l};
+    }
+
+    private static long getAadcStickedVersion(final int aadcMemberId, final Document aboutDocument) {
+        final String stickToRevision = getSimpleXpathVal(aboutDocument, "About/AadcMember" + aadcMemberId + "/@StickToRevision");
+        if (stickToRevision != null) {
+            return Long.parseLong(stickToRevision);
+        }
+        return -1;
+    }
+
+    private static byte[] findAboutXml() throws RadixLoaderException {
+        for (IRepositoryEntry entry : RadixLoader.getInstance().listDir("", -1, false)) {
+            if (!entry.isDirectory() && entry.getName().equals(RevisionMeta.ABOUT_XML)) {
+                return RadixLoader.getInstance().export(entry.getPath(), entry.getRevisionNum());
+            }
+        }
+        return null;
+    }
+
+    private static String getSimpleXpathVal(Node node, String path) {
+        final int slashIdx = path.indexOf("/");
+        final String targetName;
+        if (slashIdx >= 0) {
+            targetName = path.substring(0, slashIdx);
+        } else {
+            targetName = path;
+        }
+        for (int i = 0; i < node.getChildNodes().getLength(); i++) {
+            final Node childNode = node.getChildNodes().item(i);
+            if (childNode.getNodeType() == Node.ELEMENT_NODE && childNode.getLocalName().equals(targetName)) {
+                if (slashIdx >= 0) {
+                    final String subPath = path.substring(slashIdx + 1);
+                    if (subPath.startsWith("@")) {
+                        return childNode.getAttributes().getNamedItem(subPath.substring(1)).getNodeValue();
+                    } else {
+                        return getSimpleXpathVal(childNode, subPath);
+                    }
+                } else {
+                    return childNode.getNodeValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    private static String trimLastSlash(final String s) {
+        if (s == null || !s.endsWith("/")) {
+            return s;
+        }
+        return s.substring(0, s.length() - 1);
+    }
+
     private static void tryActualizeLoader() throws RadixLoaderException {
         try {
-            RadixLoader.getInstance().actualize();
+            RadixLoader.getInstance().actualize(targetVer, null, null, null, null);
         } catch (RadixLoaderException ex) {
-            if (RadixLoader.getInstance().getCurrentRevisionMeta() == null) {
+            if (RadixLoader.getInstance().getCurrentRevisionMeta() == null || (ex instanceof RadixLoaderPreloadException)) {
                 throw ex;
             } else {
                 SafeLogger.getInstance().error(Starter.class, "Unable to determine latest changes in repostory", ex);
@@ -601,6 +776,28 @@ public class Starter {
         return args.toArray(new String[args.size()]);
     }
 
+    private static void readRestartState() throws IOException {
+        if (isRootStarter_TrickyButGuaranteed()) {
+            restartedProcessState = ProcessRestarter.consumeRestartProcessState();
+        } else {
+            try {
+                final Class rootStarterClass = getRootStarterClassLoader().loadClass(Starter.class.getCanonicalName());
+                final Field f = rootStarterClass.getDeclaredField("restartedProcessState");
+                f.setAccessible(true);
+                final Object val = f.get(null);
+                f.set(null, null);
+                if (val instanceof Map) {
+                    restartedProcessState = (Map<String, String>) val;
+                }
+            } catch (Exception ex) {
+                throw new IOException("Unable to get restarted process state", ex);
+            }
+        }
+        if (restartedProcessState != null && restartedProcessState.containsKey(VERSION_FOR_RESTART_PROP)) {
+            targetVer = Long.parseLong(restartedProcessState.get(VERSION_FOR_RESTART_PROP));
+        }
+    }
+
     public static StarterArguments getArguments() {
         return starterArgs;
     }
@@ -673,29 +870,6 @@ public class Starter {
     }
 
     /**
-     * Clear temp files created by RadixLoader on jvm termination
-     */
-    private static void registerCleanupShutdownHook() {
-        addStarterShutdownHook(cleanupHook = new Runnable() {
-            private RadixLoader loader = RadixLoader.getInstance();
-
-            public void run() {
-                cleanup(loader);
-            }
-        });
-    }
-
-    private static void unregisterCleanupShutdownHook() {
-        if (cleanupHook != null) {
-            try {
-                removeStarterShutdownHook(cleanupHook);
-            } catch (IllegalStateException e) {
-                // shutdown is in progress
-            }
-        }
-    }
-
-    /**
      * dirty workaround
      */
     private static boolean isExplorerOnMac(final String appClassName) {
@@ -762,6 +936,28 @@ public class Starter {
 
     public static void mustRestart(final String[] restartParameters) {
         Starter.restartParameters = restartParameters;
+    }
+
+    /**
+     *
+     * @param appState
+     * @param targetVersion - version to switch after restart, -1 - newest.
+     */
+    public static void mustRestartByNewProcess(final byte[] appState, final long targetVersion) {
+        appRestartState = appState;
+        restartByNewProcess = true;
+        restartVersion = targetVersion;
+    }
+
+    public static synchronized byte[] consumeAppRestartState() {
+        if (appRestartState != null) {
+            final byte[] b = new byte[appRestartState.length];
+            System.arraycopy(appRestartState, 0, b, 0, appRestartState.length);
+            Arrays.fill(appRestartState, (byte) 0);
+            appRestartState = null;
+            return b;
+        }
+        return null;
     }
 
     public static String[] getRestartParameters() {

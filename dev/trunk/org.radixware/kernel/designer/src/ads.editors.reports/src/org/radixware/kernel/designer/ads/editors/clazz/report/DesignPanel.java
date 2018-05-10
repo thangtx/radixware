@@ -27,6 +27,7 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.EReportLayout;
+import org.radixware.kernel.common.enums.EReportTextFormat;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.common.utils.events.IRadixEventListener;
 import org.radixware.kernel.common.utils.events.RadixEvent;
@@ -40,7 +41,10 @@ import org.radixware.kernel.designer.ads.editors.clazz.report.action.AdsReportFo
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.AdsReportGridLayoutAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.AdsReportGroupsEditAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.AdsReportHLayoutAction;
+import org.radixware.kernel.designer.ads.editors.clazz.report.action.AdsReportMarginAction;
+import org.radixware.kernel.designer.ads.editors.clazz.report.action.AdsReportTreeAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.AdsReportVLayoutAction;
+import org.radixware.kernel.designer.ads.editors.clazz.report.action.AdsReportVisibilityAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.AlignBottomAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.AlignByHeightAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.AlignByWidthAction;
@@ -49,10 +53,10 @@ import org.radixware.kernel.designer.ads.editors.clazz.report.action.AlignLeftAc
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.AlignMiddleAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.AlignRightAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.AlignTopAction;
-import org.radixware.kernel.designer.ads.editors.clazz.report.action.AllBordersAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.ArrangeByHorizontalAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.ArrangeByVerticalAction;
-import org.radixware.kernel.designer.ads.editors.clazz.report.action.BottomBorderAction;
+import org.radixware.kernel.designer.ads.editors.clazz.report.action.BackgroundAction;
+import org.radixware.kernel.designer.ads.editors.clazz.report.action.BorderAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.ClipContentAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.FontAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.GridSettingsEditAction;
@@ -60,33 +64,31 @@ import org.radixware.kernel.designer.ads.editors.clazz.report.action.HAlignCente
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.HAlignJustifyAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.HAlignLeftAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.HAlignRightAction;
-import org.radixware.kernel.designer.ads.editors.clazz.report.action.LeftBorderAction;
+import org.radixware.kernel.designer.ads.editors.clazz.report.action.LineSpaicingAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.NoAdjustAction;
-import org.radixware.kernel.designer.ads.editors.clazz.report.action.NoBorderAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.NoClipContentAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.NoSnapEdgesAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.NoWrapWordAction;
-import org.radixware.kernel.designer.ads.editors.clazz.report.action.RightBorderAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.SnapBottomEdgeAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.SpanTopEdgeAction;
-import org.radixware.kernel.designer.ads.editors.clazz.report.action.TopBorderAction;
+import org.radixware.kernel.designer.ads.editors.clazz.report.action.TextFormatAction;
 import org.radixware.kernel.designer.ads.editors.clazz.report.action.WrapWordAction;
+import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.AdsReportAbstractSelectableWidget;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.AdsReportBandWidget;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.AdsReportBaseContainer;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.AdsReportFormDiagram;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.AdsReportFormDiagramOptions;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.AdsReportFormUndoRedo;
-import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.AdsReportSelectableWidget;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.IReportCellContainer;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.palette.AdsReportPaletteRootNode;
+import org.radixware.kernel.designer.ads.editors.clazz.report.navigator.ReportNavigator;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
 
 class DesignPanel extends javax.swing.JPanel {
 
     private final AdsReportFormDiagram diagram;
-    private final ArrowColorButton.ColorChangeEventListener bgListener;
+//    private final ArrowColorButton.ColorChangeEventListener bgListener;
     private final ArrowColorButton.ColorChangeEventListener fgListener;
-    private final ArrowColorButton.ColorChangeEventListener brListener;
     private final JComboBox<EIsoLanguage> langComboBox = new JComboBox<>();
     private final JComboBox<AdsReportForm.Mode> modeComboBox = new JComboBox<>();
     private final AdsReportFormUndoRedo undoRedo;
@@ -95,14 +97,15 @@ class DesignPanel extends javax.swing.JPanel {
     private JButton hLayoutBtn;
     private JButton vLayoutBtn;
     private JButton gridLayoutBtn;
+    private JSplitPane jSplitPane = new JSplitPane();
 
-    private interface OnModeChangeListener {
+    public interface OnModeChangeListener {
 
         void onModeChanged(AdsReportForm.Mode newMode);
     }
     private final List<OnModeChangeListener> modeChangeListeners = new LinkedList<>();
 
-    private void addModeChangeListener(OnModeChangeListener listener) {
+    public void addModeChangeListener(OnModeChangeListener listener) {
         synchronized (modeChangeListeners) {
             if (!modeChangeListeners.contains(listener)) {
                 modeChangeListeners.add(listener);
@@ -151,20 +154,11 @@ class DesignPanel extends javax.swing.JPanel {
         @Override
         public void onEvent(RadixEvent e) {
             IReportCellContainer widgetContainer = null;
-            List<AdsReportSelectableWidget> selectedWidgets = new ArrayList<>();
-            for (AdsReportBandWidget band : diagram.getBandWidgets()) {
-                if (band.isSelected()) {
-                    selectedWidgets.addAll(band.getSelectedWidgets());
-                    if (selectedWidgets.isEmpty()) {
-                        widgetContainer = band;
-                    }
-                    break;
-                }
-            }
-            if (selectedWidgets.size() == 1) {
-                AdsReportSelectableWidget selectedWidget = selectedWidgets.get(0);
-                if (selectedWidget instanceof AdsReportBaseContainer) {
-                    widgetContainer = (AdsReportBaseContainer) selectedWidget;
+            List<AdsReportAbstractSelectableWidget> selectedWidgets = diagram.getSelectedWidgets();
+            if (selectedWidgets.size() == 1){
+                AdsReportAbstractSelectableWidget selectedWidget = selectedWidgets.get(0);
+                if (selectedWidget instanceof AdsReportBandWidget || selectedWidget instanceof AdsReportBaseContainer){
+                    widgetContainer = (IReportCellContainer) selectedWidget;
                 }
             }
             updateLayoutBtns(widgetContainer);
@@ -208,7 +202,6 @@ class DesignPanel extends javax.swing.JPanel {
         hLayoutBtn.setEnabled(enabled);
         vLayoutBtn.setEnabled(enabled);
     }
-
     /**
      * Creates new form AdsReportClassDefEditor
      */
@@ -221,19 +214,19 @@ class DesignPanel extends javax.swing.JPanel {
         redoAction = new AdsReportFormRedoAction(undoRedo);
         diagram = new AdsReportFormDiagram(form, undoRedo);
         diagram.addSelectionListener(selectionListener);
-        bgListener = new ArrowColorButton.ColorChangeEventListener() {
-
-            @Override
-            public void onEvent(ColorChangeEvent e) {
-                for (RadixObject obj : diagram.getSelectedObjects()) {
-                    if (obj instanceof AdsReportCell) {
-                        AdsReportCell cell = (AdsReportCell) obj;
-                        cell.setBgColorInherited(false);
-                        cell.setBgColor(e.getColor());
-                    }
-                }
-            }
-        };
+//        bgListener = new ArrowColorButton.ColorChangeEventListener() {
+//
+//            @Override
+//            public void onEvent(ColorChangeEvent e) {
+//                for (RadixObject obj : diagram.getSelectedObjects()) {
+//                    if (obj instanceof AdsReportCell) {
+//                        AdsReportCell cell = (AdsReportCell) obj;
+//                        cell.setBgColorInherited(false);
+//                        cell.setBgColor(e.getColor());
+//                    }
+//                }
+//            }
+//        };
         fgListener = new ArrowColorButton.ColorChangeEventListener() {
 
             @Override
@@ -247,31 +240,23 @@ class DesignPanel extends javax.swing.JPanel {
                 }
             }
         };
-        brListener = new ArrowColorButton.ColorChangeEventListener() {
-
-            @Override
-            public void onEvent(ColorChangeEvent e) {
-                for (RadixObject obj : diagram.getSelectedObjects()) {
-                    if (obj instanceof AdsReportCell) {
-                        AdsReportCell cell = (AdsReportCell) obj;
-                        cell.getBorder().setColor(e.getColor());
-                    }
-                }
-            }
-        };
 
         setLayout(new MultiBorderLayout());
+        jSplitPane.setDividerLocation(150);
+        final ReportNavigator navigator = new ReportNavigator();
+        AdsReportTreeAction reportTreeAction = new AdsReportTreeAction(diagram, jSplitPane, navigator);
         //JPanel toolBarPanel=new JPanel();
 
         //toolBarPanel.setLayout(/*new FlowLayout()*/new MultiBorderLayout(0,0)/*new WrappedLayout(WrappedLayout.LEFT, 1, 1)*/);
-        add(getTopToolBar(form), BorderLayout.NORTH);
+        add(getTopToolBar(form, reportTreeAction), BorderLayout.NORTH);
         add(getEditToolBar(), BorderLayout.NORTH);
         //add(toolBarPanel,BorderLayout.NORTH);
 //        add(getLeftToolBar(), BorderLayout.WEST);
-
+        
         final JScrollPane scroll = new JScrollPane(diagram);
         scroll.getVerticalScrollBar().setUnitIncrement(16);
-        add(scroll, BorderLayout.CENTER);
+        jSplitPane.setRightComponent(scroll);
+        add(jSplitPane, BorderLayout.CENTER);
 
         InputMap inputMap = this.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_DOWN_MASK), "undo");
@@ -289,33 +274,42 @@ class DesignPanel extends javax.swing.JPanel {
         final JToolBar toolBar = new javax.swing.JToolBar();
         toolBar.setFloatable(true);
         toolBar.setRollover(true);
-
+        toolBar.add(getVisibilityButton());
         toolBar.add(getAlignButton());
         toolBar.add(getHAlignButton());
         toolBar.add(getSnapEdgesButton());
         toolBar.add(getAdjustButton());
         toolBar.addSeparator();
+        toolBar.add(getButtonForAction(new LineSpaicingAction(diagram), false, "Line Spacing"));
         toolBar.add(getWrapWordButton());
         toolBar.add(getClipContentButton());
+        toolBar.add(getTextFormatButton());
+        toolBar.add(getButtonForAction(new AdsReportMarginAction(diagram), false, "Margins"));
         toolBar.addSeparator();
 //        toolBar.add(getVAlignButton());
-        toolBar.add(getButtonForAction(new FontAction(diagram), false));
+        toolBar.add(getButtonForAction(new FontAction(diagram), false, "Font"));
         toolBar.add(getFgColorButton());
-        toolBar.add(getBgColorButton());
-        toolBar.add(getBrColorButton());
-        toolBar.add(getBorderButton());
+        toolBar.add(getButtonForAction(new BackgroundAction(diagram), true, "Background Color"));
+        toolBar.addSeparator();
+        toolBar.add(getButtonForAction(new BorderAction(diagram), false, "Borders"));
         return toolBar;
     }
 
-    private JToolBar getTopToolBar(AdsReportForm form) {
+    private JToolBar getTopToolBar(AdsReportForm form, final AdsReportTreeAction reportTreeAction) {
         final JToolBar toolBar = new javax.swing.JToolBar();
         toolBar.setFloatable(true);
         toolBar.setRollover(true);
 
-        toolBar.add(getButtonForAction(new AdsReportFormEditAction(form), true));
-        toolBar.add(getButtonForAction(new AdsReportBandsEditAction(form), true));
-        toolBar.add(getButtonForAction(new AdsReportGroupsEditAction(form), true));
-        toolBar.add(getButtonForAction(new GridSettingsEditAction(), true));
+        final JToggleButton button = new JToggleButton(reportTreeAction);
+        button.setSelected(true);
+        reportTreeAction.actionPerformed(new ActionEvent(button, 0, ""));
+        toolBar.add(button);
+        toolBar.addSeparator();
+        
+        toolBar.add(getButtonForAction(new AdsReportFormEditAction(form), true, ""));
+        toolBar.add(getButtonForAction(new AdsReportBandsEditAction(form), true, ""));
+        toolBar.add(getButtonForAction(new AdsReportGroupsEditAction(form), true, ""));
+        toolBar.add(getButtonForAction(new GridSettingsEditAction(form), true, ""));
         toolBar.addSeparator();
         toolBar.add(new ScaleComboBox(this));
         toolBar.addSeparator();
@@ -330,8 +324,8 @@ class DesignPanel extends javax.swing.JPanel {
 //        modeComboBox.setVisible(false);
 
         toolBar.addSeparator();
-        toolBar.add(getButtonForAction(undoAction, true));
-        toolBar.add(getButtonForAction(redoAction, true));
+        toolBar.add(getButtonForAction(undoAction, true, ""));
+        toolBar.add(getButtonForAction(redoAction, true, ""));
 
         /* toolBar.addSeparator();
          toolBar.add(getAlignButton());
@@ -348,9 +342,9 @@ class DesignPanel extends javax.swing.JPanel {
         AdsReportHLayoutAction hLayoutAction = new AdsReportHLayoutAction(diagram);
         AdsReportVLayoutAction vLayoutAction = new AdsReportVLayoutAction(diagram);
         AdsReportGridLayoutAction gridLayoutAction = new AdsReportGridLayoutAction(diagram);
-        hLayoutBtn = getButtonForAction(hLayoutAction, false);
-        vLayoutBtn = getButtonForAction(vLayoutAction, false);
-        gridLayoutBtn = getButtonForAction(gridLayoutAction, false);
+        hLayoutBtn = getButtonForAction(hLayoutAction, false, "");
+        vLayoutBtn = getButtonForAction(vLayoutAction, false, "");
+        gridLayoutBtn = getButtonForAction(gridLayoutAction, false, "");
 
         toolBar.addSeparator();
         toolBar.add(hLayoutBtn);
@@ -359,12 +353,13 @@ class DesignPanel extends javax.swing.JPanel {
         return toolBar;
     }
 
-    private JButton getButtonForAction(final Action action, final boolean isEnabledInTextMode) {
+    private JButton getButtonForAction(final Action action, final boolean isEnabledInTextMode, String tooltip) {
         final JButton button = new JButton(action);
         button.setText("");
         button.setBorderPainted(false);
         button.setMargin(new Insets(2, 2, 2, 2));
         button.setFocusable(false);
+        button.setToolTipText(tooltip);
         addModeChangeListener(new OnModeChangeListener() {
 
             @Override
@@ -406,7 +401,7 @@ class DesignPanel extends javax.swing.JPanel {
         button.addSeparator();
         button.addAction(new ArrangeByHorizontalAction(diagram));
         button.addAction(new ArrangeByVerticalAction(diagram));
-        button.getButton().setToolTipText("Cells Align");
+        button.getButton().setToolTipText("Align Cells");
         return button.getButton();
     }
 
@@ -416,7 +411,7 @@ class DesignPanel extends javax.swing.JPanel {
         button.addAction(new HAlignCenterAction(diagram));
         button.addAction(new HAlignRightAction(diagram));
         button.addAction(new HAlignJustifyAction(diagram));
-        button.getButton().setToolTipText("Horizontal Text Align");
+        button.getButton().setToolTipText("Align Text Horizontally");
         return button.getButton();
     }
 
@@ -473,6 +468,26 @@ class DesignPanel extends javax.swing.JPanel {
         button.getButton().setToolTipText("Clip Content");
         return button.getButton();
     }
+    
+    private JButton getTextFormatButton() {
+        DropDownButton button = new DropDownButton();
+        for (EReportTextFormat format : EReportTextFormat.values()){
+            button.addAction(new TextFormatAction(diagram, format));
+        }
+        button.getButton().setToolTipText("Text format");
+        return button.getButton();
+    }
+    
+    private JButton getVisibilityButton() {
+        DropDownButton button = new DropDownButton();
+        button.setIcon(RadixWareIcons.MLSTRING_EDITOR.SHOW_EMPTY_STRINGS.getIcon());
+        button.addAction(new AdsReportVisibilityAction(diagram, null));
+        for (AdsReportForm.Mode mode : AdsReportForm.Mode.values()){
+            button.addAction(new AdsReportVisibilityAction(diagram, mode));
+        }
+        button.getButton().setToolTipText("Visibility");
+        return button.getButton();
+    }
 
     /* private JButton getVAlignButton() {
      DropDownButton button = new DropDownButton();
@@ -483,22 +498,6 @@ class DesignPanel extends javax.swing.JPanel {
      button.getButton().setToolTipText("Vertical Text Align");
      return button.getButton();
      }*/
-    private JButton getBgColorButton() {
-        final ArrowColorButton button = new ArrowColorButton(
-                (ImageIcon) RadixWareIcons.EDIT.BACKGROUND.getIcon(), Color.WHITE);
-        button.addColorChangeEventListener(bgListener);
-        button.setToolTipText("Background Color");
-
-        addModeChangeListener(new OnModeChangeListener() {
-
-            @Override
-            public void onModeChanged(AdsReportForm.Mode newMode) {
-                button.setEnabled(newMode != AdsReportForm.Mode.TEXT);
-            }
-        });
-        return button;
-    }
-
     private JButton getFgColorButton() {
         final ArrowColorButton button = new ArrowColorButton(
                 (ImageIcon) RadixWareIcons.EDIT.FOREGROUND.getIcon(), Color.BLACK);
@@ -514,40 +513,7 @@ class DesignPanel extends javax.swing.JPanel {
         return button;
     }
 
-    private JButton getBrColorButton() {
-        final ArrowColorButton button = new ArrowColorButton(
-                (ImageIcon) RadixWareIcons.EDIT.BORDER_COLOR.getIcon(), Color.BLACK);
-        button.addColorChangeEventListener(brListener);
-        button.setToolTipText("Border Color");
-        addModeChangeListener(new OnModeChangeListener() {
-
-            @Override
-            public void onModeChanged(AdsReportForm.Mode newMode) {
-                button.setEnabled(newMode != AdsReportForm.Mode.TEXT);
-            }
-        });
-        return button;
-    }
-
-    private JButton getBorderButton() {
-        final DropDownButton button = new DropDownButton();
-        button.addAction(new NoBorderAction(diagram));
-        button.addAction(new TopBorderAction(diagram));
-        button.addAction(new RightBorderAction(diagram));
-        button.addAction(new BottomBorderAction(diagram));
-        button.addAction(new LeftBorderAction(diagram));
-        button.addAction(new AllBordersAction(diagram));
-        button.getButton().setToolTipText("Border");
-        addModeChangeListener(new OnModeChangeListener() {
-
-            @Override
-            public void onModeChanged(AdsReportForm.Mode newMode) {
-                button.setEnabled(newMode != AdsReportForm.Mode.TEXT);
-            }
-        });
-        return button.getButton();
-    }
-
+    
     public void open(OpenInfo openInfo) {
         diagram.open(openInfo);
     }
@@ -557,7 +523,7 @@ class DesignPanel extends javax.swing.JPanel {
         final List<EIsoLanguage> supportedLanguages = report.getModule().getSegment().getLayer().getLanguages();
         EIsoLanguage arrLangs[] = new EIsoLanguage[supportedLanguages.size()];
         arrLangs = supportedLanguages.toArray(arrLangs);
-        langComboBox.setModel(new javax.swing.DefaultComboBoxModel<EIsoLanguage>(arrLangs));
+        langComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(arrLangs));
         if (!supportedLanguages.contains(diagram.getLanguage())) {
             if (supportedLanguages.isEmpty()) {
                 diagram.setLanguage(EIsoLanguage.ENGLISH);
@@ -570,14 +536,22 @@ class DesignPanel extends javax.swing.JPanel {
         langComboBox.addActionListener(langComboBoxActionListener);
 
         modeComboBox.removeActionListener(modeComboBoxActionListener);
-        AdsReportForm.Mode arrModes[] = new AdsReportForm.Mode[]{
-            AdsReportForm.Mode.GRAPHICS,
-            AdsReportForm.Mode.TEXT,};
-
-        modeComboBox.setModel(new javax.swing.DefaultComboBoxModel<AdsReportForm.Mode>(arrModes));
+        DefaultComboBoxModel<AdsReportForm.Mode> comboBoxModel = new DefaultComboBoxModel();
+        comboBoxModel.addElement(AdsReportForm.Mode.GRAPHICS);
+        final AdsReportForm form = report.getForm();
+        if (form != null) {
+            if (form.isSupportsTxt()) {
+                comboBoxModel.addElement(AdsReportForm.Mode.TEXT);
+            }
+             if (diagram.getMode() != form.getMode()) {
+                diagram.setMode(form.getMode());
+                fireModeChange(form.getMode());
+            }
+        }
+        modeComboBox.setModel(comboBoxModel);
         modeComboBox.setSelectedItem(diagram.getMode());
         modeComboBox.addActionListener(modeComboBoxActionListener);
-
+        
         diagram.update();
     }
 

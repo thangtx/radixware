@@ -20,7 +20,6 @@ import com.trolltech.qt.core.Qt.ScrollBarPolicy;
 import com.trolltech.qt.gui.QAbstractItemView;
 import com.trolltech.qt.gui.QAbstractItemView.SelectionMode;
 import com.trolltech.qt.gui.QApplication;
-import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QKeyEvent;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QLineEdit;
@@ -142,16 +141,7 @@ public abstract class BaseChoosePanel extends QWidget {
         final QRegExp reg = new QRegExp(pattern);
         reg.setCaseSensitivity(CaseSensitivity.CaseInsensitive);
         reg.setPatternSyntax(QRegExp.PatternSyntax.Wildcard);
-        String nameToMatchTo = name;
-        int parentIndex = nameToMatchTo.indexOf('(');
-        if (parentIndex > 0) {
-            int spaceIndex = nameToMatchTo.indexOf(' ');
-            if (spaceIndex > 0 && parentIndex > spaceIndex) {
-                //lib user function choose.
-                nameToMatchTo = nameToMatchTo.substring(spaceIndex + 1, parentIndex);
-            }
-        }
-        return reg.exactMatch(nameToMatchTo);
+        return reg.exactMatch(name);
     }
 
     protected List<DefInfo> getDefList() {

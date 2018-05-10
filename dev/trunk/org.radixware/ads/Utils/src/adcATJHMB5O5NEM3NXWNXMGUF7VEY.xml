@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcATJHMB5O5NEM3NXWNXMGUF7VEY" Name="MsdlPreprocessorAasClient" Type="3" Environment="server">
+    <AccessRules IsFinal="true" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcATJHMB5O5NEM3NXWNXMGUF7VEY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcATJHMB5O5NEM3NXWNXMGUF7VEY"/>
+    </Bodies>
+    <MethodGroup Id="cmgXIAQYV7NDBBENPNZVUUFPPBVWA" Name="Root"/>
+    <PropertyGroup Id="cpgRI6ORLAEBND2PL7IPNFBMZTNL4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthDUCQ4NV2P5G6XLBKMLQ44OY5UY" Name="invokeRead" Nature="0" IsReflectiveCallable="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="className" Id="mprCGNBQQBDSBBRBLNTGYH57JIFPI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodName" Id="mprCP2WKGUFP5B2VDUHOLOBWJZV5Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="arg" Id="mpr33PGFCBOQZCDBK6TN2O6Q72XAI">
+            <Type TypeId="22"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>byte[] res = (byte[]) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcATJHMB5O5NEM3NXWNXMGUF7VEY mthATSH27XHXVGJJMGS2T4TFHIDZQ" Invoke="true">
+                <xsc:Presentation>invokeImpl</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(className, methodName, arg);
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNC7RELKU45EFBK2XRUG6T2L5DE">
+                <xsc:Presentation>Hex</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNC7RELKU45EFBK2XRUG6T2L5DE mthLOCUMHMZ5ZDG7NDBYGMWSCLZBU" Invoke="true">
+                <xsc:Presentation>encode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(res);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNNKFBQMVKFG5PHHK5DYXMUV36I" Name="invokeWrite" Nature="0" IsReflectiveCallable="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="className" Id="mprCGNBQQBDSBBRBLNTGYH57JIFPI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodName" Id="mprCP2WKGUFP5B2VDUHOLOBWJZV5Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="arg" Id="mpr33PGFCBOQZCDBK6TN2O6Q72XAI">
+            <Type TypeId="22"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>byte[] res = (byte[]) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcATJHMB5O5NEM3NXWNXMGUF7VEY mthATSH27XHXVGJJMGS2T4TFHIDZQ" Invoke="true">
+                <xsc:Presentation>invokeImpl</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(className, methodName, arg);
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcNC7RELKU45EFBK2XRUG6T2L5DE">
+                <xsc:Presentation>Hex</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNC7RELKU45EFBK2XRUG6T2L5DE mthLOCUMHMZ5ZDG7NDBYGMWSCLZBU" Invoke="true">
+                <xsc:Presentation>encode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(res);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNHCMHV3TL5FZ5CZSG25QLFHYBM" Name="invokeSelect" Nature="0" IsReflectiveCallable="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="className" Id="mprCGNBQQBDSBBRBLNTGYH57JIFPI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodName" Id="mprCP2WKGUFP5B2VDUHOLOBWJZV5Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="arg" Id="mpr33PGFCBOQZCDBK6TN2O6Q72XAI">
+            <Type TypeId="22"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcATJHMB5O5NEM3NXWNXMGUF7VEY mthATSH27XHXVGJJMGS2T4TFHIDZQ" Invoke="true">
+                <xsc:Presentation>invokeImpl</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(className, methodName, arg);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthATSH27XHXVGJJMGS2T4TFHIDZQ" Name="invokeImpl" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="className" Id="mprKD2G5NWMMNCWTOYKJFFA3P6D6Y">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="methodName" Id="mprHXAASQXQ7NCTFEIVV3SPYCYE3Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="arg" Id="mpr2DVEQU3ODVHDJA2TILMRLLCFN4">
+            <Type TypeId="22"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth3L3ZXJE233NRDCK7ABIFNQAABA" Invoke="true">
+                <xsc:Presentation>invokeByClassId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true">
+                <xsc:Presentation>loadFrom</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(className), methodName, new java.lang.Class[] {byte[].class}, new java.lang.Object[] {arg.get()});</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

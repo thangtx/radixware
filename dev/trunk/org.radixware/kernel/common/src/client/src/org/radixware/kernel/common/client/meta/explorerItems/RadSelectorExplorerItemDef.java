@@ -87,8 +87,8 @@ public class RadSelectorExplorerItemDef extends RadExplorerItemDef {
         return targetClassId;
     }
     
-    public RadContextFilter getContextFilter(){
-        return null;
+    public List<RadContextFilter> getContextFilters(){
+        return Collections.emptyList();
     }
     
     public RadSortingDef getInitialSorting(){

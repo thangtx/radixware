@@ -13,18 +13,22 @@ package org.radixware.kernel.designer.common.dialogs.components.description;
 
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.IDescribable;
 
 import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
+import org.radixware.kernel.common.defs.dds.DdsDefinition;
+import org.radixware.kernel.common.defs.dds.DdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
 import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.types.Id;
 
 
-public final class DescriptionModel implements IDescribable, ILocalizedDescribable {
+public final class DescriptionModel implements IDescribable, ILocalizedDescribable, ILocalizedDescribable.Inheritable {
 
     public static final class Factory {
         public static <T extends Object & IDescribable & ILocalizedDescribable> DescriptionModel newInstance(T definition) {
@@ -40,21 +44,21 @@ public final class DescriptionModel implements IDescribable, ILocalizedDescribab
         }
     }
     
-    static String toString(EDescriptionType editorMode, Map<EIsoLanguage, String> localizedDescription, String stringDescription) {
+    static String toString(EDescriptionType editorMode, List<IMultilingualStringDef.StringStorage> list, String stringDescription) {
         if (editorMode == EDescriptionType.LOCALIZED) {
 
-            if (localizedDescription == null) {
+            if (list == null) {
                 return "";
             } else {
                 final StringBuilder builder = new StringBuilder();
                 boolean first = true;
-                for (final EIsoLanguage lang : localizedDescription.keySet()) {
+                for (IMultilingualStringDef.StringStorage storage : list) {
                     if (first) {
                         first = false;
                     } else {
                         builder.append("; ");
                     }
-                    builder.append(lang.getName()).append(": ").append(localizedDescription.get(lang));
+                    builder.append(storage.getLanguage().getName()).append(": ").append(storage.getValue());
                 }
                 return builder.toString();
             }
@@ -62,46 +66,61 @@ public final class DescriptionModel implements IDescribable, ILocalizedDescribab
             return stringDescription != null ? stringDescription : "";
         }
     }
+    private boolean isDescriptionInheritable = false;
+    private boolean isDescriptionInherited = false;
+    private ILocalizedDescribable.Inheritable describableDef = null;
+    private final ILocalizedDescribable localizedDescribable;
     private final Definition descriptionLocation;
     private String stringDescription;
-    private Map<EIsoLanguage, String> localizedDescription;
+//    private Map<EIsoLanguage, String> localizedDescription;
+    private IMultilingualStringDef string = null;
     private EDescriptionType descriptionType;
     private boolean spellcheck = false;
-
-    public DescriptionModel(Definition descriptionLocation, String stringDescription) {
-        this.descriptionLocation = descriptionLocation;
-        this.descriptionType = EDescriptionType.STRING;
-        this.stringDescription = stringDescription;
-    }
-
-    public DescriptionModel(Definition descriptionLocation, Map<EIsoLanguage, String> localizedDescription) {
-        this.descriptionLocation = descriptionLocation;
-        this.descriptionType = EDescriptionType.LOCALIZED;
-        this.localizedDescription = localizedDescription != null ? new HashMap<>(localizedDescription) : null;
-        spellcheck = true;
-    }
 
     private DescriptionModel(Object definition) {
         assert definition instanceof ILocalizedDescribable && definition instanceof IDescribable;
         
-        final ILocalizedDescribable localizedDescribable = (ILocalizedDescribable)definition;
+        this.localizedDescribable = (ILocalizedDescribable)definition;
         final IDescribable describable = (IDescribable)definition;
         
         this.descriptionLocation = localizedDescribable.getDescriptionLocation();
         this.descriptionType = DescriptionHandleInfo.getEditorModeFor(definition);
 
         stringDescription = describable.getDescription();
+        
+        if (localizedDescribable instanceof ILocalizedDescribable.Inheritable) {
+            describableDef = (ILocalizedDescribable.Inheritable) localizedDescribable;
+            isDescriptionInheritable = describableDef.isDescriptionInheritable();
+            if (isDescriptionInheritable) {
+                isDescriptionInherited = describableDef.isDescriptionInherited();
+            }
+            
+            if (!isDescriptionInherited) {
+                loadStringValues(localizedDescribable);
+            }
+            
+            
+        } else {
+            loadStringValues(localizedDescribable);
+            isDescriptionInheritable = false;
+        }
+        spellcheck = isSpellcheckEnabled(localizedDescribable);
+    }
+    
+    private void loadStringValues(ILocalizedDescribable localizedDescribable) {
         if (localizedDescribable.getDescriptionId() != null) {
-            createDescription();
-
             final IMultilingualStringDef localizedString = localizedDescribable.getDescriptionLocation().findLocalizedString(localizedDescribable.getDescriptionId());
             if (localizedString != null) {
-                for (final EIsoLanguage lang : localizedString.getLanguages()) {
-                    localizedDescription.put(lang, localizedString.getValue(lang));
-                }
+                string = localizedString.cloneString(null);
             }
+        }
+        createNewString();
 
-            spellcheck = isSpellcheckEnabled(localizedDescribable);
+    }
+    
+    private void createNewString(){
+        if (string == null) {
+            string = AdsMultilingualStringDef.Factory.newDescriptionInstance();
         }
     }
 
@@ -117,35 +136,53 @@ public final class DescriptionModel implements IDescribable, ILocalizedDescribab
 
     @Override
     public Id getDescriptionId() {
-        return null;
+        if(describableDef != null){
+            return describableDef.getDescriptionId(isDescriptionInherited);
+        }
+        return localizedDescribable.getDescriptionId();
     }
 
     @Override
+    public Id getDescriptionId(boolean inherited) {
+        return getDescriptionId();
+    }
+
+
+    @Override
     public void setDescriptionId(Id id) {
+        if (id == null){
+            string = null;
+        }
     }
 
     @Override
     public String getDescription(EIsoLanguage language) {
-        return localizedDescription != null ? localizedDescription.get(language) : null;
+        if (isDescriptionInherited()){
+            return getDescriptionLocation().getDescription(language);
+        }
+        return string == null ? null : string.getValue(language);
     }
 
     @Override
     public boolean setDescription(EIsoLanguage language, String description) {
-        if (localizedDescription != null) {
-            localizedDescription.put(language, description);
-            return true;
+        if (!isDescriptionInherited()){
+            createNewString();
+            string.setValue(language, description);
         }
-        return false;
+        return true;
     }
 
     @Override
     public Definition getDescriptionLocation() {
+        if(describableDef != null){
+            return describableDef.getDescriptionLocation(isDescriptionInherited);
+        }
         return descriptionLocation;
     }
-
+    
     @Override
-    public String toString() {
-        return toString(getDescriptionType(), localizedDescription, stringDescription);
+    public Definition getDescriptionLocation(boolean inherited) {
+        return getDescriptionLocation();
     }
 
     public boolean isSpellcheckEnabled() {
@@ -154,20 +191,6 @@ public final class DescriptionModel implements IDescribable, ILocalizedDescribab
 
     public void setSpellcheckEnabled(boolean spellcheck) {
         this.spellcheck = spellcheck;
-    }
-
-    public void removeDescription() {
-        localizedDescription = null;
-        spellcheck = false;
-    }
-
-    public void createDescription() {
-        localizedDescription = new EnumMap<>(EIsoLanguage.class);
-        spellcheck = true;
-    }
-
-    public Map<EIsoLanguage, String> getLocalizedDescriptions() {
-        return localizedDescription != null ? new EnumMap<>(localizedDescription) : null;
     }
 
     public EDescriptionType getDescriptionType() {
@@ -188,25 +211,35 @@ public final class DescriptionModel implements IDescribable, ILocalizedDescribab
 
     public boolean applyFor(ILocalizedDescribable object) {
         if (object != null) {
-
-            final Map<EIsoLanguage, String> localizedDescriptions = getLocalizedDescriptions();
-            if (localizedDescriptions != null) {
-                for (final EIsoLanguage lang : localizedDescriptions.keySet()) {
-                    if (!object.setDescription(lang, localizedDescriptions.get(lang))) {
-                        return false;
+            if (object instanceof ILocalizedDescribable.Inheritable) {
+                ILocalizedDescribable.Inheritable def = (ILocalizedDescribable.Inheritable) object;
+                def.setDescriptionInherited(isDescriptionInherited);
+            } 
+            
+            if (!(object instanceof ILocalizedDescribable.Inheritable) || !isDescriptionInherited()) {
+                if (string != null) {
+                    IMultilingualStringDef localizedString = null;
+                    
+                    if (object.getDescriptionId() != null) {
+                        localizedString = object.getDescriptionLocation().findLocalizedString(object.getDescriptionId());
                     }
+                    
+                    if (localizedString != null) {
+                        localizedString.setSpellCheckEnabled(spellcheck);
+                    }
+                    List<IMultilingualStringDef.StringStorage> values = string.getValues(ExtendableDefinitions.EScope.LOCAL);
+                    for (IMultilingualStringDef.StringStorage storage : values) {
+                        if (localizedString == null || !storage.getValue().equals(localizedString.getValue(storage.getLanguage()))){
+                            if (!object.setDescription(storage.getLanguage(), storage.getValue())) {
+                                return false;
+                            }
+                        }
+                    }
+                } else {
+                    object.setDescriptionId(null);
                 }
-            } else {
-                object.setDescriptionId(null);
             }
 
-            if (object.getDescriptionId() != null) {
-                final IMultilingualStringDef localizedString = object.getDescriptionLocation().findLocalizedString(object.getDescriptionId());
-
-                if (localizedString != null) {
-                    localizedString.setSpellCheckEnabled(spellcheck);
-                }
-            }
             return true;
         }
         return false;
@@ -226,4 +259,59 @@ public final class DescriptionModel implements IDescribable, ILocalizedDescribab
         }
         return false;
     }
+    
+    @Override
+    public boolean isDescriptionInheritable() {
+        return isDescriptionInheritable;
+    }
+
+    @Override
+    public boolean isDescriptionInherited() {
+        if (isDescriptionInheritable()){
+            return isDescriptionInherited;
+        }
+        return false;
+    }
+
+    @Override
+    public void setDescriptionInherited(boolean inherit) {
+        if (isDescriptionInheritable()){
+            if (isDescriptionInherited != inherit) {
+                isDescriptionInherited = inherit;
+                if (!isDescriptionInherited){
+                    Id stringId = getDescriptionId();
+                    if (stringId != null) {
+                        final IMultilingualStringDef localizedString = getDescriptionLocation().findLocalizedString(stringId);
+                        if (localizedString != null) {
+                            string = localizedString.cloneString(null);
+                        }
+                    }
+                    if (string == null) {
+                        string = AdsMultilingualStringDef.Factory.newDescriptionInstance();
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        List<IMultilingualStringDef.StringStorage> values = null;
+        if (isDescriptionInherited()){
+            Id stringId = getDescriptionId();
+            if (stringId != null) {
+                final IMultilingualStringDef localizedString = getDescriptionLocation().findLocalizedString(stringId);
+                if (localizedString != null) {
+                    values = localizedString.getValues(ExtendableDefinitions.EScope.LOCAL);
+                }
+            }
+        } else {
+            if (string != null){
+                values = string.getValues(ExtendableDefinitions.EScope.LOCAL);
+            }
+        }
+        return toString(getDescriptionType(), values, stringDescription);
+    }
+
+    
 }

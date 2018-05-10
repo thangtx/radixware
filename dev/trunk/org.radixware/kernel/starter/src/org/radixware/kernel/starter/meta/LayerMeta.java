@@ -44,6 +44,7 @@ public class LayerMeta {
     protected static final String ATTR_BASE_LAYER_URIS = "BaseLayerURIs";
     protected static final String ATTR_PREV_LAYER_URI = "PrevLayerUri";
     protected static final String ATTR_RELEASE_NUMBER = "ReleaseNumber";
+    protected static final String ATTR_EMPTY = "IsEmpty";
     protected static final String ATTR_LANGUAGES = "Languages";
     private static final String ACCESSIBLE_ROOTS_TITLE = "AccessibleRoots";
     private static final String ACCESSIBLE_ROLES_TITLE = "AccessibleRoles";
@@ -64,10 +65,12 @@ public class LayerMeta {
     private static final DocumentBuilder documentBuilder;
     private final Map<String, String[]> accessibleRoots;
     private final Map<String, String[]> accessibleRoles;
+    private final boolean empty;
 
     static {
         //temporary workaround for RADIX-6549
         final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        dbFactory.setNamespaceAware(true);
         DocumentBuilder builder = null;
         try {
             builder = dbFactory.newDocumentBuilder();
@@ -76,7 +79,7 @@ public class LayerMeta {
         }
         documentBuilder = builder;
     }
-
+    
     public LayerMeta(final String layerUri, final RadixLoaderAccessor loaderAccessor, final long revisionNum, final RadixLoader.HowGetFile howGet) throws IOException {
         try {
             this.layerUri = layerUri;
@@ -149,6 +152,9 @@ public class LayerMeta {
                         accessibleRoles.put(e.getKey(), e.getValue() == null ? null : e.getValue().toArray(new String[e.getValue().size()]));
                     }
                 }
+                
+                final String emptyStr = findAttribute(layerNode, ATTR_EMPTY);
+                empty = "true".equals(emptyStr);
 
                 directories = new ArrayList<>();
 
@@ -160,7 +166,15 @@ public class LayerMeta {
             throw ex;
         }
     }
+    
+    public static DocumentBuilder getDocumentBuilder() {
+        return documentBuilder;
+    }
 
+    public boolean isEmpty() {
+        return empty;
+    }
+    
     private Map<String, List<String>> loadAccessibleDefIndex(Node layerNode, String nodeName) {
         Map<String, List<String>> rootsIndex = null;
         for (int i = 0; i < layerNode.getChildNodes().getLength(); i++) {

@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.command.components;
 
 import java.awt.event.ActionEvent;
@@ -19,30 +18,37 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.event.ChangeListener;
 import org.openide.util.ChangeSupport;
+import org.radixware.kernel.common.components.ExtendableTextField;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.VisitorProvider;
+import org.radixware.kernel.common.defs.VisitorProviderFactory;
 import org.radixware.kernel.common.defs.ads.clazz.form.AdsFormHandlerClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsScopeCommandDef;
 import org.radixware.kernel.common.defs.ads.command.AdsCommandDef;
+import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.type.IAdsTypeSource;
+import org.radixware.kernel.common.defs.ads.xml.AdsXmlSchemeDef;
 import org.radixware.kernel.common.enums.ECommandScope;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinition;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
 import org.radixware.kernel.designer.common.dialogs.choosetype.ChooseType;
 import org.radixware.kernel.common.resources.RadixWareIcons;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.choosetype.ETypeNature;
-
+import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 
 public class AdsCommandDataPanel extends javax.swing.JPanel {
 
     public static final String NONE_ACTION = "NoValue";
     public static final String XML_ACTION = "Xml";
     public static final String FORM_ACTION = "Form";
-    private JButton xmlBtn;
-    private JButton formBtn;
+    private JButton xmlBtnEdit;
+    private JButton formBtnEdit;
+    private JButton xmlBtnGoTo;
+    private JButton formBtnGoTo;
     private ButtonGroup group;
 
     /**
@@ -50,12 +56,13 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
      */
     public AdsCommandDataPanel() {
         initComponents();
-        xmlBtn = xmlField.addButton();
-        xmlBtn.setIcon(RadixWareIcons.DIALOG.CHOOSE.getIcon(13, 13));
-        xmlBtn.addActionListener(new ActionListener() {
+
+        // xml
+        xmlBtnEdit = xmlField.addButton();
+        xmlBtnEdit.setIcon(RadixWareIcons.DIALOG.CHOOSE.getIcon(13, 13));
+        xmlBtnEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 AdsTypeDeclaration newtype = ChooseType.getInstance().editType(ETypeNature.RADIX_XML, new ChooseType.DefaultTypeFilter(command, null));
                 if (newtype != null) {
                     valueType = newtype;
@@ -64,10 +71,12 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
                 }
             }
         });
+        xmlBtnGoTo = createGoToButton(xmlField);
 
-        formBtn = formField.addButton();
-        formBtn.setIcon(RadixWareIcons.DIALOG.CHOOSE.getIcon(13, 13));
-        formBtn.addActionListener(new ActionListener() {
+        // form
+        formBtnEdit = formField.addButton();
+        formBtnEdit.setIcon(RadixWareIcons.DIALOG.CHOOSE.getIcon(13, 13));
+        formBtnEdit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ChooseDefinitionCfg cfg = ChooseDefinitionCfg.Factory.newInstance(command, new FormDefVisitorProvider());
@@ -81,6 +90,7 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
                 }
             }
         });
+        formBtnGoTo = createGoToButton(formField);
 
         group = new ButtonGroup();
         noneCheck.setActionCommand(NONE_ACTION);
@@ -89,6 +99,21 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
         group.add(noneCheck);
         group.add(xmlCheck);
         group.add(formCheck);
+    }
+
+    private JButton createGoToButton(ExtendableTextField field) {
+        JButton button = field.addButton();
+        button.setIcon(RadixWareIcons.ARROW.GO_TO_OBJECT.getIcon());
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AdsModule module = command.getModule();
+                Id id = valueType.getPath().getTargetId();
+                Definition def = (Definition) module.getDefinitionSearcher().findById(id).get();
+                DialogUtils.goToObject(def);
+            }
+        });
+        return button;
     }
 
     private void setupCheckListeners() {
@@ -100,8 +125,10 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
                             && !valueType.equals(AdsTypeDeclaration.Factory.voidType())) {
                         valueType = AdsTypeDeclaration.Factory.voidType();
                         AdsCommandDataPanel.this.applyTypeToCommand();
-                        xmlBtn.setEnabled(false);
-                        formBtn.setEnabled(false);
+                        xmlBtnEdit.setEnabled(false);
+                        xmlBtnGoTo.setEnabled(false);
+                        formBtnEdit.setEnabled(false);
+                        formBtnGoTo.setEnabled(false);
                         xmlField.setValue("");
                         formField.setValue("");
                         changeSupport.fireChange();
@@ -118,7 +145,8 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
                         if (xmltype != null) {
                             valueType = xmltype;
                             AdsCommandDataPanel.this.applyTypeToCommand();
-                            xmlBtn.setEnabled(true);
+                            xmlBtnEdit.setEnabled(true);
+                            xmlBtnGoTo.setEnabled(true);
                             xmlField.setValue(valueType.getName(command));
                             changeSupport.fireChange();
                         } else {
@@ -130,7 +158,8 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
                             }
                         }
                     } else {
-                        xmlBtn.setEnabled(false);
+                        xmlBtnEdit.setEnabled(false);
+                        xmlBtnGoTo.setEnabled(false);
                         xmlField.setValue("");
                     }
                 }
@@ -148,7 +177,8 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
                                 AdsCommandDataPanel.this.valueType = AdsTypeDeclaration.Factory.newInstance((IAdsTypeSource) def);
                                 AdsCommandDataPanel.this.applyTypeToCommand();
                                 formField.setValue(valueType.getName(command));
-                                formBtn.setEnabled(formCheck.isEnabled() ? true : false);
+                                formBtnEdit.setEnabled(formCheck.isEnabled() ? true : false);
+                                formBtnGoTo.setEnabled(formCheck.isEnabled() ? true : false);
                                 changeSupport.fireChange();
                             } else {
                                 AdsCommandDataPanel.this.update();
@@ -164,7 +194,8 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
                             changeSupport.fireChange();
                         }
                     } else {
-                        formBtn.setEnabled(false);
+                        formBtnEdit.setEnabled(false);
+                        formBtnGoTo.setEnabled(false);
                         formField.setValue("");
                     }
                 }
@@ -241,7 +272,8 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
             formField.setVisible(!isReadOnly);
             updateTypeState();
         } else {
-            formBtn.setEnabled(false);
+            formBtnEdit.setEnabled(false);
+            formBtnGoTo.setEnabled(false);
             //formCheck.setEnabled(false);
             AdsTypeDeclaration outtype = command.getData().getOutType();
             this.valueType = outtype;
@@ -249,15 +281,21 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
             updateTypeState();
         }
         if (noneCheck.isSelected()) {
-            xmlBtn.setEnabled(false);
-            formBtn.setEnabled(false);
+            xmlBtnEdit.setEnabled(false);
+            xmlBtnGoTo.setEnabled(false);
+            formBtnEdit.setEnabled(false);
+            formBtnGoTo.setEnabled(false);
         } else if (xmlCheck.isSelected()) {
-            xmlBtn.setEnabled(!isReadOnly);
-            formBtn.setEnabled(false);
+            xmlBtnEdit.setEnabled(!isReadOnly);
+            xmlBtnGoTo.setEnabled(true);
+            formBtnEdit.setEnabled(false);
+            formBtnGoTo.setEnabled(false);
         } else if (formCheck.isSelected()) {
-            xmlBtn.setEnabled(false);
+            xmlBtnEdit.setEnabled(false);
+            xmlBtnGoTo.setEnabled(false);
             if (editorType != OUT_EDITOR) {
-                formBtn.setEnabled(!isReadOnly);
+                formBtnEdit.setEnabled(!isReadOnly);
+                formBtnGoTo.setEnabled(true);
             }
         }
         isUpdate = false;
@@ -298,8 +336,8 @@ public class AdsCommandDataPanel extends javax.swing.JPanel {
         xmlCheck.setEnabled(!readonly);
         formCheck.setEnabled(!readonly);
 
-        xmlBtn.setEnabled(!readonly);
-        formBtn.setEnabled(!readonly);
+        xmlBtnEdit.setEnabled(!readonly);
+        formBtnEdit.setEnabled(!readonly);
     }
 
     /**

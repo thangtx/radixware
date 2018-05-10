@@ -33,7 +33,29 @@ import org.radixware.wps.rwt.UIObject;
 class RwtSelectorMainWindow implements ISelectorMainWindow {
     
     private boolean isDefaultFilterInited;
-    private final FilterSettingsStorage filterSettings;
+    private final FilterSettingsStorage filterSettings;    
+    private ToolBarHandle tbHandle = null;
+    private RwtSelector selectorComponent;
+    private RadSortingDef initialSorting;
+    private FilterModel initialFilter;
+    
+    private static class ToolBarHandle extends AbstractContainer {
+        
+        public ToolBarHandle() {
+            super(new Div());
+            setSizePolicy(SizePolicy.EXPAND, SizePolicy.PREFERRED);
+            setPreferredHeight(30);
+            html.setCss("border-bottom", "solid 1px #BBB");
+        }
+    }
+    
+    RwtSelectorMainWindow(RwtSelector selector) {
+        this.selectorComponent = selector;
+        this.tbHandle = new ToolBarHandle();
+        selectorComponent.add(0, this.tbHandle);
+        filterSettings = selector.getEnvironment().getFilterSettingsStorage();
+        checkTbHandleVisibility();
+    }
     
     @Override
     public boolean isAnyFilter() {
@@ -46,50 +68,34 @@ class RwtSelectorMainWindow implements ISelectorMainWindow {
         } else if (isDefaultFilterInited) {
             return false;
         } else {
+            if (group.getCurrentFilter()!=null){
+                return true;
+            }
             isDefaultFilterInited = true;
+            final Id storedFilterId;
             if (filterSettings.isFilterSettingsStored(group)) {
                 final FilterSettingsStorage.FilterSettings settings = filterSettings.getFilterSettings(group);
-                if (settings.getLastFilterId() != null) {
-                    return true;
-                } else if (!group.getFilters().isObligatory()) {
-                    return false;
-                }
+                storedFilterId = settings.getLastFilterId();
+            }else{
+                storedFilterId = null;
             }
-            FilterModel filter = group.getFilters().getDefaultFilter();
+            FilterModel filter = group.getFilters().getDefaultFilter(storedFilterId, true);  
             if (filter == null && group.getFilters().isObligatory()) {
                 filter = group.getFilters().getFirstPredefined();
             }
             return filter != null;
         }
-    }
-    
-    private static class ToolBarHandle extends AbstractContainer {
-        
-        public ToolBarHandle() {
-            super(new Div());
-            setSizePolicy(SizePolicy.EXPAND, SizePolicy.PREFERRED);
-            setPreferredHeight(30);
-            html.setCss("border-bottom", "solid 1px #BBB");
-        }
-    }
-    private ToolBarHandle tbHandle = null;
-    private RwtSelector selectorComponent;
-    
-    RwtSelectorMainWindow(RwtSelector selector) {
-        this.selectorComponent = selector;
-        this.tbHandle = new ToolBarHandle();
-        selectorComponent.add(0, this.tbHandle);
-        filterSettings = selector.getEnvironment().getFilterSettingsStorage();
-        checkTbHandleVisibility();
-    }
+    }    
     
     @Override
     public boolean isFilterAndOrderToolbarVisible() {
         return selectorComponent.isFilterAndOrderVisible();
     }
     
-    @Override
+    @Override    
     public boolean setupInitialFilterAndSorting() throws InterruptedException {
+        initialFilter = null;
+        initialSorting = null;        
         final GroupModel group = getGroupModel();
         if (group == null) {
             return false;
@@ -101,10 +107,7 @@ class RwtSelectorMainWindow implements ISelectorMainWindow {
             lastUsedSortingId = null;
         }
         return setupInitialFilter(lastUsedSortingId) || setupInitialSorting(lastUsedSortingId);
-    }
-    
-    private RadSortingDef initialSorting;
-    private FilterModel initialFilter;
+    }    
     
     private boolean setupInitialSorting(final Id lastUsedSortingId) throws InterruptedException {
         final RadSortingDef sorting = getSortingForFilter(null, lastUsedSortingId);
@@ -126,41 +129,39 @@ class RwtSelectorMainWindow implements ISelectorMainWindow {
     
     private RadSortingDef getSortingForFilter(final FilterModel filter, final Id storedSortingId) {
         final GroupModel group = getGroupModel();
-        final RadSortingDef sorting = storedSortingId == null ? null : group.getSortings().findById(storedSortingId);
-        if (sorting == null || !sorting.isValid() || !group.getSortings().isAcceptable(sorting, filter)) {
-            return group.getSortings().getDefaultSorting(filter);
-        }
-        return sorting;
+        return group.getSortings().getDefaultSorting(filter, storedSortingId);
     }
     
-    private boolean setupInitialFilter(final Id lastUsedSortingId) throws InterruptedException {
+    private boolean setupInitialFilter(final Id lastUsedSortingId) throws InterruptedException {        
         final GroupModel group = selectorComponent.getGroupModel();
         final boolean isContextFilterDefined;
         if (group.getContext() instanceof IContext.TableSelect){
             final IContext.TableSelect context = (IContext.TableSelect)group.getContext();
-            isContextFilterDefined = context.getFilter()!=null;
+            isContextFilterDefined = !context.getFilters().isEmpty();
         }else{
             isContextFilterDefined = false;
         }
-        final FilterModel defaultFilter = isContextFilterDefined ? null : group.getFilters().getDefaultFilter();        
         final FilterModel firstPredefined = isContextFilterDefined ? null : group.getFilters().getFirstPredefined();                
         if (filterSettings.isFilterSettingsStored(group)) {
             final FilterSettingsStorage.FilterSettings settings = filterSettings.getFilterSettings(group);
             final Id lastFilterId = settings.getLastFilterId();
             final Id lastSortingId = settings.getLastSortingId();
-            if (lastFilterId != null) {
-                if (setStoredFilterAndSorting(lastFilterId, lastSortingId)) {
-                    return true;
-                } else if (defaultFilter != null && defaultFilter.getId() != lastFilterId
-                        && setDefaultFilter(defaultFilter, lastSortingId)) {
+            if (lastFilterId != null) {                
+                FilterModel defaultFilter = group.getFilters().getDefaultFilter(lastFilterId, !isContextFilterDefined);                
+                if (defaultFilter!=null && defaultFilter.getId().equals(lastFilterId) && setStoredFilterAndSorting(lastFilterId, lastSortingId)) {
                     return true;
                 } else {
+                    defaultFilter = group.getFilters().getDefaultFilter(null, !isContextFilterDefined);                
+                    if (defaultFilter != null && !defaultFilter.getId().equals(lastFilterId)
+                        && setDefaultFilter(defaultFilter, lastSortingId)) {
+                        return true;
+                    }
                     return group.getFilters().isObligatory() ? setDefaultFilter(firstPredefined, lastSortingId) : false;
                 }
             } else {
                 return group.getFilters().isObligatory() ? setDefaultFilter(firstPredefined, lastUsedSortingId) : false;
             }
-        } else if (setDefaultFilter(defaultFilter, lastUsedSortingId)) {
+        } else if (setDefaultFilter(group.getFilters().getDefaultFilter(null, !isContextFilterDefined), lastUsedSortingId)) {
             return true;
         } else {
             return group.getFilters().isObligatory() ? setDefaultFilter(firstPredefined, lastUsedSortingId) : false;
@@ -194,7 +195,7 @@ class RwtSelectorMainWindow implements ISelectorMainWindow {
             return false;
         }
         if (filter != null && filter.isValid()) {
-            final RadSortingDef sorting = storedSortingId == null ? group.getSortings().getDefaultSorting(filter) : getSortingForFilter(filter, storedSortingId);
+            final RadSortingDef sorting = getSortingForFilter(filter, storedSortingId);
             if (!filter.hasParameters() || allParametersPersistent(filter)) {
                 return setInitialSettings(filter, selectorComponent.getEnvironment().getMessageProvider().translate("Selector", "default filter"), sorting);
             } else {
@@ -330,6 +331,17 @@ class RwtSelectorMainWindow implements ISelectorMainWindow {
     @Override
     public void setUpdatesEnabled(boolean enabled) {
     }
+
+    @Override
+    public void switchToSelectorContent() {
+        selectorComponent.switchToContentMode();
+    }
+
+    @Override
+    public void switchToApplyFilter() {
+        selectorComponent.switchToApplyFilterMode();
+    }
+        
     
     @Override
     public void clear() {

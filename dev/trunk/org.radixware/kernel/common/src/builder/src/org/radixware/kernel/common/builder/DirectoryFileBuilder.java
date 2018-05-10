@@ -12,8 +12,10 @@ package org.radixware.kernel.common.builder;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -29,10 +31,12 @@ import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.ads.build.Cancellable;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
+import org.radixware.kernel.common.defs.dds.DdsModule;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.Segment;
 import org.radixware.kernel.common.repository.ads.AdsSegment;
+import org.radixware.kernel.common.repository.dds.DdsSegment;
 import org.radixware.kernel.common.utils.FileUtils;
 
 public class DirectoryFileBuilder {
@@ -459,5 +463,49 @@ public class DirectoryFileBuilder {
             return;
         }
         updateModules(modules, segments, ph);
+    }
+    
+    public void indexDdsModules(final Collection<DdsModule> modules){
+        List<DdsSegment> segments = new ArrayList<>();
+        for (DdsModule module: modules){
+            try {
+                File dir = module.getDirectory();
+                final File directoryXmlFile = new File(dir, FileUtils.DIRECTORY_XML_FILE_NAME);
+                final boolean exist = directoryXmlFile.exists();
+                module.saveDirectoryXml();
+                if (exist) {
+                    buildEnv.getFlowLogger().message("[dist] Directory index file updated: " + directoryXmlFile.getAbsolutePath());
+                } else {
+                    buildEnv.getFlowLogger().message("[dist] Directory index file created: " + directoryXmlFile.getAbsolutePath());
+                }
+                DdsSegment segment = module.getSegment();
+                if (segment == null) {
+                    continue;
+                }
+                if (!segments.contains(segment)) {
+                    segments.add(segment);
+                }
+            } catch (IOException ex) {
+                problemHandle.accept(RadixProblem.Factory.newError(module, "Directory index file creation error: " + ex.getMessage()));
+            }
+        }
+        
+        for (DdsSegment segment : segments) {
+            try {
+                File dir = segment.getDirectory();
+                final File directoryXmlFile = new File(dir, FileUtils.DIRECTORY_XML_FILE_NAME);
+                final boolean exist = directoryXmlFile.exists();
+
+                segment.saveDirectoryXml();
+
+                if (exist) {
+                    buildEnv.getFlowLogger().message("[dist] Directory index file updated: " + directoryXmlFile.getAbsolutePath());
+                } else {
+                    buildEnv.getFlowLogger().message("[dist] Directory index file created: " + directoryXmlFile.getAbsolutePath());
+                }
+            } catch (IOException ex) {
+                problemHandle.accept(RadixProblem.Factory.newError(segment, "Directory index file creation error: " + ex.getMessage()));
+            }
+        }
     }
 }

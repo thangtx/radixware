@@ -10,7 +10,9 @@
     <Bodies>
       <Src Name="BodyadcKSEW3XEB7ZD35JYWB37OIIAUIQ"/>
     </Bodies>
-    <MethodGroup Id="cmgN53ZLIQ5NZEULCII6UXQWRYL5M" Name="Root"/>
+    <MethodGroup Id="cmgN53ZLIQ5NZEULCII6UXQWRYL5M" Name="Root">
+      <Group Id="cmgJHFE7AJOPFCADKHPQ7KSCDKHIQ" Name="ReportColumns" Members="mthCXDY5FUCL5CHNIIGKEBZSCA4LI mthXBLDD4K3GRE3TCL4FMSMV7XPCA mthMY5JRISCX5FALO7GSC3GJNWEEI mthOB7AS3YH5VEVLAXQVHROAJJSDM"/>
+    </MethodGroup>
     <PropertyGroup Id="cpgYDD4V3AJYJHWHPDIQWKZ3QT5EU" Name="Root"/>
     <Properties/>
     <Methods>
@@ -28,26 +30,34 @@
               <xsc:Java>final Class&lt;?> reportClass = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true">
+                <xsc:Presentation>getDefManager</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().getClass(reportClassId);
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().DefManager.getClassDef(reportClassId); //check definition
@@ -56,7 +66,9 @@ try{
     return (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcReport____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcReport____________________">
+                <xsc:Presentation>Types::Report</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)reportClass.newInstance();
@@ -64,7 +76,9 @@ try{
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("Unable to instantiate report", ex);
@@ -72,7 +86,9 @@ try{
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>("Unable to instantiate report", ex);
@@ -105,7 +121,9 @@ try{
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcB2WQJNOFRZFV7PGAJ7SCXJ5IPM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcB2WQJNOFRZFV7PGAJ7SCXJ5IPM">
+                <xsc:Presentation>Meta::PropDef</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> propDef = report.RadMeta.getPropById(propId);
@@ -117,7 +135,9 @@ if (propDef instanceof org.radixware.kernel.server.meta.clazzes.IRadRefPropertyD
     final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> refEntityId = refPropDef.DestinationEntityId;
@@ -125,14 +145,18 @@ if (propDef instanceof org.radixware.kernel.server.meta.clazzes.IRadRefPropertyD
     if (paramValue instanceof </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>){
         paramValue = report.Arte.getEntityObject((</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)paramValue);
@@ -179,13 +203,17 @@ return paramValue;
               <xsc:Java>final java.util.HashMap&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, Object> paramId2Value = new java.util.HashMap&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, Object>();
@@ -194,14 +222,18 @@ for (org.radixware.schemas.eas.Property xProp : xmlProps) {
     final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> propId = xProp.getId();
     final Object paramValue = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mth4ATAR5KP3VDFTPER44OASZQKJI" Invoke="true"/>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mth4ATAR5KP3VDFTPER44OASZQKJI" Invoke="true">
+                <xsc:Presentation>loadParamFromXml</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(report, propId, xProp);
@@ -228,20 +260,26 @@ return paramId2Value;</xsc:Java>
     return new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcFileOutResource___________ mthRTCDLQYWGZCCLBWYK74OTYDKFI" Invoke="true"/>
+              <xsc:IdReference Path="pdcFileOutResource___________ mthRTCDLQYWGZCCLBWYK74OTYDKFI" Invoke="true">
+                <xsc:Presentation>FileOutResource</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(
             </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(),
@@ -249,53 +287,53 @@ return paramId2Value;</xsc:Java>
             </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsQ2VTKPOMHTNRDCGPABIFNQAABA aciEOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsQ2VTKPOMHTNRDCGPABIFNQAABA aciEOBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::FileOpenMode:TruncateOrCreate</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>,
             </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFIH6I56MHTNRDCGPABIFNQAABA aciE6BEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFIH6I56MHTNRDCGPABIFNQAABA aciE6BEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::FileOpenShareMode:Write</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
 } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4">
+                <xsc:Presentation>Exceptions::ResourceUsageException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> ex) {
+              <xsc:Java> | </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTYUDRQZMVJFTZNOQKKR2LEJUDU">
+                <xsc:Presentation>Exceptions::ResourceUsageTimeout</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> | InterruptedException ex) {
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>("Unable to open file out resource", ex);
-} catch (</xsc:Java>
+              <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcTYUDRQZMVJFTZNOQKKR2LEJUDU"/>
+              <xsc:LocalizedString StringId="mlsI7P363TWCBC75FV723K7REAHCQ"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> ex) {
-    throw new </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>("Unable to open file out resource", ex);
-} catch (InterruptedException ex) {
-    throw new </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>("Unable to open file out resource", ex);
+              <xsc:Java>, ex);
 }
 </xsc:Java>
             </xsc:Item>
@@ -319,63 +357,83 @@ return paramId2Value;</xsc:Java>
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> pid = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcPid_______________________ mthKCMJGSZYFREVLCWPBDG5YROTDE" Invoke="true"/>
+              <xsc:IdReference Path="pdcPid_______________________ mthKCMJGSZYFREVLCWPBDG5YROTDE" Invoke="true">
+                <xsc:Presentation>Pid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="tblUNC67IF5OBCX7NOPNLQOCUG374"/>
+              <xsc:IdReference Path="tblUNC67IF5OBCX7NOPNLQOCUG374">
+                <xsc:Presentation>Reports::ReportPub</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, pidAsStr);
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374">
+                <xsc:Presentation>ReportPub</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> pub = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecUNC67IF5OBCX7NOPNLQOCUG374">
+                <xsc:Presentation>ReportPub</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthYY6FOOADRTNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthYY6FOOADRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getEntityObject</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(pid);
 pub.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 mthAK3L7LWYAVC5DIXCO5HLBYKAQE" Invoke="true"/>
+              <xsc:IdReference Path="aecUNC67IF5OBCX7NOPNLQOCUG374 mthAK3L7LWYAVC5DIXCO5HLBYKAQE" Invoke="true">
+                <xsc:Presentation>generateReport</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(context, input);
@@ -403,19 +461,25 @@ try {
     final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y">
+                <xsc:Presentation>Meta::ClassDef</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> classDef = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().DefManager.getClassDef(classId);
@@ -424,7 +488,9 @@ try {
 } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I">
+                <xsc:Presentation>Exceptions::Throwable</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> ex) {
@@ -450,13 +516,17 @@ try {
     return "'" + entity.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthNAAWAWQX6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthNAAWAWQX6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionName</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>() + "' (#" + entity.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>() + ")";
@@ -486,7 +556,9 @@ try {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType">
+                <xsc:Presentation>ReportsXsd:ParametersBindingType</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> parametersBinding = parametersBindingDoc.getParametersBinding();
@@ -494,7 +566,9 @@ try {
         final java.util.List&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding">
+                <xsc:Presentation>ReportsXsd:ParametersBindingType.ParameterBinding</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> bindingList = parametersBinding.ParameterBindingList;
@@ -502,7 +576,9 @@ try {
             for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ParametersBindingType.ParameterBinding">
+                <xsc:Presentation>ReportsXsd:ParametersBindingType.ParameterBinding</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> binding : bindingList){
@@ -515,6 +591,662 @@ try {
 }
 return null;
 </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth4TB5R4XGVBF5PIYTIACSU5YQJI" Name="isFileExists" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="fileName" Id="mprBQG5SQP3CZGU7OFPCZCNHJ2RAA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>try {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcFileResource______________">
+                <xsc:Presentation>Client.Resources::FileResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcFileResource______________ mthDLXS67SIRNASPJSJVFMZTTGF3A" Invoke="true">
+                <xsc:Presentation>isExists</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), fileName, org.radixware.kernel.server.arte.resources.Resource.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRDB4IOGN2JCWHCQPVHVPQ35DTU prdY3DJMVZXFVGLNC7E5GTC4OPD3Q" Invoke="true">
+                <xsc:Presentation>DEFAULT_TIMEOUT</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4">
+                <xsc:Presentation>Exceptions::ResourceUsageException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> | </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTYUDRQZMVJFTZNOQKKR2LEJUDU">
+                <xsc:Presentation>Exceptions::ResourceUsageTimeout</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> | InterruptedException ex) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsDIAEKLUFSZCBNNQEKF5ZEGEHRQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, ex);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthFBJSRXGSYBHWTC4DBLY2RPYC2U" Name="showReplaceFileDialog" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="fileName" Id="mprNHLFDLFNOZHDTP7UQX4TJKKPNE">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21" Path="acsS7F4BA7TJXNRDCHCABIFNQAABA"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.util.LinkedHashSet&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcUP6XRTVF6ZCZ5N5PD5RJH3KVLQ">
+                <xsc:Presentation>Client.Resources::MessageDialogButton</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> replaceFileDialogVariants = new java.util.LinkedHashSet&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcUP6XRTVF6ZCZ5N5PD5RJH3KVLQ">
+                <xsc:Presentation>Client.Resources::MessageDialogButton</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+replaceFileDialogVariants.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcUP6XRTVF6ZCZ5N5PD5RJH3KVLQ mthQJ75JOWSB5CVHIQHEZOMC2237I" Invoke="true">
+                <xsc:Presentation>MessageDialogButton</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci36AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogButtonType:Yes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="imgVRB7FQIH6RCBHMDHB4JPBA2XGA">
+                <xsc:Presentation>Explorer.Icons::button_ok</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+replaceFileDialogVariants.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcUP6XRTVF6ZCZ5N5PD5RJH3KVLQ mthQJ75JOWSB5CVHIQHEZOMC2237I" Invoke="true">
+                <xsc:Presentation>MessageDialogButton</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aciSCCMFHTXKJBSFA4OYMXBUVR4NI" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogButtonType:YesToAll</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="imgD7P5NXXXIJDTPFCMRRZIS2MP2M">
+                <xsc:Presentation>Explorer.Icons::yes_all</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+replaceFileDialogVariants.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcUP6XRTVF6ZCZ5N5PD5RJH3KVLQ mthQJ75JOWSB5CVHIQHEZOMC2237I" Invoke="true">
+                <xsc:Presentation>MessageDialogButton</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3GAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogButtonType:No</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="img67O45ZK3CBB3TKKYKZHF5BSS4Q">
+                <xsc:Presentation>Explorer.Icons::button_cancel</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+replaceFileDialogVariants.add(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcUP6XRTVF6ZCZ5N5PD5RJH3KVLQ mthQJ75JOWSB5CVHIQHEZOMC2237I" Invoke="true">
+                <xsc:Presentation>MessageDialogButton</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aciYM5EDIA7Z5CKDLNLDZODN72PPE" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogButtonType:NoToAll</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, null, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="imgIMTLKOPBJJGF5PZ7CVIFZHXLWI">
+                <xsc:Presentation>Explorer.Icons::no_all</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+
+try {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcUP6XRTVF6ZCZ5N5PD5RJH3KVLQ">
+                <xsc:Presentation>Client.Resources::MessageDialogButton</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> result = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcMessageDialogResource_____">
+                <xsc:Presentation>Client.Resources::MessageDialogResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcMessageDialogResource_____ mthUOPWC6BAH5DWLNWGUFW47YS2HY" Invoke="true">
+                <xsc:Presentation>show</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(),
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4KAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogType:Information</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsXBCVVDCYVVCEZP3KLROLXGWSXA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+            replaceFileDialogVariants,
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVKGJPJRGY3NRDCKFABIFNQAABA">
+                <xsc:Presentation>Utils::MessageFormatter</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVKGJPJRGY3NRDCKFABIFNQAABA mthFTTYRRBGY3NRDCKFABIFNQAABA" Invoke="true">
+                <xsc:Presentation>format</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mls57U5E2ZHDRHNVIWZOBU4KBZ5G4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, fileName)
+    );
+    return result.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcUP6XRTVF6ZCZ5N5PD5RJH3KVLQ mthNHGQBDNNQFDEJK4CWQQWWMRXWA" Invoke="true">
+                <xsc:Presentation>getType</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcWGDHFHONYFCQFIQSELYRVS7DJ4">
+                <xsc:Presentation>Exceptions::ResourceUsageException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> | </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTYUDRQZMVJFTZNOQKKR2LEJUDU">
+                <xsc:Presentation>Exceptions::ResourceUsageTimeout</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> | InterruptedException ex) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsILAJDRBJ2NGMZKSQB7DUZV6JCM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, ex);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCXDY5FUCL5CHNIIGKEBZSCA4LI" Name="getColumnsWidthMap" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="report" Id="mprIMEB5ATYWVAS3MO4RZ57ANXTUI">
+            <Type TypeId="411" Path="pdcReport____________________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column.Width"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.util.Map&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column.Width">
+                <xsc:Presentation>ReportsXsd:ReportColumnsList.Column.Width</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> result = new java.util.HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column.Width">
+                <xsc:Presentation>ReportsXsd:ReportColumnsList.Column.Width</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+
+org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm form = report.createForm();
+for (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand band : form.getColumnHeaderBands()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthXBLDD4K3GRE3TCL4FMSMV7XPCA" Invoke="true">
+                <xsc:Presentation>loadColumnsWidthFromContainer</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(band, result);
+}
+
+for (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand band : form.getDetailBands()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthXBLDD4K3GRE3TCL4FMSMV7XPCA" Invoke="true">
+                <xsc:Presentation>loadColumnsWidthFromContainer</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(band, result);
+}
+
+for (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand band : form.getSummaryBands()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthXBLDD4K3GRE3TCL4FMSMV7XPCA" Invoke="true">
+                <xsc:Presentation>loadColumnsWidthFromContainer</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(band, result);
+}
+
+for (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportGroup group : form.getGroups()) {
+    if (group.getFooterBand() != null) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthXBLDD4K3GRE3TCL4FMSMV7XPCA" Invoke="true">
+                <xsc:Presentation>loadColumnsWidthFromContainer</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(group.getFooterBand(), result);
+    }
+}
+
+return result;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXBLDD4K3GRE3TCL4FMSMV7XPCA" Name="loadColumnsWidthFromContainer" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="container" Id="mpr2WSUGMD7ENHTTB5XA6BE2JSUZU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContainer"/>
+          </Parameter>
+          <Parameter Name="column2WidthMap" Id="mprDU4DFBSUYNFPHOJIBWPFZTEUJA">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column.Width"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportWidget widget : container.getWidgets()) {
+    if (widget instanceof org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContainer) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthXBLDD4K3GRE3TCL4FMSMV7XPCA" Invoke="true">
+                <xsc:Presentation>loadColumnsWidthFromContainer</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>((org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContainer) widget, column2WidthMap);
+    } else if (widget instanceof org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell) {
+        org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell cell = (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell) widget;
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> columnId = cell.getAssociatedColumnId();
+        
+        if (columnId == null || column2WidthMap.containsKey(columnId)) {
+            continue;
+        }
+        
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column.Width">
+                <xsc:Presentation>ReportsXsd:ReportColumnsList.Column.Width</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xWidth = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column.Width.Factory">
+                <xsc:Presentation>ReportsXsd:ReportColumnsList.Column.Width.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+        
+        xWidth.setMillimeters(new java.math.BigDecimal(cell.getWidthMm()));
+        xWidth.setColumns(cell.getWidthCols());
+        
+        column2WidthMap.put(columnId, xWidth);
+    }
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMY5JRISCX5FALO7GSC3GJNWEEI" Name="isContainerHasColumns" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="container" Id="mprOMWEOPVQFVFA3DXD3W2NOW5PXY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContainer"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>for (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportWidget widget : container.getWidgets()) {
+    if (widget instanceof org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContainer) {
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthMY5JRISCX5FALO7GSC3GJNWEEI" Invoke="true">
+                <xsc:Presentation>isContainerHasColumns</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>((org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContainer) widget);
+    } else if (widget instanceof org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell) {
+        org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell cell = (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell) widget;
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> columnId = cell.getAssociatedColumnId();
+        
+        if (columnId != null) {
+            return true;
+        }
+    }
+}
+return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOB7AS3YH5VEVLAXQVHROAJJSDM" Name="isAnyReportCellAssotiateToColumn" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="report" Id="mprHLUV52MGQFGIVJ4PV2S37A6DTU">
+            <Type TypeId="411" Path="pdcReport____________________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm form = report.createForm();
+
+for (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand band : form.getColumnHeaderBands()) {
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthMY5JRISCX5FALO7GSC3GJNWEEI" Invoke="true">
+                <xsc:Presentation>isContainerHasColumns</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(band)) {
+        return true;
+    }
+}
+
+for (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand band : form.getDetailBands()) {
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthMY5JRISCX5FALO7GSC3GJNWEEI" Invoke="true">
+                <xsc:Presentation>isContainerHasColumns</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(band)) {
+        return true;
+    }
+}
+
+for (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand band : form.getSummaryBands()) {
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthMY5JRISCX5FALO7GSC3GJNWEEI" Invoke="true">
+                <xsc:Presentation>isContainerHasColumns</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(band)) {
+        return true;
+    }
+}
+
+for (org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportGroup group : form.getGroups()) {
+    if (group.getFooterBand() != null) {
+        if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthMY5JRISCX5FALO7GSC3GJNWEEI" Invoke="true">
+                <xsc:Presentation>isContainerHasColumns</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(group.getFooterBand())) {
+            return true;
+        }
+    }
+}
+
+return false;</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

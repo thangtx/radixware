@@ -542,6 +542,15 @@ public class AdsEntityClassDef extends AdsEntityObjectClassDef {
         if (getId().equals(SystemPresentationBuilder.USER2ROLE_ID) || getId().equals(SystemPresentationBuilder.USERGROUP2ROLE_ID)) {
             Collection<Definition> apfCollection = RadixObjectsUtils.collectAllAround(this, DdsVisitorProviderFactory.newAccessPartitionFamilyProvider());
             list.addAll(apfCollection);
+        } else { 
+            for (AccessAreas.AccessArea accessArea : getAccessAreas()) {
+                for (Partition partition : accessArea.getPartitions()) {
+                    final DdsAccessPartitionFamilyDef familyDef = partition.findApf();
+                    if (familyDef != null) {
+                        list.add(familyDef);
+                    }
+                }
+            }
         }
     }
 

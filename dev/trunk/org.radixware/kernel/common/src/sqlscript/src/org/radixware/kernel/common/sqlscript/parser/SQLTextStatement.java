@@ -15,12 +15,22 @@ package org.radixware.kernel.common.sqlscript.parser;
 public class SQLTextStatement extends SQLParseStatement {
     final private String text;
 
-    public SQLTextStatement(SQLPosition position, String text) {
+    public SQLTextStatement(final SQLPosition position, final String text) {
         super(position, SQLConstants.StatementType.ST_TEXT);
-        this.text = text;
+        if (text == null) {
+            throw new IllegalArgumentException("Text string can't be null");
+        }
+        else {
+            this.text = text;
+        }
     }
 
     public String getText() {
         return text;
+    }
+
+    @Override
+    public String toString() {
+        return "SQLTextStatement{" + "text=" + text + '}';
     }
 }

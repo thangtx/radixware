@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="axcZRYLOOVPJZBVFJOAEQ6TVBB3NU" Name="AadcLockTimeoutError" Type="8" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaxcZRYLOOVPJZBVFJOAEQ6TVBB3NU"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaxcZRYLOOVPJZBVFJOAEQ6TVBB3NU"/>
+    </Bodies>
+    <MethodGroup Id="cmgAK52LZE5WRASXC2XJKKCSUKZAY" Name="Root"/>
+    <PropertyGroup Id="cpg7HA7ZF4KCRFGLLYOHZJSLBGMOM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth5OEDPWMAJZES3ITDZEZV26KYRI" Name="AadcLockTimeoutError" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="pid" Id="mprQFCXHFB4PNE57KB5UG7EWZZPSQ">
+            <Type TypeId="411" Path="pdcPid_______________________"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super("AADC lock timeout for object " + pid.getTable().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDLXOOC7QVCEHNZTTHWDJH62BU mthXCIPTMRU7VBAZMIYH3BG3BIY4E" Invoke="true">
+                <xsc:Presentation>getName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() + "[" + pid.toString() + "]");
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="axc7M2U2F2F7REN5IFLI44GKDBXOY"/>
+  </AdsClassDefinition>
+</AdsDefinition>

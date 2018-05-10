@@ -409,8 +409,11 @@ public final class DdsColumnTemplateEditor extends RadixObjectEditor<DdsColumnTe
 
     public void updateName() { //need for update of the name after editing one in the table
 //        updating = true;
-        nameEditPanel.setCurrentName(getColumnTemplate().getName());
-        fireDdsColumnTemplateChanged();
+        final String name = getColumnTemplate().getName();
+        if (name == null || !name.equals(nameEditPanel.getCurrentName())) {
+            nameEditPanel.setCurrentName(name);
+            fireDdsColumnTemplateChanged();
+        }
 //        updating = false;
     }
 

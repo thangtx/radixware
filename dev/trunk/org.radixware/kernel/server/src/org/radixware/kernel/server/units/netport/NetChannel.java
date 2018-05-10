@@ -17,15 +17,17 @@ import java.util.Map;
 import org.radixware.kernel.common.enums.EEventContextType;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
-import org.radixware.kernel.common.enums.ELinkLevelProtocolKind;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.types.ArrStr;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.server.SrvRunParams;
+import org.radixware.kernel.server.aio.AadcAffinity;
 import org.radixware.kernel.server.aio.Event;
 import org.radixware.kernel.server.aio.EventHandler;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.instance.ResourceRegistry;
 import org.radixware.kernel.server.trace.FileLogOptions;
 import org.radixware.kernel.server.trace.ServerTrace;
 import org.radixware.kernel.server.trace.Trace;
@@ -42,34 +44,28 @@ import org.radixware.kernel.server.units.ServerItemView;
  *
  *
  */
-abstract class NetChannel implements EventHandler, ViewModel {
+public abstract class NetChannel implements EventHandler, ViewModel {
 
     protected final NetPortHandlerUnit unit;
     protected final NetChannelServerTrace trace;
     protected final long id;
-    protected final String title;
-    protected final ELinkLevelProtocolKind linkLevelProtocolKind;
-    protected final String inFrame;
-    protected final String outFrame;
+    protected String title;
     private boolean needUpdateDbStats = false;
     private ServerItemView view = null;
     protected NetChannelOptions options = null;
     private boolean isStopped = true;
+    private String viewStatus = null;
+    private INetChannelAffinityHandler aadcAffinityHandler;
 
     protected NetChannel(
             final NetPortHandlerUnit unit,
             final long id,
-            final String title,
-            final ELinkLevelProtocolKind linkLevelProtocolKind,
-            final String inFrame,
-            final String outFrame) {
+            final String title) {
         this.unit = unit;
         this.id = id;
         this.title = title;
-        this.linkLevelProtocolKind = linkLevelProtocolKind;
-        this.inFrame = inFrame;
-        this.outFrame = outFrame;
         trace = new NetChannelServerTrace(this);
+        trace.setOwnerDescription("NetChannel[" + id + "]");
         trace.init();
         trace.setProfiles(TraceProfiles.DEFAULT);
         trace.enterContext(EEventContextType.NET_CHANNEL, String.valueOf(id), null);
@@ -81,6 +77,10 @@ abstract class NetChannel implements EventHandler, ViewModel {
         return trace;
     }
 
+    public long getId() {
+        return id;
+    }
+    
     public ServerItemView getView() {
         if (view == null && SrvRunParams.getIsGuiOn()) {
             view = ServerItemView.Factory.newInstance(this);
@@ -93,25 +93,69 @@ abstract class NetChannel implements EventHandler, ViewModel {
     }
 
     @Override
+    public String getViewStatus() {
+        return viewStatus;
+    }
+
+    public void seanceUnregistered(final Seance seance) {
+    }
+
+    @Override
     public String getTitle() {
         return title;
     }
 
+    public String getResourceKeyPrefix() {
+        return unit.getResourceKeyPrefix() + ResourceRegistry.SEPARATOR + "NetChannel[" + id + "]";
+    }
+
     boolean start() throws SQLException, InterruptedException {
-        options = unit.getNetPortHandlerDbQueries().readChannelOptions(this);
-        if (options == null) {
-            throw new RadixError(Messages.ERR_CANT_READ_OPTIONS);
+        try {
+            options = unit.getNetPortHandlerDbQueries().readChannelOptions(this);
+
+            if (options == null) {
+                throw new RadixError(Messages.ERR_CANT_READ_OPTIONS);
+            }
+
+            title = options.title;
+            if (options.bindAddress == null && options.connectAddress == null) {
+                throw new IllegalStateException("Unable to start net channel '" + getTitle() + "': invalid address '" + options.addressString + "'");
+            }
+            getTrace().setProfiles(options.traceProfiles);
+            getTrace().startFileLogging(getFileLogOptions());
+
+            unit.getInstance().getResourceRegistry().closeAllWithKeyPrefix(getResourceKeyPrefix(), "channel start");
+            
+            aadcAffinityHandler = createAadcAffinityHandler();
+
+            if (!startImpl()) {
+                return false;
+            }
+            final String o = options.toString();
+            getTrace().put(EEventSeverity.EVENT, NetPortHandlerMessages.CHANNEL_STARTED + o, NetPortHandlerMessages.MLS_ID_CHANNEL_STARTED, new ArrStr(getTitle(), o), EEventSource.UNIT_PORT.getValue(), false);
+            isStopped = false;
+            setNeedUpdateDbStats(true);
+            return true;
+        } catch (Throwable e) {
+            if (e instanceof InterruptedException) {
+                throw (InterruptedException) e;
+            }
+            final String exStack = ExceptionTextFormatter.exceptionStackToString(e);
+            unit.getTrace().put(EEventSeverity.ERROR, NetPortHandlerMessages.ERR_ON_CHANNEL_START + " \"" + getTitle() + "\": \n" + exStack, NetPortHandlerMessages.MLS_ID_ERR_ON_CHANNEL_START, new ArrStr(getTitle(), exStack), EEventSource.NET_PORT_HANDLER, false);
         }
-        getTrace().setProfiles(options.traceProfiles);
-        getTrace().startFileLogging(getFileLogOptions());
-        if (!startImpl()) {
-            return false;
+        return false;
+    }
+    
+    private INetChannelAffinityHandler createAadcAffinityHandler() {
+        if (options.aadcAffinityHandlerClassName != null && unit.getInstance().getAadcManager().isInAadc()) {
+            try {
+                Class c = this.getClass().getClassLoader().loadClass(options.aadcAffinityHandlerClassName);
+                return (INetChannelAffinityHandler) c.newInstance();
+            } catch (Throwable t) {
+                getTrace().put(EEventSeverity.WARNING, "Unable to create AADC affinity handler: " + ExceptionTextFormatter.throwableToString(t), EEventSource.NET_PORT_HANDLER);
+            } 
         }
-        final String o = options.toString();
-        getTrace().put(EEventSeverity.EVENT, NetPortHandlerMessages.CHANNEL_STARTED + o, NetPortHandlerMessages.MLS_ID_CHANNEL_STARTED, new ArrStr(getTitle(), o), EEventSource.UNIT_PORT.getValue(), false);
-        isStopped = false;
-        setNeedUpdateDbStats(true);
-        return true;
+        return null;
     }
 
     public boolean isStarted() {
@@ -139,14 +183,36 @@ abstract class NetChannel implements EventHandler, ViewModel {
 
     public void maintenance() {
         getTrace().flush();
+        if (SrvRunParams.getIsGuiOn() && getViewIfCreated() != null) {
+            viewStatus = calcViewStatus();
+        }
+    }
+    
+    protected AadcAffinity getAadcAffinity(Seance seance, Seance.FramePacket packet) {
+        if (aadcAffinityHandler == null) {
+            return null;
+        }
+        return aadcAffinityHandler.getAadcAffinity(seance, packet == null ? null : packet.packet, packet == null ? null : packet.headers);
     }
 
-    public final int getActiveSeanceCount() {
+    protected abstract String calcViewStatus();
+
+    public final int getActiveSeancesCount() {
         return unit.getSeances().getActiveSeanceCount(this);
     }
 
+    public int getBusySeancesCount() {
+        int result = 0;
+        for (Seance s : unit.getSeances().getActiveSeances(this)) {
+            if (s.isBusy()) {
+                result++;
+            }
+        }
+        return result;
+    }
+
     protected void applyOptions(final NetChannelOptions newOptions) {
-        final boolean bNeedSocketRestart = !Utils.equals(options.address, newOptions.address);
+        final boolean bNeedSocketRestart = !Utils.equals(options.bindAddress, newOptions.bindAddress);
         final boolean bTraceProfileChanged = !Utils.equals(options.traceProfiles, newOptions.traceProfiles);
         options = newOptions;
         if (bNeedSocketRestart) {
@@ -155,6 +221,14 @@ abstract class NetChannel implements EventHandler, ViewModel {
         if (bTraceProfileChanged) {
             getTrace().setProfiles(options.traceProfiles);
         }
+    }
+    
+    public void beforInvokeOnRecv(final Seance seance) {
+        
+    }
+    
+    public void afterInvokeOnRecv(final Seance seance) {
+        
     }
 
     protected boolean rereadOptions(final Map<Long, NetChannelOptions> preloadedOptoins) throws SQLException, InterruptedException {
@@ -214,7 +288,8 @@ abstract class NetChannel implements EventHandler, ViewModel {
                 "channel_#" + getSeqNumber(),
                 unitOpt.getMaxFileSizeBytes(),
                 unitOpt.getRotationCount(),
-                unitOpt.isRotateDaily());
+                unitOpt.isRotateDaily(),
+                unitOpt.isWriteContextToFile());
     }
 
     void applyNewFileLogOptions() {
@@ -230,9 +305,10 @@ abstract class NetChannel implements EventHandler, ViewModel {
 
     public boolean isNeedUpdateDbStats() {
         return needUpdateDbStats;
+
     }
 
-    private static class NetChannelServerTrace extends ServerTrace {
+    protected static class NetChannelServerTrace extends ServerTrace {
 
         private final NetChannel channel;
 

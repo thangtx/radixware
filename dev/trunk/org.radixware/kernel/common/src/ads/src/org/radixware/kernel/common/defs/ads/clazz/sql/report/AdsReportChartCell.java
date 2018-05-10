@@ -59,7 +59,6 @@ public class AdsReportChartCell extends AdsReportCell implements ILocalizedDef {
         series = new ChartSeries();
         domainAxes = new AdsReportChartAxes();
         rangeAxes = new AdsReportChartAxes();
-        setName("Chart");
     }
 
     protected AdsReportChartCell(org.radixware.schemas.adsdef.ReportCell xCell) {
@@ -68,9 +67,6 @@ public class AdsReportChartCell extends AdsReportCell implements ILocalizedDef {
         series = new ChartSeries();
         domainAxes = new AdsReportChartAxes();
         rangeAxes = new AdsReportChartAxes();
-        if (!xCell.isSetName()) {
-            setName("Chart");
-        }
         if (xCell.getChartSeriesList() != null && !xCell.getChartSeriesList().isEmpty()) {
             for (org.radixware.schemas.adsdef.ChartSeries xSeries : xCell.getChartSeriesList()) {
                 AdsReportChartSeries chartSeries = new AdsReportChartSeries(this, xSeries);
@@ -158,9 +154,6 @@ public class AdsReportChartCell extends AdsReportCell implements ILocalizedDef {
         series = new ChartSeries();
         domainAxes = new AdsReportChartAxes();
         rangeAxes = new AdsReportChartAxes();
-        if (!xCell.isSetName()) {
-            setName("Chart");
-        }
         if (xCell.getChartSeriesList() != null && !xCell.getChartSeriesList().isEmpty()) {
             for (org.radixware.schemas.adsdef.ChartSeries xSeries : xCell.getChartSeriesList()) {
                 AdsReportChartSeries chartSeries = new AdsReportChartSeries(this, xSeries);

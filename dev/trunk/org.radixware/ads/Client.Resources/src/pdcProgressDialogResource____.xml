@@ -52,6 +52,31 @@
           <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout" DescriptionId="mlsUSOMSRL6A5CVTOWMSRSZBCPHLM"/>
         </ThrownExceptions>
       </Method>
+      <Method Id="mthZCU5UVCSMRCYLKGKJMZLXXCRX4" Name="startNewProcess" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="startNewProcess(Ljava.lang.String;ZLjava.lang.String;Z)Lorg.radixware.kernel.server.arte.resources.ProgressDialogResource.Process;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprWCCWIVNAMRARRPHI3F6U3674KI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="cancellable" Id="mprR7M72IEKORFNBJXSUSCM4EKBD4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="cancelButtonTitle" Id="mpr3UK5TWSQC5BWDCX22HH6BK673Q">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="showPercent" Id="mprQRGP6HRMDVBNJHYHRNNZLLWJKQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.arte.resources.ProgressDialogResource.Process"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ResourceUsageTimeout"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
     </Methods>
   </AdsClassDefinition>
 </AdsDefinition>

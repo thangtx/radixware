@@ -25,7 +25,7 @@ import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.utils.RadixObjectsUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.general.filesystem.RadixFileUtil;
-import org.radixware.kernel.designer.dds.script.defs.DdsScriptGeneratorUtils;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 
 public final class GenerateTriggersScriptAction implements ActionListener {
 

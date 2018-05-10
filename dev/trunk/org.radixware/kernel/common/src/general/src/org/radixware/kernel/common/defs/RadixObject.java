@@ -13,6 +13,7 @@ package org.radixware.kernel.common.defs;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.radixware.kernel.common.check.RadixProblem;
+import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
+import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ENamingPolicy;
 import org.radixware.kernel.common.enums.ERepositorySegmentType;
@@ -34,6 +37,7 @@ import org.radixware.kernel.common.repository.fs.IRepositoryBranch;
 import org.radixware.kernel.common.resources.icons.IIconified;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.Reference;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.common.utils.events.IRadixEventListener;
 import org.radixware.kernel.common.utils.events.RadixEvent;
@@ -82,6 +86,7 @@ public abstract class RadixObject implements IIconified {
     private EEditState editState = EEditState.NEW;
     private RadixObject container = null;
     private NameProvider nameProvider = null;
+    private boolean frozen = false;//in readonly runtime this can be set to true to allow some optimizations
 
     public interface NameProvider {
 
@@ -96,6 +101,26 @@ public abstract class RadixObject implements IIconified {
         this.name = (name != null ? name : "");
     }
 
+    /**
+     * Marks this object as frozen in readonly runtime environment.
+     * It is usually set by server after loading all data
+     * to allow some optimizations in metadata access.
+     */
+    public void setFrozen(boolean frozen) {
+        if (frozen && !RadixObjectInitializationPolicy.get().isRuntime()) {
+            throw new IllegalStateException("Object can be frozen only in runtime environment");
+        }
+        this.frozen = frozen;
+    }
+
+    /**
+     * See {@link setFrozen(boolean)}.
+     * @return 
+     */
+    public boolean isFrozen() {
+        return frozen;
+    }
+    
     private RenameSupport getRenameSupport() {
         if (renameSupportHolder != null) {
             return renameSupportHolder;
@@ -424,11 +449,53 @@ public abstract class RadixObject implements IIconified {
     }
 
     protected String getDescriptionForToolTip() {
+        if (this instanceof ILocalizedDescribable){
+            return getLocalizedDescriptionForToolTip((ILocalizedDescribable) this);
+        }
         return getDescription();
     }
 
     protected String getDescriptionForToolTip(EIsoLanguage language) {
         return getDescriptionForToolTip();
+    }
+    
+     public static String getLocalizedDescriptionForToolTip(ILocalizedDescribable describable) {
+        return getLocalizedDescriptionForToolTip(describable, EIsoLanguage.ENGLISH);
+    }
+
+    public static String getLocalizedDescriptionForToolTip(ILocalizedDescribable describable, EIsoLanguage language) {
+        String description;
+
+        if (describable.getDescriptionId() != null) {
+            description = describable.getDescription(language);
+            if (description != null && !description.isEmpty()) {
+                return description;
+            }
+
+            final Definition descriptionLocation = describable.getDescriptionLocation();
+            if (descriptionLocation != null && descriptionLocation.getLayer() != null) {
+                final EIsoLanguage defaultLanguage = descriptionLocation.getLayer().getDefaultLanguage();
+                if (defaultLanguage != null) {
+                    description = describable.getDescription(defaultLanguage);
+                    if (description != null && !description.isEmpty()) {
+                        return description;
+                    }
+                }
+
+                final IMultilingualStringDef localizedString = descriptionLocation.findLocalizedString(describable.getDescriptionId());
+                if (localizedString != null) {
+                    return localizedString.getValue(language);                    
+                }
+            }
+        }
+
+        if (describable instanceof IDescribable) {
+            description = ((IDescribable) describable).getDescription();
+            if (description != null && !description.isEmpty()) {
+                return description;
+            }
+        }
+        return null;
     }
 
     /**
@@ -730,7 +797,11 @@ public abstract class RadixObject implements IIconified {
         if (provider.isTarget(this)) {
             visitor.accept(this);
         }
-
+        
+        if (provider.isCancelled()) {
+            return;
+        }
+        
         if (provider.isContainer(this)) {
             visitChildren(visitor, provider);
         }
@@ -745,6 +816,7 @@ public abstract class RadixObject implements IIconified {
         final RadixObject object;
 
         public BreakVisitException(RadixObject object) {
+            super("", null, false, false);
             this.object = object;
         }
     }
@@ -754,18 +826,16 @@ public abstract class RadixObject implements IIconified {
      *
      * @return founded object or null if not found.
      */
-    public final RadixObject find(VisitorProvider provider) {
-        try {
-            visit(new IVisitor() {
-                @Override
-                public void accept(RadixObject object) {
-                    throw new BreakVisitException(object); // not nice, but most simple way.
-                }
-            }, provider);
-            return null;
-        } catch (BreakVisitException e) {
-            return e.object;
-        }
+    public final RadixObject find(final VisitorProvider provider) {
+        final Reference<RadixObject> ref = new Reference<>();
+        visit(new IVisitor() {
+            @Override
+            public void accept(RadixObject object) {
+                ref.set(object);
+                provider.cancel();
+            }
+        }, provider);
+        return provider.isCancelled() ? ref.get() : null;
     }
 
     public static class RenameEvent extends RadixEvent {

@@ -22,6 +22,7 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -41,6 +42,7 @@ import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.HandleInfo;
 
@@ -85,8 +87,8 @@ public class FormatStringEditorPanel extends StateAbstractDialog.StateAbstractPa
     }
 
     private void validateSimplePattern(String pattern) {
-        if (inputPattern != null && inputType != null) {
-            if (MessageFormatValidator.formatIsValid(inputType.getTypeId(), inputPattern)) {
+        if (pattern != null && inputType != null) {
+            if (MessageFormatValidator.formatIsValid(inputType.getTypeId(), pattern)) {
                 stateManager.ok();
             } else {
                 stateManager.error("Invalid pattern format!");
@@ -111,7 +113,7 @@ public class FormatStringEditorPanel extends StateAbstractDialog.StateAbstractPa
     }
 
     private void checkSingleLanguagePattern() {
-        validatePattern(singleLanguageValue);
+        validatePattern(inputPattern);
     }
 
     @Override
@@ -128,10 +130,8 @@ public class FormatStringEditorPanel extends StateAbstractDialog.StateAbstractPa
     }
 
     protected void apply() {
+        editingTitleItem.setMultilingual(isMultilingualResult);
         if (!isSimplePatternCheck) {
-            if (!editingTitleItem.isMultilingual()) {
-                editingTitleItem.setMultilingual(isMultilingualResult);
-            }
 
             if (isMultilingualResult) {
                 Iterator<Map.Entry<EIsoLanguage, String>> iter = languages2PatternsMap.entrySet().iterator();
@@ -142,23 +142,23 @@ public class FormatStringEditorPanel extends StateAbstractDialog.StateAbstractPa
             } else {
                 boolean isMustSet = false;
                 if (editingTitleItem.getPattern() != null
-                        && !editingTitleItem.getPattern().equals(singleLanguageValue)) {
+                        && !editingTitleItem.getPattern().equals(inputPattern)) {
                     isMustSet = true;
                 }
                 if (editingTitleItem.getPattern() == null
-                        && singleLanguageValue != null) {
+                        && inputPattern != null) {
                     isMustSet = true;
                 }
 
                 if (isMustSet) {
-                    editingTitleItem.setPattern(singleLanguageValue);
+                    editingTitleItem.setPattern(inputPattern);
                 }
             }
         }
     }
 
     public String getPattern() {
-        if (isSimplePatternCheck) {
+        if (!isMultilingualResult) {
             return inputPattern;
         }
         return getPatternForCurrentLocale();
@@ -201,7 +201,7 @@ public class FormatStringEditorPanel extends StateAbstractDialog.StateAbstractPa
     public void open(final AdsObjectTitleFormatDef objectTitleFormat, final AdsObjectTitleFormatDef.TitleItem titleItem) {
         this.editingTitleItem = titleItem;
         this.languages2PatternsMap = new HashMap<EIsoLanguage, String>();
-        this.singleLanguageValue = titleItem.getPattern();
+        this.inputPattern = titleItem.getPattern();
 
         handleInfo = new HandleInfo() {
             @Override
@@ -239,7 +239,7 @@ public class FormatStringEditorPanel extends StateAbstractDialog.StateAbstractPa
 
             @Override
             public void onSingleLanguagePatternChange(String newStringValue) {
-                singleLanguageValue = newStringValue;
+                inputPattern = newStringValue;
                 demoFormatPanel.setPatternValue(newStringValue);
                 check();
 
@@ -252,6 +252,19 @@ public class FormatStringEditorPanel extends StateAbstractDialog.StateAbstractPa
             @Override
             public void onLanguagesChange() {
                 languages2PatternsMap.clear();
+                EnumSet<EIsoLanguage> languages = EnumSet.noneOf(EIsoLanguage.class);
+                if (isMultilingualResult) {
+                    AdsDefinition def = getAdsDefinition();
+                    if (def != null) {
+                        Layer layer = def.getLayer();
+                        if (layer != null) {
+                            languages.addAll(layer.getLanguages());
+                        }
+                    }
+                    for (EIsoLanguage l : languages) {
+                        languages2PatternsMap.put(l, inputPattern);
+                    }
+                }
                 check();
                 changeSupport.fireChange();
             }
@@ -447,6 +460,15 @@ public class FormatStringEditorPanel extends StateAbstractDialog.StateAbstractPa
             public Dimension getMaximumSize() {
                 return new Dimension(super.getMaximumSize().width, super.getPreferredSize().height);
             }
+
+            @Override
+            protected String getDefaultValue(EIsoLanguage l) {
+                if (languages2PatternsMap != null) {
+                    return languages2PatternsMap.get(l);
+                }
+                return super.getDefaultValue(l);
+            }
+
         };
 
         result.addChangeSupportListener(new ChangeListener() {

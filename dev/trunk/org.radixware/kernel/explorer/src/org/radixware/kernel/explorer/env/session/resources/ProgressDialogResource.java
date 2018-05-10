@@ -13,16 +13,20 @@ package org.radixware.kernel.explorer.env.session.resources;
 
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QDialog;
+import com.trolltech.qt.gui.QLayout;
 import com.trolltech.qt.gui.QPushButton;
+import com.trolltech.qt.gui.QResizeEvent;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.eas.resources.IProgressDialogResource;
 import org.radixware.kernel.common.client.eas.resources.IProgressMonitor;
@@ -31,33 +35,64 @@ import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.schemas.eas.ProgressDialogSetRq;
 
 
-class ProgressDialogResource extends QDialog implements IProgressDialogResource {
+class ProgressDialogResource extends QDialog implements IProgressDialogResource {        
     
     public final static class UpdateSizeEvent extends QEvent{        
         public UpdateSizeEvent(){
             super(QEvent.Type.User);
         }
     }
+    
+    private class DialogLayout extends QVBoxLayout{
+        
+        public DialogLayout(final QWidget owner){
+            super(owner);
+        }
+
+        @Override
+        public QSize maximumSize() {
+            return ProgressDialogResource.this.layoutMaximumSize(super.minimumSize());
+        }
+        
+        @Override
+        public QSize minimumSize() {
+            return ProgressDialogResource.this.layoutMinimumSize(super.minimumSize());
+        }                                
+    }    
 
     private final static int START_DELAY = 3000;
     private final static int STOP_DELAY = 500;
     private final QObject eventFilter = new UserInputFilter(this);
     private final List<ProgressWidget> processes = new ArrayList<>(8);
-    private final QVBoxLayout layout = new QVBoxLayout(this);
+    private final QVBoxLayout layout = new DialogLayout(this);
     private final QVBoxLayout processLayout = new QVBoxLayout(null);
     private final QPushButton btnCancel;
     private final ProgressTraceWidget progressTrace;
+    private int windowHeaderWidth = 120;
     private int startTimerId = -1, stopTimerId = -1;
+    private boolean needToUpdatePosition;
     private final IClientEnvironment environment;
 
     ProgressDialogResource(final IClientEnvironment environment) {
         super((QWidget)environment.getMainWindow());
-        this.environment = environment;
-        btnCancel = new QPushButton(environment.getMessageProvider().translate("Wait Dialog", "Cancel"), this);
+        this.environment = environment;        
+        btnCancel = new QPushButton(this);
+        setDefaultCancelButtonText();
         progressTrace = new ProgressTraceWidget(environment, this);
         setObjectName("Progress Dialog Resource");
         setupUi();
         hide();
+    }
+    
+    private void setDefaultCancelButtonText(){
+        setCancelButtonText(environment.getMessageProvider().translate("Wait Dialog", "Cancel"));
+    }
+    
+    private void setCancelButtonText(final String text){
+        if (!Objects.equals(btnCancel.text(), text)){
+            btnCancel.setText(text);
+            needToUpdatePosition = true;
+        }
     }
 
     private void setupUi() {        
@@ -69,7 +104,6 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
         setWindowFlags(flags);
         setModal(true);
         this.setCursor(new QCursor(Qt.CursorShape.ArrowCursor));
-
         btnCancel.setObjectName("btnCancel");
         btnCancel.clicked.connect(this, "onCancel()");
         btnCancel.setVisible(false);
@@ -96,30 +130,40 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
             final boolean showTrace = request.isSetShowTrace() ? request.getShowTrace() : false;
             final boolean showPercent = request.isSetShowPercent() ? request.getShowPercent() : false;
             final String caption = request.isSetCaption() ? request.getCaption() : null;
-            final ProgressWidget process = new ProgressWidget(this, showPercent, showTrace, caption);
+            final String cancelButtonTitle = request.isSetCancelButtonTitle() ? request.getCancelButtonTitle() : null;
+            final ProgressWidget process = new ProgressWidget(this, showPercent, showTrace, caption, cancelButtonTitle);
             process.setText(request.getTitle());
             process.setCanCancel(request.getCancellable());
-            processLayout.addWidget(process);
+            processLayout.addWidget(process);            
             if (process.canCancel()) {
                 btnCancel.setEnabled(true);
                 btnCancel.setVisible(true);
             }
+            if (cancelButtonTitle!=null){
+                btnCancel.setText(cancelButtonTitle);
+            }else{
+                setDefaultCancelButtonText();
+            }
             if (showTrace) {
+                needToUpdatePosition = true;
                 progressTrace.setVisible(true);
             }
             if (isHidden()) {
                 if (startTimerId == -1) {
-                    setWindowTitle(caption == null ? environment.getMessageProvider().translate("Wait Dialog", "Please Wait") : caption);
+                    setWindowTitle(caption == null ? environment.getMessageProvider().translate("Wait Dialog", "Please Wait") : caption);                    
                     QApplication.instance().installEventFilter(eventFilter);
                     startTimerId = startTimer(START_DELAY);
                 } else if (caption != null) {
-                    setWindowTitle(caption);
+                    setWindowTitle(caption);                    
                 }
+                updateWindowHeaderWidth();
             } else {
                 if (caption != null) {
                     setWindowTitle(caption);
+                    updateWindowHeaderWidth();
                 }
                 updateGeometry();
+                needToUpdatePosition = true;
                 updateSizeLater();
             }
             processes.add(process);
@@ -159,6 +203,7 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
         QApplication.instance().removeEventFilter(eventFilter);
         environment.getProgressHandleManager().blockProgress();
         show();
+        needToUpdatePosition = true;
         updateSize();
     }
 
@@ -169,7 +214,8 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
 
     private void closeDialog() {
         setWindowTitle(environment.getMessageProvider().translate("Wait Dialog", "Please Wait"));
-        setFixedWidth(fontMetrics().width(windowTitle()) + 120);
+        updateWindowHeaderWidth();
+        updateGeometry();
         hide();
         progressTrace.deleteAll();
         environment.getProgressHandleManager().unblockProgress();
@@ -180,8 +226,10 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
         if (process.wasCanceled()) {
             return false;
         }
-        if (request.isSetTitle()) {
+        if (request.isSetTitle()
+            && !Objects.equals(request.getTitle(), process.getText())) {            
             process.setText(request.getTitle());
+            needToUpdatePosition = true;
         }
         if (request.isSetProgress()) {
             process.setValue(Math.round(request.getProgress()));
@@ -189,6 +237,10 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
         if (request.isSetCancellable()) {
             process.setCanCancel(request.getCancellable());
             updateCancelState();
+        }
+        if (request.isSetCancelButtonTitle()){
+            process.setCancelButtonTitle(request.getCancelButtonTitle());
+            updateCancelTitle();
         }
         updateSize();
         return true;
@@ -224,7 +276,8 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
                 }
             } else {
                 removeLast();
-                updateGeometry();
+                needToUpdatePosition = true;
+                updateGeometry();                
                 updateSizeLater();
             }
             return true;
@@ -254,17 +307,20 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
                 } else {
                     setWindowTitle(environment.getMessageProvider().translate("Wait Dialog", "Please Wait"));
                 }
+                updateWindowHeaderWidth();
+                updateGeometry();
             }
             updateCancelState();
+            updateCancelTitle();
             if (process.showTrace()) {
                 for (ProgressWidget pw : processes) {
                     if (pw.showTrace()) {
                         return;
                     }             
                 }    
-                progressTrace.deleteAll();
-                progressTrace.setVisible(false);
-            }              
+            }            
+            progressTrace.deleteAll();
+            progressTrace.setVisible(false);
         }
     }
 
@@ -278,6 +334,17 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
         }
         btnCancel.setVisible(false);
     }
+    
+    private void updateCancelTitle(){        
+        for (int i = processes.size() - 1; i >= 0; i--) {
+            if (processes.get(i).getCancelButtonTitle()!=null) {
+                setCancelButtonText(processes.get(i).getCancelButtonTitle());
+                return;
+            }
+        }
+        setDefaultCancelButtonText();
+        updateSizeLater();
+    }
 
     private void updateSizeLater() {
         QApplication.postEvent(this, new UpdateSizeEvent());
@@ -285,17 +352,34 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
 
     private void updateSize() {
         if (!isHidden()) {
-            final String title = windowTitle();
+            updateGeometry();
             layout.activate();
             processLayout.activate();
-            final int width = Math.max(sizeHint().width(), fontMetrics().width(title) + 120);
-            if (progressTrace.isVisible()) {
-                setMinimumSize(Math.max(width(), width), sizeHint().height());
-                setMaximumSize(WidgetUtils.MAXIMUM_SIZE, WidgetUtils.MAXIMUM_SIZE);
-            } else {
-                setFixedSize(Math.max(width(), width), sizeHint().height());
-            }
+            
+            if (progressTrace.isVisible()){
+                layout.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize);
+            }else{
+                layout.setSizeConstraint(QLayout.SizeConstraint.SetMinAndMaxSize);
+            }            
         }
+    }
+    
+    private void updateWindowHeaderWidth(){
+        windowHeaderWidth = Math.max(sizeHint().width(), WidgetUtils.calcWindowHeaderWidth(this));
+    }
+    
+    private QSize layoutMaximumSize(final QSize defaultMinimumSize){
+        if (progressTrace.isVisible()) {
+            return WidgetUtils.shrinkWindowSize(WidgetUtils.MAXIMUM_SIZE, WidgetUtils.MAXIMUM_SIZE);
+        }else{
+            return layoutMinimumSize(defaultMinimumSize);
+        }
+    }
+    
+    private QSize layoutMinimumSize(final QSize defaultMinimumSize){
+        final int width = Math.max(defaultMinimumSize.width(), windowHeaderWidth);
+        final int height = defaultMinimumSize.height();
+        return WidgetUtils.shrinkWindowSize(width, height);
     }
 
     @SuppressWarnings("unused")
@@ -356,6 +440,15 @@ class ProgressDialogResource extends QDialog implements IProgressDialogResource 
             updateSize();
         }else{
             super.customEvent(qevent);
+        }
+    }
+
+    @Override
+    protected void resizeEvent(final QResizeEvent event) {
+        super.resizeEvent(event);
+        if (needToUpdatePosition){
+            needToUpdatePosition = false;
+            WidgetUtils.centerDialog(this);
         }
     }
     

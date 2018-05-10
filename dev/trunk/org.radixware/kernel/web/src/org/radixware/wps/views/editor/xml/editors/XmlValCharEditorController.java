@@ -35,13 +35,13 @@ final class XmlValCharEditorController extends ValCharEditorController {
     }
 
     @Override
-    public void setValue(String value) {
+    public void setValue(Character value) {
         validationEnabled = true;
         super.setValue(value);
     }
 
     @Override
-    protected ValidationResult calcValidationResult(String value) {
+    protected ValidationResult calcValidationResult(Character value) {
         final ValidationResult result = super.calcValidationResult(value);
         if (schemaType == null) {
             return result;

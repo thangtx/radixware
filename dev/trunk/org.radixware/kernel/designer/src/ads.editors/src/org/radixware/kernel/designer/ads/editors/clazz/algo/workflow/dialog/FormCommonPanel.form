@@ -35,9 +35,9 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="panelTitle" alignment="0" pref="478" max="32767" attributes="0"/>
-                  <Component id="panelHeaderTitle" alignment="0" pref="478" max="32767" attributes="0"/>
-                  <Component id="panelFooterTitle" alignment="0" pref="478" max="32767" attributes="0"/>
+                  <Component id="panelTitle" alignment="0" max="32767" attributes="0"/>
+                  <Component id="panelHeaderTitle" alignment="0" max="32767" attributes="0"/>
+                  <Component id="panelFooterTitle" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="panel1" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
@@ -52,17 +52,16 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="panelTitle" pref="100" max="32767" attributes="0"/>
+              <Component id="panelTitle" pref="85" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="panelHeaderTitle" pref="101" max="32767" attributes="0"/>
+              <Component id="panelHeaderTitle" pref="84" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="panelFooterTitle" pref="99" max="32767" attributes="0"/>
+              <Component id="panelFooterTitle" pref="85" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="panel1" min="-2" max="-2" attributes="0"/>
                   <Component id="panel2" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -90,16 +89,27 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="labelClerkAutoSelect" min="-2" max="-2" attributes="0"/>
-                      <Component id="labelClerk" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Component id="labelWorkerRole" alignment="1" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="textClerk" alignment="1" pref="135" max="32767" attributes="1"/>
-                      <Component id="comboClerkAutoSelect" alignment="0" pref="135" max="32767" attributes="1"/>
-                      <Component id="textClerkRoles" alignment="1" pref="135" max="32767" attributes="1"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="labelClerkAutoSelect" min="-2" max="-2" attributes="0"/>
+                              <Component id="labelClerk" alignment="1" min="-2" max="-2" attributes="0"/>
+                              <Component id="labelWorkerRole" alignment="1" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="textClerk" alignment="1" max="32767" attributes="1"/>
+                              <Component id="comboClerkAutoSelect" alignment="0" max="32767" attributes="1"/>
+                              <Component id="textClerkRoles" alignment="1" max="32767" attributes="1"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="0" pref="29" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="cbForbidForProcessCreator" max="32767" attributes="0"/>
+                              <Component id="cbForbidRedirection" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -123,7 +133,10 @@
                       <Component id="textClerkRoles" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="labelWorkerRole" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="cbForbidForProcessCreator" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
+                  <Component id="cbForbidRedirection" min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -156,6 +169,26 @@
             </Property>
           </Properties>
         </Component>
+        <Component class="javax.swing.JCheckBox" name="cbForbidForProcessCreator">
+          <Properties>
+            <Property name="horizontalTextPosition" type="int" value="10"/>
+            <Property name="label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/radixware/kernel/designer/ads/editors/clazz/algo/workflow/dialog/Bundle.properties" key="FormCommonPanel.cbForbidForProcessCreator.label" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbForbidForProcessCreatorActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="cbForbidRedirection">
+          <Properties>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/radixware/kernel/designer/ads/editors/clazz/algo/workflow/dialog/Bundle.properties" key="FormCommonPanel.cbForbidRedirection.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+            <Property name="horizontalAlignment" type="int" value="11"/>
+            <Property name="horizontalTextPosition" type="int" value="10"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="panel2">
@@ -173,8 +206,8 @@
                           </Group>
                           <EmptySpace min="4" pref="4" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="textAdminRoles" pref="154" max="32767" attributes="0"/>
-                              <Component id="comboPriority" alignment="0" pref="154" max="32767" attributes="0"/>
+                              <Component id="textAdminRoles" pref="178" max="32767" attributes="0"/>
+                              <Component id="comboPriority" alignment="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">

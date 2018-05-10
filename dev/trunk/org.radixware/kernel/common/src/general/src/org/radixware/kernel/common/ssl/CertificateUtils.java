@@ -66,6 +66,7 @@ import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.radixware.kernel.common.exceptions.CertificateUtilsException;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
 import org.radixware.kernel.common.types.ArrBin;
+import org.radixware.kernel.common.utils.DebugLog;
 import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.common.utils.SystemPropUtils;
 
@@ -75,7 +76,7 @@ import org.radixware.kernel.common.utils.SystemPropUtils;
  */
 public final class CertificateUtils {
 
-    private static final String KEY_MANAGER_ALGO = SystemPropUtils.getBooleanSystemProp("rdx.use.default.algo.for.key.manager", true) ? KeyManagerFactory.getDefaultAlgorithm() : "SunX509";
+    public static final String KEY_MANAGER_ALGO = SystemPropUtils.getBooleanSystemProp("rdx.use.default.algo.for.key.manager", true) ? KeyManagerFactory.getDefaultAlgorithm() : "SunX509";
     public static final String ALGORITHM_MD5 = "MD5";
     public static final String ALGORITHM_SHA1 = "SHA1";
 
@@ -576,6 +577,7 @@ public final class CertificateUtils {
 
     public static KeyManager[] createServerKeyManagers(final List<String> ownKeyAliases) throws CertificateUtilsException {
         final KeyManagerFactory serverKeyManagerFactory;
+        DebugLog.logUpDown("CertificateUtils.createServerKeyManagers: KEY_MANAGER_ALGO = " + KEY_MANAGER_ALGO);
         try {
             serverKeyManagerFactory = KeyManagerFactory.getInstance(KEY_MANAGER_ALGO);
             KeystoreController.initServerKeyManagerFactory(serverKeyManagerFactory);

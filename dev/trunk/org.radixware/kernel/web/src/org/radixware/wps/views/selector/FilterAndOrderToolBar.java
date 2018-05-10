@@ -235,8 +235,6 @@ class FilterAndOrderToolBar extends Container {
                 return;
             }
         }
-        updateEditButtons();
-
     }
 
     @SuppressWarnings("unused")
@@ -246,7 +244,6 @@ class FilterAndOrderToolBar extends Container {
                 chooseSorting.setCurrentAddon(model.getCurrentSorting());
             }
         }
-        updateEditButtons();
     }
 
     private boolean changeCurrentFilterImpl(final FilterModel filter, final boolean quiet) {
@@ -263,7 +260,7 @@ class FilterAndOrderToolBar extends Container {
         }
         final RadSortingDef choosedSorting = chooseSorting.getCurrentAddon(), newSorting;
         if (choosedSorting!=null && !model.getSortings().isAcceptable(choosedSorting, filter)){
-            newSorting = model.getSortings().getDefaultSorting(filter);
+            newSorting = model.getSortings().getDefaultSorting(filter, null);
         }else{
             newSorting = null;//do not change current sorting
         }            
@@ -308,7 +305,7 @@ class FilterAndOrderToolBar extends Container {
         try {
             applySettings(filter, sorting==null ? getSorting() : sorting);
             final FilterSettingsStorage.FilterSettings settings = filterSettings.getFilterSettings(model);
-            settings.saveLastFilter(filter != null ? filter.getId() : null, getSortingId(), true);
+            settings.saveLastFilter(filter != null ? filter.getId() : null, getSortingId(), true, false, -1);
             return true;
         } catch (ModelPropertyException ex) {
             filter.showException(getEnvironment().getMessageProvider().translate("Selector", "Can't Apply Filter"), ex);
@@ -331,7 +328,7 @@ class FilterAndOrderToolBar extends Container {
             if (sorting == null) {
                 throw exception;
             }
-            final RadSortingDef defaultSorting = sortings.getDefaultSorting(filter);
+            final RadSortingDef defaultSorting = sortings.getDefaultSorting(filter, null);
             if (sorting == defaultSorting) {
                 applySettings(filter, null);
             } else {
@@ -393,7 +390,7 @@ class FilterAndOrderToolBar extends Container {
         }
 
         final FilterSettingsStorage.FilterSettings settings = filterSettings.getFilterSettings(model);
-        settings.saveLastFilter(currentFilter != null ? currentFilter.getId() : null, getSortingId(), false);
+        settings.saveLastFilter(currentFilter != null ? currentFilter.getId() : null, getSortingId(), false, false, -1);
 
         defaultFilterListener.filterSelected(filter);
     }
@@ -434,42 +431,15 @@ class FilterAndOrderToolBar extends Container {
         } else {
             chooseSorting.refresh();
         }
-        updateEditButtons();
         explorerItemsCreator.updateInsertButton();
-    }
-
-    private void updateEditButtons() {
-        /* if (chooseSorting.getCurrentAddon() != null) {
-        if (chooseSorting.getCurrentAddon().isUserDefined()) {
-        chooseSorting.setEditButtonHint(getEnvironment().getMessageProvider().translate("SelectorAddons", "Edit Sorting"));
-        } else {
-        chooseSorting.setEditButtonHint(getEnvironment().getMessageProvider().translate("SelectorAddons", "View Sorting"));
-        }
-        } else if (model.getSortings().canOpenSettingsManager()) {
-        chooseSorting.setEditButtonHint(getEnvironment().getMessageProvider().translate("SelectorAddons", "Open Sortings Manager"));
-        }
-        
-        if (currentFilter != null) {
-        if (currentFilter.isUserDefined()) {
-        chooseSorting.setEditButtonHint(getEnvironment().getMessageProvider().translate("SelectorAddons", "Edit Filter"));
-        } else if (currentFilter.isCommon()) {
-        chooseFilter.setEditButtonHint(getEnvironment().getMessageProvider().translate("SelectorAddons", "Open Filters Manager"));
-        } else {
-        chooseSorting.setEditButtonHint(getEnvironment().getMessageProvider().translate("SelectorAddons", "View Filter"));
-        }
-        } else if (model.getFilters().canOpenSettingsManager()) {
-        chooseFilter.setEditButtonHint(getEnvironment().getMessageProvider().translate("SelectorAddons", "Open Filters Manager"));
-        }
-        chooseFilter.setEditButtonVisible(currentFilter != null || model.getFilters().canOpenSettingsManager());
-        chooseSorting.setEditButtonVisible(chooseSorting.getCurrentAddon() != null || model.getSortings().canOpenSettingsManager());*/
     }
 
     public void storeSettings() {
         final FilterSettingsStorage.FilterSettings settings = filterSettings.getFilterSettings(model);
         if (currentFilter != null) {
-            settings.saveLastFilter(currentFilter.getId(), getSortingId(), isSelectorEnabled());
+            settings.saveLastFilter(currentFilter.getId(), getSortingId(), isSelectorEnabled(), false, -1);
         } else {
-            settings.saveLastFilter(null, null, false);
+            settings.saveLastFilter(null, null, false, false, -1);
         }
     }
 
@@ -482,7 +452,7 @@ class FilterAndOrderToolBar extends Container {
     
     @Override
     protected String[] clientScriptsRequired() {
-        return new String[]{"client.js"};        
+        return new String[]{"org/radixware/wps/rwt/client.js"};        
     }
 
     @Override

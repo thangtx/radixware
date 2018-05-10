@@ -10,46 +10,20 @@
  */
 package org.radixware.kernel.common.svn.utils;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.zip.ZipFile;
 import org.radixware.kernel.common.components.ICancellable;
 import org.radixware.kernel.common.svn.SVNRepositoryAdapter;
 
 public abstract class UpgradeCompatibilityVerifier implements NoizyVerifier {
 
-    private final SVNRepositoryAdapter repository;
-    private final String branchPath;
-    private final ZipFile upgradeFile;
-    private final String upgradeFilePath;
-    private final boolean skipDevelopmentLayers;
-    private final String predefinedBaseDevLayerURI;
-
-    public UpgradeCompatibilityVerifier(SVNRepositoryAdapter repository, String branchPath, ZipFile upgradeFile, String baseDevLayerURI, boolean skipDevelopmentLayers) {
-        this.repository = repository;
-        this.branchPath = branchPath;
-        this.upgradeFile = upgradeFile;
-        this.skipDevelopmentLayers = skipDevelopmentLayers;
-        this.upgradeFilePath = null;
-        this.predefinedBaseDevLayerURI = baseDevLayerURI;
-    }
+    protected final BranchHolderParams branchParams;
 
     public UpgradeCompatibilityVerifier(SVNRepositoryAdapter repository, String branchPath, ZipFile upgradeFile, boolean skipDevelopmentLayers) {
-        this.repository = repository;
-        this.branchPath = branchPath;
-        this.upgradeFile = upgradeFile;
-        this.skipDevelopmentLayers = skipDevelopmentLayers;
-        this.upgradeFilePath = null;
-        this.predefinedBaseDevLayerURI = Utils.NO_BASE_DEVELOPMENT_LAYER_SPECIFIED;
+        this(new BranchHolderParams(repository, branchPath, upgradeFile, skipDevelopmentLayers));
     }
 
-    public UpgradeCompatibilityVerifier(SVNRepositoryAdapter repository, String branchPath, String upgradeFilePath, boolean skipDevelopmentLayers) {
-        this.repository = repository;
-        this.branchPath = branchPath;
-        this.upgradeFilePath = upgradeFilePath;
-        this.skipDevelopmentLayers = skipDevelopmentLayers;
-        this.upgradeFile = null;
-        this.predefinedBaseDevLayerURI = Utils.NO_BASE_DEVELOPMENT_LAYER_SPECIFIED;
+    public UpgradeCompatibilityVerifier(BranchHolderParams branchParams) {
+        this.branchParams = branchParams;
     }
 
     public static interface IClassLinkageProblemHandler {
@@ -57,13 +31,13 @@ public abstract class UpgradeCompatibilityVerifier implements NoizyVerifier {
         public boolean canIgnoreProblem(final Class c, final String problem);
     }
 
-    private IClassLinkageProblemHandler classLinkageProblemHandler = null;
+    protected IClassLinkageProblemHandler classLinkageProblemHandler = null;
 
     final public void setClassLinkageProblemHandler(IClassLinkageProblemHandler classLinkageProblemHandler) {
         this.classLinkageProblemHandler = classLinkageProblemHandler;
     }
 
-    private ICancellable cancellableHandler = null;
+    protected ICancellable cancellableHandler = null;
 
     final public void setCancellableHandler(ICancellable cancellableHandler) {
         this.cancellableHandler = cancellableHandler;
@@ -71,9 +45,9 @@ public abstract class UpgradeCompatibilityVerifier implements NoizyVerifier {
 
     @Override
     public boolean verify() {
-        BranchHolder holder = new BranchHolder(this, skipDevelopmentLayers);
+        BranchHolder holder = new BranchHolder(this, branchParams.isSkipDevelopmentLayers());
         try {
-            if (!holder.initialize(repository, branchPath, upgradeFile, upgradeFilePath, predefinedBaseDevLayerURI, skipDevelopmentLayers)) {
+            if (!holder.initialize(branchParams)) {
                 return false;
             }
             message("Checking Usages-API compatibility...");
@@ -90,8 +64,8 @@ public abstract class UpgradeCompatibilityVerifier implements NoizyVerifier {
         }
     }
 
-    private Usages2APIVerifier createUsages2APIVerifier() {
-        return new Usages2APIVerifier(repository, branchPath, upgradeFile, upgradeFilePath, skipDevelopmentLayers, predefinedBaseDevLayerURI) {
+    protected Usages2APIVerifier createUsages2APIVerifier() {
+        return new Usages2APIVerifier(branchParams) {
 
             @Override
             public boolean cancel() {
@@ -126,8 +100,8 @@ public abstract class UpgradeCompatibilityVerifier implements NoizyVerifier {
         };
     }
 
-    PatchClassFileLinkageVerifier createCFVerifier() {
-        return new PatchClassFileLinkageVerifier(repository, branchPath, upgradeFile, upgradeFilePath, skipDevelopmentLayers, predefinedBaseDevLayerURI, false) {
+    protected PatchClassFileLinkageVerifier createCFVerifier() {
+        return new PatchClassFileLinkageVerifier(branchParams, false) {
 
             @Override
             protected boolean canIgnoreProblem(final Class c, final String problem) {
@@ -168,30 +142,5 @@ public abstract class UpgradeCompatibilityVerifier implements NoizyVerifier {
                 UpgradeCompatibilityVerifier.this.message(message);
             }
         };
-    }
-
-    public boolean verifyUserFunctions(Connection c) {
-        try {
-            message("Verifing user functions at " + c.getMetaData().getURL());
-        } catch (SQLException ex) {
-            //ignore
-        }
-        BranchHolder holder = new BranchHolder(this, skipDevelopmentLayers);
-        try {
-            if (!holder.initialize(repository, branchPath, upgradeFile, upgradeFilePath, predefinedBaseDevLayerURI, skipDevelopmentLayers)) {
-                return false;
-            }
-            message("Checking Usages-API compatibility...");
-            Usages2APIVerifier verifier = createUsages2APIVerifier();
-            if (!verifier.verifyUserFunctions(c, holder)) {
-                return false;
-            }
-            message("Checking binary compatibility...");
-            PatchClassFileLinkageVerifier cfVerifier = createCFVerifier();
-            return cfVerifier.verifyUserFunctions(c, holder);
-        } finally {
-            holder.finish();
-        }
-
     }
 }

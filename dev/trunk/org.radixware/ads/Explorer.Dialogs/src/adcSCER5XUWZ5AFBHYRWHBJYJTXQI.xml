@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcSCER5XUWZ5AFBHYRWHBJYJTXQI" Name="UdsModulesDownloader" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.explorer.dialogs.udsbrowser.UdsModulesDownloader"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcSCER5XUWZ5AFBHYRWHBJYJTXQI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcSCER5XUWZ5AFBHYRWHBJYJTXQI"/>
+    </Bodies>
+    <MethodGroup Id="cmg64UKOQXWTNG5RO5VI3RKVLD2TI" Name="Root"/>
+    <PropertyGroup Id="cpgJYYJFYUNSVGOHLTRX57TGKIAGM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthK76LYPNAXJFGNHTD6U6RSXEEQQ" Name="download" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="download(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;)Ljava.util.List&lt;Ljava.io.File;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mpr6ZRHQQYM4JEQ3OJSAEV24FSAHM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="parentWidget" Id="mprRLBGPPIF3VDEHN5ON2FVMBKLOU">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.io.File"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

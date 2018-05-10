@@ -11,9 +11,7 @@
 package org.radixware.kernel.common.client.meta;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.errors.CantLoadCustomViewError;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
@@ -101,7 +99,6 @@ public class RadPropertyDef extends TitledDefinition {
     private final boolean canBeUsedInSorting;
     private String nullString = null;
     private String arrayItemNullString = null;
-    private String title;
     private String hint;
     private RadPropertyDef finalProp;
     private final int firstArrayItemIndex;
@@ -448,10 +445,17 @@ public class RadPropertyDef extends TitledDefinition {
             return super.hasTitle();
         }
     }
+    
+    public String getTitle(final IClientEnvironment environment){
+        return getTitleImpl();
+    }
 
     @Override
     public String getTitle() {
-        //if (title == null) {
+        return getTitleImpl();
+    }
+    
+    private String getTitleImpl(){
         if (inheritanceMask.isTitleInherited() && getNature() != EPropNature.VIRTUAL) {
             String titleStr = null;
             if (isFormProperty()) {
@@ -465,24 +469,19 @@ public class RadPropertyDef extends TitledDefinition {
                 final RadClassPresentationDef owner = getDefManager().getClassPresentationDef(ownerClassId);
                 for (RadClassPresentationDef base = owner.getAncestorClassPresentationDef(); base != null && titleStr == null; base = base.getAncestorClassPresentationDef()) {
                     if (base.isPropertyDefExistsById(getId())) {
-                        //title = base.getPropertyDefById(getId()).getTitle();
                         titleStr = base.getPropertyDefById(getId()).getTitle();
                     }
                 }
             }
             if (titleStr == null) {
-                //title = getNature() == EPropNature.PARENT_PROP ? getOrigProp().getTitle() : super.getTitle();
                 return getNature() == EPropNature.PARENT_PROP ? getOrigProp().getTitle() : super.getTitle();
             } else {
                 return titleStr;
             }
 
         } else {
-            //title = super.getTitle();
             return super.getTitle();
-        }
-        //}
-        // return title;
+        }        
     }
 
     public String getHint() {

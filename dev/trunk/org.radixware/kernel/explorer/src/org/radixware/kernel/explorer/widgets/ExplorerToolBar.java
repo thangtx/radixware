@@ -24,6 +24,7 @@ import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.kernel.common.client.widgets.actions.IToolBar;
 import org.radixware.kernel.explorer.env.ExplorerWidgetFactory;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.views.IExplorerView;
 
 
@@ -55,7 +56,8 @@ public class ExplorerToolBar extends QToolBar implements IToolBar {
         if (action!=null){
             actions.add(action);
         }        
-        insertAction((QAction) before, (QAction) action);
+        insertAction((QAction) before, (QAction) action);        
+        WidgetUtils.updateToolButtonObjectName(this,(QAction)action);
     }
 
     @Override
@@ -69,6 +71,7 @@ public class ExplorerToolBar extends QToolBar implements IToolBar {
             actions.add(action);
         }        
         addAction((QAction) action);
+        WidgetUtils.updateToolButtonObjectName(this,(QAction)action);
     }
 
     @Override
@@ -127,5 +130,5 @@ public class ExplorerToolBar extends QToolBar implements IToolBar {
     @Override
     public Action[] getActions() {
         return actions.toArray(new Action[actions.size()]);
-    }        
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -24,41 +24,73 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.radixware.kernel.common.enums.*;
 
+import org.radixware.kernel.common.lang.MetaInfo;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.lang.ReflectiveCallable;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.exceptions.DatabaseError;
+import org.radixware.kernel.server.jdbc.AbstractDbQueries;
+import org.radixware.kernel.server.jdbc.DontCheckDbQuery;
+import org.radixware.kernel.server.jdbc.RadixResultSet;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.Pid;
 import org.radixware.kernel.server.utils.SrvValAsStr;
 
-public final class JobQueue {
+public final class JobQueue extends AbstractDbQueries {
 
     private final Arte arte;
     /**
-     * Запрос для добавления параметра
+     * 0?@>A 4;O 4>102;5=8O ?0@0<5B@0
      */
+    private static final String qryAddParamSQL = "Insert into RDX_JS_JOBPARAM (JOBID, NAME, SEQ, VALTYPE, VAL, CLOBVAL, BLOBVAL) values (?,?,?,?,?,?,?)";
     private PreparedStatement qryAddParam = null;
+
     /**
-     * Запрос для изменения значения параметра
+     * 0?@>A 4;O 87<5=5=8O 7=0G5=8O ?0@0<5B@0
      */
+    private static final String qryUpdateParamSQL = "Update RDX_JS_JOBPARAM set VAL=?, CLOBVAL=?, BLOBVAL=?  where JOBID=? and NAME=?";
     private PreparedStatement qryUpdateParam = null;
+
+    private static final String qryScheduleRelativeSQL = "begin ?:= RDX_JS_JOB.scheduleRelative(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); end;";
     private CallableStatement qryScheduleRelative = null;
+
+    private static final String qryJobSQL = "select CLASSNAME, METHODNAME, EXECREQUESTERID, dump(DUETIME) dueTimeDump, TASKID, threadPoolClassGuid, threadKey from RDX_JS_JOBQUEUE where ID = ?";
     private PreparedStatement qryJob = null;
+
+    private static final String qryGetParamsSQL = "select NAME, VALTYPE, VAL, CLOBVAL, BLOBVAL from RDX_JS_JOBPARAM where JOBID=? order by SEQ";
     private PreparedStatement qryGetParams = null;
+
+    private static final String delJobSQL = "Delete from RDX_JS_JOBQUEUE where id=? and dump(duetime)=nvl(?, dump(duetime))";
     private PreparedStatement delJob = null;
+
+    private static final String qryScheduleSQL = "begin ?:= RDX_JS_JOB.schedule(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); end;";
     private CallableStatement qrySchedule = null;
+
+    private static final String qryOnStartSQL = "begin RDX_JS_JOB.onStartJobExecution(?); end;";
+    @DontCheckDbQuery   // User exception during test!
     private CallableStatement qryOnStart = null;
+
     private Long currentJobId = null;
     private Long relatedTaskId = null;
     private boolean bJobDeleted = false;
     private final Utils utils;
+    private String threadPoolClassGuid;
+    private String threadKey;
+
+    private JobQueue() {
+        this(null);
+    }
 
     JobQueue(final Arte arte) {
         this.arte = arte;
         utils = new Utils(arte);
+    }
+
+    @Override
+    public void prepareAll() throws SQLException {
+        prepareAll(arte.getDbConnection().get());
     }
 
     public static class Param {
@@ -75,7 +107,7 @@ public final class JobQueue {
         //TODO refactoring mth valToStmt (stmt, strValIdx, clobValIdx, blobValIdx, objValIdx);	use in schedule and awake 
     }
 
-    public static final class JobIdParam extends Param {//для спец. параметра - job.id 
+    public static final class JobIdParam extends Param {//4;O A?5F. ?0@0<5B@0 - job.id 
 
         public static final String NAME = "JOB.ID";
 
@@ -84,7 +116,7 @@ public final class JobQueue {
         }
     }
 
-    public static final class ArteParam extends Param {//для спец. параметра - arte
+    public static final class ArteParam extends Param {//4;O A?5F. ?0@0<5B@0 - arte
 
         public static final String NAME = "ARTE";
 
@@ -144,14 +176,14 @@ public final class JobQueue {
 
 
     /**
-     * Подготовка задания без назначения времени исполнения.
+     * >43>B>2:0 7040=8O 157 =07=0G5=8O 2@5<5=8 8A?>;=5=8O.
      */
     public static Entity post(final Arte arte, final String title, final Pid creator, final String className, final String methodName, final Param[] params, final Long priority, final Long boosting, final boolean allowRerun) {
         return arte.getJobQueue().post(title, creator, className, methodName, params, priority, boosting, allowRerun);
     }
 
     /**
-     * Подготовка задания без назначения времени исполнения.
+     * >43>B>2:0 7040=8O 157 =07=0G5=8O 2@5<5=8 8A?>;=5=8O.
      *
      */
     public Entity post(final String title, final Pid creator, final String className, final String methodName, final Param[] params, final Long priority, final Long boosting, final boolean allowRerun) {
@@ -159,21 +191,21 @@ public final class JobQueue {
     }
 
     /**
-     * Планирование готового к исполнению задания.
+     * ;0=8@>20=85 3>B>2>3> : 8A?>;=5=8N 7040=8O.
      */
     public static Entity schedule(final Arte arte, final String title, final Pid creator, final String className, final String methodName, final Param[] params, final Long priority, final Long boosting, final boolean allowRerun) {
         return arte.getJobQueue().schedule(title, creator, className, methodName, params, priority, boosting, allowRerun);
     }
 
     /**
-     * Планирование готового к исполнению задания.
+     * ;0=8@>20=85 3>B>2>3> : 8A?>;=5=8N 7040=8O.
      */
     public Entity schedule(final String title, final Pid creator, final String className, final String methodName, final Param[] params, final Long priority, final Long boosting, final boolean allowRerun) {
         return scheduleRelative(title, creator, 0, className, methodName, params, priority, boosting, allowRerun);
     }
 
     /**
-     * Планирование задания с задержкой.
+     * ;0=8@>20=85 7040=8O A 7045@6:>9.
      *
      */
     public static Entity schedule(final Arte arte, final String title, final Pid creator, final double delay, final String className, final String methodName, final Param[] params, final Long priority, final Long boosting, final boolean allowRerun) {
@@ -181,7 +213,7 @@ public final class JobQueue {
     }
 
     /**
-     * Планирование задания с задержкой.
+     * ;0=8@>20=85 7040=8O A 7045@6:>9.
      *
      */
     public Entity schedule(final String title, final Pid creator, final double delay, final String className, final String methodName, final Param[] params, final Long priority, final Long boosting, final boolean allowRerun) {
@@ -201,7 +233,7 @@ public final class JobQueue {
     }
 
     /**
-     * Планирование задания на заданное время.
+     * ;0=8@>20=85 7040=8O =0 7040==>5 2@5<O.
      *
      */
     public static Entity schedule(final Arte arte, final String title, final Pid creator, final Timestamp timestamp, final String className, final String methodName, final Param[] params, final Long priority, final Long boosting, final boolean allowRerun) {
@@ -209,29 +241,56 @@ public final class JobQueue {
     }
 
     /**
-     * Планирование задания на заданное время.
+     * ;0=8@>20=85 7040=8O =0 7040==>5 2@5<O.
      */
     public Entity schedule(final String title, final Pid creator, final Timestamp timestamp, final String className, final String methodName, final Param[] params, final Long priority, final Long boosting, final boolean allowRerun) {
         return schedule(title, creator, timestamp, className, methodName, params, priority, boosting, null, allowRerun);
     }
 
     /**
-     * Планирование задания на заданное время.
+     * ;0=8@>20=85 7040=8O =0 7040==>5 2@5<O.
      */
     public Entity schedule(final String title, final Pid creator, final Timestamp timestamp, final String className, final String methodName, final Param[] params, final Long priority, final Long boosting, final Long taskId, final boolean allowRerun) {
         return schedule(title, creator, timestamp, className, methodName, params, null, priority, boosting, taskId, allowRerun);
     }
 
     /**
-     * Планирование задания на заданное время.
+     * ;0=8@>20=85 7040=8O =0 7040==>5 2@5<O.
      */
-    public Entity schedule(final String title, final Pid creator, final Timestamp timestamp, final String className, final String methodName, final Param[] params, final String scpName, final Long priority, final Long boosting, final Long taskId, final boolean allowRerun) {
+    public Entity schedule(final String title,
+            final Pid creator,
+            final Timestamp timestamp,
+            final String className,
+            final String methodName,
+            final Param[] params,
+            final String scpName,
+            final Long priority,
+            final Long boosting,
+            final Long taskId,
+            final boolean allowRerun) {
+        return schedule(title, creator, timestamp, className, methodName, params, scpName, priority, boosting, taskId, allowRerun, null, null, null, null);
+    }
+
+    public Entity schedule(final String title,
+            final Pid creator,
+            final Timestamp timestamp,
+            final String className,
+            final String methodName,
+            final Param[] params,
+            final String scpName,
+            final Long priority,
+            final Long boosting,
+            final Long taskId,
+            final boolean allowRerun,
+            Integer aadcMemberId,
+            String threadPoolClassGuid,
+            String threadPoolPid,
+            Integer threadKey) {
         try {
             if (qrySchedule == null) {
                 arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 try {
-                    qrySchedule = arte.getDbConnection().get().prepareCall(
-                            "begin ?:= RDX_JS_JOB.schedule(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); end;");
+                    qrySchedule = arte.getDbConnection().get().prepareCall(qryScheduleSQL);
                 } finally {
                     arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 }
@@ -279,6 +338,30 @@ public final class JobQueue {
                 qrySchedule.setLong(13, taskId);
             }
 
+            if (aadcMemberId == null) {
+                qrySchedule.setNull(14, Types.INTEGER);
+            } else {
+                qrySchedule.setLong(14, aadcMemberId);
+            }
+
+            if (threadPoolClassGuid == null) {
+                qrySchedule.setNull(15, Types.VARCHAR);
+            } else {
+                qrySchedule.setString(15, threadPoolClassGuid);
+            }
+
+            if (threadPoolPid == null) {
+                qrySchedule.setNull(16, Types.VARCHAR);
+            } else {
+                qrySchedule.setString(16, threadPoolPid);
+            }
+
+            if (threadKey == null) {
+                qrySchedule.setNull(17, Types.INTEGER);
+            } else {
+                qrySchedule.setLong(17, threadKey);
+            }
+
             qrySchedule.execute();
             final Long jobId = qrySchedule.getLong(1);
 
@@ -299,12 +382,29 @@ public final class JobQueue {
     }
 
     public Entity scheduleRelative(final String title, final Pid creator, final long delayMillis, final String className, final String methodName, final Param[] params, final String scpName, final Long priority, final Long boosting, final Long taskId, final boolean allowRerun) {
+        return scheduleRelative(title, creator, delayMillis, className, methodName, params, scpName, priority, boosting, taskId, allowRerun, null, null, null, null);
+    }
+
+    public Entity scheduleRelative(final String title,
+            final Pid creator,
+            final long delayMillis,
+            final String className,
+            final String methodName,
+            final Param[] params,
+            final String scpName,
+            final Long priority,
+            final Long boosting,
+            final Long taskId,
+            final boolean allowRerun,
+            final Integer aadcMemberId,
+            final String threadPoolClassGuid,
+            final String threadPoolPid,
+            final Integer threadKey) {
         try {
             if (qryScheduleRelative == null) {
                 arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 try {
-                    qryScheduleRelative = arte.getDbConnection().get().prepareCall(
-                            "begin ?:= RDX_JS_JOB.scheduleRelative(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); end;");
+                    qryScheduleRelative = arte.getDbConnection().get().prepareCall(qryScheduleRelativeSQL);
                 } finally {
                     arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 }
@@ -347,6 +447,30 @@ public final class JobQueue {
                 qryScheduleRelative.setLong(13, taskId);
             }
 
+            if (aadcMemberId == null) {
+                qryScheduleRelative.setNull(14, Types.INTEGER);
+            } else {
+                qryScheduleRelative.setLong(14, aadcMemberId);
+            }
+
+            if (threadPoolClassGuid == null) {
+                qryScheduleRelative.setNull(15, Types.VARCHAR);
+            } else {
+                qryScheduleRelative.setString(15, threadPoolClassGuid);
+            }
+
+            if (threadPoolPid == null) {
+                qryScheduleRelative.setNull(16, Types.VARCHAR);
+            } else {
+                qryScheduleRelative.setString(16, threadPoolPid);
+            }
+
+            if (threadKey == null) {
+                qryScheduleRelative.setNull(17, Types.INTEGER);
+            } else {
+                qryScheduleRelative.setLong(17, threadKey);
+            }
+
             qryScheduleRelative.execute();
             final Long jobId = qryScheduleRelative.getLong(1);
             writeJobParams(jobId, params);
@@ -370,14 +494,13 @@ public final class JobQueue {
             if (qryAddParam == null) {
                 arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 try {
-                    qryAddParam = arte.getDbConnection().get().prepareStatement(
-                            "Insert into RDX_JS_JOBPARAM (JOBID, NAME, SEQ, VALTYPE, VAL, CLOBVAL, BLOBVAL) values (?,?,?,?,?,?,?)");
+                    qryAddParam = arte.getDbConnection().get().prepareStatement(qryAddParamSQL);
                 } finally {
                     arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 }
             }
 
-            // записать параметры
+            // 70?8A0BL ?0@0<5B@K
             arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_EXEC);
             try {
                 for (int i = 0; i < params.length; i++) {
@@ -506,8 +629,8 @@ public final class JobQueue {
     }
 
     /**
-     * Сигнал о необходимости немедленно исполнить задание с передачей
-     * параметров
+     * !83=0; > =5>1E>48<>AB8 =5<54;5==> 8A?>;=8BL 7040=85 A ?5@540G59
+     * ?0@0<5B@>2
      *
      * @param job
      * @param params
@@ -523,14 +646,13 @@ public final class JobQueue {
             if (qryUpdateParam == null) {
                 arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 try {
-                    qryUpdateParam = job.getArte().getDbConnection().get().prepareStatement(
-                            "Update RDX_JS_JOBPARAM set VAL=?, CLOBVAL=?, BLOBVAL=?  where JOBID=? and NAME=?");
+                    qryUpdateParam = job.getArte().getDbConnection().get().prepareStatement(qryUpdateParamSQL);
                 } finally {
                     arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 }
             }
 
-            // записать параметры
+            // 70?8A0BL ?0@0<5B@K
             arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_EXEC);
             try {
                 for (int i = 0; i < params.length; i++) {
@@ -570,7 +692,7 @@ public final class JobQueue {
             throw new DatabaseError("Can't awake job: " + ExceptionTextFormatter.getExceptionMess(e), e);
         }
 
-        // задать время
+        // 7040BL 2@5<O
         job.setProp(JOB_PROP_DUETIME_ID, new Timestamp(System.currentTimeMillis()));
         job.update();
     }
@@ -594,7 +716,6 @@ public final class JobQueue {
      * arte.commit() and can call arte.rollback().
      *
      * @param id
-     * @param traceProfile
      * @return
      */
     @ReflectiveCallable
@@ -628,16 +749,16 @@ public final class JobQueue {
                 if (qryJob == null) {
                     arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                     try {
-                        qryJob = arte.getDbConnection().get().prepareStatement("select CLASSNAME, METHODNAME, EXECREQUESTERID, dump(DUETIME) dueTimeDump, TASKID from RDX_JS_JOBQUEUE where ID = ?");
+                        qryJob = arte.getDbConnection().get().prepareStatement(qryJobSQL);
                     } finally {
                         arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                     }
                 }
-                final ResultSet rs;
+                final RadixResultSet rs;
                 arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_EXEC);
                 try {
                     qryJob.setLong(1, id.longValue());
-                    rs = qryJob.executeQuery();
+                    rs = (RadixResultSet)qryJob.executeQuery();
                 } finally {
                     arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_EXEC);
                 }
@@ -649,19 +770,18 @@ public final class JobQueue {
                     jobMethodName = rs.getString("METHODNAME");
                     execRequesterId = rs.getString("EXECREQUESTERID");
                     dueTimeBeforeStartDump = rs.getString("dueTimeDump");
-                    relatedTaskId = rs.getLong("taskId");
-                    if (rs.wasNull()) {
-                        relatedTaskId = null;
-                    }
+                    relatedTaskId = rs.getNullableLong("taskId");
+                    threadPoolClassGuid = rs.getString("threadPoolClassGuid");
+                    threadKey = rs.getString("threadKey");
                 } finally {
                     rs.close();
                 }
-                // получение списка параметров
+
+                // receiving parameters list
                 if (qryGetParams == null) {
                     arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                     try {
-                        qryGetParams = arte.getDbConnection().get().prepareStatement(
-                                "select NAME, VALTYPE, VAL, CLOBVAL, BLOBVAL from RDX_JS_JOBPARAM where JOBID=? order by SEQ");
+                        qryGetParams = arte.getDbConnection().get().prepareStatement(qryGetParamsSQL);
                     } finally {
                         arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                     }
@@ -702,7 +822,7 @@ public final class JobQueue {
                                 paramType = paramDbpValType.getName();
 
                             } else {
-                                // Если ValType==null, то передается JobID
+                                // A;8 ValType==null, B> ?5@5405BAO JobID
                                 if (JobIdParam.NAME.equals(paramName)) {
                                     paramClass = Long.class;
                                     paramObj = id;
@@ -743,7 +863,7 @@ public final class JobQueue {
             try {
                 arte.onStartRequestExecution(execRequesterId);
                 if (qryOnStart == null) {
-                    qryOnStart = arte.getDbConnection().get().prepareCall("begin RDX_JS_JOB.onStartJobExecution(?); end;");
+                    qryOnStart = arte.getDbConnection().get().prepareCall(qryOnStartSQL);
                 }
                 qryOnStart.setLong(1, id);
                 qryOnStart.executeQuery();
@@ -798,6 +918,31 @@ public final class JobQueue {
         return currentJobId;
     }
 
+    private String getThreadPoolName() {
+        if (threadPoolClassGuid != null) {
+            try {
+                final Class<?> c = Arte.class.getClassLoader().loadClass(threadPoolClassGuid);
+                final MetaInfo metaAnno = c.getAnnotation(MetaInfo.class);
+                String poolName = metaAnno.name();
+                int lastDoubleColonIdx = poolName.lastIndexOf("::");
+                if (lastDoubleColonIdx > 0) {
+                    poolName = poolName.substring(lastDoubleColonIdx + 2);
+                }
+                return poolName;
+            } catch (Exception e) {
+            }
+        }
+        return threadPoolClassGuid;
+    }
+
+    public String getThreadStr() {
+        final String poolName = getThreadPoolName();
+        if (poolName != null && threadKey != null) {
+            return threadKey + "." + poolName;
+        }
+        return null;
+    }
+
     /**
      * Delete current job from job queue without commit.
      * <br/>Use case:<br/> {@code JobQueue.deleteCurrentJob();}<br/>
@@ -830,7 +975,7 @@ public final class JobQueue {
             if (delJob == null) {
                 arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 try {
-                    delJob = arte.getDbConnection().get().prepareStatement("Delete from RDX_JS_JOBQUEUE where id=? and dump(duetime)=nvl(?, dump(duetime))");
+                    delJob = arte.getDbConnection().get().prepareStatement(delJobSQL);
                 } finally {
                     arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                 }
@@ -863,11 +1008,17 @@ public final class JobQueue {
         }
     }
 
-    public static class Utils {
+    public static class Utils extends AbstractDbQueries {
 
+        private static final String qryUnlockJobSQL = "update RDX_JS_JOBQUEUE set processorTitle=null, unlockCount=unlockCount+1, selfCheckTime=null, selfCheckTimeMillis=null where id=? and processorTitle is not null";
         private PreparedStatement qryUnlockJob = null;
+
         private Connection dbConnection;
         private final Arte arte;
+
+        private Utils() {
+            this((Arte) null);
+        }
 
         public Utils(Arte arte) {
             this(arte, null);//connection will be initialized later
@@ -910,7 +1061,7 @@ public final class JobQueue {
                         arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                     }
                     try {
-                        qryUnlockJob = dbConnection.prepareStatement("update RDX_JS_JOBQUEUE set processorTitle=null, unlockCount=unlockCount+1, selfCheckTime=null where id=? and processorTitle is not null");
+                        qryUnlockJob = dbConnection.prepareStatement(qryUnlockJobSQL);
                     } finally {
                         if (arte != null) {
                             arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
@@ -932,6 +1083,11 @@ public final class JobQueue {
             } catch (SQLException e) {
                 throw new DatabaseError("Unable to unlock job: " + e.getMessage(), e);
             }
+        }
+
+        @Override
+        public void prepareAll() throws SQLException {
+            prepareAll(dbConnection);
         }
     }
 }

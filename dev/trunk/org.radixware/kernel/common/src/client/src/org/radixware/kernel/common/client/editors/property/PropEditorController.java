@@ -79,6 +79,7 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
     protected IButton customDialogBtn;
     protected IButton loadFromFileBtn;
     protected IButton saveToFileBtn;
+    private boolean buttonsCreated;
     protected final List<ICommandToolButton> commandButtons = new ArrayList<>();
     private final List<EditActionListener> editListeners = new LinkedList<>();
     private final List<FocusListener> focusListeners = new LinkedList<>();
@@ -96,23 +97,55 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
     protected abstract IModificationListener findParentModificationListener();
 
     public IButton getOwnValButton() {
+        if (!buttonsCreated){
+            createButtons();
+        }
         return ownValueBtn;
     }
 
     public IButton getCustomDialogButton() {
+        if (!buttonsCreated){
+            createButtons();
+        }        
         return customDialogBtn;
     }
 
     public IButton getLoadFromFileButton() {
+        if (!buttonsCreated){
+            createButtons();
+        }        
         return loadFromFileBtn;
     }
 
     public IButton getSaveToFileButton() {
+        if (!buttonsCreated){
+            createButtons();
+        }        
         return saveToFileBtn;
     }
 
     public List<ICommandToolButton> getCommandToolButtons() {
         return Collections.unmodifiableList(commandButtons);
+    }
+    
+    public List<IButton> getStandardButtons(){
+        if (!buttonsCreated){
+            createButtons();
+        }
+        final List<IButton> buttons = new LinkedList<>();
+        if (ownValueBtn!=null){
+            buttons.add(ownValueBtn);
+        }
+        if (customDialogBtn!=null){
+            buttons.add(customDialogBtn);
+        }
+        if (loadFromFileBtn!=null){
+            buttons.add(loadFromFileBtn);
+        }
+        if (saveToFileBtn!=null){
+            buttons.add(saveToFileBtn);
+        }
+        return buttons;
     }
 
     protected final T getPropEditor() {
@@ -214,32 +247,32 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
         super(null, editor);
     }
 
-    private void createButtons() {
-        customDialogBtn = createToolButton("...", "btnCustomDialog", new IButton.ClickHandler() {
-            @Override
-            public void onClick(IButton source) {
-                onExecPropEditorDialog();
+    protected final void createButtons() {
+        if (!buttonsCreated){
+            buttonsCreated = true;
+            customDialogBtn = createToolButton("...", "btnCustomDialog", new IButton.ClickHandler() {
+                @Override
+                public void onClick(IButton source) {
+                    onExecPropEditorDialog();
+                }
+            });
+            ownValueBtn = createToolButton(null, "btnOwnValue", new IButton.ClickHandler() {
+                @Override
+                public void onClick(IButton source) {
+                    onOwnValueClicked();
+                }
+            });
+            if (getProperty() instanceof SimpleProperty) {
+                loadFromFileBtn = createLoadButton();
+                saveToFileBtn = createSaveButton();
             }
-        });
-        ownValueBtn = createToolButton(null, "btnOwnValue", new IButton.ClickHandler() {
-            @Override
-            public void onClick(IButton source) {
-                onOwnValueClicked();
-            }
-        });
-        if (getProperty() instanceof SimpleProperty) {
-            loadFromFileBtn = createLoadButton();
-            saveToFileBtn = createSaveButton();
-        }
+        }        
     }
 
     @Override
     public final void setProperty(final Property property) {
         super.setProperty(property);
         if (property != null) {
-            if (ownValueBtn == null) {
-                createButtons();
-            }
             List<Id> commandIds = property.getEnabledCommands();
             Command cmd;
             ICommandToolButton button;
@@ -252,14 +285,16 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
         } else {
             if (ownValueBtn != null) {
                 ownValueBtn.setVisible(false);
-                customDialogBtn.setVisible(false);
-                if (loadFromFileBtn != null) {
-                    loadFromFileBtn.setVisible(false);
-                }
-                if (saveToFileBtn != null) {
-                    saveToFileBtn.setVisible(false);
-                }
             }
+            if (customDialogBtn != null){
+                customDialogBtn.setVisible(false);
+            }
+            if (loadFromFileBtn != null) {
+                loadFromFileBtn.setVisible(false);
+            }
+            if (saveToFileBtn != null) {
+                saveToFileBtn.setVisible(false);
+            }            
         }
     }
 
@@ -271,7 +306,6 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
             }
         });
         lb.setIcon(getIcon(ClientIcon.CommonOperations.OPEN));
-        lb.setEnabled(!isReadonly());
         lb.setToolTip(getEnvironment().getMessageProvider().translate("PropertyEditor", "Load from File"));
         return lb;
     }
@@ -299,58 +333,85 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
     }
 
     // проверка, вызывается при принятии решении о отображении ownValBtn
-    private boolean testInherit() {
-        final Property property = getProperty();
+    private static boolean testInherit(final Property property) {
         Model owner = property.getOwner();
         return property.getDefinition().isInheritable()
                 && (property.getDefinition().getType() != EValType.OBJECT
                 || ((owner instanceof EntityModel) && ((EntityModel) owner).isExists()));
     }
 
-    private boolean testCustomDialog() {
-        final Property property = getProperty();
+    private static boolean testCustomDialog(final Property property) {
         return property.getDefinition().customDialog()
-                && property.getOwner().canUsePropEditorDialog(property.getId());
+                  && property.getOwner().canUsePropEditorDialog(property.getId())
+                  && property.canOpenPropEditorDialog();
     }
 
     private Icon getIcon(ClientIcon icon) {
         return getEnvironment().getApplication().getImageManager().getIcon(icon);
     }
+    
+    private static boolean isOwnValueBtnVisible(final Property property){
+        return testInherit(property) 
+                  && !property.isReadonly() 
+                  && property.isEnabled() 
+                  && property.getInheritableValue() != null
+                  && property.getEditPossibility() != EEditPossibility.PROGRAMMATICALLY;                
+    }
+    
+    private static boolean isCustomDialogBtnVisible(final Property property){
+        return testCustomDialog(property)
+                  //if value is not defined then custom dialog will be shown in setHasOwnValue method
+                  && (!isOwnValueBtnVisible(property) || property.isValueDefined());
+    }
 
-    private void updateOwnValueBtn() {
-        final Property property = getProperty();
-        if (testInherit() && !property.isReadonly() && property.getInheritableValue() != null
-                && //!property.isCustomEditOnly() && //by BAO 07.07.10 to allow use ownValueBtn with custom dialog button
-                property.getEditPossibility() != EEditPossibility.PROGRAMMATICALLY) {
-
+    private void updateOwnValueBtn(final Property property) {
+        if (isOwnValueBtnVisible(property)) {
             ownValueBtn.setVisible(true);
-            if (property.getDefinition().isInheritable()) {
-                if (property.hasOwnValue()) {
-                    ownValueBtn.setToolTip(getEnvironment().getMessageProvider().translate("PropertyEditor", "Inherit Value"));
-                    ownValueBtn.setIcon(getIcon(ClientIcon.ValueModification.INHERIT));
-                } else {
-                    ownValueBtn.setToolTip(getEnvironment().getMessageProvider().translate("PropertyEditor", "Override Value"));
-                    ownValueBtn.setIcon(getIcon(ClientIcon.ValueModification.OVERRIDE));
-                }
+            if (property.hasOwnValue()) {
+                ownValueBtn.setToolTip(getEnvironment().getMessageProvider().translate("PropertyEditor", "Inherit Value"));
+                ownValueBtn.setIcon(getIcon(ClientIcon.ValueModification.INHERIT));
             } else {
-                if (property.isValueDefined()) {
-                    ownValueBtn.setToolTip(getEnvironment().getMessageProvider().translate("PropertyEditor", "Set to None"));
-                    ownValueBtn.setIcon(getIcon(ClientIcon.ValueModification.CLEAR));
-                } else {
-                    ownValueBtn.setToolTip(getEnvironment().getMessageProvider().translate("PropertyEditor", "Define Value"));
-                    ownValueBtn.setIcon(getIcon(ClientIcon.ValueModification.DEFINE));
-                }
+                ownValueBtn.setToolTip(getEnvironment().getMessageProvider().translate("PropertyEditor", "Override Value"));
+                ownValueBtn.setIcon(getIcon(ClientIcon.ValueModification.OVERRIDE));
             }
         } else {
             ownValueBtn.setVisible(false);
         }
     }
+    
+    private void updateCustomDialogBtn(final Property property){        
+        if (customDialogBtn != null) {
+            if (isCustomDialogBtnVisible(property)){
+                customDialogBtn.setVisible(true);
+                final Icon icon = property.getPropEditorDialogButtonIcon();
+                if (icon!=customDialogBtn.getIcon()){//NOPMD
+                    if (icon==null){
+                        customDialogBtn.setIcon(null);                    
+                        customDialogBtn.setTitle("...");
+                    }else{
+                        customDialogBtn.setTitle(null);
+                        customDialogBtn.setIcon(icon);
+                    }
+                }                
+            }else{
+                customDialogBtn.setVisible(false);
+            }
+        }
+    }
+    
+    public final boolean isInheritedValue(){
+        final Property property = getProperty();
+        return testInherit(property) 
+                  && property.getInheritableValue() != null 
+                  && !property.hasOwnValue();
+    }
 
     @Override
     protected String getToolTip() {
-        final String hint = getProperty().getHint();
-        final PropertyValue.InheritableValue inheritableValue = getProperty().getInheritableValue();
-        if (testInherit() && inheritableValue != null && !getProperty().hasOwnValue()) {
+        final Property finalProperty = getProperty();
+        final String hint = finalProperty.getHint();
+        final PropertyValue.InheritableValue inheritableValue = finalProperty.getInheritableValue();        
+        if (testInherit(finalProperty) && inheritableValue != null && !finalProperty.hasOwnValue()) {
             final String toolTip;
             if (hint != null && !hint.isEmpty()) {
                 toolTip = getEnvironment().getMessageProvider().translate("PropertyEditor", "%s\nInherited from %s\'%s\'");
@@ -444,6 +505,7 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
         final Property property = getProperty();
 
         return (getPropertyProxy() == null ? property.isReadonly() : getPropertyProxy().isPropertyReadonly())
+                || !property.isEnabled()
                 || (!property.hasOwnValue() && property.isValueDefined())
                 || property.isCustomEditOnly()
                 || property.getEditPossibility() == EEditPossibility.PROGRAMMATICALLY
@@ -478,24 +540,29 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
         previousVal = currentValue instanceof XmlObject ? ((XmlObject) currentValue).xmlText() : currentValue;
         previousUnacceptableInput = getPropertyUnacceptableInput();
 
-        if (customDialogBtn != null) {
-            customDialogBtn.setVisible(testCustomDialog() && finalProperty.canOpenPropEditorDialog());
-        }
         if (finalProperty instanceof SimpleProperty) {
             final EPropertyValueStorePossibility pvsp = ((SimpleProperty) finalProperty).getPropertyValueStorePossibility();
-            saveToFileBtn.setVisible((pvsp == EPropertyValueStorePossibility.FILE_SAVE || pvsp == EPropertyValueStorePossibility.FILE_SAVE_AND_LOAD) && currentValue != null);
-            loadFromFileBtn.setVisible((pvsp == EPropertyValueStorePossibility.FILE_LOAD || pvsp == EPropertyValueStorePossibility.FILE_SAVE_AND_LOAD) && !isReadonly());
+            if (saveToFileBtn!=null){
+                saveToFileBtn.setVisible((pvsp == EPropertyValueStorePossibility.FILE_SAVE || pvsp == EPropertyValueStorePossibility.FILE_SAVE_AND_LOAD) && currentValue != null);
+            }
+            if (loadFromFileBtn!=null){
+                loadFromFileBtn.setVisible((pvsp == EPropertyValueStorePossibility.FILE_LOAD || pvsp == EPropertyValueStorePossibility.FILE_SAVE_AND_LOAD) && !isReadonly());
+            }
         }
+        if (ownValueBtn!=null){
+            updateOwnValueBtn(finalProperty);
+        }
+        updateCustomDialogBtn(finalProperty);        
         final PropEditorOptions editorData = new PropEditorOptions();
         editorData.setTooltip(getToolTip());
         editorData.setEditMask(getPropertyEditMask());
         editorData.setMandatory(finalProperty.isMandatory() || !finalProperty.isOwnValueAcceptable(null));
-        editorData.setReadOnly(isReadonly());
+        editorData.setReadOnly(isReadonly() || isInheritedValue());
+        editorData.setEnabled(finalProperty.isEnabled());
         if (RadPropertyDef.isPredefinedValuesSupported(finalProperty.getType(), getPropertyEditMask().getType())) {
             editorData.setPredefinedValues(finalProperty.getPredefinedValues());
         }
-        editorData.setUnacceptableInput(getPropertyUnacceptableInput());
-        //editorData.setInvalidInputText(finalProperty.getInvalidInputText());
+        editorData.setUnacceptableInput(getPropertyUnacceptableInput());        
         internalUpdate = true;
         try {
             updateEditor(currentValue, editorData);
@@ -503,7 +570,6 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
             internalUpdate = false;
         }
         wasEdited = false;
-        updateOwnValueBtn();
     }
 
     public void onValueEdit(final Object value) {
@@ -668,29 +734,41 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
                     return;
                 }
                 boolean propertyValueChanged = false;
+                final Object previousValue = getPropertyValue();
                 try {
                     if (value != null 
                         || property.hasOwnValue() 
-                        || property.getDefinition().isInheritable()) {
-                        final Object previousValue = getPropertyValue();                        
+                        || property.getDefinition().isInheritable()) {                        
                         property.setValueObject(value);
-                        currentValueModified = false;
-                        if (valuesEquals(previousValue, getPropertyValue())) {
-                            //Текущее значение свойства не изменилось (изменение было отклонено в сеттере)
-                            discardPropertyModification();//устанавливаем прежнее значение
-                        } else {
-                            propertyValueChanged = true;
-                            firePropertyValueChanged();
+                        if (!wasClosed){
+                            propertyValueChanged = afterSetPropertyValue(previousValue);
                         }
                     }
                 } catch (Exception ex) {
                     getEnvironment().processException(new SettingPropertyValueError(property, ex));
+                    if (!wasClosed){
+                        propertyValueChanged = afterSetPropertyValue(previousValue);
+                    }
                 }
-                property.onFinishEditValue(propertyValueChanged);
+                if (!wasClosed){
+                    property.onFinishEditValue(propertyValueChanged);
+                }
             } finally {
                 ignoreFocusEvents = false;
             }
         }
+    }
+    
+    private boolean afterSetPropertyValue(final Object previousValue){
+        currentValueModified = false;
+        if (valuesEquals(previousValue, getPropertyValue())) {
+            //Текущее значение свойства не изменилось (изменение было отклонено в сеттере)
+            discardPropertyModification();//устанавливаем прежнее значение
+            return false;
+        } else {
+            firePropertyValueChanged();
+            return true;
+        }        
     }
 
     public boolean focusEvent(boolean focusIn, boolean isPopupFocus) {
@@ -728,6 +806,10 @@ public abstract class PropEditorController<T extends IPropEditor & IWidget> exte
         commandButtons.clear();
         editListeners.clear();
         focusListeners.clear();
+        if (customDialogBtn!=null){
+            customDialogBtn.setIcon(null);
+            customDialogBtn.setTitle("...");
+        }
         propertyProxy = null;
         propertyChangeListeners = null;
         previousVal = null;

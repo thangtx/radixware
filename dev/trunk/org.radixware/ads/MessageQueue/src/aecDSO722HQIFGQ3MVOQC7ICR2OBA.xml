@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aecDSO722HQIFGQ3MVOQC7ICR2OBA" Name="QueueSafPartition" Type="1">
+    <AccessRules IsFinal="true"/>
+    <Headers>
+      <Src Name="HeaderaecJHR4LW524ZCGTBSQQG7UTBC7SQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaecJHR4LW524ZCGTBSQQG7UTBC7SQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgYUQOWPY53JBAPJDJ4SNDF6MHDQ" Name="Root"/>
+    <PropertyGroup Id="cpgVJZPHFCBMVCX7FG2OIQDCGBAXI" Name="Root"/>
+    <Properties>
+      <Property Id="colWZVX3THQLND6BB7WPP7ME7V44Y" Name="id" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsQIE3AH2YDNDWHFW6VI5NHA7FEE" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colG55ZCAD6WJEQ5ACW2MXPZZ2ZI4" Name="queueId" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="col6MLXHROSN5DLXPAKXBP6GINPMQ" Name="safMode" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls7SUZRRCIAFE6PMRR34QNRHQVI4" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colI2YYFC7DJVAIZB47BH5EVWMLVE" Name="queue" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false" ParentRefId="ref4ELBP5HUIZC3DKTMGOPWPOYDKM">
+        <AccessRules/>
+        <Type TypeId="31" Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ"/>
+        <Presentation InheritanceMask="21">
+          <Editing EditEnvironment="explorer" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_loadByPidStr_____________" Name="loadByPidStr" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pidAsStr" Id="mprPidAsStr__________________">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="checkExistance" Id="mprCheckExisstance___________">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecDSO722HQIFGQ3MVOQC7ICR2OBA"/>
+      </Method>
+      <Method Id="mth_loadByPK_________________" Name="loadByPK" Nature="15" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="queueId" Id="mprG55ZCAD6WJEQ5ACW2MXPZZ2ZI4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="id" Id="mprWZVX3THQLND6BB7WPP7ME7V44Y">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="checkExistance" Id="mprCheckExisstance___________">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecDSO722HQIFGQ3MVOQC7ICR2OBA"/>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblDSO722HQIFGQ3MVOQC7ICR2OBA">
+      <AccessAreas Type="None"/>
+    </Entity>
+    <Presentations ObjectTitleId="mls2BZXWTQTCBAI5IWFFOVFMWB3YU" EntityTitleId="mls6U3B3NTXFJBXXPRASRJY5XVQQU" DefaultSelectorPresentationId="sprMHWBAWN6AZHINMOI7XHNMXQYRI" Restrictions="28677">
+      <ObjectTitleFormat Id="etfH6PFC2YJJ5DGDE4KBTUISFATNQ">
+        <TitleItem PropId="colI2YYFC7DJVAIZB47BH5EVWMLVE">
+          <Pattern>{0}</Pattern>
+        </TitleItem>
+        <TitleItem PropId="colWZVX3THQLND6BB7WPP7ME7V44Y">
+          <Pattern>: {0}</Pattern>
+        </TitleItem>
+      </ObjectTitleFormat>
+      <Sortings>
+        <Sorting Id="srtXGZTZ3N46BEZVO3COCGHKBN72U" Name="ByQueuePartID" TitleId="mlsSSKLZISIJ5EEXEWSQLU47ASSXE">
+          <OrderBy Desc="false" PropId="colG55ZCAD6WJEQ5ACW2MXPZZ2ZI4"/>
+          <OrderBy Desc="false" PropId="colWZVX3THQLND6BB7WPP7ME7V44Y"/>
+          <Hint/>
+        </Sorting>
+      </Sortings>
+      <EditorPresentations>
+        <EditorPresentation Id="epr7J5AC2IP6VBC3OTQBWBHCN2J7Q" Name="Default" InheritanceMask="2192" Restrictions="0" EnabledCommandIds="" RightsInheritanceMode="0">
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgS2REKU3TPVC7HG6MUFAXETGBX4" Name="General" TitleId="mlsRRX6RR5VABDE7FVMKM7SAXBOLI" Type="1" ClientEnvironment="explorer">
+              <Properties>
+                <Property Id="colWZVX3THQLND6BB7WPP7ME7V44Y" Row="0" Column="0"/>
+                <Property Id="colI2YYFC7DJVAIZB47BH5EVWMLVE" Row="1" Column="0"/>
+                <Property Id="col6MLXHROSN5DLXPAKXBP6GINPMQ" Row="2" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgS2REKU3TPVC7HG6MUFAXETGBX4" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfFSO2LBIUTJFT7IC7SSSEN7F4IU"/>
+        </EditorPresentation>
+      </EditorPresentations>
+      <SelectorPresentations>
+        <SelectorPresentation Id="sprMHWBAWN6AZHINMOI7XHNMXQYRI" Name="Default" InheritanceMask="144" Restrictions="32" EnabledCommandIds="" EditorPresentationIds="epr7J5AC2IP6VBC3OTQBWBHCN2J7Q">
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="true" AnyBaseSortingEnabled="true" CustomFilterEnabled="true" CustomSortingEnabled="true" FilterIsObligatory="false" DefaultSortingId="srtXGZTZ3N46BEZVO3COCGHKBN72U">
+            <DefaultHint/>
+          </Addons>
+          <SelectorColumns>
+            <Column Align="-1" PropId="colWZVX3THQLND6BB7WPP7ME7V44Y" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="colI2YYFC7DJVAIZB47BH5EVWMLVE" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="col6MLXHROSN5DLXPAKXBP6GINPMQ" Visibility="1" SizePolicy="0"/>
+          </SelectorColumns>
+        </SelectorPresentation>
+      </SelectorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntity____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

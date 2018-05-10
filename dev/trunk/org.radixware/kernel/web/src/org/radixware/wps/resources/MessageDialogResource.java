@@ -48,6 +48,7 @@ public class MessageDialogResource extends MessageBox implements IMessageDialogR
     private MessageDialogResource(final IClientEnvironment environment, final EDialogIconType icon, final String caption, final String text, final List<IMessageDialogResource.MessageDialogButton> buttons) {
         super(caption, text, null, icon);
         if (buttons != null) {
+            clearCloseActions();
             final WidgetFactory factory = environment.getApplication().getWidgetFactory();
             IPushButton button;
             final Set<EDialogButtonType> buttonTypes = new HashSet<>();
@@ -74,8 +75,12 @@ public class MessageDialogResource extends MessageBox implements IMessageDialogR
         } else {
             caption = request.getCaption();
         }
-        final List<IMessageDialogResource.MessageDialogButton> buttons = 
-            IMessageDialogResource.MessageDialogButton.parse(request.getButtons());
+        final List<IMessageDialogResource.MessageDialogButton> buttons;
+        if (request.getButtons()==null || request.getButtons().getItemList()==null || request.getButtons().getItemList().isEmpty()){
+            buttons = IMessageDialogResource.MessageDialogButton.wrap(Collections.singletonList(EDialogButtonType.OK));
+        }else{
+            buttons = IMessageDialogResource.MessageDialogButton.parse(request.getButtons());
+        }
         return new MessageDialogResource(environment, icon, caption, text, buttons);
     }
     
@@ -94,6 +99,9 @@ public class MessageDialogResource extends MessageBox implements IMessageDialogR
         }
         if (messageBox.getCancelButtonType() != null) {
             buttonTypes.add(messageBox.getCancelButtonType());
+        }
+        if (buttonTypes.isEmpty()){
+            buttonTypes.add(EDialogButtonType.OK);
         }
         final List<IMessageDialogResource.MessageDialogButton> buttons = 
             IMessageDialogResource.MessageDialogButton.wrap(buttonTypes);

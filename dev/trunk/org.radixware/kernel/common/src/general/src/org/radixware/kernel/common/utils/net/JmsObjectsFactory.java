@@ -147,7 +147,7 @@ public class JmsObjectsFactory {
         return session.createQueue(inboundQueueName);
     }
 
-    private void applyOptionsToFactory(final ConnectionFactory factory, final Map<String, String> options) {
+    public static void applyOptionsToFactory(final ConnectionFactory factory, final Map<String, String> options) {
         if (factory != null && options != null) {
             try {
                 Method setPropMethod = factory.getClass().getMethod("setProperty", String.class, String.class);
@@ -156,7 +156,7 @@ public class JmsObjectsFactory {
                 }
             } catch (Exception ex) {
                 //do nothing
-                Logger.getLogger(getClass().getName()).log(Level.FINE, ex.getMessage(), ex);
+                Logger.getLogger(JmsObjectsFactory.class.getName()).log(Level.FINE, ex.getMessage(), ex);
             }
         }
     }

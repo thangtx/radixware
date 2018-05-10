@@ -111,7 +111,7 @@ class DependentItemsPanel extends JPanel {
             }
         });
         addButton.setFocusable(false);
-        addButton.setToolTipText("Add depenednt item");
+        addButton.setToolTipText("Add depenedent item");
         bar.add(addButton);
 
         removeButton = new JButton(RadixWareIcons.DELETE.DELETE.getIcon());
@@ -125,7 +125,7 @@ class DependentItemsPanel extends JPanel {
             }
         });
         removeButton.setFocusable(false);
-        removeButton.setToolTipText("Remove depenednt item");
+        removeButton.setToolTipText("Remove depenedent item");
         removeButton.setEnabled(false);
         bar.add(removeButton);
         bar.add(Box.createGlue());

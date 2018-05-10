@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.server.meta.presentations.RadCommandDef;
 
 public class Restrictions extends Object {
 
@@ -91,12 +92,24 @@ public class Restrictions extends Object {
         return (bitMask & ERestriction.CONTEXTLESS_USAGE.getValue().longValue()) != 0;
     }
 
+    @Deprecated
     public boolean getIsCommandRestricted(final Id cmdId) {
+        return getIsCommandRestricted(cmdId, false);
+    }
+    
+    public boolean getIsCommandRestricted(final Id cmdId, final boolean isReadOnly) {
+        if ((bitMask & ERestriction.NOT_READ_ONLY_COMMANDS.getValue().longValue()) != 0 && !isReadOnly) {
+            return true;
+        }
         if ((bitMask & ERestriction.ANY_COMMAND.getValue().longValue()) != 0) {
             return (enabledCommandIds == null) || !enabledCommandIds.contains(cmdId);
         } else {
             return false;//все команды разрешены
-        }
+        }        
+    }
+    
+    public boolean getIsCommandRestricted(final RadCommandDef command){
+        return getIsCommandRestricted(command.getId(), command.isReadOnly());
     }
 
     public boolean getIsEditorPageRestricted(final Id cmdId) {

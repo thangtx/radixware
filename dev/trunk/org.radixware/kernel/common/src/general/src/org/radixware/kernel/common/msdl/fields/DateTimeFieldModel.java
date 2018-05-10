@@ -16,8 +16,6 @@ import org.radixware.kernel.common.msdl.EFieldType;
 import org.radixware.kernel.common.msdl.MsdlField;
 import org.radixware.kernel.common.msdl.MsdlUnitContext;
 import org.radixware.kernel.common.msdl.enums.EEncoding;
-import org.radixware.kernel.common.msdl.fields.parser.SmioField;
-import org.radixware.kernel.common.msdl.fields.parser.SmioFieldDateTime;
 import org.radixware.schemas.msdl.DateTimeField;
 import org.radixware.schemas.msdl.LenUnitDef;
 import org.radixware.schemas.msdl.Structure;
@@ -34,20 +32,13 @@ public class DateTimeFieldModel extends SimpleFieldModel {
         encodingSet.add(EEncoding.CP1252.getValue());
         encodingSet.add(EEncoding.CP866.getValue());
         encodingSet.add(EEncoding.EBCDIC.getValue());
+        encodingSet.add(EEncoding.EBCDIC_CP1047.getValue());
         encodingSet.add(EEncoding.UTF8.getValue());
     }
 
     @Override
     public EFieldType getType() {
         return EFieldType.DATETIME;
-    }
-
-    @Override
-    public SmioField getParser() {
-        if (parser == null) {
-            parser = new SmioFieldDateTime(this);
-        }
-        return parser;
     }
 
     @Override
@@ -58,41 +49,35 @@ public class DateTimeFieldModel extends SimpleFieldModel {
         f.setFieldLength(100);
         return f;
     }
+    
+    @Override
+    public String calcEncoding() {
+        return calcEncoding(true);
+    }
 
     @Override
-    public String getEncoding() {
-        if (getField().isSetEncoding()) {
+    public String calcEncoding(boolean inclusive) {
+        if (inclusive && getField().isSetEncoding()) {
             return getField().getEncoding();
         } else {
-            final String[] result = new String[]{null};
-            iterateOverParents(true, new ParentAcceptor() {
-                @Override
-                public boolean accept(MsdlField field, Structure cur) {
-                    if (cur.isSetDefaultDateTimeEncoding()) {
-                        result[0] = cur.getDefaultDateTimeEncoding();
-                        return false;
-                    }
-                    if ((isRootMsdlSchemeDirectChild() || field.getModel().isRootMsdlScheme()) && cur.isSetDefaultEncoding()) {
-                        String encoding = cur.getDefaultEncoding();
-                        if (isAcceptableEncoding(EEncoding.getInstance(encoding))) {
-                            result[0] = encoding;
-                            return false;
-                        }
-                    }
-                    return true;
+            for (Structure cur : getParentList(true)) {
+                if (cur.isSetDefaultDateTimeEncoding()) {
+                    return cur.getDefaultDateTimeEncoding();
                 }
-            });
-            return result[0];
+                final String defEnc = getAcceptableEncoding(cur.getDefaultEncoding());
+                if (defEnc != null) {
+                    return defEnc;
+                }
+            }
+            return null;
         }
     }
     
     @Override
     public String getUnit(boolean inclusive, MsdlUnitContext ctx) {
-        if (ctx.getContextType() == MsdlUnitContext.EContext.FIXED_LEN) {
-            return super.getUnit(inclusive, ctx);
-        } else if (ctx.getContextType() == MsdlUnitContext.EContext.EMBEDDED_LEN) {
+        if (ctx.getContextType() == MsdlUnitContext.EContext.EMBEDDED_LEN) {
             return LenUnitDef.CHAR.toString();
         }
-        return null;
+        return super.getUnit(inclusive, ctx);
     }
 }

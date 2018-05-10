@@ -91,7 +91,7 @@ public class NestedClassCreatureWizardStepCommandSetupPanel extends javax.swing.
                             return false;
                         }
                         AdsClassDef contextClazz = containerModel.findServerSideClasDef();
-                        if (contextClazz != clazz && !contextClazz.getInheritance().isSubclassOf(clazz) && !DefinitionsUtils.isOverridesOrOverwrites(contextClazz, clazz)) {
+                        if (contextClazz == null || contextClazz != clazz && !contextClazz.getInheritance().isSubclassOf(clazz) && !DefinitionsUtils.isOverridesOrOverwrites(contextClazz, clazz)) {
                             return false;
                         }
                     }

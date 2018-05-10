@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.tree.nodes.dds;
 
 import org.openide.nodes.Node;
@@ -22,15 +21,18 @@ import org.radixware.kernel.designer.common.general.creation.CreationSupport;
 import org.radixware.kernel.designer.common.general.nodes.INodeFactory;
 import org.radixware.kernel.designer.common.dialogs.wizards.newobject.NamedRadixObjectCreature;
 import org.radixware.kernel.designer.common.tree.RadixObjectsNode;
+import org.radixware.kernel.designer.common.tree.RadixObjectsNodeChildren;
 import org.radixware.kernel.designer.common.tree.RadixObjectsNodeSortedChildren;
 
 /**
- * Node of designer tree for {@linkplain DdsTypeDef PL/SQL types} of {@linkplain DdsModelDef}.
+ * Node of designer tree for {@linkplain DdsTypeDef PL/SQL types} of
+ * {@linkplain DdsModelDef}.
  */
 public class DdsModelDdsTypesNode extends RadixObjectsNode {
 
     public DdsModelDdsTypesNode(DdsDefinitions<DdsTypeDef> types) {
-        super(types, new RadixObjectsNodeSortedChildren(types));
+        super(types, new RadixObjectsNodeChildren(types));
+//        super(types, new RadixObjectsNodeSortedChildren(types));
     }
 
     private static class DdsTypeCreature extends NamedRadixObjectCreature<DdsTypeDef> {

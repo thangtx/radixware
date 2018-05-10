@@ -8,9 +8,9 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.ads.common;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,13 +22,17 @@ import java.util.Set;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.HierarchyWalker;
+import org.radixware.kernel.common.defs.IParameterDef;
 import org.radixware.kernel.common.defs.IVisitor;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.SearchResult;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.IInheritableTitledDefinition;
+import org.radixware.kernel.common.defs.ads.ITransparency;
+import org.radixware.kernel.common.defs.ads.build.BuildOptions;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassMember;
 import org.radixware.kernel.common.defs.ads.clazz.AdsModelClassDef;
@@ -37,25 +41,44 @@ import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityGroupClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsPresentationEntityAdapterClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsDynamicPropertyDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPresentationDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsFilterDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsSelectorPresentationDef;
 import org.radixware.kernel.common.defs.ads.command.AdsContextlessCommandDef;
+import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
+import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumItemDef;
 import org.radixware.kernel.common.defs.ads.explorerItems.AdsExplorerItemDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
+import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
+import org.radixware.kernel.common.defs.ads.type.AdsEnumType;
+import org.radixware.kernel.common.defs.ads.type.AdsType;
+import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
+import org.radixware.kernel.common.defs.ads.type.IDeprecatedInheritable;
 import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
 import org.radixware.kernel.common.defs.dds.*;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef.EType;
+import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
+import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EIfParamTagOperator;
 import org.radixware.kernel.common.enums.ERepositorySegmentType;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.Segment;
 import org.radixware.kernel.common.repository.ads.AdsSegment;
 import org.radixware.kernel.common.repository.dds.DdsSegment;
+import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IJavaCodePrinter;
+import org.radixware.kernel.common.sqml.tags.IfParamTag;
 import org.radixware.kernel.common.types.Id;
-
+import org.radixware.kernel.common.utils.FileUtils;
+import org.radixware.kernel.common.utils.Utils;
 
 public class AdsUtils {
 
@@ -125,7 +148,6 @@ public class AdsUtils {
             final Id tableId = table.getId();
             final Id entityClassId = Id.Factory.changePrefix(tableId, EDefinitionIdPrefix.ADS_ENTITY_CLASS);
 
-
             return findEntityClassDef(entityClassId, layer);
 
         }
@@ -135,7 +157,7 @@ public class AdsUtils {
 
     private static AdsEntityClassDef findEntityClassDef(Id id, Layer layer) {
         for (AdsModule module : ((AdsSegment) layer.getAds()).getModules()) {
-            final AdsDefinition def = module.getDefinitions().findById(id);
+            final AdsDefinition def = module.getTopContainer().findById(id);
             if (def instanceof AdsEntityClassDef) {
                 return (AdsEntityClassDef) def;
             }
@@ -399,7 +421,7 @@ public class AdsUtils {
         final Id entityGroupClassId = Id.Factory.changePrefix(tableId, EDefinitionIdPrefix.ADS_ENTITY_GROUP_CLASS);
 
         for (AdsModule module : ((AdsSegment) layer.getAds()).getModules()) {
-            final AdsDefinition def = module.getDefinitions().findById(entityGroupClassId);
+            final AdsDefinition def = module.getTopContainer().findById(entityGroupClassId);
             if (def instanceof AdsEntityGroupClassDef) {
                 return (AdsEntityGroupClassDef) def;
             }
@@ -420,7 +442,7 @@ public class AdsUtils {
             @Override
             public void accept(HierarchyWalker.Controller<AdsDefinition> controller, Layer layer) {
                 for (AdsModule adsModule : ((AdsSegment) layer.getAds()).getModules()) {
-                    final AdsDefinition def = adsModule.getDefinitions().findById(id);
+                    final AdsDefinition def = adsModule.getTopContainer().findById(id);
                     if (def != null) {
                         controller.setResultAndStop(def);
                     }
@@ -454,6 +476,9 @@ public class AdsUtils {
         return Layer.HierarchyWalker.walk(layer, new Layer.HierarchyWalker.Acceptor<DdsAccessPartitionFamilyDef>() {
             @Override
             public void accept(HierarchyWalker.Controller<DdsAccessPartitionFamilyDef> controller, Layer layer) {
+                if (layer.isLocalizing()) {
+                    return;
+                }
                 for (DdsModule ddsModule : ((DdsSegment) layer.getDds()).getModules()) {
                     final DdsModelDef model = ddsModule.getModelManager().findModel();
                     if (model != null) {
@@ -510,5 +535,275 @@ public class AdsUtils {
             return ((IInheritableTitledDefinition) startDefinition).findOwnerTitleDefinition();
         }
         return startDefinition;
+    }
+
+    private static final ValAsStr FALSE_AS_VAL_AS_STR = ValAsStr.Factory.newInstance(Boolean.FALSE, EValType.BOOL);
+
+    public static void printTagCondition(final CodePrinter cp, final IfParamTag ifParamTag) {
+        // supported only simple parameters
+        final IParameterDef iParam = ifParamTag.findParameter();
+        Definition def = null;
+        Definition parameter = null;
+        if (iParam != null) {
+            def = iParam.getDefinition();
+        }
+        if (def instanceof AdsParameterPropertyDef || def instanceof AdsDynamicPropertyDef || def instanceof AdsFilterDef.Parameter) {
+            parameter = def;
+        }
+        if (parameter == null) {
+            cp.printError();
+            return;
+        }
+
+        final String paramName;
+        if (cp instanceof IJavaCodePrinter && (def instanceof AdsDynamicPropertyDef && !(def instanceof AdsParameterPropertyDef))) {
+            paramName = "get" + parameter.getDefinition().getId() + "()";
+        } else {
+            paramName = parameter.getName();
+        }
+
+        if (ifParamTag.getOperator() == EIfParamTagOperator.NULL) {
+            cp.print(paramName + "==null");
+            return;
+        }
+
+        if (ifParamTag.getOperator() == EIfParamTagOperator.NOT_NULL) {
+            cp.print(paramName + "!=null");
+            return;
+        }
+
+        if (ifParamTag.getOperator() == EIfParamTagOperator.EMPTY) {
+            cp.print(paramName + "!=null && " + paramName + ".isEmpty()");
+            return;
+        }
+
+        if (ifParamTag.getOperator() == EIfParamTagOperator.NOT_EMPTY) {
+            cp.print(paramName + "!=null && !" + paramName + ".isEmpty()");
+            return;
+        }
+
+        final AdsTypeDeclaration type;
+        if (parameter instanceof AdsPropertyDef) {
+            type = ((AdsPropertyDef) parameter).getValue().getType();
+        } else if (parameter instanceof AdsFilterDef.Parameter) {
+            type = ((AdsFilterDef.Parameter) parameter).getType();
+        } else {
+            type = null;
+        }
+
+        if (type == null) {
+            cp.printError();
+            return;
+        }
+
+        final ValAsStr value = ifParamTag.getValue();
+        final boolean multy = type.getTypeId().isArrayType();
+        final boolean equal = ifParamTag.getOperator() == EIfParamTagOperator.EQUAL;
+
+        if (value == null) {
+            if (ifParamTag.getOperator() == EIfParamTagOperator.EQUAL) {
+                if (multy) {
+                    cp.print(paramName + "!=null && " + paramName + ".contains(null)");
+                } else {
+                    cp.print(paramName + "==null");
+                }
+            } else {
+                if (multy) {
+                    cp.print(paramName + "==null || !" + paramName + ".contains(null)");
+                } else {
+                    cp.print(paramName + "!=null");
+                }
+            }
+            return;
+        }
+
+        if (equal) {
+            if (multy) {
+                cp.print(paramName + "!=null && " + paramName + ".contains(");
+            }
+        } else {
+            if (multy) {
+                cp.print(paramName + "==null || !" + paramName + ".contains(");
+            }
+        }
+        final AdsType resolvedType = type.resolve(parameter).get();
+        final AdsEnumDef enumDef;
+        if (resolvedType instanceof AdsEnumType) {
+            enumDef = ((AdsEnumType) resolvedType).getSource();
+        } else {
+            enumDef = null;
+        }
+        boolean isEnum = false;
+        if (enumDef != null) {
+            for (AdsEnumItemDef item : enumDef.getItems().list(ExtendableDefinitions.EScope.ALL)) {
+                if (Utils.equals(item.getValue(), value)) {
+                    if (!multy) {
+                        if (equal) {
+                            cp.print(paramName + "==");
+                        } else {
+                            cp.print(paramName + "!=");
+                        }
+                    }
+                    item.getJavaSourceSupport().getCodeWriter(JavaSourceSupport.UsagePurpose.SERVER_EXECUTABLE).writeUsage(cp);
+                    isEnum = true;
+                    break;
+                }
+            }
+        }
+
+        if (!isEnum) {
+            final String javaValue = value.toString();
+            switch (type.getTypeId()) {
+                case INT:
+                case ARR_INT:
+                case NUM:
+                case ARR_NUM:
+                case DATE_TIME:
+                case ARR_DATE_TIME:
+                    if (!multy) {
+                        if (equal) {
+                            cp.print(paramName + "==");
+                        } else {
+                            cp.print(paramName + "!=");
+                        }
+                    }
+                    cp.print(javaValue);
+                    break;
+                case STR:
+                case ARR_STR:
+                case CHAR:
+                case ARR_CHAR:
+                case CLOB:
+                case ARR_CLOB:
+                case BLOB:
+                case ARR_BLOB:
+                case BIN:
+                case ARR_BIN:
+                    if (!multy) {
+                        if (equal) {
+                            cp.print(paramName + "!=null && " + paramName + ".equals(");
+                        } else {
+                            cp.print(paramName + "!=null && !" + paramName + ".equals(");
+                        }
+                    }
+
+                    cp.printStringLiteral(javaValue);
+
+                    if (!multy) {
+                        cp.print(")");
+                    }
+                    break;
+                case BOOL:
+                case ARR_BOOL:
+                    if (!multy) {
+                        if (equal) {
+                            cp.print(paramName + "!=null && " + paramName + ".equals(");
+                        } else {
+                            cp.print(paramName + "!=null && !" + paramName + ".equals(");
+                        }
+                    }
+
+                    cp.print(FALSE_AS_VAL_AS_STR.equals(value) ? "false" : "true");
+
+                    if (!multy) {
+                        cp.print(")");
+                    }
+                    break;
+            }
+        }
+
+        if (multy) {
+            cp.print(")");
+        }
+    }
+
+    public static File calcHumanReadableFile(RadixObject ro) {
+        if (ro != null) {
+            if (ro instanceof AdsDefinition && !(ro instanceof ILocalizingBundleDef)) {
+                return calcHumanReadableFile(ro.getFile());
+            }
+        }
+        return null;
+    }
+    private static final String humanReadableFileName = File.separator + Module.PREVIEW_DIR_NAME + File.separator;
+
+    public static File calcHumanReadableFile(File sourceFile) {
+        if (sourceFile == null) {
+            return null;
+        }
+        String name = FileUtils.getFileBaseName(sourceFile);
+        String path = sourceFile.getParent();
+        if (name != null && path != null) {
+            File file = new File(path + humanReadableFileName + name + ".java");
+            return file;
+        }
+        return null;
+    }
+
+    public static boolean isEnableHumanReadable(RadixObject def) {
+        if (def == null || BuildOptions.UserModeHandlerLookup.getUserModeHandler() != null) {
+            return false;
+        }
+
+        if ((def instanceof AdsClassDef) || (def instanceof AdsEnumDef)) {
+            boolean isDef = def instanceof ITransparency && ((ITransparency) def).getTransparence() != null
+                    && ((ITransparency) def).getTransparence().isTransparent()
+                    && !((ITransparency) def).getTransparence().isExtendable();
+            if (def instanceof AdsClassDef) {
+                EClassType type = ((AdsClassDef) def).getClassDefType();
+                if (type != EClassType.APPLICATION && type != EClassType.ENTITY
+                        && type != EClassType.ENUMERATION && type != EClassType.INTERFACE
+                        && type != EClassType.PRESENTATION_ENTITY_ADAPTER && type != EClassType.DYNAMIC
+                        && type != EClassType.ENTITY_GROUP) {
+                    return false;
+                }
+            }
+            return !isDef;
+        }
+        return false;
+    }
+
+    public static boolean savePreview(RadixObject radixObject) {
+        if (!(radixObject instanceof AdsDefinition)) {
+            return false;
+        }
+        Module m = radixObject.getModule();
+        if (!(m instanceof AdsModule)) {
+            return false;
+        }
+
+        AdsModule module = (AdsModule) m;
+        if (radixObject.isReadOnly()) {
+            return false;
+        }
+        module.getDefinitions().savePreview((AdsDefinition) radixObject);
+        return true;
+
+    }
+
+    public static AdsDefinition getDeprecatedOwner(AdsDefinition definition) {
+        if (definition instanceof IDeprecatedInheritable) {
+            AdsDefinition ovr = definition.getHierarchy().findOverwritten().get();
+            while (ovr != null) {
+                if (!(ovr instanceof IDeprecatedInheritable)) {
+                    break;
+                }
+                if (((IDeprecatedInheritable) ovr).getAccessFlags().isDefaultDeprecated()) {
+                    return ovr;
+                }
+                ovr = ovr.getHierarchy().findOverwritten().get();
+            }
+            ovr = definition.getHierarchy().findOverridden().get();
+            while (ovr != null) {
+                if (!(ovr instanceof IDeprecatedInheritable)) {
+                    break;
+                }
+                if (((IDeprecatedInheritable) ovr).getAccessFlags().isDefaultDeprecated()) {
+                    return ovr;
+                }
+                ovr = ovr.getHierarchy().findOverridden().get();
+            }
+        }
+        return definition;
     }
 }

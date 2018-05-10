@@ -13,12 +13,16 @@ package org.radixware.kernel.explorer.trace;
 
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QSize;
+import com.trolltech.qt.core.QTimer;
 import com.trolltech.qt.core.Qt.FocusPolicy;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.RunParams;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.exceptions.NoConstItemWithSuchNameError;
+import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 
@@ -34,6 +38,9 @@ public class TraceTrayItem extends QPushButton {
     }
     
     private final IClientEnvironment environment;
+    private final QTimer timer = new QTimer(this);
+    private boolean isIconVisible;
+    private EEventSeverity severity;
 
     public TraceTrayItem(final QWidget parent, final IClientEnvironment environment) {
         super(parent);
@@ -48,11 +55,42 @@ public class TraceTrayItem extends QPushButton {
     }
 
     public void maxSeverityChanged(EEventSeverity severity) {
+        this.severity = severity;
         if (severity == EEventSeverity.NONE) {
             setVisible(false);
-        } else {            
+        } else {
             setVisible(true);
             setIcon(ExplorerIcon.getQIcon(ClientIcon.TraceLevel.findEventSeverityIcon(severity, environment)));
+            String traceMinSeverity = RunParams.getTraceMinSeverity();
+            if (traceMinSeverity != null) {
+                try {
+                    if (severity.getValue() < EEventSeverity.getForName(traceMinSeverity).getValue()) {
+                        timer.disconnect();
+                        isIconVisible = true;
+                    } else {
+                        blinkOnSeverityEvent(severity);
+                    }
+                } catch (NoConstItemWithSuchValueError ex) {
+                }
+            }
+        }
+    }
+
+    public void blinkOnSeverityEvent(final EEventSeverity severity) {
+        timer.disconnect();
+        timer.timeout.connect(TraceTrayItem.this, "onTimer()");
+        timer.setInterval(500);
+        timer.start();
+    }
+
+    @SuppressWarnings("unused")
+    private void onTimer() {
+        if (isIconVisible) {
+            setIcon(null);
+            isIconVisible = false;
+        } else {
+            setIcon(ExplorerIcon.getQIcon(ClientIcon.TraceLevel.findEventSeverityIcon(TraceTrayItem.this.severity, environment)));
+            isIconVisible = true;
         }
     }
 

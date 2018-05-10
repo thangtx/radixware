@@ -14,7 +14,6 @@ package org.radixware.kernel.designer.dds.script;
 import org.radixware.kernel.common.defs.dds.DdsDefinition;
 import org.radixware.kernel.common.scml.CodePrinter;
 
-
 public interface IDdsDefinitionScriptGenerator<T extends DdsDefinition> {
 
     public boolean isModifiedToDrop(T oldDefinition, T newDefinition);
@@ -26,4 +25,8 @@ public interface IDdsDefinitionScriptGenerator<T extends DdsDefinition> {
     public void getAlterScript(CodePrinter cp, T oldDefinition, T newDefinition);
     
     public void getRunRoleScript(CodePrinter printer,T definition);
+    
+    public void getReCreateScript(CodePrinter printer, T definition, boolean storeData);
+    
+    public void getEnableDisableScript(CodePrinter cp, T definition, boolean enable);
 }

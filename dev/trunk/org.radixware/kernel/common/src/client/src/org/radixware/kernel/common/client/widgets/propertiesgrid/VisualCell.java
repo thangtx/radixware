@@ -12,22 +12,28 @@
 package org.radixware.kernel.common.client.widgets.propertiesgrid;
 
 import org.radixware.kernel.common.client.localization.MessageProvider;
-import org.radixware.kernel.common.client.models.items.properties.Property;
+import org.radixware.kernel.common.client.models.items.ModelItem;
+import org.radixware.kernel.common.client.views.IPropertiesGroupWidget;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.client.widgets.propertiesgrid.IPropertiesGridCell.ELinkageDirection;
 
 
-final class VisualCell<L extends IModelWidget, E extends IModelWidget> implements IPropertiesGridCell<L, E> {
+final class VisualCell<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget> implements IPropertiesGridCell<L, E, G> {
 
-    private final IPropertiesGridCell<L, E> logicalCell;
+    private final IPropertiesGridCell<L, E, G> logicalCell;
     private final boolean isVisible, isEmpty;
-    private int column, row, span;
+    private int column, row, colSpan, rowSpan;
 
-    public VisualCell(final IPropertiesGridCell<L,E> logicalCell, final int column, final int row, final int colSpan) {
+    public VisualCell(final IPropertiesGridCell<L,E,G> logicalCell, 
+                             final int column, 
+                             final int row, 
+                             final int colSpan,
+                             final int rowSpan) {
         this.logicalCell = logicalCell;
         this.column = column;
         this.row = row;
-        this.span = colSpan;
+        this.colSpan = colSpan;
+        this.rowSpan = rowSpan;
         isVisible = logicalCell.isVisible();
         isEmpty = logicalCell.isEmpty();
     }
@@ -43,33 +49,33 @@ final class VisualCell<L extends IModelWidget, E extends IModelWidget> implement
     }
 
     @Override
-    public boolean isLinked(ELinkageDirection direction) {
+    public boolean isLinked(final ELinkageDirection direction) {
         return logicalCell.isLinked(direction);
     }
 
     @Override
-    public IPropertiesGridCell<L, E> getLinkedCell(ELinkageDirection direction) {
+    public IPropertiesGridCell<L, E, G> getLinkedCell(final ELinkageDirection direction) {
         return logicalCell.getLinkedCell(direction);
     }
 
     @Override
-    public void linkWith(IPropertiesGridCell<L, E> cell, ELinkageDirection direction) {
+    public void linkWith(final IPropertiesGridCell<L, E, G> cell, final ELinkageDirection direction) {
         throw new UnsupportedOperationException("Linking is not supported for VisualCell");
     }
 
     @Override
-    public int getLinkedCellsCount(ELinkageDirection direction) {
+    public int getLinkedCellsCount(final ELinkageDirection direction) {
         return logicalCell.getLinkedCellsCount(direction);
     }
 
     @Override
-    public String getDescription(MessageProvider mp) {
+    public String getDescription(final MessageProvider mp) {
         return logicalCell.getDescription(mp);
     }
 
     @Override
-    public IPropertiesGridCell<L, E> createCopy() {
-        return new VisualCell<L, E>(logicalCell, column, row, span);
+    public IPropertiesGridCell<L, E, G> createCopy() {
+        return new VisualCell<L, E, G>(logicalCell, column, row, colSpan, rowSpan);
     }
 
     @Override
@@ -83,9 +89,24 @@ final class VisualCell<L extends IModelWidget, E extends IModelWidget> implement
     }
 
     @Override
-    public Property getProperty() {
-        return logicalCell.getProperty();
+    public G getPropertiesGroupWidget() {
+        return logicalCell.getPropertiesGroupWidget();
+    }        
+
+    @Override
+    public ModelItem getModelItem() {
+        return logicalCell.getModelItem();
     }
+
+    @Override
+    public boolean isModelItemVisible() {
+        return logicalCell.isModelItemVisible();
+    }
+
+    @Override
+    public boolean isModelItemReadOnly() {
+        return logicalCell.isModelItemReadOnly();
+    }            
 
     @Override
     public int getColumn() {
@@ -102,7 +123,7 @@ final class VisualCell<L extends IModelWidget, E extends IModelWidget> implement
     }
 
     @Override
-    public void close(final IPropertiesGridPresenter<L, E> presenter) {
+    public void close(final IPropertiesGridPresenter<L, E, G> presenter) {
         logicalCell.close(presenter);
     }
 
@@ -112,10 +133,19 @@ final class VisualCell<L extends IModelWidget, E extends IModelWidget> implement
 
     @Override
     public int getColumnSpan() {
-        return span;
+        return colSpan;
     }
 
     public void setColumnSpan(final int colSpan) {
-        span = colSpan;
+        this.colSpan = colSpan;
     }
+    
+    @Override
+    public int getRowSpan() {
+        return rowSpan;
+    }        
+    
+    public void setRowSpan(final int rowSpan){
+        this.rowSpan = rowSpan;
+    }    
 }

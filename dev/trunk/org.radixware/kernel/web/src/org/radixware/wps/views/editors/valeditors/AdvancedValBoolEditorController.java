@@ -17,7 +17,6 @@ import org.radixware.wps.rwt.AdvancedTristateCheckBox;
 import org.radixware.wps.rwt.InputBox;
 
 import org.radixware.wps.rwt.InputBox.ValueController;
-import org.radixware.wps.rwt.ValueEditor;
 
 
 public class AdvancedValBoolEditorController<T> extends InputBoxController<T, EditMaskBool> {
@@ -28,14 +27,17 @@ public class AdvancedValBoolEditorController<T> extends InputBoxController<T, Ed
     private boolean titleVisible;
 
     public AdvancedValBoolEditorController(final IClientEnvironment env) {
-        super(env);
-        setEditMask(new EditMaskBool());
+        this(env, new EditMaskBool(), null);
     }
 
     public AdvancedValBoolEditorController(final IClientEnvironment env, final EditMaskBool editMask) {
-        super(env);
-        setEditMask(editMask);
+        this(env, editMask, null);
     }
+    
+    public AdvancedValBoolEditorController(final IClientEnvironment env, final EditMaskBool editMask, final LabelFactory factory) {
+        super(env, factory);
+        setEditMask(editMask==null ? new EditMaskBool() : editMask);
+    }    
 
     @Override
     protected IValEditor<T, EditMaskBool> createValEditor() {

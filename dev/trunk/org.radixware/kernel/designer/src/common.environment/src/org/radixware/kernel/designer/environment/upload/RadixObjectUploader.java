@@ -160,6 +160,11 @@ abstract class RadixObjectUploader<T extends RadixObject> {
         NONE,
         NEED_TO_UPDATE_CHILDS
     }
+    
+    protected boolean needClose(){
+        final long rememberedFileTime = getRememberedFileTime();
+        return rememberedFileTime > 0;
+    }
 
     private EUpdateResult doUpdateOnWriteAccess() {
         final File file = radixObject.getFile();
@@ -175,7 +180,7 @@ abstract class RadixObjectUploader<T extends RadixObject> {
             } else {
                 return EUpdateResult.NEED_TO_UPDATE_CHILDS;
             }
-        } else if (rememberedFileTime > 0 && !ignoreList.contains(file)) { // some file was removed externally and was not added into ignore for close list.
+        } else if (needClose() && !ignoreList.contains(file)) { // some file was removed externally and was not added into ignore for close list.
             final boolean close;
             if (hasModifiedInside()) {
                 close = AbstractRadixObjectUploaderUI.getDefault().confirmClose(

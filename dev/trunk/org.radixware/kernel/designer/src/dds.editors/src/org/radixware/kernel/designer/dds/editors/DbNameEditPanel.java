@@ -20,7 +20,9 @@ import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 import org.radixware.kernel.common.components.ExtendableTextField;
 import org.radixware.kernel.common.components.ExtendableTextField.ExtendableTextChangeEvent;
+import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.utils.DbNameUtils;
+import org.radixware.kernel.common.enums.EDatabaseType;
 import org.radixware.kernel.designer.common.dialogs.components.ICheckableEditor;
 import org.radixware.kernel.designer.common.dialogs.components.state.StateManager;
 import org.radixware.kernel.designer.common.dialogs.utils.ClipboardUtils;
@@ -111,6 +113,9 @@ public class DbNameEditPanel extends JPanel implements ICheckableEditor {
 
     public void setDbName(String dbName) {
         extTextField.setValue(dbName);
+        if (!DdsColumnDef.testCanUseAsDbName(dbName,EDatabaseType.ORACLE)) {
+            stateManager.error(NbBundle.getMessage(DbNameEditPanel.class, "Error-Invalid-DbName"));
+        }
     }
 
     /**
@@ -155,7 +160,7 @@ public class DbNameEditPanel extends JPanel implements ICheckableEditor {
 
         if (isEnabled() && isEditable()) {
 
-            if (!DbNameUtils.isCorrectDbName(dbName)) {
+            if (!DbNameUtils.isCorrectDbName(dbName) || !DdsColumnDef.testCanUseAsDbName(dbName,EDatabaseType.ORACLE)) {
                 if (!(allowEmptyName && "".equals(dbName))) {
                     stateManager.error(NbBundle.getMessage(DbNameEditPanel.class, "Error-Invalid-DbName"));
                     return false;
@@ -183,5 +188,13 @@ public class DbNameEditPanel extends JPanel implements ICheckableEditor {
     @Override
     public void setNameAcceptor(IAdvancedAcceptor<String> nameAcceptor) {
         this.nameAcceptor = nameAcceptor;
+    }
+    
+    public void setVisibleCopyButton(boolean visible) {
+        copyButton.setVisible(visible);
+    }
+    
+    public void setPlaceholder(String placeholder){
+        extTextField.setPlaceholder(placeholder);
     }
 }

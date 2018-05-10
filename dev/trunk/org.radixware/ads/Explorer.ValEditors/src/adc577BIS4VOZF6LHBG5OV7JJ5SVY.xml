@@ -39,19 +39,19 @@
           <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Lcom.trolltech.qt.gui.QWidget;Lorg.radixware.kernel.common.client.meta.mask.EditMask;ZZ)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="arg0" Id="mprHBOKX6LCKJEM5LJ7HXVO4SSVQU">
+          <Parameter Name="environment" Id="mprHBOKX6LCKJEM5LJ7HXVO4SSVQU">
             <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
           </Parameter>
-          <Parameter Name="editMask" Id="mprBXQXEXLQG5BHRA2E76A7Q4PKOI">
+          <Parameter Name="parentWidget" Id="mprBXQXEXLQG5BHRA2E76A7Q4PKOI">
             <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
           </Parameter>
-          <Parameter Name="arg1" Id="mprLKQCRJYNNNCVFJZZU7FGKGAPZQ">
+          <Parameter Name="editMask" Id="mprLKQCRJYNNNCVFJZZU7FGKGAPZQ">
             <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
           </Parameter>
-          <Parameter Name="readOnly" Id="mprCGHMMSYUXBHOTGPVQQAAQNAJ6M">
+          <Parameter Name="isMandatory" Id="mprCGHMMSYUXBHOTGPVQQAAQNAJ6M">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
-          <Parameter Name="arg2" Id="mpr65OISZUZWNCGHDR5IXUCIPJUWM">
+          <Parameter Name="isReadOnly" Id="mpr65OISZUZWNCGHDR5IXUCIPJUWM">
             <Type TypeId="401" extStr="boolean"/>
           </Parameter>
         </Parameters>
@@ -95,12 +95,6 @@
           <Transparence Extendable="false" PublishedName="getEditMask()Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
         </AccessRules>
         <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
-      </Method>
-      <Method Id="mth7DWRK3RXGNEXXC55QEGWCFAXLQ" Name="getLayout" Nature="0" IsOverride="false">
-        <AccessRules Access="1" IsFinal="true">
-          <Transparence Extendable="false" PublishedName="getLayout()Lcom.trolltech.qt.gui.QHBoxLayout;"/>
-        </AccessRules>
-        <ReturnType TypeId="400" extStr="com.trolltech.qt.gui.QHBoxLayout"/>
       </Method>
       <Method Id="mthEKITQ2D6RNEI3NUXW2NHB67K2U" Name="getLineEdit" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
@@ -582,7 +576,7 @@
         <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
       <Method Id="mthLPIVUQQFJZBFDDWEP32V4SPZWU" Name="addWidget" Nature="0" IsOverride="false">
-        <AccessRules Access="1">
+        <AccessRules Access="1" IsFinal="true">
           <Transparence Extendable="false" PublishedName="addWidget(Lcom.trolltech.qt.gui.QWidget;)V"/>
         </AccessRules>
         <Parameters>
@@ -607,19 +601,19 @@
         </Parameters>
       </Method>
       <Method Id="mthJHIOZOGDRRA7VMHRXPNJ4FJZ3E" Name="getUnacceptableInput" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="getUnacceptableInput()Lorg.radixware.kernel.common.client.types.UnacceptableInput;"/>
         </AccessRules>
         <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.types.UnacceptableInput"/>
       </Method>
       <Method Id="mthGXWAZLPSJFGJHJOPVA7GXMDXVE" Name="checkInput" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="checkInput()Z"/>
         </AccessRules>
         <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
       <Method Id="mthCA7QTAG44NAHZLV7L5CIRPKL6Y" Name="checkInput" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="checkInput(Ljava.lang.String;Ljava.lang.String;)Z"/>
         </AccessRules>
         <Parameters>
@@ -633,7 +627,7 @@
         <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
       <Method Id="mthGIZ2QCTEOFHBVFANT4CKFFV3EQ" Name="hasAcceptableInput" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="hasAcceptableInput()Z"/>
         </AccessRules>
         <ReturnType TypeId="401" extStr="boolean"/>
@@ -645,12 +639,142 @@
         <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
       <Method Id="mthX5U7MHFHSZHPLIDTFYT4NSSPIE" Name="setInputText" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsFinal="true">
           <Transparence Extendable="false" PublishedName="setInputText(Ljava.lang.String;)V"/>
         </AccessRules>
         <Parameters>
           <Parameter Name="inputText" Id="mprP7PY2OVKOFFTFAFDDO4BGXIIQM">
             <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthAMER4FKVFFDJRD3X4CCGLALHFI" Name="getMaxPredefinedValuesInDropDownList" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getMaxPredefinedValuesInDropDownList()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthU3AHBDNIX5FXPMIPKPTGPPKWCA" Name="setMaxPredefinedValuesInDropDownList" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setMaxPredefinedValuesInDropDownList(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="max" Id="mprMNFVP5EUSZFRVGZE3KS4UR5M4E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth2J7NSXZEHBB3DDBVQMGG3VHXJI" Name="isAdjustWidthByContentModeEnabled" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isAdjustWidthByContentModeEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthP4AMOVXH3RCIBPHUDHTR6QWAXI" Name="setAdjustWidthByContentModeEnabled" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setAdjustWidthByContentModeEnabled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="enabled" Id="mprOFHDMBWXWVAUHA2ADMDGPDGXCE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth2WOCO4KVHBBQJACGFRN5WLYBQ4" Name="setDialogTitle" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setDialogTitle(Ljava.lang.String;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprOOE47KE4RJGIZJQHYJBR7NNXOA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthWGOZE5O7OFFN5MGGRE2OHHBMWY" Name="getDialogTitle" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="getDialogTitle()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthPWM2Q2A6CRDB5B4YZQBMNR7P3I" Name="insertWidget" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1" IsFinal="true" IsDeprecated="true">
+          <Transparence Extendable="false" PublishedName="insertWidget(ILcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprS4NYCCLOTNF4JLTFLKDBJ7JKU4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="widget" Id="mprWEBP23AS4FBGPEX2TJYEUZ57HE">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthW2VJR4446BBCRIZIAX2LAKZRYI" Name="removeWidget" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="removeWidget(Lcom.trolltech.qt.gui.QWidget;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="widget" Id="mprX2H6MZEV45H6DOXKBBNVQ5ELR4">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthKLZBM3WGDRH2FPFSTMLGMNC3WU" Name="isEmbeddedWidgetsVisible" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="isEmbeddedWidgetsVisible()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthPOELY2RY2RDSFBNJTJSBYWMBWA" Name="setEmbeddedWidgetsVisible" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="setEmbeddedWidgetsVisible(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isVisible" Id="mprFAGDTHNCMZCL3MEGUSGQ2MM2IE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOHDMVRJCDVGGFOMLZYHKEQLE4M" Name="widgetsCount" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="widgetsCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthOCQ4FWZKLZGRRJ74CFVMMCMTFQ" Name="addButton" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addButton(Lcom.trolltech.qt.gui.QToolButton;I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mprWFSONYGNP5BAFM2IONUUMWDGEA">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QToolButton"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprIBK5IYSQSZCTJPRMCXHSPWEFZ4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth3YJIYSIZ25ASNJMK6TL4WVRNKM" Name="addWidget" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1" IsFinal="true">
+          <Transparence Extendable="false" PublishedName="addWidget(Lcom.trolltech.qt.gui.QWidget;I)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="widget" Id="mprUZSAT53AH5ES3DAOKHYDQBBO2E">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+          </Parameter>
+          <Parameter Name="priority" Id="mprPKLY6GQ7YNHRZAQVKK5R3RHPAI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth2EZNRGOKXNFURPK76QNMTMB5CQ" Name="removeButton" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="removeButton(Lcom.trolltech.qt.gui.QToolButton;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="button" Id="mprTL6NQE3ZVFBUFEYFPFPRA2W4XI">
+            <Type TypeId="400" extStr="com.trolltech.qt.gui.QToolButton"/>
           </Parameter>
         </Parameters>
       </Method>

@@ -131,18 +131,12 @@ public class ExplorerTraceItem extends ClientTraceItem{
     public void compress(){
         synchronized(semaphore){            
             if (messageText!=null && uncompressedMessageMaxLength>0 && messageText.length()>uncompressedMessageMaxLength){
-                try{
-                    compressedMessage = Utils.compressString(messageText);
-                    messageText = null;
-                }catch(IOException exception){//NOPMD
-                }
+                compressedMessage = Utils.compressString(messageText);
+                messageText = null;
             }
             if (stackTrace!=null){
-                try{
-                    compressedStack = Utils.compressString(stackTrace);
-                    stackTrace = null;
-                }catch(IOException exception){//NOPMD                    
-                }
+                compressedStack = Utils.compressString(stackTrace);
+                stackTrace = null;
             }
         }
     }    

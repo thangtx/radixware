@@ -11,69 +11,113 @@
 
 package org.radixware.wps.views.editors.valeditors;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.dialogs.IListDialog;
 import org.radixware.kernel.common.client.meta.mask.EditMaskList;
-import org.radixware.wps.rwt.DropDownListDelegate;
-import org.radixware.wps.rwt.DropDownListDelegate.DropDownListItem;
+import org.radixware.kernel.common.client.widgets.IListWidget;
 import org.radixware.wps.rwt.InputBox;
-import org.radixware.wps.rwt.InputBox.ValueController;
 
 
-public class ValListEditorController<T> extends InputBoxController<T, EditMaskList> {
+public class ValListEditorController<T>  extends AbstractListEditorController<T,EditMaskList> {
 
-    private final class DropDownListDelegateImpl extends DropDownListDelegate<T> {
-
-        private List<DropDownListItem<T>> listBoxItems;
-
-        public DropDownListDelegateImpl(final IClientEnvironment env, final EditMaskList editMaskList) {
-            updateItems(env, editMaskList);
-        }
-
-        @Override
-        protected List<DropDownListItem<T>> getItems() {
-            return listBoxItems;
-        }
-
-        @SuppressWarnings("unchecked")
-        public void updateItems(final IClientEnvironment env, final EditMaskList editMaskList) {
-            listBoxItems = new LinkedList<>();
-            final List<EditMaskList.Item> items = editMaskList.getItems();
-            final InputBox.DisplayController<T> displayController = getInputBox().getDisplayController();
-            for (EditMaskList.Item item : items) {
-                final String title = displayController.getDisplayValue((T)item.getValue(), false, false);
-                listBoxItems.add(new DropDownListItem<>(title, (T)item.getValue()));
-            }
-        }
+    
+    public ValListEditorController(final IClientEnvironment env, final EditMaskList editMask, final LabelFactory factory) {
+        super(env,editMask, factory);
     }
 
     public ValListEditorController(final IClientEnvironment env, final EditMaskList editMask) {
-        super(env);
-        setEditMask(editMask);
+        super(env, editMask);
     }
 
     public ValListEditorController(final IClientEnvironment env) {
-        this(env, new EditMaskList());
+        super(env, new EditMaskList());
     }
     
-    private DropDownListDelegateImpl dropDownDelegate;
-
-    @Override
-    @SuppressWarnings("unchecked")
-    protected void applyEditMask(final InputBox box) {
-        if (dropDownDelegate == null) {
-            dropDownDelegate = new DropDownListDelegateImpl(getEnvironment(), getEditMask());
-            box.addDropDownDelegate(dropDownDelegate);
-        } else {
-            dropDownDelegate.updateItems(getEnvironment(), getEditMask());
-            box.updataButtonsState();
+    private List<EditMaskList.Item> getMaskItems(){
+        final EditMaskList maskList = getEditMask();
+        final List<EditMaskList.Item> maskItems;
+        if (maskList==null){
+            maskItems = Collections.emptyList();
+        }else{
+            maskItems = new ArrayList<>(maskList.getItems());
         }
-        super.applyEditMask(box);
+        if (maskList!=null && maskList.isAutoSortByTitles()){
+            final IClientEnvironment environment = getEnvironment();
+            Collections.sort(maskItems, new Comparator<EditMaskList.Item>(){
+
+                @Override
+                public int compare(final EditMaskList.Item item1, final EditMaskList.Item item2) {
+                    return item1.getTitle(environment).compareTo(item2.getTitle(environment));
+                }
+                
+            });
+        }
+        return maskItems;
+    }    
+    
+    @SuppressWarnings("unchecked")
+    private void updateListItems(){
+        final List<EditMaskList.Item> maskItems = getMaskItems();
+        final List<TypifiedListWidgetItem<T>> items = new LinkedList<>();
+        final IClientEnvironment env = getEnvironment();
+        final InputBox.DisplayController<T> displayController = getInputBox().getDisplayController();        
+        for (EditMaskList.Item maskItem: maskItems) {
+            final T itemValue = (T)maskItem.getValue();
+            final String title = displayController.getDisplayValue(itemValue, false, false);
+            final TypifiedListWidgetItem<T> item = 
+                    new TypifiedListWidgetItem<>(title, itemValue, maskItem.getIcon(env));
+            item.setExtendedTitle(maskItem.getExtendedTitle(env));
+            item.setToolTip(maskItem.getToolTip(env));
+            items.add(item);
+        }
+        setItems(items);
     }
 
     @Override
-    protected ValueController<T> createValueController() {
-        return null;//keyboard input is not allowed
+    protected void applyEditMask(final InputBox box) {
+        updateListItems();
+        super.applyEditMask(box);
+    }
+    
+    @Override
+    protected int getMaxItemsInPopup() {
+        final EditMaskList maskList = getEditMask();
+        if (maskList==null){
+            return super.getMaxItemsInPopup();
+        }else{
+            final int rowsLimit = maskList.getMaxIntemsNumberInDropDownList();
+            return rowsLimit>=0 ? rowsLimit : super.getMaxItemsInPopup();
+        }
+    }
+    
+    @Override
+    protected void beforeShowSelectValueDialog(final IListDialog dialog) {
+        final EditMaskList maskList = getEditMask();
+        if (maskList!=null && maskList.isAutoSortByTitles()){
+            dialog.setFeatures(EnumSet.of(IListWidget.EFeatures.FILTERING, IListWidget.EFeatures.AUTO_SORTING));
+        }else{
+            dialog.setFeatures(EnumSet.of(IListWidget.EFeatures.FILTERING, IListWidget.EFeatures.MANUAL_SORTING));
+        }
+    }
+    
+    public EditMaskList.Item getSelectedItem() {
+        Object currentValue = getValue();
+        for (EditMaskList.Item item : getMaskItems()) {
+            Object editMaskItemValue = item.getValue();
+            if (editMaskItemValue == null && currentValue == null) {
+                return item;
+            } else if (editMaskItemValue != null && currentValue != null) {
+                if (editMaskItemValue.equals(currentValue)) {
+                    return item;
+                }
+            }
+        }
+        return null;
     }
 }

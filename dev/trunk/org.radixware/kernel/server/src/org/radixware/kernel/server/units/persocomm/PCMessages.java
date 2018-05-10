@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -42,6 +42,7 @@ class PCMessages {
     static volatile String TWITTER_ACCESS_TOKEN;
     static volatile String TWITTER_ACCESS_SECRET;
     static volatile String SERVICEBUS_UNIT_TYPE_TITLE;
+    static volatile String DELIVERY_ACK_UNIT_TYPE_TITLE;
     static volatile String SEND_PERIOD;
     static volatile String RECV_PERIOD;
     static volatile String SEND_ADDRESS;
@@ -72,6 +73,7 @@ class PCMessages {
     static volatile String READ_ATTACHMENT_ERROR;
     static volatile String WRITE_ATTACHMENT_ERROR;
     static volatile String SENT_MESS_ERROR;
+    static volatile String UNEXPECTED_ERROR;
     static volatile String RECV_MESS_ERROR;
     static volatile String FILE_WRITE_ERROR;
     static volatile String SEND_ADDRESS_MISSING;
@@ -85,6 +87,8 @@ class PCMessages {
     static volatile String WRONG_RECEIVER_ADDRESS_FORMAT;
     static volatile String FILE_PARSE_ERROR;
     static volatile String FILE_READ_ERROR;
+    static volatile String WNS_UNIT_TYPE_TITLE;
+    static volatile String WNS_CLIENT_ID;
 
     static final String MLS_ID_LOADED_FROM_SENT_QUEUE = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsLYY4F7SEBFGWHLGEGOQT2AHMBQ"; //Message loaded from sent queue (id = %1)
     static final String MLS_ID_LOAD_ERROR = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsJL5ESYYI3JDGDEOZULKNLPESUQ"; //Can't read message(s) from queue
@@ -123,4 +127,8 @@ class PCMessages {
     
     static final MultiLangStringWrapper W_MLS_ID_ERR_IN_DB_QRY = new MultiLangStringWrapper(Messages.MLS_ID_ERR_IN_DB_QRY);
     static final MultiLangStringWrapper W_MLS_ID_START_OPTIONS = new MultiLangStringWrapper(Messages.MLS_ID_START_OPTIONS);
+    
+    static final MultiLangStringWrapper W_MLS_UNEXPECTED_ERROR = new MultiLangStringWrapper("mlbadcXCB5KK6HMJH7NP6E642OHPOMXY","mlsZFYGGAPCS5GLNIWLA4G4LJUXO4"); //Error eventCode["Неожиданная ошибка: %1"]
+    
+    
 }

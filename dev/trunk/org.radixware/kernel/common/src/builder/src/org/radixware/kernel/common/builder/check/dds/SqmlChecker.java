@@ -33,6 +33,7 @@ import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDe
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsFilterDef;
 import org.radixware.kernel.common.defs.ads.common.AdsVisitorProviders;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.common.defs.ads.type.AdsClassType.EntityObjectType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.enums.EValType;
@@ -191,6 +192,7 @@ public class SqmlChecker<T extends Sqml> extends RadixObjectChecker<T> {
                                     if (!AdsVisitorProviders.newPropertyForParameterTagFilter(entity).isTarget(prop)) {
                                         error(paramTag, problemHandler, "Illegal property used in parameter tag: '" + prop.getQualifiedName() + "'");
                                     }
+                                    ReleaseUtils.checkExprationRelease(paramTag, prop, problemHandler);
                                 } else {
                                     error(paramTag, problemHandler, "Property not found: " + entity.getQualifiedName() + ".#" + propId.toString());
                                 }

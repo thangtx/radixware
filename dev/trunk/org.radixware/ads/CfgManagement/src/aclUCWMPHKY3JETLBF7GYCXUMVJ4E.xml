@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="6">
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
   <AdsClassDefinition Id="aclUCWMPHKY3JETLBF7GYCXUMVJ4E" Name="CfgItem.Group" Type="2" ClientEnvironment="explorer">
     <AccessRules IsAbstract="true"/>
     <Headers>
@@ -11,7 +11,106 @@
     <MethodGroup Id="cmgC7KKINKPVFDFFKA5EMT2D5KVXI" Name="Root"/>
     <PropertyGroup Id="cpgMSFCNRKBLNHPNDPPQRAP7L5GTY" Name="Root"/>
     <Properties/>
-    <Methods/>
+    <Methods>
+      <Method Id="mthGLHCTQ732VCBNFCNV6TRJYYX6M" Name="isEmptyItem" Nature="0" IsOverride="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return !</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 prd2CKT7GHGJNAEJM42ENCONBLJOE" Invoke="true">
+                <xsc:Presentation>hasChildren</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPT5PMP2WVZGUDB7OTLOE2SBWKE" Name="beforeUpdate" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final boolean res = super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthPT5PMP2WVZGUDB7OTLOE2SBWKE" Invoke="true">
+                <xsc:Presentation>beforeUpdate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (res &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthAAZKIGKVHVA4JF5MNQBV4B7VLM" Invoke="true">
+                <xsc:Presentation>isPersistentPropModified</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colJGXEDVUL4JA5JAKSJCAVSU2BSU">
+                <xsc:Presentation>CfgItem:skip</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="sscL77ZFM4R55ECPJWTE7VYDJTQ24">
+                <xsc:Presentation>ChangeItemsSkipStateStmt</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="sscL77ZFM4R55ECPJWTE7VYDJTQ24 mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>execute</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colTUL7C3425VCCNC5ELKDFZBWJOY" Invoke="true">
+                <xsc:Presentation>packetId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colIUQVQZZKPFBRLG7DTABUYGLYBQ" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colJGXEDVUL4JA5JAKSJCAVSU2BSU" Invoke="true">
+                <xsc:Presentation>skip</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+return res;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
     <Entity EntityId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
     <Presentations ObjectTitleId="mlsZR3BCD6YXNERNPM3SFCUCIRBUU">
       <EditorPresentations>
@@ -34,6 +133,221 @@
           <ObjectTitleFormat Id="etfWD3DX6UPQVDMJAWQT6WLPEUPKE"/>
         </EditorPresentation>
         <EditorPresentation Id="eprIFGJZ5IMOBC5BOPWMWBGQ6GI3M" Name="Import" BasePresentationId="eprO3XHJ6U74NDNHJ7GNTDUUNDEWE" InheritanceMask="36018" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprO3XHJ6U74NDNHJ7GNTDUUNDEWE">
+          <Model Id="aemIFGJZ5IMOBC5BOPWMWBGQ6GI3M" Name="Import:Model" Type="15">
+            <AccessRules/>
+            <Headers>
+              <Src Name="HeaderaemIFGJZ5IMOBC5BOPWMWBGQ6GI3M"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaemIFGJZ5IMOBC5BOPWMWBGQ6GI3M"/>
+            </Bodies>
+            <MethodGroup Id="cmgOYIGTRC5S5DS3MFM75W3FUFG7A" Name="Root"/>
+            <PropertyGroup Id="cpg2JNDNDPLYFAEHNMBBUV6ZHCUWY" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mthKFFQIFJI2JFMDHPUSRKW3VGGIY" Name="afterUpdate" Nature="0" IsOverride="true" isDescriptionInherited="true">
+                <AccessRules Access="1"/>
+                <ThrownExceptions>
+                  <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.ModelException"/>
+                </ThrownExceptions>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthKFFQIFJI2JFMDHPUSRKW3VGGIY" Invoke="true">
+                        <xsc:Presentation>afterUpdate</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+if (</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthY4DO73PZIBDZDNPTJAJSOD7X5Q" Invoke="true">
+                        <xsc:Presentation>getOwnerSelectorModel</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>() != null &amp;&amp; </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthY4DO73PZIBDZDNPTJAJSOD7X5Q" Invoke="true">
+                        <xsc:Presentation>getOwnerSelectorModel</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthTTUQQ3QNAVENTCMAW45HZ7Q4UE" Invoke="true">
+                        <xsc:Presentation>getView</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>() != null) {
+    if (</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthY4DO73PZIBDZDNPTJAJSOD7X5Q" Invoke="true">
+                        <xsc:Presentation>getOwnerSelectorModel</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthTTUQQ3QNAVENTCMAW45HZ7Q4UE" Invoke="true">
+                        <xsc:Presentation>getView</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>() instanceof </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 sprE6NT4GPHVREKJJMNK6YDGWAZUQ agmE6NT4GPHVREKJJMNK6YDGWAZUQ">
+                        <xsc:Presentation>CfgItem:Import:Model</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 sprE6NT4GPHVREKJJMNK6YDGWAZUQ agmE6NT4GPHVREKJJMNK6YDGWAZUQ adcQ6XE274GVBHCVOCLGQGTPHEXPY">
+                        <xsc:Presentation>ImportTreeSelector</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>) {
+        </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="aicLEIU4YJEEZHWJD3B5V5OG3XKVA">
+                        <xsc:Presentation>Client.Views::ISelectorWidget</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> widget = ((</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 sprE6NT4GPHVREKJJMNK6YDGWAZUQ agmE6NT4GPHVREKJJMNK6YDGWAZUQ">
+                        <xsc:Presentation>CfgItem:Import:Model</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 sprE6NT4GPHVREKJJMNK6YDGWAZUQ agmE6NT4GPHVREKJJMNK6YDGWAZUQ adcQ6XE274GVBHCVOCLGQGTPHEXPY">
+                        <xsc:Presentation>ImportTreeSelector</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>) </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthY4DO73PZIBDZDNPTJAJSOD7X5Q" Invoke="true">
+                        <xsc:Presentation>getOwnerSelectorModel</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthTTUQQ3QNAVENTCMAW45HZ7Q4UE" Invoke="true">
+                        <xsc:Presentation>getView</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>()).</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc5H7P5FMQSNAEBGKNU3ESVQAEEA mthLSFT5ZKUNJA6VH2QHSFT5E675Y" Invoke="true">
+                        <xsc:Presentation>getSelectorWidget</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+        if (widget instanceof </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adc5DILXNN5N5DVHCKPQVGFPZ62FU">
+                        <xsc:Presentation>Explorer.Widgets::SelectorTree</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>) {
+            try {
+                ((</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="adc5DILXNN5N5DVHCKPQVGFPZ62FU">
+                        <xsc:Presentation>Explorer.Widgets::SelectorTree</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>) widget).</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc5DILXNN5N5DVHCKPQVGFPZ62FU mthGE5PNB5LDJC7NOMXF5CKVM75AM" Invoke="true">
+                        <xsc:Presentation>rereadChildrenForCurrentEntity</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+            } catch (</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                        <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> | </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:TypeDeclaration TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE">
+                        <xsc:Presentation>Exceptions::ServiceClientException</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> ex) {
+                </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                        <xsc:Presentation>getEnvironment</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true">
+                        <xsc:Presentation>getTracer</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcACRZP2N7KJHLTPMFXSTA2VAWSA mthPJAN2KFX3RBSVEELIMDEP6Y57M" Invoke="true">
+                        <xsc:Presentation>error</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>("Error on update selector tree", ex);
+            }
+        }
+    }
+}</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
           <ChildExplorerItems/>
           <EditorPages>
             <Page Id="epgAWE3OWYG4RFZ5IZKOWTNNOMJZA" Name="General" Type="1">

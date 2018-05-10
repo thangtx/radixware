@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.instance;
 
 import java.awt.BorderLayout;
@@ -22,6 +21,8 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -34,11 +35,13 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import org.radixware.kernel.common.exceptions.RadixError;
-import org.radixware.kernel.server.Server;
+import org.radixware.kernel.common.utils.Utils;
+import org.radixware.kernel.common.utils.VersionNumber;
 import org.radixware.kernel.starter.meta.LayerMeta;
-import org.radixware.kernel.starter.radixloader.RadixClassLoader;
-
+import org.radixware.kernel.starter.meta.RevisionMeta;
+import org.radixware.kernel.starter.radixloader.ERevisionMetaType;
+import org.radixware.kernel.starter.radixloader.RadixLoader;
+import org.radixware.kernel.starter.radixloader.RadixLoaderException;
 
 public class ReleaseNumberDialog {
 
@@ -98,19 +101,37 @@ public class ReleaseNumberDialog {
     }
 
     private TableModel createTableModel() {
-        RadixClassLoader cl;
+        final RevisionMeta revMeta;
         try {
-           cl = (RadixClassLoader)Server.class.getClassLoader();
-        } catch (ClassCastException e) {
-           throw new RadixError("Server should be loaded by starter", e);
+            if (Instance.get().getLastMaxAcceptableRevision() != -1) {
+                revMeta = RadixLoader.getInstance().getRevisionMeta(Instance.get().getLastMaxAcceptableRevision(), ERevisionMetaType.LAYERS_ONLY);
+            } else {
+                revMeta = RadixLoader.getInstance().getCurrentRevisionMeta();
+            }
+        } catch (RadixLoaderException ex) {
+            throw new RuntimeException(ex);
         }
         String columns[] = {Messages.LAYER_URI, Messages.RELEASE_NUMBER};
-        List<LayerMeta> list = cl.getRevisionMeta().getAllLayersSortedFromBottom();
+        List<LayerMeta> list = revMeta.getAllLayersSortedFromBottom();
+        final Map<String, VersionNumber> appNumbers = Utils.parseVersionsByKey(revMeta.getAppLayerVersionsString());
+        final Map<String, VersionNumber> kernelNumbers = Utils.parseVersionsByKey(revMeta.getKernelLayerVersionsString());
         String rows[][] = new String[list.size()][2];
         for (int i = 0; i < list.size(); ++i) {
             LayerMeta layer = list.get(i);
             rows[i][0] = layer.getUri();
-            rows[i][1] = layer.getReleaseNumber();
+            String appVer = appNumbers == null ? null : (appNumbers.get(layer.getUri()) == null ? null : appNumbers.get(layer.getUri()).toString());
+            String kernVer = kernelNumbers == null ? null : (kernelNumbers.get(layer.getUri()) == null ? null : kernelNumbers.get(layer.getUri()).toString());
+            if (appVer == null) {
+                appVer = layer.getReleaseNumber();
+            }
+            if (kernVer == null) {
+                kernVer = layer.getReleaseNumber();
+            }
+            if (Objects.equals(appVer, kernVer)) {
+                rows[i][1] = String.valueOf(appVer);
+            } else {
+                rows[i][1] = "Kernel=" + kernVer + "; App=" + appVer;
+            }
         }
         DefaultTableModel tableModel = new DefaultTableModel(rows, columns) {
 

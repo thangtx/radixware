@@ -11,68 +11,111 @@
 
 package org.radixware.wps.views.editors.valeditors;
 
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.dialogs.IListDialog;
 import org.radixware.kernel.common.client.meta.RadEnumPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMaskConstSet;
-import org.radixware.wps.rwt.DropDownListDelegate;
-import org.radixware.wps.rwt.DropDownListDelegate.DropDownListItem;
+import org.radixware.kernel.common.client.widgets.IListWidget;
+import org.radixware.kernel.common.enums.EEditMaskEnumOrder;
 import org.radixware.wps.rwt.InputBox;
-import org.radixware.wps.rwt.InputBox.ValueController;
 
-
-public class ValConstSetEditorController<T extends Comparable> extends InputBoxController<T,EditMaskConstSet> {
-    
-    private final class DropDownEnumListDelegate extends DropDownListDelegate<T>{
-                
-        private List<DropDownListItem<T>> listBoxItems;
-    
-        public DropDownEnumListDelegate(final IClientEnvironment env, final EditMaskConstSet editMaskConstSet) {
-            updateItems(env, editMaskConstSet);
-        }
+public class ValConstSetEditorController<T extends Comparable> extends AbstractListEditorController<T,EditMaskConstSet> {
         
-        @SuppressWarnings("unchecked")
-        public void updateItems(final IClientEnvironment env, final EditMaskConstSet editMaskConstSet){
-            final RadEnumPresentationDef.Items enumItems = editMaskConstSet.getItems(env.getApplication());            
-            listBoxItems = new LinkedList<>();
-            final InputBox.DisplayController<T> displayController = getInputBox().getDisplayController();
-            for (RadEnumPresentationDef.Item enumItem: enumItems) {
-                final T enumValue = (T)enumItem.getValue();
-                final String title = displayController.getDisplayValue(enumValue, false, false);
-                listBoxItems.add(new DropDownListItem<>(title, enumValue, enumItem.getIcon()));
-            }
-        }
-
-        @Override
-        protected List<DropDownListItem<T>> getItems() {
-           return listBoxItems;
-        }        
+    private EditMaskConstSet.DisplayMode displayMode = EditMaskConstSet.DisplayMode.SHOW_TITLE;
+    
+    public ValConstSetEditorController(final IClientEnvironment env, final EditMaskConstSet editMask, final LabelFactory factory){
+        super(env,editMask,factory);
     }
     
     public ValConstSetEditorController(final IClientEnvironment env, final EditMaskConstSet editMask) {
-        super(env);
-        setEditMask(editMask);
+        super(env,editMask);
+    }        
+
+    @Override    
+    protected void applyEditMask(final InputBox box) {
+        updateListItems();
+        super.applyEditMask(box);
     }
     
-    private DropDownEnumListDelegate dropDownDelegate;
-
-    @Override
     @SuppressWarnings("unchecked")
-    protected void applyEditMask(final InputBox box) {
-        if (dropDownDelegate==null){
-            dropDownDelegate = new DropDownEnumListDelegate(getEnvironment(), getEditMask());
-            box.addDropDownDelegate(dropDownDelegate);
+    private void updateListItems(){
+        final EditMaskConstSet editMaskConstSet = getEditMask();
+        if (editMaskConstSet!=null){
+            final RadEnumPresentationDef.Items items = editMaskConstSet.getItems(getEnvironment().getApplication());            
+            final List<TypifiedListWidgetItem<T>> listItems = new LinkedList<>();       
+            final InputBox.DisplayController<T> displayController = getInputBox().getDisplayController();
+            TypifiedListWidgetItem listItem;
+            for (int i = 0, count = items.size(); i < count; ++i) {
+                listItems.add(createListWidgetItem(items.getItem(i), displayController));
+            }
+            setItems(listItems);
         }
-        else{
-            dropDownDelegate.updateItems(getEnvironment(), getEditMask());
-            box.updataButtonsState();
+    }
+    
+    private TypifiedListWidgetItem<T> createListWidgetItem(final RadEnumPresentationDef.Item enumItem,
+                                                                                           final InputBox.DisplayController<T> displayController){
+        final T itemValue = (T)enumItem.getValue();
+        final String title = displayController.getDisplayValue(itemValue, false, false);
+        final TypifiedListWidgetItem<T> listItem = new TypifiedListWidgetItem<>(title, itemValue, enumItem.getIcon());
+        listItem.setName("rx_enum_item_"+enumItem.getId().toString());
+        return listItem;
+    }
+    
+    private RadEnumPresentationDef getEnumDef(){
+        final EditMaskConstSet editMaskConstSet = getEditMask();
+        if (editMaskConstSet==null){
+            return null;
+        }else{
+            return editMaskConstSet.getRadEnumPresentationDef(getEnvironment().getApplication());
         }
-        super.applyEditMask(box);
-    }        
+    }    
+    
+    @Override
+    protected String getSelectValueDialogConfigPrefix() {
+        final RadEnumPresentationDef enumDef = getEnumDef();
+        if (enumDef==null){
+            return super.getSelectValueDialogConfigPrefix();
+        }else{
+            return enumDef.getId().toString();
+        }
+    }
 
     @Override
-    protected ValueController<T> createValueController() {
-        return null;//keyboard input is not allowed
+    protected int getMaxItemsInPopup() {
+        final EditMaskConstSet mask = getEditMask();
+        if (mask==null){
+            return super.getMaxItemsInPopup();
+        }else{
+            final int itemsLimit = mask.getMaxIntemsNumberInDropDownList();
+            return itemsLimit>=0 ? itemsLimit : super.getMaxItemsInPopup();
+        }
+    }
+
+    @Override
+    protected void beforeShowSelectValueDialog(final IListDialog dialog) {
+        final EditMaskConstSet mask = getEditMask();
+        if (mask!=null && mask.getOrder()==EEditMaskEnumOrder.BY_TITLE){
+            dialog.setFeatures(EnumSet.of(IListWidget.EFeatures.FILTERING, IListWidget.EFeatures.AUTO_SORTING));
+        }else{
+            dialog.setFeatures(EnumSet.of(IListWidget.EFeatures.FILTERING, IListWidget.EFeatures.MANUAL_SORTING));
+        }
     }        
+    
+    public EditMaskConstSet.DisplayMode getDisplayMode() {
+        return displayMode;
+    }
+
+    public void setDisplayMode(final EditMaskConstSet.DisplayMode mode) {
+        if (displayMode != mode) {
+            displayMode = mode;
+            if (editMask!=null){//getEditMask() returns copy
+                editMask.setDisplayMode(displayMode);
+            }
+            updateListItems();
+            refresh();
+        }
+    } 
 }

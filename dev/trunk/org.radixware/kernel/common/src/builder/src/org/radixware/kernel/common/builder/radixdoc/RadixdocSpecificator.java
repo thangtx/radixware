@@ -16,20 +16,37 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.radixware.kernel.common.builder.api.IProgressHandle;
+import org.radixware.kernel.common.conventions.RadixdocConventions;
 import org.radixware.kernel.common.defs.*;
 import org.radixware.kernel.common.defs.ads.build.Cancellable;
+import org.radixware.kernel.common.defs.ads.doc.DocResources;
+import org.radixware.kernel.common.defs.ads.doc.DocTopicBody;
+import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.dds.DdsModule;
+import org.radixware.kernel.common.enums.EDefType;
+import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.radixdoc.DefaultReferenceResolver;
 import org.radixware.kernel.common.radixdoc.DocumentOptions;
 import org.radixware.kernel.common.radixdoc.IRadixdocDictionary;
+import org.radixware.kernel.common.radixdoc.IRadixdocPage;
 import org.radixware.kernel.common.radixdoc.IRadixdocProvider;
 import org.radixware.kernel.common.radixdoc.RadixdocSupport;
 import org.radixware.kernel.common.utils.Base64;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.graphs.GraphWalker;
 import org.radixware.schemas.radixdoc.DiagramRefItem;
+import org.radixware.schemas.radixdoc.DocumentationItems;
+import org.radixware.schemas.radixdoc.ModuleDocItem;
+import org.radixware.schemas.radixdoc.ModuleDocumentationItemsDocument;
 import org.radixware.schemas.radixdoc.RadixdocUnit;
 import org.radixware.schemas.radixdoc.RadixdocUnitDocument;
 
@@ -74,6 +91,7 @@ public class RadixdocSpecificator {
     private final IRadixdocDictionary dictionary;
     private final Set<File> files;
     private final DefaultReferenceResolver referenceResolver;
+    private final AtomicInteger processed = new AtomicInteger();
 
     protected RadixdocSpecificator(RadixdocOptions options, IRadixdocDictionary dictionary, IProgressHandle progressHandle, Cancellable cancellable) {
         this.options = options;
@@ -143,6 +161,10 @@ public class RadixdocSpecificator {
     protected void prepareDocumentModule(Module module) {
     }
 
+    /**
+     * Обходим все дефиниции в modules и есил они документированы создаем
+     * файлики radixdoc.xml и radixdoc2.xml
+     */
     protected void document() {
         final Map<Module, List<RadixdocSupport>> documents = new HashMap<>();
 
@@ -192,56 +214,192 @@ public class RadixdocSpecificator {
         }
 
         progressHandle.switchToDeterminate(count);
-        int processed = 0;
+        processed.set(0);
+        final ExecutorService service = Executors.newFixedThreadPool(Math.max(1, Math.min(8, Runtime.getRuntime().availableProcessors() - 1)), new ThreadFactory() {
 
+            final AtomicInteger counter = new AtomicInteger();
+
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setName("RadixDoc generator thread #" + counter.incrementAndGet());
+                return t;
+            }
+        });
         for (final Map.Entry<Module, List<RadixdocSupport>> entry : documents.entrySet()) {
-            final List<RadixdocSupport> pages = entry.getValue();
-            final RadixdocUnitDocument document = RadixdocUnitDocument.Factory.newInstance();
-            final RadixdocUnit unit = document.addNewRadixdocUnit();
+            service.submit(new Runnable() {
 
-            prepareDocumentModule(entry.getKey());
-            final List<String> definitions = new ArrayList<>();
-
-            if (entry.getKey() instanceof DdsModule) {
-                DdsModule ddsModule = (DdsModule) entry.getKey();
-                String diagram = ddsModule.getDiagramHtmlPage();
-                if (diagram != null) {
+                @Override
+                public void run() {
                     try {
-                        diagram = Base64.encode(diagram.getBytes("UTF-8"));
-                    } catch (UnsupportedEncodingException ex) {
-                        diagram = null;
+                        generateRadixdoc(entry);
+                    } catch (Exception ex) {
+                        Logger.getLogger(RadixdocSpecificator.class.getName()).log(Level.SEVERE, "Exception while generating radixdoc for " + entry.getKey().getQualifiedName() + ": " + ExceptionTextFormatter.throwableToString(ex));
                     }
                 }
-                unit.addNewDdsDiagramHtmlPage().setPageTextAsStr(diagram);
-                for (final Map.Entry<String, String> refItem : ddsModule.getDdsDiagramReference().entrySet()) {
-                    DiagramRefItem xRefItem = unit.getDdsDiagramHtmlPage().addNewDiagramRefItem();
-                    xRefItem.setItemId(refItem.getKey());
-                    xRefItem.setValue(refItem.getValue());
-                }
-                definitions.add("diagram");
-            }
+            });
+        }
+        service.shutdown();
+        try {
+            service.awaitTermination(1, TimeUnit.DAYS);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
 
-            for (final RadixdocSupport radixdocSupport : pages) {
-                if (cancellable.wasCancelled()) {
-                    break;
-                }
+    }
 
+    private void generateRadixdoc(final Map.Entry<Module, List<RadixdocSupport>> entry) {
+        final List<RadixdocSupport> pages = entry.getValue();
+        final RadixdocUnitDocument document = RadixdocUnitDocument.Factory.newInstance();
+        final RadixdocUnit unit = document.addNewRadixdocUnit();
+
+        final ModuleDocumentationItemsDocument moduleDocItemsDocument = ModuleDocumentationItemsDocument.Factory.newInstance();
+        final ModuleDocItem moduleDocItem = moduleDocItemsDocument.addNewModuleDocumentationItems();
+
+        moduleDocItem.setId(entry.getKey().getId());
+        moduleDocItem.setName(entry.getKey().getName());
+        moduleDocItem.setDefinitionType(EDefType.MODULE);
+        moduleDocItem.setDescriptionId(entry.getKey().getDescriptionId());
+        moduleDocItem.setIsDepricated(entry.getKey().isDeprecated());
+        moduleDocItem.setIsFinal(entry.getKey().isFinal());
+        moduleDocItem.setIsPublished(entry.getKey().isPublished());
+        moduleDocItem.setModulePath(getLocation(entry.getKey()).getModulePath().toString());
+        moduleDocItem.setLayerUri(entry.getKey().getLayer().getURI());
+
+        final DocumentationItems docItems = moduleDocItem.addNewDocumentationItems();
+
+        prepareDocumentModule(entry.getKey());
+        final List<String> definitions = new ArrayList<>();
+
+        if (entry.getKey() instanceof DdsModule) {
+            DdsModule ddsModule = (DdsModule) entry.getKey();
+            String diagram = ddsModule.getDiagramHtmlPage();
+            if (diagram != null) {
                 try {
-                    radixdocSupport.document(unit.addNewPage(), new DocumentOptions(referenceResolver, dictionary)).buildPage();
-                    definitions.add(referenceResolver.getIdentifier(radixdocSupport.getSource()));
-                } catch (Exception e) {
-                    Logger.getLogger(RadixdocSpecificator.class.getName()).log(Level.INFO, null, e);
-                } finally {
-                    progressHandle.progress("Document " + radixdocSupport.getSource().getQualifiedName(), ++processed);
+                    diagram = Base64.encode(diagram.getBytes("UTF-8"));
+                } catch (UnsupportedEncodingException ex) {
+                    diagram = null;
                 }
             }
-
-            unit.setPages(definitions);
-
-            final PageLocation location = getLocation(entry.getKey());
-            if (location != null) {
-                processDocument(document(document, location), entry.getKey());
+            unit.addNewDdsDiagramHtmlPage().setPageTextAsStr(diagram);
+            for (final Map.Entry<String, String> refItem : ddsModule.getDdsDiagramReference().entrySet()) {
+                DiagramRefItem xRefItem = unit.getDdsDiagramHtmlPage().addNewDiagramRefItem();
+                xRefItem.setItemId(refItem.getKey());
+                xRefItem.setValue(refItem.getValue());
             }
+            definitions.add("diagram");
+        }
+
+        for (final RadixdocSupport radixdocSupport : pages) {
+            if (cancellable.wasCancelled()) {
+                break;
+            }
+
+            try {
+                IRadixdocPage page = radixdocSupport.document(unit.addNewPage(), new DocumentOptions(referenceResolver, dictionary));
+                
+                if (!page.isGenerateHtmlDoc()) {
+                    continue;
+                }
+                
+                page.buildPage();
+                if (page.buildDocItem() != null) {
+                    docItems.getDocumentationItemList().add(page.buildDocItem());
+                }
+
+                definitions.add(referenceResolver.getIdentifier(radixdocSupport.getSource()));
+            } catch (Exception e) {
+                Logger.getLogger(RadixdocSpecificator.class.getName()).log(Level.INFO, null, e);
+            } finally {
+                synchronized (progressHandle) {
+                    progressHandle.progress("Document " + radixdocSupport.getSource().getQualifiedName(), processed.incrementAndGet());
+                }
+            }
+        }
+
+        unit.setPages(definitions);
+
+        List<EIsoLanguage> languages = new ArrayList<EIsoLanguage>(options.getLanguages());
+
+        // body dir
+        File bodyDir = null;
+        try {
+            bodyDir = File.createTempFile(RadixdocConventions.TECHDOC_BODY_DIR_NAME, "");
+            bodyDir.delete();
+            bodyDir.mkdir();
+        } catch (IOException ex) {
+            Logger.getLogger(RadixdocSpecificator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        for (EIsoLanguage lang : languages) {
+
+            File langDir = new File(bodyDir, lang.getValue());
+            if (!langDir.exists()) {
+                langDir.mkdir();
+            }
+
+            //for (Module module : modules) {
+            Module module = entry.getKey().getModule();
+            if (!(module instanceof AdsModule)) {
+                continue;
+            }
+
+            // copy
+            try {
+                File moduleBodyDir = DocTopicBody.getParentDir((AdsModule) module, lang);
+                if (moduleBodyDir.exists()) {//RADIX-14969
+                    FileUtils.copyDirectory(moduleBodyDir, langDir);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(RadixdocSpecificator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            //}
+        }
+
+        // resource dir
+        File resourceDir = null;
+        try {
+            resourceDir = File.createTempFile(RadixdocConventions.TECHDOC_RESOURCES_DIR_NAME, "");
+            resourceDir.delete();
+            resourceDir.mkdir();
+        } catch (IOException ex) {
+            Logger.getLogger(RadixdocSpecificator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        for (EIsoLanguage lang : languages) {
+            //for (Module module : modules) {
+            Module module = entry.getKey().getModule();
+
+            if (!(module instanceof AdsModule)) {
+                continue;
+            }
+
+            // langDir
+            File langDir = new File(resourceDir,
+                    module.getLayer().getURI() + File.separator
+                    + module.getName() + File.separator
+                    + lang.getValue());
+            if (!langDir.exists()) {
+                langDir.mkdirs();
+            }
+
+            // copy
+            try {
+                DocResources resources = ((AdsModule)module).getDocumentation().getResources(lang);
+                File moduleResourceDir = resources.getDir();
+                if (moduleResourceDir.exists()) { //RADIX-14969
+                    FileUtils.copyDirectory(moduleResourceDir, langDir);
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(RadixdocSpecificator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            //}
+        }
+
+        final PageLocation location = getLocation(entry.getKey());
+        if (location != null) {
+            processDocument(document(document, moduleDocItemsDocument, bodyDir, resourceDir, location), entry.getKey());
         }
     }
 
@@ -305,8 +463,8 @@ public class RadixdocSpecificator {
         }
     }
 
-    private IDocumentPage document(RadixdocUnitDocument document, PageLocation location) {
-        return new ZipXmlPage(document, location);
+    private IDocumentPage document(RadixdocUnitDocument document, ModuleDocumentationItemsDocument docItemsDocument, File bodyDir, File resourceDir, PageLocation location) {
+        return new ZipXmlPage(document, docItemsDocument, bodyDir, resourceDir, location);
     }
 
     void addFile(File file) {

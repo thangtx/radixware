@@ -66,7 +66,7 @@ public class FileOperationsImpl extends FileOperations {
     @Override
     public OutputStream getOutputStream(final File file) throws IOException {
         FileObject fileObject = RadixFileUtil.toFileObject(file);
-        if (fileObject == null) {
+        if (fileObject == null || !file.exists()) {
             fileObject = FileUtil.createData(file);
         }
         try {

@@ -26,7 +26,7 @@ public interface ClientSettings {
 
     public static final String CONFIG_VERSION = "configversion";
     public static final int configVersion = 3;
-    public static final int defaultConfigVersion = 22;
+    public static final int defaultConfigVersion = 25;
     public static final String DEFAULT_SETTINGS_FILE_NAME = "defaults.ini";    
 
     public boolean contains(final String key);
@@ -74,8 +74,14 @@ public interface ClientSettings {
     public List<String> allKeys();
 
     public void beginGroup(final String group);
+    
+    public void pushGroup();
+    
+    public String popGroup();
 
     public void setConfigProfile(final String profile);
+    
+    public String getConfigProfile();
 
     public int beginReadArray(final String array);
 

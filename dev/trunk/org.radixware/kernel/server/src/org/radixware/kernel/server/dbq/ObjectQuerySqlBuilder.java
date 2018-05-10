@@ -100,8 +100,18 @@ public final class ObjectQuerySqlBuilder extends QuerySqlBuilder {
      * @param waitTime - seconds to wait for lock (waitTime=0 - nowait,
      * waitTime=null - wait forever)
      */
-    private final void appendForUpdate(final Long waitTimeSec) {
+    private void appendForUpdate(final Long waitTimeSec, final boolean useAlias) {
         querySql.append(" for update");
+
+        if (!getTable().getPrimaryKey().getColumnsInfo().isEmpty()) {
+            querySql.append(" of ");
+            if (useAlias) {
+                querySql.append(getAlias());
+                querySql.append(".");
+            }
+            querySql.append(getTable().getPrimaryKey().getColumnsInfo().get(0).getColumn().getDbName());
+        }
+
         if (waitTimeSec != null) {
             if (waitTimeSec.longValue() == 0) {
                 querySql.append(" nowait");
@@ -133,7 +143,7 @@ public final class ObjectQuerySqlBuilder extends QuerySqlBuilder {
             return false;
         }
         querySql = new StringBuilder(SELECT_);
-        boolean hasFields = appendFieldsStr(false);
+        boolean hasFields = appendFieldsStr();
         if (!hasFields && apJoins == null) {
             return false;
         }
@@ -182,7 +192,7 @@ public final class ObjectQuerySqlBuilder extends QuerySqlBuilder {
         appendWhere(true);
 
         if (forUpdate) {
-            appendForUpdate(waitTimeSec);
+            appendForUpdate(waitTimeSec, true);
         }
 
         return true;
@@ -197,7 +207,7 @@ public final class ObjectQuerySqlBuilder extends QuerySqlBuilder {
             return "";
         }
         querySql = new StringBuilder(SELECT_);
-        final boolean hasFields = appendFieldsStr(false);
+        final boolean hasFields = appendFieldsStr();
         if (!hasFields && apJoins == null) {
             return "";
         }
@@ -306,7 +316,7 @@ public final class ObjectQuerySqlBuilder extends QuerySqlBuilder {
         querySql = new StringBuilder("select 1 from ");
         querySql.append(getTable().getDbName());
         appendWhere(false);
-        appendForUpdate(waitTimeSec);
+        appendForUpdate(waitTimeSec, false);
         return true;
     }
 

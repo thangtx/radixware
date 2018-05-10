@@ -23,6 +23,8 @@ public interface IGroupSetting {
     boolean isUserDefined();
 
     boolean isValid();
+    
+    boolean isVisible();
 
     boolean hasAncestor();
 

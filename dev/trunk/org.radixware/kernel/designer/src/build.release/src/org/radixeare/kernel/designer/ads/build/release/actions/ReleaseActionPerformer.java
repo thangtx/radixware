@@ -17,6 +17,7 @@ import javax.swing.text.JTextComponent;
 import org.openide.DialogDescriptor;
 import org.openide.util.RequestProcessor;
 import org.radixeare.kernel.designer.ads.build.release.SetupRelease;
+import org.radixeare.kernel.designer.ads.build.release.scripts.ScriptsDialog;
 
 import org.radixware.kernel.common.builder.BuildActionExecutor;
 import org.radixware.kernel.common.builder.release.ReleaseSettings;
@@ -51,6 +52,7 @@ public class ReleaseActionPerformer {
                     Spellchecker.register(text, textLanguage, null);
                 }
             });
+            settings.setScriptDialog(new ScriptsDialog ());
             final SetupRelease setupPanel = new SetupRelease(settings);
 
             final ModalDisplayer modalDisplayer = new ModalDisplayer(setupPanel);

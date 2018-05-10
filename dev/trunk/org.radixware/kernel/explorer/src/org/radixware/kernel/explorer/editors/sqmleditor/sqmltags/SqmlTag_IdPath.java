@@ -56,9 +56,9 @@ public class SqmlTag_IdPath extends SqmlTag{
         super(environment, pos,definition==null?false :definition.isDeprecated());
         this.definition = definition;
         this.isTable=isTable;
-        valid = !(definition instanceof ISqmlBrokenDefinition);
+        setValid(!(definition instanceof ISqmlBrokenDefinition));
         updateIdPath();
-        if (valid){
+        if (isValid()){
             setDisplayedInfo(showMode);
         }
         else if(definition!=null){
@@ -70,8 +70,8 @@ public class SqmlTag_IdPath extends SqmlTag{
         super(environment,pos);
         this.idPath = (org.radixware.schemas.xscml.Sqml.Item.Id)idPath.copy();
         definition = environment.getSqmlDefinitions().findDefinitionByIdPath(idPath.getPath());        
-        valid = definition!=null && !(definition instanceof ISqmlBrokenDefinition);        
-        if (valid){
+        setValid(definition!=null && !(definition instanceof ISqmlBrokenDefinition));
+        if (isValid()){
             setIsDeprecated(definition.isDeprecated());
             setDisplayedInfo(showMode);
         }

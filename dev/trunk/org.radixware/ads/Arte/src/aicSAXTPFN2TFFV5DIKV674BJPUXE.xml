@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicSAXTPFN2TFFV5DIKV674BJPUXE" Name="IRadixConnectionListener" DescriptionId="mlsDR2ON4ZDXJADDH6OI55PMYBZTM" Type="5" Environment="server">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.jdbc.IRadixConnectionListener"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicSAXTPFN2TFFV5DIKV674BJPUXE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicSAXTPFN2TFFV5DIKV674BJPUXE"/>
+    </Bodies>
+    <MethodGroup Id="cmgUC4BHZTNH5CXZH2LIVTZ6KV2BY" Name="Root"/>
+    <PropertyGroup Id="cpg53KZYUYMYZEW3DQDA6NHOWSRDA" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthK6TSB7MSJRCWPD2RUK556BVLPE" Name="afterDbCommit" DescriptionId="mlsPBIZE45575FU7BFWRF3GOHWCDE" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="afterDbCommit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthJYUTOOHWPNEAPAUGNEHPOJKZ4Q" Name="beforeDbCommit" DescriptionId="mlsQMNI3W7DNFCUNLGKNGX7XBJP4Q" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="beforeDbCommit()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthKFP5DBXCV5ANVL7NYGQP2DEYAA" Name="onDbCommitError" DescriptionId="mlsEKICQDQ7NVAUPLYHOBLTFLNYCI" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="onDbCommitError(Ljava.sql.SQLException;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="ex" DescriptionId="mlsDARTYKZ7M5CFRBQRZGJWK43KBA" Id="mprV3RNOBQIIBHQBOVWCFVXPZSC3U">
+            <Type TypeId="400" extStr="java.sql.SQLException"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMFXZM6O2DZFNBBVP4GVQN5CJ7U" Name="afterDbRollback" DescriptionId="mlsJQKGXENZXJBZ3EDLYS647PJBYI" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="afterDbRollback(Ljava.sql.Savepoint;Ljava.lang.String;J)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="savepoint" DescriptionId="mlsN57PNM4K3ZFJBHWNGBUK2G2NMA" Id="mprYIX5F5EYA5C2BIU7SBKXPE2FSY">
+            <Type TypeId="400" extStr="java.sql.Savepoint"/>
+          </Parameter>
+          <Parameter Name="savepointId" DescriptionId="mlsOU4KFSYSXNCZXHK4CKNDGIKD5Y" Id="mprPSWUNY2XENBZFJX24HRIFVJCF4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="nesting" DescriptionId="mlsH3L3QX4WJJEBXIXKDMHBBXDSHU" Id="mprFG66TR6BBJFRFDWODD6MUZU2XU">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZV23TYTY5FGTROAERWUKVHZC3U" Name="beforeDbRollback" DescriptionId="mls2BFLWZTVVNBEFPU57K2DIZBP2E" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="beforeDbRollback(Ljava.sql.Savepoint;Ljava.lang.String;J)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="savepoint" DescriptionId="mlsLOPIE3AMBZE27FE4PNHRSOTFSA" Id="mprZYCE5VMGSVCQFBTVZXUTN2PKME">
+            <Type TypeId="400" extStr="java.sql.Savepoint"/>
+          </Parameter>
+          <Parameter Name="savepointId" DescriptionId="mlsHGJ77PJFVZAXPJ3OKVEVNIFMAA" Id="mpr7BNIEACPQRDDTJX6ARW7YENOYM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="nesting" DescriptionId="mlsO5ZTI5US7ZDGVP5YTFTEDHRKAY" Id="mprAK4GF5I2ENC3XOXOPQV7BTQ53I">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthFBR6IGZX2VA2RHZABIOLGOG6MU" Name="onDbRollbackError" DescriptionId="mlsHLGDD2DF6BDUNJI6FVUQDSZGJI" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="onDbRollbackError(Ljava.sql.Savepoint;Ljava.lang.String;JLjava.sql.SQLException;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="savepoint" DescriptionId="mlsEKNTMTKV6BFKPLOOB7NU4JPZFM" Id="mprN4BHXAHUVBAQ3MM54PJWHHRHDY">
+            <Type TypeId="400" extStr="java.sql.Savepoint"/>
+          </Parameter>
+          <Parameter Name="savepointId" DescriptionId="mlsVOZ4K4EYU5C2RCEY34TVPLPXJU" Id="mpr4QZHWGY5EJBUHOO57USNPHLDPE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="nesting" DescriptionId="mls4FJVRKTLUZHA7HATKLGLV5NNJY" Id="mprDW2XAIFHCREWZHLRRDXVYLO36I">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="ex" DescriptionId="mlsRRLSBHUTIJGB7BGK7CWM7POZBU" Id="mprVSK2ZMOJKFF2TCSCT4OY2C3OHM">
+            <Type TypeId="400" extStr="java.sql.SQLException"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

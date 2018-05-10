@@ -27,22 +27,27 @@ public class CompileAllReportsAction extends CookieAction {
     public static class Cookie implements Node.Cookie {
 
         public void perform() {
+            final List<RadixObject[]> reports = new LinkedList<>();
             for (ReportsModule module : UserExtensionManager.getInstance().getUserReports().getReportModules()) {
                 for (UserReport rep : UserExtensionManager.getInstance().getUserReports().listReports(module.getId())) {
                     final ReportVersion version = rep.getVersions().getCurrent();
-                    final List<RadixObject> reports = new LinkedList<>();
                     if (version != null) {
                         final AdsReportClassDef report = version.findReportDefinition();
                         if (report != null) {
-                            reports.add(report);
+                            reports.add(new RadixObject[] {report});
                         }
                     }
-                    UserExtensionManager.getInstance().compileOnSave(reports.toArray(new RadixObject[reports.size()]), false);
                 }
             }
+            UserExtensionManager.getInstance().compileAllReports(reports);
         }
     }
 
+    @Override
+    protected boolean enable(Node[] activatedNodes) {
+        return super.enable(activatedNodes) && !UserExtensionManager.getInstance().isCompilingAllReportsStarted();
+    }
+ 
     @Override
     protected int mode() {
         return MODE_EXACTLY_ONE;

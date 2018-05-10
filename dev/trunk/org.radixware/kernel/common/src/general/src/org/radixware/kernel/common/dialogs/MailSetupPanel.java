@@ -22,8 +22,8 @@ import org.radixware.kernel.common.exceptions.ExceptionHandler;
 import org.radixware.kernel.common.mail.Letter;
 import org.radixware.kernel.common.mail.Sender;
 import org.radixware.kernel.common.mail.SettingsForSendMail;
-import org.radixware.kernel.common.mail.enums.EAuthentication;
-import org.radixware.kernel.common.mail.enums.ESecureConnection;
+import org.radixware.kernel.common.mail.enums.EMailAuthentication;
+import org.radixware.kernel.common.mail.enums.EMailSecureConnection;
 
 
 public class MailSetupPanel extends javax.swing.JPanel {
@@ -35,8 +35,8 @@ public class MailSetupPanel extends javax.swing.JPanel {
         public void actionPerformed(ActionEvent e) {
             if (!isUpdate) {
                 Object selected = jAuthentication.getSelectedItem();
-                if (selected != null && selected instanceof EAuthentication) {
-                    boolean enable = !((EAuthentication) selected).equals(EAuthentication.NONE);
+                if (selected != null && selected instanceof EMailAuthentication) {
+                    boolean enable = !((EMailAuthentication) selected).equals(EMailAuthentication.NONE);
                     enableAuthenticationFields(enable);
                 }
             }
@@ -47,7 +47,7 @@ public class MailSetupPanel extends javax.swing.JPanel {
         settings = SettingsForSendMail.getInstance();
         initComponents();
         jAuthentication.addActionListener(authenticationListener);
-        enableAuthenticationFields(!settings.getAuthentiication().equals(EAuthentication.NONE));
+        enableAuthenticationFields(!settings.getAuthentiication().equals(EMailAuthentication.NONE));
 
         btTest.addActionListener(new ActionListener() {
 
@@ -231,14 +231,14 @@ public class MailSetupPanel extends javax.swing.JPanel {
         while (jSecureConnection.getItemCount() > 0) {
             jSecureConnection.removeItemAt(0);
         }
-        for (ESecureConnection con : ESecureConnection.values()) {
+        for (EMailSecureConnection con : EMailSecureConnection.values()) {
             jSecureConnection.addItem(con);
         }
         jSecureConnection.setSelectedItem(settings.getSecureconnection());
         while (jAuthentication.getItemCount() > 0) {
             jAuthentication.removeItemAt(0);
         }
-        for (EAuthentication auth : EAuthentication.values()) {
+        for (EMailAuthentication auth : EMailAuthentication.values()) {
             jAuthentication.addItem(auth);
         }
         jAuthentication.setSelectedItem(settings.getAuthentiication());
@@ -248,7 +248,7 @@ public class MailSetupPanel extends javax.swing.JPanel {
 
         jSelfEMail.setText(settings.getDefaultSenderAddress());
 
-        enableAuthenticationFields(!settings.getAuthentiication().equals(EAuthentication.NONE));
+        enableAuthenticationFields(!settings.getAuthentiication().equals(EMailAuthentication.NONE));
 
         isUpdate = false;
     }
@@ -260,8 +260,8 @@ public class MailSetupPanel extends javax.swing.JPanel {
     private void store(SettingsForSendMail settings) {
         settings.storeHost(jServer.getText());
         settings.storePort(Integer.parseInt(jPort.getText()));
-        settings.storeSecureConnection((ESecureConnection) jSecureConnection.getSelectedItem());
-        settings.storeAuthentication((EAuthentication) jAuthentication.getSelectedItem());
+        settings.storeSecureConnection((EMailSecureConnection) jSecureConnection.getSelectedItem());
+        settings.storeAuthentication((EMailAuthentication) jAuthentication.getSelectedItem());
         settings.storeUser(jUser.getText());
 
         char[] password = passwordField.getPassword();

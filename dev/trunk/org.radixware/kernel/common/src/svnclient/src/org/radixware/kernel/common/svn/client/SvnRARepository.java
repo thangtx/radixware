@@ -91,7 +91,7 @@ public class SvnRARepository extends SvnRepository {
 
                 individualProps.add(RAMessage.MessageItem.newWord(SvnEntry.DIRENT_LAST_AUTHOR));
 
-                params.add(getRevisionItem(revision));
+                params.add(getRevisionItem(revision, true));
                 params.add(RAMessage.MessageItem.newBoolean(true));
                 params.add(RAMessage.MessageItem.newBoolean(true));
                 params.add(RAMessage.MessageItem.newList(individualProps));
@@ -115,7 +115,7 @@ public class SvnRARepository extends SvnRepository {
             getConnection().write(RAMessage.MessageItem.newWord("stat"),
                     RAMessage.MessageItem.newList(
                             RAMessage.MessageItem.newString(path),
-                            getRevisionItem(revision)));
+                            getRevisionItem(revision, true)));
             authenticate();
             List<RAMessage.MessageItem> items = getConnection().read(true, RAMessage.LIST);
             if (items.isEmpty()) {
@@ -195,7 +195,7 @@ public class SvnRARepository extends SvnRepository {
             getConnection().write(RAMessage.MessageItem.newWord("get-file"),
                     RAMessage.MessageItem.newList(
                             RAMessage.MessageItem.newString(path),
-                            getRevisionItem(revision),
+                            getRevisionItem(revision, true),
                             RAMessage.MessageItem.newBoolean(props != null),
                             RAMessage.MessageItem.newBoolean(contents != null)));
 
@@ -284,7 +284,7 @@ public class SvnRARepository extends SvnRepository {
             getConnection().write(RAMessage.MessageItem.newWord("stat"),
                     RAMessage.MessageItem.newList(
                             RAMessage.MessageItem.newString(path),
-                            getRevisionItem(revision)));
+                            getRevisionItem(revision, true)));
 
             authenticate();
             List<RAMessage.MessageItem> values = getConnection().read(true, RAMessage.LIST);
@@ -311,7 +311,7 @@ public class SvnRARepository extends SvnRepository {
             getConnection().write(RAMessage.MessageItem.newWord("check-path"),
                     RAMessage.MessageItem.newList(
                             RAMessage.MessageItem.newString(path),
-                            getRevisionItem(revision)));
+                            getRevisionItem(revision, true)));
 
             authenticate();
             List<RAMessage.MessageItem> values = getConnection().read(true, RAMessage.WORD);
@@ -333,8 +333,8 @@ public class SvnRARepository extends SvnRepository {
             connect();
             getConnection().write(RAMessage.MessageItem.newWord("replay"),
                     RAMessage.MessageItem.newList(
-                            getRevisionItem(highRevision),
-                            getRevisionItem(lowRevision),
+                            getRevisionItem(highRevision, false),
+                            getRevisionItem(lowRevision, false),
                             RAMessage.MessageItem.newBoolean(sendDeltas)));
             authenticate();
             SvnRAEditModeReader reader = new SvnRAEditModeReader(getConnection(), (SvnRAEditor) editor, true);
@@ -345,13 +345,19 @@ public class SvnRARepository extends SvnRepository {
         }
     }
 
-    private RAMessage.MessageItem getRevisionItem(long revision) {
+    private RAMessage.MessageItem getRevisionItem(long revision, final boolean asList) {
         if (revision < 0) {
             return RAMessage.MessageItem.emptyList();
         } else {
-            return RAMessage.MessageItem.newList(RAMessage.MessageItem.newNumber(revision));
+            if (asList) {
+                return RAMessage.MessageItem.newList(RAMessage.MessageItem.newNumber(revision));
+            }
+            else {
+                return (RAMessage.MessageItem.newNumber(revision));
+            }
         }
     }
+    
 
     @Override
     public void setRevisionPropertyValue(long revision, String propertyName, SvnProperties.Value value) throws RadixSvnException {
@@ -363,9 +369,9 @@ public class SvnRARepository extends SvnRepository {
             connect();
             getConnection().write(RAMessage.MessageItem.newWord("change-rev-prop"),
                     RAMessage.MessageItem.newList(
-                            getRevisionItem(revision)),
+                            getRevisionItem(revision, false),
                     RAMessage.MessageItem.newString(propertyName),
-                    RAMessage.MessageItem.newBytes(bytes));
+                    RAMessage.MessageItem.newBytes(bytes)));
 
             authenticate();
             getConnection().read(false);
@@ -387,20 +393,36 @@ public class SvnRARepository extends SvnRepository {
 
         try {
             connect();
-            getConnection().write(RAMessage.MessageItem.newWord("rev-proplist"),
-                    RAMessage.MessageItem.newList(
-                            getRevisionItem(revision)));
+            getConnection().write(RAMessage.MessageItem.newWord("rev-proplist"), getRevisionItem(revision, true));
 
             authenticate();
             List<RAMessage.MessageItem> list = getConnection().read(true, RAMessage.LIST);
-            //TODO: parse touple
+            fillProperties(list, properties);
             return properties;
-        } catch (RadixSvnException e) {
-            throw e;
-        } finally {
+        }
+        finally {
             disconnect();
         }
     }
+    
+    private static void fillProperties(final List<RAMessage.MessageItem> list, final SvnProperties properties) throws RadixSvnException{
+        assert(list.size()==1);
+        final RAMessage.MessageItem childList = list.get(0);
+        RAMessage.checkItemType(childList, RAMessage.MessageItemType.LIST);
+        for (RAMessage.MessageItem item : childList.getList()){
+            RAMessage.checkListLen(item, 2);//name and value
+            final List<RAMessage.MessageItem> nameAndVal = item.getList();
+            final RAMessage.MessageItem name = nameAndVal.get(0);
+            final RAMessage.MessageItem value = nameAndVal.get(1);
+
+            RAMessage.checkItemType(name, RAMessage.MessageItemType.STRING);
+            RAMessage.checkItemType(value, RAMessage.MessageItemType.STRING);
+            final SvnProperties.Value val = new SvnProperties.Value(value.getString(), null);
+            properties.set(name.getString(), val);
+        }        
+        
+    }
+    
 
     @Override
     public SvnEditor getEditor(String logMessage) throws RadixSvnException {

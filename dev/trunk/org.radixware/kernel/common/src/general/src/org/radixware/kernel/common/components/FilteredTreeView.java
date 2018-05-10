@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.Icon;
+import javax.swing.JPopupMenu;
 
 
 public class FilteredTreeView extends TreeView {
@@ -52,6 +53,11 @@ public class FilteredTreeView extends TreeView {
                 } else {
                     throw new IllegalStateException();
                 }
+            }
+
+            @Override
+            protected void beforePaint() {
+                Item.this.beforePaint();
             }
         }
         private final TreeView.Node node;
@@ -135,6 +141,7 @@ public class FilteredTreeView extends TreeView {
                     }
                 }
                 root.registerItem(this);
+                onRegister();
             }
         }
 
@@ -147,8 +154,13 @@ public class FilteredTreeView extends TreeView {
                     }
                 }
                 root.unregisterItem(this);
+                onUnregister();
             }
         }
+        
+        protected void onRegister(){}
+        
+        protected void onUnregister(){}
         
         public void add(Item item) {
             add(item, true);
@@ -239,6 +251,12 @@ public class FilteredTreeView extends TreeView {
                 throw new IllegalStateException();
             }
         }
+        
+        public void reload(){
+            node.reload();
+        }
+        
+        public void beforePaint(){}
     }
 
     private static class Root extends Item {
@@ -278,5 +296,17 @@ public class FilteredTreeView extends TreeView {
 
     public Item getRoot() {
         return root;
+    }
+
+    @Override
+    public JPopupMenu getPopupMenu(Node node) {
+        if (node instanceof Item.Node){
+            return getPopupMenu(((Item.Node)node).getItem());
+        }
+        return super.getPopupMenu(node);
+    }
+
+    public JPopupMenu getPopupMenu(Item item) {
+        return getPopupMenu();
     }
 }

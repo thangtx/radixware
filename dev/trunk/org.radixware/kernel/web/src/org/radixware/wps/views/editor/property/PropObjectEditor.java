@@ -12,12 +12,12 @@
 package org.radixware.wps.views.editor.property;
 
 import org.radixware.kernel.common.client.Clipboard;
+import org.radixware.kernel.common.client.editors.property.PropEditorOptions;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.items.ModelItem;
 import org.radixware.kernel.common.client.models.items.properties.PropertyObject;
-import org.radixware.kernel.common.client.models.items.properties.PropertyValue;
 import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.client.widgets.IButton.ClickHandler;
 import org.radixware.wps.rwt.ToolButton;
@@ -25,7 +25,7 @@ import org.radixware.wps.rwt.ToolButton;
 
 public class PropObjectEditor extends PropReferenceEditor {
 
-    private ToolButton deleteObjectButton;
+    protected final ToolButton deleteObjectButton;
     protected final ToolButton copyObjectButton;
     protected final ToolButton pasteObjectButton;
     
@@ -50,6 +50,8 @@ public class PropObjectEditor extends PropReferenceEditor {
                 deleteObject();
             }
         });
+        addButton(deleteObjectButton);
+        
         copyObjectButton = new ToolButton();
         copyObjectButton.setObjectName("tbCopyObject");
         copyObjectButton.setToolTip(getEnvironment().getMessageProvider().translate("PropertyEditor", "Copy Object"));
@@ -61,6 +63,8 @@ public class PropObjectEditor extends PropReferenceEditor {
                 copyObject();
             }
         });
+        addButton(copyObjectButton);
+        
         pasteObjectButton = new ToolButton();
         pasteObjectButton.setObjectName("tbPasteObject");
         pasteObjectButton.setToolTip(getEnvironment().getMessageProvider().translate("PropertyEditor", "Paste Object"));
@@ -72,6 +76,7 @@ public class PropObjectEditor extends PropReferenceEditor {
                 pasteObject();
             }
         });
+        addButton(pasteObjectButton);
     }
 
     @Override
@@ -94,31 +99,14 @@ public class PropObjectEditor extends PropReferenceEditor {
 
     private void deleteObject() {
         final PropertyObject property = (PropertyObject) getProperty();
-        if (property.getValueObject() != null) {
-            if (property.getInheritableValue() != null) {
-                property.setValueObject(null);
-            } else {
-                try {
-                    final EntityModel entity = property.openEntityModel();
-                    if (entity.delete(false)) {
-                        final PropertyValue serverValue = new PropertyValue(
-                                property.getDefinition(),
-                                null,//value
-                                false,//isOwn
-                                false,//isDefined
-                                false//isReadonly
-                                );
-                        property.setServerValue(serverValue);
-                        ((EntityModel) property.getOwner()).afterChangePropertyObject(property);
-                    }
-                } catch (InterruptedException ex) {
-                } catch (Exception ex) {
-                    final String msg = getEnvironment().getMessageProvider().translate("ExplorerException", "Can't remove value for \'%s\': \n%s");
-                    final String message = String.format(msg, property.getTitle(), ClientException.getExceptionReason(getEnvironment().getMessageProvider(), ex));
-                    processException(ex, getEnvironment().getMessageProvider().translate("ExplorerException", "Error on Removing Value"), message);
-                }
-            }
-        }
+        try{
+            property.delete();
+        } catch (InterruptedException ex) {
+        } catch (Exception ex) {
+            final String msg = getEnvironment().getMessageProvider().translate("ExplorerException", "Can't remove value for \'%s\': \n%s");
+            final String message = String.format(msg, property.getTitle(), ClientException.getExceptionReason(getEnvironment().getMessageProvider(), ex));
+            processException(ex, getEnvironment().getMessageProvider().translate("ExplorerException", "Error on Removing Value"), message);
+        }                
         this.refresh(getProperty());
     }
     
@@ -163,9 +151,7 @@ public class PropObjectEditor extends PropReferenceEditor {
             copyObjectButton.setVisible(false);
         } else {
             deleteObjectButton.setVisible(!controller.isReadonly() && property.canDelete());
-            copyObjectButton.setVisible(!controller.isReadonly()
-                    && ((EntityModel) property.getOwner()).isExists()
-                    && !property.getVal().isBroken());
+            copyObjectButton.setVisible(!controller.isReadonly() && property.canCopy());
         }
         updatePasteObjectButton();
     }
@@ -184,7 +170,7 @@ public class PropObjectEditor extends PropReferenceEditor {
     protected boolean isSelectButtonVisible() {
         final PropertyObject property = (PropertyObject) getProperty();
         if (property.getValueObject() == null) {
-            return !controller.isReadonly() && property.canCreate();
+            return !controller.isReadonly() && !controller.isInheritedValue() && property.canCreate();
         } else {
             return false;
         }
@@ -205,4 +191,11 @@ public class PropObjectEditor extends PropReferenceEditor {
         getEnvironment().getClipboard().removeChangeListener(clipboardChangeListener);
         super.closeEditor();
     }       
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void updateEditor(final Object currentValue, final Object initialValue, final PropEditorOptions options) {
+        options.setMandatory(true);//make clear button invisible
+        super.updateEditor(currentValue, initialValue, options);
+    }    
 }

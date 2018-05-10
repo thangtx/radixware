@@ -26,6 +26,7 @@ public final class RadContextlessCommandDef extends RadDefinition {
 
     private final IRadContextlessCommandExecutor cmdExecutor;
     private final ECommandNature nature;
+    private final boolean traceGuiActivity;
 
     /*
      * public TDbuContextlessCommandDef(String CODE_ASSISTANCE, String string,
@@ -40,7 +41,7 @@ public final class RadContextlessCommandDef extends RadDefinition {
             final String name,
             final ECommandNature nature,
             final IRadContextlessCommandExecutor cmdExecutor) {
-        this(arte.getDefManager().getReleaseCache().getRelease(), id, name, nature, cmdExecutor);
+        this(arte.getDefManager().getReleaseCache().getRelease(), id, name, nature, cmdExecutor, true);
     }
     
     public RadContextlessCommandDef(
@@ -49,9 +50,20 @@ public final class RadContextlessCommandDef extends RadDefinition {
             final String name,
             final ECommandNature nature,
             final IRadContextlessCommandExecutor cmdExecutor) {
+        this(release, id, name, nature, cmdExecutor, true);
+    }
+    
+    public RadContextlessCommandDef(
+            final Release release,
+            final Id id,
+            final String name,
+            final ECommandNature nature,
+            final IRadContextlessCommandExecutor cmdExecutor, 
+            boolean traceGuiActivity) {
         super(id, name);
         this.nature = nature;
         this.cmdExecutor = cmdExecutor;
+        this.traceGuiActivity = traceGuiActivity;
         link(release);
     }
     
@@ -106,5 +118,9 @@ public final class RadContextlessCommandDef extends RadDefinition {
      */
     public ECommandNature getNature() {
         return nature;
+    }
+
+    public boolean getUsrActionsIsTraced() {
+        return traceGuiActivity;
     }
 }

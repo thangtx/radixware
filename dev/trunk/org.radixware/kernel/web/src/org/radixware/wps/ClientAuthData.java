@@ -11,6 +11,7 @@
 
 package org.radixware.wps;
 
+import java.util.Objects;
 import org.radixware.kernel.common.utils.Base64;
 
 
@@ -47,4 +48,36 @@ final class ClientAuthData {
     public byte[] getToken(){
         return token==null || token.isEmpty() ? null : Base64.decode(this.token);
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.token);
+        hash = 23 * hash + (this.isBasicAuth ? 1 : 0);
+        hash = 23 * hash + (this.isNtlmAuth ? 1 : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ClientAuthData other = (ClientAuthData) obj;
+        if (!Objects.equals(this.token, other.token)) {
+            return false;
+        }
+        if (this.isBasicAuth != other.isBasicAuth) {
+            return false;
+        }
+        if (this.isNtlmAuth != other.isNtlmAuth) {
+            return false;
+        }
+        return true;
+    }
+    
+    
 }

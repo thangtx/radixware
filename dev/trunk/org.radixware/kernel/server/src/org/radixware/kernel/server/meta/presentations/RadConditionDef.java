@@ -122,6 +122,7 @@ public final class RadConditionDef {
 
         public final static Prop2ValueCondition EMPTY_CONDITION = new Prop2ValueCondition(new Id[]{}, new String[]{});
         private final Map<Id, String> propVals;
+        private final String cacheKey;
         //@GuardedBy cachedDataSem
         protected List<String> cachedAccessAreaList;
         //@GuardedBy cachedDataSem
@@ -129,9 +130,30 @@ public final class RadConditionDef {
         protected final Object cachedDataSem = new Object();
 
         public Prop2ValueCondition(Id[] propIds, String[] propVals) {
-            this.propVals = new HashMap<>(4);
-            for (int i = 0; i < propIds.length; i++) {
-                this.propVals.put(propIds[i], propVals[i]);
+            if (propIds.length==0){
+                this.propVals = Collections.<Id,String>emptyMap();
+                cacheKey = "";                
+            }else{
+                this.propVals = new HashMap<>(4);
+                final StringBuilder cacheKeyBuilder = new StringBuilder();
+                Id propId;
+                String propVal;
+                for (int i = 0; i < propIds.length; i++) {
+                    if (i>0){
+                        cacheKeyBuilder.append('\n');
+                    }
+                    propId = propIds[i];
+                    propVal = propVals[i];
+                    cacheKeyBuilder.append(propId.toString());                
+                    if (propVal!=null){
+                        cacheKeyBuilder.append('=');
+                        if (!propVal.isEmpty()){
+                            cacheKeyBuilder.append(propVal.replaceAll("=", "\\=").replaceAll("\\n", "\\\\n"));
+                        }
+                    }
+                    this.propVals.put(propId, propVal);
+                }
+                cacheKey = cacheKeyBuilder.toString();
             }
         }
 
@@ -316,6 +338,10 @@ public final class RadConditionDef {
             }
             return Collections.emptyList();
         }
+        
+        public String getCacheKey(){
+            return cacheKey;
+        }
 
         private static void fillAcsAreaList(final Arte arte,
                 final Map<RadPropDef, String> valAsStrByPropDef,
@@ -418,11 +444,19 @@ public final class RadConditionDef {
 
         private final Prop2ValueCondition condition1;
         private final Prop2ValueCondition condition2;
+        private final String cacheKey;
 
         public MergedProp2ValueCondition(final Prop2ValueCondition condition1, final Prop2ValueCondition condition2) {
             super(new Id[]{}, new String[]{});
             this.condition1 = condition1;
             this.condition2 = condition2;
+            if (condition1==null || condition1.getCacheKey().isEmpty()){
+                cacheKey = condition2==null ? "" : condition2.getCacheKey();
+            }else if (condition2==null || condition2.getCacheKey().isEmpty()){
+                cacheKey = condition1.getCacheKey();
+            }else{
+                cacheKey = condition1.getCacheKey()+"\n"+condition2.getCacheKey();
+            }
         }
 
         @Override
@@ -486,5 +520,10 @@ public final class RadConditionDef {
             }
             return Collections.emptyList();
         }
+
+        @Override
+        public String getCacheKey() {
+            return cacheKey;
+        }                
     }
 }

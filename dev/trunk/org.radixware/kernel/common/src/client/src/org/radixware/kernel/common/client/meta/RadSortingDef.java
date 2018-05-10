@@ -119,6 +119,11 @@ public class RadSortingDef extends TitledDefinition implements IGroupSetting{
     public boolean isValid() {
         return true;
     }
+    
+    @Override
+    public final boolean isVisible(){
+        return true;
+    }
 
     @Override
     public boolean hasAncestor() {

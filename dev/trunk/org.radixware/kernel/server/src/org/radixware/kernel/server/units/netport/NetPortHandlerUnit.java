@@ -21,6 +21,7 @@ import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.enums.EUnitType;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.trace.LocalTracer;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.aio.Event;
 import org.radixware.kernel.server.aio.EventDispatcher;
 import org.radixware.kernel.server.aio.EventDispatcher.TimerEvent;
@@ -28,6 +29,7 @@ import org.radixware.kernel.server.aio.ServiceManifestLoader;
 import org.radixware.kernel.server.aio.ServiceManifestServerLoader;
 import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.monitoring.AbstractMonitor;
 import org.radixware.kernel.server.monitoring.ChainStat;
 import org.radixware.kernel.server.monitoring.IStatValue;
@@ -35,6 +37,7 @@ import org.radixware.kernel.server.monitoring.IntegralCountStat;
 import org.radixware.kernel.server.monitoring.MetricParameters;
 import org.radixware.kernel.server.monitoring.MonitorFactory;
 import org.radixware.kernel.server.monitoring.RegisteredItem;
+import org.radixware.kernel.server.sc.AasClientPool;
 import org.radixware.kernel.server.trace.DbLog;
 import org.radixware.kernel.server.units.AsyncEventHandlerUnit;
 import org.radixware.kernel.server.units.UnitView;
@@ -43,7 +46,7 @@ import org.radixware.kernel.server.utils.OptionsGroup;
 public final class NetPortHandlerUnit extends AsyncEventHandlerUnit {
 
     private static final int TIC_MILLIS = 1000;
-    private final DbQueries netPortHndlDbQueries;
+    private final NetPortDbQueries netPortHndlDbQueries;
     private final Channels netChannels;
     private final Seances seances;
     private final NetPortAasClientPool aasClientsPool;
@@ -56,12 +59,12 @@ public final class NetPortHandlerUnit extends AsyncEventHandlerUnit {
     private final ChainStat aasWaitStat = new ChainStat(1000, 5000);
     private final IntegralCountStat activeAasSeancesStat = new IntegralCountStat(new MetricParameters(null, 01, TIC_MILLIS));
     private final ObjectName jmxNphStateName;
-    private NetPortHandlerMXBean jmxNphStateBean;
     private volatile NetPortHandlerState jmxState = new NetPortHandlerState(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     private long lastQueueStatCalcMillis;
     private int queuePuts;
     private int queueRemoves;
     private int activeAasSeancesCount;
+    private long lastMaintenanceMillis = 0;
 
     public NetPortHandlerUnit(final Instance instModel, final Long id, final String title) {
         super(instModel, id, title, new MonitorFactory() {
@@ -70,7 +73,7 @@ public final class NetPortHandlerUnit extends AsyncEventHandlerUnit {
                 return new NetPortHandlerMonitor((NetPortHandlerUnit) target);
             }
         });
-        netPortHndlDbQueries = new DbQueries(this);
+        netPortHndlDbQueries = new NetPortDbQueries(this);
         netChannels = new Channels(this);
         seances = new Seances(this);
         aasClientsPool = new NetPortAasClientPool(this);
@@ -168,7 +171,7 @@ public final class NetPortHandlerUnit extends AsyncEventHandlerUnit {
             return false;
         }
 
-        seances.setCurSeancesCountInDbForcibly();
+        seances.setCurSeancesCountInDbForAll();
 
         getDispatcher().waitEvent(new EventDispatcher.TimerEvent(), this, System.currentTimeMillis());
 
@@ -192,28 +195,60 @@ public final class NetPortHandlerUnit extends AsyncEventHandlerUnit {
             }, jmxNphStateName);
         }
 
+        lastMaintenanceMillis = 0;
+
         return true;
     }
 
     @Override
     protected void stopImpl() {
         if (service != null) {
-            service.stop();
-            service = null;
+            try {
+                service.stop();
+            } catch (Throwable t) {
+                logErrorOnStop(t);
+            } finally {
+                service = null;
+            }
         }
-        seances.closeAll();
+        try {
+            seances.closeAll();
+        } catch (Throwable t) {
+            logErrorOnStop(t);
+        }
         if (netChannels != null) {
-            netChannels.stop();
+            try {
+                netChannels.stop();
+            } catch (Throwable t) {
+                logErrorOnStop(t);
+            }
         }
         processAllEventsSuppressingRuntimeExceptions();
-        seances.setCurSeancesCountInDbForcibly();
-        if (netChannels != null) {
-            netChannels.clear();
+        try {
+            seances.setCurSeancesCountInDbForAll();
+        } catch (Throwable t) {
+            logErrorOnStop(t);
         }
 
-        channelsDbLog.doFlush();
+        if (netChannels != null) {
+            try {
+                netChannels.clear();
+            } catch (Throwable t) {
+                logErrorOnStop(t);
+            }
+        }
+        try {
+            channelsDbLog.doFlush();
+        } catch (Throwable t) {
+            logErrorOnStop(t);
+        }
 
-        aasClientsPool.closeAll();
+        try {
+            aasClientsPool.closeAll();
+        } catch (Throwable t) {
+            logErrorOnStop(t);
+        }
+
         manifestLoader = null;
         super.stopImpl();
     }
@@ -221,11 +256,27 @@ public final class NetPortHandlerUnit extends AsyncEventHandlerUnit {
     @Override
     protected void maintenanceImpl() throws InterruptedException {
         super.maintenanceImpl();
-        for (NetChannel channel : getChannels()) {
-            channel.maintenance();
-        }
         aasClientsPool.tryInvoke();
-        aasClientsPool.maintenance();
+
+        final long curMillis = System.currentTimeMillis();
+        if (Math.abs(lastMaintenanceMillis - curMillis) > TIC_MILLIS) {
+            for (NetChannel channel : getChannels()) {
+                try {
+                    channel.maintenance();
+                } catch (Exception ex) {
+                    getTrace().put(EEventSeverity.ERROR, "Error on channel '" + channel.getTitle() + "' maintenance: " + ExceptionTextFormatter.throwableToString(ex), EEventSource.NET_PORT_HANDLER);
+                }
+            }
+            aasClientsPool.maintenance();
+            getSeances().maintenance();
+            lastMaintenanceMillis = curMillis;
+        }
+
+        for (NetChannel channel : getChannels()) {
+            if (!channel.getOptions().isListener && channel.isStarted()) {
+                ((NetClient) channel).processQueue();
+            }
+        }
     }
 
     public DbLog getChannelsDbLog() {
@@ -242,7 +293,7 @@ public final class NetPortHandlerUnit extends AsyncEventHandlerUnit {
     }
 
     @Override
-    protected void setDbConnection(final Connection dbConnection) {
+    protected void setDbConnection(final RadixConnection dbConnection) {
         netPortHndlDbQueries.closeAll();
 
         if (channelsDbLog != null) {
@@ -264,9 +315,6 @@ public final class NetPortHandlerUnit extends AsyncEventHandlerUnit {
 
     @Override
     protected void rereadOptionsImpl() throws SQLException, InterruptedException {
-        //for (NetChannel l : netChannels) {
-        //    l.rereadOptions();
-        //}
         netChannels.reread();
         final Options newOptions = netPortHndlDbQueries.readUnitOptions();
         if (!newOptions.equals(options)) {
@@ -278,6 +326,7 @@ public final class NetPortHandlerUnit extends AsyncEventHandlerUnit {
         {
             requestStopAndPostponedRestart("unable to restart service");
         }
+        getAasClientsPool().setOptions(new AasClientPool.AasClientPoolOptions(options.maxAasSeancesCount));
     }
 
     void applyChannelsSettings() throws InterruptedException {
@@ -304,7 +353,7 @@ public final class NetPortHandlerUnit extends AsyncEventHandlerUnit {
         return netChannels.toArray(new NetChannel[]{});
     }
 
-    DbQueries getNetPortHandlerDbQueries() {
+    NetPortDbQueries getNetPortHandlerDbQueries() {
         return netPortHndlDbQueries;
     }
 

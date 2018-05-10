@@ -49,16 +49,29 @@ public class LocalizedStringInfo implements ILocalizedStringInfo {
     public boolean isNeedsCheck(EIsoLanguage language) {
         return string.getNeedsCheck(language);
     }
+    
+    
+    @Override
+    public boolean isAgreed(EIsoLanguage language) {
+        return string.isAgreed(language);
+    }
 
     @Override
-    public String asHtml(EIsoLanguage language) {
+    public String asHtml(EIsoLanguage language, boolean isNeedsCheckedInfo, boolean isNeedAgreedInfo) {
         final StringBuilder sb = new StringBuilder(128);
-
-        sb.append("<html><body>")
-                .append("<p><b>")
+         sb.append("<html><body>");
+        if (isNeedsCheckedInfo){
+            sb.append("<p><b>")
                 .append(isNeedsCheck(language) ? "Unchecked" : "Checked")
                 .append("</b></p>");
-
+        }
+        
+        if (isNeedAgreedInfo){
+            sb.append("<p><b>")
+                .append(isAgreed(language) ? "Agreed" : "None agreed")
+                .append("</b></p>");
+        }
+        
         final String author = getAuthor();
         if (author != null && !author.isEmpty()) {
             sb.append("<p>Created by: ")
@@ -86,7 +99,19 @@ public class LocalizedStringInfo implements ILocalizedStringInfo {
                     .append("</p>")
                     .append("</body></html>");
         }
-
+        
         return sb.toString();
     }
+
+    @Override
+    public String isCheckedHtml(EIsoLanguage language) {
+        return asHtml(language, true, false);
+    }
+
+    @Override
+    public String isAgreedHtml(EIsoLanguage language) {
+        return asHtml(language, false, true);
+    }
+    
+    
 }

@@ -86,7 +86,7 @@ final class ContextlessCommandRequest extends SessionRequest {
 			throw EasFaults.exception2Fault(getArte(), e, "Can't execute the command");
 		}
         //RADIX-4400 "User '%1' executed contextless command '%2'", EAS, Debug
-        if (getUsrActionsIsTraced()) {
+        if (getUsrActionsIsTraced() && cmd.getUsrActionsIsTraced()) {
             getArte().getTrace().put(
                 Messages.MLS_ID_EAS_CNTXTLESS_COMMAND,
                 new ArrStr (
@@ -99,13 +99,18 @@ final class ContextlessCommandRequest extends SessionRequest {
 
 	@Override
 	void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
-		prepare(((ContextlessCommandMess) rqXml).getContextlessCommandRq());
+                    super.prepare(rqXml);
+                    prepare(((ContextlessCommandMess) rqXml).getContextlessCommandRq());
 	}
 
 	@Override
 	XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-            final ContextlessCommandDocument doc = process((ContextlessCommandMess) rq);
-            postProcess(rq, doc.getContextlessCommand().getContextlessCommandRs());
-            return doc;
+                    ContextlessCommandDocument doc = null;
+                    try{
+                        doc = process((ContextlessCommandMess) rq);
+                    }finally{
+                        postProcess(rq, doc==null ? null : doc.getContextlessCommand().getContextlessCommandRs());
+                    }
+                    return doc;
 	}
 }

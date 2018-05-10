@@ -22,6 +22,7 @@ import org.radixware.kernel.server.meta.clazzes.RadPropDef;
 import org.radixware.kernel.server.meta.presentations.RadClassPresentationDef.ClassCatalog;
 import org.radixware.kernel.server.meta.presentations.RadConditionDef;
 import org.radixware.kernel.server.meta.presentations.RadParentTitlePropertyPresentationDef;
+import org.radixware.kernel.server.meta.presentations.RadSelectorPresentationDef;
 import org.radixware.kernel.server.types.EntityGroup;
 import org.radixware.kernel.server.types.EntityGroup.Context;
 import org.radixware.kernel.server.types.IRadClassInstance;
@@ -132,7 +133,9 @@ final class ReportPropContext  extends PropContext{
 
     @Override
     ReportPropertyPresentationContext getPresentationContext(final EntityGroup entityGroup) {
-        return new ReportPropertyPresentationContext(report,getPropertyId(),entityGroup);
+        final RadSelectorPresentationDef selectorPresentation = getSelectorPresentation();
+        final Id selectorPresentationId = selectorPresentation==null ? null : selectorPresentation.getId();
+        return new ReportPropertyPresentationContext(report,getPropertyId(),entityGroup, selectorPresentationId);
     }
         
 }

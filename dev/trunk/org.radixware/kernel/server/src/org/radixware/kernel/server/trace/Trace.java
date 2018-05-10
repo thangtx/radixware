@@ -13,8 +13,9 @@ package org.radixware.kernel.server.trace;
 import org.radixware.kernel.common.defs.utils.MlsProcessor;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Stack;
 import org.apache.commons.logging.LogFactory;
 import org.radixware.kernel.common.defs.utils.ISeverityByCodeCalculator;
@@ -31,7 +32,9 @@ import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.server.arte.Arte;
+import org.radixware.kernel.server.instance.ArteStateWriter;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.instance.TraceProfileInfo;
 
 /**
  * Трасса.
@@ -46,7 +49,8 @@ import org.radixware.kernel.server.instance.Instance;
  */
 public class Trace implements IRadixTrace {
 
-    private static final boolean LOG_TRACE_PROFILE_CHANGE = SystemPropUtils.getBooleanSystemProp("rdx.log.trace.profile.change", false);
+    private static final boolean RECORD_CONTEXT_ENTER_STACK = SystemPropUtils.getBooleanSystemProp("rdx.trace.record.context.enter.stack", false);
+
     protected final MlsProcessor mlsProcessor;
     protected final Arte arte;
     protected final Instance instance;
@@ -57,6 +61,7 @@ public class Trace implements IRadixTrace {
     private String contextTypes = "";
     private String contextIds = "";
     private String normalizedContextStackAsStr = null;
+    private final Map<String, TraceProfileInfo> desc2TraceProfileInfo = new HashMap<>();
 
     public static class Factory {
 
@@ -88,34 +93,66 @@ public class Trace implements IRadixTrace {
     }
 
 //************************************* TARGETS *******************************************
+    @Deprecated
+    /**
+     * Use prototype with description
+     */
     public Object addTargetBuffer(final String profile, final TraceBuffer buffer) {
-        final TraceTarget t = new TraceTarget(new TraceProfile(profile), buffer);
-        if (minSeverity > t.getProfile().getMinSeverity()) {
+        return addTargetBuffer(profile, buffer, null, false);
+    }
+
+    @Deprecated
+    /**
+     * Use prototype with description
+     */
+    public Object addTargetBuffer(final String profile, final TraceBuffer buffer, final boolean passive) {
+        return addTargetBuffer(profile, buffer, null, passive);
+    }
+
+    public Object addTargetBuffer(final String profile, final TraceBuffer buffer, final String description) {
+        return addTargetBuffer(profile, buffer, description, false);
+    }
+
+    public Object addTargetBuffer(final String profile, final TraceBuffer buffer, final String description, final boolean passive) {
+        final String effectiveDesc = description == null ? ExceptionTextFormatter.getCurrentStackAsStr() : description;
+        final TraceTarget t = new TraceTarget(new TraceProfile(profile), buffer, effectiveDesc, passive);
+        if (!passive && minSeverity > t.getProfile().getMinSeverity()) {
             minSeverity = t.getProfile().getMinSeverity();
+
+        }
+        if (buffer == null && !passive) {
+            registerTraceProfileInfo(profile, effectiveDesc, System.currentTimeMillis());
         }
         targets.add(t);
         return t;
+    }
+
+    private void registerTraceProfileInfo(final String profile, final String description, final long touchTimeMillis) {
+        if (profile != null) {
+            desc2TraceProfileInfo.put(description, new TraceProfileInfo(description, profile, touchTimeMillis));
+        }
     }
 
     public List<TraceTarget> getTargets() {
         return targets;
     }
 
+    @Deprecated
+    /**
+     * Use prototype with description
+     */
     public Object addTargetLog(final String profile) {
-        boolean isUniqueProfile = true;
-        for (TraceTarget tt : targets) {
-            if (tt.getProfile() != null && Objects.equals(tt.getProfile().toString(), profile)) {
-                isUniqueProfile = false;
-            }
-        }
-        final TraceTarget t = new TraceTarget(new TraceProfile(profile), null);
+        return addTargetLog(profile, null);
+    }
+
+    public Object addTargetLog(final String profile, final String description) {
+        final String effectiveDesc = description == null ? ExceptionTextFormatter.getCurrentStackAsStr() : description;
+        registerTraceProfileInfo(profile, effectiveDesc, System.currentTimeMillis());
+        final TraceTarget t = new TraceTarget(new TraceProfile(profile), null, effectiveDesc, false);
         if (minSeverity > t.getProfile().getMinSeverity()) {
             minSeverity = t.getProfile().getMinSeverity();
         }
         targets.add(t);
-        if (LOG_TRACE_PROFILE_CHANGE && isUniqueProfile && getMinSeverity(EEventSource.ARTE_TRACE) <= EEventSeverity.DEBUG.getValue()) {
-            put(EEventSeverity.DEBUG, "New trace profile added: " + profile + "\n" + ExceptionTextFormatter.getCurrentStackAsStr(), EEventSource.ARTE_TRACE);
-        }
         return t;
     }
 
@@ -124,6 +161,7 @@ public class Trace implements IRadixTrace {
             throw new IllegalArgumentError("Unknown trace target");
         }
         ((TraceTarget) handle).setProfile(new TraceProfile(profile));
+        registerTraceProfileInfo(profile, ((TraceTarget) handle).getDescription(), System.currentTimeMillis());
         calcMinSeverity();
     }
 
@@ -191,6 +229,14 @@ public class Trace implements IRadixTrace {
     }
 
     public void put(EEventSeverity severity, final String code, final List<String> words, final String source, final boolean isSensitive, final long timeMillis, final boolean flushToDbNow) {
+        put(severity, code, words, source, isSensitive, timeMillis, flushToDbNow, null);
+    }
+
+    public void put(EEventSeverity severity, final String code, final List<String> words, final String source, final boolean isSensitive, final long timeMillis, final boolean flushToDbNow, final List<TraceContext> additionalContexts) {
+        if (arte != null) {
+            arte.yeld();
+        }
+        ArteStateWriter.gatherCurrentThreadState();
         if (targets.isEmpty()) {
             return;
         }
@@ -207,7 +253,7 @@ public class Trace implements IRadixTrace {
             }
         }
         final long eventTimeMillis = timeMillis == -1 ? System.currentTimeMillis() : timeMillis;
-        final TraceItem it = new TraceItem(mlsProcessor, severity, code, words, source, getNormalizedContextStackAsStr(), isSensitive, eventTimeMillis);
+        final TraceItem it = new TraceItem(mlsProcessor, severity, code, words, source, getNormalizedContextStackAsStr(additionalContexts), isSensitive, eventTimeMillis);
         boolean bDbLogIsOn = false;
         for (TraceTarget t : targets) {
             if (t.getProfile().itemMatch(it)) {
@@ -219,8 +265,30 @@ public class Trace implements IRadixTrace {
             }
         }
         if (bDbLogIsOn && (!isSensitive || eventTimeMillis < instance.getSensitiveTracingFinishMillis())) {
-            dbLog.put(severity, code, words, source, contextTypes, contextIds, isSensitive, eventTimeMillis, flushToDbNow);
+            dbLog.put(severity, code, words, source, concatContextTypes(contextTypes, additionalContexts), concatContextIds(contextIds, additionalContexts), isSensitive, eventTimeMillis, flushToDbNow);
         }
+    }
+
+    private String concatContextTypes(String baseTypes, final List<TraceContext> additionalContexts) {
+        if (additionalContexts == null || additionalContexts.isEmpty()) {
+            return baseTypes;
+        }
+
+        for (TraceContext tc : additionalContexts) {
+            baseTypes = appendContextType(baseTypes, tc.type);
+        }
+        return baseTypes;
+    }
+
+    private String concatContextIds(String baseIds, final List<TraceContext> additionalContexts) {
+        if (additionalContexts == null || additionalContexts.isEmpty()) {
+            return baseIds;
+        }
+
+        for (TraceContext tc : additionalContexts) {
+            baseIds = appendContextType(baseIds, tc.id);
+        }
+        return baseIds;
     }
 
 //************************************* CONTEXT ************************************************
@@ -238,9 +306,17 @@ public class Trace implements IRadixTrace {
 
     public void enterContext(final String type, final String id) {
         normalizedContextStackAsStr = null;
-        contextStack.push(new TraceContext(type, id));
-        contextTypes = type + String.valueOf('\0') + contextTypes;
-        contextIds = id + String.valueOf('\0') + contextIds;
+        contextStack.push(new TraceContext(type, id, RECORD_CONTEXT_ENTER_STACK ? ExceptionTextFormatter.getCurrentStackAsStr() : null));
+        contextTypes = appendContextType(contextTypes, type);
+        contextIds = appendContextId(contextIds, id);
+    }
+
+    private String appendContextType(final String typeList, final String type) {
+        return type + String.valueOf('\0') + typeList;
+    }
+
+    private String appendContextId(final String idList, final String id) {
+        return id + String.valueOf('\0') + idList;
     }
 
     public void leaveContext(final EEventContextType type, final Long id) throws IllegalUsageError {
@@ -285,13 +361,14 @@ public class Trace implements IRadixTrace {
     }
 
     public String getNormalizedContextStackAsStr() {
+        return getNormalizedContextStackAsStr(null);
+    }
+
+    public String getNormalizedContextStackAsStr(final List<TraceContext> additionalContexts) {
         if (normalizedContextStackAsStr == null) {
-            final List<TraceContext> normalizedContext = new ArrayList<>(contextStack.size());
-            for (TraceContext context : contextStack) {
-                if (!normalizedContext.contains(context)) {
-                    normalizedContext.add(context);
-                }
-            }
+            final List<TraceContext> normalizedContext = new ArrayList<>(contextStack.size() + (additionalContexts == null ? 0 : additionalContexts.size()));
+            appendContextsNormalized(normalizedContext, contextStack);
+            appendContextsNormalized(normalizedContext, additionalContexts);
             final StringBuilder sb = new StringBuilder();
             sb.append("[");
             for (TraceContext context : normalizedContext) {
@@ -304,6 +381,17 @@ public class Trace implements IRadixTrace {
             normalizedContextStackAsStr = sb.toString();
         }
         return normalizedContextStackAsStr;
+    }
+
+    private void appendContextsNormalized(final List<TraceContext> base, final List<TraceContext> list) {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+        for (TraceContext context : list) {
+            if (!base.contains(context)) {
+                base.add(context);
+            }
+        }
     }
 
     public String getContextStackAsStr() {
@@ -345,19 +433,29 @@ public class Trace implements IRadixTrace {
     public final long getMinSeverity(final String eventSource) {
         long ms = Long.MAX_VALUE;
         for (TraceTarget target : targets) {
-            ms = Math.min(target.getProfile().getMinSeverity(eventSource), ms);
+            if (!target.isPassive()) {
+                ms = Math.min(target.getProfile().getMinSeverity(eventSource), ms);
+            }
         }
         return ms;
     }
 
     public void flush() {
         dbLog.flush();
+        flushProfileInfos();
     }
 
-    private final void calcMinSeverity() {
+    private void flushProfileInfos() {
+        instance.registerTraceProfileInfos(desc2TraceProfileInfo.values());
+        desc2TraceProfileInfo.clear();
+    }
+
+    private void calcMinSeverity() {
         minSeverity = Long.MAX_VALUE;
         for (TraceTarget target : targets) {
-            minSeverity = Math.min(target.getProfile().getMinSeverity(), minSeverity);
+            if (!target.isPassive()) {
+                minSeverity = Math.min(target.getProfile().getMinSeverity(), minSeverity);
+            }
         }
     }
 }

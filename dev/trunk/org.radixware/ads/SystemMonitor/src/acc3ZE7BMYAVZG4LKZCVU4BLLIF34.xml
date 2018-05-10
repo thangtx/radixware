@@ -50,6 +50,13 @@
           <Editing IsDuplicatesEnabled="true"/>
         </Presentation>
       </Property>
+      <Property Id="prfGTQT76RWZZBYPLETQESIL7OT5I" Name="title" Nature="3" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
     </Properties>
     <Methods>
       <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
@@ -130,6 +137,19 @@
           <xsc:PropSqlName TableId="acc3ZE7BMYAVZG4LKZCVU4BLLIF34" PropId="prf3RAZGGCM3JGMHKK73JNHMSQOXQ" Owner="THIS"/>
         </xsc:Item>
         <xsc:Item>
+          <xsc:Sql>,
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="colKK3G7VOVNBESRPNV7SEYWFKLDQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="acc3ZE7BMYAVZG4LKZCVU4BLLIF34" PropId="prfGTQT76RWZZBYPLETQESIL7OT5I" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
           <xsc:Sql>
 from 
     </xsc:Sql>
@@ -171,7 +191,20 @@ where
           <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciJG57PBLAWRCQVG2HZLZWKTSJME"/>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql> 
+          <xsc:Sql>
+        or </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col2JJNBDFWIVG47OCFOCMCXVBFXI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> =</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:ConstValue EnumId="acsF47GG6XUPJH5ZKZFOWDK7GI7LE" ItemId="aciOVR5CJIBJFEABDXN4KPOYMQKNE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
         or </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
@@ -229,13 +262,13 @@ where
         <xsc:Item>
           <xsc:Sql> is null
         or 
-        (cast(systimestamp as date) - cast(</xsc:Sql>
+        (sysdate - cast(</xsc:Sql>
         </xsc:Item>
         <xsc:Item>
           <xsc:PropSqlName TableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" PropId="colZN2B3DUPUBFXVP2Y6YPM4RPSV4" Owner="TABLE"/>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql> as date)) * 24 * 60 * 60 > </xsc:Sql>
+          <xsc:Sql> as date)) * 24 * 60 * 60 >= </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
           <xsc:PropSqlName TableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" PropId="col773ODXVAM5DIZIORVOBGIBYK7Y" Owner="TABLE"/>

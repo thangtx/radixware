@@ -20,37 +20,35 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
 import org.radixware.kernel.common.msdl.enums.EEncoding;
 import org.radixware.kernel.common.design.msdleditor.enums.EPieceType;
+import org.radixware.kernel.common.design.msdleditor.enums.EUnit;
+import org.radixware.kernel.common.msdl.MsdlField;
 import org.radixware.kernel.common.msdl.fields.IntFieldModel;
 import org.radixware.kernel.common.msdl.fields.StructureFieldModel;
 import org.radixware.schemas.msdl.*;
 
 
-public class FieldNamingPanel extends AbstractEditItem implements ActionListener {
+public class FieldNamingPanel extends AbstractMsdlPanel implements ActionListener, AbstractMsdlPanel.IEncodingField {
 
     private StructureFieldModel field;
     private IntField defaultLenField = null;
+    private IntField defaultLenFieldCopy = null;
+    private final transient MsdlField.MsdlFieldStructureChangedListener changeListener;
 
     /**
      * Creates new form FieldNamingPanel
      */
     public FieldNamingPanel() {
         initComponents();
+        changeListener = new MsdlStructChangedDefaultListener();
         DefaultComboBoxModel model = new DefaultComboBoxModel();
         model.addElement(EPieceType.FIXED_LEN);
         model.addElement(EPieceType.SEPARATED);
         model.addElement(EPieceType.EMBEDDED_LEN);
         piecePanel1.setModel(model);
-        ArrayList<JLabel> l = new ArrayList<JLabel>();
-        l.add(separatorLabel);
-        ArrayList<JComponent> e = new ArrayList<JComponent>();
-        e.add(fieldSeparatorPanel);
 
         DefaultComboBoxModel dlModel = new DefaultComboBoxModel();
         dlModel.addElement(EPieceType.FIXED_LEN);
@@ -79,9 +77,10 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
 
                         lengthPiecePanel.open(lenModel, dfl);
 
-                        lengthEncodingPane.setEncoding(EEncoding.getInstance(dfl.getEncoding()), EEncoding.NONE);
+                        lengthEncodingPane.setEncoding(EEncoding.getInstance(dfl.getEncoding()), EEncoding.getInstance(field.getEncoding(true)));
+                        defaultLenFieldCopy = lenModel.getField();
                     } else {
-                        dfl = IntField.Factory.newInstance();
+                        dfl = field.getStructure().addNewDefaultLengthFormat();
                         dfl.setName("DefaultLengthFieldFormatThatNooneMustEverTouch");
 
                         FixedLenDef fld = FixedLenDef.Factory.newInstance();
@@ -102,16 +101,17 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
 
                         lengthPiecePanel.open(ifm, dfl);
                         lengthEncodingPane.open(ifm.getMsdlField());
-                        field.getStructure().setDefaultLengthFormat(dfl);
+                        lengthEncodingPane.setEncoding(EEncoding.getInstance(dfl.getEncoding()), EEncoding.getInstance(field.getEncoding(true)));
                         field.setModified();
+                        defaultLenFieldCopy = ifm.getField();
                     }
                     defaultLenField = dfl;
-
                 } else {
                     boolean was = field.getStructure().getDefaultLengthFormat() != null;
                     setDefaultLenFormatEnabled(false);
                     
-                    field.getStructure().unsetDefaultLengthFormat();
+                    field.getStructure().unsetDefaultLengthFormat();     
+                    defaultLenField = null;
                     if (was)
                         field.setModified();
                 }
@@ -122,7 +122,7 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
     }
 
     public void open(StructureFieldModel field) {
-        super.open(field.getMsdlField());
+        super.open(field, field.getMsdlField());
         this.field = field;
         
         Piece piece = field.getStructure().getFieldNaming().getPiece();
@@ -137,23 +137,27 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
         lengthPiecePanel.setEnabled(false);
         lengthPiecePanel.setControlEnabled(false);
 
-        setupDefaultLength();
+        if (field.getStructure().getDefaultLengthFormat() != null) {
+            defaultLengthFormatCheckBox.setSelected(true);
+        }
 
         update();
         
-        fieldSeparatorPanel.addActionListener(this);
+        field.getMsdlField().getStructureChangedSupport().addEventListener(changeListener);
         lengthEncodingPane.addActionListener(this);
+        lengthEncodingPane.getSetParentPanel().addActionListener(this);
+        tagUnitPanel.addActionListener(this);
+        tagUnitPanel.getSetParentPanel().addActionListener(this);
     }
 
     @Override
     public void update() {
-        if (fieldSeparatorPanel.getViewEncoding() == EEncoding.HEX)
-            fieldSeparatorPanel.setLimit(2);
+        if (separatorPanel.getViewEncoding() == EEncoding.HEX)
+            separatorPanel.setLimit(2);
         else {
-            fieldSeparatorPanel.setLimit(1);
+            separatorPanel.setLimit(1);
         }
-        fieldSeparatorPanel.setValue(field.getStructure().getFieldSeparator(), 
-                EEncoding.getInstanceForHexViewType(field.getStructure().getFieldSeparatorViewType()));
+        separatorPanel.setValue(field.getStructure().getFieldSeparatorStart(), field.getStructure().getFieldSeparator());
         piecePanel1.update();
 
         if (defaultLengthFormatCheckBox.isSelected()) {
@@ -164,6 +168,11 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
         if(defaultLenField != null) {
             field.getStructure().setDefaultLengthFormat(defaultLenField);
         }
+        
+        final EUnit tagUnit = field.getStructure().getFieldNaming().getExtIdUnit() != null
+                ? EUnit.getInstance(field.getStructure().getFieldNaming().getExtIdUnit())
+                : EUnit.BYTE;
+        tagUnitPanel.setUnit(tagUnit, EUnit.NOTDEFINED);
 
         super.update();
     }
@@ -180,14 +189,14 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
 
         jScrollPane1 = new javax.swing.JScrollPane();
         defaultLengthPanel = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        separatorLabel = new javax.swing.JLabel();
-        fieldSeparatorPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.HexPanel();
         defaultLengthFormatCheckBox = new javax.swing.JCheckBox();
         piecePanel1 = new org.radixware.kernel.common.design.msdleditor.piece.PiecePanel();
         lengthEncodingPane = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.EncodingPanel();
         lengthPiecePanel = new org.radixware.kernel.common.design.msdleditor.piece.PiecePanel();
         alignLabel = new javax.swing.JLabel();
+        separatorPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.SeparatorPanel();
+        tagUnitPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel();
+        jLabel1 = new javax.swing.JLabel();
 
         setMinimumSize(new java.awt.Dimension(0, 0));
         setPreferredSize(new java.awt.Dimension(500, 700));
@@ -197,22 +206,6 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
 
         defaultLengthPanel.setLayout(new java.awt.GridBagLayout());
 
-        jPanel2.setPreferredSize(new java.awt.Dimension(269, 38));
-        jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
-
-        separatorLabel.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        separatorLabel.setText("Field Separator");
-        jPanel2.add(separatorLabel);
-        jPanel2.add(fieldSeparatorPanel);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        defaultLengthPanel.add(jPanel2, gridBagConstraints);
-
         defaultLengthFormatCheckBox.setText("Default length format");
         defaultLengthFormatCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -221,14 +214,11 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         defaultLengthPanel.add(defaultLengthFormatCheckBox, gridBagConstraints);
-
-        piecePanel1.setMinimumSize(new java.awt.Dimension(100, 130));
-        piecePanel1.setPreferredSize(new java.awt.Dimension(400, 130));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
@@ -236,11 +226,10 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.weighty = 0.4;
         defaultLengthPanel.add(piecePanel1, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         defaultLengthPanel.add(lengthEncodingPane, gridBagConstraints);
@@ -249,7 +238,7 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
         lengthPiecePanel.setPreferredSize(new java.awt.Dimension(400, 130));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
@@ -260,8 +249,27 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
         alignLabel.setText("Encoding");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 4;
         defaultLengthPanel.add(alignLabel, gridBagConstraints);
+
+        separatorPanel.addActionListener(this);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        defaultLengthPanel.add(separatorPanel, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        defaultLengthPanel.add(tagUnitPanel, gridBagConstraints);
+
+        jLabel1.setText("Tag Unit");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        defaultLengthPanel.add(jLabel1, gridBagConstraints);
 
         jScrollPane1.setViewportView(defaultLengthPanel);
 
@@ -285,25 +293,43 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
     private javax.swing.JLabel alignLabel;
     private javax.swing.JCheckBox defaultLengthFormatCheckBox;
     private javax.swing.JPanel defaultLengthPanel;
-    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.HexPanel fieldSeparatorPanel;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.EncodingPanel lengthEncodingPane;
     private org.radixware.kernel.common.design.msdleditor.piece.PiecePanel lengthPiecePanel;
     private org.radixware.kernel.common.design.msdleditor.piece.PiecePanel piecePanel1;
-    private javax.swing.JLabel separatorLabel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.SeparatorPanel separatorPanel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel tagUnitPanel;
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void actionPerformed(ActionEvent e) {      
-        field.getStructure().setFieldSeparator(fieldSeparatorPanel.getValue());
-        field.getStructure().setFieldSeparatorViewType(fieldSeparatorPanel.getViewEncoding().getValue());
-        if(defaultLenField != null) {
-            defaultLenField.setEncoding(lengthEncodingPane.getEncoding().getName());
-            field.getStructure().setDefaultLengthFormat(defaultLenField);
+    public EEncoding getEncoding() {
+        if (defaultLenField != null && defaultLengthFormatCheckBox.isSelected()) {
+            return lengthEncodingPane.getEncoding();
         }
-        
-        field.setModified();
+        return null;
+    }
+
+    @Override
+    protected void doSave() {
+        field.getStructure().setFieldSeparatorStart(separatorPanel.getStartSeparator());
+        field.getStructure().setFieldSeparator(separatorPanel.getEndSeparator());
+
+        if(defaultLenField != null) {
+            defaultLenField.setEncoding(lengthEncodingPane.getEncoding().getValue());
+            defaultLenFieldCopy.setEncoding(lengthEncodingPane.getEncoding().getValue());
+            field.getStructure().setDefaultLengthFormat(defaultLenField);
+            
+            if (defaultLengthFormatCheckBox.isSelected()) {
+                lengthPiecePanel.update(true);
+            }
+        }
+        field.getStructure().getFieldNaming().setExtIdUnit(tagUnitPanel.getUnit().getValue());
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {      
+        save();
     }
 
     private void setupDefaultLength() {
@@ -327,5 +353,17 @@ public class FieldNamingPanel extends AbstractEditItem implements ActionListener
         String encName = dlf.getEncoding();
         EEncoding ret = EEncoding.getInstance(encName);
         return ret;
+    }
+    
+    private class MsdlStructChangedDefaultListener implements MsdlField.MsdlFieldStructureChangedListener {
+
+        @Override
+        public void onEvent(MsdlField.MsdlFieldStructureChangedEvent e) {
+            if (!piecePanel1.isValid()) {
+                field.getMsdlField().getStructureChangedSupport().removeEventListener(this);
+            } else {
+                piecePanel1.update(true);
+            }
+        }
     }
 }

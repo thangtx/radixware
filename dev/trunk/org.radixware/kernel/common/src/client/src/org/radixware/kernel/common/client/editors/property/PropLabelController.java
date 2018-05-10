@@ -28,11 +28,12 @@ public abstract class PropLabelController<T extends IPropLabel & IWidget> extend
 
     @Override
     protected void updateVisualizer() {
-        Property prop = getProperty();
+        final Property prop = getProperty();
         if (prop == null) {
             updateLabelText("");
         } else {
             updateLabelText(prop.getTitle() + ":");
+            getWidget().setEnabled(prop.isEnabled());
         }
     }
 

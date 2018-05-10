@@ -27,7 +27,7 @@ import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.explorer.env.progress.TaskWaiter;
-import org.radixware.kernel.explorer.iad.ImageAcquaringDevice;
+import org.radixware.kernel.explorer.iad.ImageAcquiringDevice;
 import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.radixware.kernel.utils.wia.ComException;
 import org.radixware.kernel.utils.wia.EDeviceDialogFlag;
@@ -41,7 +41,7 @@ import org.radixware.kernel.utils.wia.properties.WiaProperties;
 import org.radixware.kernel.utils.wia.properties.WiaPropertyStorage;
 
 
-final class WiaDevice extends ImageAcquaringDevice{
+final class WiaDevice extends ImageAcquiringDevice{
     
     private final static EnumSet<EImageIntent> IMAGE_INTENTS = EnumSet.of(EImageIntent.NONE);
     private final static EnumSet<EDeviceDialogFlag> DIALOG_FLAGS = EnumSet.of(EDeviceDialogFlag.SINGLE_IMAGE);

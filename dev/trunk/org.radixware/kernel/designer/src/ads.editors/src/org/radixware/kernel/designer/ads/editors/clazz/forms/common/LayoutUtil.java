@@ -353,7 +353,7 @@ public class LayoutUtil {
                     maxWidth[j] = LayoutUtil.MAX_WIDTH;
                     break;
                 case Maximum:
-                    minWidth[j] = LayoutUtil.MIN_WIDTH;//0;
+                    minWidth[j] = Math.max(LayoutUtil.MIN_WIDTH, hintWidth[j]);
                     maxWidth[j] = hintWidth[j];
                     break;
                 case Preferred:
@@ -511,7 +511,7 @@ public class LayoutUtil {
                     maxHeight[i] = LayoutUtil.MAX_HEIGHT;
                     break;
                 case Maximum:
-                    minHeight[i] = LayoutUtil.MIN_HEIGHT;//0;
+                    minHeight[i] = Math.max(LayoutUtil.MIN_HEIGHT, hintHeight[i]);
                     maxHeight[i] = hintHeight[i];
                     break;
                 case Preferred:
@@ -1150,9 +1150,11 @@ public class LayoutUtil {
         if ((size = items.size()) == 0) {
             return null;
         }
-
-        int spacing = ((AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(layout, "layoutSpacing")).value;
-        spacing = Math.max(spacing, MIN_SPACING);
+        AdsUIProperty prop = AdsUIUtil.getUiProperty(layout, "layoutSpacing");
+        int spacing = MIN_SPACING;
+        if (prop != null && prop instanceof AdsUIProperty.IntProperty){
+            spacing = Math.max(((AdsUIProperty.IntProperty) prop).value, MIN_SPACING);
+        }
 
         Dimension minSize[] = new Dimension[size];
         Dimension maxSize[] = new Dimension[size];

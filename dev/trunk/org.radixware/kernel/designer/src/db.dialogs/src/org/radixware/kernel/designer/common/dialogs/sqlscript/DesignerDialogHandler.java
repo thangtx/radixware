@@ -8,12 +8,13 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.dialogs.sqlscript;
 
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import org.radixware.kernel.common.sqlscript.parser.SQLScriptValue;
 import org.radixware.kernel.common.sqlscript.parser.SQLScriptValue.Type;
 import org.radixware.kernel.common.sqlscript.parser.spi.SQLDialogHandler;
@@ -21,8 +22,8 @@ import org.radixware.kernel.common.utils.Reference;
 
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 
-
 public class DesignerDialogHandler extends SQLDialogHandler {
+    private static final int    TOO_MANY_LINES = 20;
 
     @Override
     public SQLScriptValue getScriptValue(final Type type, final String varType, final String defaultValue, final boolean prompt) {
@@ -54,28 +55,43 @@ public class DesignerDialogHandler extends SQLDialogHandler {
         if (canIgnore) {
             options.add("Ignore");
         }
-        final int result = JOptionPane.showOptionDialog(null, msg, "Error", 0, JOptionPane.ERROR_MESSAGE, null, options.toArray(), options.get(options.size() - 1));
-        switch (result) {
-            case 0:
-                return Action.ABORT;
-            case 1:
-                if (askRetry) {
-                    return Action.RETRY;
-                }
-                if (canIgnore) {
-                    return Action.IGNORE;
-                }
-                throw new IllegalStateException("Illegal option selected");
-            case 2:
-                if (canIgnore && askRetry) {
-                    return Action.IGNORE;
-                }
-            default:
-                if (canIgnore) {
-                    return Action.IGNORE;
-                } else {
+        if (msg != null) {
+            final int result;
+            if (msg.length() - msg.replace("\n", "").length() > TOO_MANY_LINES) {
+                final JTextArea textArea = new JTextArea(msg);
+                final JScrollPane textScroll = new JScrollPane(textArea);
+
+                textArea.setRows(25);
+                textArea.setEditable(false);
+                result = JOptionPane.showOptionDialog(null, textScroll, "Error", 0, JOptionPane.ERROR_MESSAGE, null, options.toArray(), options.get(options.size() - 1));
+            } else {
+                result = JOptionPane.showOptionDialog(null, msg, "Error", 0, JOptionPane.ERROR_MESSAGE, null, options.toArray(), options.get(options.size() - 1));
+            }
+
+            switch (result) {
+                case 0:
                     return Action.ABORT;
-                }
+                case 1:
+                    if (askRetry) {
+                        return Action.RETRY;
+                    }
+                    if (canIgnore) {
+                        return Action.IGNORE;
+                    }
+                    throw new IllegalStateException("Illegal option selected");
+                case 2:
+                    if (canIgnore && askRetry) {
+                        return Action.IGNORE;
+                    }
+                default:
+                    if (canIgnore) {
+                        return Action.IGNORE;
+                    } else {
+                        return Action.ABORT;
+                    }
+            }
+        } else {
+            return Action.ABORT;
         }
     }
 

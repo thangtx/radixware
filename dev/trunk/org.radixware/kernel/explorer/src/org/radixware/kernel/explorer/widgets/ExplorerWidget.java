@@ -22,7 +22,6 @@ import org.radixware.kernel.common.client.widgets.TimerEventHandler;
 
 
 public class ExplorerWidget extends QWidget implements org.radixware.kernel.common.client.widgets.IWidget {    
-    
 
     private final IClientEnvironment environment;
     private final TimersController timers = new TimersController();

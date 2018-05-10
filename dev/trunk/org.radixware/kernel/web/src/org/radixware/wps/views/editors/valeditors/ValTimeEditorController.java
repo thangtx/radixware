@@ -36,9 +36,9 @@ public class ValTimeEditorController extends InputBoxController<Long, EditMaskDa
     private final long timeZoneOffsetMillis = CalendarUtils.getTimeZoneOffsetInMillis();
     
     
-    public ValTimeEditorController(IClientEnvironment env) {
+    public ValTimeEditorController(final IClientEnvironment env) {
         super(env);
-        setEditMask( getEditMaskTime(new EditMaskDateTime(), env.getLocale()) );
+        setEditMask( getEditMaskTime(new EditMaskDateTime(), env) );
         setValue(Long.valueOf(0));
     }
 
@@ -56,7 +56,7 @@ public class ValTimeEditorController extends InputBoxController<Long, EditMaskDa
         final EditMaskDateTime maskDateTime = getEditMask();
         final Timestamp timestamp;
         try {
-            timestamp = maskDateTime.getValueForInputText(inputText, getEnvironment().getLocale());            
+            timestamp = maskDateTime.getValueForInputText(inputText, getEnvironment());            
         } catch (WrongFormatException ex) {
             final MessageProvider mp =getEnvironment().getMessageProvider();
             final String reason;
@@ -66,7 +66,7 @@ public class ValTimeEditorController extends InputBoxController<Long, EditMaskDa
                 reason = ex.getMessage();
             }
             if (reason==null || reason.isEmpty()){
-                throw new InvalidStringValueException(mp, InvalidValueReason.WRONG_FORMAT);//NOPMD
+                throw new InvalidStringValueException(mp, InvalidValueReason.Factory.createForWrongFormatValue(getEnvironment()));//NOPMD
             }else{
                 throw new InvalidStringValueException(mp, InvalidValueReason.Factory.createForInvalidValue(reason));//NOPMD
             }
@@ -109,11 +109,11 @@ public class ValTimeEditorController extends InputBoxController<Long, EditMaskDa
 
     @Override
     public final void setEditMask(final EditMaskDateTime editMask) {
-        super.setEditMask(getEditMaskTime(editMask, getEnvironment().getLocale()));
+        super.setEditMask(getEditMaskTime(editMask, getEnvironment()));
     }
     
     protected String getInputMaskString(){
-        final String inputMask = getEditMask().getInputMask(getEnvironment().getLocale());
+        final String inputMask = getEditMask().getInputMask(getEnvironment());
         return inputMask.replace('_', '0');
     }
         
@@ -128,11 +128,11 @@ public class ValTimeEditorController extends InputBoxController<Long, EditMaskDa
             return "";
         }
         final Timestamp timestamp = value==null ? null : getTimestampFromValue(value - timeZoneOffsetMillis);
-        final String inputText = editMask.getInputTextForValue(timestamp, getEnvironment().getLocale());
+        final String inputText = editMask.getInputTextForValue(timestamp, getEnvironment());
         return inputText.replace('_', '0');
     }
         
-    private static EditMaskDateTime getEditMaskTime(final EditMaskDateTime editMask, final Locale locale){
+    private static EditMaskDateTime getEditMaskTime(final EditMaskDateTime editMask, final IClientEnvironment environmnet){
         if (editMask==null){
             return null;
         }
@@ -151,7 +151,7 @@ public class ValTimeEditorController extends InputBoxController<Long, EditMaskDa
         }else{
             maxTime = new Timestamp(maxValue.getTime() - timeZomeOffset);
         }
-        return new EditMaskDateTime(editMask.getInputTimeFormat(locale), minTime, maxTime);
+        return new EditMaskDateTime(editMask.getInputTimeFormat(environmnet), minTime, maxTime);
     }    
     
     private Long getValueFromTimestamp(final Timestamp timestamp) {

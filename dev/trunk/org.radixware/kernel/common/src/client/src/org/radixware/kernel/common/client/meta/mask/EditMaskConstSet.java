@@ -40,6 +40,7 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
     private RadEnumPresentationDef.Items items;
     private RadEnumPresentationDef.Items includedItems;
     private RadEnumPresentationDef.Items excludedItems;
+    private int maxItemsInDDList = -1;
     private DisplayMode mode = DisplayMode.SHOW_TITLE;
     private static final EnumSet<EValType> SUPPORTED_VALTYPES =
             EnumSet.of(EValType.INT, EValType.STR, EValType.CHAR,
@@ -68,9 +69,9 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
         correction = EEditMaskEnumCorrection.NONE;
         correctionItems = new ArrayList<>();
         items = RadEnumPresentationDef.EMPTY_ENUM_DEF.getItems();
-    }
+    }        
 
-    public EditMaskConstSet(final Id constSetId, final EEditMaskEnumOrder order, final EEditMaskEnumCorrection correction, final Id[] correctionItems) {
+    public EditMaskConstSet(final Id constSetId, final EEditMaskEnumOrder order, final EEditMaskEnumCorrection correction, final Id[] correctionItems, final int maxItemsInPopup) {
         dummyInstance = false;
         this.constSetId = constSetId;
         this.order = order != null ? order : EEditMaskEnumOrder.BY_ORDER;
@@ -81,10 +82,15 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
         else{
             this.correctionItems = new ArrayList<>(Arrays.asList(correctionItems));//modifable array
         }
+        maxItemsInDDList = maxItemsInPopup;
+    }
+    
+    public EditMaskConstSet(final Id constSetId, final EEditMaskEnumOrder order, final EEditMaskEnumCorrection correction, final Id[] correctionItems){
+        this(constSetId, order, correction, correctionItems, -1);
     }
 
     public EditMaskConstSet(final Id constSetId) {
-        this(constSetId, null, null, null);
+        this(constSetId, null, null, null, -1);
     }
 
     public EditMaskConstSet(final EditMaskConstSet source) {
@@ -97,6 +103,7 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
         this.excludedItems = source.excludedItems != null ? source.excludedItems.copy() : null;
         this.includedItems = source.includedItems != null ? source.includedItems.copy() : null;
         this.mode = source.mode;
+        this.maxItemsInDDList = source.maxItemsInDDList;
     }
 
     protected EditMaskConstSet(final Id enumId, final org.radixware.schemas.editmask.EditMaskEnum editMask) {
@@ -106,6 +113,7 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
         order = editMask.isSetOrderBy() ? editMask.getOrderBy() : EEditMaskEnumOrder.BY_ORDER;
         correction = editMask.isSetCorrection() ? editMask.getCorrection() : EEditMaskEnumCorrection.NONE;
         correctionItems = editMask.getCorrectionItems() == null ? new ArrayList<Id>() : new ArrayList<>(editMask.getCorrectionItems());
+        maxItemsInDDList = editMask.getMaxItemsInDDList();
     }
 
     @Override
@@ -124,18 +132,19 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
             editMaskEnum.setCorrectionItems(itemIds);
             editMaskEnum.setCorrection(EEditMaskEnumCorrection.INCLUDE);
 
-        }
-        else if (excludedItems!=null){
+        }else if (excludedItems!=null){
             final List<Id> itemIds = new ArrayList<>(excludedItems.size());
             for(RadEnumPresentationDef.Item item: excludedItems){
                 itemIds.add(item.getId());
             }
             editMaskEnum.setCorrectionItems(itemIds);
             editMaskEnum.setCorrection(EEditMaskEnumCorrection.EXCLUDE);
-        }
-        else if (correction!=EEditMaskEnumCorrection.NONE){
+        }else if (correction!=EEditMaskEnumCorrection.NONE){
             editMaskEnum.setCorrectionItems(correctionItems);
             editMaskEnum.setCorrection(correction);            
+        }
+        if (maxItemsInDDList>=0){
+            editMaskEnum.setMaxItemsInDDList(maxItemsInDDList);
         }
     }
 
@@ -171,6 +180,10 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
             order = newOrder;
             afterModify();
         }
+    }
+    
+    public Id getEnumId(){
+        return constSetId;
     }
 
     private void fillItems(IClientApplication context) {
@@ -280,6 +293,15 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
         }
         mode = newMode;
     }
+    
+    public int getMaxIntemsNumberInDropDownList(){
+        return maxItemsInDDList;
+    }
+    
+    public void setMaxItemsNumberInDropDownList(final int maxNumber){
+        maxItemsInDDList = maxNumber;
+        afterModify();
+    }    
 
     @Override
     public String toStr(IClientEnvironment environment, Object o) {
@@ -304,7 +326,7 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
 		if (value instanceof Arr) return validateArray(environment, (Arr)value);
 		final RadEnumPresentationDef.Item item = getItemFromObject(environment.getApplication(),value);
         if (item==null){
-            return ValidationResult.Factory.newInvalidResult(InvalidValueReason.Factory.createForInvalidValueType(environment));
+            return ValidationResult.Factory.newInvalidResult(InvalidValueReason.NO_REASON);
         }        
         if (item.isDeprecated()){
             return ValidationResult.Factory.newInvalidResult(InvalidValueReason.Factory.createForDeprecatedValue(environment));
@@ -340,6 +362,7 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
         hash = 53 * hash + Objects.hashCode(this.includedItems);
         hash = 53 * hash + Objects.hashCode(this.excludedItems);
         hash = 53 * hash + (this.mode != null ? this.mode.hashCode() : 0);
+        hash = 53 * hash + maxItemsInDDList;
         hash = 53 * hash + super.hashCode();
         return hash;
     }
@@ -377,10 +400,13 @@ public final class EditMaskConstSet extends org.radixware.kernel.common.client.m
         if (this.mode != other.mode) {
             return false;
         }
+        if (this.maxItemsInDDList != other.maxItemsInDDList){
+            return false;
+        }
         return super.equals(obj);
     }        
     
     public static EditMaskConstSet getEmptyMask(){
         return new EditMaskConstSet();
-    }
+    }        
 }

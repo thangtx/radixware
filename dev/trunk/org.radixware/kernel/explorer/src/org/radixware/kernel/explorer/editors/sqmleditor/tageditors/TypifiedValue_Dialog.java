@@ -11,159 +11,158 @@
 
 package org.radixware.kernel.explorer.editors.sqmleditor.tageditors;
 
-import com.trolltech.qt.gui.QAction;
-import com.trolltech.qt.gui.QGridLayout;
+import com.trolltech.qt.gui.QFormLayout;
 import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QWidget;
 import java.util.EnumSet;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
-import org.radixware.kernel.common.client.meta.mask.EditMaskNone;
+import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
+import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
-import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinitionsFilter;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.enums.EDialogButtonType;
-import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
-import org.radixware.kernel.explorer.editors.sqmleditor.SqmlProcessor;
 import org.radixware.kernel.explorer.editors.valeditors.ValEditor;
 import org.radixware.kernel.explorer.editors.valeditors.ValRefEditor;
-import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
-
-
+import org.radixware.kernel.explorer.editors.valeditors.ValSqmlDefEditor;
+import org.radixware.kernel.explorer.models.SqmlTreeModel;
+import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 
 public class TypifiedValue_Dialog extends ValPropEdit_Dialog {
 
-    private final XscmlEditor editText;
-    private final ValEditor<String> editLineProp;
-    private ISqmlTableDef presentClassDef;
+    private final ValSqmlDefEditor sqmlDefEditor;  
     private final boolean isReadOnly;
-    private final EDefinitionDisplayMode showMode;
-    private final QGridLayout gridLayout = new QGridLayout();
-    //private final QCheckBox cbLiteral = new QCheckBox(this);
-    private boolean isLiteral;
+    private final QFormLayout formLayout = new QFormLayout();
+    private ValEditor valueEditor;
+    private Object value;
 
     @SuppressWarnings({"unchecked"})
-    public TypifiedValue_Dialog(final IClientEnvironment environment, final ISqmlColumnDef prop, final XscmlEditor editText, final Object val, final EDefinitionDisplayMode showMode, final boolean isLiteral) {
-        super(environment, editText, prop, environment.getMessageProvider().translate("SqmlEditor", "Edit Value"), false);
-        editLineProp = new ValEditor<>(environment, this, new EditMaskNone(), false, true);
-        this.showMode = showMode;
-        isReadOnly = editText.isReadOnly();
-        this.setWindowTitle(environment.getMessageProvider().translate("SqmlEditor", "Edit Value"));//�������� ��������
-        this.editText = editText;
-        setValue(val);
-        valEditor.setValue(this.val.get(0));
-        this.isLiteral = isLiteral;
+    public TypifiedValue_Dialog(final IClientEnvironment environment, 
+                                              final ISqmlColumnDef prop,
+                                              final Object val,
+                                              final EDefinitionDisplayMode showMode, 
+                                              final boolean isReadOnly,
+                                              final QWidget parentWidget) {
+        super(environment, parentWidget, prop, "SqmlTypifiedValueDialog", false);
+        final EnumSet<SqmlTreeModel.ItemType> itemTypes = EnumSet.of(SqmlTreeModel.ItemType.PROPERTY, SqmlTreeModel.ItemType.MODULE_INFO);
+        final SqmlTreeModel sqmlModel = new SqmlTreeModel(environment, null, itemTypes);        
+        sqmlModel.setMarkDeprecatedItems(true);
+        sqmlModel.setDisplayMode(showMode);        
+        sqmlDefEditor = new ValSqmlDefEditor(environment, this, sqmlModel, true, isReadOnly);
+        sqmlDefEditor.setDefinitionDisplayMode(showMode);
+        sqmlDefEditor.setDisplayStringProvider(new SqmlDefDisplayProvider(showMode));        
+        sqmlDefEditor.setDefinitionsFilter(new ISqmlDefinitionsFilter() {
+            @Override
+            public boolean isAccepted(final ISqmlDefinition definition, final ISqmlDefinition ownerDefinition) {
+                if (definition instanceof ISqmlColumnDef){
+                    return !((ISqmlColumnDef)definition).getType().isArrayType();
+                }else{
+                    return true;
+                }
+            }
+        });
+        this.isReadOnly = isReadOnly;        
 
-        createUI();
-        setFixedSize(sizeHint().width() + 100, sizeHint().height());
-        presentClassDef = prop.getOwnerTable();
-        final String displProp = getDisplaiedName(prop, showMode);
-        final String displDef = getDisplaiedName(presentClassDef, showMode);
-        editLineProp.setValue(displDef + "." + displProp);
-        valEditor.setReadOnly(isReadOnly);
+        createUI();        
+        setValue(val);
     }
 
+    @SuppressWarnings("unchecked")
     private void setValue(final Object val) {
-        if (prop.getType() == EValType.PARENT_REF) {
+        if (valueEditor instanceof ValRefEditor && val instanceof Pid){
             final Pid pid = (Pid) val;
-            try {
-                this.val.clear();
-                this.val.add(new Reference(pid, pid.getDefaultEntityTitle(getEnvironment().getEasSession())));
-            } catch (ServiceClientException ex) {
-                getEnvironment().processException(ex);
-                //Logger.getLogger(Condition_Dialog.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (InterruptedException ex) {
-                //Logger.getLogger(Condition_Dialog.class.getName()).log(Level.SEVERE, null, ex);
+            Reference reference;
+            final String objTitle;
+            try{
+                objTitle = pid.getDefaultEntityTitle(getEnvironment().getEasSession());
+                reference = new Reference(pid, objTitle);
+            }catch(ObjectNotFoundError ex){
+                getEnvironment().getTracer().debug(ex);
+                reference = new Reference(pid, null, pid.toString());
+            } catch(ServiceClientException ex){
+                getEnvironment().getTracer().error(ex);
+                reference = new Reference(pid, null, pid.toString());
+            } catch (InterruptedException ex){
+                reference = new Reference(pid, pid.toString());
             }
-        } else {
-            this.val.clear();
-            this.val.add(val);
+            valueEditor.setValue(reference);
+        }else{
+            valueEditor.setValue(val);
         }
+        value = val;
     }
 
     private void createUI() {
-        final QAction action = new QAction(this);
-        action.triggered.connect(this, "bntOpenDialogClick()");
-        editLineProp.setObjectName("editLineProp");
-        editLineProp.addButton("...", action);
-
-        //cbLiteral.setObjectName("cbLiteral");
-        //cbLiteral.setChecked(isLiteral);
-        //cbLiteral.setText(getEnvironment().getMessageProvider().translate("SqmlEditor", "Literal"));
-
-        //gridLayout=new QGridLayout();
-        final QLabel lbPropName = new QLabel(this);
-        lbPropName.setText(getEnvironment().getMessageProvider().translate("SqmlEditor", "Property:"));
-        final QLabel lbValue = new QLabel(this);
-        lbValue.setText(getEnvironment().getMessageProvider().translate("SqmlEditor", "Value:"));
-
+        final MessageProvider mp = getEnvironment().getMessageProvider();
+        setWindowTitle(mp.translate("SqmlEditor", "Edit Value"));
+        final String dialogTitle = isReadOnly ? mp.translate("SqmlEditor", "Column") : mp.translate("SqmlEditor", "Select Column");
+        sqmlDefEditor.setDialogTitle(dialogTitle);        
+        sqmlDefEditor.setObjectName("editLineProp");        
+        
+        final QLabel lbPropName = new QLabel(mp.translate("SqmlEditor", "Property:"), this);
+        final QLabel lbValue = new QLabel(mp.translate("SqmlEditor", "Value:"), this);
+        final ExplorerTextOptions labelTextOptions = getLabelTextOptions();
+        labelTextOptions.applyTo(lbPropName);
+        labelTextOptions.applyTo(lbValue);
+                
+        formLayout.addRow(lbPropName, sqmlDefEditor);
+        formLayout.addRow(lbValue, (QWidget)null);
+        dialogLayout().addLayout(formLayout);        
+        
+        sqmlDefEditor.valueChanged.connect(this,"onChangeColumn()");
+        sqmlDefEditor.setValue(getProperty());
+        
         final EnumSet<EDialogButtonType> buttons;
         if (isReadOnly) {
             buttons = EnumSet.of(EDialogButtonType.CLOSE);
-            editLineProp.setEnabled(false);
-            //cbLiteral.setEnabled(false);
         } else {
             buttons = EnumSet.of(EDialogButtonType.OK, EDialogButtonType.CANCEL);
-        }
-
-        gridLayout.addWidget(lbPropName, 0, 0);
-        gridLayout.addWidget(editLineProp, 0, 1);
-        gridLayout.addWidget(lbValue, 1, 0);
-        gridLayout.addWidget(valEditor, 1, 1);
-        //gridLayout.addWidget(cbLiteral, 2, 1);
-        dialogLayout().addLayout(gridLayout);
+        }        
         addButtons(buttons, true);
     }
 
-    @SuppressWarnings({"unused", "unchecked"})
-    private void bntOpenDialogClick() {
-        final Object obj = ((SqmlProcessor) editText.getTagConverter()).chooseSqmlColumn(presentClassDef, prop, isReadOnly, this);//((SqmlProcessor)editText.tagConverter).showChoceObject(editText,presentClassDef,prop,this);
-        if ((obj != null) && (obj instanceof ISqmlColumnDef)) {
-            prop = (ISqmlColumnDef) obj;
-            presentClassDef = prop.getOwnerTable();//Environment.defManager.getClassPresentationDef(prop.getOwnerTableId()/*getOwnerClassId()*/);
-            if (presentClassDef != null) {
-                final String displProp = getDisplaiedName(prop, showMode);
-                final String displDef = getDisplaiedName(presentClassDef, showMode);
-                editLineProp.setValue(displDef + "." + displProp);
-                final ValEditor newValEditor = createValEditor();
-                if (newValEditor != null) {
-                    dialogLayout().removeWidget(valEditor);
-                    valEditor.setParent(null);
-                    valEditor = newValEditor;
-                    gridLayout.addWidget(valEditor, 1, 1);
-                    getButton(EDialogButtonType.OK).setEnabled(true);
-                } else {
-                    valEditor.setValue(null);
-                    valEditor.setEnabled(false);
-                    getButton(EDialogButtonType.OK).setEnabled(false);
-                }
-            }
+    @SuppressWarnings("unused")
+    private void onChangeColumn(){
+        final ISqmlColumnDef newColumn = (ISqmlColumnDef)sqmlDefEditor.getValue();
+        if (newColumn==null){
+            sqmlDefEditor.setValue(getProperty());
+            return;
         }
-    }
+        setProperty(newColumn);
+        if (valueEditor!=null){
+            formLayout.removeWidget(valueEditor);
+            valueEditor.setParent(null);
+            valueEditor.disposeLater();
+        }        
+        valueEditor = createValEditor(this);
+        valueEditor.setReadOnly(isReadOnly);
+        formLayout.setWidget(1, QFormLayout.ItemRole.FieldRole, valueEditor);
+        value = null;
+    }    
 
     @Override
     public void accept() {
-        if (valEditor!=null && !valEditor.checkInput()){
+        if (!valueEditor.checkInput()){
             return;
         }
-        if ((valEditor != null) && (valEditor.getValue() != null)) {
-            this.val.clear();
-            if (valEditor instanceof ValRefEditor) {
-                val.add(((ValRefEditor) valEditor).getValue().getPid());
-            } else {
-
-                val.add(valEditor.getValue());
-            }
-        } else {
-            val = null;
+        final Object val = valueEditor.getValue();
+        if (val instanceof Reference){
+            if (((Reference)val).isBroken()){
+                return;
+            }else{
+                value = ((Reference)val).getPid();
+            }            
+        }else{
+            value = val;
         }
-        //isLiteral = cbLiteral.isChecked();
-        isLiteral = true;
         super.accept();
     }
 
-    public boolean isLiteral() {
-        return isLiteral;
+    public Object getValue(){
+        return value;
     }
 }

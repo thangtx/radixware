@@ -243,4 +243,10 @@ public class TableLayout extends UIObject {
     protected String[] clientScriptsRequired() {
         return new String[]{"org/radixware/wps/rwt/table-layout.js"};
     }
+
+    public void scrollToRow(final int row) {
+        UIObject selectedDiv = getRow(row).getCell(0).getChildren().get(0);
+        selectedDiv.setFocused(true);
+        this.getHtml().setAttr("scrolledToRow", row);
+    }
 }

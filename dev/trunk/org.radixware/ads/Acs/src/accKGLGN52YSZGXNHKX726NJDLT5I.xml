@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
   <AdsClassDefinition Id="accKGLGN52YSZGXNHKX726NJDLT5I" Name="ListInactiveUsersCursor" Type="4">
-    <AccessRules IsPublished="false"/>
+    <AccessRules IsFinal="true" IsPublished="false"/>
     <Headers>
       <Src Name="HeaderaccKGLGN52YSZGXNHKX726NJDLT5I"/>
     </Headers>
@@ -59,7 +59,7 @@
           </xsc:TableSqlName>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql> where </xsc:Sql>
+          <xsc:Sql> where nvl(</xsc:Sql>
         </xsc:Item>
         <xsc:Item>
           <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colNF6GYZT3FVFLLKTBIOC7F7IN3A" Owner="TABLE">
@@ -67,13 +67,29 @@
           </xsc:PropSqlName>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql> &lt; ROUND(sysdate-</xsc:Sql>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colQ5GRW4H5KNDC7PHXE7Y52C7KUM" Owner="TABLE">
+            <xsc:TableAlias>U</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) &lt; ROUND(sysdate-</xsc:Sql>
         </xsc:Item>
         <xsc:Item>
           <xsc:Parameter ParamId="prm6QMUEX27NNCEHLQDQKRMCYHIUY"/>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql>)</xsc:Sql>
+          <xsc:Sql>) and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" PropId="colQ62TN7IYY3NBDGMCABQAQH3XQ4" Owner="TABLE">
+            <xsc:TableAlias>U</xsc:TableAlias>
+          </xsc:PropSqlName>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = 0</xsc:Sql>
         </xsc:Item>
       </Source>
       <UsedTables>

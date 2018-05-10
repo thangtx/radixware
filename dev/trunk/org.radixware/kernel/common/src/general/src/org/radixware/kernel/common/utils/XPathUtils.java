@@ -41,6 +41,9 @@ import org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument.Schema;
 import org.apache.xmlbeans.impl.xb.xsdschema.TopLevelComplexType;
 import org.apache.xmlbeans.impl.xb.xsdschema.TopLevelElement;
 import org.apache.xmlbeans.impl.xb.xsdschema.TopLevelSimpleType;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 import org.xmlsoap.schemas.wsdl.DefinitionsDocument;
 import org.xmlsoap.schemas.wsdl.TMessage;
@@ -118,7 +121,7 @@ public class XPathUtils {
 
     public static List<NodeInfo> getAvailableChildren(XmlObject schemaNode, XmlTypeHolder context) {
         if (schemaNode instanceof TOperation) {
-            ArrayList<NodeInfo> result = new ArrayList<NodeInfo>();
+            ArrayList<NodeInfo> result = new ArrayList<>();
             DefinitionsDocument doc = (DefinitionsDocument) context.getXmlDocument();
             TOperation operation = (TOperation) schemaNode;
             if (operation.getInput() != null) {
@@ -126,10 +129,17 @@ public class XPathUtils {
                     if (mess.getName() != null && mess.getName().equals(operation.getInput().getMessage().getLocalPart())) {
                         for (TPart part : mess.getPartList()) {
                             if (part.getName() != null) {
-                                String typeNS = part.getType().getNamespaceURI();
-                                XmlTypeHolder typeScheme = context.findByNs(typeNS);
-                                if (typeScheme instanceof XmlTypeHolder) {
-                                    result.add(new NodeInfo(part, (XmlTypeHolder) typeScheme));
+                                String ns = null;
+                                if (part.getType() != null) {
+                                    ns = part.getType().getNamespaceURI();
+                                } else if (part.getElement().getNamespaceURI() != null) {
+                                    ns = part.getElement().getNamespaceURI();
+                                }
+                                if (ns != null) {
+                                    XmlTypeHolder typeScheme = context.findByNs(ns);
+                                    if (typeScheme instanceof XmlTypeHolder) {
+                                        result.add(new NodeInfo(part, (XmlTypeHolder) typeScheme));
+                                    }
                                 }
                             }
                         }
@@ -141,10 +151,17 @@ public class XPathUtils {
                     if (mess.getName() != null && mess.getName().equals(operation.getOutput().getMessage().getLocalPart())) {
                         for (TPart part : mess.getPartList()) {
                             if (part.getName() != null) {
-                                String typeNS = part.getType().getNamespaceURI();
-                                XmlTypeHolder typeScheme = context.findByNs(typeNS);
-                                if (typeScheme instanceof XmlTypeHolder) {
-                                    result.add(new NodeInfo(part, (XmlTypeHolder) typeScheme));
+                                String ns = null;
+                                if (part.getType() != null) {
+                                    ns = part.getType().getNamespaceURI();
+                                } else if (part.getElement().getNamespaceURI() != null) {
+                                    ns = part.getElement().getNamespaceURI();
+                                }
+                                if (ns != null) {
+                                    XmlTypeHolder typeScheme = context.findByNs(ns);
+                                    if (typeScheme instanceof XmlTypeHolder) {
+                                        result.add(new NodeInfo(part, (XmlTypeHolder) typeScheme));
+                                    }
                                 }
                             }
                         }
@@ -153,7 +170,12 @@ public class XPathUtils {
             }
             return result;
         } else if (schemaNode instanceof TPart) {
-            String type = ((TPart) schemaNode).getType().getLocalPart();
+            String type = null;
+            if (((TPart) schemaNode).getType() != null) {
+                type = ((TPart) schemaNode).getType().getLocalPart();
+            } else if (((TPart) schemaNode).getElement() != null) {
+                type = ((TPart) schemaNode).getElement().getLocalPart();
+            }
             if (type != null) {
                 NodeInfo complexType = findTopLevelComplexType(context, type);
                 if (complexType != null) {
@@ -709,5 +731,200 @@ public class XPathUtils {
             }
         }
         return null;
+    }
+
+    public static String getXPath(org.w3c.dom.Element element) {
+        List<String> attributes = new ArrayList<>();
+        attributes.add("name");
+        attributes.add("value");
+        attributes.add("namespace");
+        return buildXPath(element, new ArrayList<String>(), attributes);
+    }
+    
+    public static String getXPath(org.w3c.dom.Element element, List<String> attributes) {
+        return buildXPath(element, new ArrayList<String>(), attributes);
+    }
+
+    private static String buildXPath(org.w3c.dom.Element element, List<String> namespaces, List<String> attributes) {
+        StringBuilder path = new StringBuilder();
+        String ns = element.getNamespaceURI();
+        if (ns == null){
+            ns = "";
+        }
+        if (!namespaces.contains(ns)) {
+            namespaces.add(ns);
+        }
+        if (getParentNode(element) != null) {
+            path.append(buildXPath(getParentNode(element), namespaces, attributes)).append("/").append("ns").append(namespaces.indexOf(ns)).append(":").append(getXPathName(element, attributes));
+        } else {
+            for (int i = 0; i < namespaces.size(); i++) {
+                path.append("declare namespace ns").append(i).append("='").append(namespaces.get(i)).append("';");
+            }
+            path.append("/").append("ns").append(namespaces.indexOf(ns)).append(":").append(getXPathName(element, attributes));
+        }
+        return path.toString();
+    }
+
+    private static org.w3c.dom.Element getParentNode(org.w3c.dom.Element element) {
+        Node parentNode = element.getParentNode();
+        while (parentNode != null && parentNode.getNodeType() != Node.ELEMENT_NODE) {
+            parentNode = parentNode.getParentNode();
+        }
+        return parentNode == null ? null : (org.w3c.dom.Element) parentNode;
+    }
+
+  
+    private static String getXPathName(org.w3c.dom.Element element, List<String> attrs) {
+        StringBuilder xPathName = new StringBuilder();
+        xPathName.append(element.getLocalName());
+        if (!element.hasAttributes()){
+            return xPathName.toString();
+        }
+        
+        NamedNodeMap attributes = element.getAttributes();
+        for(int i = 0 ; i< attributes.getLength() ; i++) {
+            Node node = attributes.item(i);
+            if (node instanceof Attr){
+                Attr attr = (Attr) node;
+                String name = attr.getNodeName();
+                String value = attr.getValue();
+                if (value == null || value.isEmpty()){
+                    continue;
+                }
+                if (attrs.contains(name.toLowerCase())){
+                    xPathName.append("[@").append(name).append("='").append(value).append("']");
+                }
+            }
+        }
+
+        return xPathName.toString();
+    }
+
+    private static final String X_ELEM_PREFIX = "!";
+    private static final String X_TYPE_PREFIX = "#";
+    private static final String X_ATTR_GROUP_PREFIX = "@";
+    private static final String X_ATTR_PREFIX = "$";
+    
+    private static final String PATH_PART_ELEM = "Element";
+    private static final String PATH_PART_TYPE = "Type";
+    private static final String PATH_PART_ATTR_GROUP = "Attribute Group";
+    private static final String PATH_PART_ATTR = "Attribute";
+
+    public static String getHumanReadableXPath(String xPath) {
+        return getHumanReadableXPath(xPath, null);
+    }
+    
+    public static String getHumanReadableXPath(String xPath, Map<String, String> pathPartsLocalization) {
+        String[] xPathParts = xPath.split(";");
+        String[] elementParts = xPathParts[xPathParts.length - 1].split("/ns\\d*:");
+
+        StringBuilder path = new StringBuilder();
+        for (int i = 1; i < elementParts.length; i++) {
+            path.append(parseBlock(elementParts[i]));
+            if (i != elementParts.length - 1 && !parseBlock(elementParts[i]).equals("")) {
+                path.append(" / ");
+            } else {
+                if (i == elementParts.length - 1 && parseBlock(elementParts[i]).replaceAll(X_TYPE_PREFIX + "''", "").equals("")) {
+                    path.append(" / " + elementParts[i]);
+                }
+            }
+        }
+
+        String str = path.toString().replaceAll(" / " + X_TYPE_PREFIX + "''" + " / ", " / ");
+        if (str.endsWith(" / " + X_TYPE_PREFIX)) {
+            str = str.substring(0, str.length() - (" / " + X_TYPE_PREFIX).length());
+        }
+
+        if (pathPartsLocalization == null || pathPartsLocalization.isEmpty()) {
+            str = str.replace(X_TYPE_PREFIX, PATH_PART_TYPE + " ");
+            str = str.replace(X_ELEM_PREFIX, PATH_PART_ELEM + " ");
+            str = str.replace(X_ATTR_GROUP_PREFIX, PATH_PART_ATTR_GROUP + " ");
+            str = str.replace(X_ATTR_PREFIX, PATH_PART_ATTR + " ");
+        } else {
+            str = str.replace(X_TYPE_PREFIX, pathPartsLocalization.get(PATH_PART_TYPE) + " ");
+            str = str.replace(X_ELEM_PREFIX, pathPartsLocalization.get(PATH_PART_ELEM) + " ");
+            str = str.replace(X_ATTR_GROUP_PREFIX, pathPartsLocalization.get(PATH_PART_ATTR_GROUP) + " ");
+            str = str.replace(X_ATTR_PREFIX, pathPartsLocalization.get(PATH_PART_ATTR) + " ");
+        }
+
+        if (str.contains(" / restriction / enumeration")) {
+            return str.replaceAll(" / restriction / enumeration\\[@value=", " / ").replaceAll("]", "");
+        }
+
+        return str.replaceAll("enumeration", "/").replaceAll("/ /", "/");
+    }
+
+    private static String parseBlock(String block) {
+        if (block.contains("simpleType") || block.contains("complexType")) {
+            return X_TYPE_PREFIX + "'" + getXPathElementName(block) + "'";
+        } else if (block.contains("element")) {
+            return X_ELEM_PREFIX + "'" + getXPathElementName(block) + "'";
+        } else if (block.contains("attributeGroup")) {
+            return X_ATTR_GROUP_PREFIX + "'" + getXPathElementName(block) + "'";
+        } else if (block.contains("attribute")) {
+            return X_ATTR_PREFIX + "'" + getXPathElementName(block) + "'";
+        } else if (block.contains("restriction") || block.contains("enumeration")) {
+            return block;
+        } else {
+            return "";
+        }
+    }
+
+    public static String getXPathElementName(String element) {
+        String[] xPathBlocks = element.split("/ns\\d*:");
+        String lastElement = xPathBlocks[xPathBlocks.length - 1];
+
+        if (lastElement.contains("[@name='")) {
+            return lastElement.substring(lastElement.indexOf("[@name='") + "[@name='".length(), lastElement.indexOf("']"));
+        } else {
+            return "";
+        }
+    }
+
+    public static boolean isElementNeedsDoc(org.w3c.dom.Element element) {
+        if (element != null && element.getNodeName() != null) {
+            switch (element.getLocalName()) {
+                case "attribute":
+                case "element":
+                    return true;
+                case "simpleType":
+                case "complexType":
+                case "attributeGroup":
+                    return element.hasAttribute("name");
+                default:
+                    return false;
+            }
+        }
+        return false;
+    }
+
+    public static String getLastHumanReadableXPathPart(String xPath, Map<String, String> pathPartsLocalization) {
+        String[] xPathParts = getHumanReadableXPath(xPath, pathPartsLocalization).split("/");
+        if (xPathParts.length != 0) {
+            return xPathParts[xPathParts.length - 1].trim();
+        }
+        return "";
+    }
+    
+    public static String getElementContainer(String xPath) {
+        String[] xPathParts = xPath.split(";");
+        String[] elementParts = xPathParts[xPathParts.length - 1].split("/ns\\d*:");
+        
+        if (elementParts.length > 1) {
+            return elementParts[elementParts.length - 2];
+        }
+        
+        return "";
+    }
+    
+    public static boolean isSimpleType(String xPath) {
+        String[] xPathParts = xPath.split(";");
+        String[] elementParts = xPathParts[xPathParts.length - 1].split("/ns\\d*:");
+        
+        if (elementParts.length > 0) {
+            return elementParts[elementParts.length - 1].contains("simpleType");
+        }
+        
+        return false;
     }
 }

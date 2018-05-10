@@ -25,10 +25,14 @@ public class ColorPicker extends UIObject {
 
         public ColorInput() {
             super(new Html("input"));
+            html.setAttr("type", "button");
             html.layout("$RWT.picker.install");
             html.setCss("border-radius", "4px");
             html.setCss("border", "2px solid black");
             html.setCss("cursor", "pointer");
+            html.setCss("font-size" , 0); //hide button text
+            html.setCss("line-heigth", 0);
+            html.setCss("outline", "none");
             this.html.addClass("color {hash:true, pickerFace:15, pickerClosable:false}");//this.html.addClass("color {hash:true, adjust:true, pickerFace:15, pickerClosable:true, }");//hash tag + editable + close button
             this.html.setAttr("onchange", "$RWT.picker.processColorChange");
             this.html.setAttr("role", "colorPicker");

@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.userreport.common;
 
 import java.io.IOException;
@@ -18,12 +17,15 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.userreport.repository.ReportsModule;
 import org.radixware.kernel.common.userreport.repository.UserReport;
 
-
 public interface IUserReportModuleManager {
-        
-    ReportsModule addNewModule();    
-    boolean createReportModule(final IRepositorySegment segment, final ReportsModule module);    
-    void deleteModule(final Id reportId);    
-    boolean moveTo(final AdsModule module,final Id reportId) throws IOException;
+
+    ReportsModule addNewModule();
+
+    boolean createReportModule(final IRepositorySegment segment, final ReportsModule module);
+
+    void deleteModule(final Id reportId);
+
+    boolean moveTo(final AdsModule module, final Id reportId) throws IOException;
+
     UserReport addNewReport(final ReportsModule reportModule);
 }

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsParagraphDefinition Id="parBFYNKEWKZ5CHZKIHYBVQ4NVQ5I" IsRoot="true" LogoId="imgSWBBROYEDFCIDIA4ZOXRJTRG7A" Name="EntireSystem" TitleId="mlsY4ZJ3NWM4NEBLH3WZQZBVG4EJY">
+    <ChildExplorerItems>
+      <Order>
+        <Item TargetId="parBFYNKEWKZ5CHZKIHYBVQ4NVQ5I">
+          <Element Id="prlJJC5XNXUTVDDJDHQUH2HR2W3CY"/>
+          <Element Id="prlYTMUCIV7X5H2BPNIXBVCLII2KQ"/>
+          <Element Id="prlRS362GRO55H5HC4FO7RYWMBHTA"/>
+          <Element Id="parECS3NCOKDRDE7AQLTRYEU3KYHM"/>
+          <Element Id="prl765JGPKVS5DSPDSB4ABDAO5LGE"/>
+          <Element Id="prlLBOQM3WQ5ZBIRKHR3CY3FZ5MHY"/>
+          <Element Id="prlJAK5K6X2JVC67KOGMWK76QBHWY"/>
+        </Item>
+      </Order>
+      <Item>
+        <ParagraphLink Id="prlJJC5XNXUTVDDJDHQUH2HR2W3CY" InheritanceMask="128" Name="CommonSettings" ParagraphId="parDIRG3HV6VVHC7F3JXK6IDVFEGY">
+          <AccessRules IsPublished="false"/>
+        </ParagraphLink>
+      </Item>
+      <Item>
+        <ParagraphLink Id="prlYTMUCIV7X5H2BPNIXBVCLII2KQ" InheritanceMask="128" Name="SystemSettings" ParagraphId="parW76DW3AJBFFZLCPKUCMQ57RKSM">
+          <AccessRules IsPublished="false"/>
+        </ParagraphLink>
+      </Item>
+      <Item>
+        <ParagraphLink Id="prlRS362GRO55H5HC4FO7RYWMBHTA" InheritanceMask="128" Name="Administration" ParagraphId="parM4VAOC3MBJCHRCO5O3D7EDO2KY"/>
+      </Item>
+      <Item>
+        <Paragraph ClientEnvironment="explorer" IconId="imgYC3VDQPEG5ATJHVHBS7OZHEEB4" Id="parECS3NCOKDRDE7AQLTRYEU3KYHM" IsRoot="false" Name="Tools" TitleId="mlsGWJ6FP67ZZCBHFPI2ERPV5ARUA">
+          <ChildExplorerItems>
+            <Item>
+              <Entity ClassId="aecWMN3P5J5ONCFPLJVGBFAKZXZXU" EnabledCommands="" Id="xpiRJVHNVBG45GGFBCDKXQ2DD6GSU" InheritanceMask="16560" IsVisibleInTree="true" Name="CfgPacket" Restrictions="0" SelectorPresentationId="sprJGWXV6TQQRD3PIY4DT4JJU63ZQ">
+                <Condition>
+                  <ConditionWhere/>
+                  <ConditionFrom/>
+                </Condition>
+              </Entity>
+            </Item>
+            <Item>
+              <Entity ClassId="aecHW4OSVMS27NRDISQAAAAAAAAAA" EnabledCommands="" Id="xpiX4U5HMY44JBATGVHXL5VY55HKM" InheritanceMask="16432" IsVisibleInTree="true" Name="MyTestCases" Restrictions="0" SelectorPresentationId="sprNGT5DE5G27NRDISQAAAAAAAAAA" TitleId="mlsMQ3NWXWOLNDJDG5IYZJ2YQ434U">
+                <Condition>
+                  <ConditionWhere>
+                    <xsc:Item>
+                      <xsc:PropSqlName Owner="THIS" PropId="colMWOGO4MS27NRDISQAAAAAAAAAA" TableId="tblHW4OSVMS27NRDISQAAAAAAAAAA"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Sql>=</xsc:Sql>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:DbFuncCall FuncId="dfnH4JNIHGXCTOBDCKFAAMPGXSZKU"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Sql> and </xsc:Sql>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:PropSqlName Owner="THIS" PropId="colEZ4SH34S27NRDISQAAAAAAAAAA" TableId="tblHW4OSVMS27NRDISQAAAAAAAAAA"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Sql> is null</xsc:Sql>
+                    </xsc:Item>
+                  </ConditionWhere>
+                  <ConditionFrom/>
+                </Condition>
+              </Entity>
+            </Item>
+            <Item>
+              <Entity ClassId="aecHW4OSVMS27NRDISQAAAAAAAAAA" EnabledCommands="" Id="xpiCK3QKNANYVCMNONNLL7QQXFJJY" InheritanceMask="16432" IsVisibleInTree="true" Name="TestCase" Restrictions="0" SelectorPresentationId="sprNGT5DE5G27NRDISQAAAAAAAAAA" TitleId="mlsSWTXPEJLJ5HBBNMYYKDK4XB35Q">
+                <Condition>
+                  <ConditionWhere>
+                    <xsc:Item>
+                      <xsc:PropSqlName Owner="THIS" PropId="colEZ4SH34S27NRDISQAAAAAAAAAA" TableId="tblHW4OSVMS27NRDISQAAAAAAAAAA"/>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Sql> is null</xsc:Sql>
+                    </xsc:Item>
+                  </ConditionWhere>
+                  <ConditionFrom/>
+                </Condition>
+              </Entity>
+            </Item>
+            <Item>
+              <Entity ClassId="aecACQVZOMVVHWDBROXAAIT4AGD7E" EnabledCommands="" Id="xpi7RJ34LSQYFCNLMF4HZX5JWWUFM" InheritanceMask="16560" IsVisibleInTree="true" Name="EventLog" Restrictions="0" SelectorPresentationId="sprW7YW3HO6WLOBDCLZAALOMT5GDM">
+                <Condition>
+                  <ConditionWhere/>
+                  <ConditionFrom/>
+                </Condition>
+              </Entity>
+            </Item>
+            <Item>
+              <ParagraphLink Id="prlSWJ5RMYUIVESDGOCNZ3BJWKZJI" InheritanceMask="128" Name="UserFunc" ParagraphId="parKDAATHFQFBES5KRX4RCTYJ3RLQ"/>
+            </Item>
+            <Item>
+              <Entity ClassId="aecZOBMZ3SMVRDXFBYDYF6DKD6OYQ" EnabledCommands="" Id="xpiWMOT6CK2IREBZIB62DVH57QHKU" InheritanceMask="16560" IsVisibleInTree="true" Name="PeriodsView" Restrictions="0" SelectorPresentationId="spr5H36TYH5YJAODEJVMOVP2DKQ3M">
+                <Condition>
+                  <ConditionWhere/>
+                  <ConditionFrom/>
+                </Condition>
+              </Entity>
+            </Item>
+          </ChildExplorerItems>
+          <Model Id="apmECS3NCOKDRDE7AQLTRYEU3KYHM" Name="Tools:Model" Type="13">
+            <AccessRules/>
+            <Headers>
+              <Src Name="HeaderapmECS3NCOKDRDE7AQLTRYEU3KYHM"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyapmECS3NCOKDRDE7AQLTRYEU3KYHM"/>
+            </Bodies>
+            <MethodGroup Id="cmgYPYGOIOWLFF7ZL77E4T6QNHBLQ" Name="Root"/>
+            <PropertyGroup Id="cpg2VFPB7KSZJBABB46YMS3YCV5IM" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mthL2FTHDDWUFA3DMUUAFGSE33GKU" IsOverride="true" Name="afterInsertChildItem" Nature="0" isDescriptionInherited="true">
+                <AccessRules/>
+                <Parameters>
+                  <Parameter Id="mprYQIVDKZ6VFA2DK5PIT5VBDEYJM" Name="childItem">
+                    <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IExplorerItemView"/>
+                  </Parameter>
+                </Parameters>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Invoke="true" Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthL2FTHDDWUFA3DMUUAFGSE33GKU">
+                        <xsc:Presentation>afterInsertChildItem</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(childItem);
+if ( !</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Invoke="true" Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ">
+                        <xsc:Presentation>getEnvironment</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Invoke="true" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthY43VYOUOR5H2ZF2A2FAXYK5HQ4">
+                        <xsc:Presentation>getApplication</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>().isExtendedMetaInformationAccessible() &amp;&amp;
+     childItem.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Invoke="true" Path="aicSPJLTZQOTZHCXFRMIPCCX3F36U mthI67VRT4VXJDTJAOJVOJJHAUPWY">
+                        <xsc:Presentation>getExplorerItemId</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>()==</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="parBFYNKEWKZ5CHZKIHYBVQ4NVQ5I parECS3NCOKDRDE7AQLTRYEU3KYHM prlSWJ5RMYUIVESDGOCNZ3BJWKZJI">
+                        <xsc:Presentation>EntireSystem:Tools:UserFunc</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>){
+    childItem.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Invoke="true" Path="aicSPJLTZQOTZHCXFRMIPCCX3F36U mthQOSWNWS2XZESJMASQWUNKWG6IQ">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(false);
+}</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
+        </Paragraph>
+      </Item>
+      <Item>
+        <ParagraphLink Id="prl765JGPKVS5DSPDSB4ABDAO5LGE" InheritanceMask="128" Name="Monitoring" ParagraphId="parHWC5PCPMLNC53KVMKOTK2TS5SM"/>
+      </Item>
+      
+      <Item>
+        <ParagraphLink Id="prlLBOQM3WQ5ZBIRKHR3CY3FZ5MHY" InheritanceMask="128" Name="Workplace" ParagraphId="parX7ZJLJRGTZGAFKCUSSTZPWLFW4">
+          <AccessRules IsPublished="false"/>
+        </ParagraphLink>
+      </Item>
+    </ChildExplorerItems>
+    <Model Id="apmBFYNKEWKZ5CHZKIHYBVQ4NVQ5I" Name="EntireSystem:Model" Type="13">
+      <AccessRules/>
+      <Headers>
+        <Src Name="HeaderapmBFYNKEWKZ5CHZKIHYBVQ4NVQ5I"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyapmBFYNKEWKZ5CHZKIHYBVQ4NVQ5I"/>
+      </Bodies>
+      <MethodGroup Id="cmg5SJPLNDK2VFIXEVNXOOW2BCMVY" Name="Root"/>
+      <PropertyGroup Id="cpg522MIOYHB5CRZALBMT55P25TYE" Name="Root"/>
+      <Properties/>
+      <Methods/>
+    </Model>
+  </AdsParagraphDefinition>
+</AdsDefinition>

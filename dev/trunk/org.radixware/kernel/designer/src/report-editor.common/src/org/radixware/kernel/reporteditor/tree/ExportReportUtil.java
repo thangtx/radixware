@@ -185,6 +185,9 @@ public class ExportReportUtil {
         @Override
         public void run() {
             try {
+                if (file == null) {
+                    return;
+                }
                 FileOutputStream out = new FileOutputStream(file);
                 try {
 

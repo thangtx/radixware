@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.common.defs.ads.clazz.sql.report;
 
+import java.util.List;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.defs.ClipboardSupport;
 import org.radixware.kernel.common.defs.IVisitor;
@@ -18,7 +19,10 @@ import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.AdsClipboardSupport;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
 import org.radixware.kernel.common.enums.EReportLayout;
+import org.radixware.kernel.common.resources.icons.RadixIcon;
+import org.radixware.kernel.common.types.Id;
 
 public class AdsReportWidgetContainer extends AdsReportWidget implements IReportWidgetContainer {
 
@@ -30,6 +34,7 @@ public class AdsReportWidgetContainer extends AdsReportWidget implements IReport
 
     protected AdsReportWidgetContainer(org.radixware.schemas.adsdef.ReportCell xCellContainer) {
         super(xCellContainer);
+
         if (xCellContainer.isSetReportWidgetContainer()) {
             reportContainer = new AdsReportContainer(xCellContainer.getReportWidgetContainer(), this);
         } else {
@@ -118,8 +123,10 @@ public class AdsReportWidgetContainer extends AdsReportWidget implements IReport
             protected void afterDuplicate() {
                 super.afterDuplicate();
                 final AdsReportWidgetContainer cell = getObject();
-                cell.setLeftMm(cell.getLeftMm() + AdsReportBand.GRID_SIZE_MM);
-                cell.setTopMm(cell.getTopMm() + AdsReportBand.GRID_SIZE_MM);
+                AdsReportForm form = cell.getOwnerForm();
+                double gridSizeMm = form != null ? form.getGridSizeMm() : AdsReportForm.DEFAULT_GRID_SIZE_MM;
+                cell.setLeftMm(cell.getLeftMm() + gridSizeMm);
+                cell.setTopMm(cell.getTopMm() + gridSizeMm);
             }
         }
 
@@ -154,5 +161,25 @@ public class AdsReportWidgetContainer extends AdsReportWidget implements IReport
     @Override
     public boolean isModeSupported(AdsReportForm.Mode mode) {
         return true;
+    }
+
+    @Override
+    public RadixIcon getIcon() {
+        return AdsDefinitionIcon.WIDGETS.FRAME;
+    }
+
+    @Override
+    public List<AdsReportWidget> getChildren() {
+        return getWidgets().list();
+    }
+
+    @Override
+    public boolean isDiagramModeSupported(AdsReportForm.Mode mode) {
+        return isModeSupported(mode);
+    }
+
+    @Override
+    public AdsReportWidget findWidgetById(Id widgetId) {
+        return reportContainer.findWidgetById(widgetId);
     }
 }

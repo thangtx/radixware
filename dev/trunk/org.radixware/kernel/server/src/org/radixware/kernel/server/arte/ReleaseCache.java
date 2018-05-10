@@ -25,6 +25,7 @@ import java.util.Set;
 import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.IEnumDef;
+import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
 import org.radixware.kernel.common.defs.dds.DdsIndexDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.enums.EDdsTableExtOption;
@@ -43,13 +44,14 @@ import org.radixware.kernel.common.msdl.RootMsdlScheme;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.BufferedPool;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.server.dbq.DbQueryBuilder;
 import org.radixware.kernel.server.dbq.ObjectClassGuidQuery;
 import org.radixware.kernel.server.dbq.ReadObjectQuery;
 import org.radixware.kernel.server.exceptions.DatabaseError;
 import org.radixware.kernel.server.exceptions.LoadOldVersionFromDirError;
 import org.radixware.kernel.server.exceptions.PropNotLoadedException;
-import org.radixware.kernel.server.instance.ObjectCache;
+import org.radixware.kernel.common.cache.ObjectCache;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.meta.presentations.RadContextlessCommandDef;
 import org.radixware.kernel.server.meta.roles.RadRoleDef;
@@ -85,6 +87,7 @@ public class ReleaseCache {
     private final Map<EDrcServerResource, String> srvResRoleLists = new HashMap<>();
     private final UserRepMlbDefLoader userRepMlbDefLoader = new UserRepMlbDefLoader();
     private final Map<Id, RootMsdlScheme> msdlScemasById = new HashMap<>();
+    private final Map<String, RootMsdlScheme> msdlScemasByTargetNs = new HashMap<>();
     private final AppRolesCache appRolesCache = new AppRolesCache();
     //enumeration meta is hard to share because it contains reference to enumeration executable part //TODO
     private final Release.AdsDefLoader<RadEnumDef> constSetDefs;
@@ -94,6 +97,7 @@ public class ReleaseCache {
     private final LoadErrorsLog errorsLog;
     private final Map<Id, RoleLoadError> appRoleLoadErrors = new HashMap<>();
     private final ObjectCache userCache = new ObjectCache();
+    private final List<IArteEventListener> arteEventListeners = new ArrayList<>();
 
     public ReleaseCache(final Arte arte, final Release release) {
         this.arte = arte;
@@ -125,6 +129,20 @@ public class ReleaseCache {
         if (errorsLog instanceof LoadErrorsLog) {
             ((LoadErrorsLog) errorsLog).setTryLogInsteadOfExceptionOnNotFound(false);
         }
+    }
+
+    public void registerArteEventListener(final IArteEventListener listener) {
+        if (!arteEventListeners.contains(listener)) {
+            arteEventListeners.add(listener);
+        }
+    }
+
+    public boolean unregisterArteEventListener(final IArteEventListener listener) {
+        return arteEventListeners.remove(listener);
+    }
+
+    public List<IArteEventListener> getArteEventsListeners() {
+        return new ArrayList<>(arteEventListeners);
     }
 
     public Class<?> getClass(final Id id) {
@@ -160,6 +178,29 @@ public class ReleaseCache {
         }
         msdlScemasById.put(id, schema);
         return schema;
+    }
+
+    RootMsdlScheme findMsdlSchemeByTargetNamespace(final String targetNamespace) {
+        RootMsdlScheme schema = msdlScemasByTargetNs.get(targetNamespace);
+        if (schema != null) {
+            return schema;
+        }
+        Collection<Id> ids = getRelease().getRepository().getAdsIndices().getDefIdsByType(EDefType.MSDL_SCHEME);
+        for (Id id : ids) {
+            try {
+                schema = getMsdlScheme(id);
+                if (schema != null) {
+                    final String namespace = schema.getNamespace();
+                    msdlScemasByTargetNs.put(namespace, schema);
+                    if (Utils.equals(namespace, targetNamespace)) {
+                        return schema;
+                    }
+                }
+            } catch (DefinitionNotFoundError e) {
+                //ignore
+            }
+        }
+        return null;
     }
 
     public EntityPropVals readOwnProps(final Pid pid) {
@@ -303,14 +344,27 @@ public class ReleaseCache {
     }
 
     final void close() {
+        for (IArteEventListener listener : new ArrayList<>(arteEventListeners)) {
+            try {
+                listener.beforeReleaseUnload();
+            } catch (Throwable t) {
+                arte.getTrace().put(EEventSeverity.WARNING, "Error on calling arteListener.beforeReleaseUnload() '" + Thread.currentThread().getName() + "' : " + ExceptionTextFormatter.exceptionStackToString(t), EEventSource.ARTE);
+            }
+        }
+        arteEventListeners.clear();
         try {
             clearDbQueriesCaches();
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             arte.logCleanupError(ex, "ReleaseCache #" + getRelease().getVersion() + " DbQueries");
         }
         try {
             userCache.clear();
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
+            arte.logCleanupError(ex, "ReleaseCache #" + getRelease().getVersion() + " UserCache");
+        }
+        try {
+            AdsUserFuncDef.Lookup.clearCaches(getRelease().getRepository().getBranch(), Thread.currentThread());
+        } catch (Throwable ex) {
             arte.logCleanupError(ex, "ReleaseCache #" + getRelease().getVersion() + " UserCache");
         }
     }
@@ -455,6 +509,10 @@ public class ReleaseCache {
     public RadMlStringBundleDef getUserRepMlbDef(final Id id) {
         return userRepMlbDefLoader.getUserRepMlbDef(id);
     }
+    
+    public void updateAppRolesCache() {
+        appRolesCache.forceUpdate();
+    }
 
     public class AppRolesCache {
 
@@ -474,7 +532,7 @@ public class ReleaseCache {
         }
 
         private boolean mustCheckForUpdates() {
-            return System.currentTimeMillis() - lastCheckTime > UPDATE_PERIOD || appRoles == null;
+            return Math.abs(System.currentTimeMillis() - lastCheckTime) > UPDATE_PERIOD || appRoles == null;
         }
 
         public List<RadRoleDef> listLoaded() {
@@ -526,6 +584,11 @@ public class ReleaseCache {
                 return holder.def;
             }
             return null;
+        }
+        
+        public void forceUpdate() {
+            lastCheckTime = 0;
+            updateAppRoles();
         }
 
         private void updateAppRoles() {

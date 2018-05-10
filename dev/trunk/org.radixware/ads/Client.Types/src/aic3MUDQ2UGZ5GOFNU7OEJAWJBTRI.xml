@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aic3MUDQ2UGZ5GOFNU7OEJAWJBTRI" Name="IProxyPropEditor" Type="5" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.views.IProxyPropEditor"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeraic3MUDQ2UGZ5GOFNU7OEJAWJBTRI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyaic3MUDQ2UGZ5GOFNU7OEJAWJBTRI"/>
+    </Bodies>
+    <MethodGroup Id="cmgA6DDHER2LVD7VNC2QFBSOZ36VY" Name="Root"/>
+    <PropertyGroup Id="cpgSYHVCPIZ25GWLNQS3YSXYBQKOU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthB6VTMBQDKJCI7PRLBP3R32XT7Y" Name="changeValueType" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="changeValueType(Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.client.meta.mask.EditMask;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="valueType" Id="mprZ2JXSGFJNNGC3E56UEKW6Y5RT4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="mask" Id="mprW4QXWJDTIZGLNML47UEDIUSCOQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthMOUP7KJE7NFKZEIZD4SM3U7JYA" Name="getEditMask" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getEditMask()Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+      </Method>
+      <Method Id="mthAMTI5X5OQBCCDAA4YCSPLRZIQU" Name="getValueType" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getValueType()Lorg.radixware.kernel.common.enums.EValType;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+      </Method>
+      <Method Id="mthMOK6MYEAFNHFTF2C6FJ77UYIQU" Name="isInErrorMode" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="isInErrorMode()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthYXGABX55WFCVXBVZK77COR6VVQ" Name="getReferenceValueFormat" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getReferenceValueFormat()Lorg.radixware.kernel.common.client.enums.EReferenceStringFormat;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.enums.EReferenceStringFormat"/>
+      </Method>
+      <Method Id="mthUPDFWN4EL5A5VKZ5SEIQWLGXNI" Name="getValueConverter" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getValueConverter()Lorg.radixware.kernel.common.client.utils.IValAsStrConverter;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.utils.IValAsStrConverter"/>
+      </Method>
+      <Method Id="mthYJDQH2X67JCCNP6T4A76UKCVWY" Name="setValueConverter" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setValueConverter(Lorg.radixware.kernel.common.client.utils.IValAsStrConverter;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="converter" Id="mprK3X4DO6KGZG7PBRWB7PS3O4JR4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.utils.IValAsStrConverter"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOYUXJXWFRJBQXM5H5LL3NEHBEY" Name="setReferenceValueFormat" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setReferenceValueFormat(Lorg.radixware.kernel.common.client.enums.EReferenceStringFormat;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="format" Id="mpr6OZSA4R355D25OYHRH4R6VW3RA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EReferenceStringFormat"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -27,6 +27,7 @@ import org.radixware.kernel.common.client.meta.mask.EditMaskList;
 import org.radixware.kernel.common.client.meta.mask.EditMaskNone;
 import org.radixware.kernel.common.client.meta.mask.EditMaskNum;
 import org.radixware.kernel.common.client.meta.mask.EditMaskStr;
+import org.radixware.kernel.common.enums.EDateTimeStyle;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
@@ -106,8 +107,7 @@ public class XEditorTools {
                     ((ValIntEditor) e).setValue(Long.valueOf(v));
                 }
                 if (e instanceof ValNumEditor) {
-                    Double dv = Double.valueOf(v);
-                    ((ValNumEditor) e).setValue(BigDecimal.valueOf(dv));
+                    ((ValNumEditor) e).setValue(new BigDecimal(v));
                 }
                 if (e instanceof ValDateTimeEditor) {
                     if (v.contains("+")) {
@@ -227,10 +227,15 @@ public class XEditorTools {
             edit = new ValBoolEditor(environment, null, new EditMaskNone(), false, false);
         }
         if (editortype == DATE_EDITOR) {
-            Timestamp max = getMaxDateTime(t);
-            Timestamp min = getMinDateTime(t);
-            String display = getDateTimePattern(t, environment.getLocale());
-            EditMaskDateTime dtMask = new EditMaskDateTime(display, min, max);
+            final Timestamp max = getMaxDateTime(t);
+            final Timestamp min = getMinDateTime(t);
+            final String format = getDateTimePattern(t);
+            final EditMaskDateTime dtMask;
+            if (format==null || format.isEmpty()){
+                dtMask = new EditMaskDateTime(EDateTimeStyle.DEFAULT, EDateTimeStyle.DEFAULT, min, max);
+            }else{
+                dtMask = new EditMaskDateTime(format, min, max);
+            }
             edit = new ValDateTimeEditor(environment, null, dtMask, false, false);
         }
         if (editortype == BIN_EDITOR) {
@@ -355,13 +360,13 @@ public class XEditorTools {
         return null;
     }
 
-    static public String getDateTimePattern(SchemaType t, final java.util.Locale locale) {
+    static public String getDateTimePattern(final SchemaType t) {
         if (t.getFacet(SchemaType.FACET_PATTERN) != null) {
             XmlAnySimpleType res = t.getFacet(SchemaType.FACET_PATTERN);
             return res.getStringValue();
+        }else{
+            return null;
         }
-        final EditMaskDateTime mask = new EditMaskDateTime();
-        return mask.getDisplayFormat(locale);
     }
 
     static public byte getMinLength(SchemaType t) {

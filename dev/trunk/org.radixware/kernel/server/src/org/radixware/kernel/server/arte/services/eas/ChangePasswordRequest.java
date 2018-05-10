@@ -12,11 +12,13 @@
 package org.radixware.kernel.server.arte.services.eas;
 
 import java.sql.*;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.auth.AuthUtils;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.enums.EAuthType;
 import org.radixware.kernel.common.enums.ETimingSection;
 import org.radixware.kernel.common.enums.EValType;
@@ -28,14 +30,30 @@ import org.radixware.kernel.common.exceptions.ServiceProcessServerFault;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.server.dbq.DbQuery;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.schemas.eas.ChangePasswordMess;
 import org.radixware.schemas.eas.ChangePasswordRq;
-import org.radixware.schemas.eas.ChangePasswordRs;
 import org.radixware.schemas.eas.ExceptionEnum;
 import org.radixware.schemas.easWsdl.ChangePasswordDocument;
 
 final class ChangePasswordRequest extends SessionRequest {
 
+    private static final String qryReadCurPwdHashStmtSQL = "select u.pwdHash, u.pwdHashHistory, "
+                                                         + "(case when u.authTypes is NULL or u.authTypes like '%" + EAuthType.PASSWORD.getValue() + "%' then 1 else 0 end) CAN_CHANGE_PASSWORD, "
+                                                         + "s.uniquePwdSeqLen  "
+                                                         + "from rdx_ac_user u, rdx_system s where u.name = ? and s.id = 1";
+    private static final Stmt qryReadCurPwdHashStmt = new Stmt(qryReadCurPwdHashStmtSQL,Types.VARCHAR);
+
+    private static final String qryUpdatePwdStmtSQL = "update RDX_AC_USER set PWDHASH = ?, PWDHASHHISTORY = ?, PWDHASHALGO = ?, TEMPORARYPWDSTARTTIME = null where NAME = ?";
+    private static final Stmt qryUpdatePwdStmt = new Stmt(qryUpdatePwdStmtSQL,Types.VARCHAR,Types.CLOB,Types.VARCHAR,Types.VARCHAR);
+            
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
+            
+    private ChangePasswordRequest(){}
+    
     ChangePasswordRequest(final ExplorerAccessService presenter) {
         super(presenter);
     }
@@ -48,10 +66,7 @@ final class ChangePasswordRequest extends SessionRequest {
             getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
             final PreparedStatement qryReadCurPwdHash;
             try {
-                qryReadCurPwdHash = getArte().getDbConnection().get().prepareStatement("select u.pwdHash, u.pwdHashHistory, "
-                        + "(case when u.authTypes is NULL or u.authTypes like '%" + EAuthType.PASSWORD.getValue() + "%' then 1 else 0 end) CAN_CHANGE_PASSWORD, "
-                        + "s.uniquePwdSeqLen  "
-                        + "from rdx_ac_user u, rdx_system s where u.name = ? and s.id = 1");
+                qryReadCurPwdHash = ((RadixConnection)getArte().getDbConnection().get()).prepareStatement(qryReadCurPwdHashStmt);
             } finally {
                 getArte().getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
             }
@@ -77,14 +92,19 @@ final class ChangePasswordRequest extends SessionRequest {
                     if (rs.wasNull()) {
                         uniquePwdSeqLen = null;
                     }
-                    final String newPwdHash = Hex.encode(AuthUtils.decryptNewPwdHash(newPwdHashCryptogram, curPwdHash));
-                    if (uniquePwdSeqLen != null && history != null && newPwdHash != null) {
+                    final byte[] newPwdHashData = AuthUtils.decryptNewPwdHash(newPwdHashCryptogram, curPwdHash);
+                    final PasswordHash newPwdHash = PasswordHash.Factory.fromBytes(newPwdHashData);                    
+                    if (uniquePwdSeqLen != null && history != null) {
                         for (int i = 0; i < uniquePwdSeqLen.longValue() && i < history.size(); i++) {
-                            if (newPwdHash.equals(history.get(i))) {
-                                throw new ServiceProcessServerFault(ExceptionEnum.REPEATATIVE_PASSWORD.toString(), uniquePwdSeqLen.toString(), null, null);
+                            final byte[] oldPwdHash = Hex.decode(history.get(i));
+                            for (PasswordHash.Algorithm algo: PasswordHash.Algorithm.values()){
+                                if ( Arrays.equals(oldPwdHash, newPwdHash.getBytes(algo)) ){
+                                    throw new ServiceProcessServerFault(ExceptionEnum.REPEATATIVE_PASSWORD.toString(), uniquePwdSeqLen.toString(), null, null);
+                                }
                             }
                         }
                     }
+                    final String newPwdHashString = Hex.encode(newPwdHash.getBytes(PasswordHash.DEFAULT_ALGORITHM));
                     if (uniquePwdSeqLen == null) {
                         history = null;
                     } else {
@@ -95,20 +115,21 @@ final class ChangePasswordRequest extends SessionRequest {
                                 history.remove(history.size() - 1);
                             }
                         }
-                        history.add(0, newPwdHash);
+                        history.add(0, newPwdHashString);
                     }
                     final CallableStatement qryUpdatePwd;
                     getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                     try {
-                        qryUpdatePwd = getArte().getDbConnection().get().prepareCall("update RDX_AC_USER set PWDHASH = ?, PWDHASHHISTORY = ? where NAME = ?"); //mustChangePwd is set to 0 by trigger
+                        qryUpdatePwd = ((RadixConnection)getArte().getDbConnection().get()).prepareCall(qryUpdatePwdStmt); //mustChangePwd is set to 0 by trigger
                     } finally {
                         getArte().getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
                     }
                     getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_EXEC);
                     try {
-                        qryUpdatePwd.setString(1, newPwdHash);
+                        qryUpdatePwd.setString(1, newPwdHashString);
                         DbQuery.setParam(getArte(), qryUpdatePwd, 2, EValType.ARR_STR, OracleTypeNames.CLOB, history, "PWDHASHHISTORY");
-                        qryUpdatePwd.setString(3, getArte().getUserName());
+                        qryUpdatePwd.setString(3, PasswordHash.DEFAULT_ALGORITHM.getTitle());
+                        qryUpdatePwd.setString(4, getArte().getUserName());                        
                         final int updatedCnt = qryUpdatePwd.executeUpdate();
                         if (updatedCnt != 1) {
                             throw new ServiceProcessServerFault(ExceptionEnum.SERVER_MALFUNCTION.toString(), "Wrong number of users been updated: " + updatedCnt, null, null);
@@ -148,13 +169,18 @@ final class ChangePasswordRequest extends SessionRequest {
 
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(((ChangePasswordMess) rqXml).getChangePasswordRq());
     }
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final ChangePasswordDocument doc = process((ChangePasswordMess) rq);
-        postProcess(rq, doc.getChangePassword().getChangePasswordRs());
+        ChangePasswordDocument doc = null;
+        try{
+            doc = process((ChangePasswordMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getChangePassword().getChangePasswordRs());
+        }
         return doc;
     }
 }

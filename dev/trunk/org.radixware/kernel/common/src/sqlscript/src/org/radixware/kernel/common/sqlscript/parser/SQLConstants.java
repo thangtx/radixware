@@ -13,10 +13,8 @@ package org.radixware.kernel.common.sqlscript.parser;
 
 
 public class SQLConstants {
-
     public enum TokenType {
         // SQL tokens
-
         TK_NAME,
         TK_STRING,
         TK_SEMICOLON,
@@ -66,6 +64,7 @@ public class SQLConstants {
         TK_CMD_OFF,
         // SQL script tokens
         TK_SCRIPT_PP_STMT,
+        TK_SCRIPT_PP_PRAGMA,
         TK_SCRIPT_STMT,
         TK_SCRIPT_NAME,
         TK_SCRIPT_VALUE,
@@ -97,7 +96,6 @@ public class SQLConstants {
     };
 
     public enum StatementType {
-
         ST_PROMPT,
         ST_ACCEPT,
         ST_DEFINE,
@@ -107,9 +105,11 @@ public class SQLConstants {
         ST_COMMAND,
         ST_SHOW_ERRORS,
         ST_INCLUDE,
+        ST_PRAGMA,
         ST_TEXT,
         ST_SCRIPT
     };
+    
     public final static int MAX_GET_STR = 1024;
     public final static String LINE_INFO = " pp_line ";
 }

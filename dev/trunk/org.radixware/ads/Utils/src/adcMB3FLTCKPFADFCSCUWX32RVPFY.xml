@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcMB3FLTCKPFADFCSCUWX32RVPFY" Name="ArteWaitStatsUtils" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcMB3FLTCKPFADFCSCUWX32RVPFY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcMB3FLTCKPFADFCSCUWX32RVPFY"/>
+    </Bodies>
+    <MethodGroup Id="cmgAUPCB4PO5REPDI3P3ECJD7C7AQ" Name="Root"/>
+    <PropertyGroup Id="cpg456QWHKCCFGDXO5I35QLOTEBOI" Name="Root"/>
+    <Properties>
+      <Property Id="prdSTQV2V5IIRGJ7IPJA7X4YOFLLY" Name="TO_MILLIS" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="401" extStr="long"/>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>1000000l</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthY47WTUD7YFF3VNPIO735JEWOVM" Name="toStr" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="cpuNs" Id="mprWFAU43AC2RC5VPKOA23F2ERATI">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="dbNs" Id="mprLVZKOZOWHBGZZBCTVDIA274BZM">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="extNs" Id="mprFLMA4ZDZONEHXNYL2U5LJQSILQ">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="actNs" Id="mprNWDSCZV6BJB33H6MZPASM6EEZM">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final long cpuMs = cpuNs / </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMB3FLTCKPFADFCSCUWX32RVPFY prdSTQV2V5IIRGJ7IPJA7X4YOFLLY" Invoke="true">
+                <xsc:Presentation>TO_MILLIS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+final long dbMs = dbNs / </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMB3FLTCKPFADFCSCUWX32RVPFY prdSTQV2V5IIRGJ7IPJA7X4YOFLLY" Invoke="true">
+                <xsc:Presentation>TO_MILLIS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+final long extMs = extNs / </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMB3FLTCKPFADFCSCUWX32RVPFY prdSTQV2V5IIRGJ7IPJA7X4YOFLLY" Invoke="true">
+                <xsc:Presentation>TO_MILLIS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+
+final java.lang.StringBuilder sb = new java.lang.StringBuilder();
+sb.append("CPU = ").append(cpuMs).append(" ms, ")
+        .append("DB = ").append(dbMs).append(" ms, ")
+        .append("EXT = ").append(extMs).append(" ms");
+
+final long totalMs;
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().isUseActiveArteLimits()) {
+    final long actMs = actNs / </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMB3FLTCKPFADFCSCUWX32RVPFY prdSTQV2V5IIRGJ7IPJA7X4YOFLLY" Invoke="true">
+                <xsc:Presentation>TO_MILLIS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+    sb.append(", ACT = ").append(actMs).append(" ms");
+    totalMs = cpuMs + dbMs + extMs + actMs;
+} else {
+    totalMs = cpuMs + dbMs + extMs;
+}
+
+sb.append(" (Total ").append(totalMs).append(" ms)");
+return sb.toString();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthNIDMSFG3VJBMZESWAFSWU744RI" Name="toStr" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="before" Id="mprBEIXFQF4OBBIVHC44YC3SWO5XU">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.monitoring.ArteWaitStats"/>
+          </Parameter>
+          <Parameter Name="after" Id="mprXYXHTFHNLFDRRB7WAHTYXTXQVM">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.monitoring.ArteWaitStats"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final org.radixware.kernel.server.monitoring.ArteWaitStats res = before.substractFrom(after);
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMB3FLTCKPFADFCSCUWX32RVPFY mthY47WTUD7YFF3VNPIO735JEWOVM" Invoke="true">
+                <xsc:Presentation>toStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(res.CpuNanos, res.DbNanos, res.ExtNanos, res.QueueNanos);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthB6JGX5HIZFB6LGS45VVQWHMPP4" Name="toStr" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="before" Id="mprBEIXFQF4OBBIVHC44YC3SWO5XU">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.monitoring.ArteWaitStats"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final org.radixware.kernel.server.monitoring.ArteWaitStats after = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getProfiler().WaitStatsSnapshot;
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMB3FLTCKPFADFCSCUWX32RVPFY mthNIDMSFG3VJBMZESWAFSWU744RI" Invoke="true">
+                <xsc:Presentation>toStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(before, after);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -11,12 +11,18 @@
 package org.radixware.kernel.common.defs.ads.src.clazz.presentation;
 
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.ServerPresentationSupport;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsObjectTitleFormatDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsObjectTitleFormatDef.TitleItem;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.IAdsPresentableProperty;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyEditOptions;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyPresentation;
 import org.radixware.kernel.common.defs.ads.src.AbstractDefinitionWriter;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.defs.ads.src.WriterUtils;
+import org.radixware.kernel.common.enums.ETitleNullFormat;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.utils.CharOperations;
 
@@ -27,7 +33,7 @@ public class AdsObjectTitleFormatWriter extends AbstractDefinitionWriter<AdsObje
     }
     private static final char[] OTF_META_SERVER_CLASS_NAME = CharOperations.merge(WriterUtils.PRESENTATIONS_META_SERVER_PACKAGE_NAME, "RadEntityTitleFormatDef".toCharArray(), '.');
     private static final char[] TITLE_ITEM_META_SERVER_CLASS_NAME = CharOperations.merge(OTF_META_SERVER_CLASS_NAME, "TitleItem".toCharArray(), '.');
-
+    private static final char[] TITLE_FORMAT_ITEM_META_SERVER_CLASS_NAME = CharOperations.merge(OTF_META_SERVER_CLASS_NAME, "TitleFormatItem".toCharArray(), '.');
     @Override
     protected boolean writeMeta(CodePrinter printer) {
         switch (usagePurpose.getEnvironment()) {
@@ -56,10 +62,14 @@ public class AdsObjectTitleFormatWriter extends AbstractDefinitionWriter<AdsObje
                             WriterUtils.writeIdUsage(printer, item.getPropertyId());
                             printer.printComma();
                             WriterUtils.writeIdUsage(printer, item.getPatternId());
+                            printTitleFormatTitle(item, printer);
                         } else {
+                            WriterUtils.writeIdUsage(printer, def.getOwnerClass().getId());
+                            printer.printComma();
                             WriterUtils.writeIdUsage(printer, item.getPropertyId());
                             printer.printComma();
                             printer.printStringLiteral(item.getPattern());
+                            printTitleFormatTitle(item, printer);
                         }
                     }
                 }.write(printer, def.getItems().list());
@@ -93,6 +103,49 @@ public class AdsObjectTitleFormatWriter extends AbstractDefinitionWriter<AdsObje
                 return true;
             default:
                 return false;
+        }
+    }
+    
+    private void printTitleFormatTitle(TitleItem item, CodePrinter printer) {
+        printer.printComma();
+        ETitleNullFormat format = item.getNullFormat();
+        WriterUtils.writeEnumFieldInvocation(printer, format);
+        printer.printComma();
+        if (format == ETitleNullFormat.CUSTOM) {
+            TitleItem customTitle = item.getCustomTitle();
+            if (customTitle != null) {
+                printer.print("new ");
+                printer.print(TITLE_FORMAT_ITEM_META_SERVER_CLASS_NAME);
+                printer.print('(');
+                if (customTitle.isMultilingual()) {
+                    WriterUtils.writeIdUsage(printer, customTitle.getPatternId());
+                } else {
+                    printer.printStringLiteral(customTitle.getPattern());
+                }
+                printer.print(')');
+            }
+        } else if (format == ETitleNullFormat.PROPERTY_NULL_TITLE){
+            AdsPropertyDef prop = item.findProperty();
+            if (prop instanceof IAdsPresentableProperty) {
+                ServerPresentationSupport support = ((IAdsPresentableProperty)prop).getPresentationSupport();
+                if (support !=  null) {
+                    PropertyPresentation pres = support.getPresentation();
+                    PropertyEditOptions options = pres.getEditOptions();
+                    if (options.getNullValTitleId() != null) {
+                        printer.print("new ");
+                        printer.print(TITLE_FORMAT_ITEM_META_SERVER_CLASS_NAME);
+                        printer.print('(');
+                        WriterUtils.writeIdUsage(printer, options.getNullValTitleId());
+                        printer.print(')');
+                    } else {
+                        WriterUtils.writeNull(printer);
+                    }
+                }
+            } else {
+                WriterUtils.writeNull(printer);
+            }
+        } else {
+            WriterUtils.writeNull(printer);
         }
     }
 }

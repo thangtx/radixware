@@ -128,7 +128,7 @@ public class RwtStandardReportParamEditor extends RwtReportParamDialog {
     public void finishEdit() {
         if (propGrid != null) {
             propGrid.finishEdit();
-        } else {
+        } else if (tabSet!=null){
             tabSet.finishEdit();
         }
         super.finishEdit();

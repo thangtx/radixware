@@ -38,6 +38,9 @@ var TABLE_TRIGGERS_RECT_COLOR = '#FFFAF0';
 var TABLE_STROKE_WIDTH = .25;
 var TABLE_STROKE_COLOR = 'black';
 
+var PAGE_PADDING = 50;
+
+
 // ------ FOR BETTER LIFE - DON'T ALTER! ------
 // Base independent parameters
 var FONT_FAMILY = 'Monospace';
@@ -49,7 +52,7 @@ var TABLE_FIELDS_FONT_SIZE = 11;
 // This constants are depended from font constants 
 // (FONT_FAMILY, TABLE_TITLE_FONT_SIZE, TABLE_SUBTITLE_FONT_SIZE, TABLE_FIELDS_FONT_SIZE)
 var BASE_ELEMENT_WIDTH = 60;
-var SCROLLER_PADDING = 10;
+var SCROLLER_PADDING = 8;
 var TITLE_HEIGHT = 24;
 var FIELD_HEIGHT = 11;
 var LINES_VERT_PADDING = 8;
@@ -264,23 +267,24 @@ function buildDiagram(jsonData, elementName, autoPlacement) {
         interactive: IS_ELEMENTS_MOVABLE,
         linkView: view
     });
-    
-    var paperScroller = new joint.ui.PaperScroller({
-        autoResizePaper: true,
-        paper: mainPaper
-    });
 
-    mainPaper.on('blank:pointerdown', paperScroller.startPanning);
-    paperScroller.$el.css({
-        width: $(window).width() - SCROLLER_PADDING,
-		height: $(window).height() - SCROLLER_PADDING
-    });
+    // mainPaper.on('blank:pointerdown', mainPaper.startPanning);
+  //   mainPaper.$el.css({    	
+  //   	width: PAGE_WIDTH,
+		// height: PAGE_HEIGHT
+  //   });
 
-    $('#' + elementName).append(paperScroller.render().el);
-    paperScroller.center();
+    var placeHolder = $('#' + elementName);
+    placeHolder.append(mainPaper.el);
+    placeHolder.css({
+    	width: $(window).width() - SCROLLER_PADDING,
+		height: $(window).height() - SCROLLER_PADDING,
+    	overflow: 'auto'
+    });
+    // mainPaper.center();
     
     window.onresize = function(evt) {
-       paperScroller.$el.css({
+       placeHolder.css({
             width: $(window).width() - SCROLLER_PADDING,
             height: $(window).height() - SCROLLER_PADDING
         }); 
@@ -310,6 +314,8 @@ function buildDiagram(jsonData, elementName, autoPlacement) {
 	    });
 	}
 
+
+	
 	var allElements = [];
 
 	_.each(jsonData.tables, function(table) {
@@ -328,11 +334,25 @@ function buildDiagram(jsonData, elementName, autoPlacement) {
 		allElements.push( {data: label, type: 'label'} );
 	});
 
+	// Calc offset
+	var minX = 0;
+	var minY = 0;
+
+	for(var index = 0; index < allElements.length; index++) {
+		var element = allElements[index].data;
+
+		minX = element.position.x < minX ? element.position.x : minX;
+		minY = element.position.y < minY ? element.position.y : minY;
+	}
+
+	var elementOffsetX = -minX + PAGE_PADDING;
+	var elementOffsetY = -minY + PAGE_PADDING;
+
 	// Placement
     for(var index = 0; index < allElements.length; index++) {
     	var element = allElements[index].data;
-    	element.position.x = element.position.x * MAIN_SCALE;
-    	element.position.y = element.position.y * MAIN_SCALE;
+    	element.position.x = elementOffsetX + element.position.x * MAIN_SCALE;
+    	element.position.y = elementOffsetY + element.position.y * MAIN_SCALE;
 
     	var current;
 
@@ -445,12 +465,13 @@ function buildDiagram(jsonData, elementName, autoPlacement) {
 
     // Setting paper size according to the content
     _.each(graph.getElements(), function(element) {
-
-        maxWidth = maxWidth > element.getWidth() ? maxWidth : element.getWidth();
+    	maxWidth = maxWidth > element.getWidth() ? maxWidth : element.getWidth();
         maxHeight = maxHeight > element.getHeight() ? maxHeight : element.getHeight();
 
-        requiredWidth += element.getWidth() * PAPER_SCALE;
-        requiredHeight += element.getHeight() * PAPER_SCALE;
+        var position = element.get('position');
+
+    	requiredWidth = (position.x + element.getWidth()) > requiredWidth ? (position.x + element.getWidth()) : requiredWidth;
+    	requiredHeight = (position.y + element.getHeight()) > requiredHeight ? (position.y + element.getHeight()) : requiredHeight;
     });
 
     // hides all links
@@ -459,8 +480,10 @@ function buildDiagram(jsonData, elementName, autoPlacement) {
     });
 
     // Adds some borders
-    maxWidth += 50;
-    maxHeight += 50;
+    maxWidth += PAGE_PADDING;
+    maxHeight += PAGE_PADDING;
+    requiredWidth += PAGE_PADDING;
+    requiredHeight += PAGE_PADDING;
 
     var i = 0;
 

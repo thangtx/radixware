@@ -16,6 +16,7 @@ import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAbstractItemView;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QCheckBox;
+import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QFileDialog;
 import com.trolltech.qt.gui.QGridLayout;
 import com.trolltech.qt.gui.QGroupBox;
@@ -33,10 +34,14 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.ClientSettings;
@@ -51,6 +56,8 @@ import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.items.SelectorColumnModelItem;
 import org.radixware.kernel.common.client.types.PropertyValuesWriteOptions;
 import org.radixware.kernel.common.client.utils.CsvWriter;
+import org.radixware.kernel.common.client.widgets.IListWidget;
+import org.radixware.kernel.common.client.widgets.selector.ISelectorDataExportOptionsDialog;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.ESelectorColumnVisibility;
 import org.radixware.kernel.common.enums.EValType;
@@ -62,19 +69,29 @@ import org.radixware.kernel.explorer.editors.valeditors.ValStrEditor;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
+import org.radixware.kernel.explorer.dialogs.ExplorerListDialog;
+import org.radixware.kernel.common.client.widgets.ListWidgetItem;
+import org.radixware.kernel.common.enums.EMimeType;
 
 
-final class SelectorDataExportOptionsDialog extends ExplorerDialog{
-    
+final class SelectorDataExportOptionsDialog extends ExplorerDialog implements ISelectorDataExportOptionsDialog{
+    public static enum Features{ENCODING, TIMEZONEFORMAT, OPENFILESETTING};
     private final static int TITLE_COLUMN_INDEX = 0;
     private final static int FORMAT_COLUMN_INDEX = 1;
     private final static int CHECK_COLUMN_INDEX = 2;
-
+    private final static String SETTINGS_KEY = "export_exel_params";   
+    
     private final QLabel lbFile = 
-        new QLabel(getEnvironment().getMessageProvider().translate("Selector", "&File path:"), this);    
+        new QLabel(getEnvironment().getMessageProvider().translate("Selector", "&File path:"), this);  
+    private GroupModel groupModel;
     private final ValStrEditor veFile = new ValStrEditor(getEnvironment(), this);
-    private final ValIntEditor veMaxRows = new ValIntEditor(getEnvironment(), this);
+    private final ValIntEditor veMaxRows = new ValIntEditor(getEnvironment(), this, new EditMaskInt(), false ,false);
     private final ValListEditor veEncoding;
+    private final ValListEditor veTimezone;
+    private Object veTimezonePrevValue;
+    private QLabel lbTimeZone;
+    private QCheckBox cbOpenFile;
+    private final List<ValListEditor> valDateTimeEditorList;
     private final QGroupBox gbColumns = 
         new QGroupBox(getEnvironment().getMessageProvider().translate("Selector", "Choose columns to export:"),this);
     private final QTableWidget tbColumns = new QTableWidget(gbColumns){
@@ -99,7 +116,7 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
             }
         }
         
-    };
+    };  
     private final QCheckBox cbExportTitles = 
         new QCheckBox(getEnvironment().getMessageProvider().translate("Selector", "Export column &headers"), this);
     
@@ -113,22 +130,56 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
     private File resultFile;
     private int maxRows;
     private boolean exportColumnTitles;
+    private boolean isEncoding = false;
+    private boolean isTimezone = false;
+    private boolean isOpenFileSetting = false;
+    private final EMimeType type;
     
     @SuppressWarnings("LeakingThisInConstructor")
-    public SelectorDataExportOptionsDialog(final GroupModel group, final QWidget widget){
+    public SelectorDataExportOptionsDialog(final GroupModel group, final QWidget widget, EMimeType type, EnumSet<Features> features){ 
         super(group.getEnvironment(), widget);
+        this.groupModel = group;
+        this.type = type;
+        isEncoding = features.contains(Features.ENCODING);
+        isTimezone = features.contains(Features.TIMEZONEFORMAT);
+        isOpenFileSetting = features.contains(Features.OPENFILESETTING);
+        
         setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, true);
-        final List<EditMaskList.Item> encodingItems = new LinkedList<>();
-        final Map<String,Charset> allCharsets = Charset.availableCharsets();
-        String currentCharsetName = "UTF-8";
-        for (Map.Entry<String,Charset> entry: allCharsets.entrySet()){            
-            encodingItems.add(new EditMaskList.Item(entry.getValue().displayName(), entry.getKey()));
-            if (Charset.defaultCharset().name().equals(entry.getKey())){
-               currentCharsetName = entry.getKey();
+        if (isEncoding) {
+            final List<EditMaskList.Item> encodingItems = new LinkedList<>();
+            final Map<String,Charset> allCharsets = Charset.availableCharsets();
+            String currentCharsetName = "UTF-8";
+            final String utf8WithBomTitle = 
+                group.getEnvironment().getMessageProvider().translate("Selector","UTF-8 with BOM character");
+            for (Map.Entry<String,Charset> entry: allCharsets.entrySet()){            
+                encodingItems.add(new EditMaskList.Item(entry.getValue().displayName(), entry.getKey()));
+                if (Charset.defaultCharset().name().equals(entry.getKey())){
+                   currentCharsetName = entry.getKey();
+                }
+                if ("UTF-8".equals(entry.getKey())){
+                    encodingItems.add(new EditMaskList.Item(utf8WithBomTitle, CsvWriter.UTF_8_WITH_BOM));
+                }
             }
+            veEncoding = new ValListEditor(getEnvironment(), this, encodingItems);
+            veEncoding.setValue(currentCharsetName);
+        } else {
+            veEncoding = null;
         }
-        veEncoding = new ValListEditor(getEnvironment(), this, encodingItems);
-        veEncoding.setValue(currentCharsetName);
+        if (isTimezone) {
+            veTimezone = createTimeZoneEditor(PropertyValuesWriteOptions.TimeZoneFormat.SERVER_TIMEZONE);
+            veTimezonePrevValue = PropertyValuesWriteOptions.TimeZoneFormat.SERVER_TIMEZONE.asString();
+            veTimezone.valueChanged.connect(this, "veTimeZoneEditingFinished(Object)");
+            restoreTimeZoneFromConfig();
+            valDateTimeEditorList = new LinkedList<>();
+        } else {
+            veTimezone = null;
+            valDateTimeEditorList = null;
+        }
+        if (isOpenFileSetting) {
+            cbOpenFile = new QCheckBox(this);
+        } else {
+            cbOpenFile = null;
+        }
         setupUi();
         selectorPresentationId = group.getDefinition().getId();
         final Map<Id,PropertyValuesWriteOptions.ExportFormat> restoredFormats = new HashMap<>();
@@ -149,33 +200,55 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
             layout.addWidget(lbFile, 0, 0);        
             final QAction chooseFileAction = new QAction("...",veFile);
             chooseFileAction.triggered.connect(this,"onChooseFile()");
+            chooseFileAction.setObjectName("select_file");
             veFile.addButton("...", chooseFileAction);
             veFile.valueChanged.connect(this,"filePathChanged()");
             veFile.setMandatory(true);
             layout.addWidget(veFile, 0, 1);
             veFile.setFocus();
         }
+        if (isOpenFileSetting) 
+        {//open file setting
+           QLabel lbOpenFile = new QLabel(getEnvironment().getMessageProvider().translate("Selector", "&Open file after export:"), this);
+           WidgetUtils.applyDefaultTextOptions(lbOpenFile);
+           lbOpenFile.setBuddy(cbOpenFile);
+           layout.addWidget(lbOpenFile, 1, 0);
+           layout.addWidget(cbOpenFile, 1, 1);
+           cbOpenFile.setChecked(true);
+        }
+        if (isEncoding)
         {//encoding
             final QLabel lbEncoding = 
                 new QLabel(mp.translate("Selector", "File &character set:"), this);
             WidgetUtils.applyDefaultTextOptions(lbEncoding);            
             lbEncoding.setBuddy(veEncoding);
-            layout.addWidget(lbEncoding, 1, 0);
+            layout.addWidget(lbEncoding, 2, 0);
             veEncoding.setMandatory(true);
-            layout.addWidget(veEncoding, 1, 1);
+            layout.addWidget(veEncoding, 2, 1);
         }
         {//max rows
             final QLabel lbMaxRows = 
                 new QLabel(mp.translate("Selector", "&Maximum rows:"), this);
             WidgetUtils.applyDefaultTextOptions(lbMaxRows);
             lbMaxRows.setBuddy(veMaxRows);
-            layout.addWidget(lbMaxRows, 2, 0);
+            layout.addWidget(lbMaxRows, 3, 0);
             final EditMaskInt mask = new EditMaskInt();
             mask.setMinValue(Long.valueOf(1));
             mask.setMaxValue(Long.valueOf(Integer.MAX_VALUE));
             mask.setNoValueStr(mp.translate("Selector", "<unbounded>"));
             veMaxRows.setEditMask(mask);
-            layout.addWidget(veMaxRows, 2, 1);
+            layout.addWidget(veMaxRows, 3, 1);
+        }
+        
+        if (isTimezone)
+        {
+            lbTimeZone = new QLabel(mp.translate("Selector", "&Timezone:"));
+            WidgetUtils.applyDefaultTextOptions(lbTimeZone);   
+            lbTimeZone.setBuddy(veTimezone);
+            layout.addWidget(lbTimeZone, 4, 0);
+            layout.addWidget(veTimezone, 4, 1);
+            lbTimeZone.setVisible(false);
+            veTimezone.setVisible(false);
         }
         dialogLayout().addLayout(layout);
         {//columns selector            
@@ -206,8 +279,13 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
             dialogLayout().addWidget(cbExportTitles);
         }
         {//tab order setup 
-            QWidget.setTabOrder(veFile, veEncoding);
-            QWidget.setTabOrder(veEncoding, veMaxRows);
+            if (isEncoding) {
+                QWidget.setTabOrder(veFile, veEncoding);
+                QWidget.setTabOrder(veEncoding, veMaxRows);
+            } else {
+                QWidget.setTabOrder(veFile, veMaxRows);
+            }
+            
             QWidget.setTabOrder(veMaxRows, tbColumns);
             QWidget.setTabOrder(tbColumns, cbExportTitles);
         }
@@ -317,13 +395,20 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
         final EditMaskList editMask = 
             createEditMaskForExportFormatItems(formatItems, getEnvironment().getMessageProvider());
         final ValListEditor editor = new ValListEditor(getEnvironment(), null, editMask, true, false);
+        if (valType == EValType.DATE_TIME && isTimezone) {
+            veTimezone.setVisible(true);
+            lbTimeZone.setVisible(true);
+            valDateTimeEditorList.add(editor);
+        }
+        editor.valueChanged.connect(this, "onChangeFormat()", Qt.ConnectionType.QueuedConnection);
         if (formatItems.contains(defaultFormat)){
             editor.setValue(defaultFormat.asString());
-        }else{
+        } else if (valType == EValType.PARENT_REF && formatItems.contains(PropertyValuesWriteOptions.ExportFormat.DISPLAYED_TEXT)) {
+            editor.setValue(PropertyValuesWriteOptions.ExportFormat.DISPLAYED_TEXT.asString());
+        } else{
             editor.setValue(formatItems.get(0).asString());
         }
         editor.changeStateForGrid();
-        editor.valueChanged.connect(this,"onChangeFormat()");
         return editor;
     }
     
@@ -336,14 +421,101 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
         return new EditMaskList(editMaskItems);
     }
 
+    private ValListEditor createTimeZoneEditor(final PropertyValuesWriteOptions.TimeZoneFormat defaultFormat) {
+        final List<PropertyValuesWriteOptions.TimeZoneFormat> formatItems = new LinkedList<>();   
+        for (PropertyValuesWriteOptions.TimeZoneFormat format : PropertyValuesWriteOptions.TimeZoneFormat.values()) {
+            formatItems.add(format);
+        }
+        final EditMaskList editMask = 
+            createEditMaskForTimeZoneFormatItems(formatItems, getEnvironment());
+        final ValListEditor editor = new ValListEditor(getEnvironment(), null, editMask, true, false);
+        if (formatItems.contains(defaultFormat)){
+            editor.setValue(defaultFormat.asString());
+        }else{
+            editor.setValue(formatItems.get(0).asString());
+        }
+        return editor;
+    }
+    
+    private EditMaskList createEditMaskForTimeZoneFormatItems(final List<PropertyValuesWriteOptions.TimeZoneFormat> formats, final IClientEnvironment env){
+        MessageProvider mp = env.getMessageProvider();
+        final List<EditMaskList.Item> editMaskItems = new LinkedList<>();
+        for (PropertyValuesWriteOptions.TimeZoneFormat format: formats){
+            StringBuilder title = new StringBuilder(PropertyValuesWriteOptions.TimeZoneFormat.getDisplayName(format, mp));
+            if (format.equals(PropertyValuesWriteOptions.TimeZoneFormat.SERVER_TIMEZONE)) {
+                title.append(" (").append(env.getServerTimeZoneInfo().getTimeZoneDisplayName(TimeZone.LONG, env.getLocale())).append(')');
+            } else if (format.equals(PropertyValuesWriteOptions.TimeZoneFormat.CLIENT_TIMEZONE)) {
+                TimeZone clientTimeZone = TimeZone.getDefault();
+                title.append(" (").append(displayTimeZone(clientTimeZone)).append(')') ;
+            }
+            editMaskItems.add(new EditMaskList.Item(title.toString(), format.asString()));
+        }
+        return new EditMaskList(editMaskItems);
+    }
+    
+    @SuppressWarnings("unused")
+    private void veTimeZoneEditingFinished(Object val) {
+        if (val.toString().equals(PropertyValuesWriteOptions.TimeZoneFormat.ANOTHER.asString())) {
+            ExplorerListDialog tzDialog = new ExplorerListDialog(getEnvironment(), this);
+            tzDialog.setFeatures(EnumSet.of(IListWidget.EFeatures.FILTERING));
+            String[] ids = TimeZone.getAvailableIDs();
+            List<ListWidgetItem> availableTimeZones = new LinkedList<>();
+            for (String id : ids) {
+                String displayName = displayTimeZone(TimeZone.getTimeZone(id));
+                availableTimeZones.add(new ListWidgetItem(displayName, id)); 
+            }
+            tzDialog.setItems(availableTimeZones);
+            tzDialog.setWindowModality(Qt.WindowModality.WindowModal);                        
+            if (tzDialog.exec() == QDialog.DialogCode.Accepted.value()) {
+                EditMaskList editMask = (EditMaskList) veTimezone.getEditMask();
+                ListWidgetItem currentTZ = tzDialog.getCurrent();
+                boolean containsCurrent = false;
+                for (EditMaskList.Item item :editMask.getItems()) {
+                    if (item.getValue().equals(currentTZ.getValue())) {
+                        containsCurrent = true;
+                    }
+                }
+                if (!containsCurrent) {
+                    editMask.addItem(editMask.getItems().size() - 1, currentTZ.getText(), currentTZ.getValue());
+                    veTimezone.setEditMask(editMask);
+                }
+                veTimezone.setValue(currentTZ.getValue());
+            } else {
+                veTimezone.setValue(veTimezonePrevValue);
+            }
+        } else {
+            veTimezonePrevValue = val;
+        }
+    }
+    
+    private String displayTimeZone(TimeZone tz) {
+        long hours = TimeUnit.MILLISECONDS.toHours(tz.getRawOffset());
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(tz.getRawOffset())
+                          - TimeUnit.HOURS.toMinutes(hours);
+        // avoid -4:-30 issue
+        minutes = Math.abs(minutes);
+        String result = "";
+        if (hours > 0) {
+                result = String.format("(GMT+%d:%02d) %s", hours, minutes, tz.getID());
+        } else {
+                result = String.format("(GMT%d:%02d) %s", hours, minutes, tz.getID());
+        }
+        return result;
+    }
+
     private List<Id> restoreOptionsFromConfig(final Map<Id,PropertyValuesWriteOptions.ExportFormat> formatByColumnId){
         final ClientSettings config = getEnvironment().getConfigStore();
         config.beginGroup(SettingNames.SYSTEM+"/"+getClass().getSimpleName());
         try{
             initialResulFileDirectory = config.readString("initialPath", null);
             final String charsetName = config.readString("charset",null);
-            if (charsetName!=null && !charsetName.isEmpty() && Charset.isSupported(charsetName)){
-                veEncoding.setValue(charsetName);
+            try{
+                if (charsetName!=null && !charsetName.isEmpty() && isEncoding
+                    && (CsvWriter.UTF_8_WITH_BOM.equals(charsetName) || Charset.isSupported(charsetName))){
+                    veEncoding.setValue(charsetName);
+                }
+            }catch(IllegalArgumentException exception){
+                //ignore
             }
             config.beginGroup(selectorPresentationId.toString());
             try{
@@ -401,7 +573,11 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
             if (initialResulFileDirectory!=null && !initialResulFileDirectory.isEmpty()){
                 config.writeString("initialPath", initialResulFileDirectory);
             }
-            config.writeString("charset",String.valueOf(veEncoding.getValue()));
+            if (isEncoding) {
+                config.writeString("charset",String.valueOf(veEncoding.getValue()));
+            } else {
+                config.writeString("charset", "UTF-8");
+            }
             config.beginGroup(selectorPresentationId.toString());
             try{
                 config.writeInteger("maxRows", veMaxRows.getValue()==null ? 0 : veMaxRows.getValue().intValue());
@@ -443,7 +619,15 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
         final ValListEditor editorRow2 = (ValListEditor)tbColumns.cellWidget(row2, FORMAT_COLUMN_INDEX);
         final EditMask mask = editorRow1.getEditMask();
         final String format = (String)editorRow1.getValue();
-        
+        if (valDateTimeEditorList != null) {
+            if (valDateTimeEditorList.contains(editorRow1) && !valDateTimeEditorList.contains(editorRow2)) {
+                valDateTimeEditorList.remove(editorRow1);
+                valDateTimeEditorList.add(editorRow2);
+            } else if (valDateTimeEditorList.contains(editorRow2) && !valDateTimeEditorList.contains(editorRow1)) {
+                valDateTimeEditorList.remove(editorRow2);
+                valDateTimeEditorList.add(editorRow1);
+            }
+        }
         tbColumns.item(row1,CHECK_COLUMN_INDEX).setData(Qt.ItemDataRole.UserRole,tbColumns.item(row2, CHECK_COLUMN_INDEX).data(Qt.ItemDataRole.UserRole));
         tbColumns.item(row1,CHECK_COLUMN_INDEX).setCheckState(tbColumns.item(row2, CHECK_COLUMN_INDEX).checkState());
         tbColumns.item(row1, TITLE_COLUMN_INDEX).setText(tbColumns.item(row2,TITLE_COLUMN_INDEX).text());
@@ -460,8 +644,15 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
     @SuppressWarnings("unused")
     private void onChooseFile(){
         final String title = getEnvironment().getMessageProvider().translate("Selector", "Export to");
-        final String filter = getEnvironment().getMessageProvider().translate("Selector", "CSV files (%s)");
-        final QFileDialog.Filter fileFilter = new QFileDialog.Filter(String.format(filter, "*.csv"));
+        final String filter;
+        final QFileDialog.Filter fileFilter;
+        if (type.equals(EMimeType.CSV)) {
+            filter = getEnvironment().getMessageProvider().translate("Selector", "CSV files (%s)");
+            fileFilter = new QFileDialog.Filter(String.format(filter, "*.csv"));
+        } else {
+            filter = getEnvironment().getMessageProvider().translate("Selector", "XLSX files (%s)");
+            fileFilter = new QFileDialog.Filter(String.format(filter, "*.xlsx"));
+        }
         final String dir;
         if (initialResulFileDirectory!=null && 
             !initialResulFileDirectory.isEmpty() &&
@@ -474,7 +665,11 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
         if (fileName!=null && !fileName.isEmpty()){
             final File file = new File(fileName);
             if (file.getName().indexOf('.')<0){
-                veFile.setValue(fileName+".csv");
+                if (type.equals(EMimeType.CSV)) {
+                    veFile.setValue(fileName+".csv");
+                } else {
+                    veFile.setValue(fileName+".xlsx");
+                }
             }else{        
                 veFile.setValue(fileName);
             }
@@ -500,6 +695,20 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
     @SuppressWarnings("unused")
     private void onChangeFormat(){
         tbColumns.resizeColumnToContents(FORMAT_COLUMN_INDEX);
+        onChangeDateTimeEditorFormat();
+    }
+    
+    private void onChangeDateTimeEditorFormat() {
+        if (valDateTimeEditorList != null) {
+            boolean isVeTimezoneEnabled = false;
+            for (ValListEditor editor : valDateTimeEditorList) {
+                if (editor.isEnabled() && editor.getValue().equals(PropertyValuesWriteOptions.ExportFormat.PROPERTY_VALUE.asString())) {
+                   isVeTimezoneEnabled = true; 
+                   break;
+                }
+            }
+            veTimezone.setEnabled(isVeTimezoneEnabled);
+        }
     }
     
     @SuppressWarnings("unused")
@@ -515,6 +724,7 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
                 ExplorerTextOptions.getDefault().changeForegroundColor(Color.gray).applyTo(titleItem);
                 editor.setEnabled(false);
             }
+            onChangeDateTimeEditorFormat();
         }
     }
     
@@ -557,7 +767,9 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
             getEnvironment().processException(exceptionTitle, new FileException(getEnvironment(), FileException.EExceptionCode.CANT_WRITE, filePath));
             return;
         }
-        resultCsvFormatOptions = new CsvWriter.FormatOptions((String)veEncoding.getValue());
+        if (isEncoding) {
+            resultCsvFormatOptions = new CsvWriter.FormatOptions((String)veEncoding.getValue());
+        }
         maxRows = veMaxRows.getValue()==null ? -1 : veMaxRows.getValue().intValue();
         final List<Id> columnIds = new LinkedList<>();
         final Map<Id,String> formatNameByColumnId = new HashMap<>();
@@ -569,7 +781,25 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
                 formatNameByColumnId.put(columnId, (String)editor.getValue());
             }
         }
-        resultWriteOptions = new PropertyValuesWriteOptions(columnIds);
+        PropertyValuesWriteOptions.TimeZoneFormat timeZoneFormat;
+        if (isTimezone) {
+            timeZoneFormat = PropertyValuesWriteOptions.TimeZoneFormat.getFromString(String.valueOf(veTimezone.getValue()));
+            if (timeZoneFormat == null) { //if other format is used getFormString() return null
+                timeZoneFormat = PropertyValuesWriteOptions.TimeZoneFormat.ANOTHER;
+            }
+        } else {
+            timeZoneFormat = null;
+        }
+        resultWriteOptions = new PropertyValuesWriteOptions(columnIds, timeZoneFormat);
+        if (PropertyValuesWriteOptions.TimeZoneFormat.ANOTHER.equals(timeZoneFormat)) {
+            resultWriteOptions.setTimeZone(TimeZone.getTimeZone(veTimezone.getValue().toString()));
+        }
+        if (isTimezone) {
+            writeTimeZoneToConfig(String.valueOf(veTimezone.getValue()));
+        }
+        if (isOpenFileSetting) {
+            resultWriteOptions.setOpenFile(cbOpenFile.isChecked());
+        }
         for (Map.Entry<Id,String> entry: formatNameByColumnId.entrySet()){
             final PropertyValuesWriteOptions.ExportFormat format =
                     PropertyValuesWriteOptions.ExportFormat.getFromString(entry.getValue());
@@ -580,23 +810,66 @@ final class SelectorDataExportOptionsDialog extends ExplorerDialog{
         accept();
     }
         
+    @Override
     public File getFile(){
         return resultFile;
     }    
     
+    @Override
     public PropertyValuesWriteOptions getPropertyValuesWriteOptions(){
         return resultWriteOptions;
     }
     
+    @Override
     public CsvWriter.FormatOptions getCsvFormatOptions(){
         return resultCsvFormatOptions;
     }
     
+    @Override
     public int getMaxRows(){
         return maxRows;
     }
     
+    @Override
     public boolean exportColumnTitles(){
         return exportColumnTitles;
+    }
+    
+    private void writeTimeZoneToConfig(final String timeZone){
+        if (timeZone != null && !timeZone.isEmpty()){
+            final ClientSettings settings = getEnvironment().getConfigStore();
+            settings.beginGroup(SettingNames.SYSTEM);
+            settings.beginGroup(SettingNames.SELECTOR_GROUP);
+            try{
+                settings.writeString(SETTINGS_KEY, timeZone);
+            }finally{
+                settings.endGroup();
+                settings.endGroup();
+            }
+        }
+    }
+    
+     private void restoreTimeZoneFromConfig(){
+        final ClientSettings settings = getEnvironment().getConfigStore();
+        settings.beginGroup(SettingNames.SYSTEM);
+        settings.beginGroup(SettingNames.SELECTOR_GROUP);
+        final String timeZone;
+        try{
+            timeZone = settings.readString(SETTINGS_KEY, "");
+        }finally{
+            settings.endGroup();
+            settings.endGroup();
+        }
+        if (timeZone!=null && !timeZone.isEmpty()){  
+            if (PropertyValuesWriteOptions.TimeZoneFormat.getFromString(timeZone) != null) {
+                veTimezone.setValue(timeZone);
+            } else {
+                EditMaskList editMask = (EditMaskList) veTimezone.getEditMask();
+                TimeZone tz = TimeZone.getTimeZone(timeZone);
+                editMask.addItem(editMask.getItems().size() - 1, displayTimeZone(tz), timeZone);
+                veTimezone.setEditMask(editMask);
+                veTimezone.setValue(timeZone);
+            }
+        }
     }
 }

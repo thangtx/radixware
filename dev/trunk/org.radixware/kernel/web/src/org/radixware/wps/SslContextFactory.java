@@ -19,6 +19,7 @@ import java.security.cert.CertificateExpiredException;
 import java.security.cert.CertificateNotYetValidException;
 import java.security.cert.CertificateRevokedException;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.Collections;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
@@ -28,6 +29,8 @@ import javax.net.ssl.X509TrustManager;
 import org.radixware.kernel.common.client.eas.ISslContextFactory;
 import org.radixware.kernel.common.client.eas.connections.ConnectionOptions;
 import org.radixware.kernel.common.client.exceptions.FileException;
+import org.radixware.kernel.common.client.utils.ISecretStore;
+import org.radixware.kernel.common.client.utils.TokenProcessor;
 import org.radixware.kernel.common.enums.EAuthType;
 import org.radixware.kernel.common.exceptions.CertificateUtilsException;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
@@ -137,10 +140,10 @@ public final class SslContextFactory implements ISslContextFactory{
     }
     
     @Override
-    public SSLContext createSslContext(final char[] keyStorePwd) throws KeystoreControllerException, CertificateUtilsException {        
+    public SSLContext createSslContext(final ISecretStore secretStore) throws KeystoreControllerException, CertificateUtilsException {        
         if (connection.getAuthType()==EAuthType.CERTIFICATE){
             final KeystoreController keyStoreController = KeystoreController.getServerKeystoreController();
-            String alias = WebServerRunParams.getCertificateAlias();
+            String alias = environment.getRunParams().getCertificateAlias();
             if (alias==null){
                 final String[] aliases = keyStoreController.getRsaKeyAliases();
                 alias = aliases!=null && aliases.length>0 ? aliases[0] : null;
@@ -153,7 +156,7 @@ public final class SslContextFactory implements ISslContextFactory{
             final X509Certificate certificate = keyStoreController.getCertificate(alias);
             final KeyManager[] keyManagers = 
                     CertificateUtils.createServerKeyManagers(Collections.singletonList(alias));
-            final X509TrustManager trustManager = createTrustManager(certificate);
+            final X509TrustManager trustManager = createTrustManager(certificate, secretStore);
             
             try {
                 final SSLContext serverSslContext = SSLContext.getInstance("TLS");
@@ -168,37 +171,38 @@ public final class SslContextFactory implements ISslContextFactory{
                 //trust to any server certificate
                 trustManager = DummyTrustManager.getInstance();
             }else{
-                trustManager = createTrustManager(null);
+                trustManager = createTrustManager(null, secretStore);
             }
             return CertificateUtils.prepareSslContext(getEmptyKeyStore(), null, trustManager, null);
         }
     }
     
-    private X509TrustManager createTrustManager(final X509Certificate clientCertificate) throws KeystoreControllerException, CertificateUtilsException{
+    private X509TrustManager createTrustManager(final X509Certificate clientCertificate,
+                                                                            final ISecretStore secretStore) throws KeystoreControllerException, CertificateUtilsException{
         final File trustStoreFile = getTrustStoreFile();
         final KeystoreController keystoreController;
         if (trustStoreFile==null){
             keystoreController = KeystoreController.getServerKeystoreController();
         }else{
-            keystoreController = 
-                    KeystoreController.newClientInstance(trustStoreFile, connection.getSslOptions().getTrustStorePassword());
+            final char[] password;
+            if (secretStore.isEmpty()){
+                password = new char[0];
+            }else{
+                final byte[] encryptedPwd = secretStore.getSecret();
+                password = new TokenProcessor().decrypt(encryptedPwd);
+                Arrays.fill(encryptedPwd, (byte)0);                
+            }
+            keystoreController = KeystoreController.newClientInstance(trustStoreFile, password);
         }
         return new SslTrustManager(keystoreController,clientCertificate);        
     }
                 
     private File getTrustStoreFile(){
         final ConnectionOptions.SslOptions sslOptions = connection.getSslOptions();
-        final String trustStorePath = sslOptions.getTrustStoreFilePath();
-        if (trustStorePath==null || trustStorePath.isEmpty()){
+        final File connectionsFile = new File(environment.getRunParams().getConnectionsFile());
+        final File trustStoreFile = sslOptions.getTrustStoreFile(connectionsFile.getParent());
+        if (trustStoreFile==null){
             return null;
-        }
-        final File trustStoreFile;
-        if (sslOptions.isTrustStorePathRelative()) {
-            final String connectionsFilePath = WebServerRunParams.getConnectionsFile();
-            File connectionsFile = new File(connectionsFilePath);
-            trustStoreFile = new File(connectionsFile.getParentFile(), trustStorePath);
-        } else {
-            trustStoreFile = new File(trustStorePath);
         }
         if (!trustStoreFile.canRead()){
             final FileException exception = 

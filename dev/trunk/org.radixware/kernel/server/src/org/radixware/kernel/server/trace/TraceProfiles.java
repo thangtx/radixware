@@ -18,6 +18,7 @@ import org.radixware.kernel.common.trace.TraceProfile;
 public class TraceProfiles { //RADIX-1390
 
     public static final TraceProfiles DEFAULT = new TraceProfiles(null, null, null);
+    public static final TraceProfiles NONE = new TraceProfiles(EEventSeverity.NONE.getName(), EEventSeverity.NONE.getName(), EEventSeverity.NONE.getName());
     private final String dbTraceProfile;
     private final String fileTraceProfile;
     private final String guiTraceProfile;

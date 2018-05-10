@@ -28,7 +28,8 @@ public final class SnmpAgentSap extends Sap {
                 unit.getDispatcher(),
                 unit.createTracer(),
                 3, //maxSeanceCount
-                10 //rqWaitTimeout
+                10, //rqWaitTimeout
+                unit.getResourceKeyPrefix() + "/sausap"
                 );
         this.unit = unit;
     }

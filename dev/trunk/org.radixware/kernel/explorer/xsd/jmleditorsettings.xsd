@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/jmlEditorSettings.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:ads="http://schemas.radixware.org/adsdef.xsd" targetNamespace="http://schemas.radixware.org/jmlEditorSettings.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="ads.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    <xs:complexType name="UserFuncAutosaveData">
+        <xs:sequence>
+            <xs:element name="FuncEntry" type="this:FuncEntry" minOccurs="0" maxOccurs="unbounded"/>			
+        </xs:sequence>
+        <xs:attribute name="IsAutosaveEnabled" type="types:Bool"/>
+        <xs:attribute name="SaveIntervalSec" type="types:Int"/>
+        <xs:attribute name="MaxStoredVersionsForFunc" type="types:Int"/>
+        <xs:attribute name="MaxStoredVersionsAll" type="types:Int"/>
+    </xs:complexType>
+    <xs:complexType name="FuncEntry">
+        <xs:sequence>
+            <xs:element name="Pid" type="types:SafeStr" minOccurs="1"/>
+            <xs:element name="Versions" type="ads:UserFuncSourceVersions" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:element name="UserFuncAutosaveData" type="this:UserFuncAutosaveData"/>
+</xs:schema>

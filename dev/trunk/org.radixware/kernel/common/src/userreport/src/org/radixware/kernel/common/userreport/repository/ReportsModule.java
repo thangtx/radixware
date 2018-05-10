@@ -360,14 +360,22 @@ public class ReportsModule extends AdsModule implements IUserDefModule{
                     if (UserReport.ReportVersion.parseReportVersion(id, reportId, reportVersion)) {
                         UserReport report = UserExtensionManagerCommon.getInstance().getUserReports().findReportById(reportId[0]);
                         if (report != null && report.getModuleId() == getModule().getId()) {
+                            final ReportVersion versionToFound;
                             if (reportVersion[0] == -1) {
-                                reportVersion[0] = report.getVersions().getCurrent().getVersion();
+                                versionToFound = report.getVersions().getCurrent();
+                                reportVersion[0] = versionToFound.getVersion();
                             } else {
-                                if (reportVersion[0] == report.getVersions().getCurrent().getVersion()) {
-                                    def = super.findById(report.getId());
-                                    if (def != null) {
-                                        return def;
-                                    }
+                                versionToFound = report.getVersions().get(reportVersion[0]);
+                            }
+                            
+                            if (versionToFound != null && versionToFound.isDefinitionSearchLocked()) {
+                                return null;
+                            }
+                            
+                            if (report.getVersions().isCurrent(versionToFound)) {
+                                def = super.findById(report.getId());
+                                if (def != null) {
+                                    return def;
                                 }
                             }
 

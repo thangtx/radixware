@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.units.netport;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
@@ -16,7 +15,7 @@ import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.trace.LocalTracerProxy;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
-import org.radixware.kernel.server.units.AasClient;
+import org.radixware.kernel.server.sc.SingleSeanceAasClient;
 import org.radixware.schemas.aas.InvokeRs;
 
 /**
@@ -27,60 +26,53 @@ import org.radixware.schemas.aas.InvokeRs;
  * messages to channel's trace.
  *
  */
-public class NetPortAasClient extends AasClient {
+public class NetPortAasClient extends SingleSeanceAasClient<NetPortInvokeQueueItem> {
 
     public static final int AAS_INVOKE_TIMEOUT_MILLIS = 24 * 60 * 60 * 1000; //1 day
-    private NetPortInvokeQueueItem invokeItem;
-    private long invokeMillis;
 
     public NetPortAasClient(NetPortHandlerUnit unit) {
         super(unit, unit.getManifestLoader(), new LocalTracerProxy(null, unit.createTracer()), unit.getDispatcher());
     }
 
+    @Override
     public void invoke(final NetPortInvokeQueueItem item) {
-        invokeItem = item;
-        ((LocalTracerProxy) tracer).setBackendTracer(item.seance.getAasClientTracer());
-        invokeMillis = System.currentTimeMillis();
+        ((LocalTracerProxy) tracer).setBackendTracer(item.source.getTracer());
         ((NetPortHandlerUnit) unit).onAasRqStarted();
-        invoke(invokeItem.invokeXml, invokeItem.invokeHeaders, invokeItem.keepConnect, AAS_INVOKE_TIMEOUT_MILLIS, unit.getScpName());
-    }
-
-    public boolean busy() {
-        return !seances.isEmpty() && seances.get(0).busy() || invokeItem != null;
+        
+        final NetPortHandlerUnit nphUnit = (NetPortHandlerUnit)unit;
+        final long waited = System.currentTimeMillis() - item.createTimeMillis;
+        nphUnit.getNetPortHandlerMonitor().aasRequestStarted(waited);
+        
+        super.invoke(item);
     }
 
     @Override
-    protected void onInvokeResponse(InvokeRs rs) {
-        if (invokeItem != null) {
-            try {
-                logResponse("response");
-                invokeItem.seance.onAasInvokeResponse(rs);
-            } finally {
-                invokeItem = null;
-            }
+    protected void onInvokeResponseImpl(InvokeRs rs) {
+        if (getItem() != null) {
+            logResponse(getItem(), "response");
+            getItem().source.onAasInvokeResponse(rs);
         } else {
             unit.getTrace().put(EEventSeverity.WARNING, "Unable to find handler for response: " + rs, EEventSource.NET_PORT_HANDLER);
         }
     }
-    
-    private void logResponse(String description) {
-        final long aasWait = System.currentTimeMillis() - invokeMillis;
-        final long totalWait = System.currentTimeMillis() - invokeItem.createTimeMillis;
-        unit.getTrace().debug("Got " + description + " to item " + invokeItem.debugTitle + " , waited: " + aasWait + " ms, total: " + totalWait + " ms, queue: " + ((NetPortHandlerUnit) unit).getQueueSize(), EEventSource.NET_PORT_HANDLER, false);
-        ((NetPortHandlerUnit) unit).appendAasWait(aasWait);
-        ((NetPortHandlerUnit) unit).appendTotalWait(totalWait);
-        ((NetPortHandlerUnit) unit).onAasRqFinished();
+
+    private void logResponse(final NetPortInvokeQueueItem item, String description) {
+        final NetPortHandlerUnit nphUnit = (NetPortHandlerUnit) unit;
+        final int queueSize = nphUnit.getQueueSize();
+        final long pureWait = getLastInvokeDurationMillis();
+        final long totalWait = System.currentTimeMillis() - item.createTimeMillis;
+        nphUnit.getNetPortHandlerMonitor().aasResponseReceived(pureWait, totalWait);
+        unit.getTrace().debug("Got " + description + " to item " + item.debugTitle + " , waited: " + pureWait + " ms, total: " + totalWait + " ms, queue: " + queueSize, EEventSource.NET_PORT_HANDLER_QUEUE, false);
+        nphUnit.appendAasWait(pureWait);
+        nphUnit.appendTotalWait(totalWait);
+        nphUnit.onAasRqFinished();
     }
 
     @Override
-    protected void onInvokeException(ServiceClientException exception) {
-        if (invokeItem != null) {
-            try {
-                logResponse("exception");
-                invokeItem.seance.onAasInvokeException(exception);
-            } finally {
-                invokeItem = null;
-            }
+    protected void onInvokeExceptionImpl(ServiceClientException exception) {
+        if (getItem() != null) {
+            logResponse(getItem(), "exception");
+            getItem().source.onAasInvokeException(exception);
         } else {
             unit.getTrace().put(EEventSeverity.WARNING, "Unable to find handler for response: " + ExceptionTextFormatter.throwableToString(exception), EEventSource.NET_PORT_HANDLER);
         }

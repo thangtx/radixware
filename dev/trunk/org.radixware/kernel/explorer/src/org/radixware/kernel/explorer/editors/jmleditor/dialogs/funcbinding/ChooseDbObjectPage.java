@@ -32,17 +32,19 @@ public class ChooseDbObjectPage extends QWizardPage {
         this.wizard = parent;
         this.setObjectName("ChooseDefPage");
         setFinalPage(true);
-        layout = new QVBoxLayout();
+        layout = new QVBoxLayout(this);
         layout.setMargin(0);
         this.setLayout(layout);
+        
+        //we must close selector on accept, 
+        //but cleanupPage() not invoked in this case, so we listen on accepted signal
+        this.wizard.accepted.connect(this, "clear()");
     }
 
     public void clear() {
-        if (layout.indexOf(selector) != -1) {
-            layout.removeWidget(selector);
+        if (selector != null) {
+            selector.close(true);
         }
-        selector.hide();
-        layout.update();
     }
 
     @Override

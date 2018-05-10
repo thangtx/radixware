@@ -8,21 +8,14 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.radixdoc.html;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.apache.xmlbeans.XmlException;
+import java.util.Map;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.radixdoc.IReferenceResolver;
-import org.radixware.schemas.adsdef.AdsDefinitionDocument;
-import org.radixware.schemas.adsdef.AdsDefinitionElementType;
+import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.Utils;
 import org.radixware.schemas.adsdef.LocalizedString;
-
 
 public final class TransformLib {
 
@@ -72,47 +65,93 @@ public final class TransformLib {
 
     public static String loadString(String entry, String id, HtmlRadixdocGenerator generator, EIsoLanguage language) {
         final String[] ids = id.split(" ");
-        String bunbleId;
+        String bundleId;
         String strId;
         if (ids.length < 2) {
             return id;
         } else if (ids.length == 2) {
-            bunbleId = ids[0];
+            bundleId = ids[0];
             strId = ids[1];
         } else if (ids.length == 3) {
             final String pathToModule = ids[0];
             entry = pathToModule;
-            bunbleId = ids[1];
+            bundleId = ids[1];
             strId = ids[2];
         } else {
             return id;
         }
 
-        final AdsDefinitionDocument definitionDocument;
-        try (final InputStream inputStream = generator.getFileProvider().getLocalizedBandle(entry, bunbleId, language)) {
-            if (inputStream != null) {
-                definitionDocument = AdsDefinitionDocument.Factory.parse(inputStream);
-            } else {
-                return "";
-            }
-        } catch (XmlException | IOException ex) {
-            Logger.getLogger(HtmlRadixdocGenerator.class.getName()).log(Level.WARNING, bunbleId + "." + strId, ex);
+        Map<Id, LocalizedString> strings = generator.getFileProvider().getLocalizedBundleStrings(entry, bundleId, language);
+        String strVal = loadString(strings, strId, language);
+
+        if (strVal.isEmpty() && language != EIsoLanguage.ENGLISH) {
+            strVal = loadStringFromLocalizingLayer(generator.getFileProvider(), entry, bundleId, strId, language);
+            
+            if (strVal.isEmpty()) {
+                strings = generator.getFileProvider().getLocalizedBundleStrings(entry, bundleId, EIsoLanguage.ENGLISH);
+                strVal = loadString(strings, strId, EIsoLanguage.ENGLISH);
+            }                        
+        }
+        
+        return strVal;        
+    }
+
+    private static String loadString(Map<Id, LocalizedString> stringList, String stringId, EIsoLanguage language) {
+        if (stringList == null) {
             return "";
         }
 
-        final AdsDefinitionElementType element = definitionDocument.getAdsDefinition();
-        if (element.isSetAdsLocalizingBundleDefinition()) {
-            for (final LocalizedString localizedString : element.getAdsLocalizingBundleDefinition().getStringList()) {
-                if (Objects.equals(localizedString.getId().toString(), strId)) {
-                    for (final LocalizedString.Value value : localizedString.getValueList()) {
-                        if (value.getLanguage() == language) {
-                            return value.getStringValue();
-                        }
+        Id id = Id.Factory.loadFrom(stringId);
+        if (!stringList.keySet().contains(id)) {
+            return "";
+        }
+
+        final LocalizedString localizedString = stringList.get(id);
+        if (localizedString.getValueList() != null) {
+            for (final LocalizedString.Value value : localizedString.getValueList()) {
+                if (value.getLanguage() == language) {
+                    if (!Utils.emptyOrNull(value.getStringValue())) {
+                        return value.getStringValue();
                     }
                 }
             }
         }
+
         return "";
+    }
+
+    public static String loadStringFromLocalizingLayer(FileProvider provider, String entry, String bundleId, String stringId, EIsoLanguage language) {        
+        String[] entryParts = entry.replace("\\", "/").split("/");        
+
+        if (entryParts.length > 0) {
+            String uri = entryParts[0];
+            FileProvider.LayerEntry entryLayer = provider.getLayer(uri);
+            if (entryLayer != null && entryLayer.hasLocalizingLayer(language)) {
+                entryParts[0] = entryLayer.getLocalizingLayer(language);
+                String newEntry = constructEntry(entryParts);
+                
+                Map<Id, LocalizedString> strings = provider.getLocalizedBundleStrings(newEntry, bundleId, language);
+                return loadString(strings, stringId, language);
+            }
+        }
+        
+        return "";
+    }
+
+    public static String constructEntry(String[] entryParts) {
+        StringBuilder result = new StringBuilder();
+        boolean isFirst = true;        
+        for (String part : entryParts) {
+            if (!isFirst) {
+                result.append("/");
+            } else {
+                isFirst = false;
+            }
+            
+            result.append(part);
+        }
+        
+        return result.toString();
     }
 
     public static boolean addFile(String source, String fileName, String outName, HtmlRadixdocGenerator generator, EIsoLanguage language) {

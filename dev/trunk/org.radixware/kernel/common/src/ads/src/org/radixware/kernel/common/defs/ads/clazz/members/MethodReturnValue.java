@@ -25,9 +25,13 @@ public class MethodReturnValue extends MethodValue {
     private static Id getDescriptionId(MethodDefinition.ReturnType xDef) {
         return xDef != null ? xDef.getDescriptionId() : null;
     }
+    
+    private static boolean getIsDescriptionInherited(MethodDefinition.ReturnType xDef) {
+        return xDef != null && xDef.isSetIsDescriptionInherited() ? xDef.getIsDescriptionInherited() : true;
+    }
 
     MethodReturnValue(AdsMethodDef md, MethodDefinition.ReturnType xDef) {
-        super(xDef, AdsTypeDeclaration.Factory.voidType(), getDescription(xDef), getDescriptionId(xDef));
+        super(xDef, AdsTypeDeclaration.Factory.voidType(), getDescription(xDef), getDescriptionId(xDef),getIsDescriptionInherited(xDef));
         setContainer(md);
     }
 
@@ -48,8 +52,13 @@ public class MethodReturnValue extends MethodValue {
                 xType.setDescription(desc);
             }
 
-            if (isDescriptionIdChanged()) {
-                xType.setDescriptionId(getDescriptionId());
+            if (!isDescriptionInherited()) {
+                if (isDescriptionIdChanged()) {
+                    xType.setDescriptionId(getDescriptionId());
+                }
+                if (isDescriptionInheritable()){
+                    xDef.setIsDescriptionInherited(false);
+                }
             }
         }
     }
@@ -62,5 +71,5 @@ public class MethodReturnValue extends MethodValue {
         }
         return super.needsDocumentation();
     }
-
+    
 }

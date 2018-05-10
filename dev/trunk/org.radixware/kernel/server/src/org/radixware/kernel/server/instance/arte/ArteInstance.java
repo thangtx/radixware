@@ -11,10 +11,9 @@
 package org.radixware.kernel.server.instance.arte;
 
 import java.io.File;
+import java.lang.management.ThreadInfo;
 import java.lang.reflect.Field;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
@@ -22,7 +21,6 @@ import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.build.xbeans.IXBeansChangeListener;
 import org.radixware.kernel.common.build.xbeans.XBeansChangeEmitterHandler;
 import org.radixware.kernel.common.build.xbeans.XBeansChangeEmitterHandler.ListenersStorage;
-import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
@@ -36,15 +34,17 @@ import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.common.enums.EInstanceThreadKind;
+import org.radixware.kernel.server.instance.InstanceThreadStateRecord;
 import org.radixware.kernel.server.jdbc.RadixConnection;
+import org.radixware.kernel.server.monitoring.ArteWaitStats;
 import org.radixware.kernel.server.trace.DbLog;
 import org.radixware.kernel.server.trace.FileLog;
 import org.radixware.kernel.server.trace.FileLogOptions;
-import org.radixware.kernel.server.trace.IServerThread;
+import org.radixware.kernel.server.trace.ServerThread;
 import org.radixware.kernel.server.trace.ServerTrace;
 import org.radixware.kernel.server.trace.TraceProfiles;
 import org.radixware.kernel.server.units.ServerItemView;
-import org.radixware.kernel.starter.radixloader.RadixLoader;
 
 /**
  * Инстанция ARTE.
@@ -67,6 +67,8 @@ public class ArteInstance {
     }
     //
     private static final long PING_DB_PERIOD_MILLIS = 5000;
+    private static final long WAITS_HISTORY_STORE_DURATION_MILLIS = 60000;
+    private static final long WAITS_HISTORY_UPDATE_INTERVAL_MILLIS = 1000;
     private static AtomicLong serialSequence = new AtomicLong();
     //
     private final long serial;
@@ -89,6 +91,10 @@ public class ArteInstance {
     private volatile Connection dbConnection = null;
     private volatile List<Long> cachedVersions;
     private final long versionOnCreate;
+    private volatile boolean started = false;
+    private final LinkedList<ArteWaitsHistoryItem> waitsHistory = new LinkedList<>();
+    private ArteWaitsHistoryItem lastWaitsSnapshot = null;
+    private volatile Arte arte;
 
     public ArteInstance(final Instance instance) {
         super();
@@ -196,18 +202,43 @@ public class ArteInstance {
         return Collections.emptyList();
     }
 
+    public void updateWaitsHistory() {
+        synchronized (waitsHistory) {
+            final long curMillis = System.currentTimeMillis();
+            if (lastWaitsSnapshot != null && curMillis - lastWaitsSnapshot.getTimestampMillis() < WAITS_HISTORY_UPDATE_INTERVAL_MILLIS) {
+                return;
+            }
+            while (!waitsHistory.isEmpty() && (curMillis - waitsHistory.getFirst().getTimestampMillis() > WAITS_HISTORY_STORE_DURATION_MILLIS)) {
+                waitsHistory.removeFirst();
+            }
+            final ArteWaitStats curSnapshot = thread == null ? null : (thread.getArte() == null ? null : thread.getArte().getProfiler().getWaitStatsSnapshot());
+            if (curSnapshot != null) {
+                if (lastWaitsSnapshot != null) {
+                    waitsHistory.add(new ArteWaitsHistoryItem(lastWaitsSnapshot.getWaitStats().substractFrom(curSnapshot), curMillis));
+                }
+                lastWaitsSnapshot = new ArteWaitsHistoryItem(curSnapshot, curMillis);
+            }
+        }
+    }
+
+    public List<ArteWaitsHistoryItem> getWaitsHistory() {
+        synchronized (waitsHistory) {
+            return new ArrayList<>(waitsHistory);
+        }
+    }
+
     public boolean needMaintenance() {
         return (thread != null && thread.getArte() != null && thread.getArte().needMaintenance()) || System.currentTimeMillis() - lastRequestMillis > PING_DB_PERIOD_MILLIS;
     }
 
     public void flushWaitStats() {
         if (thread != null && thread.getArte() != null) {
-            thread.getArte().getProfiler().flushWaitStats();
+            thread.getArte().getProfiler().flushWaitStatsThreadSafe();
         }
     }
 
     public boolean needUpdate() {
-        final List<Long> cachedVersionsSnapshot = getCachedVersions();
+        final List<Long> cachedVersionsSnapshot = getCachedVersionsSnapshot();
         if (cachedVersionsSnapshot != null && !cachedVersionsSnapshot.isEmpty()) {
             return cachedVersionsSnapshot.get(0) < instance.getLatestVersion();
         }
@@ -221,12 +252,12 @@ public class ArteInstance {
     /**
      * @return List of the cached versions, most recent version come first
      */
-    public List<Long> getCachedVersions() {
+    public List<Long> getCachedVersionsSnapshot() {
         return cachedVersions;
     }
 
     public long getLatestCachedVersion() {
-        final List<Long> cachedVerListSnapshot = getCachedVersions();
+        final List<Long> cachedVerListSnapshot = getCachedVersionsSnapshot();
         if (cachedVerListSnapshot == null || cachedVerListSnapshot.isEmpty()) {
             return -1;
         }
@@ -240,13 +271,13 @@ public class ArteInstance {
     public void process(final IArteRequest request) {
         synchronized (getNextRqSemaphore()) {
             if (state != EState.FREE) {
-                throw new IllegalUsageError("Arte Instance is busy");
+                throw new IllegalUsageError("ARTE is busy");
             }
             if (isStopped()) {
-                throw new IllegalUsageError("Arte Instance is stopped");
+                throw new IllegalUsageError("ARTE is stopped");
             }
             if (thread.getState() != Thread.State.WAITING) {
-                throw new IllegalUsageError("Wrong ARTE Instance thread state: free instance is not waiting for request, thread state  is " + String.valueOf(thread.getState()));
+                throw new IllegalUsageError("Wrong ARTE thread state: free instance is not waiting for request, thread state  is " + String.valueOf(thread.getState()));
             }
             setState(EState.BUSY);
             this.arteRequest = request;
@@ -266,7 +297,14 @@ public class ArteInstance {
     }
 
     protected void setState(final EState state) {
+        if (state == EState.FREE) {
+            started = true;
+        }
         this.state = state;
+    }
+
+    public boolean isStarted() {
+        return started;
     }
 
     public EState getState() {
@@ -404,11 +442,20 @@ public class ArteInstance {
                 "arte_instance_#" + getSeqNumber(),
                 instanceOptions.getMaxFileSizeBytes(),
                 instanceOptions.getRotationCount(),
-                instanceOptions.isRotateDaily());
+                instanceOptions.isRotateDaily(),
+                instanceOptions.isWriteContextToFile());
     }
 
     public Instance getInstance() {
         return instance;
+    }
+
+    public void arteInited(final Arte arte) {
+        this.arte = arte;
+    }
+
+    public Arte getArte() {
+        return arte;
     }
 
     static final class Messages {
@@ -431,19 +478,15 @@ public class ArteInstance {
         static final String _OF_UNIT_;
     }
 
-    private final class ProcessThread extends Thread implements IServerThread, XBeansChangeEmitterHandler.ListenersStorageProvider, IArteProvider, IRadixEnvironment {
+    private final class ProcessThread extends ServerThread implements XBeansChangeEmitterHandler.ListenersStorageProvider, IArteProvider, IRadixEnvironment {
 
-        private final LocalTracer localTracer;
         private final XmlObjListenersStorage storage = new XmlObjListenersStorage();
         private final ArteProcessor processor;
+        private volatile ArteWaitStats prevGatheredWaits = null; // for InstanceThreadStateRecord
 
         ProcessThread(final ArteProcessor processor) {
-            super(processor);
+            super(getTitle(), processor, ArteInstance.class.getClassLoader(), trace.newTracer(EEventSource.ARTE.getValue()));
             this.processor = processor;
-            setName(getTitle());
-            setContextClassLoader(ArteInstance.class.getClassLoader());
-            localTracer = trace.newTracer(EEventSource.ARTE.getValue());
-
         }
 
         @Override
@@ -500,6 +543,23 @@ public class ArteInstance {
             }
             return null;
         }
+
+        @Override
+        public boolean isAborted() {
+            return false;
+        }
+
+        private synchronized ArteWaitStats getWaitDiff() {
+            final ArteWaitStats currWaits = lastWaitsSnapshot == null ? null : lastWaitsSnapshot.getWaitStats();
+            final ArteWaitStats diffWaits = prevGatheredWaits == null ? null : prevGatheredWaits.substractFrom(currWaits);
+            prevGatheredWaits = currWaits;
+            return diffWaits;
+        }
+
+        @Override
+        public InstanceThreadStateRecord getThreadStateRecord(ThreadInfo threadInfo) {
+            return InstanceThreadStateRecord.createRecord(EInstanceThreadKind.ARTE, this, threadInfo, getArte(), processor.getArteInstance(), getWaitDiff(), (RadixConnection) getConnection());
+        }
     }
 
     private static class XmlObjListenersStorage implements XBeansChangeEmitterHandler.ListenersStorage {
@@ -542,4 +602,5 @@ public class ArteInstance {
             return false;
         }
     }
+
 }

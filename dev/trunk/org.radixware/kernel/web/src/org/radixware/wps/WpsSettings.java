@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import org.radixware.kernel.common.client.eas.IEasSession;
+import org.radixware.kernel.common.client.enums.EFontWeight;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.errors.AuthError;
@@ -100,7 +101,7 @@ public class WpsSettings implements ClientSettings {
         }
     }
 
-    class Group {
+    private static class Group {
 
         private final String name;
 
@@ -118,7 +119,7 @@ public class WpsSettings implements ClientSettings {
         }
     }
 
-    abstract class ArrayGroup extends Group {
+    private abstract static class ArrayGroup extends Group {
 
         private int idx = -1;
 
@@ -140,14 +141,14 @@ public class WpsSettings implements ClientSettings {
         }
     }
 
-    class ReadArrayGroup extends ArrayGroup {
+    private static class ReadArrayGroup extends ArrayGroup {
 
         ReadArrayGroup(String name) {
             super(name);
         }
     }
 
-    class WriteArrayGroup extends ArrayGroup {
+    private static class WriteArrayGroup extends ArrayGroup {
 
         private int size = -1;
         private final Set<Integer> indexes = new HashSet<>();
@@ -167,13 +168,17 @@ public class WpsSettings implements ClientSettings {
             return size < 0 ? indexes.size() : size;
         }
     }
+    
+    private final static String FONT_WEIGTH_KEY = "FONT_WEIGTH";
+    
     private final Stack<Group> groups = new Stack<>();
+    private final Stack<Stack<Group>> groupsStack = new Stack<>();
     private final Map<String, Value> map = new HashMap<>();
     private final WpsEnvironment env;
     private String browser;
     private String browserVersion;
-    private DerbyDb derby = null;
-    private static File customStorage = null;
+    private DerbyDb derby;
+    private File customStorage;
     
     public WpsSettings(){//local settings in memory
         this(null);
@@ -209,7 +214,7 @@ public class WpsSettings implements ClientSettings {
     }
 
     private File initCustomDBStorage() {
-        String path = WebServerRunParams.getSettingsDatabaseDir();
+        String path = env==null ? null : env.getRunParams().getSettingsDatabaseDir();
         if (path == null) {
             customStorage = null;
         } else {
@@ -222,35 +227,6 @@ public class WpsSettings implements ClientSettings {
         if (derby == null) {
             derby = new DerbyDb(env, map);
             derby.createConnection();
-
-            /*            
-             if (group().startsWith("ADMINISTRATOR")) {
-             beginGroup("XXX");
-             remove("YYY");
-             beginGroup("YYY");
-             beginWriteArray("ARR");
-             setArrayIndex(0); 
-
-             writeString("title", "TITLE"); 
-             writeString("pids", "PIDS"); 
-
-             endArray();
-             endGroup();
-             endGroup();
-            
-             beginGroup("XXX");
-             beginGroup("YYY");
-             int itemCount = beginReadArray("ARR");
-             for (int i = 0; i < itemCount; i++) {
-             setArrayIndex(i);
-             String title = readString("title");
-             String pids = readString("pids");
-             }
-             endArray();
-             endGroup();
-             endGroup();
-             }
-             */
         }
         return derby;
     }
@@ -687,13 +663,13 @@ public class WpsSettings implements ClientSettings {
                 } else {
                     rsDoc = (SettingsDocument) env.getEasSession().executeContextlessCommand(SYNC_COMMAND_ID, rqDoc, SettingsDocument.class);
                 }
+            }catch (AuthError e) {
+                env.getTracer().debug(e);
+                return;                
             } catch (ServiceClientException | InterruptedException e) {
                 env.getTracer().error(e);
                 return;
-            } catch (AuthError e) {
-                env.getTracer().error(e);
-                return;
-            }
+            } 
 
             getDerby().setModifiedProps(rsDoc);
             derby.setLastChangeTime(rsDoc.getSettings().getLastChangeTime());
@@ -770,7 +746,14 @@ public class WpsSettings implements ClientSettings {
 
     @Override
     public boolean readBoolean(String key) {
-        return readBoolean(key, false);
+        final String actualKey = getKey(key);
+        Value obj = getDerby().getValue(actualKey);
+        if (obj != null) {
+            return obj.getBoolean();
+        } else {
+            final String booleanAsStr = DefaultSettings.getInstance().getValue(actualKey);
+            return booleanAsStr==null || booleanAsStr.isEmpty() ? false : Boolean.parseBoolean(booleanAsStr);
+        }
     }
 
     @Override
@@ -789,7 +772,18 @@ public class WpsSettings implements ClientSettings {
 
     @Override
     public int readInteger(String key) {
-        return readInteger(key, 0);
+        final String actualKey = getKey(key);
+        Value obj = getDerby().getValue(actualKey);
+        if (obj != null) {
+            return obj.getInt();
+        } else {
+            final String intAsStr = DefaultSettings.getInstance().getValue(actualKey);
+            try{
+                return intAsStr==null || intAsStr.isEmpty() ? 0 : Integer.parseInt(intAsStr);
+            }catch(NumberFormatException ex){
+                return 0;
+            }
+        }        
     }
 
     @Override
@@ -808,12 +802,29 @@ public class WpsSettings implements ClientSettings {
 
     @Override
     public double readDouble(String key) {
-        return readDouble(key, 0);
+        final String actualKey = getKey(key);
+        Value obj = getDerby().getValue(actualKey);
+        if (obj != null) {
+            return obj.getDouble();
+        } else {
+            final String doubleAsStr = DefaultSettings.getInstance().getValue(actualKey);
+            try{
+                return doubleAsStr==null || doubleAsStr.isEmpty() ? 0 : Double.parseDouble(doubleAsStr);
+            }catch(NumberFormatException ex){
+                return 0;
+            }
+        }
     }
 
     @Override
-    public String readString(String key) {
-        return readString(key, null);
+    public String readString(final String key) {
+        final String actualKey = getKey(key);
+        Value obj = getDerby().getValue(actualKey);
+        if (obj != null) {
+            return obj.asStr;
+        } else {
+            return DefaultSettings.getInstance().getValue(actualKey);
+        }
     }
 
     @Override
@@ -829,11 +840,12 @@ public class WpsSettings implements ClientSettings {
     @Override
     public Dimension readSize(String key) {
         String size = null;
-        Value obj = getDerby().getValue(getKey(key));
+        final String actualKey = getKey(key);
+        Value obj = getDerby().getValue(actualKey);
         if (obj != null) {
             size = obj.asStr;
         } else {
-            return null;
+            size = DefaultSettings.getInstance().getValue(actualKey);
         }
         if (size != null) {
 
@@ -854,22 +866,26 @@ public class WpsSettings implements ClientSettings {
     }
 
     @Override
-    public Id readId(String key) {
-        Value obj = getDerby().getValue(getKey(key));
+    public Id readId(final String key) {
+        final String actualKey = getKey(key);
+        Value obj = getDerby().getValue(actualKey);
         if (obj != null) {
             return obj.getId();
-        } else {
-            return null;
+        } else {            
+            final String idAsStr = DefaultSettings.getInstance().getValue(key);
+            return idAsStr==null || idAsStr.isEmpty() ? null : Id.Factory.loadFrom(idAsStr);
         }
     }
 
     @Override
-    public Pid readPid(String key) {
-        Value obj = getDerby().getValue(getKey(key));
+    public Pid readPid(final String key) {
+        final String actualKey = getKey(key);
+        Value obj = getDerby().getValue(actualKey);
         if (obj != null) {
             return obj.getPid();
         } else {
-            return null;
+            final String pidAsStr = DefaultSettings.getInstance().getValue(actualKey);
+            return pidAsStr==null || pidAsStr.isEmpty() ? null : Pid.fromStr(pidAsStr);
         }
     }
     
@@ -888,11 +904,12 @@ public class WpsSettings implements ClientSettings {
 
     @Override
     public Object value(String key) {
-        Value obj = getDerby().getValue(getKey(key));
+        final String actualKey = getKey(key);
+        Value obj = getDerby().getValue(actualKey);
         if (obj != null) {
             return obj.asStr;
         } else {
-            return null;
+            return DefaultSettings.getInstance().getValue(actualKey);
         }
     }
 
@@ -911,7 +928,7 @@ public class WpsSettings implements ClientSettings {
         if (obj != null) {
             return obj.asStr;
         } else {
-            return null;
+            return DefaultSettings.getInstance().getValue(key);
         }
     }
 
@@ -930,14 +947,31 @@ public class WpsSettings implements ClientSettings {
     @Override
     public void beginGroup(String group) {
         groups.push(new Group(group));
-        /*for (String g : group.split("/")) {
-         groups.push(new Group(g));
-         }*/
+    }
+
+    @Override
+    public void pushGroup() {                
+        final Stack<Group> keepGroups = new Stack<>();
+        keepGroups.addAll(groups);
+        groupsStack.add(keepGroups);
+    }
+
+    @Override
+    public String popGroup() {
+        final Stack<Group> keepGroups = groupsStack.pop();        
+        groups.clear();
+        groups.addAll(keepGroups);
+        return group();
     }
 
     @Override
     public void setConfigProfile(String profile) {
     }
+
+    @Override
+    public String getConfigProfile() {
+        return "";
+    }        
 
     @Override
     public int beginReadArray(String array) {
@@ -1021,7 +1055,7 @@ public class WpsSettings implements ClientSettings {
                 if (f) {
                     f = false;
                 } else {
-                    sb.append("/");
+                    sb.append('/');
                 }
                 sb.append(g);
             }
@@ -1089,17 +1123,20 @@ public class WpsSettings implements ClientSettings {
         textOptionsCache.put(getCaheKey(key), options);
     }
 
-    private WpsTextOptions readOptions(final String cfgGroups) {
-        if (textOptionsCache.containsKey(cfgGroups)) {
-            return (WpsTextOptions) textOptionsCache.get(cfgGroups);
-        }
+    private WpsTextOptions readOptions(final String cfgGroups) {        
         final String bColorAsStr = getValue(cfgGroups + "/" + SettingNames.TextOptions.BCOLOR);
         final String fColorAsStr = getValue(cfgGroups + "/" + SettingNames.TextOptions.FCOLOR);
         Color bgrnd, frgrnd;
         bgrnd = bColorAsStr == null || bColorAsStr.isEmpty() ? null : Color.decode(bColorAsStr);
         frgrnd = fColorAsStr == null || fColorAsStr.isEmpty() ? null : Color.decode(fColorAsStr);
-        WpsTextOptions options = WpsTextOptions.Factory.getOptions(frgrnd, bgrnd);
-        return options;
+        final WpsTextOptions options = WpsTextOptions.Factory.getOptions(frgrnd, bgrnd);
+        final String fontAsStr = getValue(cfgGroups + "/" + FONT_WEIGTH_KEY);
+        if (fontAsStr==null || fontAsStr.isEmpty()){
+            return options;
+        }else{
+            final EFontWeight fontWeigth = EFontWeight.forCssValue(fontAsStr);
+            return fontWeigth==EFontWeight.NORMAL ? options : options.changeFontWeight(fontWeigth);
+        }
     }
     
     private void traceWarning(final Class<?> valClass, final String key, final Exception ex) {

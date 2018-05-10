@@ -12,10 +12,12 @@
 package org.radixware.kernel.common.defs.ads.userfunc;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.types.Pid;
 import org.radixware.schemas.adsdef.AdsUserFuncDefinitionDocument.AdsUserFuncDefinition;
 import org.radixware.schemas.adsdef.ClassDefinition;
 
@@ -71,4 +73,6 @@ public abstract class UdsObserver {
         UserDefReceiver recv = new UserDefReceiver(getReportRequestor());
         recv.listUserDefs(defTypes, infos);
     }
+    
+    public abstract Map<Pid, Boolean> checkEntitiesExistance(Set<Pid> pidsToCheck);
 }

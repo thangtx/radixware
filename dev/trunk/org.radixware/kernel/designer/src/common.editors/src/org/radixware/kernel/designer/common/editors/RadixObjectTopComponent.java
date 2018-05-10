@@ -22,8 +22,10 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.ProxyLookup;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
+import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObject.RemovedEvent;
+import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.utils.events.IRadixEventListener;
@@ -234,8 +236,16 @@ public class RadixObjectTopComponent extends TopComponent {
             }
         });
     }
-
     
+    private boolean ignoreFileStatus (RadixObject selectedObject) {
+        Module module = selectedObject.getModule();
+        if (module instanceof AdsModule) {
+            AdsModule ads = (AdsModule) module;
+            return ads.isUserModule();
+        }
+        return false;
+    }
+
     
     private void updateActiveNodes() {
         final List<RadixObject> selectedObjects = editor.getSelectedObjects();
@@ -243,7 +253,9 @@ public class RadixObjectTopComponent extends TopComponent {
         for (int i = 0; i < selectedObjects.size(); i++) {
             final RadixObject selectedObject = selectedObjects.get(i);
             final Node node = NodesManager.findOrCreateNode(getEditorRoot(), selectedObject);
-            node.getHtmlDisplayName(); // TODO: FIXME: ugly, refactoring required, called to calc file objects (see RafixObjectNode.getHtmlDisplayName()) RADIX-4178, RADIX-3619
+            if (!ignoreFileStatus(selectedObject)) {
+                node.getHtmlDisplayName(); // TODO: FIXME: ugly, refactoring required, called to calc file objects (see RafixObjectNode.getHtmlDisplayName()) RADIX-4178, RADIX-3619
+            }
             activeNodes[i] = node;
         }
         if (SwingUtilities.isEventDispatchThread()) {

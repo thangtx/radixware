@@ -15,14 +15,35 @@ import com.trolltech.qt.core.Qt.ContextMenuPolicy;
 import com.trolltech.qt.core.Qt.FocusPolicy;
 import com.trolltech.qt.core.Qt.Orientation;
 import com.trolltech.qt.core.Qt.ShortcutContext;
+import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QCloseEvent;
+import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QTextBlock;
+import com.trolltech.qt.gui.QTextCursor;
 import com.trolltech.qt.gui.QTextCursor.MoveMode;
-import com.trolltech.qt.gui.*;
-import java.io.*;
-import java.util.*;
+import com.trolltech.qt.gui.QVBoxLayout;
+import com.trolltech.qt.gui.QWidget;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlException;
-import org.apache.xmlbeans.XmlObject;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.text.edits.MalformedTreeException;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.check.RadixProblem.ESeverity;
@@ -30,11 +51,16 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.mask.EditMaskStr;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinition;
 import org.radixware.kernel.common.client.models.EntityModel;
+import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.views.IDialog;
+import org.radixware.kernel.common.compiler.formatter.JmlCodeFormatter;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodThrowsList;
+import org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter;
 import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
+import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EDialogIconType;
@@ -43,10 +69,10 @@ import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.common.jml.JmlTagLocalizedString;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.editors.jmleditor.JmlProblemList.ProblemItem;
+import org.radixware.kernel.explorer.editors.jmleditor.autosave.UserFuncAutosaveManager;
 import org.radixware.kernel.explorer.editors.jmleditor.dialogs.ImportUserFuncDialog;
 import org.radixware.kernel.explorer.editors.jmleditor.dialogs.ImportUserFuncDialog.ImportAction;
 import org.radixware.kernel.explorer.editors.jmleditor.dialogs.ProfileDialog;
-import org.radixware.kernel.explorer.editors.valeditors.ValStrEditor;
 import org.radixware.kernel.explorer.editors.xscmleditor.Highlighter;
 import org.radixware.kernel.explorer.editors.xscmleditor.TagInfo;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
@@ -58,8 +84,13 @@ import org.radixware.kernel.explorer.views.Splitter;
 import org.radixware.schemas.adsdef.AdsUserFuncDefinitionDocument;
 import org.radixware.schemas.adsdef.LocalizedString;
 import org.radixware.schemas.adsdef.LocalizingBundleDefinition;
+import org.radixware.schemas.adsdef.ParameterDeclaration;
+import org.radixware.schemas.adsdef.UserFuncProfile;
+import org.radixware.schemas.commondef.ChangeLog;
 import org.radixware.schemas.udsdef.UdsDefinitionDocument;
 import org.radixware.schemas.udsdef.UdsDefinitionListDocument;
+import org.radixware.schemas.xscml.JmlFuncProfile;
+import org.radixware.schemas.xscml.JmlParameterDeclaration;
 import org.radixware.schemas.xscml.JmlType;
 
 public final class JmlEditor extends MainWindow {
@@ -75,7 +106,7 @@ public final class JmlEditor extends MainWindow {
     //private final QLineEdit edDescription = new QLineEdit();
     private long userFuncId;
     IUserFuncLocator userFuncLocator;
-    private ValStrEditor profileLine;
+    private String profileLine;
     private EditorActionsProvider actionProvider;
     private boolean isReadOnly = false;
     private QLabel lbDescription;
@@ -84,11 +115,12 @@ public final class JmlEditor extends MainWindow {
     private boolean isCurSrcVersionUnChecked = false;//true - текущая версия редактировалась, и после этого не было компиляции
     private final BracketHighlighter bracketHightlighter;
     private SearchPanel searchPanel;
+    private final QTimerWithPause autoSaveTimer;
     private boolean isDevelopmentMode = false;
     private boolean isNew;
-    private final QToolButton btnEditProfile;
-    private final static String NOT_DEFENED = "<not defened>";
-
+    
+    private static final  String NOT_DEFENED = "<not defened>";
+    
     public static final class JmlEditorIcons extends ExplorerIcon.CommonOperations {
 
         private JmlEditorIcons(final String fileName) {
@@ -104,6 +136,8 @@ public final class JmlEditor extends MainWindow {
         public static final JmlEditorIcons IMG_REPLACE = new JmlEditorIcons("classpath:images/replace.svg");
         public static final JmlEditorIcons IMG_MODULE_NAME = new JmlEditorIcons("classpath:images/model_name.svg");
         public static final JmlEditorIcons IMG_DEVELOPMENT_MODE = new JmlEditorIcons("classpath:images/srcedit.svg");
+        public static final JmlEditorIcons IMG_SRC_VIEW = new JmlEditorIcons("classpath:images/srcview.svg");
+        public static final JmlEditorIcons IMG_AUTOSAVE = new JmlEditorIcons("classpath:images/autosave.svg");
         public static final JmlEditorIcons IMG_ERROR = new JmlEditorIcons("classpath:images/error.svg");
         public static final JmlEditorIcons IMG_XML = new JmlEditorIcons("classpath:images/xml.svg");
         public static final JmlEditorIcons IMG_CLASS = new JmlEditorIcons("classpath:images/class.svg");
@@ -124,6 +158,9 @@ public final class JmlEditor extends MainWindow {
         public static final JmlEditorIcons TAG_LOCALIZED_STR = new JmlEditorIcons("classpath:images/open_document.svg");
         public static final JmlEditorIcons VOID = new JmlEditorIcons("classpath:images/void.svg");
         public static final JmlEditorIcons CLOSE = new JmlEditorIcons("classpath:images/close.svg");
+        public static final JmlEditorIcons IMG_WARNING = new JmlEditorIcons("classpath:images/warning.svg");
+        public static final JmlEditorIcons IMG_TOGGLE_COMMENT = new JmlEditorIcons("classpath:images/toggle_comment.svg");
+        public static final JmlEditorIcons IMG_FORMAT_TEXT = new JmlEditorIcons("classpath:images/formatText.svg");
     }
 
     public interface EditorActionsProvider {
@@ -137,10 +174,14 @@ public final class JmlEditor extends MainWindow {
         void reread();
 
         boolean isValid();
+        
+        Pid getPid();
 
         Id getOwnerClassId();
 
         Id getOwnerPropId();
+        
+        String getOwnerTitle();
 
         String getFunctionName();
 
@@ -151,7 +192,7 @@ public final class JmlEditor extends MainWindow {
         void saveSourceVersions(List<String> changedSourceVersions);
 
         void setDisplayProfile(String sProfile);
-        
+
         void updateLibUserFuncName();
 
         void setDescription(String description);
@@ -159,6 +200,16 @@ public final class JmlEditor extends MainWindow {
         String getObjectFromOptimizerCache(String key);
 
         Map<String, String> getAllowedLibNames2PipelineId();
+
+        void exportUserFunc();
+
+        UserFuncImportInfo parseImportInfo(String xml);
+        
+        void importChangeLog(ChangeLog xDoc);
+        
+        public void syncUdsBuildPath();
+        
+        public String[] getPresentationInfo();
     }
 
     public interface IPostOpenAction {
@@ -187,6 +238,8 @@ public final class JmlEditor extends MainWindow {
         void moveCursorToPosition(int[] pi);
 
         JmlEditor getEditorIfAny();
+        
+        boolean considerUserFuncIdOnSearch();
     }
 
     /**
@@ -195,7 +248,6 @@ public final class JmlEditor extends MainWindow {
     public JmlEditor(IClientEnvironment environment, QWidget parent) {
         //super(parent,new WindowType[]{WindowType.Widget});
         this.setParent(parent);
-        btnEditProfile = new QToolButton();
 
         this.environment = environment;
         splitter = new Splitter(this, (ExplorerSettings) environment.getConfigStore());
@@ -223,6 +275,14 @@ public final class JmlEditor extends MainWindow {
         //centralWidget.setLayout(editorLayout);
         this.setCentralWidget(splitter);
         //this.show();
+        
+        autoSaveTimer = new QTimerWithPause(this);
+        autoSaveTimer.setSingleShot(true);
+        autoSaveTimer.timeout.connect(this, "doAutosave()");
+    }
+    
+    public final void startPreloadCompletion() {
+        editText.startPreloadCompletion();
     }
 
     public final void setSearchPanelVisible(boolean isVisible) {
@@ -231,12 +291,6 @@ public final class JmlEditor extends MainWindow {
             setReplacePanelVisible(false);
             setSearchText(null);
         } else {
-            QTextCursor tc = editText.textCursor();
-            if (tc.hasSelection()) {
-                String selectedText = tc.selectedText();
-                searchPanel.setSearchingText(selectedText);
-                //setSearchText(selectedText);
-            }
             searchPanel.setFocusInSearchEditor();
         }
     }
@@ -309,6 +363,13 @@ public final class JmlEditor extends MainWindow {
         return environment;
     }
     private JmlProblemList problemList;
+    
+    public void reopen(boolean updateProfile) {
+        this.open(userFuncLocator, userFuncId, this.actionProvider, this.problemList);
+        if (updateProfile) {
+            updateProfileString(true);
+        }
+    }
 
     public void open(IUserFuncLocator ufLocator, long ufId, EditorActionsProvider actionProvider, JmlProblemList problemList) {
         this.setFocusPolicy(FocusPolicy.StrongFocus);
@@ -345,6 +406,7 @@ public final class JmlEditor extends MainWindow {
             hightlighter.rehighlight();
             editToolBar.open(isAnotherFunc);
             editToolBar.setEnabledForBtnPast(editText.canPaste());
+            editToolBar.enableAutosave(actionProvider.getPid() != null);
             versionsToolBar.updateSourceVersionEditLine();
         }
 
@@ -365,6 +427,49 @@ public final class JmlEditor extends MainWindow {
 
     public void setPastEnabled() {
         editToolBar.setEnabledForBtnPast(true);
+    }
+    
+    void pauseAutosave() {
+        autoSaveTimer.pause();
+    }
+    
+    void resumeAutosave() {
+        autoSaveTimer.resume();
+    }
+    
+    private void scheduleAutosave() {
+        if (actionProvider.getPid() != null && !autoSaveTimer.isActive()) {
+            final UserFuncAutosaveManager inst = UserFuncAutosaveManager.getInstance(environment);
+            if (inst.isAutosaveEnabled()) {
+                autoSaveTimer.startWithPause(inst.getSaveIntervalSec() * 1000);
+            }
+        }
+    }
+    
+    @SuppressWarnings("unused")
+    void doAutosave() {
+        //Perform copy jml to avoid problems with modifying current user func jml
+        final Jml copyJml = Jml.Factory.newInstance(userFunc, "user_func_autosave");
+        try {
+            //JmlTag may belong only one jml, perform copy tags
+            final List<TagInfo> copyTags = new ArrayList<>(converter.getCurrentTagList().size());
+            for (TagInfo t : converter.getCurrentTagList()) {
+                copyTags.add(t.copyWithScmlItem());
+            }
+            converter.toXml(copyJml, editText.toPlainText(), copyTags, editText.textCursor(), 0, editText.toPlainText().length());
+            UserFuncAutosaveManager.getInstance(environment).addVersion(actionProvider.getPid(), copyJml);
+        } finally {
+            copyJml.delete();
+        }
+    }
+    
+    private void rereadSourceFromEditor(QTextCursor tc) {
+        converter.toXml(editText.toPlainText(), tc);
+    }
+    
+    @SuppressWarnings("unused")
+    private void beforeExposeCompleter() {
+        actionProvider.syncUdsBuildPath();
     }
 
     @SuppressWarnings("unused")
@@ -441,6 +546,8 @@ public final class JmlEditor extends MainWindow {
     private void textChange() {
         //editText.document().modificationChanged.emit(true);
         if (!disableTrackChanges && !isReadOnly && !openingEditor) {
+            scheduleAutosave();
+            
             toolBar.setCheckButtonState(false);
             if (getEditingVersionName() == null) {
                 isCurSrcVersionUnChecked = true;
@@ -448,13 +555,11 @@ public final class JmlEditor extends MainWindow {
             setEnabledToBtnSave(true);
             if (!srcWasChange) {
                 actionProvider.saveChanges();
+                srcWasChange = true;
             }
-            //saveUserFunc(false, false);           
-            srcWasChange = true;
-            //bracketHightlighter.clearHightlightBracket(editText.textCursor());  
         }
     }
-
+    
     public boolean isDisableTrackChanges() {
         return disableTrackChanges;
     }
@@ -462,7 +567,7 @@ public final class JmlEditor extends MainWindow {
     public void disableTrackChanges(boolean disableTrackChanges) {
         this.disableTrackChanges = disableTrackChanges;
     }
-    
+
     void setEnabledToBtnSave(boolean enable) {
         isSaveEnabled = enable;
     }
@@ -486,21 +591,12 @@ public final class JmlEditor extends MainWindow {
         //profileLine = new QLineEdit();
         EditMaskStr editMask = new EditMaskStr();
         editMask.setNoValueStr(NOT_DEFENED);
-        profileLine = new ValStrEditor(getEnvironment(), this, editMask, true, isReadOnly);
 
-        btnEditProfile.setObjectName("btnEditReturnType");
-        btnEditProfile.setText("...");
-        btnEditProfile.clicked.connect(this, "btnEditProfile_Clicked()");
-        profileLine.addButton(btnEditProfile);
-        profileLine.setReadOnly(true);
-        profileLine.setValue("");
         //editLine.home(true);
-
 //        edDescription.setReadOnly(false);
 //        edDescription.setText("");
 //        edDescription.home(true);
 //        edDescription.setVisible(false);
-        profileLine.setVisible(false);
         /*QToolBar newToolBar = new QToolBar();
 
          QWidget widget = new QWidget(this);
@@ -514,18 +610,6 @@ public final class JmlEditor extends MainWindow {
          newToolBar.addWidget(widget);
          this.addToolBarBreak();
          this.addToolBar(newToolBar);*/
-
-    }
-
-    @SuppressWarnings("unused")
-    private void btnEditProfile_Clicked() {
-        ProfileDialog editProfileDialog = new ProfileDialog(this);
-        if (editProfileDialog.exec() == 1) {
-            setEnabledToBtnSave(true);
-            actionProvider.updateLibUserFuncName();
-            srcWasChange = true;
-            updateProfileString(true);
-        }
     }
 
     public IDialog.DialogResult editProfile() {
@@ -548,15 +632,25 @@ public final class JmlEditor extends MainWindow {
         String profileString = profile == null ? NOT_DEFENED
                 : libName == null
                         ? profile.getName() : profile.getNameForSelector(libName);
-        profileLine.setValue(profileString);
+        profileLine = profileString;
         if (update) {
             actionProvider.setDisplayProfile(profileString);
         }
-        btnEditProfile.setVisible(userFunc.isFreeForm());
+    }
+
+    private void changeProfile(ProfileInfo profInfo) {
+        if (profInfo != null && userFunc.isFreeForm()) {
+            userFunc.findMethod().updateSignature(profInfo.mthName, profInfo.retType,
+                    profInfo.params, profInfo.exceptions);
+            setEnabledToBtnSave(true);
+            actionProvider.updateLibUserFuncName();
+            srcWasChange = true;
+            updateProfileString(true);
+        }
     }
 
     public String getProfileString() {
-        return profileLine.getValue();
+        return profileLine;
     }
 
     /* private String calcProfileName(AdsMethodDef.Profile profile){
@@ -610,10 +704,12 @@ public final class JmlEditor extends MainWindow {
                 return false;
             }
         }
+        autoSaveTimer.pause();
         QTextCursor tc = editText.textCursor();
         try {
             if ((actionProvider != null) && (!isReadOnly)) {
                 boolean wasCompiled = false;
+                int pos = tc.position();
                 if (needCompile) {
                     isCurSrcVersionUnChecked = false;
                     if (!actionProvider.isValid() || srcWasChange) {
@@ -630,11 +726,10 @@ public final class JmlEditor extends MainWindow {
                         }
                     }
                 } else if (srcWasChange) {
-                    userFunc.getSource().getItems().clear();
-                    converter.toXml(editText.toPlainText(), tc);
+                    rereadSourceFromEditor(tc);
+                    actionProvider.saveChanges();
+                    srcWasChange = false;
                 }
-                int pos = tc.position();
-                actionProvider.saveChanges();
                 if (needApply) {
                     //compileUserFunc();//для перехода по ошибкам в редакторе
                     boolean res = actionProvider.applyChanges(this, !wasCompiled);
@@ -649,11 +744,11 @@ public final class JmlEditor extends MainWindow {
 
                     return res;
                 }
-                srcWasChange = false;
                 return true;
             }
         } finally {
             tc.dispose();
+            autoSaveTimer.resume();
         }
         return true;
     }
@@ -683,26 +778,83 @@ public final class JmlEditor extends MainWindow {
         return sb.toString();
     }
 
-    /* private final Charset UTF8_CHARSET = Charset.forName("UTF-8");
-    
-     private String decodeUTF8(byte[] bytes) {
-     return new String(bytes, UTF8_CHARSET);
-     }
-     private byte[] encodeUTF8(String string) {
-     return string.getBytes(UTF8_CHARSET);
-     }*/
+    public static UserFuncImportInfo parseImportInfo(String xml) throws IllegalArgumentException {
+        org.radixware.schemas.xscml.JmlType jmlType = null;
+        JmlEditor.ProfileInfo profInfo = null;
+        LocalizingBundleDefinition xStrings = null;
+        String description = null;
+
+        try {
+            AdsUserFuncDefinitionDocument doc = AdsUserFuncDefinitionDocument.Factory.parse(xml);
+            jmlType = doc.getAdsUserFuncDefinition().getSource();
+            if (doc.getAdsUserFuncDefinition().getUserFuncProfile() != null) {
+                profInfo = new JmlEditor.ProfileInfo(doc.getAdsUserFuncDefinition().getUserFuncProfile());
+            }
+            description = doc.getAdsUserFuncDefinition().getDescription();
+            xStrings = doc.getAdsUserFuncDefinition().getStrings();
+        } catch (XmlException ex) {
+            try {
+                UdsDefinitionDocument doc = UdsDefinitionDocument.Factory.parse(xml);
+                if (doc.getUdsDefinition() != null && doc.getUdsDefinition().getUserFunc() != null) {
+                    jmlType = doc.getUdsDefinition().getUserFunc().getSource();
+                    if (doc.getUdsDefinition().getUserFunc().getUserFuncProfile() != null) {
+                        profInfo = new JmlEditor.ProfileInfo(doc.getUdsDefinition().getUserFunc().getUserFuncProfile());
+                    }
+                    description = doc.getUdsDefinition().getUserFunc().getDescription();
+                    xStrings = doc.getUdsDefinition().getUserFunc().getStrings();
+                }
+            } catch (XmlException ex2) {
+                try {
+                    UdsDefinitionListDocument doc = UdsDefinitionListDocument.Factory.parse(xml);
+                    if (doc.getUdsDefinitionList() != null && doc.getUdsDefinitionList().getUdsDefinitionList() != null) {
+                        for (UdsDefinitionDocument.UdsDefinition def : doc.getUdsDefinitionList().getUdsDefinitionList()) {
+                            if (def.getUserFunc() != null) {
+                                jmlType = def.getUserFunc().getSource();
+                                if (def.getUserFunc().getUserFuncProfile() != null) {
+                                    profInfo = new JmlEditor.ProfileInfo(def.getUserFunc().getUserFuncProfile());
+                                }
+                                description = def.getUserFunc().getDescription();
+                                xStrings = def.getUserFunc().getStrings();
+                                break;
+                            }
+                        }
+                    }
+                } catch (XmlException ex3) {
+                    try {
+                        org.apache.xmlbeans.XmlObject xObj = org.apache.xmlbeans.XmlObject.Factory.parse(xml);
+                        if (xObj instanceof org.radixware.schemas.xscml.JmlType) {
+                            jmlType = org.radixware.schemas.xscml.JmlType.Factory.parse(xml);
+                        } else {
+                            throw new IllegalArgumentException("NOT_FOUND_JML_TYPE");
+                        }
+                    } catch (XmlException ex4) {
+                        throw new IllegalArgumentException("UNKNOWN_ELEMENT_TYPE", ex4);
+                    }
+                }
+            }
+        }
+        return new UserFuncImportInfo(profInfo, jmlType, description, xStrings, null);
+    }
+
     public void readTextFromFile(String filename) {
         if (filename == null || filename.isEmpty()) {
             return;
         }
         String res = getTextFromFile(filename);
-        JmlType jmlTypeFromFile = getJmlType(res);
-        String description = getDescription(res);
-        if (jmlTypeFromFile != null) {
-//            if (userFuncPid == null) {
-//                loadXmlToEditor(jmlTypeFromFile, ImportAction.REPLACE);
-//            } else {
-            ImportUserFuncDialog dialog = new ImportUserFuncDialog(this, jmlTypeFromFile);
+        UserFuncImportInfo metaInfo = actionProvider.parseImportInfo(res);
+
+        if (metaInfo.src != null) {
+            //we need to import strings before close dialog ("push OK")
+            //because strings can be required in preview
+            LocalizingBundleDefinition xStrings = metaInfo.getStrings();
+            if (xStrings != null) {
+                for (LocalizedString xString : xStrings.getStringList()) {
+                    AdsMultilingualStringDef mlStringdef = AdsMultilingualStringDef.Factory.loadFrom(xString);
+                    userFunc.findLocalizingBundle().getStrings().getLocal().add(mlStringdef);
+                }
+            }
+            
+            ImportUserFuncDialog dialog = new ImportUserFuncDialog(this, metaInfo);
             if (dialog.exec() == 1) {
                 boolean isSaveAsNewSrcVersion = dialog.getIsSaveAsNewSrcVersion();
                 ImportAction importAction = dialog.getImportAction();
@@ -712,11 +864,16 @@ public final class JmlEditor extends MainWindow {
                 }
                 JmlType jmlType = dialog.getJmlType();
                 loadXmlToEditor(jmlType, importAction);
+                if (dialog.needUpdateProfile()) {
+                    changeProfile(metaInfo.profInfo);
+                }
 
                 compileUserFunc(true, false);
-                actionProvider.setDescription(description);
+                actionProvider.setDescription(metaInfo.description);
+                if (dialog.doImportChangeLog()) {
+                    actionProvider.importChangeLog(metaInfo.getChangeLog());
+                }
             }
-            //  }
         }
     }
 
@@ -739,159 +896,117 @@ public final class JmlEditor extends MainWindow {
         }
     }
 
-    private JmlType getJmlType(String str) {
-        JmlType jmlType = null;
-        try {
-            AdsUserFuncDefinitionDocument doc = AdsUserFuncDefinitionDocument.Factory.parse(str);
-            jmlType = doc.getAdsUserFuncDefinition().getSource();//JmlType.Factory.parse(str);  
+    public final static class ProfileInfo {
 
-            LocalizingBundleDefinition xStrings = doc.getAdsUserFuncDefinition().getStrings();
-            if (xStrings != null) {
-                for (LocalizedString xString : xStrings.getStringList()) {
-                    AdsMultilingualStringDef mlStringdef = AdsMultilingualStringDef.Factory.loadFrom(xString);
-                    userFunc.findLocalizingBundle().getStrings().getLocal().add(mlStringdef);
+        private final String mthName;
+        private final AdsTypeDeclaration retType;
+        private final List<MethodParameter> params = new ArrayList<>();
+        private final List<AdsMethodThrowsList.ThrowsListItem> exceptions = new ArrayList<>();
+
+        public ProfileInfo(JmlFuncProfile xProf) {
+            mthName = xProf.getMethodName();
+            retType = AdsTypeDeclaration.Factory.loadFrom(xProf.getReturnType());
+            if (xProf.getParameters() != null) {
+                for (JmlParameterDeclaration xPar : xProf.getParameters().getParameterList()) {
+                    params.add(MethodParameter.Factory.newInstance(xPar.getName(),
+                            xPar.getDescription(),
+                            xPar.getDescriptionId(), AdsTypeDeclaration.Factory.loadFrom(xPar.getType()),
+                            xPar.getVariable()));
                 }
             }
-        } catch (XmlException e) {
-            try {
-                UdsDefinitionDocument doc = UdsDefinitionDocument.Factory.parse(str);
-                if (doc.getUdsDefinition() != null && doc.getUdsDefinition().getUserFunc() != null) {
-                    jmlType = doc.getUdsDefinition().getUserFunc().getSource();
-                }
-            } catch (XmlException ex) {
-                try {
-                    UdsDefinitionListDocument doc = UdsDefinitionListDocument.Factory.parse(str);
-                    if (doc.getUdsDefinitionList() != null && doc.getUdsDefinitionList().getUdsDefinitionList() != null) {
-                        for (UdsDefinitionDocument.UdsDefinition def : doc.getUdsDefinitionList().getUdsDefinitionList()) {
-                            if (def.getUserFunc() != null) {
-                                jmlType = def.getUserFunc().getSource();
-                                break;
-                            }
-                        }
-                    }
-                } catch (XmlException ex1) {
-                    try {
-                        XmlObject xObj = XmlObject.Factory.parse(str);
-                        if (xObj instanceof JmlType) {
-                            jmlType = JmlType.Factory.parse(str);
-                        }
-                    } catch (XmlException e1) {
-                        environment.messageError(Application.translate("JmlEditor", "Can't load user function from file!"));
-                    }
+            
+            if (xProf.getThrownExceptions() != null) {
+                for (JmlFuncProfile.ThrownExceptions.Exception xExc : xProf.getThrownExceptions().getExceptionList()) {
+                    exceptions.add(AdsMethodThrowsList.ThrowsListItem.Factory.newInstance(
+                            AdsTypeDeclaration.Factory.loadFrom(xExc),
+                            xExc.getDescription(), xExc.getDescriptionId()));
                 }
             }
         }
-        if (jmlType == null) {
-            environment.messageError(Application.translate("JmlEditor", "Can't load user function from file!"));
-            //jmlType = JmlType.Factory.newInstance();
-            //jmlType.addNewItem().setJava(str);
+
+        public ProfileInfo(UserFuncProfile xProf) {
+            mthName = xProf.getMethodName();
+            retType = AdsTypeDeclaration.Factory.loadFrom(xProf.getReturnType());
+            if (xProf.getParameters() != null) {
+                for (ParameterDeclaration xPar : xProf.getParameters().getParameterList()) {
+                    params.add(MethodParameter.Factory.newInstance(xPar.getName(),
+                            xPar.getDescription(),
+                            xPar.getDescriptionId(), AdsTypeDeclaration.Factory.loadFrom(xPar.getType()),
+                            xPar.getVariable()));
+                }
+            }
+            
+            if (xProf.getThrownExceptions() != null) {
+                for (UserFuncProfile.ThrownExceptions.Exception xExc : xProf.getThrownExceptions().getExceptionList()) {
+                    exceptions.add(AdsMethodThrowsList.ThrowsListItem.Factory.newInstance(
+                            AdsTypeDeclaration.Factory.loadFrom(xExc),
+                            xExc.getDescription(), xExc.getDescriptionId()));
+                }
+            }
         }
-        return jmlType;
+
+        public String getMthName() {
+            return mthName;
+        }
+
+        public AdsTypeDeclaration getRetType() {
+            return retType;
+        }
+
+        public List<MethodParameter> getParams() {
+            return params;
+        }
+
+        public List<AdsMethodThrowsList.ThrowsListItem> getExceptions() {
+            return exceptions;
+        }
     }
 
-    private String getDescription(String str) {
-        String description = null;
-        try {
-            AdsUserFuncDefinitionDocument doc = AdsUserFuncDefinitionDocument.Factory.parse(str);
-            description = doc.getAdsUserFuncDefinition().getDescription();//JmlType.Factory.parse(str);  
+    public final static class UserFuncImportInfo {
 
-            LocalizingBundleDefinition xStrings = doc.getAdsUserFuncDefinition().getStrings();
-            if (xStrings != null) {
-                for (LocalizedString xString : xStrings.getStringList()) {
-                    AdsMultilingualStringDef mlStringdef = AdsMultilingualStringDef.Factory.loadFrom(xString);
-                    userFunc.findLocalizingBundle().getStrings().getLocal().add(mlStringdef);
-                }
-            }
-        } catch (XmlException e) {
-            try {
-                UdsDefinitionDocument doc = UdsDefinitionDocument.Factory.parse(str);
-                if (doc.getUdsDefinition() != null && doc.getUdsDefinition().getUserFunc() != null) {
-                    description = doc.getUdsDefinition().getUserFunc().getDescription();
-                }
-            } catch (XmlException ex) {
-                try {
-                    UdsDefinitionListDocument doc = UdsDefinitionListDocument.Factory.parse(str);
-                    if (doc.getUdsDefinitionList() != null && doc.getUdsDefinitionList().getUdsDefinitionList() != null) {
-                        for (UdsDefinitionDocument.UdsDefinition def : doc.getUdsDefinitionList().getUdsDefinitionList()) {
-                            if (def.getUserFunc() != null) {
-                                description = def.getUserFunc().getDescription();
-                                break;
-                            }
-                        }
-                    }
-                } catch (XmlException ex1) {
+        private final ProfileInfo profInfo;
+        private final JmlType src;
+        private final LocalizingBundleDefinition strings;
+        private final String description;
+        private final ChangeLog changeLog;
 
-                }
-            }
+        public UserFuncImportInfo(ProfileInfo profInfo, JmlType src, String description,
+                LocalizingBundleDefinition strings, ChangeLog xLog) {
+            this.profInfo = profInfo;
+            this.src = src;
+            this.description = description;
+            this.strings = strings;
+            this.changeLog = xLog;
         }
-        return description;
+        
+        public UserFuncImportInfo() {
+            this(null, null, null, null, null);
+        }
+
+        public JmlType getSrc() {
+            return src;
+        }
+
+        public ProfileInfo getProfInfo() {
+            return profInfo;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public LocalizingBundleDefinition getStrings() {
+            return strings;
+        }
+
+        public ChangeLog getChangeLog() {
+            return changeLog;
+        }
     }
 
-    /* public void saveUserFuncToFile1(String filename){
-     if(filename==null)return;
-     JmlType xDef= JmlType.Factory.newInstance();
-     userFunc.getSource().appendTo(xDef, ESaveMode.NORMAL);
-     try {
-     BufferedWriter out = new BufferedWriter(new FileWriter(filename));
-     StringWriter w = new StringWriter();
-     xDef.save(w);
-     out.write(w.toString());
-     out.close();
-     } catch (IOException e){
-     Logger.getLogger(JmlEditor.class.getName()).log(Level.SEVERE, null, e);
-     }
-     }*/
-
-    /* private String createDoc() throws ParserConfigurationException, TransformerConfigurationException, TransformerException{
-     DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
-     DocumentBuilder builder = factory.newDocumentBuilder();
-     DOMImplementation impl = builder.getDOMImplementation();
-    
-     Document doc = impl.createDocument(null,null,null);
-     Element e1 =doc.createElement("source");
-     doc.appendChild(e1);
-     e1.setTextContent(userFunc.getSource().toString());//setNodeValue(userFunc.getSource().toString());
-    
-     //Element e2 = doc.createElement("java");
-     //e1.appendChild(e2);
-    
-     //e2.setAttribute("url","http://www.rgagnon.com/howto.html");
-    
-    
-     // transform the Document into a String
-     DOMSource domSource = new DOMSource(doc);
-     TransformerFactory tf = TransformerFactory.newInstance();
-     Transformer transformer = tf.newTransformer();
-     //transformer.setOutputProperty
-     //    (OutputKeys.OMIT_XML_DECLARATION, "yes");
-     transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-     transformer.setOutputProperty(OutputKeys.ENCODING,"UTF-8");
-     transformer.setOutputProperty
-     ("{http://xml.apache.org/xslt}indent-amount", "4");
-     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-     java.io.StringWriter sw = new java.io.StringWriter();
-     StreamResult sr = new StreamResult(sw);
-     transformer.transform(domSource, sr);
-     String xml = sw.toString();
-     return xml;
-     }*/
-    public void saveUserFuncToFile(String filename) {
-        if (filename == null || filename.isEmpty()) {
-            return;
-        }
-        //saveUserFunc(false, false);
-        /*try {
-         createDoc();
-         } catch (ParserConfigurationException ex) {
-         Logger.getLogger(JmlEditor.class.getName()).log(Level.SEVERE, null, ex);
-         } catch (TransformerConfigurationException ex) {
-         Logger.getLogger(JmlEditor.class.getName()).log(Level.SEVERE, null, ex);
-         } catch (TransformerException ex) {
-         Logger.getLogger(JmlEditor.class.getName()).log(Level.SEVERE, null, ex);
-         }*/
+    public AdsUserFuncDefinitionDocument getUserFuncXml() {
         AdsUserFuncDefinitionDocument.AdsUserFuncDefinition xUfDef = AdsUserFuncDefinitionDocument.AdsUserFuncDefinition.Factory.newInstance();
-        userFunc.getSource().getItems().clear();
-        converter.toXml(editText.toPlainText(), editText.textCursor());
+        rereadSourceFromEditor(editText.textCursor());
         userFunc.appendTo(xUfDef);
         xUfDef.setOwnerClassId(actionProvider.getOwnerClassId());
         xUfDef.setPropId(actionProvider.getOwnerPropId());
@@ -901,17 +1016,19 @@ public final class JmlEditor extends MainWindow {
         }
         AdsUserFuncDefinitionDocument doc = AdsUserFuncDefinitionDocument.Factory.newInstance();
         doc.setAdsUserFuncDefinition(xUfDef);
-        try {
-            /*DOMWriter writer = new org.apache.xml.serialize.XMLSerializer();
-             writer.setNewLine("\r\n");
-             writer.setEncoding("UTF-8");
-             writer.writeNode(new FileOutputStream(new File("outputFile.xml")), myDocument);*/
+        return doc;
+    }
 
-            //BufferedWriter out = new BufferedWriter(new FileWriter(filename));
+    @Deprecated
+    public void saveUserFuncToFile(String filename) {
+        if (filename == null || filename.isEmpty()) {
+            return;
+        }
+
+        try {
             StringWriter w = new StringWriter();
-            doc.save(w);
+            getUserFuncXml().save(w);
             String string = w.toString();
-            //byte[] utf8 = string.getBytes("UTF-8");
             try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filename), "UTF-8"))) {
                 out.write(string);
             }
@@ -939,8 +1056,9 @@ public final class JmlEditor extends MainWindow {
         editText.pastEnabled.connect(this, "setPastEnabled()");
         editText.updateUndoRedoBtns.connect(this, "updateUndoRedoBtns()");
         editText.checkPastOnMlStrings.connect(this, "checkPastOnMlStrings(JmlType)");
+        editText.beforeExposeCompleter.connect(this, "beforeExposeCompleter()");
         editText.cursorPositionChanged.connect(hightlighter, "clearLineHighlight()");
-
+        
         searchPanel = new SearchPanel(this);
         searchPanel.setObjectName("SearchPanel");
         //editText.setStyleSheet("selection-background-color: green;");
@@ -956,7 +1074,7 @@ public final class JmlEditor extends MainWindow {
         editText.addAction(insertDataType);
         editText.setMinimumHeight(5);
     }
-
+    
     public void hightlightErrors(Set<ProblemItem> problemSet) {
         editText.clearHightlightError();
         QTextCursor tc = editText.textCursor();
@@ -1050,16 +1168,16 @@ public final class JmlEditor extends MainWindow {
     public void compileUserFunc(boolean isEdited, boolean forSaving) {
         if (actionProvider != null) {
             problemList.clear(userFuncId);
+            autoSaveTimer.pause();
             QTextCursor tc = editText.textCursor();
             int pos = tc.position();
             try {
-                editText.document().setUndoRedoEnabled(false);
+                editText.document().setUndoRedoEnabled(false, false);
                 editText.blockSignals(true);
                 editText.document().blockSignals(true);
                 tc.beginEditBlock();
                 if (srcWasChange) {
-                    userFunc.getSource().getItems().clear();
-                    converter.toXml(editText.toPlainText(), tc);
+                    rereadSourceFromEditor(tc);
                     actionProvider.saveChanges();
                     srcWasChange = false;
                 }
@@ -1075,15 +1193,17 @@ public final class JmlEditor extends MainWindow {
                 problemList.fillErrorList(userFuncId);
                 //errorList.fillValidationProblemItems( userFuncLocator,  userFuncPid);
                 hightlightErrors(problemList.getProblems(userFuncId));
-                converter.clearHystory();
+                //converter.clearHystory();
             } finally {
                 tc.endEditBlock();
                 editText.document().blockSignals(false);
                 editText.blockSignals(false);
-                editText.document().setUndoRedoEnabled(true);
+                editText.document().setUndoRedoEnabled(true, false);
                 tc.dispose();
                 setPosition(pos);
                 toolBar.setCheckButtonState();
+                updateUndoRedoBtns();
+                autoSaveTimer.resume();
             }
         }
     }
@@ -1118,7 +1238,7 @@ public final class JmlEditor extends MainWindow {
         String message = Application.translate("Editor", "Reread Data in Editor" + "?");
         if (actionProvider != null && Application.messageConfirmation(message)) {
             actionProvider.reread();
-            this.open(userFuncLocator, userFuncId, this.actionProvider, this.problemList);
+            reopen(false);
         }
     }
 
@@ -1128,10 +1248,10 @@ public final class JmlEditor extends MainWindow {
         }
         return false;
     }
-    
+
     private int getPosForAddTag() {
         return editText.textCursor().selectionStart(); //if no selection return position()
-    } 
+    }
 
     public void addJmlTagId(AdsDefinition selectedDef) {
         //editText.prepareInsertNewTag();
@@ -1252,7 +1372,7 @@ public final class JmlEditor extends MainWindow {
     public void openSourceVersion(String versionName) {
         if (actionProvider != null /*&& Application.messageConfirmation(message)*/) {
             actionProvider.openSourceVersion(this, versionName);
-            srcWasChange = true;
+            //srcWasChange = true;
             //errorList.clear(userFuncPid);
             //errorList.setVisible(false);
             //errorList.setMinimumHeight(5);
@@ -1296,6 +1416,11 @@ public final class JmlEditor extends MainWindow {
 
     @Override
     protected void closeEvent(final QCloseEvent closeEvent) {
+        if (autoSaveTimer.isActive()) {
+            autoSaveTimer.stop();
+        }
+        autoSaveTimer.timeout.disconnect();
+        
         ((Application) getEnvironment().getApplication()).getActions().settingsChanged.disconnect();
         if (toolBar != null) {
             toolBar.close();
@@ -1311,6 +1436,7 @@ public final class JmlEditor extends MainWindow {
             }
             //converter.clearHystory();
         }
+        editText.cleanup();
         super.closeEvent(closeEvent);
     }
 
@@ -1329,6 +1455,33 @@ public final class JmlEditor extends MainWindow {
         //changedSrcVersions.add(name);
         saveSourceVersions(null);
         //actionProvider.saveChanges();
+    }
+    
+    public void formatCode() {
+        final QTextCursor tc = editText.textCursor();
+        //В результате undo форматирования курсор может оказаться внутри тега, 
+        //поэтому запоминаем и позднее восстанавливаем начальную позицию курсора.
+        final int startPos = tc.position();
+        final StringBuilder fakeText = converter.createTextForFormatter(editText.toPlainText(), tc);
+        final JmlTextStore store = new JmlTextStore(fakeText, tc, editText.getDefaultCharFormat());
+        //Нужно сбросить запомненные позиции скобок для раскрашивания, потому что в процессе
+        //форматирования будет производится перераскрашивание блоков, для которых данная
+        //позиция скобок смысла не имеет
+        hightlighter.clearBracketIndex();
+        try {
+            new JmlCodeFormatter().format(store);
+            tc.setPosition(startPos);
+            if (store.needFormat()) {
+                tc.beginEditBlock();
+                try {
+                    store.applyFormat();
+                } finally {
+                    tc.endEditBlock();
+                }
+            }
+        } catch (BadLocationException | MalformedTreeException ex) {
+            environment.processException(ex);
+        }
     }
 
     void closeSearchPanel() {

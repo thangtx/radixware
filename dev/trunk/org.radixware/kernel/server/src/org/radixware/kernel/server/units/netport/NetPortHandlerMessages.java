@@ -30,6 +30,9 @@ final class NetPortHandlerMessages {
     static volatile String CONNECTION_WITH;
     static volatile String ADDRESS;
     static volatile String REMOTE_ADDRESS;
+    static volatile String LINK_LEVEL_PROTOCOL;
+    static volatile String IN_FRAME;
+    static volatile String OUT_FRAME;
     static volatile String MAX_SESSION_COUNT;
     static volatile String CHANNEL_STARTED;
     static volatile String CHANNEL_STOPPED;
@@ -59,6 +62,7 @@ final class NetPortHandlerMessages {
     static volatile String SERVER_KEYSTORE_MODIFICATION_TIME;
     static volatile String ANY;
     static volatile String ERR_ON_WRITE_CHANNEL_CONNECTED_STATE_TO_DB;
+    static volatile String SYNC_MODE;
 
     static final String MLS_ID_ERR_ON_SOCKET_START = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsKJ3C3QBTFJFJPLIO7YW46FN6XU"; //MLS "Can't start server socket of \"%1\": %2", Error, EEventSource.NET_PORT_HANDLER
     static final String MLS_ID_ERR_ON_SOCKET_IO = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsIEKI34XTFVBW5DWH32PFJM7WF4";//MLS "%1: Socket IO Error of "%2": %3", Error, EEventSource.UNIT_PORT

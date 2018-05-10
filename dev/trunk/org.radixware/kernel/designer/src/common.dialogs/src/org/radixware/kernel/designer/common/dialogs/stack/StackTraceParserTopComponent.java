@@ -35,6 +35,7 @@ public class StackTraceParserTopComponent extends TopComponent {
         setIcon(RadixWareIcons.CHECK.STACK.getImage());
         this.setLayout(new BorderLayout());
         traceList = new StackTraceList();
+        traceList.addListner();
         add(new StackTraceParserToolBar(traceList), BorderLayout.NORTH);
         add(traceList, BorderLayout.CENTER);
         List<Branch> branches = new ArrayList<>(RadixFileUtil.getOpenedBranches());
@@ -85,7 +86,7 @@ public class StackTraceParserTopComponent extends TopComponent {
         public Object readResolve() {
             return StackTraceParserTopComponent.getDefault();
         }
-    }
+    }    
 
     @Override
     public int getPersistenceType() {

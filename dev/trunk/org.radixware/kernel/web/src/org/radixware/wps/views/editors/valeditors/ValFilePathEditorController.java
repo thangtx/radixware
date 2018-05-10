@@ -10,39 +10,35 @@
  */
 package org.radixware.wps.views.editors.valeditors;
 
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.util.EnumSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.meta.mask.EditMaskFilePath;
-import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.widgets.IButton;
+import org.radixware.kernel.common.enums.EFileSelectionMode;
 import org.radixware.kernel.common.enums.EMimeType;
 
 import org.radixware.wps.rwt.InputBox;
 import org.radixware.wps.rwt.ToolButton;
 import org.radixware.wps.rwt.uploading.FileUploader;
+import org.radixware.wps.rwt.uploading.IUploadedDataReader;
 
 public class ValFilePathEditorController extends InputBoxController<String, EditMaskFilePath> {
 
-    private InputBox.ValueController<String> valueController;
-    private FileDialogButton fileDialogButton;
-    private FileUploader fileUploader;
-    private EMimeType mimeType;
-    private boolean handleInputAvailable;
+    private final FileUploader fileUploader;
+    private final FileDialogButton fileDialogButton = new FileDialogButton();
 
     private class FileDialogButton extends ToolButton {
 
         public FileDialogButton() {
             super();
-            fileUploader = new FileUploader(getEnvironment(), this, null);
-            this.setFileUploader(fileUploader);
             final Icon openDialogIcon =
                     getEnvironment().getApplication().getImageManager().getIcon(ClientIcon.CommonOperations.OPEN);
             setIcon(openDialogIcon);
-            if (mimeType != null) {
-                fileUploader.setAcceptedMimeType(mimeType.getValue());
-            }
             this.addClickHandler(new IButton.ClickHandler() {
                 @Override
                 public void onClick(IButton source) {
@@ -52,33 +48,34 @@ public class ValFilePathEditorController extends InputBoxController<String, Edit
         }
     }
 
-    public ValFilePathEditorController(IClientEnvironment env) {
-        super(env);
-        EditMaskFilePath mask = new EditMaskFilePath();
-        setEditMask(mask);
-        fileDialogButton = new FileDialogButton();
-        fileDialogButton.getHtml().setCss("cursor", "pointer");
-        this.addButton(fileDialogButton);
+    public ValFilePathEditorController(final IClientEnvironment env) {
+        this(env, new EditMaskFilePath(), null);
     }
 
-    public ValFilePathEditorController(IClientEnvironment env, EditMaskFilePath mask) {
-        super(env);
-        setEditMask(mask);
-        fileDialogButton = new FileDialogButton();
-        this.addButton(fileDialogButton);
+    public ValFilePathEditorController(final IClientEnvironment env, final EditMaskFilePath mask) {
+        this(env, mask, null);
+    }
+    
+    public ValFilePathEditorController(final IClientEnvironment env, final EditMaskFilePath mask, final LabelFactory factory) {
+        super(env,factory);
+        setEditMask(mask==null ? new EditMaskFilePath() : mask);
+        fileDialogButton.getHtml().setCss("cursor", "pointer");        
+        this.addButton(fileDialogButton);        
+        fileUploader = new FileUploader(getEnvironment(), fileDialogButton, null);
+        fileDialogButton.setFileUploader(fileUploader);        
+        fileDialogButton.setObjectName("tbSelectFile");
+        updateInputBox();
+        updateAcceptedMimeType();
     }
 
     @Override
     protected InputBox.ValueController<String> createValueController() {
-        valueController = new InputBox.ValueController<String>() {
+        return new InputBox.ValueController<String>() {
             @Override
             public String getValue(final String path) throws InputBox.InvalidStringValueException {
-                final EditMaskFilePath maskFilePath = getEditMask();
-                String p = maskFilePath.toStr(getEnvironment(), path);
-                return Paths.get(p).normalize().toString();
+                return getEditMask().toStr(getEnvironment(), path);
             }
         };
-        return valueController;
     }
 
     private void edit() {
@@ -90,38 +87,70 @@ public class ValFilePathEditorController extends InputBoxController<String, Edit
         });
     }
 
-    public void setValueController(InputBox.ValueController<String> valueController) {
-        this.valueController = valueController;
-        getInputBox().setReadOnly(isReadOnly() || !editMask.getHandleInputAvailable() || valueController == null);
-    }
-
     @Override
-    public void setEditMask(EditMaskFilePath editMask) {
+    public void setEditMask(final EditMaskFilePath editMask) {
         this.editMask = editMask;
-        this.handleInputAvailable = editMask.getHandleInputAvailable();
-        this.mimeType = editMask.getMimeType();
-        updateButtons();
+        updateInputBox();
+        updateAcceptedMimeType();
+        updateFileDialogButton();
         super.setEditMask(editMask);
-
     }
 
-    private void updateButtons() {
+    private void updateInputBox() {
         if (getInputBox() != null) {
-            getInputBox().setReadOnly(isReadOnly() || !handleInputAvailable);
+            getInputBox().setReadOnly(isReadOnly() || !getEditMask().getHandleInputAvailable());
         }
-        if (mimeType != null) {
-            fileUploader.setAcceptedMimeType(mimeType.getValue());
+    }
+    
+    private void updateFileDialogButton(){
+        fileDialogButton.setVisible(!isReadOnly() && getEditMask().getSelectionMode()==EFileSelectionMode.SELECT_FILE);
+    }
+    
+    private void updateAcceptedMimeType(){
+        if (fileUploader!=null){
+            final String acceptedTypes;
+            final EnumSet<EMimeType> types = getEditMask().getMimeTypes();
+            if (types==null || types.isEmpty()){
+                acceptedTypes = null;
+            }else{
+                final StringBuilder acceptedTypesBuilder = new StringBuilder();
+                for (EMimeType type: types){
+                    if (type!=EMimeType.ALL_SUPPORTED && type!=EMimeType.ALL_FILES){
+                        if (acceptedTypesBuilder.length()>0){
+                            acceptedTypesBuilder.append(',');
+                        }
+                        acceptedTypesBuilder.append('.');
+                        acceptedTypesBuilder.append(type.getExt());
+                    }
+                }
+                acceptedTypes = acceptedTypesBuilder.toString();
+            }
+            fileUploader.setAcceptedMimeType(acceptedTypes);
         }
     }
 
     @Override
-    protected ValidationResult calcValidationResult(String value) {
-        if (value != null && value.contains("[<:\"\'>?*]")) {
-            return ValidationResult.INVALID;
-        }
-        return ValidationResult.ACCEPTABLE;
+    protected void afterChangeReadOnly() {
+        super.afterChangeReadOnly();
+        updateFileDialogButton();
     }
 
+    @Override
+    public void setEnabled(final boolean isEnabled) {
+        super.setEnabled(isEnabled);
+        fileUploader.setEnabled(isEnabled);
+    }        
+
+    public void uploadAndReadSelectedFile (IUploadedDataReader reader){
+        if (fileUploader != null) {
+            try {
+                fileUploader.uploadAndReadSelectedFile(reader, true);
+            } catch (IOException ex) {
+                Logger.getLogger(ValFilePathEditorController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
     @Override
     protected void applyEditMask(final InputBox box) {
         super.applyEditMask(box);

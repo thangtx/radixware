@@ -17,6 +17,7 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Objects;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.enums.EEditMaskType;
@@ -26,11 +27,12 @@ import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.common.types.ArrInt;
 
 public final class EditMaskInt extends org.radixware.kernel.common.client.meta.mask.EditMask {
-
-    //	Если количество цифр в числе < length
-    //  дополняется слева символами symbol до length.
-    // Значения <=0 не учитываются.
-    private byte minLength = 0;
+    
+    private final static String GROUPING_SEPARATOR_SETTING_NAME=SettingNames.SYSTEM+"/"
+        +SettingNames.FORMAT_SETTINGS+"/"
+        +SettingNames.FormatSettings.NUMBER+"/"+SettingNames.FormatSettings.Number.GROUP_SEPARATOR;
+    
+    private byte minLength = 0;    
     private Character padChar = null;
     private long stepSize = 1L;
     private Long minValue = null;
@@ -216,6 +218,7 @@ public final class EditMaskInt extends org.radixware.kernel.common.client.meta.m
         return DecimalFormatSymbols.getInstance(locale);
     }
     
+    @Deprecated//use getTriadDelimeter(final IClientEnvironment environment) instead
     public Character getTriadDelimeter(final Locale locale){
         switch (triadDelimeterType) {
             case NONE:
@@ -224,16 +227,32 @@ public final class EditMaskInt extends org.radixware.kernel.common.client.meta.m
                 return customTriadDelimeter;
             default:
                 return Character.valueOf(getSymbols(locale).getGroupingSeparator());
+        }
+    }
+    
+    public Character getTriadDelimeter(final IClientEnvironment environment){
+        switch (triadDelimeterType) {
+            case NONE:
+                return null;
+            case SPECIFIED:
+                return customTriadDelimeter;
+            default:
+                final String delimeterFromSettings = environment.getConfigStore().readString(GROUPING_SEPARATOR_SETTING_NAME, null);
+                if (delimeterFromSettings!=null && !delimeterFromSettings.isEmpty()){
+                    return Character.valueOf(delimeterFromSettings.charAt(0));
+                }else{
+                    return Character.valueOf(getSymbols(environment.getLocale()).getGroupingSeparator());
+                }
         }        
     }
 
-    private String insertDelimeters(String string, final Locale locale) {
-        final Character triadDelimeter = getTriadDelimeter(locale);
+    private String insertDelimeters(String string, final IClientEnvironment environment) {
+        final Character triadDelimeter = getTriadDelimeter(environment);
         if (triadDelimeter == null || triadDelimeter == '\0') {
             return string;
         }
-        string = string.replaceAll(String.valueOf(triadDelimeter.charValue()), "");
-        final char minusChar = getSymbols(locale).getMinusSign();
+        string = string.replace(String.valueOf(triadDelimeter.charValue()), "");
+        final char minusChar = getSymbols(environment.getLocale()).getMinusSign();
         final char plusChar = '+';
         final StringBuffer result = new StringBuffer();
         final Character signChar;
@@ -327,19 +346,19 @@ public final class EditMaskInt extends org.radixware.kernel.common.client.meta.m
     
     public String formatInputString(final IClientEnvironment environment, final String numberAsStr){        
         if (getNumberBase() == 10){
-            return insertDelimeters(numberAsStr, environment.getLocale());
+            return insertDelimeters(numberAsStr, environment);
         }else{
             return numberAsStr;
         }
     }
     
     public Long fromStr(final IClientEnvironment environment, final String string){
-        final Character triadDelimeter = getTriadDelimeter(environment.getLocale());
+        final Character triadDelimeter = getTriadDelimeter(environment);
         final String preparsedString;
         if (triadDelimeter==null || triadDelimeter.charValue()=='\0'){
             preparsedString = string;
         }else{            
-            preparsedString = string.replaceAll(String.valueOf(triadDelimeter.charValue()), "");
+            preparsedString = string.replace(String.valueOf(triadDelimeter.charValue()), "");
         }
         return Long.parseLong(preparsedString,getNumberBase());
     }

@@ -23,7 +23,7 @@ import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.HttpFormatter;
 import org.radixware.kernel.server.units.AasClient;
-import org.radixware.kernel.server.utils.PriorityResourceManager;
+import org.radixware.kernel.server.utils.IPriorityResourceManager;
 import org.radixware.schemas.aas.InvokeMess;
 
 /**
@@ -35,7 +35,7 @@ final class JeAasClient extends AasClient {
 
     //options
     private String lastScpName;
-    private PriorityResourceManager.Ticket priorityTicket;
+    private IPriorityResourceManager.Ticket priorityTicket;
     private static final int AAS_INVOKE_TIMEOUT_MILLIS = 24 * 60 * 60 * 1000; //24 hours
 
     public JeAasClient(final JobExecutorUnit unit) throws SQLException {
@@ -47,11 +47,11 @@ final class JeAasClient extends AasClient {
         return lastScpName;
     }
 
-    public PriorityResourceManager.Ticket getPriorityTicket() {
+    public IPriorityResourceManager.Ticket getPriorityTicket() {
         return priorityTicket;
     }
 
-    public void setPriorityTicket(PriorityResourceManager.Ticket priorityTicket) {
+    public void setPriorityTicket(IPriorityResourceManager.Ticket priorityTicket) {
         this.priorityTicket = priorityTicket;
     }
 
@@ -84,7 +84,7 @@ final class JeAasClient extends AasClient {
     protected void onInvokeException(final ServiceClientException exception) {
         if (exception instanceof NoSapsAvailableException) {
             unit.getTrace().put(EEventSeverity.DEBUG, curJob.getFullTitle() + JobExecutorMessages._TERMINATED_BY_ERR + ": " + exception.getMessage(), null, null, unit.getEventSource(), false);
-            notifyNoSaps(lastScpName);
+            notifyNoSaps(getScpName());
         } else {
             final String exStack = ExceptionTextFormatter.exceptionStackToString(exception);
             unit.getTrace().put(EEventSeverity.ERROR, curJob.getFullTitle() + JobExecutorMessages._TERMINATED_BY_ERR + ": " + exStack, JobExecutorMessages.MLS_ID_JOB_TERMINATED_BY_ERR, new ArrStr(String.valueOf(curJob.id), String.valueOf(curJob.title), curJob.getParametersDescription(), exStack), unit.getEventSource(), false);

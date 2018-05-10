@@ -15,13 +15,18 @@ import org.radixware.kernel.common.sqlscript.parser.SQLConstants.StatementType;
 
 
 public class SQLParseDefinetStatement extends SQLParseStatement {
-    private String var;
+    private final String var;
     private final String value;
 
-    public SQLParseDefinetStatement(SQLPosition position, String var, String value) {
+    public SQLParseDefinetStatement(final SQLPosition position, final String var, final String value) {
         super(position, StatementType.ST_DEFINE);
-        this.var = var;
-        this.value = value;
+        if (var == null || var.isEmpty()) {
+            throw new IllegalArgumentException("Var name can't be null or empty");
+        }
+        else {
+            this.var = var;
+            this.value = value;
+        }
     }
 
     public String getVar() {
@@ -32,4 +37,8 @@ public class SQLParseDefinetStatement extends SQLParseStatement {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "SQLParseDefinetStatement{" + "var=" + var + ", value=" + value + '}';
+    }
 }

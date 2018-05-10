@@ -106,9 +106,9 @@ public final class ReadObjectQuery extends DbQuery {
                 try {
                     if (rs.next()) {
                         for (Field field : fields) {
-                            if (!propVals.containsPropById(field.prop.getId())) {//if read then store loaded and updated values
+                            if (!propVals.containsPropById(field.id)) {//if read then store loaded and updated values
                                 //adding or replacing (if reread)
-                                propVals.putPropValById(field.prop.getId(), field.getFieldVal(rs));
+                                propVals.putPropValById(field.id, field.getFieldVal(rs));
                             }
                         }
                         if (!propVals.containsPropById(QuerySqlBuilder.ALL_ROLES_FIELD_COL_ID) && sqlQuery.contains(QuerySqlBuilder.ALL_ROLES_FIELD_ALIAS)) {
@@ -149,7 +149,7 @@ public final class ReadObjectQuery extends DbQuery {
                     Logger.getLogger(getClass().getName()).log(Level.FINE, ex.getMessage(), ex);
                 }
             }
-            throw new DatabaseError("Read query error: " + ExceptionTextFormatter.getExceptionMess(e), e);
+            throw new DatabaseError("Read query error (TableID: " + (pid == null ? null : pid.getEntityId()) + ", PID: '" + pid + "'): " + ExceptionTextFormatter.getExceptionMess(e), e);
         }
     }
 }

@@ -20,7 +20,7 @@ public class HrefButton extends ButtonBase {
         super(new Html("a"));
         setText(text);
         html.setCss("white-space", "nowrap");
-        html.setAttr("href", "#");
+        html.setCss("cursor", "pointer");
         html.setCss("text-decoration", "underline");
         html.setCss("color", "blue");
     }

@@ -115,8 +115,8 @@ public class UniqueConstraintViolationError extends ServiceCallFault {
         final String tableTitle;
         if (classDef.hasGroupTitle()) {
             tableTitle = classDef.getGroupTitle();
-        } else if (classDef.getClassTitle() != null && !classDef.getClassTitle().isEmpty()) {
-            tableTitle = classDef.getClassTitle();
+        } else if (classDef.hasObjectTitle()) {
+            tableTitle = classDef.getObjectTitle();
         } else {
             tableTitle = classDef.getName();
         }
@@ -150,13 +150,13 @@ public class UniqueConstraintViolationError extends ServiceCallFault {
                     continue;                    
                 }
             }
-            if (!printProperty(classDef, propertyId, propertyTitles)){
+            if (!printProperty(classDef, propertyId, propertyTitles, environment)){
                 final Set<Id> parentRefIds = parentRefPropIds.get(propertyId);
                 for (Id parentRefId: parentRefIds){
                     if (printedPropertyRefId.contains(parentRefId)){
                         break;
                     }
-                    if (printProperty(classDef, parentRefId, propertyTitles)){
+                    if (printProperty(classDef, parentRefId, propertyTitles, environment)){
                         printedPropertyRefId.add(parentRefId);
                         propertyId = null;
                         break;
@@ -189,8 +189,8 @@ public class UniqueConstraintViolationError extends ServiceCallFault {
         final String tableTitle;
         if (classDef.hasGroupTitle()) {
             tableTitle =classDef.getGroupTitle();
-        } else if (classDef.getClassTitle() != null && !classDef.getClassTitle().isEmpty()) {
-            tableTitle = classDef.getClassTitle();
+        } else if (classDef.hasObjectTitle()) {
+            tableTitle = classDef.getObjectTitle();
         } else {
             tableTitle = classDef.getName();
         }
@@ -217,22 +217,22 @@ public class UniqueConstraintViolationError extends ServiceCallFault {
                     if (propertyDef!=null){
                         if (!printedPropertyRefId.contains(propertyDef.getId())){
                             printedPropertyRefId.add(propertyDef.getId());
-                            propertyTitles.append(propertyDef.getTitle());
+                            propertyTitles.append(propertyDef.getTitle(environment));
                         }
                         continue;                        
                     }
                 }else{
-                    propertyTitles.append(propertyDef.getTitle());
+                    propertyTitles.append(propertyDef.getTitle(environment));
                     continue;                    
                 }
             }
-            if (!printProperty(contextClassDef, propertyId, propertyTitles)){
+            if (!printProperty(contextClassDef, propertyId, propertyTitles, environment)){
                 final Set<Id> parentRefIds = parentRefPropIds.get(propertyId);
                 for (Id parentRefId: parentRefIds){
                     if (printedPropertyRefId.contains(parentRefId)){
                         break;
                     }
-                    if (printProperty(contextClassDef, parentRefId, propertyTitles)){
+                    if (printProperty(contextClassDef, parentRefId, propertyTitles, environment)){
                         printedPropertyRefId.add(parentRefId);
                         propertyId = null;
                         break;
@@ -246,11 +246,14 @@ public class UniqueConstraintViolationError extends ServiceCallFault {
         return String.format(translatedMessage, tableTitle, propertyTitles.toString());        
     }    
     
-    private static boolean printProperty(final RadClassPresentationDef classDef, final Id propertyId, final StringBuilder writeTo){
+    private static boolean printProperty(final RadClassPresentationDef classDef, 
+                                                          final Id propertyId, 
+                                                          final StringBuilder writeTo,
+                                                          final IClientEnvironment environment){
         if (classDef.isPropertyDefExistsById(propertyId)) {
             final  RadPropertyDef property = classDef.getPropertyDefById(propertyId);
             if (property.hasTitle()) {
-                writeTo.append(property.getTitle());
+                writeTo.append(property.getTitle(environment));
                 return true;
             } else if (property.getName() != null && !property.getName().isEmpty()) {
                 writeTo.append(property.getName());
@@ -304,7 +307,7 @@ public class UniqueConstraintViolationError extends ServiceCallFault {
         Id itemId;
         for (RadStandardEditorPageDef.PageItem item : items) {
             itemId = item.getItemId();
-            if (itemId.getPrefix() == EDefinitionIdPrefix.ADS_PROPERTY_GROUP) {
+            if (itemId.getPrefix() == EDefinitionIdPrefix.EDITOR_PAGE_PROP_GROUP) {
                 if (findPropertyInGroup(presentation,pageDef, pageDef.getPropertiesGroup(itemId), propertyId)){
                     return true;
                 }

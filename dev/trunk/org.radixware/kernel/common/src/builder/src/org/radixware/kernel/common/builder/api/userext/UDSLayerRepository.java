@@ -63,7 +63,7 @@ public class UDSLayerRepository extends FSRepositoryLayer {
         this.branch = branch;
         this.loader = loader;
         this.layerObj = new UDSLayer(this, loader);
-        this.branch.getLayers().add(this.layerObj);
+        this.branch.getLayers().addAdditionalLayer(this.layerObj);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class UDSLayerRepository extends FSRepositoryLayer {
     @Override
     public void close() {
         super.close();
-        this.branch.getLayers().remove(layerObj);
+        this.branch.getLayers().removeAdditionalLayer(layerObj);
         cleanup();
     }
 

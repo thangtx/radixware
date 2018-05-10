@@ -17,6 +17,7 @@ import java.util.Collection;
 import com.trolltech.qt.gui.QWidget;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.models.CleanModelController;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.ParagraphModel;
@@ -74,6 +75,7 @@ public abstract class ParagraphEditor extends ExplorerWidget implements IExplore
     public void open(Model model_) {
         paragraph = (ParagraphModel) model_;
         model_.setView(this);
+        setObjectName("rx_parag_view_#"+paragraph.getDefinition().getId().toString());
     }
 
     private boolean wasClosed;
@@ -158,4 +160,8 @@ public abstract class ParagraphEditor extends ExplorerWidget implements IExplore
     public boolean hasUI() {
         return asQWidget() != null && asQWidget().nativePointer() != null;
     }
+    
+    public final EWidgetMarker getWidgetMarker(){
+        return EWidgetMarker.PARAGRAPH;
+    }    
 }

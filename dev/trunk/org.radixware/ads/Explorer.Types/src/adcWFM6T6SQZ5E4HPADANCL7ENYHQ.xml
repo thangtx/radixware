@@ -21,7 +21,7 @@
         <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
       <Method Id="mthTDNH56HBGFB7BHASLEMAV2MWIU" Name="getIsCommandRestricted" Nature="0" IsOverride="false">
-        <AccessRules>
+        <AccessRules IsDeprecated="true">
           <Transparence Extendable="false" PublishedName="getIsCommandRestricted(Lorg.radixware.kernel.common.types.Id;)Z"/>
         </AccessRules>
         <Parameters>
@@ -144,6 +144,37 @@
             </xsc:Argument>
           </xsc:GenericArguments>
         </ReturnType>
+      </Method>
+      <Method Id="mthD3P4JY5Z45F47DERJ7MBKUOQJ4" Name="getIsCommandRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsCommandRestricted(Lorg.radixware.kernel.common.client.meta.RadCommandDef;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="commandDef" Id="mprUFGNIGAMTFF7PNR6ZTGXWCDU5I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadCommandDef"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth3DONW4ZIEJHUBPGNCSC2KJTKTI" Name="getIsCommandRestricted" Nature="0" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsCommandRestricted(Lorg.radixware.kernel.common.types.Id;Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="cmdId" Id="mpr3HJFSJ6GLRH77EV5IPCP43P7DI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="isCommandReadOnly" Id="mprBIGV5Y3OZVAMLDWJSYCQTQRBJI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth6LA3Y3RZGBAVHCV5BOSJ5QMKUQ" Name="getIsMultipleCreateRestricted" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getIsMultipleCreateRestricted()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
     </Methods>
   </AdsClassDefinition>

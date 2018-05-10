@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.editors.monitoring.diagram;
 
+import org.radixware.kernel.common.client.dashboard.FastMetricRecordIterator;
 import com.trolltech.qt.gui.QWidget;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -30,6 +31,7 @@ import org.jfree.data.time.TimePeriod;
 import org.jfree.data.time.TimeTableXYDataset;
 import org.jfree.data.xy.DefaultIntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.dashboard.DiagramSettings;
 import org.radixware.kernel.explorer.editors.monitoring.diagram.AbstaractMetricView.MetricValue;
 import org.radixware.kernel.explorer.editors.monitoring.diagram.AbstaractMetricView.StatistMetricValue;
@@ -42,11 +44,11 @@ public class StatisticalDiagramWidget extends DiagramWidget {
 
     private boolean showMaxMin = true;
 
-    public StatisticalDiagramWidget(final QWidget parent) {
-        super(parent);
+    public StatisticalDiagramWidget(final IClientEnvironment env, final QWidget parent) {
+        super(env, parent);
         //isHistogram=histogram;
         //this.period=period;
-        String sTime = Application.translate("SystemMonitoring", "Time");
+        String sTime = Application.translate("SystemMonitoring", null);
         String sValue = Application.translate("SystemMonitoring", "Value");
         chart = ChartFactory.createTimeSeriesChart(null, sTime, sValue, null, false, false, false);
 
@@ -88,16 +90,19 @@ public class StatisticalDiagramWidget extends DiagramWidget {
 //                listOfVals.add(new StatistMetricValue(rec.getBegTime().getTime(), rec.getEndTime().getTime(), rec.getAvgVal().doubleValue(), max, min));
 //            }
 //        } else {
-        for (MetricRecord rec : diagRs.getHistoryRs().getRecords().getRecordList()) {
-            if (rec.getEndTime() != null && rec.getBegTime() != null && rec.getAvgVal() != null) {
-                Double min = rec.getMinVal() != null ? rec.getMinVal().doubleValue() : null;
-                Double max = rec.getMaxVal() != null ? rec.getMaxVal().doubleValue() : null;
-                listOfVals.add(new StatistMetricValue(rec.getBegTime().getTime(), rec.getEndTime().getTime(), rec.getAvgVal().doubleValue(), max, min));
+        try (final FastMetricRecordIterator iter = new FastMetricRecordIterator(diagRs.getHistoryRs().getRecords())) {
+            while (iter.hasNext()) {
+                final MetricRecord rec = iter.next();
+                if (rec.getEndTime() != null && rec.getBegTime() != null && rec.getAvgVal() != null) {
+                    Double min = rec.getMinVal() != null ? rec.getMinVal().doubleValue() : null;
+                    Double max = rec.getMaxVal() != null ? rec.getMaxVal().doubleValue() : null;
+                    listOfVals.add(new StatistMetricValue(rec.getBegTime().getTime(), rec.getEndTime().getTime(), rec.getAvgVal().doubleValue(), max, min));
+                }
             }
         }
-
-        Timestamp begTime = diagRs.getHistoryRs().getTimeFrom();
-        Timestamp endTime = diagRs.getHistoryRs().getTimeTo();
+        
+        begTime = diagRs.getHistoryRs().getTimeFrom();
+        endTime = diagRs.getHistoryRs().getTimeTo();
         updateDataset(listOfVals, begTime, endTime, metricSettings);
         metricSettings.getHistSettings().setValueScale(getMinVal(), getMaxVal());
     }

@@ -15,15 +15,24 @@ import org.radixware.kernel.common.sqlscript.parser.SQLConstants.StatementType;
 
 
 public class SQLParsePauseStatement extends SQLParseStatement {
-    private String prompt;
+    private final String prompt;
 
-    public SQLParsePauseStatement(SQLPosition position, String prompt) {
+    public SQLParsePauseStatement(final SQLPosition position, final String prompt) {
         super(position, StatementType.ST_PAUSE);
-        this.prompt = prompt;
+        if (prompt == null) {
+            throw new IllegalArgumentException("Prompt can't be null");
+        }
+        else {
+            this.prompt = prompt;
+        }
     }
 
     public String getPrompt() {
         return prompt;
     }
 
+    @Override
+    public String toString() {
+        return "SQLParsePauseStatement{" + "prompt=" + prompt + '}';
+    }
 }

@@ -30,6 +30,7 @@ import org.radixware.kernel.common.svn.SVNRepositoryAdapter;
 import org.radixware.kernel.common.svn.SvnEntryComparator;
 import org.radixware.kernel.common.svn.SvnPathUtils;
 import org.radixware.kernel.common.svn.client.SvnEntry;
+import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.designer.common.dialogs.commitpanel.MicroCommitPanel;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import static org.radixware.kernel.designer.environment.merge.MergeUtils.getTableAsStr;
@@ -124,8 +125,14 @@ public class AdsCopyMergeTable extends CopyMergeTable {
                     exists.add(false);
                     continue;
                 }
+                
+                final File file = list.get(index).getDef().getFile();
+                if (file == null) {//RADIX-12711
+                    DialogUtils.messageError("Invalid definitions state. Please close merge dialog, and refresh definitions tree.");
+                    return;
+                }
 
-                long fromRev = SVN.getFileRevision(options.getFsClient(), list.get(index).getDef().getFile());
+                long fromRev = SVN.getFileRevision(options.getFsClient(), file);
 
                 String fromPath = list.get(index).getFromPath();
                 if (!revisionNumbers.contains(fromRev)) {
@@ -134,7 +141,7 @@ public class AdsCopyMergeTable extends CopyMergeTable {
                 String toPath = list.get(index).getToPath();
                 boolean toFileExists = SVN.isFileExists(repository, toPath);
                 if (list.get(index).getXmlStringDataEmulator() != null) {
-                    changedData.add(list.get(index).getXmlStringDataEmulator().getBytes());
+                    changedData.add(list.get(index).getXmlStringDataEmulator().getBytes(FileUtils.XML_ENCODING));
                 } else if (toFileExists) {
                     SvnEntry dirEntry1 = repository.info(fromPath, rev);
                     Long fileSize = dirEntry1.getSize();
@@ -366,7 +373,7 @@ public class AdsCopyMergeTable extends CopyMergeTable {
         byte buf[] = null;
 
         if (list.get(index).getXmlStringDataEmulator() != null) {
-            buf = list.get(index).getXmlStringDataEmulator().getBytes();
+            buf = list.get(index).getXmlStringDataEmulator().getBytes(FileUtils.XML_ENCODING);
         } else if (toFileExists) {
             SvnEntry dirEntry1 = repository.info(fromPath, rev);
             Long fileSize = dirEntry1.getSize();

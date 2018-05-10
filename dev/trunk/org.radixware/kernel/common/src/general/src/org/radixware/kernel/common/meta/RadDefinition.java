@@ -13,6 +13,8 @@ package org.radixware.kernel.common.meta;
 
 import java.io.IOException;
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.enums.EDocGroup;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.types.Id;
 
 
@@ -33,5 +35,15 @@ public class RadDefinition extends Definition {
 
     //force all lazy loading before shared meta will be published for ARTE instances
     public void link() {
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return null;
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
     }
 }

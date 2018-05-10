@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcPZD6QX27VZGF7EXH6E7HNEBWVA" Name="AdsUserReportClassDef" Type="3" Environment="common">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsUserReportClassDef"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcPZD6QX27VZGF7EXH6E7HNEBWVA"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcPZD6QX27VZGF7EXH6E7HNEBWVA"/>
+    </Bodies>
+    <MethodGroup Id="cmgYO6DNPPOBRGKHHRO5IJ3H37X34" Name="Root"/>
+    <PropertyGroup Id="cpgRRH3YRHZLNCGDFDIOCZCB5VDZ4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthCHB66BHMT5HRFAZWJXASKNAMDI" Name="getReportDefWithCorrectIds" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="getReportDefWithCorrectIds(Lorg.radixware.schemas.adsdef.UserReportDefinitionType;Lorg.radixware.kernel.common.types.Id;JZ)Lorg.radixware.schemas.adsdef.UserReportDefinitionType;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="xRepDef" Id="mprUC5TJI3T4FEBJF4IKXS4SXSV44">
+            <Type TypeId="400" extStr="org.radixware.schemas.adsdef.UserReportDefinitionType"/>
+          </Parameter>
+          <Parameter Name="reportId" Id="mprAQXQS7HUPJBOHJ4ZWPUYFJ4ELY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="version" Id="mprQ5THUI6A3FB7FATMMGNT47YADU">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="isCurrent" Id="mpr5M5YXSGE2JAAZD4IG4CNIEKSS4">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.adsdef.UserReportDefinitionType"/>
+      </Method>
+      <Method Id="mthJHRVWIVWTJDCFL3PTYQM5YIHJA" Name="migrateChangeLogToVersionForCompatibility" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="migrateChangeLogToVersionForCompatibility(Lorg.radixware.schemas.adsdef.UserReportExchangeType;Lorg.radixware.schemas.adsdef.UserReportDefinitionType;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="exportDoc" Id="mprOBW4VKTD7JHDXFEXSKARUJMFLQ">
+            <Type TypeId="400" extStr="org.radixware.schemas.adsdef.UserReportExchangeType"/>
+          </Parameter>
+          <Parameter Name="xVersion" Id="mprTZP3HM3BDNG6LNTXMGU6U73SDY">
+            <Type TypeId="400" extStr="org.radixware.schemas.adsdef.UserReportDefinitionType"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

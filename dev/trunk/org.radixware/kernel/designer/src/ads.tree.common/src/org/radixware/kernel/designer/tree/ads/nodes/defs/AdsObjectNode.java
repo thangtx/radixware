@@ -28,6 +28,7 @@ import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.ads.profiling.AdsProfileSupport.IProfileable;
 import org.radixware.kernel.common.defs.ads.src.IJavaSource;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
+import org.radixware.kernel.common.defs.uds.UdsDefinition;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.designer.ads.build.actions.AbstractBuildAction.CompileCookie;
@@ -40,6 +41,7 @@ import org.radixware.kernel.designer.tree.ads.nodes.actions.ViewExplorerSourceAc
 import org.radixware.kernel.designer.tree.ads.nodes.actions.ViewServerSourceAction.ViewServerSourceCookie;
 import org.radixware.kernel.designer.tree.ads.nodes.actions.*;
 import org.radixware.kernel.designer.tree.ads.nodes.actions.ViewWebSourceAction.ViewWebSourceCookie;
+import org.radixware.kernel.designer.tree.ads.nodes.actions.preview.PreviewAction;
 
 /**
  * Base class for tree-look representation of ads definition
@@ -52,6 +54,7 @@ public class AdsObjectNode<T extends RadixObject> extends RadixObjectNode {
     //private final boolean canChangeAccess;
     private final AdsDefinition.AccessListener accessListener;
     private ExportToUdsExchangeFormatAction.Cookie exportCookie;
+    private PreviewAction.PreviewCookie cookie;
     private TuneProfileCookie tuneProfileCookie = null;
     private final Map<Object, Cookie> cookies = new HashMap<>();
     
@@ -82,6 +85,13 @@ public class AdsObjectNode<T extends RadixObject> extends RadixObjectNode {
             if (definition.isSaveable()) {
                 final AdsDefinitionReloadAction.Cookie reloadCookie = new AdsDefinitionReloadAction.Cookie(adsdef);
                 addCookie(reloadCookie);
+            }
+                    
+            if (!(definition instanceof UdsDefinition) 
+                    && !definition.isReadOnly()
+                    && BuildOptions.UserModeHandlerLookup.getUserModeHandler() == null 
+                    && AdsUtils.isEnableHumanReadable(definition)) {
+                addCookie(cookie = new PreviewAction.PreviewCookie(adsdef));
             }
         } else {
             configureDomainsCookie = null;
@@ -166,6 +176,10 @@ public class AdsObjectNode<T extends RadixObject> extends RadixObjectNode {
         updateCompileCookie(actions);
         
         actions.add(null);
+        if (cookie != null) {
+            actions.add(SystemAction.get(PreviewAction.class));
+        }
+        actions.add(null);        
         if (usingRolesCookie != null) {
             actions.add(SystemAction.get(ConfigureUsingRolesAction.class));
         }
@@ -181,7 +195,7 @@ public class AdsObjectNode<T extends RadixObject> extends RadixObjectNode {
             actions.add(SystemAction.get(ExportToUdsExchangeFormatAction.class));
         }
         
-        
+
     }
     
     private boolean isBuildable(JavaSourceSupport jSupport, ERuntimeEnvironmentType environment) {

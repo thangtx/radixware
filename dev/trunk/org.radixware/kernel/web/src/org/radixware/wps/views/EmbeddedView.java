@@ -12,6 +12,7 @@
 package org.radixware.wps.views;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
@@ -35,7 +36,7 @@ import org.radixware.kernel.common.client.views.IEmbeddedViewContext;
 import org.radixware.kernel.common.client.views.ISelector;
 import org.radixware.kernel.common.client.views.ISelector.SelectorListener;
 import org.radixware.kernel.common.client.views.IView;
-import org.radixware.kernel.common.client.widgets.IModelWidget;
+import org.radixware.kernel.common.client.widgets.IModifableComponent;
 import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
@@ -45,10 +46,11 @@ import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.rwt.UIObject;
 
 import org.radixware.wps.views.editor.Editor;
+import org.radixware.wps.views.editor.ErrorView;
 import org.radixware.wps.views.selector.RwtSelector;
 
 
-public class EmbeddedView extends UIObject implements IModelWidget, IPresentationChangedHandler, org.radixware.kernel.common.client.eas.IResponseListener, IEmbeddedView {
+public class EmbeddedView extends UIObject implements IPresentationChangedHandler, org.radixware.kernel.common.client.eas.IResponseListener, IEmbeddedView {
 
     private WpsEnvironment env;
     protected IView embeddedView;
@@ -57,14 +59,13 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
     protected Model parentModel;
     private ComponentModificationRegistrator modificationRegistrator;
     private boolean editorWasRestricted = false;
-    private boolean updateWasRestricted = false;
-    private boolean createWasRestricted = false;
-    private boolean deleteWasRestricted = false;
     private IPresentationChangedHandler oldPch;
     private boolean isOpened = false;
     private final IEmbeddedViewContext viewContext;
     private boolean synchronizedWithParentView;
     private final ViewRestrictions initialRestrictions = new ViewRestrictions();
+    protected final List<RequestHandle> handles = new ArrayList<>();
+    private ErrorView errWidget;    
 
     protected EmbeddedView(WpsEnvironment e) {
         this(e, null, null, false, null);
@@ -77,9 +78,14 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
             return result;
         } else {
             if (embeddedView != null) {
-                return ((UIObject) embeddedView).findObjectByHtmlId(id);
+                result = ((UIObject) embeddedView).findObjectByHtmlId(id);
+                if (result!=null){
+                    return result;
+                }
             }
-            //  return box.findObjectByHtmlId(id);
+            if (errWidget != null){
+                return errWidget.findObjectByHtmlId(id);
+            }
             return null;
         }
     }
@@ -90,12 +96,19 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
         if (embeddedView != null) {
             ((UIObject) embeddedView).visit(visitor);
         }
-        //  box.visit(visitor);
+        if (errWidget != null){
+            errWidget.visit(visitor);
+        }        
     }
 
     public EmbeddedView(final IClientEnvironment environment, final IView parentView, final Id childItemId, final boolean synchronizeWithParentView, final IEmbeddedViewContext context) {
         super(new Div());
         this.env = (WpsEnvironment) environment;
+        errWidget = new ErrorView();
+        errWidget.setSizePolicy(SizePolicy.EXPAND, SizePolicy.EXPAND);
+        errWidget.setParent(this);
+        getHtml().add(errWidget.getHtml());
+        errWidget.setVisible(false);
         this.viewContext = context == null ? new IEmbeddedViewContext.EmbeddedView() : context;
         this.synchronizedWithParentView = synchronizeWithParentView;
         parentModel = parentView == null ? null : parentView.getModel();
@@ -131,28 +144,26 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
             modificationRegistrator = new ComponentModificationRegistrator(this, this);
         }
 
+        removeErrWidget();
         if (embeddedView != null) {
             close(true);
         }
         try {
             if (model == null) {
                 model = createModel();
+                if (model==null){//entity object creation was cancelled in event handler
+                    close(true);
+                    return;
+                }                
             }
             embeddedView = model.createView();
             UIObject viewWidget = ((UIObject) embeddedView);
 
-//            viewWidget.setAttribute(WidgetAttribute.WA_DeleteOnClose, true);
-//            if (parentModel != null && parentModel.getView() != null) {
-//                viewWidget.setProperty("EditorMenu", ((QWidget) parentModel.getView()).property("EditorMenu"));
-//                viewWidget.setProperty("SelectorMenu", ((QWidget) parentModel.getView()).property("SelectorMenu"));
-//            }
-            //box.add(viewWidget);
             viewWidget.setVisible(false);
             try {
                 html.add(viewWidget.getHtml());
 
                 viewWidget.setParent(this);
-                //viewWidget.setSizePolicy(SizePolicy.EXPAND, SizePolicy.EXPAND);
                 embeddedView.getRestrictions().add(initialRestrictions);
                 onViewCreated();
                 if (embeddedView instanceof Editor) {
@@ -205,15 +216,6 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
             getEnvironment().getTracer().error(String.format(msg, childItemId == null ? getObjectName() : "#" + childItemId.toString()), err);
             close(true);
             throw err;
-//        } catch (ServiceClientException err) {
-//            final String msg = getEnvironment().getMessageProvider().translate("TraceMessage", "Cannot open embedded view %s");
-//            getEnvironment().getTracer().error(String.format(msg, childItemId == null ? getObjectName() : "#" + childItemId.toString()), err);
-//            close(true);
-//            throw err;
-//        } catch (InterruptedException ex) {
-//            close(true);
-//            throw ex;
-//        } finally {
         }
     }
 
@@ -244,21 +246,6 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
             if (!restrictions.getIsEditorRestricted()) {
                 restrictions.setEditorRestricted(true);
                 editorWasRestricted = true;
-            }
-            if (parentModel.getContext().getRestrictions() != null && //parentModel may be  model of paragraph
-                    parentModel.getContext().getRestrictions().getIsUpdateRestricted()) {
-                if (!restrictions.getIsCreateRestricted()) {
-                    restrictions.setCreateRestricted(true);
-                    createWasRestricted = true;
-                }
-                if (!restrictions.getIsUpdateRestricted()) {
-                    restrictions.setUpdateRestricted(true);
-                    updateWasRestricted = true;
-                }
-                if (!restrictions.getIsDeleteRestricted()) {
-                    restrictions.setDeleteRestricted(true);
-                    deleteWasRestricted = true;
-                }
             }
         }else if (newModel instanceof EntityModel){
             final EntityModel entityModel = (EntityModel)newModel;
@@ -298,18 +285,6 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
                 if (editorWasRestricted && restrictions.canBeAllowed(ERestriction.EDITOR)) {
                     restrictions.setEditorRestricted(false);
                     editorWasRestricted = false;
-                }
-                if (createWasRestricted && restrictions.canBeAllowed(ERestriction.CREATE)) {
-                    restrictions.setCreateRestricted(false);
-                    createWasRestricted = false;
-                }
-                if (updateWasRestricted && restrictions.canBeAllowed(ERestriction.UPDATE)) {
-                    restrictions.setUpdateRestricted(false);
-                    updateWasRestricted = false;
-                }
-                if (deleteWasRestricted && restrictions.canBeAllowed(ERestriction.DELETE)) {
-                    restrictions.setDeleteRestricted(false);
-                    deleteWasRestricted = false;
                 }
             }
         }
@@ -353,6 +328,15 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
     }
 
     @Override
+    public void setFocused(boolean focused) {
+        if (embeddedView != null && embeddedView instanceof RwtSelector && focused) {
+            embeddedView.setFocus();
+        } else {
+            super.setFocused(focused); 
+        }
+    }
+
+    @Override
     public void reread() {
         if (embeddedView != null) {
             try {
@@ -381,14 +365,39 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
             }
         }
 
-        /*final String name = getObjectName() != null && !getObjectName().isEmpty()
-         ? "\"" + getObjectName() + "\""
-         : getEnvironment().getMessageProvider().translate("EmbeddedViewErr", "widget");
+        final String name;
+        if (getObjectName() != null && !getObjectName().isEmpty()){
+            name = "\"" + getObjectName() + "\"";
+        }else{
+            name = getEnvironment().getMessageProvider().translate("EmbeddedViewErr", "widget");
+        }
          final String message = getEnvironment().getMessageProvider().translate("EmbeddedViewErr", "Can't open %s");
-         errWidget.show();
-         errWidget.setError(String.format(message, name), objectNotFound == null ? exception : objectNotFound);*/
+         initErrWidget();         
+         errWidget.setError(String.format(message, name), objectNotFound == null ? exception : objectNotFound);
+    }    
+    
+    private void initErrWidget(){
+        if (errWidget==null){
+            errWidget = new ErrorView();
+            errWidget.setParent(this);
+            errWidget.setSizePolicy(SizePolicy.EXPAND, SizePolicy.EXPAND);
+            getHtml().add(errWidget.getHtml());
+        }
+        if (embeddedView!=null){
+            embeddedView.setVisible(false);
+        }
     }
-    protected final List<RequestHandle> handles = new ArrayList<>();
+    
+    private void removeErrWidget(){
+        if (errWidget!=null){
+            getHtml().remove(errWidget.getHtml());
+            errWidget.setParent(null);
+            errWidget = null;
+        }
+        if (embeddedView!=null){
+            embeddedView.setVisible(true);
+        }        
+    }
 
     @Override
     public void registerRequestHandle(final RequestHandle handle) {
@@ -482,10 +491,15 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
         return isOpened() ? getView().getRestrictions() : initialRestrictions;
     }
 
-    private void onModifiedStateChanged() {
+    protected void onModifiedStateChanged() {
         if (modificationRegistrator != null) {
             modificationRegistrator.getListener().notifyComponentModificationStateChanged(this, inModifiedStateNow());
         }
+    }
+    
+    @Override
+    public final Collection<IModifableComponent> getInnerComponents() {
+        return modificationRegistrator.getRegisteredComponents();
     }
     
     @Override
@@ -521,5 +535,5 @@ public class EmbeddedView extends UIObject implements IModelWidget, IPresentatio
                 setUpdatesEnabled(true);
             }                        
         }
-    }     
+    }             
 }

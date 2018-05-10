@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.builder.check.ads;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import org.radixware.kernel.common.builder.check.ads.clazz.AdsClassChecker;
 import org.radixware.kernel.common.builder.check.common.ModuleChecker;
@@ -23,8 +24,12 @@ import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.module.AdsPath;
+import org.radixware.kernel.common.defs.ads.module.Loader;
 import org.radixware.kernel.common.defs.ads.module.MetaInfServicesCatalog;
+import org.radixware.kernel.common.defs.ads.module.ModuleDefinitions;
+import org.radixware.kernel.common.defs.ads.module.ModuleDefinitions.LoadFailure;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.fs.IRepositoryDefinition;
 import org.radixware.kernel.common.types.Id;
 
@@ -62,6 +67,23 @@ public class AdsModuleChecker extends ModuleChecker<AdsModule> {
                 }
             }
         }
+        
+        ArrayList<LoadFailure> stringsFailures = null;
+        Layer layer = module.getLayer();
+        if (layer != null && layer.isLocalizing() && (stringsFailures == null || stringsFailures.isEmpty())) {
+            AdsModule overwrittenModule = module.findOverwritten();
+            if (overwrittenModule != null && overwrittenModule.isReadOnly()) {
+                ModuleDefinitions overwrittenDefs = overwrittenModule.getDefinitions();
+                if (overwrittenDefs != null) {
+                    stringsFailures = overwrittenDefs.getStringLoadFailure();
+                }
+            }
+        }
+        if (stringsFailures != null && !stringsFailures.isEmpty()) {
+            for (LoadFailure fail : stringsFailures) {
+                checkStringLocation(module, problemHandler, fail);
+            }
+        }
 
         if (module.getCompanionModuleId() != null) {
             AdsModule companion = module.findCompanionModule();
@@ -82,7 +104,7 @@ public class AdsModuleChecker extends ModuleChecker<AdsModule> {
             checkUnderConstructionDependencies(module, problemHandler);
         }
     }
-
+    
     private void checkUnderConstructionDependencies(final AdsModule module, final IProblemHandler problemHandler) {
         for (final Dependences.Dependence dependence : module.getDependences()) {
             final List<Module> dependenceModule = dependence.findDependenceModule(module);
@@ -146,6 +168,23 @@ public class AdsModuleChecker extends ModuleChecker<AdsModule> {
             } else {
                 error(module, problemHandler, "Service must be interface");
             }
+        }
+    }
+    
+    private void checkStringLocation(AdsModule module, IProblemHandler problemHandler, LoadFailure fail){
+        File f = fail.getFile();
+        Layer layer = module.getLayer();
+        File layerDir;
+        if (layer == null || f == null || (layerDir  = layer.getDirectory()) == null){
+            return;
+        }
+        
+        while (f != null  && !layerDir.getAbsolutePath().equals(f.getAbsolutePath())){
+            f = f.getParentFile();
+        }
+        
+        if (f != null){
+            warning(module, problemHandler, "Localizing bundle #" + fail.getId() + " not loaded. There are some problems at file " + fail.getFile());
         }
     }
 }

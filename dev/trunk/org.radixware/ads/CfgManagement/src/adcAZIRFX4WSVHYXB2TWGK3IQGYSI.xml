@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcAZIRFX4WSVHYXB2TWGK3IQGYSI" Name="AbstractEntityCursorIterator" Type="3" Environment="server">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.types.AbstractEntityCursorIterator"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="HeaderadcAZIRFX4WSVHYXB2TWGK3IQGYSI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcAZIRFX4WSVHYXB2TWGK3IQGYSI"/>
+    </Bodies>
+    <MethodGroup Id="cmgJE7YPHH7ABGMBIU6BUEQMCCLCY" Name="Root"/>
+    <PropertyGroup Id="cpgENSZSEW7VVC7XMN7GQIRSUGYA4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthYLECDOAFDNA53ITMRAZCBLO7EU" Name="AbstractEntityCursorIterator" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.server.types.Cursor;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="cursor" Id="mpr4ASCAPKCRNF6TCYHVZPWHGVQ4U">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Cursor"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthCFC3PSMAXVBIRGFZXRA5DLRIXI" Name="close" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="close()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth6XT56NET2NBORNSH3DBJRRP4GU" Name="closeIterator" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="closeIterator(Ljava.util.Iterator&lt;*>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="iter" Id="mprHU5IOOEXXVH47MPGUFBT4OKUIQ">
+            <Type TypeId="400" extStr="java.util.Iterator">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?"/>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVY67ACHML5E6FHWSSKZK7ZEZNE" Name="hasNext" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="hasNext()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthG52QFU7E7FAEPEIB37LFRWQKRM" Name="next" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="next()TT;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="T" IsArgumentType="true"/>
+      </Method>
+      <Method Id="mth4D7KK655HVDTTKHISJATWZV3JU" Name="remove" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="remove()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthSJSOP3KSWJEBBHE5SCY5HQMQQ4" Name="getEntity" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getEntity(Lorg.radixware.kernel.server.types.Cursor;)TT;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="cursor" Id="mprTGC62LBGTNEATK5EISENAYZ4BM">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Cursor"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="T" IsArgumentType="true"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

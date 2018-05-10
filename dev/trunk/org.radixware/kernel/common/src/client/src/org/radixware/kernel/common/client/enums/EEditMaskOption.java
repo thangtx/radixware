@@ -81,7 +81,16 @@ public enum EEditMaskOption implements IKernelIntEnum{
     FILEPATH_INIT_PATH(3,"EditMaskFilePathInitPath"),
     FILEPATH_FREE_INPUTAVAILABLE(4,"EditMaskFilePathFreeInputAvailable"), 
     FILEPATH_MULTIPLE_SELECTION(5,"EditMaskFilePathMultipleSelection"),
-    FILEPATH_FILE_DIALOG_TITLE(6,"EditMaskFilePathFileDialogTitle");
+    FILEPATH_FILE_DIALOG_TITLE(6,"EditMaskFilePathFileDialogTitle"),
+    FILEPATH_PATH_EXIST(7, "EditMaskFilePathExists"),
+    FILEPATH_FILE_STORE_PATH(8, "EditMaskFilePathStorePath"),
+    FILEPATH_FILE_DIALOG_OPEN_MODE(9, "EditMaskFilePathDialogOpenMode"),
+    
+    REF_SELECTOR_PRESENTATION_ID(1,"EditMaskRefSelectorPresentationId"),
+    REF_EDITOR_PRESENTATION_ID(2,"EditMaskRefEditorPresentationId"),
+    REF_FILTER_ID(3,"EditMaskRefFilterId"),
+    REF_SORTING_ID(4,"EditMaskRefSortingId"),
+    REF_DROP_DOWN(5, "EditMaskRefUseDropDownList");
     
     private final long value;
     private final String name;//Имя графического объекта редактора настройки

@@ -34,6 +34,7 @@ import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.dds.DdsSegment;
 import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.common.sqml.translate.SqmlTranslator;
+import org.radixware.kernel.common.svn.FinalSvnEditor;
 import org.radixware.kernel.common.svn.RadixSvnException;
 import org.radixware.kernel.common.svn.SVN;
 import org.radixware.kernel.common.svn.SVNRepositoryAdapter;
@@ -52,11 +53,22 @@ public class DdsModuleCaptureAction extends CookieAction {
     public static class Cookie implements Node.Cookie, Runnable {
 
         private DdsModule module;
+        private final boolean recapture;
+        private Status status = Status.NONE;
+        public enum Status {
+            NONE, COMPLITE, RECAPTURE, LOCALE_DELETE, IS_NOT_UP_TO_DATE
+        }
 
         public Cookie(DdsModule module) {
             this.module = module;
+            this.recapture = true;
         }
 
+        public Cookie(DdsModule module, boolean recapture) {
+            this.module = module;
+            this.recapture = recapture;
+        }
+        
         private static void actualizeAllSqml(DdsModelDef module) {
             final SqmlTranslator sqmlTranslator = SqmlTranslator.Factory.newInstance();
 
@@ -101,7 +113,8 @@ public class DdsModuleCaptureAction extends CookieAction {
                         final String editor = String.valueOf(modifierInfo.getEditor());
                         final String station = String.valueOf(modifierInfo.getStation());
                         final String message = "DDS module '" + module.getName() + "' is already captured by '" + editor + "' on '" + station + "'.\nRecapture?";
-                        if (!DialogUtils.messageConfirmation(message)) {
+                        if (!recapture || !DialogUtils.messageConfirmation(message)) {
+                            status = Status.RECAPTURE;
                             return;
                         }
                     }
@@ -119,6 +132,7 @@ public class DdsModuleCaptureAction extends CookieAction {
                 if (radixSvnUtils != null && !radixSvnUtils.isUpToDate(segmentDir)) {
                     DialogUtils.messageError("Unable to capture DDS module '" + module.getName() + "'\n"
                             + "because it's owner DDS segment versioning status is not up to date.");
+                    status = Status.IS_NOT_UP_TO_DATE;
                     return;
                 }
 
@@ -134,6 +148,7 @@ public class DdsModuleCaptureAction extends CookieAction {
 
                 actualizeAllSqml(modifiedModel);
                 NodesManager.updateOpenedEditors();
+                status = Status.COMPLITE;
             } catch (IOException | SVNClientException | RadixSvnException | NoSuchAlgorithmException cause) {
                 DefinitionError error = new DefinitionError("Unable to capture DDS module.", module, cause);
                 DialogUtils.messageError(error);
@@ -182,19 +197,20 @@ public class DdsModuleCaptureAction extends CookieAction {
                 if (!localFile.exists() && fileExists) {
                     final String message = String.format("File %s exists in svn repository, but locally has been deleted."
                             + " If continue, remote file will be replaced by new locally file. Continue?", DdsModelManager.MODIFIED_MODEL_XML_FILE_NAME);
-                    if (!DialogUtils.messageConfirmation(message)) {
+                    if (!recapture || !DialogUtils.messageConfirmation(message)) {
+                        status = Status.LOCALE_DELETE;
                         return false;
                     }
                 }
 
-                SVNRepositoryAdapter.Editor editor;
+                FinalSvnEditor editor;
                 try {
-                    final SVNRepositoryAdapter.Editor testEditor = repository.createEditor("Check write access");
-                    testEditor.cancel();
+                    final FinalSvnEditor testEditor = new FinalSvnEditor(repository, "Check write access");
+                    testEditor.abort();
 
                     final String message = fileExists ? String.format("Recapture module %s by %s", module.getName(), System.getProperty("user.name")) : String.format("Capture module %s by %s", module.getName(), System.getProperty("user.name"));
 
-                    editor = repository.createEditor(message);
+                    editor = new FinalSvnEditor(repository, message);
                 } catch (RadixSvnException ex) {
                     final String message = "Write access to '" + repository.getLocation() + "' not exist";
                     Logger.getLogger(DdsModuleCaptureAction.class.getName()).log(Level.INFO, message, ex);
@@ -203,7 +219,6 @@ public class DdsModuleCaptureAction extends CookieAction {
                 }
 
                 final byte[] modelModificationState = module.getModelManager().getModelModificationState();
-
                 if (fileExists) {
                     editor.modifyFile(path, modelModificationState);
                 } else {
@@ -242,6 +257,11 @@ public class DdsModuleCaptureAction extends CookieAction {
 
             }
         }
+
+        public Status getStatus() {
+            return status;
+        }
+        
     }
 
     @Override

@@ -13,6 +13,7 @@ package org.radixware.kernel.common.client.models;
 
 import java.awt.Dimension;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientSettings;
@@ -32,6 +33,7 @@ public final class ModelSettings implements ClientSettings {
     private String clientSettingsState = "";
     private final String illegalUsageMessage;
     private final Stack<String> groupStack = new Stack<String>();
+    private final Stack<String> keepGroupStack = new Stack<String>();
     
     
     public ModelSettings(final IClientEnvironment environment, final Model model) {
@@ -263,8 +265,28 @@ public final class ModelSettings implements ClientSettings {
     }
 
     @Override
+    public void pushGroup() {
+        keepGroupStack.push(currentGroup);
+    }
+
+    @Override
+    public String popGroup() {
+        final String group = keepGroupStack.pop();
+        if (!Objects.equals(group, currentGroup)){
+            beginGroup(group);
+        }
+        return group;
+    }
+        
+
+    @Override
     public void setConfigProfile(final String profile) {
         throw new UnsupportedOperationException("Unsupported operation: setConfigProfile(String)");
+    }
+
+    @Override
+    public String getConfigProfile() {
+        return "";
     }
 
     @Override

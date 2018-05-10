@@ -56,6 +56,69 @@
           </Parameter>
         </Parameters>
       </Method>
+      <Method Id="mth2RDTDRIMKNCGVD7Q7SQE6MDLUA" Name="getNewObjectTitle" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getNewObjectTitle(Lorg.radixware.kernel.common.client.models.EntityModel;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="newEntityObject" Id="mprIKM63QX4CBESVKS4KMTB7K4VQY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mth6AH27ERISZHDZFQC5PFU33EHVE" Name="delete" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="delete()V"/>
+        </AccessRules>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthBVU2T3CGRVHIBOU3M7KHBAE45Y" Name="canCopy" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="canCopy()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mth7DWEKO6CPRBKDKSOKTDGUUWGNA" Name="create" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="create(Lorg.radixware.kernel.common.client.models.EntityModel;)Lorg.radixware.kernel.common.client.models.EntityModel;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="source" Id="mpr67X25E2YNBFK3P6LDXS5XIM2YQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthF2WAFKM54BDW5IMN5OSKDTLVCQ" Name="canPaste" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="canPaste(Lorg.radixware.kernel.common.client.models.EntityModel;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="src" Id="mprFE5MNIE3HJFEXGRCU573QYIFDE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthRWLSW33EXZANNI3OXGI53WM6U4" Name="autoSelectCreationClassId" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="autoSelectCreationClassId(Lorg.radixware.kernel.common.client.models.EntityModel;)Lorg.radixware.kernel.common.types.Id;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="entityModel" Id="mprWMHJLUAPCNFZXCDY5PDFB67OXE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
     </Methods>
   </AdsClassDefinition>
 </AdsDefinition>

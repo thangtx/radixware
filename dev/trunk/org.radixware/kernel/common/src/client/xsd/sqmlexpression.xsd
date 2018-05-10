@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema version="1.0" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:this="http://schemas.radixware.org/sqmlexpression.xsd"
+    xmlns:t="http://schemas.radixware.org/types.xsd"
+    xmlns:xscml="http://schemas.radixware.org/xscml.xsd"
+    targetNamespace="http://schemas.radixware.org/sqmlexpression.xsd"
+    elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+    
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
+    
+    <xs:complexType name="SqmlExpression">
+        <xs:sequence>
+            <xs:element name="Sqml" type="xscml:Sqml" minOccurs="1" maxOccurs="1"/>            
+            <xs:element name="Parameters" type="xs:anyType" minOccurs="0" maxOccurs="1"/>            
+        </xs:sequence>        
+        <xs:attribute name="TableId" type="t:Id" use="optional" />
+        <xs:attribute name="EntityClassId" type="t:Id" use="optional"/>
+    </xs:complexType>
+        
+    <xs:element name="SqmlExpression" type="this:SqmlExpression"/>
+    
+</xs:schema>

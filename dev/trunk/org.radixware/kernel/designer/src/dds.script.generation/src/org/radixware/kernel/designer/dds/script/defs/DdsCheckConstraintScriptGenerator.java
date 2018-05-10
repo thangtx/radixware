@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.designer.dds.script.defs;
 
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 import org.radixware.kernel.designer.dds.script.IScriptGenerationHandler;
 import org.radixware.kernel.common.defs.dds.DdsCheckConstraintDef;
 import org.radixware.kernel.common.defs.dds.DdsColumnDef;
@@ -31,60 +32,87 @@ public class DdsCheckConstraintScriptGenerator extends DdsConstraintScriptGenera
     }
 
     @Override
-    public boolean isModifiedToDrop(DdsCheckConstraintDef oldCheckConstraint, DdsCheckConstraintDef newCheckConstraint) {
-        DdsColumnDef oldColumn = oldCheckConstraint.getOwnerColumn();
-        DdsColumnDef newColumn = newCheckConstraint.getOwnerColumn();
-        DdsColumnScriptGenerator columnScriptGenerator = DdsColumnScriptGenerator.Factory.newInstance();
-        if (columnScriptGenerator.isModifiedToDrop(oldColumn, newColumn)) {
-            return true;
+    public boolean isModifiedToDrop(final DdsCheckConstraintDef oldCheckConstraint, final DdsCheckConstraintDef newCheckConstraint) {
+        if (oldCheckConstraint == null) {
+            throw new IllegalArgumentException("Old constraint can't be null");
         }
-
-        if (super.isModifiedToDrop(oldCheckConstraint, newCheckConstraint)) {
-            return true;
+        else if (newCheckConstraint == null) {
+            throw new IllegalArgumentException("New constraint can't be null");
         }
+        else {
+            final DdsColumnDef oldColumn = oldCheckConstraint.getOwnerColumn();
+            final DdsColumnDef newColumn = newCheckConstraint.getOwnerColumn();
+            final DdsColumnScriptGenerator columnScriptGenerator = DdsColumnScriptGenerator.Factory.newInstance();
+            
+            if (columnScriptGenerator.isModifiedToDrop(oldColumn, newColumn)) {
+                return true;
+            }
 
-        Sqml oldConstraintCondition = oldCheckConstraint.getCondition();
-        Sqml newConstraintCondition = newCheckConstraint.getCondition();
-        if (!DdsScriptGeneratorUtils.isTranslatedSqmlEquals(oldConstraintCondition, newConstraintCondition)) {
-            return true;
+            if (super.isModifiedToDrop(oldCheckConstraint, newCheckConstraint)) {
+                return true;
+            }
+
+            final Sqml oldConstraintCondition = oldCheckConstraint.getCondition();
+            final Sqml newConstraintCondition = newCheckConstraint.getCondition();
+            return !DdsScriptGeneratorUtils.isTranslatedSqmlEquals(oldConstraintCondition, newConstraintCondition);
         }
-
-        return false;
     }
 
     @Override
-    public void getRunRoleScript(CodePrinter printer, DdsCheckConstraintDef definition) {
-        
+    public void getRunRoleScript(final CodePrinter printer, final DdsCheckConstraintDef definition) {
+        if (printer == null) {
+            throw new IllegalArgumentException("Code printer can't be null");
+        }
+        else if (definition == null) {
+            throw new IllegalArgumentException("Check constraint printer can't be null");
+        }
     }
-    
 
     @Override
     public void getCreateScript(CodePrinter cp, DdsCheckConstraintDef checkConstraint, IScriptGenerationHandler handler) {
-        if (handler != null) {
-            handler.onGenerationStarted(checkConstraint, cp);
+        if (cp == null) {
+            throw new IllegalArgumentException("Code printer can't be null");
         }
+        else if (checkConstraint == null) {
+            throw new IllegalArgumentException("Check constraint printer can't be null");
+        }
+        else {
+            if (handler != null) {
+                handler.onGenerationStarted(checkConstraint, cp);
+            }
 
-        final DdsColumnDef column = checkConstraint.getOwnerColumn();
-        final DdsTableDef table = column.getOwnerTable();
-        final String tableDbName = table.getDbName();
+            final DdsColumnDef column = checkConstraint.getOwnerColumn();
+            final DdsTableDef table = column.getOwnerTable();
+            final String tableDbName = table.getDbName();
 
-        cp.print("alter ");
-        if (table instanceof DdsViewDef) {
-            cp.print("view ");
-        } else {
-            cp.print("table ");
-        };
-        cp.print(tableDbName);
-        cp.print(" add constraint ");
-        cp.print(checkConstraint.getDbName());
-        cp.print(" check (");
-        final Sqml condition = checkConstraint.getCondition();
-        DdsScriptGeneratorUtils.translateSqml(cp, condition);
-        cp.print(")");
+            cp.print("alter ").print(table instanceof DdsViewDef ? "view " : "table ").print(tableDbName).print(" add constraint ").print(checkConstraint.getDbName()).print(" check (");
+            DdsScriptGeneratorUtils.translateSqml(cp, checkConstraint.getCondition());
+            cp.print(")");
 
-        getCreateDbOptionsScript(cp, checkConstraint.getDbOptions());
+            getCreateDbOptionsScript(cp, checkConstraint.getDbOptions());
 
-        cp.printCommandSeparator();
+            cp.printCommandSeparator();
+        }
+    }
+
+    @Override
+    public void getReCreateScript(final CodePrinter printer, final DdsCheckConstraintDef definition, final boolean storeData) {
+        if (printer == null) {
+            throw new IllegalArgumentException("Code printer can't be null");
+        }
+        else if (definition == null) {
+            throw new IllegalArgumentException("Check constraint printer can't be null");
+        }
+    }
+
+    @Override
+    public void getEnableDisableScript(final CodePrinter cp, final DdsCheckConstraintDef definition, final boolean enable) {
+        if (cp == null) {
+            throw new IllegalArgumentException("Code printer can't be null");
+        }
+        else if (definition == null) {
+            throw new IllegalArgumentException("Check constraint printer can't be null");
+        }
     }
 
     public static final class Factory {

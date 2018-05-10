@@ -42,6 +42,7 @@ public class Ui_ConnectionEditor implements com.trolltech.qt.QUiForm<QDialog>
     public QLabel stationNameLabel;
     public QLabel commentLabel;
     public QLabel countryLabel;
+    public QCheckBox sapDiscoveryEnabledCheckBox;
     public QWidget tab_encryption;
     public QVBoxLayout verticalLayout_2;
     public QVBoxLayout ltSecurity;
@@ -81,7 +82,7 @@ public class Ui_ConnectionEditor implements com.trolltech.qt.QUiForm<QDialog>
         ConnectionEditor.setModal(false);
         tabWidget = new QTabWidget(ConnectionEditor);
         tabWidget.setObjectName("tabWidget");
-        tabWidget.setGeometry(new QRect(9, 43, 319, 361));
+        tabWidget.setGeometry(new QRect(20, 40, 319, 361));
         QSizePolicy sizePolicy1 = new QSizePolicy(com.trolltech.qt.gui.QSizePolicy.Policy.Minimum, com.trolltech.qt.gui.QSizePolicy.Policy.Minimum);
         sizePolicy1.setHorizontalStretch((byte)0);
         sizePolicy1.setVerticalStretch((byte)0);
@@ -168,6 +169,11 @@ public class Ui_ConnectionEditor implements com.trolltech.qt.QUiForm<QDialog>
         countryLabel.setObjectName("countryLabel");
 
         optionsLayout.addWidget(countryLabel, 6, 0, 1, 1);
+
+        sapDiscoveryEnabledCheckBox = new QCheckBox(tab_options);
+        sapDiscoveryEnabledCheckBox.setObjectName("sapDiscoveryEnabledCheckBox");
+
+        optionsLayout.addWidget(sapDiscoveryEnabledCheckBox, 10, 0, 1, 2);
 
         tabWidget.addTab(tab_options, com.trolltech.qt.core.QCoreApplication.translate("ConnectionEditor", "Main Options", null));
         tab_encryption = new QWidget();
@@ -339,6 +345,7 @@ public class Ui_ConnectionEditor implements com.trolltech.qt.QUiForm<QDialog>
         stationNameLabel.setText(com.trolltech.qt.core.QCoreApplication.translate("ConnectionEditor", "St&ation name:", null));
         commentLabel.setText(com.trolltech.qt.core.QCoreApplication.translate("ConnectionEditor", "Comm&ent:", null));
         countryLabel.setText(com.trolltech.qt.core.QCoreApplication.translate("ConnectionEditor", "Cou&ntry:", null));
+        sapDiscoveryEnabledCheckBox.setText(com.trolltech.qt.core.QCoreApplication.translate("ConnectionEditor", "Automatic &discovery of server addresses", null));
         tabWidget.setTabText(tabWidget.indexOf(tab_options), com.trolltech.qt.core.QCoreApplication.translate("ConnectionEditor", "Main Options", null));
         lblAuthType.setText(com.trolltech.qt.core.QCoreApplication.translate("ConnectionEditor", "Authentication type:", null));
         sslGroupBox.setTitle(com.trolltech.qt.core.QCoreApplication.translate("ConnectionEditor", "Use TLS &Encryption", null));

@@ -40,6 +40,8 @@ import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.module.AdsSearcher;
 import org.radixware.kernel.common.defs.ads.msdl.AdsMsdlSchemeDef;
 import org.radixware.kernel.common.defs.ads.src.xml.XBeansTypeSystem;
+import org.radixware.kernel.common.enums.EDocGroup;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.msdl.XmlObjectMessagingXsdCreator;
 import org.radixware.kernel.common.repository.ads.AdsSegment;
@@ -81,6 +83,22 @@ public abstract class AbstractXmlDefinition<T extends DescribedAdsDefinition> ex
                 xbeansTs = null;
             }
         }
+//        cyclicImportPath = null;
+    }
+
+    @Override
+    public boolean needsDocumentation() {
+        return false;
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.XSD;
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return super.getUsageEnvironment();
     }
 
     @Override
@@ -149,7 +167,7 @@ public abstract class AbstractXmlDefinition<T extends DescribedAdsDefinition> ex
 
                 });
             } catch (XmlException ex) {
-                Logger.getLogger(AbstractXmlDefinition.class.getName()).log(Level.FINE, null, ex);
+                Logger.getLogger(AbstractXmlDefinition.class.getName()).log(Level.SEVERE, null, ex);
                 return null;
             }
             if (xDoc != null && xDoc.getSchema() != null) {
@@ -369,5 +387,68 @@ public abstract class AbstractXmlDefinition<T extends DescribedAdsDefinition> ex
         } else {
             return null;
         }
+    }
+
+    private static final String NS_DELIMITER = "->";
+    public String getCyclicImportPath() {
+        String cyclicImportPath = "";
+        List<String> checkingNamespaces = new ArrayList<>();
+        List<String> goodNamespacesList = new ArrayList<>();
+
+        if (isSchemaHasCyclicImport(this, checkingNamespaces, goodNamespacesList)) {
+            StringBuilder messageBuilder = new StringBuilder();
+            boolean isFirst = true;
+            for (String ns : checkingNamespaces) {
+                if (!isFirst) {
+                    messageBuilder.append(NS_DELIMITER);
+                } else {
+                    isFirst = false;
+                }
+
+                messageBuilder.append(ns);
+            }
+
+            cyclicImportPath = messageBuilder.toString();
+        }
+        
+        return cyclicImportPath;
+    }
+
+    
+
+    private boolean isSchemaHasCyclicImport(final IXmlDefinition scheme, List<String> checkingNamespaces, List<String> goodNamespacesList) {
+        if (checkingNamespaces.contains(scheme.getTargetNamespace())) {
+            checkingNamespaces.add(scheme.getTargetNamespace());
+            return true;
+        }
+        List<IXmlDefinition> importedSchemas = scheme.getImportedDefinitions();
+        checkingNamespaces.add(scheme.getTargetNamespace());
+
+        for (IXmlDefinition importedSchema : importedSchemas) {
+            if (goodNamespacesList.contains(importedSchema.getTargetNamespace())) {
+                continue;
+            }
+
+            if (isSchemaHasCyclicImport(importedSchema, checkingNamespaces, goodNamespacesList)) {
+                if (checkingNamespaces.indexOf(scheme.getTargetNamespace()) == checkingNamespaces.size() - 2) {
+                    if (scheme.isTransparent() && importedSchema.isTransparent()) {
+                        checkingNamespaces.remove(importedSchema.getTargetNamespace());
+                        continue;
+                    }
+
+                    if (((AbstractXmlDefinition) scheme).getModule() == ((AbstractXmlDefinition) importedSchema).getModule()) {
+                        if (scheme.getTargetEnvironment() == importedSchema.getTargetEnvironment()) {
+                            checkingNamespaces.remove(importedSchema.getTargetNamespace());
+                            continue;
+                        }
+                    }
+                }
+                return true;
+            }
+        }
+
+        checkingNamespaces.remove(scheme.getTargetNamespace());
+        goodNamespacesList.add(scheme.getTargetNamespace());
+        return false;
     }
 }

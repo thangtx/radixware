@@ -29,6 +29,12 @@ import org.radixware.kernel.server.instance.Instance;
 
 public class FileLog implements Closeable {
 
+    public static enum RotationBase {
+
+        RECORD_TIME,
+        CURRENT_TIME;
+    }
+
     private static final boolean WRITE_CONTEXT_TO_FILE = SystemPropUtils.getBooleanSystemProp("rdx.trace.write.context.to.file", false);
     private static final boolean WRITE_SENSITIVE_TO_FILE = SystemPropUtils.getBooleanSystemProp("rdx.trace.write.sensitive.to.file", false);
     private static final DateFormat DEFAULT_CREATION_DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
@@ -40,6 +46,7 @@ public class FileLog implements Closeable {
     private final FileLogOptions options;
     private volatile boolean closed = false;
     private final DateFormat creationDateFormat;
+    private final RotationBase rotationBase;
 
     /**
      * Use {@linkplain FileLog#create(FileLogOptions options) } instead
@@ -58,12 +65,28 @@ public class FileLog implements Closeable {
      */
     @Deprecated
     public FileLog(final FileLogOptions opt, final DateFormat creationDateFormat) {
+        this(opt, creationDateFormat, RotationBase.CURRENT_TIME);
+    }
+
+    /**
+     * Use {@linkplain FileLog#create(FileLogOptions options) } instead
+     *
+     * @deprecated
+     */
+    @Deprecated
+    public FileLog(final FileLogOptions opt, final DateFormat creationDateFormat, final RotationBase rotationBase) {
         this.options = opt;
         this.creationDateFormat = creationDateFormat == null ? DEFAULT_CREATION_DATE_FORMAT : creationDateFormat;
-        try {
-            recreateLog(Calendar.getInstance());
-        } catch (Exception ex) {
-            //Attempt to recreate log will be performed in maintenance()
+        if (rotationBase == null) {
+            throw new NullPointerException("RotationBase should not be null");
+        }
+        this.rotationBase = rotationBase;
+        if (rotationBase == RotationBase.CURRENT_TIME) {
+            try {
+                recreateLog(Calendar.getInstance());
+            } catch (Exception ex) {
+                //Attempt to recreate log will be performed in maintenance()
+            }
         }
     }
 
@@ -81,7 +104,25 @@ public class FileLog implements Closeable {
             final int rotationCount,
             final boolean rotateDaily,
             final DateFormat creationDateFormat) {
-        this(new FileLogOptions(dir, name, maxFileSizeBytes, rotationCount, rotateDaily), creationDateFormat);
+        this(new FileLogOptions(dir, name, maxFileSizeBytes, rotationCount, rotateDaily, false), creationDateFormat);
+    }
+
+    /**
+     * Use {@linkplain FileLog#create(FileLogOptions options) }
+     * instead
+     *
+     * @deprecated
+     */
+    @Deprecated
+    public FileLog(
+            final File dir,
+            final String name,
+            final int maxFileSizeBytes,
+            final int rotationCount,
+            final boolean rotateDaily,
+            final DateFormat creationDateFormat,
+            final RotationBase rotationBase) {
+        this(new FileLogOptions(dir, name, maxFileSizeBytes, rotationCount, rotateDaily, false), creationDateFormat, rotationBase);
     }
 
     /**
@@ -140,21 +181,44 @@ public class FileLog implements Closeable {
             return;
         }
         final TraceItem.EFormat[] formatOpts;
-        if (WRITE_CONTEXT_TO_FILE) {
+        if (WRITE_CONTEXT_TO_FILE || (options != null && options.isWriteContextToFile())) {
             formatOpts = new TraceItem.EFormat[1];
             formatOpts[0] = TraceItem.EFormat.WITH_CONTEXT;
         } else {
             formatOpts = new TraceItem.EFormat[0];
         }
-        log(traceItem.toFormattedString(null, formatOpts));
+        final Calendar fileDate;
+        if (rotationBase == RotationBase.CURRENT_TIME || traceItem.time == -1) {
+            fileDate = Calendar.getInstance();
+        } else {
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(traceItem.time);
+            fileDate = c;
+            if (internalLog == null) {
+                try {
+                    recreateLog(fileDate);
+                } catch (IOException ex) {
+                    throw new IllegalStateException("Unable to create log based on first event time whith rotation base " + rotationBase);
+                }
+            }
+        }
+        doLog(traceItem.toFormattedString(null, formatOpts), fileDate);
     }
 
     public synchronized void log(final String formattedMessage) {
+        doLog(formattedMessage, Calendar.getInstance());
+    }
+
+    /**
+     * @NotThreadSafe This method should be called when "this" is locked by
+     * synchronized
+     */
+    private void doLog(final String formattedMessage, final Calendar fileDate) {
         if (internalLog == null) {
             return;
         }
         try {
-            rotateIfNeccessaryImpl(roundToDay(Calendar.getInstance()));
+            rotateIfNeccessaryImpl(roundToDay(fileDate));
         } catch (Exception ex) {
             return;
         }

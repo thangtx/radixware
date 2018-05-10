@@ -18,6 +18,7 @@ import org.radixware.kernel.common.client.meta.sqml.ISqmlEnumDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlEnumItem;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.exceptions.DefinitionError;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.editors.sqmleditor.tageditors.ConstValue_Dialog;
 
@@ -86,7 +87,7 @@ public class SqmlTag_ConstValue extends SqmlTag {
     }
 
     private void setNotValid(final String val) {
-        valid = false;
+        setValid(false);
         final String s = "???<ConstSetId>-'<" + val + ">'???";
         setDisplayedInfo(s, s);
     }
@@ -119,7 +120,7 @@ public class SqmlTag_ConstValue extends SqmlTag {
     }
 
     private String getToolTip(final String constset,final String item) {
-        if (!valid) {
+        if (!isValid()) {
             return "";
         }
         final StringBuilder sb=new StringBuilder();
@@ -133,18 +134,18 @@ public class SqmlTag_ConstValue extends SqmlTag {
     public final boolean setDisplayedInfo(final EDefinitionDisplayMode showMode) {
         if (isValid()){
             String name;
-            final String constSetName = constSet.getShortName();//(constSet.getName()==null ? "#"+constSetItem.getId() : constSet.getName());
+            final String constSetName = Html.string2HtmlString(constSet.getShortName());//(constSet.getName()==null ? "#"+constSetItem.getId() : constSet.getName());
             if (EDefinitionDisplayMode.SHOW_TITLES == showMode) {
                 //name=getNameWithoutModule(constSetName);
-                name = constSetName + ":" + constSetItem.getTitle();
+                name = constSetName + ":" + Html.string2HtmlString(constSetItem.getTitle());
                 setDisplayedInfo(getToolTip(constSetName, constSetItem.getShortName()), name);
             } else if (EDefinitionDisplayMode.SHOW_SHORT_NAMES == showMode) {
                 //name=getNameWithoutModule();
-                name = constSetName + ":" + constSetItem.getShortName();
+                name = constSetName + ":" + Html.string2HtmlString(constSetItem.getShortName());
                 setDisplayedInfo(getToolTip(constSetName, constSetItem.getTitle()), name);
             } else {
                 name = fullName;
-                setDisplayedInfo(getToolTip(constSet.getTitle(), constSetItem.getTitle()), name);
+                setDisplayedInfo(getToolTip(Html.string2HtmlString(constSet.getTitle()), Html.string2HtmlString(constSetItem.getTitle())), name);
             }
             return true;
         }

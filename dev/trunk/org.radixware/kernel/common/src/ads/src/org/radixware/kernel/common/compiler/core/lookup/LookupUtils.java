@@ -17,6 +17,7 @@ import java.util.Map;
 import org.eclipse.jdt.core.Flags;
 import org.eclipse.jdt.core.compiler.CharOperation;
 import org.eclipse.jdt.internal.compiler.env.IBinaryType;
+import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.radixware.kernel.common.compiler.lookup.AdsWorkspace;
 import org.eclipse.jdt.internal.compiler.lookup.Binding;
 import org.eclipse.jdt.internal.compiler.lookup.PackageBinding;
@@ -122,10 +123,13 @@ public class LookupUtils {
             @Override
             public boolean accept(char[][] packageName, char[] className, AdsNameEnvironment.ClassDataProvider provider) {
                 if (provider != null) {
-                    IBinaryType bt = provider.getAnswer().getBinaryType();
-                    EValType valType;
-                    if (bt != null && (valType = RadixPlatformEnum.getPlatformEnumType(bt)) != null) {
-                        list.put(String.valueOf(CharOperation.concatWith(packageName, className, '.')), valType);
+                    NameEnvironmentAnswer answer = provider.getAnswer();
+                    if (answer != null) {
+                        IBinaryType bt = answer.getBinaryType();
+                        EValType valType;
+                        if (bt != null && (valType = RadixPlatformEnum.getPlatformEnumType(bt)) != null) {
+                            list.put(String.valueOf(CharOperation.concatWith(packageName, className, '.')), valType);
+                        }
                     }
                 }
                 return false;

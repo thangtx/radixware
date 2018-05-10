@@ -75,6 +75,10 @@ public abstract class RadPresentationDef extends TitledDefinition implements IMo
         public boolean isPresentationPropertyAttributesInherited(){
             return inheritedAttributes.contains(EPresentationAttrInheritance.PROPERTY_PRESENTATION_ATTRIBUTES);
         }
+        
+        public boolean isClassCatalogInherited(){
+            return inheritedAttributes.contains(EPresentationAttrInheritance.CLASS_CATALOG);
+        }
     }
     
     
@@ -198,31 +202,33 @@ public abstract class RadPresentationDef extends TitledDefinition implements IMo
 
         enabledCommands = new ArrayList<>(commandsByOrder.size());
         contextlessCommandsById = new HashMap<>();
-        for (Id commandId : commandsByOrder) {
-            if (!getRestrictions().getIsCommandRestricted(commandId)) {
-                if (commandId.getPrefix() == EDefinitionIdPrefix.CONTEXTLESS_COMMAND) {
-                    try {
-                        RadCommandDef command = getDefManager().getContextlessCommandDef(commandId);
-                        contextlessCommandsById.put(commandId, command);
-                        //Проверка на Environment.isContextlessCommandAccessible производиться в модели
+        final Restrictions restrictions = getRestrictions();
+        for (Id commandId : commandsByOrder) {            
+            if (commandId.getPrefix() == EDefinitionIdPrefix.CONTEXTLESS_COMMAND) {
+                try {
+                    RadCommandDef command = getDefManager().getContextlessCommandDef(commandId);
+                    contextlessCommandsById.put(commandId, command);
+                    //Проверка на Environment.isContextlessCommandAccessible производиться в модели
+                    if (!restrictions.getIsCommandRestricted(command)) {
                         enabledCommands.add(command);
-                    } catch (NoDefinitionWithSuchIdError e) {
-                        getApplication().getTracer().debug("Command not found: #" + commandId);
-                    } catch (DefinitionError err) {
-                        final String msg = getApplication().getMessageProvider().translate("TraceMessage", "Cannot get contextless command #%s for presentation %s");
-                        getApplication().getTracer().error(String.format(msg, commandId, toString()), err);
                     }
-                } else {
-                    try {
-                        final RadPresentationCommandDef presentationCommand = (RadPresentationCommandDef) getClassPresentation().getCommandDefById(commandId);
-                        if (isCommandEnabled(presentationCommand)) {
-                            enabledCommands.add(presentationCommand);
-                        }
-                    } catch (NoDefinitionWithSuchIdError e) {
-                        getApplication().getTracer().debug("Command not found: #" + commandId);
-                    }
+                } catch (NoDefinitionWithSuchIdError e) {
+                    getApplication().getTracer().debug("Command not found: #" + commandId);
+                } catch (DefinitionError err) {
+                    final String msg = getApplication().getMessageProvider().translate("TraceMessage", "Cannot get contextless command #%s for presentation %s");
+                    getApplication().getTracer().error(String.format(msg, commandId, toString()), err);
                 }
-            }
+            } else {
+                try {
+                    final RadPresentationCommandDef presentationCommand = (RadPresentationCommandDef) getClassPresentation().getCommandDefById(commandId);
+                    if (!restrictions.getIsCommandRestricted(presentationCommand)
+                        && isCommandEnabled(presentationCommand)) {
+                        enabledCommands.add(presentationCommand);
+                    }
+                } catch (NoDefinitionWithSuchIdError e) {
+                    getApplication().getTracer().debug("Command not found: #" + commandId);
+                }
+            }            
         }
         RadPresentationDef presentation = this;
         while (presentation != null) {

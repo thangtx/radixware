@@ -17,8 +17,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.errors.AuthError;
 import org.radixware.kernel.common.client.errors.BrokenConnectionError;
+import org.radixware.kernel.common.client.errors.EasError;
+import org.radixware.kernel.common.client.errors.IAlarm;
 import org.radixware.kernel.common.client.errors.IClientError;
+import org.radixware.kernel.common.client.errors.UnsupportedDefinitionVersionError;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.meta.Definition;
 import org.radixware.kernel.common.client.meta.IExplorerItemsHolder;
@@ -27,6 +31,7 @@ import org.radixware.kernel.common.client.meta.explorerItems.RadParagraphLinkDef
 import org.radixware.kernel.common.client.meta.explorerItems.RadExplorerItems;
 import org.radixware.kernel.common.client.meta.explorerItems.RadParentRefExplorerItemDef;
 import org.radixware.kernel.common.client.meta.explorerItems.RadSelectorUserExplorerItemDef;
+import org.radixware.kernel.common.client.meta.filters.RadContextFilter;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.Model;
@@ -98,6 +103,7 @@ public abstract class ExplorerTreeNode implements IExplorerTreeNode {
 
     protected final void setModel(Model model) {
         view = new ExplorerItemView(model, getExplorerItemId(), this);
+        model.setExplorerItemView(view);
     }
 
     public String getTitle() {
@@ -217,6 +223,11 @@ public abstract class ExplorerTreeNode implements IExplorerTreeNode {
     }
 
     @Override
+    public boolean isChildNodesInited(){
+        return childsWasInited;
+    }
+        
+    @Override
     public List<IExplorerTreeNode> getChildNodesRecursively() {
         final List<IExplorerTreeNode> result = new ArrayList<>();
         final Stack<ExplorerTreeNode> parents = new Stack<>();
@@ -250,7 +261,7 @@ public abstract class ExplorerTreeNode implements IExplorerTreeNode {
                 return null;
             }
         }
-    }        
+    }
     
     private IExplorerItemsHolder findNearestExplorerItemsHolder(){
         for (ExplorerTreeNode node=this; node!=null; node=node.getParentNode()){
@@ -329,12 +340,14 @@ public abstract class ExplorerTreeNode implements IExplorerTreeNode {
                                     userExplorerItems.findUserExplorerItemsForSourceExplorerItem(userExplorerItemContextId, ei.getId(), items);
                                 if (userItemsList!=null && !userItemsList.isEmpty()){
                                     for (RadSelectorUserExplorerItemDef userEI: userItemsList){
-                                        final ExplorerTreeNode userChildNode = 
-                                            findNodeByExplorerItemId(prevChilds, userEI.getId());
-                                        if (userChildNode==null){
-                                            addNewChildNode(userEI);
-                                        }else{
-                                            childs.add(userChildNode);
+                                        if (validateSelectorUserExplorerItem(userEI)){
+                                            final ExplorerTreeNode userChildNode = 
+                                                findNodeByExplorerItemId(prevChilds, userEI.getId());
+                                            if (userChildNode==null){
+                                                addNewChildNode(userEI);
+                                            }else{
+                                                childs.add(userChildNode);
+                                            }
                                         }
                                     }
                                 }
@@ -351,6 +364,18 @@ public abstract class ExplorerTreeNode implements IExplorerTreeNode {
                 if (childNode.isValid()) {
                     try {
                         getRadixModel().afterInsertChildItem(childNode.getView());
+                    }catch(UnsupportedDefinitionVersionError err){
+                        final String message = getEnvironment().getMessageProvider().translate("ExplorerError", "Exception occurred in handler of '%s' event:");
+                        getEnvironment().getTracer().debug(String.format(message, "afterInsertChildItem") + "\n" + ClientException.exceptionStackToString(err));
+                        getEnvironment().processException(err);
+                    } catch(EasError | AuthError err){
+                        if (err instanceof IAlarm){
+                            getEnvironment().processException(err);
+                            break;                            
+                        }else{
+                            final String message = getEnvironment().getMessageProvider().translate("ExplorerError", "Exception occurred in handler of '%s' event:");
+                            getEnvironment().getTracer().error(String.format(message, "afterInsertChildItem") + "\n" + ClientException.exceptionStackToString(err));
+                        }
                     } catch (Exception ex) {
                         final String message = getEnvironment().getMessageProvider().translate("ExplorerError", "Exception occurred in handler of '%s' event:");
                         getEnvironment().getTracer().error(String.format(message, "afterInsertChildItem") + "\n" + ClientException.exceptionStackToString(ex));
@@ -360,6 +385,21 @@ public abstract class ExplorerTreeNode implements IExplorerTreeNode {
         }finally{
             initingChilds = false;
         }
+    }
+    
+    private boolean validateSelectorUserExplorerItem(final RadSelectorUserExplorerItemDef explorerItem){        
+        final List<RadContextFilter> filters = explorerItem.getContextFilters();
+        for (RadContextFilter filter: filters){
+            final String message = filter.validate(getEnvironment(), explorerItem.getModelDefinition());
+            if (message!=null){                
+                final String messageTemplate = 
+                    getEnvironment().getMessageProvider().translate("TraceMessage", "Failed to restore user explorer item '%1$s'\n%2$s");
+                final String traceMessage = String.format(messageTemplate, explorerItem.getTitle(), message);
+                getEnvironment().getTracer().debug(traceMessage);
+                return false;
+            }
+        }
+        return true;
     }
     
     private static ExplorerTreeNode findNodeByExplorerItemId(final Collection<ExplorerTreeNode> nodes, final Id explorerItemId){

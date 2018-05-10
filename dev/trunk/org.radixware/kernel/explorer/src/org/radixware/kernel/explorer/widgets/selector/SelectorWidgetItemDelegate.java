@@ -11,7 +11,11 @@
 
 package org.radixware.kernel.explorer.widgets.selector;
 
+import com.trolltech.qt.QNoSuchEnumValueException;
+import com.trolltech.qt.core.QAbstractItemModel;
+import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.Qt;
@@ -21,6 +25,8 @@ import com.trolltech.qt.gui.QBrush;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QFontMetrics;
 import com.trolltech.qt.gui.QIcon;
+import com.trolltech.qt.gui.QKeyEvent;
+import com.trolltech.qt.gui.QMouseEvent;
 import com.trolltech.qt.gui.QPainter;
 import com.trolltech.qt.gui.QPalette;
 import com.trolltech.qt.gui.QStyle;
@@ -46,14 +52,14 @@ public class SelectorWidgetItemDelegate extends WrapModelDelegate{
     
     private final QStyleOptionHeader options = new QStyleOptionHeader();
     private final QSize size = new QSize();
-    private int minSectionHeight;
+    private int minSectionHeight = -1;
 
     public SelectorWidgetItemDelegate(final QAbstractItemView view){
         super(view);
         setEditorFrameVisible(true);
         minSectionHeight = calcHeaderHeight(view);
         setFocusFrameVisible(true);
-        textMargin = QApplication.style().pixelMetric(QStyle.PixelMetric.PM_FocusFrameHMargin);        
+        textMargin = QApplication.style().pixelMetric(QStyle.PixelMetric.PM_FocusFrameHMargin);
     }
     
     public void setEvenRowBgColorFactor(final int bgColorFactor){
@@ -195,11 +201,85 @@ public class SelectorWidgetItemDelegate extends WrapModelDelegate{
         minSectionHeight = calcHeaderHeight(view);
     }
 
-    private int calcHeaderHeight(final QAbstractItemView view){
+     private int calcHeaderHeight(final QAbstractItemView view){
         final ExplorerFont boldFont = ExplorerFont.Factory.getFont(view.font()).getBold();
         options.setFontMetrics(boldFont.getQFontMetrics());
         final QSize headerSize = 
             view.style().sizeFromContents(QStyle.ContentsType.CT_HeaderSection, options, size, view);
         return headerSize.height();
+    }        
+    
+    public boolean clickInsideCheckbox(final QEvent event, 
+                                                         final QAbstractItemModel model, 
+                                                         final QStyleOptionViewItem option, 
+                                                         final QModelIndex index) {
+        if (event instanceof QMouseEvent==false){
+            return false;
+        }
+        
+        final QMouseEvent mouseEvent = (QMouseEvent)event;
+        final QEvent.Type eventType = mouseEvent.type();
+        if (mouseEvent.button()!=Qt.MouseButton.LeftButton){
+            return false;
+        }
+        
+        if ((eventType == QEvent.Type.MouseButtonRelease)
+            || (eventType == QEvent.Type.MouseButtonDblClick)
+            || (eventType == QEvent.Type.MouseButtonPress)) {
+            return posInsideCheckbox(mouseEvent.pos(), model, option, index);
+        }else{
+            return false;
+        }        
     }
+    
+    public boolean posInsideCheckbox(final QPoint pos, 
+                                                        final QAbstractItemModel model, 
+                                                        final QStyleOptionViewItem option, 
+                                                        final QModelIndex index) {
+        if (!option.state().isSet(QStyle.StateFlag.State_Enabled)
+            || StandardSelectorWidgetController.getCheckState(model, index)==null){
+            return false;            
+        }
+
+        final Rectangle checkRect = 
+                new Rectangle(0, 0, TristateCheckBoxStyle.INDICATOR_SIZE, TristateCheckBoxStyle.INDICATOR_SIZE);
+        ItemDelegatePainter.CellLayout layout = new ItemDelegatePainter.CellLayout(checkRect, null, null);
+        layout = ItemDelegatePainter.getInstance().doLayout(option, layout, textMargin);
+        layout.checkRect.grow(1, 2);
+        layout.checkRect.translate(0, 1);
+        return layout.checkRect.contains(pos.x(), pos.y());
+    }       
+
+    @Override
+    public boolean editorEvent(final QEvent event, 
+                                             final QAbstractItemModel model, 
+                                             final QStyleOptionViewItem option, 
+                                             final QModelIndex index) {
+        
+        final Qt.CheckState checkState = StandardSelectorWidgetController.getCheckState(model, index);
+        if (checkState==null){
+            return false;
+        }
+        final Qt.CheckState newState = 
+            checkState==Qt.CheckState.Checked ? Qt.CheckState.Unchecked : Qt.CheckState.Checked;
+
+        if (event instanceof QKeyEvent){
+            final QKeyEvent keyEvent = (QKeyEvent)event;
+            if (keyEvent.key()==Qt.Key.Key_Space.value() || keyEvent.key()==Qt.Key.Key_Select.value()){
+                return model.setData(index, newState, Qt.ItemDataRole.CheckStateRole);
+            }else{
+                return false;
+            }
+        }else if (clickInsideCheckbox(event, model, option, index)){
+            final QEvent.Type eventType = event.type();
+            // eat the double click events inside the check rect
+            if (eventType == QEvent.Type.MouseButtonPress || eventType == QEvent.Type.MouseButtonDblClick){
+                return true;
+            }
+            return model.setData(index, newState, Qt.ItemDataRole.CheckStateRole);            
+        }else{
+            return false;
+        }
+    }    
+    
 }

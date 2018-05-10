@@ -1,0 +1,22 @@
+
+class Prop1 {
+
+    String getStringProp() {
+	return null;
+    }
+}
+
+class PropClass {
+
+    Prop1 getProperty() {
+	return null;
+    }
+}
+
+class Test {
+
+    public void f() {
+	Object o = new PropClass();
+	String s = ((PropClass) o).Property.StringProp;
+    }
+}

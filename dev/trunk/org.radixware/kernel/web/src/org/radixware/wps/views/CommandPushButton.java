@@ -35,8 +35,9 @@ public class CommandPushButton extends PushButton implements ICommandPushButton 
                 controller.executeCommand();
             }
         });
+        setObjectName("rx_cmd_pbtn_#"+command.getId().toString());
     }
-    private boolean useCommandTitle;
+    private boolean useCommandTitle = true;
     private String ownTitle = "";
     
     public boolean isUseCommandTitle() {
@@ -62,12 +63,12 @@ public class CommandPushButton extends PushButton implements ICommandPushButton 
     }
     
     @Override
-    public void refresh(ModelItem aThis) {
+    public void refresh(final ModelItem aThis) {
         if (controller.getCommand() != null) {
             this.setIcon(controller.getCommand().getIcon());
             setToolTip(ClientValueFormatter.capitalizeIfNecessary(getEnvironment(), controller.getCommand().getTitle()));
             if (isUseCommandTitle()) {
-                this.setText(controller.getCommand().getTitle());
+                super.setText(controller.getCommand().getTitle());
             } else {
                 this.setText(ownTitle);
             }
@@ -94,6 +95,7 @@ public class CommandPushButton extends PushButton implements ICommandPushButton 
     public void bind() {
         if (controller.getCommand() != null) {
             controller.getCommand().subscribe(this);
+            refresh(controller.getCommand());
         }
     }
 }

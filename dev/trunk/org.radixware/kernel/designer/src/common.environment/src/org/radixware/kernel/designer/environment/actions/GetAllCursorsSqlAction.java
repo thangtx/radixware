@@ -41,7 +41,7 @@ public final class GetAllCursorsSqlAction implements ActionListener {
                     if (radixObject instanceof AdsCursorClassDef) {
                         final AdsCursorClassDef cursor = (AdsCursorClassDef) radixObject;
                         cp.print("-- "+cursor.getQualifiedName()+"\n");
-                        sqmlt.translate(cursor.getSource(), cp);
+                        sqmlt.translate(cursor.getSqml(), cp);
                         cp.printCommandSeparator();
                     }
                 }

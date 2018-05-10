@@ -114,7 +114,7 @@ public class StatisticsPanel extends JPanel/*StateAbstractPanel*/ {
         if(translLangs.size()>1){
             int n=0;
             for(RowString rowString:mlStrings){
-                 if(!rowString.needsCheck(translLangs)){
+                 if(!rowString.isNeedsCheck(translLangs)){
                     n++;
                  }
             }
@@ -154,7 +154,7 @@ public class StatisticsPanel extends JPanel/*StateAbstractPanel*/ {
             long ckcharacterWithSpace=0, ckcharacter=0,characterWithSpace=0, character=0;
             for(RowString rowString : mlStrings){
                 final String translation=rowString.getValue(lang);
-                if((!rowString.needsCheck(lang))){
+                if((!rowString.isNeedsCheck(lang))){
                     if(translation!=null){
                         ckcharacterWithSpace+=translation.length();
                         ckwords+=calcWords( translation);

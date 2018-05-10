@@ -31,7 +31,9 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>                        
-        </xs:sequence>       
+        </xs:sequence>
+        <xs:attribute name="predefinedFilterId" type="types:Id"  use="optional"/>
+        <xs:attribute name="explorerItemId" type="types:Id"  use="optional"/>
     </xs:complexType>
     
     <xs:complexType name="Sorting">
@@ -56,7 +58,7 @@
     <xs:complexType name="SelectorUserExplorerItem">
         <xs:sequence>
             <xs:element name="Title" type="xs:string" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="Filter" type="this:ContextFilter" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Filter" type="this:ContextFilter" minOccurs="1" maxOccurs="unbounded"/>
             <xs:element name="Sorting" type="this:Sorting" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="Id" type="types:Id"  use="required"/>

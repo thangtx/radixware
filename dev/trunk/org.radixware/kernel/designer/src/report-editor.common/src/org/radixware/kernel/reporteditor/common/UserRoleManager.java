@@ -21,7 +21,6 @@ import org.radixware.kernel.common.client.enums.EEntityCreationResult;
 import org.radixware.kernel.common.client.exceptions.ModelException;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.IContext;
-import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
 import org.radixware.kernel.common.defs.ads.rights.AdsRoleDef;
@@ -31,6 +30,7 @@ import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.types.Bin;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.defs.utils.changelog.ChangeLog;
 import org.radixware.kernel.common.userreport.common.IUserRoleManager;
 import org.radixware.kernel.common.userreport.common.IUserDefChangeSuppert;
 import org.radixware.kernel.common.userreport.common.UserExtensionManagerCommon;
@@ -48,6 +48,7 @@ import org.radixware.kernel.designer.common.general.creation.ICreatureGroup;
 import org.radixware.schemas.adsdef.AdsDefinitionDocument;
 import org.radixware.schemas.adsdef.AdsDefinitionListDocument;
 import org.radixware.schemas.adsdef.RoleDefinition;
+import org.radixware.schemas.commondef.ChangeLogDocument;
 
 
 public class UserRoleManager  implements IUserRoleManager{
@@ -85,7 +86,19 @@ public class UserRoleManager  implements IUserRoleManager{
                     EntityModel model = AppRole.openAppRoleModel(env, role.getId());
                     model.getProperty(AppRole.NAME_PROP_ID).setValueObject(role.getName());
                     model.getProperty(AppRole.DESCR_PROP_ID).setValueObject(role.getDescription());
-                    if (role.isEmptyRole()) {
+                    
+                    ChangeLogDocument xLog = ChangeLogDocument.Factory.newInstance();
+                    final AppRole roleWrapper = UserExtensionManager.getInstance().getAppRoles().findAppRole(role.getId());
+                    boolean changeLogDefined = false;
+                    if (roleWrapper != null) {
+                        changeLogDefined = !roleWrapper.getChangeLog().isEmpty();
+                        if (roleWrapper.isChangeLogModified()) {
+                            roleWrapper.getChangeLog().appendTo(xLog.addNewChangeLog(), true);
+                            model.getProperty(AppRole.CHANGE_LOG_PROP_ID).setValueObject(xLog);
+                        }
+                    }
+                    
+                    if (role.isEmptyRole() && !changeLogDefined) {
                         model.getProperty(DEF_PROP_ID).setValueObject(null);
                         model.getProperty(RUNTIME_PROP_ID).setValueObject(null);
                         model.getProperty(CLASS_GUID_PROP_ID).setValueObject(null);
@@ -100,8 +113,10 @@ public class UserRoleManager  implements IUserRoleManager{
                         }
                     }
                     model.update();
+                    if (roleWrapper != null) {
+                        roleWrapper.afterSave();
+                    }
                 } catch (final ModelException | IOException | ServiceClientException | InterruptedException ex) {
-                    //Exceptions.printStackTrace(ex);
                     env.processException(ex);
                 }
             }
@@ -176,7 +191,7 @@ public class UserRoleManager  implements IUserRoleManager{
                 });
 
                 if (guid[0] != null) {
-                    AppRole role = new AppRole(guid[0], name[0], null, readOnly[0]);
+                    AppRole role = new AppRole(guid[0], name[0], null, null, readOnly[0]);
                     return role;
                 }
             }
@@ -240,14 +255,16 @@ public class UserRoleManager  implements IUserRoleManager{
                                             boolean readOnly = xDef.getReadOnly();
                                             RoleDefinition xRole = xDef.getAdsRoleDefinition();
                                             AdsDefinitionDocument xDoc = AdsDefinitionDocument.Factory.newInstance();
+                                            final ChangeLog changeLog;
                                             if (xRole != null) {
-
+                                                changeLog = ChangeLog.Factory.loadFromXml(xRole.getChangeLog());
                                                 xDoc.addNewAdsDefinition().setAdsRoleDefinition(xRole);
                                                 xRole = xDoc.getAdsDefinition().getAdsRoleDefinition();
                                                 xRole.setName(name);
                                                 xRole.setId(id);
                                                 xRole.setDescription(description);
                                             } else {
+                                                changeLog = null;
                                                 AdsRoleDef role = AdsRoleDef.Factory.newInstance(id, name);
                                                 if (description != null) {
                                                     role.setDescription(description);
@@ -267,7 +284,7 @@ public class UserRoleManager  implements IUserRoleManager{
                                                 Exceptions.printStackTrace(ex);
                                             }
 
-                                            AppRole appRole = new AppRole(id, name, description, readOnly);
+                                            AppRole appRole = new AppRole(id, name, description, changeLog, readOnly);
                                             UserExtensionManager.getInstance().getAppRoles().registerRole(appRole);
                                         }
                                     }

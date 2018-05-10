@@ -17,33 +17,33 @@ import org.radixware.wps.WpsSettings;
 import org.radixware.wps.rwt.TableLayout;
 import org.radixware.wps.rwt.UIObject;
 
-public class StylePageSettingsWidget extends SettingsWidget {
+final class StylePageSettingsWidget extends SettingsWidget {
 
     private final ArrayList<SettingsWidget> settingsArrayList = new ArrayList<>();
 
     public StylePageSettingsWidget(WpsEnvironment env, UIObject parent, String group, String subGroup, String name) {
-        super(env, parent, group, subGroup, name, null);
+        super(env, parent, group, subGroup, name);
         TableLayout box = new TableLayout();
         add(box);
 
-        SelectorSettingWidget w12 = new SelectorSettingWidget(env, this, group, subGroup + "/" + name,
+        final SelectorSettingWidget w12 = new SelectorSettingWidget(env, this, group, subGroup + "/" + name,
                 SettingNames.Properties.READONLY_PROPERTY,
-                env.getMessageProvider().translate("Settings Dialog", "Readonly Properties Value"), null);
+                env.getMessageProvider().translate("Settings Dialog", "Readonly Properties Value"));
         box.addRow().addCell().add(w12);
         box.addVerticalSpace();
         settingsArrayList.add(w12);
 
-        PropertySettingsWidget w22 = new PropertySettingsWidget(env, this, group, subGroup + "/" + name,
+        final PropertySettingsWidget w22 = new PropertySettingsWidget(env, this, group, subGroup + "/" + name,
                 SettingNames.Properties.MANDATORY_PROPERTY,
                 env.getMessageProvider().translate("Settings Dialog", "Mandatory Properties Value"),
-                true, null);
+                true);
         box.addRow().addCell().add(w22);
         box.addVerticalSpace();
         settingsArrayList.add(w22);
 
-        SelectorSettingWidget w32 = new SelectorSettingWidget(env, this, group, subGroup + "/" + name,
+        final SelectorSettingWidget w32 = new SelectorSettingWidget(env, this, group, subGroup + "/" + name,
                 SettingNames.Properties.OTHER_PROPERTY,
-                env.getMessageProvider().translate("Settings Dialog", "Other Properties Value"), null);
+                env.getMessageProvider().translate("Settings Dialog", "Other Properties Value"));
         box.addRow().addCell().add(w32);
         settingsArrayList.add(w32);
     }
@@ -70,20 +70,14 @@ public class StylePageSettingsWidget extends SettingsWidget {
     }
 
     public SelectorSettingWidget getReadonlyPropertySettingsWidget() {
-        SelectorSettingWidget roProp = (SelectorSettingWidget) settingsArrayList.get(0);
-        roProp.setDefaultValue(getDefaultValue());
-        return roProp;
+        return (SelectorSettingWidget) settingsArrayList.get(0);
     }
 
     public PropertySettingsWidget getMandatoryPropertySettingsWidget() {
-        PropertySettingsWidget mProp = (PropertySettingsWidget) settingsArrayList.get(1);
-        mProp.setDefaultValue(getDefaultValue());
-        return mProp;
+        return (PropertySettingsWidget) settingsArrayList.get(1);
     }
 
     public SelectorSettingWidget getOtherPropertySettingsWidget() {
-        SelectorSettingWidget othProp = (SelectorSettingWidget) settingsArrayList.get(2);
-        othProp.setDefaultValue(getDefaultValue());
-        return othProp;
+        return (SelectorSettingWidget) settingsArrayList.get(2);
     }
 }

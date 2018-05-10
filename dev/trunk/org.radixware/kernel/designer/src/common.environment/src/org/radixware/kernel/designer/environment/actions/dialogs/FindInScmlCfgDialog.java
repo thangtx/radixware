@@ -20,7 +20,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
-import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.repository.Branch;
@@ -34,7 +33,6 @@ import org.radixware.kernel.designer.common.dialogs.utils.IAcceptor;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 import org.radixware.kernel.designer.common.editors.DefaultTagTextFactory;
 import org.radixware.kernel.designer.common.general.filesystem.RadixFileUtil;
-import org.radixware.kernel.designer.common.general.nodes.NodesManager;
 
 
 public class FindInScmlCfgDialog extends javax.swing.JPanel {
@@ -50,6 +48,7 @@ public class FindInScmlCfgDialog extends javax.swing.JPanel {
 
         rbSelection.setSelected(true);
         cbSearchInTitles.setSelected(true);
+        cbSearchInXml.setSelected(true);
 
         cbRegularExpression.addChangeListener(new ChangeListener() {
             @Override
@@ -86,6 +85,9 @@ public class FindInScmlCfgDialog extends javax.swing.JPanel {
             activeFinders.add(ScmlFinderFactory.createTitleFinder(serachStrng, matchCase, wholeWords, trueRegex));
         }
         activeFinders.add(ScmlFinderFactory.createEventCodePropFinderfinal(serachStrng, matchCase, wholeWords, trueRegex));
+        if(cbSearchInXml.isSelected()) {
+            activeFinders.add(ScmlFinderFactory.createXmlSchemeFinder(serachStrng, matchCase, wholeWords, trueRegex));
+        }
         final List<RadixObject> roots = getSearchRoots();
         return new DefaultCfg(roots, activeFinders);
     }
@@ -114,7 +116,8 @@ public class FindInScmlCfgDialog extends javax.swing.JPanel {
                 cbRegularExpression.isSelected(),
                 tfFindString.getText(),
                 rbSelection.isSelected(),
-                cbSearchInTitles.isSelected());
+                cbSearchInTitles.isSelected(),
+                cbSearchInXml.isSelected());
     }
 
     private void restoreConfigData() {
@@ -125,6 +128,7 @@ public class FindInScmlCfgDialog extends javax.swing.JPanel {
         cbWholeWords.setSelected(previousConfigData.wholeWords);
         cbRegularExpression.setSelected(previousConfigData.trueRegex);
         cbSearchInTitles.setSelected(previousConfigData.searchInTitles);
+        cbSearchInXml.setSelected(previousConfigData.searchInXml);
         tfFindString.setText(previousConfigData.pattern);
         rbSelection.setSelected(previousConfigData.inSelection);
         tfFindString.selectAll();
@@ -138,14 +142,16 @@ public class FindInScmlCfgDialog extends javax.swing.JPanel {
         private final String pattern;
         private final boolean inSelection;
         private final boolean searchInTitles;
+        private final boolean searchInXml;
 
-        public ConfigData(boolean matchCase, boolean wholeWords, boolean trueRegex, String pattern, boolean selection, boolean searchInTitles) {
+        public ConfigData(boolean matchCase, boolean wholeWords, boolean trueRegex, String pattern, boolean selection, boolean searchInTitles, boolean searchInXml) {
             this.matchCase = matchCase;
             this.wholeWords = wholeWords;
             this.trueRegex = trueRegex;
             this.pattern = pattern;
             this.inSelection = selection;
             this.searchInTitles = searchInTitles;
+            this.searchInXml = searchInXml;
         }
 
     }
@@ -253,6 +259,7 @@ public class FindInScmlCfgDialog extends javax.swing.JPanel {
         cbMatchCase = new javax.swing.JCheckBox();
         cbRegularExpression = new javax.swing.JCheckBox();
         cbSearchInTitles = new javax.swing.JCheckBox();
+        cbSearchInXml = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
         rbOpenBranches = new javax.swing.JRadioButton();
         rbSelection = new javax.swing.JRadioButton();
@@ -280,6 +287,13 @@ public class FindInScmlCfgDialog extends javax.swing.JPanel {
 
         cbSearchInTitles.setText(org.openide.util.NbBundle.getMessage(FindInScmlCfgDialog.class, "FindInScmlCfgDialog.cbSearchInTitles.text")); // NOI18N
 
+        cbSearchInXml.setText(org.openide.util.NbBundle.getMessage(FindInScmlCfgDialog.class, "FindInScmlCfgDialog.cbSearchInXml.text")); // NOI18N
+        cbSearchInXml.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbSearchInXmlActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -290,8 +304,9 @@ public class FindInScmlCfgDialog extends javax.swing.JPanel {
                     .addComponent(cbWholeWords)
                     .addComponent(cbMatchCase)
                     .addComponent(cbRegularExpression)
-                    .addComponent(cbSearchInTitles))
-                .addContainerGap(14, Short.MAX_VALUE))
+                    .addComponent(cbSearchInTitles)
+                    .addComponent(cbSearchInXml))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -303,7 +318,9 @@ public class FindInScmlCfgDialog extends javax.swing.JPanel {
                 .addComponent(cbRegularExpression)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cbSearchInTitles)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbSearchInXml)
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(FindInScmlCfgDialog.class, "FindInScmlCfgDialog.jPanel2.border.title"))); // NOI18N
@@ -372,11 +389,17 @@ public class FindInScmlCfgDialog extends javax.swing.JPanel {
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void cbSearchInXmlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSearchInXmlActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbSearchInXmlActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgScope;
     private javax.swing.JCheckBox cbMatchCase;
     private javax.swing.JCheckBox cbRegularExpression;
     private javax.swing.JCheckBox cbSearchInTitles;
+    private javax.swing.JCheckBox cbSearchInXml;
     private javax.swing.JCheckBox cbWholeWords;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

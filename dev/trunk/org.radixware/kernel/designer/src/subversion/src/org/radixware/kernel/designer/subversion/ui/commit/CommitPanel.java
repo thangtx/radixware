@@ -50,6 +50,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
 import java.util.*;
@@ -80,6 +82,7 @@ import org.netbeans.modules.versioning.util.common.SectionButton;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.Mnemonics;
+import org.openide.awt.TabbedPaneFactory;
 import org.openide.cookies.EditorCookie;
 import org.openide.cookies.SaveCookie;
 import org.openide.util.Exceptions;
@@ -507,6 +510,10 @@ String getCommitMessage() {
                 panel = new MultiDiffPanel(file, Setup.REVISION_BASE, Setup.REVISION_CURRENT, false); // switch the last parameter to true if editable diff works poorly
                 displayedDiffs.put(file, panel);
                 tabbedPane.addTab(file.getName(), panel);
+            } else {
+                if (tabbedPane.indexOfComponent(panel) < 0){
+                    tabbedPane.addTab(file.getName(), panel);
+                }
             }
             tabbedPane.setSelectedComponent(panel);
         }
@@ -561,13 +568,28 @@ String getCommitMessage() {
    }
 
     private void initializeTabs () {
-         tabbedPane = new JTabbedPane(JTabbedPane.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
+         tabbedPane = TabbedPaneFactory.createCloseButtonTabbedPane();
+         tabbedPane.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+         basePanel.putClientProperty(TabbedPaneFactory.NO_CLOSE_BUTTON, Boolean.TRUE);
+        tabbedPane.addPropertyChangeListener(TabbedPaneFactory.PROP_CLOSE, new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                JTabbedPane pane = (JTabbedPane) evt.getSource();
+                int sel = pane.getSelectedIndex();
+                if (sel > 0){
+                    Component component = pane.getComponentAt(sel);
+                    if (component instanceof MultiDiffPanel){
+                        pane.removeTabAt(sel); 
+                    }
+                }
+            }
+        });
          tabbedPane.addTab(NbBundle.getMessage(CommitPanel.class, "CTL_CommitDialog_Tab_Commit"), basePanel); //NOI18N
          tabbedPane.setPreferredSize(basePanel.getPreferredSize());
          add(tabbedPane);
          tabbedPane.addChangeListener(this);
     }
-
+    
     private HashMap<File, SaveCookie> getModifiedFiles () {
         HashMap<File, SaveCookie> modifiedFiles = new HashMap<File, SaveCookie>();
         for (Map.Entry<File, MultiDiffPanel> e : displayedDiffs.entrySet()) {

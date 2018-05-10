@@ -1,0 +1,4 @@
+alter table RDX_PC_OUTMESSAGE
+	add BASEFORWARDTIMEMILLIS NUMBER(18,0) null
+/
+

@@ -46,6 +46,9 @@ class EngineLookup {
     private static SVNRepositoryAdapter.IEngine loadEngine() {
 
         String engineClassName = System.getProperty("org.radixware.svn.client.engine-class-name");
+        //String engineClassName = ("org.radixware.kernel.common.svn.svnkitdept.SvnRepositoryAdapterBuilderSvnKitEngine");
+        
+        
         if (engineClassName != null) {
             try {
                 Class engineClass = EngineLookup.class.getClassLoader().loadClass(engineClassName);
@@ -102,10 +105,10 @@ class EngineLookup {
                 return RadixSVNRepositoryAdapter.createRepository(url, path, user, auth, sshKeyFilePath, passwordGetter);
             }
 
-            @Override
-            public SVNRepositoryAdapter newInstance(SVNRepositoryExtendedOptions options, String url, String path, String user, SvnAuthType auth, String sshKeyFilePath, ISvnPasswordProvider passwordGetter) throws RadixSvnException {
-                return RadixSVNRepositoryAdapter.createRepository(url, path, user, auth, sshKeyFilePath, passwordGetter);
-            }
+//            @Override
+//            public SVNRepositoryAdapter newInstance(SVNRepositoryExtendedOptions options, String url, String path, String user, SvnAuthType auth, String sshKeyFilePath, ISvnPasswordProvider passwordGetter) throws RadixSvnException {
+//                return RadixSVNRepositoryAdapter.createRepository(url, path, user, auth, sshKeyFilePath, passwordGetter);
+//            }
 
             @Override
             public SVNRepositoryAdapter newInstance(String url, SVNRepositoryAdapter credentialsProvider) throws RadixSvnException {

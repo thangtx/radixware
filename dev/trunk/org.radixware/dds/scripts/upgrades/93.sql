@@ -1,0 +1,4 @@
+alter table RDX_AMQPQUEUE
+	add EXPIRATIONSEC NUMBER(9,0) null
+/
+

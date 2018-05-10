@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.editors.traceprofile.ITraceProfileEditor;
+import org.radixware.kernel.common.client.editors.traceprofile.ITraceProfileEventSourceOptionsEditor;
 import org.radixware.kernel.common.client.editors.traceprofile.ITraceProfileTreePresenter;
 import org.radixware.kernel.common.client.editors.traceprofile.TraceProfileTreeController;
 import org.radixware.kernel.common.client.editors.traceprofile.TraceProfileTreeController.EventSeverity;
@@ -27,7 +28,10 @@ import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.mask.EditMaskList;
 import org.radixware.kernel.common.client.types.Icon;
+import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.html.Div;
+import org.radixware.kernel.common.trace.TraceProfile;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.rwt.*;
 import org.radixware.wps.rwt.InputBox.ValueController;
@@ -352,7 +356,13 @@ public final class TraceProfileEditor extends Tree implements ITraceProfileEdito
         @Override
         public void destroyPresentations() {
         }
+
+        @Override
+        public ITraceProfileEventSourceOptionsEditor createEventSourceOptionsEditor(final EEventSource eventSource, final EEventSeverity eventSeverity, final TraceProfile.EventSourceOptions options) {
+            return null;
+        }                
     }
+    
     private boolean isReadOnly;
     private final TraceProfileTreeController<Node.DefaultNode> controller;
     private final Tree.Column eventSeverityColumn;

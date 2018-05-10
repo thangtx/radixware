@@ -68,4 +68,8 @@ public class StateManager {
             d.getStateContext().update(this);
         }
     }
+
+    public String getMessage() {
+        return message;
+    }
 }

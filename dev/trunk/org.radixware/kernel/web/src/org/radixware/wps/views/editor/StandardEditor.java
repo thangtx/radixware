@@ -65,7 +65,7 @@ public class StandardEditor extends Editor {
             throw new CantOpenEditorError(getEntityModel(), ex);
         }
         //content.setFocusProxy(tabSet);
-        notifyOpened();
+        fireOpened();
     }
 
     @Override
@@ -79,9 +79,6 @@ public class StandardEditor extends Editor {
         } else {
             return false;
         }
-    }
-
-    private void notifyOpened() {
     }
 
     @Override

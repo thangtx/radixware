@@ -10,11 +10,13 @@
             <xs:extension base="common:Definition">
                 <xs:sequence>
                     <xs:element name="DefaultVal" type="xs:string" minOccurs="0"/>
+                    <xs:element name="ParentSelectorCondition" type="xscml:Sqml" minOccurs="0"/>
                 </xs:sequence>
                 <xs:attribute name="OwnerClassId" type="types:Id"  use="required"/>
                 <xs:attribute name="PropertyId" type="types:Id"  use="required"/>
                 <xs:attribute name="Title" type="xs:string"  use="optional"/>              
                 <xs:attribute name="NotNull" type="xs:boolean" use="optional"/>
+                <xs:attribute name="UseDropDownList" type="xs:boolean" use="optional"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
@@ -25,26 +27,54 @@
                 <xs:sequence>
                     <xs:element name="EditMask" type="editmask:EditMask" minOccurs="0"/>
                     <xs:element name="DefaultVal" type="types:SafeStr" minOccurs="0"/>
+                    <xs:element name="ParentSelectorCondition" type="xscml:Sqml" minOccurs="0"/>
                 </xs:sequence>
                 <xs:attribute name="Title" type="xs:string" use="required"/>
-				<xs:attribute name="ValType" use="required">
-					<xs:simpleType>
-						<xs:annotation>
-							<xs:documentation>Enum EValType</xs:documentation>
-							<xs:appinfo source="http://schemas.radixware.org/types.xsd">
-								<types:class>org.radixware.kernel.common.enums.EValType</types:class>
-							</xs:appinfo>
-						</xs:annotation>
-						<xs:restriction base="types:IntEnum"/>
-					</xs:simpleType>
-				</xs:attribute>
+                <xs:attribute name="ValType" use="required">
+                        <xs:simpleType>
+                                <xs:annotation>
+                                        <xs:documentation>Enum EValType</xs:documentation>
+                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                                        </xs:appinfo>
+                                </xs:annotation>
+                                <xs:restriction base="types:IntEnum"/>
+                        </xs:simpleType>
+                </xs:attribute>
                 <xs:attribute name="NotNull" type="xs:boolean" use="optional" default="false"/>
                 <xs:attribute name="EnumId" type="types:Id" use="optional"/>
                 <xs:attribute name="ReferencedClassId" type="types:Id" use="optional"/>
-                <xs:attribute name="ParentSelectorPresentationId" type="types:Id" use="optional"/>
+                <xs:attribute name="ParentSelectorPresentationId" type="types:Id" use="optional"/>                
                 <xs:attribute name="NullTitle" type="xs:string" use="optional"/>
+                <xs:attribute name="UseDropDownList" type="xs:boolean" use="optional"/>
+                <xs:attribute name="maxArrayItemsCount" type="xs:int" use="optional" default="-1"/>
+                <xs:attribute name="minArrayItemsCount" type="xs:int" use="optional" default="-1"/>
             </xs:extension>
         </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:complexType name="FilterParameterValue">
+        <xs:sequence>
+            <xs:element name="ValueAsStr" type="types:SafeStr" nillable="true" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="ParamId" type="types:Id" use="required"/>
+        <xs:attribute name="ValAsStr" type="types:SafeStr" use="optional">
+            <xs:annotation>
+                <xs:documentation>Deprecated attribute. Use ValueAsStr element instead</xs:documentation>
+            </xs:annotation>           
+        </xs:attribute>
+        <xs:attribute name="Type" use="required">
+                <xs:simpleType>
+                        <xs:annotation>
+                                <xs:documentation>Enum EValType</xs:documentation>
+                                <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                        <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                                </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="EditorPresentationId" type="types:Id" use="optional"/>        
     </xs:complexType>
     
     <xs:complexType name="FilterParameters">
@@ -57,6 +87,13 @@
                     </xs:choice>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="Values" minOccurs="0"  maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="PersistentValue" type="this:FilterParameterValue" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
         </xs:sequence>        
     </xs:complexType>    
 
@@ -67,15 +104,12 @@
                     <xs:element name="Condition" type="xscml:Sqml" minOccurs="0"/>
                     <xs:element name="Parameters" type="this:FilterParameters" minOccurs="0"/>
                     <xs:element name="PersistentValues" minOccurs="0">
+                        <xs:annotation>
+                            <xs:documentation>Deprecated element. Use Parameters/Values instead</xs:documentation>
+                        </xs:annotation>                        
                         <xs:complexType>
                             <xs:sequence>
-                                <xs:element name="PersistentValue" minOccurs="0" maxOccurs="unbounded">
-                                    <xs:complexType>
-                                        <xs:attribute name="ParamId" type="types:Id" use="required"/>
-                                        <xs:attribute name="ValAsStr" type="types:SafeStr" use="optional"/>
-                                        <xs:attribute name="EditorPresentationId" type="types:Id" use="optional"/>
-                                    </xs:complexType>
-                                </xs:element>
+                                <xs:element name="PersistentValue" type="this:FilterParameterValue" minOccurs="0" maxOccurs="unbounded"/>
                             </xs:sequence>
                         </xs:complexType>
                     </xs:element>

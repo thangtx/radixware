@@ -11,8 +11,8 @@
 
 package org.radixware.kernel.designer.dds.script.defs;
 
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 import java.util.EnumSet;
-import org.radixware.kernel.common.defs.dds.DdsDefinition;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsIndexDef;
@@ -32,9 +32,7 @@ public class DdsIndexScriptGenerator<T extends DdsIndexDef> implements IDdsDefin
 
     @Override
     public void getDropScript(CodePrinter cp, DdsIndexDef idx) {
-        cp.print("drop index ");
-        cp.print(idx.getDbName());
-        cp.printCommandSeparator();
+        cp.print("drop index ").print(idx.getDbName()).printCommandSeparator();
     }
 
     @Override
@@ -82,10 +80,7 @@ public class DdsIndexScriptGenerator<T extends DdsIndexDef> implements IDdsDefin
         if (newDbOptions.contains(DdsIndexDef.EDbOption.BITMAP)) {
             newDbOptions.remove(DdsIndexDef.EDbOption.UNIQUE);
         }
-        if (!oldDbOptions.equals(newDbOptions)) {
-            return true;
-        }
-        return false;
+        return !oldDbOptions.equals(newDbOptions);
     }
 
     @Override
@@ -105,11 +100,7 @@ public class DdsIndexScriptGenerator<T extends DdsIndexDef> implements IDdsDefin
             cp.print(" unique");
         }
 
-        cp.print(" index ");
-        cp.print(idx.getDbName());
-        cp.print(" on ");
-        cp.print(tableDbName);
-        cp.print(" (");
+        cp.print(" index ").print(idx.getDbName()).print(" on ").print(tableDbName).print(" (");
 
         boolean columnFlag = false;
         for (DdsIndexDef.ColumnInfo columnInfo : idx.getColumnsInfo()) {
@@ -119,9 +110,7 @@ public class DdsIndexScriptGenerator<T extends DdsIndexDef> implements IDdsDefin
                 columnFlag = true;
             }
             DdsColumnDef column = columnInfo.getColumn();
-            cp.print(column.getDbName());
-            cp.print(' ');
-            cp.print(columnInfo.getOrder().getValue().toLowerCase());
+            cp.print(column.getDbName()).print(' ').print(columnInfo.getOrder().getValue().toLowerCase());
         }
 
         cp.print(')');
@@ -136,8 +125,7 @@ public class DdsIndexScriptGenerator<T extends DdsIndexDef> implements IDdsDefin
 
         String tablespace = TablespaceCalculator.calcTablespaceForIndex(idx);
         if (!tablespace.isEmpty()) {
-            cp.print(" tablespace ");
-            cp.print(tablespace);
+            cp.print(" tablespace ").print(tablespace);
         }
 
         if (idx.getDbOptions().contains(DdsIndexDef.EDbOption.INVISIBLE)) {
@@ -155,40 +143,33 @@ public class DdsIndexScriptGenerator<T extends DdsIndexDef> implements IDdsDefin
         String oldDbName = oldIdx.getDbName();
         String newDbName = newIdx.getDbName();
         if (!oldDbName.equals(newDbName)) {
-            cp.print("alter index ");
-            cp.print(oldDbName);
-            cp.print(" rename to ");
-            cp.print(newDbName);
-            cp.printCommandSeparator();
+            cp.print("alter index ").print(oldDbName).print(" rename to ").print(newDbName).printCommandSeparator();
         }
         boolean oldNoLogging = oldIdx.getDbOptions().contains(DdsIndexDef.EDbOption.NOLOGGING);
         boolean newNoLogging = newIdx.getDbOptions().contains(DdsIndexDef.EDbOption.NOLOGGING);
         if (oldNoLogging != newNoLogging) {
-            cp.print("alter index ");
-            cp.print(newIdx.getDbName());
-            cp.print(' ');
-            cp.print(newNoLogging ? "nologging" : "logging");
-            cp.printCommandSeparator();
+            cp.print("alter index ").print(newIdx.getDbName()).print(' ').print(newNoLogging ? "nologging" : "logging").printCommandSeparator();
         }
 
         String oldTablespace = TablespaceCalculator.calcTablespaceForIndex(oldIdx);
         String newTablespace = TablespaceCalculator.calcTablespaceForIndex(newIdx);
         if (!oldTablespace.equals(newTablespace) && !newTablespace.isEmpty()) {
-            cp.print("alter index ");
-            cp.print(newIdx.getDbName());
-            cp.print(" rebuild tablespace ");
-            cp.print(newTablespace);
-            cp.printCommandSeparator();
+            cp.print("alter index ").print(newIdx.getDbName()).print(" rebuild tablespace ").print(newTablespace).printCommandSeparator();
         }
         boolean oldReverse = oldIdx.getDbOptions().contains(DdsIndexDef.EDbOption.REVERSE);
         boolean newReverse = newIdx.getDbOptions().contains(DdsIndexDef.EDbOption.REVERSE);
         if (oldReverse != newReverse) {
-            cp.print("alter index ");
-            cp.print(newIdx.getDbName());
-            cp.print(" rebuild ");
-            cp.print(newReverse ? "reverse" : "noreverse");
-            cp.printCommandSeparator();
+            cp.print("alter index ").print(newIdx.getDbName()).print(" rebuild ").print(newReverse ? "reverse" : "noreverse").printCommandSeparator();
         }
+    }
+
+    @Override
+    public void getReCreateScript(CodePrinter printer, T definition, boolean storeData) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void getEnableDisableScript(CodePrinter cp, T definition, boolean enable) {
     }
 
     public static final class Factory {
@@ -202,25 +183,6 @@ public class DdsIndexScriptGenerator<T extends DdsIndexDef> implements IDdsDefin
         }
     }
 
-    public static void printReCreateScript(DdsIndexDef index, CodePrinter printer) {
-        DdsIndexScriptGenerator generator = new DdsIndexScriptGenerator();
-        //drop constraint
-        DdsUniqueConstraintDef constraint = index.getOwnerTable().getPrimaryKey().getUniqueConstraint();
-        boolean recreateConstraint = false;
-        if (constraint != null && constraint.getOwnerIndex() == index) {
-            DdsUniqueConstraintScriptGenerator.Factory.newInstance().getDropScript(printer, constraint);
-            recreateConstraint = true;
-        }
-        //drop index
-        generator.getDropScript(printer, index);
-        //generate create script
-        generator.getCreateScript(printer, index, IScriptGenerationHandler.NOOP_HANDLER);
-        //add constraint if any
-        if (recreateConstraint) {
-            DdsUniqueConstraintScriptGenerator.Factory.newInstance().getCreateScript(printer, constraint, IScriptGenerationHandler.NOOP_HANDLER);
-        }
-    }
-    
     @Override
     public void getRunRoleScript(CodePrinter printer, DdsIndexDef definition) {
 

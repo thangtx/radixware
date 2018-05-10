@@ -256,18 +256,18 @@ public class LoginDialog extends javax.swing.JPanel {
             while (isMustContinue){
                 isMustContinue = false;
                 if (!new LoginDialog().execute(title, targetName, target, user_ref, pwd_ref)) {
-                      if(JOptionPane.showConfirmDialog(null, 
-                            "Are you sure you want to cancel authorization?", 
-                            "Conformation",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,null) == JOptionPane.YES_OPTION) 
-                        {
+//                      if(JOptionPane.showConfirmDialog(null, 
+//                            "Are you sure you want to cancel authorization?", 
+//                            "Conformation",
+//                            JOptionPane.YES_NO_OPTION,
+//                            JOptionPane.QUESTION_MESSAGE,null) == JOptionPane.YES_OPTION) 
+//                        {
                             throw new AuthenticationCancelledException();
-                        }
-                        else
-                        {
-                            isMustContinue = true;
-                        }
+//                        }
+//                        else
+//                        {
+//                            isMustContinue = true;
+//                        }
                 }
                 else
                     break;

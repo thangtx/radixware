@@ -146,7 +146,7 @@ public class ValAsStr {
                     valAsStr = ((Pid) obj).toStr();
                     break;
                 default:
-                    throw new RadixError("String value is not supported for value type \"" + valType.getName() + "\"");
+                    throw new RadixError((obj == null ? "Null" : obj.getClass())+" value is not supported for value type \"" + valType.getName() + "\"");
             }
 
             return new ValAsStr(valAsStr);
@@ -294,7 +294,7 @@ public class ValAsStr {
                 }
                 return new Pid(Id.Factory.loadFrom(valAsStr.substring(0, pos)), valAsStr.substring(pos + 1));
             default:
-                throw new RadixError("String value is not supported for value type \"" + valType.getName() + "\"");
+                throw new RadixError((valAsStr == null ? "Null" : valAsStr.getClass())+" value is not supported for value type \"" + valType.getName() + "\"");
         }
     }
 }

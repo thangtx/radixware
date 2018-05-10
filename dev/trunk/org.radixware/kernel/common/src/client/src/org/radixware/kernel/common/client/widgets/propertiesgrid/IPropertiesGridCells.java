@@ -12,22 +12,24 @@
 package org.radixware.kernel.common.client.widgets.propertiesgrid;
 
 import java.util.Collection;
+import org.radixware.kernel.common.client.views.IPropertiesGroupWidget;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
 
 
-interface IPropertiesGridCells<L extends IModelWidget, E extends IModelWidget> {
+interface IPropertiesGridCells<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget> {
     
-    abstract class CellsFinder<L extends IModelWidget, E extends IModelWidget>{
-        abstract public boolean isTarged(IPropertiesGridCell<L,E> cell);
+    abstract class CellsFinder<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget>{
+        abstract public boolean isTarged(IPropertiesGridCell<L,E,G> cell);
         public boolean isCancelled(){
             return false;
         }
     }
     
-    IPropertiesGridCell<L,E> get(int column, int row);
+    IPropertiesGridCell<L,E,G> get(int column, int row);    
     int getRowsCount();
     int getColumnsCount();
+    boolean isVisibleColumn(int column);
     boolean isEmptySpaceInRow(int row, int fromColumn, int toColumn);
     boolean isEmptySpaceInColumn(int column, int fromRow, int toRow);
-    Collection<IPropertiesGridCell<L,E>> find(CellsFinder<L,E> finder);
+    Collection<IPropertiesGridCell<L,E,G>> find(CellsFinder<L,E,G> finder);
 }

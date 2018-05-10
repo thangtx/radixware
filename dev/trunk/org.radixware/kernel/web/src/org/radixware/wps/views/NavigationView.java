@@ -23,12 +23,14 @@ public class NavigationView extends VerticalBox {
     private ConnectionToolBar connectionToolBar;
 
     public NavigationView(WpsEnvironment env) {
-        connectionToolBar = new ConnectionToolBar(env, true);
+        connectionToolBar = new ConnectionToolBar(env);
         add(connectionToolBar);
+        connectionToolBar.updateTranslations(env.getMessageProvider());
+        connectionToolBar.afterConnect();        
         connectionToolBar.getHtml().getParent().setCss("border-bottom", "solid 1px #BBB");
     }
 
-    public void updateToolBarState(List<Action> addActions) {
+    public void updateToolBarState(final List<Action> addActions) {
         connectionToolBar.updateNavigationState(addActions);
     }
 }

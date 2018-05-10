@@ -8,18 +8,19 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.dbq;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.CallableStatement;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -30,9 +31,6 @@ import java.util.SortedSet;
 
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
-import oracle.jdbc.OracleCallableStatement;
-import oracle.jdbc.OraclePreparedStatement;
-import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.defs.dds.DdsIndexDef;
 import org.radixware.kernel.server.arte.Arte;
@@ -46,10 +44,16 @@ import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EEntityLockMode;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
+import org.radixware.kernel.common.enums.EIfParamTagOperator;
+import org.radixware.kernel.common.enums.EPaginationMethod;
 import org.radixware.kernel.common.enums.ETimingSection;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.sqml.Sqml;
+import org.radixware.kernel.common.sqml.tags.IfParamTag;
+import org.radixware.kernel.common.sqml.translate.SqmlPreprocessor;
+import org.radixware.kernel.common.types.AggregateFunctionCall;
+import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.SoftCache;
 import org.radixware.kernel.server.arte.DefManager;
@@ -58,6 +62,7 @@ import org.radixware.kernel.server.exceptions.DbQueryBuilderError;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.meta.presentations.RadExplorerItemDef;
 import org.radixware.kernel.server.meta.presentations.RadSortingDef;
+import org.radixware.kernel.server.types.Pid;
 import org.radixware.kernel.server.types.SqmlTranslateResult;
 
 public final class DbQueryBuilder {
@@ -154,19 +159,19 @@ public final class DbQueryBuilder {
         return qry;
     }
 
-    public OracleCallableStatement prepareCallWithProfiling(final String sql) throws SQLException {
+    public CallableStatement prepareCallWithProfiling(final String sql) throws SQLException {
         arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_BUILDER_PREPARE);
         try {
-            return (OracleCallableStatement) arte.getDbConnection().get().prepareCall(sql);
+            return arte.getDbConnection().get().prepareCall(sql);
         } finally {
             arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_BUILDER_PREPARE);
         }
     }
 
-    public OraclePreparedStatement prepareStatementWithProfiling(final String sql) throws SQLException {
+    public PreparedStatement prepareStatementWithProfiling(final String sql) throws SQLException {
         arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_BUILDER_PREPARE);
         try {
-            return (OraclePreparedStatement) arte.getDbConnection().get().prepareStatement(sql);
+            return arte.getDbConnection().get().prepareStatement(sql);
         } finally {
             arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_BUILDER_PREPARE);
         }
@@ -399,6 +404,27 @@ public final class DbQueryBuilder {
                 throw new DbQueryBuilderError("\"Select\" query requested but not built", null);
             }
         }
+        return qry;
+    }
+    
+    public final SelectQuery buildStatisticQuery(final EntityGroup<? extends Entity> group, final List<AggregateFunctionCall> functions){
+        final GroupQuerySqlBuilder builder;
+        final boolean bOk;
+        arte.getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_BUILDER_CONSTR);
+        try {
+            builder = new GroupQuerySqlBuilder(group);
+            builder.buildCalcStatistic(functions);                    
+        } finally {
+            arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_BUILDER_CONSTR);
+        }
+        final String sql = builder.getQuerySql();
+        arte.getTrace().put(EEventSeverity.DEBUG, "Calc statistic built:\n" + sql, EEventSource.DB_QUERY_BUILDER);
+        final SelectQuery qry = new SelectQuery(
+                arte,
+                group.getDdsMeta(),
+                sql,
+                builder.getQueryFields(),
+                builder.getQueryParams());
         return qry;
     }
 
@@ -656,6 +682,10 @@ public final class DbQueryBuilder {
             key.append(srtItem.getOrder().getValue());
             key.append(srtItem.getColumnId());
         }
+        if (group.getPaginationMethod() == EPaginationMethod.RELATIVE) {
+            key.append(EPaginationMethod.RELATIVE.getValue());
+            key.append(group.getPreviousEntityPid() == null ? "0" : "1");
+        }
         key.append(SEP);
         final Sqml hint = group.getHint();
         if (hint != null) {
@@ -664,10 +694,85 @@ public final class DbQueryBuilder {
         key.append(SEP);
         final Sqml additionalCond = group.getAdditionalCond();
         if (additionalCond != null) {
-            final org.radixware.schemas.xscml.Sqml xSqml =
-                    org.radixware.schemas.xscml.Sqml.Factory.newInstance();
-            group.getAdditionalCond().appendTo(xSqml);
+            final org.radixware.schemas.xscml.Sqml xSqml
+                    = org.radixware.schemas.xscml.Sqml.Factory.newInstance();
+            additionalCond.appendTo(xSqml);
             key.append(xSqml.xmlText());
+        }
+        final Sqml additionalFrom = group.getAdditionalFrom();
+        if (additionalFrom !=null ){
+            final org.radixware.schemas.xscml.Sqml xSqml
+                    = org.radixware.schemas.xscml.Sqml.Factory.newInstance();
+            additionalFrom.appendTo(xSqml);
+            key.append(xSqml.xmlText()); 
+        }
+        key.append(SEP);
+        final Map<Id, Object> parameters = group.getFltParamValsById();
+        if (parameters != null && !parameters.isEmpty()) {
+
+            boolean firstParameter = true;
+            for (Map.Entry<Id, Object> parameter : parameters.entrySet()) {
+                if (parameter.getValue() instanceof Arr) {
+                    if (firstParameter) {
+                        firstParameter = false;
+                    } else {
+                        key.append(';');
+                    }
+                    key.append(parameter.getKey().toString());
+                    key.append('[');
+                    key.append(String.valueOf(((Arr) parameter.getValue()).size()));
+                    key.append(']');
+                }
+            }
+
+            final Collection<IfParamTag> paramsForPreprocessorInCond = SqmlPreprocessor.getIfParamTags(additionalCond);
+            final Collection<IfParamTag> paramsForPreprocessorInFrom = SqmlPreprocessor.getIfParamTags(additionalFrom);
+            final Collection<IfParamTag> paramsForPreprocessorInHint = SqmlPreprocessor.getIfParamTags(group.getHint());
+            final Collection<IfParamTag> allParamsForPreprocessor = new LinkedList<>();
+            if (paramsForPreprocessorInCond != null) {
+                allParamsForPreprocessor.addAll(paramsForPreprocessorInCond);
+            }
+            if (paramsForPreprocessorInHint != null) {
+                allParamsForPreprocessor.addAll(paramsForPreprocessorInHint);
+            }
+            if (paramsForPreprocessorInFrom!=null){
+                allParamsForPreprocessor.addAll(paramsForPreprocessorInFrom);
+            }
+            if (!allParamsForPreprocessor.isEmpty()) {
+                key.append(SEP);
+                for (IfParamTag ifParam : allParamsForPreprocessor) {
+                    final Id paramId = ifParam.getParameterId();
+                    if (!group.getFltParamValsById().containsKey(paramId)) {
+                        throw new IllegalStateException("Parameter #" + paramId + " used in preprocessor is undefined");
+                    }
+                    key.append(paramId);
+                    final Object paramValue = group.getFltParamValsById().get(paramId);
+                    if (paramValue instanceof Arr) {
+                        if (ifParam.getOperator()==EIfParamTagOperator.EQUAL ||
+                            ifParam.getOperator()==EIfParamTagOperator.NOT_EQUAL
+                           ){
+                            key.append("=").append(paramValue.toString());
+                        }else{
+                            key.append("[").append(((Arr) paramValue).size()).append("]");
+                        }
+                    } else if (paramValue instanceof Pid) {
+                        key.append(paramValue.toString());
+                    } else if (paramValue instanceof Entity){
+                        key.append(((Entity)paramValue).getPid().toString());
+                    } else {
+                        if (paramValue == null) {
+                            key.append("null");
+                        } else {
+                            final String paramValueStr = SqmlPreprocessor.scalarParamValueAsStr(paramValue);
+                            if (paramValueStr == null) {
+                                throw new IllegalStateException("Unable to translate param #" + paramId + " used in preprocessor to string for query cache key");
+                            }
+                            key.append(paramValueStr.replaceAll(";", "\\;"));
+                        }
+                    }
+                    key.append(";");
+                }
+            }
         }
         key.append(SEP);
         return key.toString();
@@ -826,7 +931,7 @@ public final class DbQueryBuilder {
         updateBatchOptions.clear();
         createBatchOptions.clear();
     }
-    
+
     protected void ensureValidId(final Id tableId) {
         if (tableId == null || tableId.getPrefix() != EDefinitionIdPrefix.DDS_TABLE) {
             throw new IllegalArgumentException("Expected " + EDefinitionIdPrefix.DDS_TABLE.getValue() + "..., got " + tableId);

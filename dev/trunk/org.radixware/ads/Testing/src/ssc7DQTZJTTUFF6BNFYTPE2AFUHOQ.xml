@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="ssc7DQTZJTTUFF6BNFYTPE2AFUHOQ" Name="TestBatchStatement" Type="9">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.Statement"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcYIHFFZJ4WVEEHKTKSH6TMXPZEM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcU4XPZIPC2FF4PDMDODUCZ4LMO4"/>
+    </Bodies>
+    <MethodGroup Id="cmgROWCJ63F7NFV3LUFQ4RWQYZ7O4" Name="Root"/>
+    <PropertyGroup Id="cpg6LQIR6I5Q5EEZHWTV525GTPWNE" Name="Root"/>
+    <Properties>
+      <Property Id="prmZLQQM5XVG5AKDKNLEHRXH5YHHA" Name="pId" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmBBEVAGLH5ZHEXOOIV4SEG35HSU" Name="pContent" Nature="11" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pId" Id="mprZLQQM5XVG5AKDKNLEHRXH5YHHA">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="pContent" Id="mprBBEVAGLH5ZHEXOOIV4SEG35HSU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_setExecuteBatch_____" Name="setExecuteBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="size" Id="mprSize______________________">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth_stmt_sendBatch___________" Name="sendBatch" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>insert into TEST_BATCH_FOR_STATEMENTS(id, content) values (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmZLQQM5XVG5AKDKNLEHRXH5YHHA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmBBEVAGLH5ZHEXOOIV4SEG35HSU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)</xsc:Sql>
+        </xsc:Item>
+      </Source>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.Statement"/>
+  </AdsClassDefinition>
+</AdsDefinition>

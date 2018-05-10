@@ -31,9 +31,16 @@ import org.radixware.kernel.common.design.msdleditor.field.ShowErrorsPanel;
 import org.radixware.kernel.common.design.msdleditor.field.VariantFieldPanel;
 import org.radixware.kernel.common.design.msdleditor.tree.Tree;
 import org.radixware.kernel.common.design.msdleditor.tree.ItemNode;
+import org.radixware.kernel.common.environment.IRadixDefManager;
+import org.radixware.kernel.common.msdl.EFieldType;
 import org.radixware.kernel.common.msdl.MsdlField;
+import org.radixware.kernel.common.msdl.MsdlUtils.SchemeInternalVisitor;
+import org.radixware.kernel.common.msdl.MsdlUtils.SchemeInternalVisitorProvider;
 import org.radixware.kernel.common.msdl.MsdlVariantField;
 import org.radixware.kernel.common.msdl.RootMsdlScheme;
+import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
+import org.radixware.kernel.common.msdl.fields.ISchemeSearcher;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.adsdef.AdsDefinitionDocument;
 import org.radixware.schemas.adsdef.MsdlDefinition;
 import org.radixware.schemas.msdl.Message;
@@ -114,6 +121,22 @@ public class Editor extends JPanel {
         root = new RootMsdlScheme(message);
         root.setName("MessageMsdl");
         createEditor();
+    }
+    
+    void setSchemeSearcher(final IRadixDefManager manager) {
+        root.setSchemeSearcher(new ISchemeSearcher() {
+            @Override
+            public AbstractFieldModel findField(Id templateSchemeId, String templateSchemePath, EFieldType type) {
+                SchemeInternalVisitor visitor = new SchemeInternalVisitor();
+                RootMsdlScheme scheme = manager.getMsdlScheme(templateSchemeId);
+                if (scheme != null) {
+                    scheme.visit(visitor, new SchemeInternalVisitorProvider(templateSchemePath, root, type));
+                } else {
+                    root.visit(visitor, new SchemeInternalVisitorProvider(templateSchemePath, root, type));
+                }
+                return visitor.target;
+            }
+        });
     }
 
     private void createEditor() {
@@ -232,7 +255,7 @@ public class Editor extends JPanel {
                 }
                 if (radixObject instanceof MsdlVariantField) {
                     VariantFieldPanel fieldPanel = new VariantFieldPanel();
-                    fieldPanel.open((MsdlVariantField) radixObject, null, null);
+                    fieldPanel.open((MsdlVariantField) radixObject, null, null, null);
                     splitPanel.setTopComponent(fieldPanel);
                     return;
                 }

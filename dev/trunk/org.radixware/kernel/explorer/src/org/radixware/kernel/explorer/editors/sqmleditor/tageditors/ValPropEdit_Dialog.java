@@ -11,11 +11,13 @@
 
 package org.radixware.kernel.explorer.editors.sqmleditor.tageditors;
 
+import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.gui.QWidget;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumSet;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
+import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
+import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.common.enums.EValType;
@@ -25,41 +27,89 @@ import org.radixware.kernel.explorer.editors.valeditors.ValBoolEditor;
 import org.radixware.kernel.explorer.editors.valeditors.ValEditor;
 import org.radixware.kernel.explorer.editors.valeditors.ValRefEditor;
 import org.radixware.kernel.explorer.editors.valeditors.ValStrEditor;
+import org.radixware.kernel.explorer.text.ExplorerTextOptions;
+import org.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider;
 
 
-public class ValPropEdit_Dialog extends ExplorerDialog {
+abstract class ValPropEdit_Dialog extends ExplorerDialog {
+    
+    final static class SqmlDefDisplayProvider implements IDisplayStringProvider{
+        
+        private final EDefinitionDisplayMode showMode;
+        private final String tableAlias;                
+        
+        public SqmlDefDisplayProvider(final EDefinitionDisplayMode displayMode){
+            this(displayMode, null);
+        }
+        
+        public SqmlDefDisplayProvider(final EDefinitionDisplayMode displayMode, final String tableAlias){
+            showMode = displayMode;
+            this.tableAlias = tableAlias;
+        }
 
-    protected ValEditor valEditor;
-    private boolean isMandatory;
-    protected ISqmlColumnDef prop;
-    protected List<Object> val = new ArrayList<>();
-
-    public ValPropEdit_Dialog(final IClientEnvironment environment, final QWidget parent, final ISqmlColumnDef prop, final String dialogTitle, final boolean isMandatory) {
-        super(environment, parent, dialogTitle);
-        this.isMandatory = isMandatory;
-        this.setWindowTitle(dialogTitle);
-        this.prop = prop;
-        valEditor = createValEditor();
-        valEditor.setObjectName("valEditor");
+        @Override
+        public String format(final EditMask mask, final Object value, final String defaultDisplayString) {
+            if (value instanceof ISqmlColumnDef){
+                final ISqmlColumnDef column = (ISqmlColumnDef)value;
+                final ISqmlTableDef ownerTable = column.getOwnerTable();
+                final String tableDisplayString;
+                if (tableAlias!=null && !tableAlias.isEmpty()){
+                    tableDisplayString = tableAlias;
+                } else if (ownerTable.hasAlias()){
+                    tableDisplayString = ownerTable.getAlias();
+                }else{
+                    tableDisplayString = ownerTable.getDisplayableText(showMode);
+                }
+                final String columnDisplayString;
+                if (showMode== EDefinitionDisplayMode.SHOW_FULL_NAMES){
+                    columnDisplayString = column.getShortName();
+                }else{
+                    columnDisplayString = column.getDisplayableText(showMode);
+                }
+                return tableDisplayString+"."+columnDisplayString;
+            }else if (value instanceof ISqmlTableDef){
+                if (tableAlias!=null && !tableAlias.isEmpty()){
+                    return tableAlias;
+                }
+                final ISqmlTableDef table = (ISqmlTableDef)value;
+                return table.hasAlias() ? table.getAlias() : defaultDisplayString;
+            }else{
+                return defaultDisplayString;
+            }
+        }
+        
     }
 
-    public ValPropEdit_Dialog(final IClientEnvironment environment, final QWidget parent, final ISqmlColumnDef prop, final String dialogTitle) {
-        super(environment, parent, dialogTitle);
-        this.setWindowTitle(dialogTitle);
+    private final boolean isMandatory;
+    private ISqmlColumnDef prop;
+    
+    public ValPropEdit_Dialog(final IClientEnvironment environment, final QWidget parent, final ISqmlColumnDef prop, final String dialogName) {
+        this(environment, parent, prop, dialogName, false);
+    }    
+
+    public ValPropEdit_Dialog(final IClientEnvironment environment, final QWidget parent, final ISqmlColumnDef prop, final String dialogName, final boolean isMandatory) {
+        super(environment, parent, dialogName);
+        this.isMandatory = isMandatory;        
         this.prop = prop;
+        setAutoSize(true);
+        setDisposeAfterClose(true);
     }
 
-    protected final ValEditor createValEditor() {
+    protected final ValEditor createValEditor(final QWidget parentWidget) {
         final EValType type = prop.getType();
         final ValEditor editor;
 
-        if (type == EValType.ANY/* && (prop.getEditMask() instanceof EditMaskStr)*/) {
-            editor = new ValStrEditor(getEnvironment(), this);//, (EditMaskStr)prop.getEditMask(), isMandatory, false);
-            //editor.setEditMask(null);Value(prop);
-        } else if (type == EValType.BOOL) {//added  by dkanatova radix-7108
-            editor = new ValBoolEditor(getEnvironment(), this);
-        } else {
-            editor = ValEditor.createForValType(getEnvironment(), type, prop.getEditMask(), isMandatory, false, this);
+        switch(type){
+            case ANY:{
+                editor = new ValStrEditor(getEnvironment(), parentWidget);
+                break;
+            }
+            case BOOL:{
+                editor = new ValBoolEditor(getEnvironment(), parentWidget);
+                break;
+            }
+            default:
+                editor = ValEditor.createForValType(getEnvironment(), type, prop.getEditMask(), isMandatory, false, parentWidget);
         }
         if (type == EValType.PARENT_REF) {
             try {
@@ -73,81 +123,28 @@ public class ValPropEdit_Dialog extends ExplorerDialog {
         if (type.isArrayType()) {
             editor.setVisible(false);
         }
+        editor.setObjectName("valEditor");
         return editor;
-        /* if (type == EValType.BOOL) {
-         return new ValBoolEditor(getEnvironment(), this, prop.getEditMask(), true, false);
-         }
-         if (type == EValType.CHAR) {
-         if (prop.getEditMask() instanceof EditMaskConstSet) {
-         return new ValConstSetEditor(getEnvironment(), this, (EditMaskConstSet) prop.getEditMask(), isMandatory, false);
-         }
-         return new ValCharEditor(getEnvironment(), this, prop.getEditMask(), isMandatory, false);
-         }
-         if ((type == EValType.BIN) || (type == EValType.BLOB)) {
-         return new ValBinEditor(getEnvironment(), this, (EditMaskNone) prop.getEditMask(), isMandatory, false);
-         }
-         if (type == EValType.DATE_TIME) {
-         if (prop.getEditMask() instanceof EditMaskDateTime) {
-         return new ValDateTimeEditor(getEnvironment(), this, (EditMaskDateTime) prop.getEditMask(), isMandatory, false);
-         }
-         if (prop.getEditMask() instanceof EditMaskTimeInterval) {
-         return new ValTimeIntervalEditor(getEnvironment(), this, (EditMaskTimeInterval) prop.getEditMask(), isMandatory, false);
-         }
-         }
-         if (type == EValType.INT) {
-         if (prop.getEditMask() instanceof EditMaskInt) {
-         return new ValIntEditor(getEnvironment(), this, (EditMaskInt) prop.getEditMask(), isMandatory, false);
-         }
-         if (prop.getEditMask() instanceof EditMaskTimeInterval) {
-         return new ValTimeIntervalEditor(getEnvironment(), this, (EditMaskTimeInterval) prop.getEditMask(), isMandatory, false);
-         }
-         if (prop.getEditMask() instanceof EditMaskConstSet) {
-         return new ValConstSetEditor(getEnvironment(), this, (EditMaskConstSet) prop.getEditMask(), isMandatory, false);
-         }
-         }
-         if (type == EValType.NUM) {
-         return new ValNumEditor(getEnvironment(), this, (EditMaskNum) prop.getEditMask(), isMandatory, false);
-         }
-         if ((type == EValType.STR) || ((type == EValType.CLOB))) {
-         if (prop.getEditMask() instanceof EditMaskStr) {
-         return new ValStrEditor(getEnvironment(), this, (EditMaskStr) prop.getEditMask(), isMandatory, false);
-         }
-         if (prop.getEditMask() instanceof EditMaskConstSet) {
-         return new ValConstSetEditor(getEnvironment(), this, (EditMaskConstSet) prop.getEditMask(), isMandatory, false);
-         }
-         }
-         if (type == EValType.PARENT_REF) {
-         ValRefEditor valRefEditor = new ValRefEditor(getEnvironment(), this, true, false);
-         try {
-         if (prop.getSelectorPresentationId() != null && prop.getSelectorPresentationClassId() != null) {
-         valRefEditor.setSelectorPresentation(prop.getSelectorPresentationClassId(), prop.getSelectorPresentationId());
-         }
-         } catch (DefinitionError e) {
-         getEnvironment().processException(e);
-         }
-         return valRefEditor;
-         }
-         if(type.isArrayType()){
-         final ValEditor valEditor = new ValArrEditor(getEnvironment(), type, null, this);
-         valEditor.setVisible(false);
-         return valEditor;
-         }
-         throw new IllegalUsageError("Cannot create value editor of \"" + type.name() + "\" type");*/
+    }
+    
+    protected final ExplorerTextOptions getLabelTextOptions(){
+        final EnumSet<ETextOptionsMarker> markers = 
+            EnumSet.of(ETextOptionsMarker.LABEL, ETextOptionsMarker.EDITABLE_VALUE, ETextOptionsMarker.REGULAR_VALUE);
+        return (ExplorerTextOptions)getEnvironment().getTextOptionsProvider().getOptions(markers, null);
+    }
+        
+    protected final void setProperty(final ISqmlColumnDef prop){
+        this.prop = prop;
     }
 
-    protected String getDisplaiedName(final ISqmlTableDef classDef, final EDefinitionDisplayMode displayMode) {
-        return classDef.getDisplayableText(displayMode);
-    }
-
-    protected String getDisplaiedName(final ISqmlColumnDef prop, final EDefinitionDisplayMode displayMode) {
-        return displayMode == EDefinitionDisplayMode.SHOW_FULL_NAMES ? prop.getShortName() : prop.getDisplayableText(displayMode);
-    }
-
-    public List<Object> getValue() {
-        return val;
-    }
-
-    public ISqmlColumnDef getProperty() {
+    public final ISqmlColumnDef getProperty() {
         return prop;
+    }
+    
+    @Override
+    protected QSize layoutMinimumSize(final QSize size){
+        size.setHeight(layout().sizeHint().height());
+        size.setWidth(layout().sizeHint().width()+80);
+        return size;
     }
 }

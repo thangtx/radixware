@@ -38,13 +38,13 @@ public class ItemNameFilter<TValue> extends EmptyTextFilter<TValue> {
     }
 
     protected final void updateNamePattern() {
-        strPattern = getNameStringPattern();
+        strPattern = transformWildCardsToJavaStyle(getNameStringPattern());
         synchronized (patternLock) {
             if (strPattern.isEmpty()) {
                 pattern = null;
             } else {
                 try {
-                    pattern = Pattern.compile(strPattern + ".*");
+                    pattern = Pattern.compile(strPattern + ".*", Pattern.CASE_INSENSITIVE);
                 } catch (PatternSyntaxException ex) {
                     pattern = emptyPattern;
                 }
@@ -70,5 +70,24 @@ public class ItemNameFilter<TValue> extends EmptyTextFilter<TValue> {
 
     public String getName(TValue value) {
         return value.toString().toLowerCase();
+    }
+    
+        
+    private static String transformWildCardsToJavaStyle(String text) {
+        final StringBuilder regexBuilder = new StringBuilder(""); // NOI18N
+        int lastWildCardPosition = 0;
+        for (int i = 0; i < text.length(); i++) {
+            if (text.charAt(i) == '?') { // NOI18N
+                regexBuilder.append(text.substring(lastWildCardPosition, i));
+                regexBuilder.append('.'); // NOI18N
+                lastWildCardPosition = i + 1;
+            } else if (text.charAt(i) == '*') { // NOI18N
+                regexBuilder.append(text.substring(lastWildCardPosition, i));
+                regexBuilder.append(".*"); // NOI18N
+                lastWildCardPosition = i + 1;
+            }
+        }
+        regexBuilder.append(text.substring(lastWildCardPosition, text.length()));
+        return regexBuilder.toString();
     }
 }

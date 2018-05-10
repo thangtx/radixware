@@ -11,19 +11,25 @@
 package org.radixware.kernel.server.units;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
-import org.radixware.kernel.common.trace.IRadixTrace;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.server.aio.EventDispatcher;
 import org.radixware.kernel.server.aio.EventHandler;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.instance.SimpleResourceRegistryItem;
 import org.radixware.kernel.server.instance.UnitCommand;
 import org.radixware.kernel.server.monitoring.MonitorFactory;
 
 public abstract class AsyncEventHandlerUnit extends Unit implements EventHandler {
-
+    
+    private static final int MAX_IGNORED_EXCEPTIONS_ON_STOP = SystemPropUtils.getIntSystemProp("rdx.unit.max.ignored.exceptions.on.stop", 100);
     private EventDispatcher dispatcher = null;
+
+    protected AsyncEventHandlerUnit() {  // Use this constructor for testing only
+    }
 
     public AsyncEventHandlerUnit(final Instance instModel, final Long id, final String title, final MonitorFactory factory) {
         super(instModel, id, title, factory);
@@ -37,6 +43,7 @@ public abstract class AsyncEventHandlerUnit extends Unit implements EventHandler
     protected boolean startImpl() throws Exception {
         if (super.startImpl()) {
             dispatcher = new EventDispatcher();
+            getInstance().getResourceRegistry().register(new EventDispatcherResourceItem(getResourceKeyPrefix() + "/dispatcher", dispatcher, null, getThisRunAliveChecker()));
             return true;
         } else {
             return false;
@@ -72,18 +79,20 @@ public abstract class AsyncEventHandlerUnit extends Unit implements EventHandler
     }
 
     private void doProcessAllEvents(boolean ignoreExceptions) {
+        int ignoredExceptionsCount = 0;
         if (dispatcher != null) {
-            while (dispatcher.getNonIgnorableOnStopEventSubscribersCount() > 0 && !Thread.currentThread().isInterrupted()) {
+            while (dispatcher.getNonIgnorableOnStopEventSubscribersCount() > 0 && !Thread.currentThread().isInterrupted() && !isAborted() && dispatcher.isOpen()) {
                 try {
                     dispatcher.process();
                 } catch (IOException e) {//selector internal error
                     getTrace().put(EEventSeverity.ERROR, ExceptionTextFormatter.exceptionStackToString(e), null, null, getEventSource(), false);
                     return;
                 } catch (RuntimeException re) {
-                    if (!ignoreExceptions) {
+                    if (!ignoreExceptions || ignoredExceptionsCount > MAX_IGNORED_EXCEPTIONS_ON_STOP) {
                         throw re;
                     } else {
                         getTrace().put(EEventSeverity.ERROR, ExceptionTextFormatter.exceptionStackToString(re), null, null, getEventSource(), false);
+                        ignoredExceptionsCount++;
                     }
                 }
             }
@@ -117,5 +126,25 @@ public abstract class AsyncEventHandlerUnit extends Unit implements EventHandler
 
     public final EventDispatcher getDispatcher() {
         return dispatcher;
+    }
+
+    private static class EventDispatcherResourceItem extends SimpleResourceRegistryItem {
+
+        private final EventDispatcher dispatcher;
+
+        public EventDispatcherResourceItem(String key, EventDispatcher dispatcher, String description, Callable<Boolean> holderAliveChecker) {
+            super(key, dispatcher, description, holderAliveChecker);
+            this.dispatcher = dispatcher;
+        }
+
+        @Override
+        public boolean isClosed() {
+            return !dispatcher.isOpen();
+        }
+
+        @Override
+        public Object getTarget() {
+            return dispatcher;
+        }
     }
 }

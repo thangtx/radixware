@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsCustomDialogDefinition Id="cdlJ257WQJKMBCJTKZVB7W2J4W37Y" Name="ReportColumnsListDialog">
+    <AccessRules IsPublished="false"/>
+    <ui:ui>
+      <ui:widget name="Dialog" id="wdgPCLOJPQNGFG3DAXD5T5QWEBI6M" class="cdlJ257WQJKMBCJTKZVB7W2J4W37Y" weight="0.0">
+        <ui:property name="geometry">
+          <ui:rect>
+            <ui:x>0</ui:x>
+            <ui:y>0</ui:y>
+            <ui:width>400</ui:width>
+            <ui:height>300</ui:height>
+          </ui:rect>
+        </ui:property>
+        <ui:property name="windowTitle">
+          <ui:mlstringid>mlsIB63QMEAHBFKHOOU26IOAXUP3E</ui:mlstringid>
+        </ui:property>
+        <ui:layout class="QVBoxLayout" name="verticalLayout">
+          <ui:property name="layoutLeftMargin">
+            <ui:int>9</ui:int>
+          </ui:property>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="listWidget" id="wdgQGVGIHOBURDWNFZZ3XF2LSYW5E" class="QListWidget" weight="0.0">
+              <ui:property name="selectionMode">
+                <ui:enum>com.trolltech.qt.gui.QAbstractItemView.SelectionMode.ExtendedSelection</ui:enum>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+            <ui:widget name="buttonBox" id="wdgNQRQQ77E3FDQ5G3GQCSHIPM4R4" class="QDialogButtonBox" weight="0.0">
+              <ui:property name="standardButtons">
+                <ui:set>org.radixware.kernel.common.enums.EDialogButtonType.OK | org.radixware.kernel.common.enums.EDialogButtonType.CANCEL</ui:set>
+              </ui:property>
+              <ui:property name="autoConnectRejectSignal">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+              <ui:property name="autoConnectAcceptSignal">
+                <ui:bool>true</ui:bool>
+              </ui:property>
+            </ui:widget>
+          </ui:item>
+        </ui:layout>
+      </ui:widget>
+      <ui:connections>
+        <ui:connection>
+          <ui:sender>wdgPCLOJPQNGFG3DAXD5T5QWEBI6M</ui:sender>
+          <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+          <ui:slot>mthKCYKFDMMWJEQXLFMPN5S7RVGK4</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgNQRQQ77E3FDQ5G3GQCSHIPM4R4</ui:sender>
+          <ui:signal>accepted()</ui:signal>
+          <ui:slot>mthEUNE5CLCXBBVDBEXTG5SH2UJVE</ui:slot>
+        </ui:connection>
+        <ui:connection>
+          <ui:sender>wdgQGVGIHOBURDWNFZZ3XF2LSYW5E</ui:sender>
+          <ui:signal>doubleClicked(com.trolltech.qt.core.QModelIndex index)</ui:signal>
+          <ui:slot>mthW2C5GZZA7ZEMJKWZRZME4OMKIM</ui:slot>
+        </ui:connection>
+      </ui:connections>
+    </ui:ui>
+    <EmbeddedModel Id="admJ257WQJKMBCJTKZVB7W2J4W37Y" Name="ReportColumnsListDialog:Model" Type="16">
+      <AccessRules IsPublished="false"/>
+      <Headers>
+        <Src Name="HeaderadmJ257WQJKMBCJTKZVB7W2J4W37Y"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyadmJ257WQJKMBCJTKZVB7W2J4W37Y"/>
+      </Bodies>
+      <MethodGroup Id="cmgLU7NPC3WKBD7FNTVRABKUFPUI4" Name="Root">
+        <Group Id="cmgEYO5IITILFGWXPWFCK2JING47E" Name="Events" Members="mthKCYKFDMMWJEQXLFMPN5S7RVGK4 mthEUNE5CLCXBBVDBEXTG5SH2UJVE mthW2C5GZZA7ZEMJKWZRZME4OMKIM"/>
+        <Group Id="cmgVD7E76VO5VEIDF5CC5JSCGKFAM" Name="Methods" Members="mth6T6VHQ55FFF3XB42ORSZEYKWYQ"/>
+      </MethodGroup>
+      <PropertyGroup Id="cpgYRT4ODP7YRDAPPP5JAIEZU47RA" Name="Root">
+        <Group Id="cpgNSQQ47D5UFDFHKJSGGPYH225OE" Name="Props" Members="prdPUCHVEHZLJF7TJOJUEFCDNVDJU prd5R6FQVLIR5AYNNYZB24EXGXREY prdPHPLP2QC2BGZTBS7RL6NDQDFEE"/>
+      </PropertyGroup>
+      <Properties>
+        <Property Id="prdPUCHVEHZLJF7TJOJUEFCDNVDJU" Name="selectedColumns" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="400" extStr="java.util.Map">
+            <xsc:GenericArguments>
+              <xsc:Argument Alias="?">
+                <xsc:Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column"/>
+              </xsc:Argument>
+              <xsc:Argument Alias="?">
+                <xsc:Type TypeId="2"/>
+              </xsc:Argument>
+            </xsc:GenericArguments>
+          </Type>
+          <InitialValue>
+            <Jml>
+              <xsc:Item>
+                <xsc:Java>new java.util.HashMap&lt;</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column">
+                  <xsc:Presentation>ReportsXsd:ReportColumnsList.Column</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="2">
+                  <xsc:Presentation>Int</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>>();</xsc:Java>
+              </xsc:Item>
+            </Jml>
+          </InitialValue>
+        </Property>
+        <Property Id="prd5R6FQVLIR5AYNNYZB24EXGXREY" Name="excludedColumns" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList"/>
+        </Property>
+        <Property Id="prdPHPLP2QC2BGZTBS7RL6NDQDFEE" Name="reportId" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        </Property>
+      </Properties>
+      <Methods>
+        <Method Id="mthKCYKFDMMWJEQXLFMPN5S7RVGK4" Name="Dialog_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="widget" Id="mpr7AAVFJIU3RGY7BWGG67PTWEJLU">
+              <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList">
+                  <xsc:Presentation>ReportsXsd:ReportColumnsList</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xColumnsList = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY">
+                  <xsc:Presentation>ReportsExplorerUtils</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcDHI5YQVUWZFTXMXT2QKFPDDVRY mthMPZSNPLN4FFX7IRU5GCEQZJOVU" Invoke="true">
+                  <xsc:Presentation>requestColumnsList</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                  <xsc:Presentation>getEnvironment</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(), </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJ257WQJKMBCJTKZVB7W2J4W37Y admJ257WQJKMBCJTKZVB7W2J4W37Y prdPHPLP2QC2BGZTBS7RL6NDQDFEE" Invoke="true">
+                  <xsc:Presentation>reportId</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>);
+if (xColumnsList == null) {
+    return;
+}
+
+for (int i = 0; i &lt; xColumnsList.getColumnList().size(); i++) {    
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column">
+                  <xsc:Presentation>ReportsXsd:ReportColumnsList.Column</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xColumn = xColumnsList.getColumnList().get(i);
+    if (!</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJ257WQJKMBCJTKZVB7W2J4W37Y admJ257WQJKMBCJTKZVB7W2J4W37Y mth6T6VHQ55FFF3XB42ORSZEYKWYQ" Invoke="true">
+                  <xsc:Presentation>isColumnExcluded</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(xColumn)) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcQZCFCJMXV5GZ5O7AQKL7WBIAIU">
+                  <xsc:Presentation>Explorer.Qt.Types::QListWidgetItem</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> item = new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcQZCFCJMXV5GZ5O7AQKL7WBIAIU mthWUH4C3NGE5H2JAAG4WL3G56HLM" Invoke="true">
+                  <xsc:Presentation>QListWidgetItem</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(xColumn.getColumnName());
+        item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcQZCFCJMXV5GZ5O7AQKL7WBIAIU mthT6I3HCYWFFAGNA7QDVAMEUCVUA" Invoke="true">
+                  <xsc:Presentation>setData</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(com.trolltech.qt.core.Qt.ItemDataRole.UserRole, xColumn);
+        item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcQZCFCJMXV5GZ5O7AQKL7WBIAIU mthT6I3HCYWFFAGNA7QDVAMEUCVUA" Invoke="true">
+                  <xsc:Presentation>setData</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(com.trolltech.qt.core.Qt.ItemDataRole.UserRole + 1, new </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="2">
+                  <xsc:Presentation>Int</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(i));
+
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJ257WQJKMBCJTKZVB7W2J4W37Y wdgQGVGIHOBURDWNFZZ3XF2LSYW5E" Invoke="true">
+                  <xsc:Presentation>ReportColumnsListDialog:Dialog:listWidget</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcR6UHL6EGGBAG3AVCCNFRVUFD2E mthCSG6KCSSBNCTHLC2AVGEMZB3YY" Invoke="true">
+                  <xsc:Presentation>addItem</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(item);
+    }
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mth6T6VHQ55FFF3XB42ORSZEYKWYQ" Name="isColumnExcluded" Nature="0" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="column" Id="mprU3GZ6OWOPZDBFDOM2WRPP5AWJE">
+              <Type TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJ257WQJKMBCJTKZVB7W2J4W37Y admJ257WQJKMBCJTKZVB7W2J4W37Y prd5R6FQVLIR5AYNNYZB24EXGXREY" Invoke="true">
+                  <xsc:Presentation>excludedColumns</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> != null &amp;&amp; !</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJ257WQJKMBCJTKZVB7W2J4W37Y admJ257WQJKMBCJTKZVB7W2J4W37Y prd5R6FQVLIR5AYNNYZB24EXGXREY" Invoke="true">
+                  <xsc:Presentation>excludedColumns</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getColumnList().isEmpty()) {
+    for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column">
+                  <xsc:Presentation>ReportsXsd:ReportColumnsList.Column</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xColumn : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJ257WQJKMBCJTKZVB7W2J4W37Y admJ257WQJKMBCJTKZVB7W2J4W37Y prd5R6FQVLIR5AYNNYZB24EXGXREY" Invoke="true">
+                  <xsc:Presentation>excludedColumns</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getColumnList()) {
+        if (xColumn.getColumnId() == column.getColumnId()) {
+            return true;
+        }
+    }
+}
+
+return false;</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthEUNE5CLCXBBVDBEXTG5SH2UJVE" Name="buttonBox_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>for (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcQZCFCJMXV5GZ5O7AQKL7WBIAIU">
+                  <xsc:Presentation>Explorer.Qt.Types::QListWidgetItem</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> item : </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJ257WQJKMBCJTKZVB7W2J4W37Y wdgQGVGIHOBURDWNFZZ3XF2LSYW5E" Invoke="true">
+                  <xsc:Presentation>ReportColumnsListDialog:Dialog:listWidget</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcR6UHL6EGGBAG3AVCCNFRVUFD2E mth2GXRAAUFARBK5KE3HDLEHTACLA" Invoke="true">
+                  <xsc:Presentation>selectedItems</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>()) {   
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column">
+                  <xsc:Presentation>ReportsXsd:ReportColumnsList.Column</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> key = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="ReportColumnsList.Column">
+                  <xsc:Presentation>ReportsXsd:ReportColumnsList.Column</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcQZCFCJMXV5GZ5O7AQKL7WBIAIU mthO7UUHX7TYNA77GBMWVO5FW63PU" Invoke="true">
+                  <xsc:Presentation>data</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(com.trolltech.qt.core.Qt.ItemDataRole.UserRole);
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="2">
+                  <xsc:Presentation>Int</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> value = (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="2">
+                  <xsc:Presentation>Int</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) item.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcQZCFCJMXV5GZ5O7AQKL7WBIAIU mthO7UUHX7TYNA77GBMWVO5FW63PU" Invoke="true">
+                  <xsc:Presentation>data</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(com.trolltech.qt.core.Qt.ItemDataRole.UserRole + 1);
+    
+    </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJ257WQJKMBCJTKZVB7W2J4W37Y admJ257WQJKMBCJTKZVB7W2J4W37Y prdPUCHVEHZLJF7TJOJUEFCDNVDJU" Invoke="true">
+                  <xsc:Presentation>selectedColumns</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.put(key, value);
+}</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+        <Method Id="mthW2C5GZZA7ZEMJKWZRZME4OMKIM" Name="listWidget_doubleClicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+          <AccessRules IsPublished="false"/>
+          <Parameters>
+            <Parameter Name="index" Id="mprESX45VJ4FBEFDJOGXXQF3QRFKI">
+              <Type TypeId="400" extStr="com.trolltech.qt.core.QModelIndex"/>
+            </Parameter>
+          </Parameters>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJ257WQJKMBCJTKZVB7W2J4W37Y admJ257WQJKMBCJTKZVB7W2J4W37Y mthEUNE5CLCXBBVDBEXTG5SH2UJVE" Invoke="true">
+                  <xsc:Presentation>buttonBox_accepted</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="cdlJ257WQJKMBCJTKZVB7W2J4W37Y wdgPCLOJPQNGFG3DAXD5T5QWEBI6M" Invoke="true">
+                  <xsc:Presentation>ReportColumnsListDialog:Dialog</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU mthFWNU3ODV7ZFDJBZBNWRH4HVGMM" Invoke="true">
+                  <xsc:Presentation>accept</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </EmbeddedModel>
+  </AdsCustomDialogDefinition>
+</AdsDefinition>

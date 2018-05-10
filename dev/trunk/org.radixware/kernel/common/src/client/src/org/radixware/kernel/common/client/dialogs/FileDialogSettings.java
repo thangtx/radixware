@@ -11,49 +11,58 @@
 
 package org.radixware.kernel.common.client.dialogs;
 
-import java.io.File;
+import org.radixware.kernel.common.enums.EFileDialogOpenMode;
+import java.util.EnumSet;
+import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.meta.mask.EditMaskFilePath;
 import org.radixware.kernel.common.enums.EFileSelectionMode;
 import org.radixware.kernel.common.enums.EMimeType;
 
 
 public class FileDialogSettings implements IFileDialogSettings {
 
-
     private String title;
-    private EMimeType type;
+    private EnumSet<EMimeType> types;
     private EFileSelectionMode selectionMode;
     private String initialPath;
     private EFileDialogOpenMode openMode;
     private boolean showFullPath;
 
-    public FileDialogSettings(EFileDialogOpenMode openMode) {//default settings constructor
-        this("File Dialog", null, EFileSelectionMode.SELECT_FILE, null, openMode);
+    public FileDialogSettings(final EFileDialogOpenMode openMode) {//default settings constructor
+        this("File Dialog", EnumSet.noneOf(EMimeType.class), EFileSelectionMode.SELECT_FILE, null, openMode);
     }
+    
+    public FileDialogSettings(final IClientEnvironment environment, final EditMaskFilePath mask) {
+        this(mask.getFileDialogTitle(environment.getDefManager()), mask.getMimeTypes(), mask.getSelectionMode(), mask.getInitialPath(), mask.getDialogMode());
+    }    
+    
+    public FileDialogSettings(final String dialogTitle,
+                              final EMimeType mimeType,
+                              final EFileSelectionMode selectionMode,
+                              final String initPath,
+                              final EFileDialogOpenMode openMode) {//parameterized constructor
+        this(dialogTitle, EnumSet.of(mimeType), selectionMode, initPath, openMode);
+    }    
 
-    public FileDialogSettings(String dialogTitle, EMimeType mimeType,
-            EFileSelectionMode selectionMode, String initPath,
-            EFileDialogOpenMode openMode) {//parameterized constructor
+    public FileDialogSettings(final String dialogTitle,
+                              final EnumSet<EMimeType> mimeTypes,
+                              final EFileSelectionMode selectionMode,
+                              final String initPath,
+                              final EFileDialogOpenMode openMode) {//parameterized constructor
         if (dialogTitle == null) {
             this.title = "File Dialog";
         } else {
             this.title = dialogTitle;
         }
-        this.type = mimeType;
-        if (selectionMode == null) {
-            this.selectionMode = EFileSelectionMode.SELECT_FILE;
-        } else {
-            this.selectionMode = selectionMode;
-        }
+        types = mimeTypes==null ? null : EnumSet.copyOf(mimeTypes);
+        this.selectionMode = selectionMode==null ? EFileSelectionMode.SELECT_FILE : selectionMode;
+        this.openMode = openMode==null ? EFileDialogOpenMode.LOAD : openMode;
+        
         if (initPath == null || initPath.isEmpty()) {
             initialPath = System.getProperty("user.home");
         } else {
             this.initialPath = initPath;
-        }
-        if (openMode == null) {
-            this.openMode = EFileDialogOpenMode.LOAD;
-        }
-        this.openMode = openMode;
-        updateSettings();
+        }        
     }
 
     @Override
@@ -61,16 +70,12 @@ public class FileDialogSettings implements IFileDialogSettings {
         return title;
     }
 
-    @Override
-    public void setFileDialogTitle(String title) {
+    public void setFileDialogTitle(final String title) {
         this.title = title;
-        updateSettings();
     }
 
-    @Override
-    public void setFileSelectionMode(EFileSelectionMode mode) {
+    public void setFileSelectionMode(final EFileSelectionMode mode) {
         this.selectionMode = mode;
-        updateSettings();
     }
 
     @Override
@@ -78,15 +83,18 @@ public class FileDialogSettings implements IFileDialogSettings {
         return selectionMode;
     }
 
-    @Override
-    public void setMimeType(EMimeType type) {
-        this.type = type;
-        updateSettings();
+    
+    public void setMimeType(final EMimeType type) {
+        this.types = type==null ? null : EnumSet.of(type);
+    }
+    
+    public void setMimeTypes(final EnumSet<EMimeType> types){
+        this.types = types==null ? null : EnumSet.copyOf(types);
     }
 
     @Override
-    public EMimeType getMimeType() {
-        return type;
+    public EnumSet<EMimeType> getMimeTypes() {
+        return types==null ? EnumSet.noneOf(EMimeType.class) : EnumSet.copyOf(types);
     }
 
     @Override
@@ -94,16 +102,12 @@ public class FileDialogSettings implements IFileDialogSettings {
         return initialPath;
     }
 
-    @Override
-    public void setInitialPath(String path) {
-        this.initialPath = path;
-        updateSettings();
+    public void setInitialPath(final String path) {
+        this.initialPath = path;        
     }
     
-    @Override
-    public void setFileDialogOpenMode(EFileDialogOpenMode openMode) {
+    public void setFileDialogOpenMode(final EFileDialogOpenMode openMode) {
         this.openMode = openMode;
-        updateSettings();
     }
 
     @Override
@@ -111,16 +115,13 @@ public class FileDialogSettings implements IFileDialogSettings {
         return openMode;
     }
 
+    
     public boolean getShowFullPath() {
         return showFullPath;
     }
 
-    public void setShowFullPath(boolean showFullPath) {
+    public void setShowFullPath(final boolean showFullPath) {
         this.showFullPath = showFullPath;
-        updateSettings();
     }
     
-    private void updateSettings(){
-
-    }
 }

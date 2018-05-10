@@ -10,7 +10,51 @@
     </Bodies>
     <MethodGroup Id="cmgJK3COOP6LJHWXNUMFHQ6UBGQZ4" Name="Root"/>
     <PropertyGroup Id="cpgQU7LPMXYARENRGDD4LORMRKACI" Name="Root"/>
-    <Properties/>
+    <Properties>
+      <Property Id="prdHFRK4NGNFRERZMCUBGCFLC7FO4" Name="makeAllImportedVersionsCurrent" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls6ZZ6NGU225BXBCK57BIEJAZIUM" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdHFRK4NGNFRERZMCUBGCFLC7FO4" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>activateVersionAfterImport</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+    return false;
+}
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdHFRK4NGNFRERZMCUBGCFLC7FO4" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>activateVersionAfterImport</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="prdUSYI3KQHCFDLZJ3AO5A5DOBC64" Name="expModulesIds" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="221"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
     <Methods>
       <Method Id="mthQBTJF44B3ZDN7DLPVA4RQQ7OUU" Name="extractExportData" Nature="0" IsOverride="true">
         <AccessRules Access="1"/>
@@ -31,16 +75,36 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U">
+                <xsc:Presentation>UserReport</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U mthDS52HOWT4ZAQZFWRC3K4GU4OH4" Invoke="true"/>
+              <xsc:IdReference Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U mth6LUFMKGQLNBT5E42OD55E676AQ" Invoke="true">
+                <xsc:Presentation>exportAll</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(null,data);
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdUSYI3KQHCFDLZJ3AO5A5DOBC64" Invoke="true">
+                <xsc:Presentation>expModulesIds</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, data, null, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdHFRK4NGNFRERZMCUBGCFLC7FO4" Invoke="true">
+                <xsc:Presentation>makeAllImportedVersionsCurrent</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
 </xsc:Java>
             </xsc:Item>
           </Src>
@@ -65,6 +129,30 @@
         <Sources>
           <Src>
             <xsc:Item>
+              <xsc:Java>((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclEEHKIW3PIJCHRIMWABVBTDEJIE">
+                <xsc:Presentation>CfgItem.UserReportGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) item).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclEEHKIW3PIJCHRIMWABVBTDEJIE pruENRSM2KGLJBVFJCJDOCCLJSFEU" Invoke="true">
+                <xsc:Presentation>expModulesIds</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdUSYI3KQHCFDLZJ3AO5A5DOBC64" Invoke="true">
+                <xsc:Presentation>expModulesIds</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
               <xsc:Java>;</xsc:Java>
             </xsc:Item>
           </Src>
@@ -72,7 +160,7 @@
       </Method>
     </Methods>
     <Presentations>
-      <Form InheritanceMask="4114">
+      <Form InheritanceMask="18">
         <Model Id="afmT27JXGWQCNCUTCTDADND5Z3XKY" Name="CfgExportForm.UserReportGroup:Model" Type="18">
           <AccessRules/>
           <Headers>
@@ -83,9 +171,105 @@
           </Bodies>
           <MethodGroup Id="cmgLTRL3EYMW5GYLKUFIZDH43TYCY" Name="Root"/>
           <PropertyGroup Id="cpg5LAN5SQLO5EGPPTEJETKDASPUU" Name="Root"/>
-          <Properties/>
+          <Properties>
+            <Property Id="prdH5MTLP7ERZBHVBJ55N7AERJZEM" Name="toFile" Nature="8" IsConst="false" Environment="common-client" IsOverride="true">
+              <AccessRules Access="1"/>
+              <Type TypeId="1"/>
+              <DependentItems/>
+              <SetterSources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>super.setValue(val);
+
+final boolean toFile = val.booleanValue();
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdHFRK4NGNFRERZMCUBGCFLC7FO4" Invoke="true">
+                      <xsc:Presentation>makeImportedVersionCurrent</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(!toFile);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdHFRK4NGNFRERZMCUBGCFLC7FO4" Invoke="true">
+                      <xsc:Presentation>makeImportedVersionCurrent</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setValue(!toFile);</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </SetterSources>
+            </Property>
+            <Property Id="prdA6IUDE5WWJENDLUWY2D2K5NGHA" Name="toPacket" Nature="8" IsConst="false" Environment="common-client" IsOverride="true">
+              <AccessRules Access="1"/>
+              <Type TypeId="1"/>
+              <DependentItems/>
+              <SetterSources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>super.setValue(val);
+
+final boolean toPacket = val.booleanValue();
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdHFRK4NGNFRERZMCUBGCFLC7FO4" Invoke="true">
+                      <xsc:Presentation>makeImportedVersionCurrent</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(toPacket);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdHFRK4NGNFRERZMCUBGCFLC7FO4" Invoke="true">
+                      <xsc:Presentation>makeImportedVersionCurrent</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setValue(toPacket);</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </SetterSources>
+            </Property>
+          </Properties>
           <Methods/>
         </Model>
+        <EditorPages>
+          <Page Id="epgDN73CDHRENDEVG4L4YOM44A664" Name="General" Type="1" ClientEnvironment="explorer">
+            <AccessRules IsPublished="false"/>
+            <Properties>
+              <Property Id="prdH5MTLP7ERZBHVBJ55N7AERJZEM" Row="0" Column="0"/>
+              <Property Id="prdA6IUDE5WWJENDLUWY2D2K5NGHA" Row="1" Column="0"/>
+              <Property Id="prdLEQ7NQRA4BGRBBKLFXNXMK5WXU" Row="0" Column="1"/>
+              <Property Id="prdGIRD7QI6DNGFHP6IZTCDDGEAA4" Row="1" Column="1"/>
+              <Property Id="prdHFRK4NGNFRERZMCUBGCFLC7FO4" Row="2" Column="0" ColSpan="2"/>
+            </Properties>
+          </Page>
+          <PageOrder>
+            <Item PageId="epgDN73CDHRENDEVG4L4YOM44A664" Level="1"/>
+          </PageOrder>
+        </EditorPages>
       </Form>
     </Presentations>
     <Extends TypeId="411" Path="afh762LZFWFDFGPBJ6P33H4XR2OYQ"/>

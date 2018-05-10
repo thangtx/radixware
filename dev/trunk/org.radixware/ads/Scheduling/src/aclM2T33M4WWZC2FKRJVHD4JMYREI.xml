@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclM2T33M4WWZC2FKRJVHD4JMYREI" Name="Task.Dir" Type="2" ClientEnvironment="explorer">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderaclM2T33M4WWZC2FKRJVHD4JMYREI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclM2T33M4WWZC2FKRJVHD4JMYREI"/>
+    </Bodies>
+    <MethodGroup Id="cmgFVKTRLTICFHLHFV3TGP2DB3WLE" Name="Root"/>
+    <PropertyGroup Id="cpg2JN5KFVN65FZXOISLPQL5NUGPM" Name="Root"/>
+    <Properties>
+      <Property Id="colN4UP2RJZNVGGFHJ2O6GKFQNLAI" Name="hasChildren" Nature="6" IsConst="false" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="63"/>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclM2T33M4WWZC2FKRJVHD4JMYREI colJDITQVG7QRGIPPZQ4BICW5SISA" Invoke="true">
+                <xsc:Presentation>hasChildrenWorkaround</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+        <SqmlExpression>
+          <xsc:Item>
+            <xsc:Sql>nvl((select 1 from dual where exists (select * from </xsc:Sql>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TableSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Sql> where </xsc:Sql>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colC7IXI3MF4ZHHRJGGR7KVS6LL7Y" Owner="TABLE"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Sql> = </xsc:Sql>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:PropSqlName TableId="aecWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colPU65PF7LJPOBDCIUAALOMT5GDM" Owner="THIS"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Sql>)), 0)</xsc:Sql>
+          </xsc:Item>
+        </SqmlExpression>
+      </Property>
+      <Property Id="colJDITQVG7QRGIPPZQ4BICW5SISA" Name="hasChildrenWorkaround" Nature="6" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="28" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <SqmlExpression>
+          <xsc:Item>
+            <xsc:Sql>nvl((select 1 from dual where exists (select * from </xsc:Sql>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:TableSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Sql> where </xsc:Sql>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colC7IXI3MF4ZHHRJGGR7KVS6LL7Y" Owner="TABLE"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Sql> = </xsc:Sql>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:PropSqlName TableId="aecWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="colPU65PF7LJPOBDCIUAALOMT5GDM" Owner="THIS"/>
+          </xsc:Item>
+          <xsc:Item>
+            <xsc:Sql>)), 0)</xsc:Sql>
+          </xsc:Item>
+        </SqmlExpression>
+      </Property>
+      <Property Id="colPT5IWXJ4O5AIPIYP3NSPZTDK54" Name="status" Nature="0" IsConst="false" IsOverride="true">
+        <AccessRules/>
+        <Type TypeId="21" Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI"/>
+        <Presentation InheritanceMask="61">
+          <Editing NullValTitleId="mlsFNZIK5OL4VFVLL7KGBYKXYJJAM" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prdAOMIZVMCJZHFLCSICRPP7CFGJQ" Name="timeSinceLastExec" Nature="2" IsConst="true" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="61">
+          <Editing NullValTitleId="mlsI2T3CEP7GZD43B46WELYJF3T5I" IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="prdNDQRMIMTBRAKDCLS3FZU4MFC6U" Name="lastDurationTime" Nature="2" IsConst="true" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="61">
+          <Editing NullValTitleId="mlsGOM5YRHYLZEDJCHSQLCDDQ5ZI4" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthN36NOGMSW5EGZIX2JAVCBWM2RU" Name="execute" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="prevExecTime" Id="mprI3XJAGBYXVHV5L35DF5MASV5KY">
+            <Type TypeId="12"/>
+          </Parameter>
+          <Parameter Name="curExecTime" Id="mprWAWOWC2FP5ENDGSCBWSY5L2ZII">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>throw new UnsupportedOperationException("Not supported for this type of task");</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRM7DUPZ7CFAU7NRFYMBPOXCMSY" Name="isDead" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth3AJ224J3KFH4PKRZDARTG6KR2M" Name="isRunningOnlyWhenRelatedJobsExist" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthZBBPKW3Z6RAUTC3LR3FVNCTIXY" Name="afterChildExecFinish" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="childTask" Id="mprOPTOKFPEUNFW5LRFC4FF6NTGTE">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="nextTask" Id="mprRHXH66PP3JDAVDZHKPQGNUQ3LE">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+          <Parameter Name="returnStatus" Id="mprI2YUXFZTDNF2HKVH732GU2DHWE">
+            <Type TypeId="21" Path="acsEIXEKC5YG5CVBEOCLYU33L3WGI"/>
+          </Parameter>
+          <Parameter Name="execToken" Id="mprWOF2P3TWJFDR5BT5NTZC2PERPM">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>//do nothing</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTHJHLFF7GJE45MGPI5TEEFNPYY" Name="getPrevChild" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules IsDeprecated="true"/>
+        <Parameters>
+          <Parameter Name="child" Id="mprKMDNQZ6DVZD2VLEAEZFOATNVIE">
+            <Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>throw new UnsupportedOperationException("Not supported yet.");</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCMOZTIRUORE4FDJG67MVTWQCQE" Name="getChilds" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accRHNAHQYZVJE25HIG5N3EQMPUPM">
+                <xsc:Presentation>ChildTasksByDirCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> childsCursor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="accRHNAHQYZVJE25HIG5N3EQMPUPM">
+                <xsc:Presentation>ChildTasksByDirCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accILBHICALDNB2ZMVMXQQ5LEEK4E mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>open</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> childs = new java.util.ArrayList&lt;>();
+try {
+    while (childsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+                <xsc:Presentation>next</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+        childs.add(childsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accRHNAHQYZVJE25HIG5N3EQMPUPM prf2IXKIEG63NAMZFPVIGKN3PAVWE" Invoke="true">
+                <xsc:Presentation>task</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+    return childs;
+} finally {
+    childsCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true">
+                <xsc:Presentation>close</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5DTKCHKSHJDIRAUKR47UTBXOUQ" Name="getChildsCountFromDb" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acc4GD6YEMOQRCMPANCXVA5QRLMWQ">
+                <xsc:Presentation>ChildDirTasksCountCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> countCursor = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="acc4GD6YEMOQRCMPANCXVA5QRLMWQ">
+                <xsc:Presentation>ChildDirTasksCountCursor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="accNOTTWQN3OFCPTIM3FSY55GDYKM mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>open</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+try {
+    if (countCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+                <xsc:Presentation>next</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() &amp;&amp; countCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc4GD6YEMOQRCMPANCXVA5QRLMWQ prfWUWAS5VBGJD6FNH43UADHPNBVI" Invoke="true">
+                <xsc:Presentation>count</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+        return countCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acc4GD6YEMOQRCMPANCXVA5QRLMWQ prfWUWAS5VBGJD6FNH43UADHPNBVI" Invoke="true">
+                <xsc:Presentation>count</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue();
+    }
+} finally {
+    countCursor.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true">
+                <xsc:Presentation>close</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+}
+return 0;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth5W6SOWX2PNCHNJ2MZZSRILJSKU" Name="decreaseChildSeqNumbers" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="seqNum" Id="mprCHMFRBGQJJFHVCEOBMCPCGJAU4">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="sscFAQCB3MFLVA67H3NWT2FKQWNVM">
+                <xsc:Presentation>DecreaseChildSeqNumbersStatement</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="sscFAQCB3MFLVA67H3NWT2FKQWNVM mth_stmt_execute_____________" Invoke="true">
+                <xsc:Presentation>execute</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, seqNum, false);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthA6H22KEZF5A33NV7PIU4A5JRFQ" Name="canContainDirectory" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return true;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+    <Presentations ObjectTitleId="mlsL745RFMRV5HR7JN7YGCR6KCY7M">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccVXWRKQLYJTOBDCIVAALOMT5GDM" Name="Default">
+          <AccessRules IsPublished="false"/>
+          <ClassRef TopicId="cctKWLFFJ24KVGHXD5FOCWSR27WJM" Order="50.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprWABRAQF3OZDDVBPYA4AX2SBQ3A" Name="Edit" BasePresentationId="eprAIWBLDTSJTOBDCIVAALOMT5GDM" InheritanceMask="36018" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprAIWBLDTSJTOBDCIVAALOMT5GDM">
+          <AccessRules IsPublished="false"/>
+          <Model Id="aemWABRAQF3OZDDVBPYA4AX2SBQ3A" Name="Edit:Model" Type="15">
+            <AccessRules IsPublished="false"/>
+            <Headers>
+              <Src Name="HeaderaemWABRAQF3OZDDVBPYA4AX2SBQ3A"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaemWABRAQF3OZDDVBPYA4AX2SBQ3A"/>
+            </Bodies>
+            <MethodGroup Id="cmgEDYCU2FC5FF5JK645B7DBFWCHM" Name="Root"/>
+            <PropertyGroup Id="cpgBVRM33QI7BBAXPKWILHT7PIPBI" Name="Root"/>
+            <Properties>
+              <Property Id="colRMH5P2FSTNABBMBNUIXU3AINEQ" Name="isActive" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+                <AccessRules IsPublished="false"/>
+                <Type TypeId="1"/>
+                <EmbeddedClass Id="aet6N577TAAVNG6HOTGJMKN2CDMTI" Name="EmbeddedClass" Type="3">
+                  <AccessRules IsPublished="false"/>
+                  <Headers>
+                    <Src Name="Headeraet6N577TAAVNG6HOTGJMKN2CDMTI"/>
+                  </Headers>
+                  <Bodies>
+                    <Src Name="Bodyaet6N577TAAVNG6HOTGJMKN2CDMTI"/>
+                  </Bodies>
+                  <MethodGroup Id="cmgH7GBOCX3W5FQBG4UXMWSAE6LGE" Name="Root"/>
+                  <PropertyGroup Id="cpgDCXBO2USA5D2RBXEZOGV6PHVNY" Name="Root"/>
+                  <Properties/>
+                  <Methods>
+                    <Method Id="mthQNIP5JWJYBFZHLPIGNB2E5KLFM" Name="isVisible" Nature="0" IsOverride="true" isDescriptionInherited="true">
+                      <AccessRules/>
+                      <ReturnType TypeId="401" extStr="boolean"/>
+                      <Sources>
+                        <Src>
+                          <xsc:Item>
+                            <xsc:Java>return false;</xsc:Java>
+                          </xsc:Item>
+                        </Src>
+                      </Sources>
+                    </Method>
+                  </Methods>
+                </EmbeddedClass>
+                <DependentItems/>
+              </Property>
+            </Properties>
+            <Methods>
+              <Method Id="mthZXLWC3AQT5ARLORV4S2MZR3MGI" Name="isCommandAccessible" Nature="0" IsOverride="true">
+                <AccessRules/>
+                <Parameters>
+                  <Parameter Name="commandDef" Id="mprVKPDE3G23BFSPIJDK46LCQJ4TQ">
+                    <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.RadCommandDef"/>
+                  </Parameter>
+                </Parameters>
+                <ReturnType TypeId="401" extStr="boolean"/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>return commandDef.getId() != </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM cmdGS3G6CAUIJBUFIKKDOBUHNHW5M">
+                        <xsc:Presentation>Task:Post</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>
+        &amp;&amp; commandDef.getId() != </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM cmdVVLKTQJEBVDJXC66TP546OCFCA">
+                        <xsc:Presentation>Task:Cancel</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>
+        &amp;&amp; commandDef.getId() != </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM cmd36DOQAUK4NBXRA7B5OCHPTNIVQ">
+                        <xsc:Presentation>Task:ActualizeStatus</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>
+        &amp;&amp; super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM eprAIWBLDTSJTOBDCIVAALOMT5GDM aemAIWBLDTSJTOBDCIVAALOMT5GDM mthZXLWC3AQT5ARLORV4S2MZR3MGI" Invoke="true">
+                        <xsc:Presentation>isCommandAccessible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(commandDef);</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgHHRMHELUJTOBDCIVAALOMT5GDM" Name="General" Type="1" IconId="imgZSKPYPT64G4ENTLKOOWJ6OT56KBWJ4YR">
+              <Properties>
+                <Property Id="colPU65PF7LJPOBDCIUAALOMT5GDM" Row="0" Column="0"/>
+                <Property Id="colIYGJ6NTQJTOBDCIVAALOMT5GDM" Row="2" Column="0"/>
+                <Property Id="colVVAT5W3YSLOBDCKTAALOMT5GDM" Row="5" Column="0"/>
+                <Property Id="prdTCVRBPKC6JBMFIRHRNV7XKWEAE" Row="4" Column="0"/>
+                <Property Id="colWDY2TRTHU5CBNOYBLCQRTQSCZM" Row="3" Column="0"/>
+                <Property Id="colRMU7WRHOUZDINIVZWJHT6KSOFM" Row="6" Column="0"/>
+                <Property Id="col7PEOSLRVM5GQLNRYMHH4V7B2JI" Row="1" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgHHRMHELUJTOBDCIVAALOMT5GDM" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfI6W6FO6TN5CTTPJLRZ5KD7YBHQ"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprHOYEWKPLQBHGPFBVJTR4SDGK74" Name="Create" BasePresentationId="eprXGQ6C3VMQPOBDCKCAALOMT5GDM" InheritanceMask="36018" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprXGQ6C3VMQPOBDCKCAALOMT5GDM">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgHHRMHELUJTOBDCIVAALOMT5GDM" Name="General" Type="1" IconId="imgZSKPYPT64G4ENTLKOOWJ6OT56KBWJ4YR">
+              <Properties>
+                <Property Id="colPU65PF7LJPOBDCIUAALOMT5GDM" Row="0" Column="0"/>
+                <Property Id="colIYGJ6NTQJTOBDCIVAALOMT5GDM" Row="2" Column="0"/>
+                <Property Id="colVVAT5W3YSLOBDCKTAALOMT5GDM" Row="5" Column="0"/>
+                <Property Id="prdTCVRBPKC6JBMFIRHRNV7XKWEAE" Row="4" Column="0"/>
+                <Property Id="colWDY2TRTHU5CBNOYBLCQRTQSCZM" Row="3" Column="0"/>
+                <Property Id="col7PEOSLRVM5GQLNRYMHH4V7B2JI" Row="1" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgHHRMHELUJTOBDCIVAALOMT5GDM" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfGEOHMENXHJEEBDQPTUMTVLLLII"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U"/>
+  </AdsClassDefinition>
+</AdsDefinition>

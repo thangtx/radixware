@@ -7,6 +7,24 @@
            elementFormDefault="qualified" 
            attributeFormDefault="qualified">
     <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:simpleType name="DeliveryStatus">
+        <xs:annotation>
+            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                <t:class>org.radixware.kernel.common.enums.EPersoCommDeliveryStatus</t:class>
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="t:StrEnum"/>
+    </xs:simpleType>
+<!--    <xs:complexType name="DeliveryReceipt">
+        <xs:attribute name="DeliveryStatus" type="dpc:DeliveryStatus" use="optional"/>
+    </xs:complexType>
+    <xs:complexType name="SmppDeliveryReceipt">
+        <xs:complexContent>
+            <xs:extension base="dpc:DeliveryReceipt">
+                <xs:attribute name="SmppMessageId" type="t:Str" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>-->
     <xs:complexType name="Attachment">
         <xs:sequence>
             <xs:element name="Data" type="t:BinBase64"/>
@@ -32,9 +50,14 @@
                     </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <!--<xs:element name="DeliveryReceipt" type="dpc:DeliveryReceipt" minOccurs="0" maxOccurs="1"/>-->
         </xs:sequence>
+        <xs:attribute name="MessageId" type="t:Int" use="required"/>
         <xs:attribute name="Importance" type="t:Int"/>
         <xs:attribute name="SentTime" type="t:DateTime"/>
+        <xs:attribute name="ChannelId" type="t:Int" use="optional"/>
+        <xs:attribute name="IsUssd" type="t:Bool" use="optional"/>
+        <xs:attribute name="UssdServiceOp" type="t:Int" use="optional"/>
     </xs:complexType>
     <xs:element name="Message" type="dpc:MessageType">
         <xs:annotation>
@@ -61,6 +84,7 @@
             <xs:element name="Body" type="t:Str" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Icon" type="t:Str" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Tag" type="t:Str" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Badge" type="t:Int" minOccurs="0" maxOccurs="1"/>            
             <xs:element name="ClickAction" type="t:Str" minOccurs="0" maxOccurs="1"/>
             <xs:element name="TimeToLiveSec" type="t:Int" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Color" type="t:Str" minOccurs="0" maxOccurs="1">
@@ -69,7 +93,7 @@
                 </xs:annotation>
             </xs:element>
             <xs:element name="CollapseKey" type="t:Str" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="Sound" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Sound" type="t:Str" minOccurs="0" maxOccurs="1"/>
             <xs:element name="DelayWhileIdle" minOccurs="0" maxOccurs="1"/>
             <xs:element name="Data" type="t:MapStrStr" minOccurs="0" maxOccurs="1"/>
         </xs:sequence>

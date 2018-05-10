@@ -16,7 +16,7 @@ import java.util.Map;
 import org.radixware.kernel.server.units.arte.ArteUnit;
 import org.radixware.kernel.common.utils.net.RequestChannel;
 import org.radixware.kernel.server.sap.SapOptions;
-import org.radixware.kernel.server.utils.PriorityResourceManager;
+import org.radixware.kernel.server.utils.IPriorityResourceManager;
 
 
 public interface IArteRequest {
@@ -42,13 +42,13 @@ public interface IArteRequest {
     
     public InputStream getOverriddenInput();
     
-    public PriorityResourceManager.Ticket getCountTicket();
+    public IPriorityResourceManager.Ticket getCountTicket();
     
-    public void setCountTicket(PriorityResourceManager.Ticket ticket);
+    public void setCountTicket(IPriorityResourceManager.Ticket ticket);
     
-    public PriorityResourceManager.Ticket getActiveTicket();
+    public IPriorityResourceManager.Ticket getActiveTicket();
     
-    public void setActiveTicket(PriorityResourceManager.Ticket ticket);
+    public void setActiveTicket(IPriorityResourceManager.Ticket ticket);
     
     public long getCreateTimeMillis();
     

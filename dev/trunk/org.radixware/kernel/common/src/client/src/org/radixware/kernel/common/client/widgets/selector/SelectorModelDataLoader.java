@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.widgets.selector;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +24,6 @@ import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.views.IProgressHandle;
-import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EDialogIconType;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
@@ -44,7 +44,6 @@ public class SelectorModelDataLoader {
     private final static String ROWS_LIMIT_CONFIG_PATH =
             SettingNames.SYSTEM + "/" + SettingNames.SELECTOR_GROUP + "/" + SettingNames.Selector.COMMON_GROUP + "/" + SettingNames.Selector.Common.ROWS_LIMIT_FOR_SEARCH;
     private final IClientEnvironment environment;
-    private final IWidget parentWidget;
     private IProgressHandle progressHandle;
     private final String updateSelectorWidgetProgress;
     private boolean checkForLoadingLimitEnabled = true;
@@ -60,12 +59,11 @@ public class SelectorModelDataLoader {
     private String progressHeader;
     private String progressTitle;
 
-    public SelectorModelDataLoader(final IClientEnvironment environment, final IWidget parent) {
+    public SelectorModelDataLoader(final IClientEnvironment environment) {
         this.environment = environment;
         loadingDelta = environment.getConfigStore().readInteger(ROWS_LIMIT_CONFIG_PATH, 100);
         loadingLimit = loadingDelta;
         progressHandle = environment.getProgressHandleManager().newStandardProgressHandle();
-        parentWidget = parent;
         continueButtonText = null;
         dontAskButtonText = environment.getMessageProvider().translate("Selector", "Continue Operation and don't Ask Again");
         interruptButtonText = null;
@@ -232,12 +230,12 @@ public class SelectorModelDataLoader {
         return delegate.rowCount();
     }
 
-    public int findObjectByPid(final ISelectorWidgetDelegate delegate, final Pid pid) throws ServiceClientException, InterruptedException {
+    public int findObjectByPid(final ISelectorWidgetDelegate delegate, final Collection<Pid> pids) throws ServiceClientException, InterruptedException {
         final GroupModel groupModel = delegate.getChildGroup();
         if (groupModel==null){
             return -1;
-        }
-        int searchResult = findObjectByPid(groupModel, 0, pid);
+        }        
+        int searchResult = findObjectByPid(groupModel, 0, pids);
         if (searchResult > -1) {
             return searchResult;
         }
@@ -252,7 +250,7 @@ public class SelectorModelDataLoader {
         }
         try {
             while (searchResult < 0 && loadMore(delegate) && !progressHandle.wasCanceled()) {//loadMore(groupModel) --> delegate.readMore()
-                searchResult = findObjectByPid(groupModel, startIndex, pid);
+                searchResult = findObjectByPid(groupModel, startIndex, pids);
                 startIndex = groupModel.getEntitiesCount();
                 if (progressTitle != null && !progressTitle.isEmpty()) {
                     progressHandle.setText(String.format(progressTitle, String.valueOf(getLoadedObjectsCount())));
@@ -285,14 +283,14 @@ public class SelectorModelDataLoader {
         }
     }
 
-    private int findObjectByPid(final GroupModel groupModel, final int startIndex, final Pid pid) throws ServiceClientException, InterruptedException {
+    private int findObjectByPid(final GroupModel groupModel, final int startIndex, final Collection<Pid> pids) throws ServiceClientException, InterruptedException {
         for (int i = startIndex, count = groupModel.getEntitiesCount(); i < count; i++) {
             try {
-                if (groupModel.getEntity(i).getPid().equals(pid)) {
+                if (pids.contains(groupModel.getEntity(i).getPid())) {
                     return i;
                 }
             } catch (BrokenEntityObjectException exception) {
-                if (Objects.equals(exception.getPid(), pid)) {
+                if (pids.contains(exception.getPid())) {
                     return i;
                 }
             }
@@ -354,6 +352,7 @@ public class SelectorModelDataLoader {
             final Icon btnIcon = environment.getApplication().getImageManager().getIcon(ButtonIcon.NO_BUTTON);
             messageBox.addButton(EDialogButtonType.NO, interruptBtnText, btnIcon);
         }
+        messageBox.removeButton(EDialogButtonType.OK);
         environment.getProgressHandleManager().blockProgress();
         try {
             return messageBox.execMessageBox();

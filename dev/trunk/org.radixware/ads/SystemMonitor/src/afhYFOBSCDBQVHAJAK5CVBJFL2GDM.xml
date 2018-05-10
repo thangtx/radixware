@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="afhYFOBSCDBQVHAJAK5CVBJFL2GDM" Name="InstanceStateHistoryExportForm" TitleId="mlsFEK4NEWSOFFL3P7KVBJG5KZXKA" Type="19">
+    <AccessRules/>
+    <Headers>
+      <Src Name="HeaderadcGNQGTFZJAVAU5DPKAK2UOEHDZE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcBQHMZNAPOVFSRN2R7QQNFY5JVM"/>
+    </Bodies>
+    <MethodGroup Id="cmgV7AJCVW3CVCBVDEA72UOXBE7R4" Name="Root"/>
+    <PropertyGroup Id="cpgQQF7BJQ7ZVGVBASRJFGTURQDIY" Name="Root">
+      <Group Id="cpgLR33PGKBWFFQZBYSIIYUOP4LXM" Name="Props" Members="pfmBPNB5PCHAJFKFNDCBIRTYVP4MM pfmWJDGTGEON5HX7NDIYARSETOH3I prdL4V7LSNM5VEIZKJS3QXN4BNF5Q prd7QRPB3FEN5CJLIHFAXKA4Y2HNM"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="pfmBPNB5PCHAJFKFNDCBIRTYVP4MM" Name="maxCount" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mls5Z6LKN6APBBDROGYYCGDGSKEPQ" InheritanceMask="4">
+          <Editing NullValTitleId="mlsA4HUYNQ7YBENFGHWQIQUHSL2B4" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Int MaxValue="999999" MinValue="1" NumberBase="10" StepSize="1"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+      <Property Id="pfmWJDGTGEON5HX7NDIYARSETOH3I" Name="fileName" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsFZX2OGEEF5G2DGBC2JSV4VC6OE" InheritanceMask="4">
+          <Editing NotNull="true" StoreEditHistory="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:FilePath FileDialogTitle="File Dialog" MimeType="text/html" CheckIfPathExists="false" SelectionMode="0" HandleInputAvailable="false" StoreLastPath="true" FileDialogTitleId="mlsW6DO5S5MRFHY3ON3CAFGP2FY6Q"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+      <Property Id="prdL4V7LSNM5VEIZKJS3QXN4BNF5Q" Name="fileFormat" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <InitialValue>
+          <ValAsStr>text/html</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsLV7PXVFEVRE65J6QEBMEFNTKNI" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:List>
+                <edit:Item>
+                  <edit:Title>HTML</edit:Title>
+                  <edit:Value>text/html</edit:Value>
+                </edit:Item>
+                <edit:Item>
+                  <edit:Title>XML</edit:Title>
+                  <edit:Value>text/xml</edit:Value>
+                </edit:Item>
+              </edit:List>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+      <Property Id="prd7QRPB3FEN5CJLIHFAXKA4Y2HNM" Name="instanceId" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthRLBAUOVZ7NC5JJGYPXNI7KD4OQ" Name="InstanceStateHistoryExportForm" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="prevForm" Id="mprHDJETTGXQBCTLBH2SVDO7IUZ4A">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(prevForm);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTYWXJRLODNAT7LXOISEO5SFPZU" Name="onSubmit" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="context" Id="mprD64CNH6YKRFJDL5TZ2YUETMLOY">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.Context"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>((</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="agcRHY4TVWIC5C4TJN2GKL2ABRKKQ">
+                <xsc:Presentation>InstanceStateHistoryGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)context.entityGroup).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="agcRHY4TVWIC5C4TJN2GKL2ABRKKQ mthASEBO2ATL5AR3NCYXPA6JQJHHI" Invoke="true">
+                <xsc:Presentation>export</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhYFOBSCDBQVHAJAK5CVBJFL2GDM prdL4V7LSNM5VEIZKJS3QXN4BNF5Q" Invoke="true">
+                <xsc:Presentation>fileFormat</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhYFOBSCDBQVHAJAK5CVBJFL2GDM pfmWJDGTGEON5HX7NDIYARSETOH3I" Invoke="true">
+                <xsc:Presentation>fileName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhYFOBSCDBQVHAJAK5CVBJFL2GDM pfmBPNB5PCHAJFKFNDCBIRTYVP4MM" Invoke="true">
+                <xsc:Presentation>maxCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhYFOBSCDBQVHAJAK5CVBJFL2GDM prd7QRPB3FEN5CJLIHFAXKA4Y2HNM" Invoke="true">
+                <xsc:Presentation>instanceId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Presentations>
+      <Form InheritanceMask="0">
+        <Model Id="afmYFOBSCDBQVHAJAK5CVBJFL2GDM" Name="InstanceStateHistoryExportForm:Model" Type="18">
+          <AccessRules/>
+          <Headers>
+            <Src Name="HeaderadcZEYGKL4F7VEXPOZAT5IQQRMMSQ"/>
+          </Headers>
+          <Bodies>
+            <Src Name="Bodyadc5ZPUH4ILXFDLXHG2LIWX5ZDBUU"/>
+          </Bodies>
+          <MethodGroup Id="cmgCO7AOMOMCFA3PFMEIFB4TCHDIA" Name="Root"/>
+          <PropertyGroup Id="cpgH4DD22P2XBA7PF5J2AH3LE6NM4" Name="Root"/>
+          <Properties>
+            <Property Id="prdL4V7LSNM5VEIZKJS3QXN4BNF5Q" Name="fileFormat" Nature="8" IsConst="false" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Type TypeId="21"/>
+              <DependentItems/>
+              <SetterSources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhYFOBSCDBQVHAJAK5CVBJFL2GDM afmYFOBSCDBQVHAJAK5CVBJFL2GDM prdL4V7LSNM5VEIZKJS3QXN4BNF5Q" Invoke="true" extStr="#STD_PROP_VALUE#">
+                      <xsc:Presentation>fileFormat</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> = val;
+final </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcQQIPH33FVFCJHMXXIODLS4BEHY">
+                      <xsc:Presentation>Explorer.EditMask::EditMaskFilePath</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> mask = (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcQQIPH33FVFCJHMXXIODLS4BEHY">
+                      <xsc:Presentation>Explorer.EditMask::EditMaskFilePath</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>)</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhYFOBSCDBQVHAJAK5CVBJFL2GDM pfmWJDGTGEON5HX7NDIYARSETOH3I" Invoke="true">
+                      <xsc:Presentation>fileName</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthOUS63YL4KRC3RGX5X4DSBLJ74I" Invoke="true">
+                      <xsc:Presentation>getEditMask</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+final </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="21" Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM">
+                      <xsc:Presentation>Common::MimeType</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> mimeType = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="21" Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM">
+                      <xsc:Presentation>Common::MimeType</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.getForValue(val);
+mask.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcQQIPH33FVFCJHMXXIODLS4BEHY mthTJ6UIWSVGZGZNP7H4RHJ7WYIOE" Invoke="true">
+                      <xsc:Presentation>setMimeType</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(mimeType);</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </SetterSources>
+            </Property>
+          </Properties>
+          <Methods>
+            <Method Id="mthWJPXB2Y6UJGNDEMAGIH622AE4E" Name="beforeSubmit" Nature="0" IsOverride="true" isDescriptionInherited="true">
+              <AccessRules/>
+              <ReturnType TypeId="401" extStr="boolean"/>
+              <ThrownExceptions>
+                <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.ModelException"/>
+                <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+                <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+              </ThrownExceptions>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCICJHDC22RGH5ACUPHLRTZQL6Y mthKDCFYYQWK5BQVH3L35XGIXYVTY" Invoke="true">
+                      <xsc:Presentation>getFormContext</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().OwnerModel.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth7I77JEZSOVDBZPRP7N6QITSMQI" Invoke="true">
+                      <xsc:Presentation>getContext</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() instanceof </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adc45UH2P5YURGXLN3O34PQ4YFDCI">
+                      <xsc:Presentation>Explorer.Context::TableSelectContext</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adc45UH2P5YURGXLN3O34PQ4YFDCI">
+                      <xsc:Presentation>Explorer.Context::TableSelectContext</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> context = (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adc45UH2P5YURGXLN3O34PQ4YFDCI">
+                      <xsc:Presentation>Explorer.Context::TableSelectContext</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>)</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCICJHDC22RGH5ACUPHLRTZQL6Y mthKDCFYYQWK5BQVH3L35XGIXYVTY" Invoke="true">
+                      <xsc:Presentation>getFormContext</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().OwnerModel.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mth7I77JEZSOVDBZPRP7N6QITSMQI" Invoke="true">
+                      <xsc:Presentation>getContext</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+    if (context.getHolderEntityModel()!=null){
+        final Str instIdStr = context.getHolderEntityModel().</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth2KIAJ6FEFRGK7OPUZOZC4ZHECU" Invoke="true">
+                      <xsc:Presentation>getPid</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc6MUJT675HNGATDJ477ZWLDUOHM mthJ4YIWLZDFRFJHGGWOEYKWOCHLU" Invoke="true">
+                      <xsc:Presentation>toString</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+        final Int instId = Integer.valueOf(instIdStr);
+        </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhYFOBSCDBQVHAJAK5CVBJFL2GDM prd7QRPB3FEN5CJLIHFAXKA4Y2HNM" Invoke="true">
+                      <xsc:Presentation>instanceId</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = instId;
+        
+    }
+}
+return super.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCICJHDC22RGH5ACUPHLRTZQL6Y mthWJPXB2Y6UJGNDEMAGIH622AE4E" Invoke="true">
+                      <xsc:Presentation>beforeSubmit</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+          </Methods>
+        </Model>
+        <EditorPages>
+          <Page Id="epgU5VOPQXKY5CJVEON5H3DA6HHZE" Name="Main" TitleId="mlsBVWVHC2HTZD3HI5RYP7TWI37NA" Type="1" ClientEnvironment="explorer">
+            <AccessRules Access="2" IsPublished="false"/>
+            <Properties>
+              <Property Id="pfmWJDGTGEON5HX7NDIYARSETOH3I" Row="1" Column="0"/>
+              <Property Id="pfmBPNB5PCHAJFKFNDCBIRTYVP4MM" Row="2" Column="0"/>
+              <Property Id="prdL4V7LSNM5VEIZKJS3QXN4BNF5Q" Row="0" Column="0"/>
+            </Properties>
+          </Page>
+          <Page Id="epgN6XLXMCVIRFY7BLYNMPDTPFK2I" Name="MainWeb" TitleId="mls4ONQU7PYQ5GYPCNXMSA3L4S6CU" Type="1" ClientEnvironment="web">
+            <AccessRules IsPublished="false"/>
+            <Properties>
+              <Property Id="pfmBPNB5PCHAJFKFNDCBIRTYVP4MM" Row="0" Column="0"/>
+            </Properties>
+          </Page>
+          <PageOrder>
+            <Item PageId="epgU5VOPQXKY5CJVEON5H3DA6HHZE" Level="1"/>
+            <Item PageId="epgN6XLXMCVIRFY7BLYNMPDTPFK2I" Level="1"/>
+          </PageOrder>
+        </EditorPages>
+      </Form>
+    </Presentations>
+  </AdsClassDefinition>
+</AdsDefinition>

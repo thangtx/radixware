@@ -12,8 +12,10 @@
 
 package org.radixware.kernel.explorer.editors.sqmleditor;
 
+import java.util.Map;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.common.client.meta.RadClassPresentationDef;
+import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlParameters;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
@@ -29,9 +31,16 @@ final class SqmlTranslator {
     
     private SqmlTranslator(){
         
-    }        
+    }    
     
-    public static String translate(final IClientEnvironment environment, final Sqml sqml, final Id contextTableId, final Id contextEntityId){
+    public static String translate(final IClientEnvironment environment, 
+                                              final Sqml where, 
+                                              final Sqml from,
+                                              final Id contextTableId, 
+                                              final Id contextEntityId,
+                                              final ISqmlParameters parameters,
+                                              final Map<Id, Object> paramValues,
+                                              final EDefinitionDisplayMode displayMode){
         try {
             final SqmlTranslationRqDocument requestDoc = SqmlTranslationRqDocument.Factory.newInstance();
             final SqmlTranRq request = requestDoc.addNewSqmlTranslationRq();
@@ -41,11 +50,19 @@ final class SqmlTranslator {
             if (contextEntityId!=null){
                 request.setEntityClassId(contextEntityId);                
             }
-            request.setSqml(sqml);
+            final SqmlPreprocessor preprocessor = new SqmlPreprocessor();
+            final Sqml preprocessedWhere 
+                = preprocessor.preprocess(where, parameters, paramValues, environment, displayMode);
+            request.setSqml(preprocessedWhere);
+            if (from!=null){
+                final Sqml preprocessedFrom
+                    = preprocessor.preprocess(from, parameters, paramValues, environment, displayMode);
+                request.setAdditionalFrom(preprocessedFrom);
+            }
             request.setTableAlias("");
             final SqmlTranslationRsDocument resp =  
                 (SqmlTranslationRsDocument) environment.getEasSession().executeContextlessCommand(TRANSLATE_SQML_COMMAND_ID, requestDoc, SqmlTranslationRsDocument.class);
-            return resp.getSqmlTranslationRs().getResult();
+            return preprocessor.postprocess( resp.getSqmlTranslationRs().getResult() );
         } catch (ServiceClientException ex) {
             final String title = environment.getMessageProvider().translate("SqmlEditor", "SQML Translation Error");
             final String message = environment.getMessageProvider().translate("SqmlEditor", "Exception occured during SQML translation");
@@ -54,13 +71,55 @@ final class SqmlTranslator {
         } catch(InterruptedException ex){
             return null;
         }        
+    }    
+    
+    public static String translate(final IClientEnvironment environment, 
+                                              final Sqml sqml,
+                                              final Id contextTableId, 
+                                              final Id contextEntityId,
+                                              final ISqmlParameters parameters,
+                                              final Map<Id, Object> paramValues,
+                                              final EDefinitionDisplayMode displayMode){
+        return translate(environment, sqml, null, contextTableId, contextEntityId, parameters, paramValues, displayMode);
     }
     
-    public static String translate(final IClientEnvironment environment, final Sqml sqml, final ISqmlTableDef context){
+    public static String translate(final IClientEnvironment environment, 
+                                              final Sqml sqml, 
+                                              final Id contextTableId, 
+                                              final Id contextEntityId){
+        return translate(environment, sqml, null, contextTableId, contextEntityId, null, null, EDefinitionDisplayMode.SHOW_SHORT_NAMES);
+    }    
+    
+    public static String translate(final IClientEnvironment environment, 
+                                              final Sqml sqml, 
+                                              final ISqmlTableDef context){
+        return translate(environment, sqml, context, null, null, EDefinitionDisplayMode.SHOW_SHORT_NAMES);
+    }  
+    
+    public static String translate(final IClientEnvironment environment, 
+                                              final Sqml where, 
+                                              final Sqml from, 
+                                              final ISqmlTableDef context,
+                                              final ISqmlParameters parameters,
+                                              final Map<Id, Object> paramValues,
+                                              final EDefinitionDisplayMode displayMode){
         if (context==null){
-            return translate(environment, sqml, null, null);
+            return translate(environment, where, from, null, null, parameters, paramValues, displayMode);
         }else{
-            return translate(environment, sqml, context.getTableId(), context.getId());
+            return translate(environment, where, from, context.getTableId(), context.getId(), parameters, paramValues, displayMode);
+        }
+    }    
+            
+    public static String translate(final IClientEnvironment environment, 
+                                              final Sqml sqml, 
+                                              final ISqmlTableDef context,
+                                              final ISqmlParameters parameters,
+                                              final Map<Id, Object> paramValues,
+                                              final EDefinitionDisplayMode displayMode){
+        if (context==null){
+            return translate(environment, sqml, (Sqml)null, null, null, parameters, paramValues, displayMode);
+        }else{
+            return translate(environment, sqml, null, context.getTableId(), context.getId(), parameters, paramValues, displayMode);
         }
     }
     

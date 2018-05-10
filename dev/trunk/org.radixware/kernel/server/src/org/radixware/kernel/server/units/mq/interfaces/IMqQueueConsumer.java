@@ -12,6 +12,8 @@
 package org.radixware.kernel.server.units.mq.interfaces;
 
 import java.io.Closeable;
+import org.radixware.kernel.common.utils.SystemPropUtils;
+import org.radixware.kernel.server.units.mq.MqDbQueries;
 import org.radixware.kernel.server.units.mq.MqMessage;
 import org.radixware.schemas.messagequeue.MqProcessRs;
 
@@ -20,6 +22,9 @@ import org.radixware.schemas.messagequeue.MqProcessRs;
  * This interface describes queue consumer</p>
  */
 public interface IMqQueueConsumer<MessageType extends MqMessage<?,DataSourceId>,DataSourceId> extends Closeable, IMqQueueManipulator<DataSourceId> {
+    
+    public final long SLEEP_BEFORE_FORCE_WAKEUP_MILLIS = SystemPropUtils.getLongSystemProp("rdx.mq.consumer.sleep.before.forced.close.millis", 2000);
+    
     /**
      * <p>Polls the queue </p>
      *
@@ -39,4 +44,8 @@ public interface IMqQueueConsumer<MessageType extends MqMessage<?,DataSourceId>,
     public void maintenance();
     
     public String debugKey();
+    
+    MqDbQueries.MqUnitOptions getOptions();
+    
+    public boolean isClosed();
 }

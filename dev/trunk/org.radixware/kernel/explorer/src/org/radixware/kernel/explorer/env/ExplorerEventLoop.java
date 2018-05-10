@@ -67,7 +67,11 @@ final class ExplorerEventLoop extends QObject implements IEventLoop{
     @Override
     public void scheduleTask(final Runnable task) {
         if (task!=null){
-            scheduledTasks.add(task);
+            if (isInProgress()){
+                QApplication.postEvent(this, new ScheduledTask(task));
+            }else{
+                scheduledTasks.add(task);
+            }
         }
     }    
 

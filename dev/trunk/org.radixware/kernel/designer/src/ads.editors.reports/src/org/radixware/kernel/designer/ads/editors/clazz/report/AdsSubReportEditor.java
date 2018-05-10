@@ -12,6 +12,8 @@ package org.radixware.kernel.designer.ads.editors.clazz.report;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -19,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.AbstractCellEditor;
+import javax.swing.BorderFactory;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -35,6 +39,7 @@ import org.radixware.kernel.common.defs.ads.build.BuildOptions;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsSubReport;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsSubReport.Association;
 import org.radixware.kernel.common.defs.ads.common.AdsVisitorProviders;
@@ -45,6 +50,7 @@ import org.radixware.kernel.common.userreport.common.UserExtensionManagerCommon;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.designer.common.annotations.registrators.EditorFactoryRegistration;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
+import org.radixware.kernel.designer.common.dialogs.components.ComponentTitledBorder;
 import org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.editors.RadixObjectEditor;
@@ -325,7 +331,9 @@ public class AdsSubReportEditor extends RadixObjectModalEditor<AdsSubReport> {
                 }
             }
         });
-
+        
+        marginPanel.setBorder(BorderFactory.createTitledBorder("Margins")); 
+        
         setupInitialValues();
     }
 
@@ -343,9 +351,14 @@ public class AdsSubReportEditor extends RadixObjectModalEditor<AdsSubReport> {
             visitUserAds();
         }
         ChooseDefinitionCfg cfg = ChooseDefinitionCfg.Factory.newInstance(
-                getRadixObject(), !isUserMode ? AdsVisitorProviders.newReportProvider() : AdsVisitorProviders.newUserReportProvider());
+                getRadixObject(), !isUserMode ? AdsVisitorProviders.newReportProvider() : AdsVisitorProviders.newCommonReportAndUserReportProvider());
         subReportLinkEditPanel.open(cfg, getRadixObject().findReport(), getRadixObject().getReportId());
         tableModel.update();
+        if (getRadixObject().getOwnerReport().getForm().getMode() == AdsReportForm.Mode.GRAPHICS){
+            marginPanel.open(getRadixObject().getMarginMm());
+        } else {
+            marginPanel.open(getRadixObject().getMarginTxt());
+        }
         updateEnableState();
         updating = false;
     }
@@ -364,6 +377,11 @@ public class AdsSubReportEditor extends RadixObjectModalEditor<AdsSubReport> {
     private void updateEnableState() {
         boolean enabled = !getRadixObject().isReadOnly();
         subReportLinkEditPanel.setEnabled(enabled);
+        if (getRadixObject().getOwnerReport().getForm().getMode() == AdsReportForm.Mode.GRAPHICS){
+            marginPanel.setEnabled(enabled);
+        } else {
+            marginPanel.setEnabled(enabled);
+        }
     }
 
     @Override
@@ -385,6 +403,7 @@ public class AdsSubReportEditor extends RadixObjectModalEditor<AdsSubReport> {
         jScrollPane1 = new javax.swing.JScrollPane();
         associationsTable = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
+        marginPanel = new org.radixware.kernel.designer.ads.editors.clazz.report.MarginPanel();
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(AdsSubReportEditor.class, "AdsSubReportEditor.jLabel1.text")); // NOI18N
 
@@ -407,16 +426,17 @@ public class AdsSubReportEditor extends RadixObjectModalEditor<AdsSubReport> {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(subReportLinkEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE))
-                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addComponent(subReportLinkEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel2))
                 .addContainerGap())
+            .addComponent(marginPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -428,8 +448,9 @@ public class AdsSubReportEditor extends RadixObjectModalEditor<AdsSubReport> {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                .addGap(6, 6, 6)
+                .addComponent(marginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -455,6 +476,7 @@ public class AdsSubReportEditor extends RadixObjectModalEditor<AdsSubReport> {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private org.radixware.kernel.designer.ads.editors.clazz.report.MarginPanel marginPanel;
     private org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel subReportLinkEditPanel;
     // End of variables declaration//GEN-END:variables
 }

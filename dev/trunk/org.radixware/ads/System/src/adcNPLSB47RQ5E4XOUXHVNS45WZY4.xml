@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcNPLSB47RQ5E4XOUXHVNS45WZY4" Name="ReadOnlyEntityValRefEditor" Type="3" Environment="explorer">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcNPLSB47RQ5E4XOUXHVNS45WZY4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcNPLSB47RQ5E4XOUXHVNS45WZY4"/>
+    </Bodies>
+    <MethodGroup Id="cmgJ6G3QV5NPFFU7MT4Y3PNRWYWOE" Name="Root"/>
+    <PropertyGroup Id="cpgB2T3SELWOZGNDLAXWQUG7SEIDU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthUUN3HCBLRFC5XIQBBDDCWYEAPU" Name="ReadOnlyEntityValRefEditor" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="env" Id="mprYUCTPYPJB5HMBMZRRFU3L3QTME">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
+          <Parameter Name="parent" Id="mprLJZGDNBNU5BT3LQREK2PQO2COU">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
+          <Parameter Name="isMandatory" Id="mprIMHI4MNMW5CJNJFLL7TU3SZCSU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(env, parent, isMandatory, false);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthG37FXKBEA5EEXPDK6P2SBRFWTE" Name="getEntityModel" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.EntityModel"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA">
+                <xsc:Presentation>Explorer.Models::EntityModel</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model = super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZGJT7DMN2BCOBGRK4YCNJ3YBMI mthG37FXKBEA5EEXPDK6P2SBRFWTE" Invoke="true">
+                <xsc:Presentation>getEntityModel</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (model != null) {
+    model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth2MVANYPJS5HYTGHL4R5LLM6CMM" Invoke="true">
+                <xsc:Presentation>getRestrictions</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNZVUJREUBNFRZGGNFT6HIXCMVQ mthJCWVNPU45ZFJXCZ54XLXZQCAKQ" Invoke="true">
+                <xsc:Presentation>setDeleteRestricted</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(true);
+    model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth2MVANYPJS5HYTGHL4R5LLM6CMM" Invoke="true">
+                <xsc:Presentation>getRestrictions</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNZVUJREUBNFRZGGNFT6HIXCMVQ mthZ5DGNK3ELBH2RJJNKEKMGB2OZA" Invoke="true">
+                <xsc:Presentation>setUpdateRestricted</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(true);
+    model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth2MVANYPJS5HYTGHL4R5LLM6CMM" Invoke="true">
+                <xsc:Presentation>getRestrictions</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcNZVUJREUBNFRZGGNFT6HIXCMVQ mthQUMGU3MB7RDUNLJJMDCMPBNQQA" Invoke="true">
+                <xsc:Presentation>setCopyRestricted</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(true);   
+//    java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> cmdIds = model.getAccessibleCommandIds();
+//    if (cmdIds != null) {
+//        for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> id: cmdIds) {
+//            model.getCommand(id).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcETZW74XVUBEX5N3MV3IZMMDTUU mthGJEHCU6VEFCKLLZB24XOOYOI7A" Invoke="true">
+                <xsc:Presentation>setEnabled</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(false);
+//        }
+//    }
+}
+return model;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth7FS3QKI4MVBXNN2B2RX4TD2TMY" Name="getGroupModel" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.models.GroupModel"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I">
+                <xsc:Presentation>Explorer.Models::GroupModel</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> model = super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZGJT7DMN2BCOBGRK4YCNJ3YBMI mth7FS3QKI4MVBXNN2B2RX4TD2TMY" Invoke="true">
+                <xsc:Presentation>getGroupModel</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (model != null) {
+    model.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mth7V2FKZWTGVDQZBAK5L5XDXXIQY" Invoke="true">
+                <xsc:Presentation>getRestrictions</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc53I3RNOVINED3OSTSDLTK27KCE mthDQL7CMPQENE47LQJCTXIHMF4ZE" Invoke="true">
+                <xsc:Presentation>setUpdateRestricted</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(true);
+}
+return model;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcZGJT7DMN2BCOBGRK4YCNJ3YBMI"/>
+  </AdsClassDefinition>
+</AdsDefinition>

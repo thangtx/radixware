@@ -66,7 +66,7 @@ public class AdsSqlClassExecuteWriter extends AdsMethodWriter<AdsMethodDef> {
     }
 
     private static boolean isContainsParamsTransfer(AdsSqlClassDef sqlClass) {
-        for (Sqml.Item item : sqlClass.getSource().getItems()) {
+        for (Sqml.Item item : sqlClass.getSqml().getItems()) {
             if (item instanceof ParameterTag) {
                 return true;
             }
@@ -75,7 +75,7 @@ public class AdsSqlClassExecuteWriter extends AdsMethodWriter<AdsMethodDef> {
     }
 
     private static boolean isContainsFields(AdsSqlClassDef sqlClass) {
-        for (Sqml.Item item : sqlClass.getSource().getItems()) {
+        for (Sqml.Item item : sqlClass.getSqml().getItems()) {
             if (item instanceof PropSqlNameTag) {
                 final PropSqlNameTag fiedRef = (PropSqlNameTag) item;
                 if (fiedRef.getOwnerType() == PropSqlNameTag.EOwnerType.THIS) {
@@ -89,7 +89,7 @@ public class AdsSqlClassExecuteWriter extends AdsMethodWriter<AdsMethodDef> {
     // static for report class writer
     public static void writeBody(AdsSqlClassDef sqlClass, CodePrinter cp, boolean execute) {
         final EClassType classType = sqlClass.getClassDefType();
-        final Sqml sqml = sqlClass.getSource();
+        final Sqml sqml = sqlClass.getSqml();
 
         cp.enterBlock();
 
@@ -250,7 +250,7 @@ public class AdsSqlClassExecuteWriter extends AdsMethodWriter<AdsMethodDef> {
     public static Statement[] createStatements(AdsSqlClassDef sqlClass, boolean execute) {
         List<Statement> stmts = new LinkedList<>();
         final EClassType classType = sqlClass.getClassDefType();
-        final Sqml sqml = sqlClass.getSource();
+        final Sqml sqml = sqlClass.getSqml();
 
         // calculate and define dynamic parameters, only for reports, because method cursor.open is static
         if (classType == EClassType.REPORT) {

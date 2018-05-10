@@ -17,7 +17,9 @@ import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.errors.CantOpenSelectorError;
 import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
+import org.radixware.kernel.common.client.errors.PasswordExpiredError;
 import org.radixware.kernel.common.client.errors.UnsupportedDefinitionVersionError;
+import org.radixware.kernel.common.client.errors.UserAccountLockedError;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.models.CleanModelController;
 import org.radixware.kernel.common.client.models.EntityModel;
@@ -35,6 +37,7 @@ import org.radixware.kernel.common.client.views.IView;
 import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.wps.HttpSessionTerminatedError;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.WpsProgressHandleManager;
 import org.radixware.wps.rwt.Label;
@@ -176,14 +179,16 @@ public class ViewHolder extends VerticalBox {
     }
 
     @SuppressWarnings("finally")
-    public IView open(ExplorerTreeNode node) throws InterruptedException {
+    public IView open(final ExplorerTreeNode node) throws InterruptedException {
 
         if (editorMenu != null) {
             editorMenu.removeAllActions();
+            editorMenu.clear();
             editorMenu.setEnabled(false);
         }
         if (selectorMenu != null) {
             selectorMenu.removeAllActions();
+            selectorMenu.clear();
             selectorMenu.setEnabled(false);
         }
 
@@ -197,15 +202,16 @@ public class ViewHolder extends VerticalBox {
         } else {
 //            lockRedraw();
 //            setUpdatesEnabled(false);
+            final String nodePath = node.getPath();
             try {
                 errorView.setVisible(false);
                 final IView previousView = getCurrentView();
                 if (previousView != null) {//closing previous view
 
                     if (previousView instanceof ISelector) {
-                        //          ((ISelector) previousView).setMenu(null, null);
+                                ((ISelector) previousView).setMenu(null, null);
                     } else if (previousView instanceof IEditor) {
-                        //        ((IEditor) previousView).setMenu(null);
+                                ((IEditor) previousView).setMenu(null);
                     }
 
                     final Model previousModel = previousView.getModel();
@@ -225,6 +231,9 @@ public class ViewHolder extends VerticalBox {
                     final String source = currentNode==null ? null : currentNode.getPath();
                     checkConfigStoreCurrentGroup(source,false);
                     checkIfProgressUnblocked(source, false);
+                    if (currentNode!=null){
+                        environment.getClipboard().removeAllChangeListeners(currentNode);
+                    }                    
                 }
 
                 {//opening current view
@@ -244,16 +253,24 @@ public class ViewHolder extends VerticalBox {
                         if (OPENING_VIEW_PROGRESS.wasCanceled()) {
                             throw new InterruptedException();
                         }
-
+                        
                         final IView view = model.createView();
                         if (view != null) {
                             if (view instanceof ISelector) {
-                                //  ((ISelector) view).setMenu(selectorMenu, editorMenu);
+                                  ((ISelector) view).setMenu(selectorMenu, editorMenu);
                             } else if (view instanceof IEditor) {
-                                //  ((IEditor) view).setMenu(editorMenu);
+                                  ((IEditor) view).setMenu(editorMenu);
                             }
-
-                            view.open(model);
+                            model.getEnvironment().getClipboard().setListenersContext(node);
+                            boolean viewOpened = false;
+                            try{
+                                view.open(model);
+                                viewOpened = true;
+                            }finally{
+                                if (!viewOpened){
+                                    model.getEnvironment().getClipboard().removeAllChangeListeners(node);
+                                }
+                            }
                             if (OPENING_VIEW_PROGRESS.wasCanceled()) {
                                 throw new InterruptedException();
                             }
@@ -332,14 +349,26 @@ public class ViewHolder extends VerticalBox {
                         }finally{//It is important do not to lost this error
                             throw error;
                         }
+                    } catch(UserAccountLockedError error){
+                        final String errMessage = environment.getMessageProvider().translate("ExplorerTree", "Can't open explorer item \'%s\'");
+                        final String reason = error.getLocalizedMessage();
+                        errorView.setMessage(String.format(errMessage, node.getTitle())+"\n"+reason);
+                        errorView.setCanReopen(true);
+                        return null;
+                    }catch (PasswordExpiredError error){
+                        final String errMessage = environment.getMessageProvider().translate("ExplorerTree", "Can't open explorer item \'%s\'");
+                        final String exceptionMessage = error.getLocalizedMessage();
+                        final String reason =  exceptionMessage.substring(0, 1).toUpperCase() + exceptionMessage.substring(1);
+                        errorView.setMessage(String.format(errMessage, node.getTitle())+"\n"+reason);
+                        errorView.setCanReopen(true);
+                        return null;                        
                     } finally {
                         OPENING_VIEW_PROGRESS.finishProgress();
                         if (previousView != null) {
                             remove((UIObject) previousView);
                         }
-                        checkConfigStoreCurrentGroup(node.getPath(), true);
-                        checkIfProgressUnblocked(node.getPath(), true);
-                        
+                        checkConfigStoreCurrentGroup(nodePath, true);//it is not safe to use node.getPath() here. It may cause NPE in case when http session was terminated
+                        checkIfProgressUnblocked(nodePath, true);                        
                     }
                 }//opening view
             } finally {
@@ -358,7 +387,7 @@ public class ViewHolder extends VerticalBox {
                 } catch (InterruptedException ex) {
                 }
             } else {
-                environment.checkForUpdatesAction.trigger();
+                environment.checkForUpdates();
             }
         }
     }
@@ -368,6 +397,9 @@ public class ViewHolder extends VerticalBox {
     }
 
     private void processExceptionOnClose(IClientEnvironment userSession, final Throwable exception, final Model closingModel) {
+        if (exception instanceof HttpSessionTerminatedError){
+            throw (HttpSessionTerminatedError)exception;
+        }
         final String message;
         if (closingModel != null) {
             message = userSession.getMessageProvider().translate("Explorer Error", String.format("Error occured during closing model %s", closingModel.getTitle()));
@@ -408,6 +440,9 @@ public class ViewHolder extends VerticalBox {
             final String source = currentNode==null ? null : currentNode.getPath();
             checkConfigStoreCurrentGroup(source,false);  
             checkIfProgressUnblocked(source,false);
+            if (currentNode!=null){
+                environment.getClipboard().removeAllChangeListeners(currentNode);
+            }
             currentView = null;
             close();
         }
@@ -443,11 +478,13 @@ public class ViewHolder extends VerticalBox {
             remove(errorView);
             if (selectorMenu != null) {
                 selectorMenu.removeAllActions();
+                selectorMenu.clear();
                 selectorMenu.setEnabled(false);
                 selectorMenu = null;
             }
             if (editorMenu != null) {
                 editorMenu.removeAllActions();
+                editorMenu.clear();
                 editorMenu.setEnabled(false);
                 editorMenu = null;
             }

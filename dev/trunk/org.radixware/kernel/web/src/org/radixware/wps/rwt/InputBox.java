@@ -31,7 +31,9 @@ import org.radixware.kernel.common.client.text.ITextOptionsManager;
 import org.radixware.kernel.common.client.text.ITextOptionsProvider;
 import org.radixware.kernel.common.client.text.MergedTextOptionsProvider;
 import org.radixware.kernel.common.client.types.Icon;
+import org.radixware.kernel.common.client.types.PriorityArray;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
+import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.client.widgets.IButton.ClickHandler;
 import org.radixware.kernel.common.utils.Utils;
@@ -40,12 +42,14 @@ import org.radixware.wps.icons.images.WsIcons;
 import org.radixware.wps.rwt.TableLayout.Row.Cell;
 import org.radixware.kernel.common.html.Div;
 import org.radixware.kernel.common.html.ICssStyledItem;
+import org.radixware.kernel.common.html.ToolTip;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.text.ECssTextOptionsStyle;
 import org.radixware.wps.text.WpsTextOptions;
+import org.radixware.wps.views.editors.valeditors.IValEditor;
 
 
-public class InputBox<T> extends UIObject implements ValueEditor<T> {
+public class InputBox<T> extends UIObject implements ValueEditor<T> {        
 
     private static enum EAttrName {
 
@@ -71,8 +75,30 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
         }
     }
     
+    private class Cell2Button {
+
+        private final TableLayout.Row.Cell cell;
+        private final ButtonBase button;
+
+        public Cell2Button(Cell cell, ButtonBase button) {
+            this.cell = cell;
+            this.button = button;
+            this.button.addPropertyListener(new UIObjectPropertyListener() {
+                @Override
+                public void propertyChange(String name, Object oldValue, Object value) {
+                    if (UIObject.Properties.VISIBLE.equals(name)) {
+                        Cell2Button.this.cell.setVisible(Cell2Button.this.button.isVisible());
+                    }
+                    updataButtonsState();
+                }
+            });
+            this.cell.setVisible(this.button.isVisible());
+            updataButtonsState();
+        }
+    }    
+    
     private final static int ICON_SIZE = 16;
-    private TableLayout table = new TableLayout();
+    private TableLayout table = new TableLayout();    
     private TableLayout.Row row;
     private TableLayout.Row.Cell editorCell;
     private final TextField textField;
@@ -86,6 +112,8 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
     private TableLayout.Row.Cell clearButtonCell = null;
     private TableLayout.Row.Cell imageCell = null;
     private TableLayout.Row.Cell invalidValueIconCell = null;
+    private List<Cell2Button> cells2Buttons = null;
+    private PriorityArray<ButtonBase> buttons = null;
     private ClearController<T> clearController;
     private DisplayController<T> displayController;
     private SpinBoxController<T> spinBoxController;
@@ -332,7 +360,9 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
                 root.add(dropDown);
                 dropDown.getHtml().addClass("rwt-drop-down");
                 dropDown.getHtml().setAttr("active_element", getActiveElementName());
-                dropDown.getHtml().setAttr("input_box_id", box.getHtml().getId());
+                dropDown.getHtml().setAttr("handler_id", box.getHtml().getId());
+                dropDown.getHtml().setAttr("relativeElem", "textFieldCell");
+                box.getHtml().setAttr("relativeElemId", box.getHtmlId());
                 dropDown.getHtml().setCss("position", "absolute");
                 dropDown.getHtml().layout("$RWT.dropDown.layout");
                 box.activeDropDown = this;
@@ -623,8 +653,13 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
     @Override
     public boolean checkInput() {
         return checkInput(null, null);
-    }        
+    }    
 
+    @Override
+    public void setHtmlToolTip(ToolTip toolTip) {
+        editorCell.setHtmlToolTip(toolTip); 
+    }
+     
     private void updateInvalidValueIcon() {
         final RootPanel root = findRoot();
         if ((!isReadOnly() || validationMessage == null) && root != null) {
@@ -745,12 +780,13 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
     public void setClearController(ClearController<T> clearController) {
         if (clearController != null) {
             if (this.clearController == null) {
-                clearButtonCell = row.addCell();
-                clearButtonCell.getHtml().setAttr(EAttrName.ButtonCell.getAttrName(), "true");
                 clearButton = new ToolButton();
                 clearButton.setIcon(getApplication().getImageManager().getIcon(ClientIcon.CommonOperations.CLEAR));
                 clearButton.setToolTip(getEnvironment().getMessageProvider().translate("Value", "Clear Value"));
                 clearButton.getHtml().addClass("rwt-clear-button");
+                clearButton.setObjectName("tbClear");
+                clearButtonCell = row.addCell(registerButton(clearButton, null));
+                clearButtonCell.getHtml().setAttr(EAttrName.ButtonCell.getAttrName(), true);                
                 clearButtonCell.add(clearButton);
                 clearButton.addClickHandler(new ClickHandler() {
                     @Override
@@ -763,6 +799,7 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
             this.clearController = clearController;
         } else {
             if (clearButton != null) {
+                unregisterButton(clearButton);
                 row.remove(clearButtonCell);
                 clearButton = null;
                 clearButtonCell = null;
@@ -776,28 +813,6 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
 
     public boolean isClearable() {
         return clearController != null;
-    }
-
-    private class Cell2Button {
-
-        private final TableLayout.Row.Cell cell;
-        private final ButtonBase button;
-
-        public Cell2Button(Cell cell, ButtonBase button) {
-            this.cell = cell;
-            this.button = button;
-            this.button.addPropertyListener(new UIObjectPropertyListener() {
-                @Override
-                public void propertyChange(String name, Object oldValue, Object value) {
-                    if (UIObject.Properties.VISIBLE.equals(name)) {
-                        Cell2Button.this.cell.setVisible(Cell2Button.this.button.isVisible());
-                    }
-                    updataButtonsState();
-                }
-            });
-            this.cell.setVisible(this.button.isVisible());
-            updataButtonsState();
-        }
     }
 
     private static class SpinButton extends ToolButton {
@@ -849,13 +864,14 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
     public void setSpinBoxController(SpinBoxController<T> spinBoxController) {
         if (spinBoxController != null) {
             if (spinButtonCell == null) {
-                spinButtonCell = row.addCell(1);
-                spinButtonCell.getHtml().setAttr(EAttrName.ButtonCell.getAttrName(), "true");
+                
                 spinUpButton = new SpinButton(false);
+                spinUpButton.setObjectName("tbSpinUp");
                 spinUpButton.setIcon(WsIcons.SPIN_UP);
 
                 spinDnButton = new SpinButton(true);
-                spinDnButton.setIcon(WsIcons.SPIN_DOWN);
+                spinDnButton.setObjectName("tbSpinDown");
+                spinDnButton.setIcon(WsIcons.SPIN_DOWN);                                
 
                 spinUpButton.addClickHandler(new ClickHandler() {
                     @Override
@@ -869,6 +885,14 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
                         setValue(InputBox.this.spinBoxController.getPrev(getValue(), 1));
                     }
                 });
+                
+                if (buttons==null){
+                    buttons = new PriorityArray<>(false, false);
+                }
+                final int index = buttons.addWithHighestPriority(spinUpButton);
+                spinButtonCell = row.addCell(index+getFirstButtonCellIndex());
+                spinButtonCell.getHtml().setAttr(EAttrName.ButtonCell.getAttrName(), true);
+                
                 spinButtonCell.add(spinUpButton);
                 spinButtonCell.add(spinDnButton);
                 spinButtonCell.setWidth(14);
@@ -877,6 +901,9 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
             this.spinBoxController = spinBoxController;
         } else {
             if (spinButtonCell != null) {
+                if (buttons!=null){
+                    buttons.remove(spinUpButton);
+                }
                 row.remove(spinButtonCell);
                 spinButtonCell = null;
                 spinUpButton = null;
@@ -887,8 +914,7 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
         updateInputHandlers();
         updataButtonsState();
 
-    }
-    private List<Cell2Button> cells2Buttons = null;
+    }    
 
     private void setupButton(ButtonBase button) {
         if (button.getIconHeight() > 12) {
@@ -915,7 +941,8 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
         if (delegate instanceof DropDownEditHistoryDelegate) {
             button.setIcon(getApplication().getImageManager().getIcon(ClientIcon.CommonOperations.EDITING_HISTORY));
             button.setIconSize(ICON_SIZE, ICON_SIZE);
-        }
+            button.setObjectName("btValHistory");
+        } 
         dropDownDelegates.put(delegate, button);
         button.addClickHandler(new ClickHandler() {
             @Override
@@ -924,8 +951,21 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
             }
         });
         updateInputHandlers();
-        addCustomButton(button);
+        addCustomButton(button,Integer.MIN_VALUE);
         return button;
+    }
+    
+    public void removeDropDownDelegate(final DropDownDelegate<? extends UIObject> delegate){
+        if (dropDownDelegates!=null){
+            final ToolButton button = dropDownDelegates.remove(delegate);
+            if (button!=null){
+                if (dropDownDelegates.isEmpty()){
+                    dropDownDelegates = null;
+                }
+                removeCustomButton(button);
+                updateInputHandlers();
+            }
+        }
     }
 
     private void updateInputHandlers() {
@@ -964,6 +1004,7 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
         if (activeDropDown != null) {
             activeDropDown.afterClose(this);
             activeDropDown = null;
+            InputBox.this.getHtml().setAttr("relativeElemId", null);
         }
     }
 
@@ -1003,7 +1044,10 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
         return value;
     }
 
-    private boolean equals(T value1, T value2) {
+    private boolean equals(final T value1, final T value2) {
+        if (value1 instanceof Reference && value2 instanceof Reference){
+            return Reference.exactlyMatch((Reference)value1, (Reference)value2);
+        }        
         return Objects.equals(normalizeToCompare(value1), normalizeToCompare(value2));
     }
 
@@ -1131,18 +1175,28 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
                     WpsTextOptions options = calculateTextOptions(markers);
                     textField.setTextOptions(options);
                 }
+            }else{
+                super.processAction(actionName, actionParam);
             }
+        } else {
+            super.processAction(actionName, actionParam);
         }
-        super.processAction(actionName, actionParam);
+    }
+    
+    private static boolean isButtonCell(TableLayout.Row.Cell cell){
+        return cell.getHtml().getBooleanAttr(EAttrName.ButtonCell.getAttrName());
     }
 
     private void updateButtonsStyle() {
-        TableLayout.Row.Cell cell, lastCell = null;
+        final boolean isButtonsVisible = isButtonsVisible();
+        TableLayout.Row.Cell cell, lastCell = null;        
         int stopIndex = isLabelVisible() ? 1 : 0;
 
         for (int i = row.getCells().size() - 1; i >= stopIndex; i--) {
             cell = row.getCells().get(i);
-            if (lastCell == null && cell.isVisible()) {
+            if (lastCell == null 
+                && cell.isVisible() 
+                && (!isButtonCell(cell) || isButtonsVisible)) {
                 lastCell = cell;
             } else {
                 cell.getHtml().removeClass("ui-corner-right");
@@ -1206,23 +1260,71 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
         }
         updateButtonsStyle();
     }
-
+    
     public void addCustomButton(final ButtonBase button) {
-        final TableLayout.Row.Cell cellForButton;
-        if (clearButtonCell == null) {
-            cellForButton = row.addCell();
-        } else {
-            cellForButton = row.addCell(row.getCellsCount() - 1);
-        }
-        cellForButton.getHtml().setAttr(EAttrName.ButtonCell.getAttrName(), "true");
-        cellForButton.add(button);
-        setupButton(button);
-        updataButtonsState();
-        updateReadOnlyMarker();
+        addCustomButton(button, IValEditor.DEFAULT_BUTTON_PRIORITY);
     }
 
-    public final TableLayout.Row.Cell addCell() {
-        return row.addCell();
+    public void addCustomButton(final ButtonBase button, final int priority) {        
+        final int index = registerButton(button, priority);
+        if (index>=0){
+            final TableLayout.Row.Cell cellForButton = row.addCell(index);
+            cellForButton.getHtml().setAttr(EAttrName.ButtonCell.getAttrName(), true);        
+            cellForButton.add(button);
+            setupButton(button);
+            updataButtonsState();
+            updateReadOnlyMarker();
+        }
+    }
+    
+    public void removeCustomButton(final ButtonBase button){
+        if (unregisterButton(button)){
+            for (int i=row.getCellsCount()-1; i>=0; i--){
+                if (row.getCell(i).getChildren().contains(button)){
+                    row.remove(row.getCell(i));
+                    updataButtonsState();
+                    updateReadOnlyMarker();
+                    break;
+                }
+            }
+        }
+    }
+    
+    private int registerButton(final ButtonBase button, final Integer priority){
+        if (buttons==null){
+            buttons = new PriorityArray<>(false, false);
+        }
+        final int buttonIndex;
+        if (priority==null){
+            buttonIndex = buttons.addWithLowestPriority(button);            
+        }else{
+            buttonIndex = buttons.addWithPriority(button, priority);            
+        }
+        return buttonIndex<0 ? -1 : buttonIndex+getFirstButtonCellIndex();
+    }
+    
+    private boolean unregisterButton(final ButtonBase button){
+        if (buttons!=null && buttons.remove(button)){
+            if (buttons.isEmpty()){
+                buttons = null;
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    private int getFirstButtonCellIndex(){
+        int buttonCellIndex = 1;
+        if (imageCell!=null){
+            buttonCellIndex++;
+        }
+        if (label!=null){
+            buttonCellIndex++;
+        }
+        if (invalidValueIconCell!=null){
+            buttonCellIndex++;
+        }
+        return buttonCellIndex;
     }
 
     private static class InvalidValueIcon extends UIObject {
@@ -1317,7 +1419,7 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
         } else {
             markers.remove(ETextOptionsMarker.UNDEFINED_VALUE);
         }
-        if (getValue() == null && isClearable()) {
+        if (getValue() == null && !isClearable()) {
             markers.add(ETextOptionsMarker.MANDATORY_VALUE);
         } else {
             markers.remove(ETextOptionsMarker.MANDATORY_VALUE);
@@ -1493,17 +1595,36 @@ public class InputBox<T> extends UIObject implements ValueEditor<T> {
             final WpsTextOptions defaultOptions = WpsTextOptions.getDefault((WpsEnvironment) getEnvironment());
             applyTextOptions(defaultOptions);
         } else if (textOptions.equals(options) && textOptions.getPredefinedCssStyles().equals(options.getPredefinedCssStyles())) {
-            final boolean isValid = validationMessage == null || validationMessage.isEmpty();
-            if (!isValid && !isReadOnly()){
-                //resend class because it was removed in javascript on focus out event
-                textField.getForegroundHolder().removeClass(ECssTextOptionsStyle.INVALID_VALUE.getStyleName());
-                textField.getForegroundHolder().addClass(ECssTextOptionsStyle.INVALID_VALUE.getStyleName());
-            }
+            if (!isReadOnly()){
+                final boolean isValid = validationMessage == null || validationMessage.isEmpty();            
+                if (isValid){
+                    textField.getForegroundHolder().removeClass(ECssTextOptionsStyle.INVALID_VALUE.getStyleName());
+                }else{
+                    //resend class because it was removed in javascript on focus out event
+                    textField.getForegroundHolder().removeClass(ECssTextOptionsStyle.INVALID_VALUE.getStyleName());
+                    textField.getForegroundHolder().addClass(ECssTextOptionsStyle.INVALID_VALUE.getStyleName());                    
+                }
+            }                
         }else{
             clearTextOptions();
             applyTextOptions(options);            
         }
     }
+    
+    public final boolean isButtonsVisible(){
+        return !table.getHtml().containsClass("rwt-hidden-buttons");
+    }
+    
+    public final void setButtonsVisible(final boolean isVisible){
+        if (isVisible==table.getHtml().containsClass("rwt-hidden-buttons")){
+            if (isVisible){
+                table.getHtml().removeClass("rwt-hidden-buttons");
+            }else{
+                table.getHtml().addClass("rwt-hidden-buttons");
+            }
+            updateButtonsStyle();
+        }
+    }    
     
     private void applyTextOptions(final WpsTextOptions options){
         super.setTextOptions(options);

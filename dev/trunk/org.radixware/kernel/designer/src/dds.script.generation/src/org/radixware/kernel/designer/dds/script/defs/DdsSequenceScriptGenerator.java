@@ -13,6 +13,7 @@ package org.radixware.kernel.designer.dds.script.defs;
 import org.radixware.kernel.common.defs.dds.DdsSequenceDef;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.utils.Utils;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 import org.radixware.kernel.designer.dds.script.IDdsDefinitionScriptGenerator;
 import org.radixware.kernel.designer.dds.script.IScriptGenerationHandler;
 
@@ -26,9 +27,7 @@ public class DdsSequenceScriptGenerator implements IDdsDefinitionScriptGenerator
 
     @Override
     public void getDropScript(CodePrinter cp, DdsSequenceDef sqn) {
-        cp.print("drop sequence ");
-        cp.print(sqn.getDbName());
-        cp.printCommandSeparator();
+        cp.print("drop sequence ").print(sqn.getDbName()).printCommandSeparator();
     }
 
     @Override
@@ -44,9 +43,7 @@ public class DdsSequenceScriptGenerator implements IDdsDefinitionScriptGenerator
     private void getScript(CodePrinter cp, DdsSequenceDef sqn, ESqnScriptType mode) {
         final boolean isAlter = (mode == ESqnScriptType.ALTER);
 
-        cp.print(isAlter ? "alter" : "create");
-        cp.print(" sequence ");
-        cp.print(sqn.getDbName());
+        cp.print(isAlter ? "alter" : "create").print(" sequence ").print(sqn.getDbName());
 
         // increment by
         Long incrementBy = sqn.getIncrementBy();
@@ -54,69 +51,65 @@ public class DdsSequenceScriptGenerator implements IDdsDefinitionScriptGenerator
             incrementBy = 1L;
         }
         if (incrementBy != null) {
-            cp.print("\n\t");
-            cp.print("increment by ");
-            cp.print(incrementBy);
+            cp.print("\n\t").print("increment by ").print(incrementBy);
         }
 
         // start with
         if (!isAlter) {
             Long startWith = sqn.getStartWith();
             if (startWith != null) {
-                cp.print("\n\t");
-                cp.print("start with ");
-                cp.print(startWith);
+                cp.print("\n\t").print("start with ").print(startWith);
             }
         }
 
         // max value
         final Long maxValue = sqn.getMaxValue();
         if (maxValue != null) {
-            cp.print("\n\t");
-            cp.print("maxvalue ");
-            cp.print(maxValue);
+            cp.print("\n\t").print("maxvalue ").print(maxValue);
         } else if (isAlter) {
-            cp.print("\n\t");
-            cp.print("nomaxvalue");
+            cp.print("\n\t").print("nomaxvalue");
         }
 
         final Long minValue = sqn.getMinValue();
         if (minValue != null) {
-            cp.print("\n\t");
-            cp.print("minvalue ");
+            cp.print("\n\t").print("minvalue ");
             cp.print(minValue);
         } else if (isAlter) {
-            cp.print("\n\t");
-            cp.print("nominvalue");
+            cp.print("\n\t").print("nominvalue");
         }
 
         if (sqn.isCycled()) {
-            cp.print("\n\t");
-            cp.print("cycle");
+            cp.print("\n\t").print("cycle");
         } else if (isAlter) {
-            cp.print("\n\t");
-            cp.print("nocycle");
+            cp.print("\n\t").print("nocycle");
         }
 
         final Long cache = sqn.getCache();
         if (cache == null) {
-            cp.print("\n\t");
-            cp.print("nocache");
+            cp.print("\n\t").print("nocache");
         } else if (isAlter || !cache.equals(20L)) {
-            cp.print("\n\t");
-            cp.print("cache ");
+            cp.print("\n\t").print("cache ");
             cp.print(cache);
         }
 
         if (sqn.isOrdered()) {
-            cp.print("\n\t");
-            cp.print("order");
+            cp.print("\n\t").print("order");
         } else if (isAlter) {
-            cp.print("\n\t");
-            cp.print("noorder");
+            cp.print("\n\t").print("noorder");
         }
 
         cp.printCommandSeparator();
+        
+        if (!DdsScriptGeneratorUtils.isInstallationScript(cp)) {
+            cp.println("begin");
+            cp.enterBlock();
+            cp.print("RDX_Aadc.afterSequenceDdl('");
+            cp.print(sqn.getDbName());
+            cp.println("');");
+            cp.leaveBlock();
+            cp.print("end;");
+            cp.printCommandSeparator();
+        }
     }
 
     @Override
@@ -145,10 +138,7 @@ public class DdsSequenceScriptGenerator implements IDdsDefinitionScriptGenerator
         if (!Utils.equals(oldSqn.getMaxValue(), newSqn.getMaxValue())) {
             return false;
         }
-        if (!Utils.equals(oldSqn.getMinValue(), newSqn.getMinValue())) {
-            return false;
-        }
-        return true;
+        return Utils.equals(oldSqn.getMinValue(), newSqn.getMinValue());
     }
 
     @Override
@@ -157,11 +147,7 @@ public class DdsSequenceScriptGenerator implements IDdsDefinitionScriptGenerator
         final String newDbName = newSqn.getDbName();
         boolean rename = !oldDbName.equals(newDbName);
         if (rename) {
-            cp.print("rename ");
-            cp.print(oldDbName);
-            cp.print(" to ");
-            cp.print(newDbName);
-            cp.printCommandSeparator();
+            cp.print("rename ").print(oldDbName).print(" to ").print(newDbName).printCommandSeparator();
         }
 
         if (!isStructureEquals(oldSqn, newSqn)) {
@@ -174,10 +160,15 @@ public class DdsSequenceScriptGenerator implements IDdsDefinitionScriptGenerator
 
     @Override
     public void getRunRoleScript(CodePrinter cp, DdsSequenceDef sqn) {
-        cp.print("grant select on ");
-        cp.print(sqn.getDbName());
-        cp.print(" to &USER&_RUN_ROLE");
-        cp.printCommandSeparator();
+        cp.print("grant select on ").print(sqn.getDbName()).print(" to &USER&_RUN_ROLE").printCommandSeparator();
+    }
+
+    @Override
+    public void getReCreateScript(CodePrinter printer, DdsSequenceDef definition, boolean storeData) {
+    }
+
+    @Override
+    public void getEnableDisableScript(CodePrinter cp, DdsSequenceDef definition, boolean enable) {
     }
 
     public static final class Factory {

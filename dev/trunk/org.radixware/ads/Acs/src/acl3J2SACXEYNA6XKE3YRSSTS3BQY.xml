@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="acl3J2SACXEYNA6XKE3YRSSTS3BQY" Name="CfgItemRef.UserGroup" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="Headeracl3J2SACXEYNA6XKE3YRSSTS3BQY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyacl3J2SACXEYNA6XKE3YRSSTS3BQY"/>
+    </Bodies>
+    <MethodGroup Id="cmgC4EUOQ6PVJBODJK3LO3W4BATSI" Name="Root"/>
+    <PropertyGroup Id="cpgU32325JCHRDGRJI6RA5LVVWQGU" Name="Root"/>
+    <Properties>
+      <Property Id="prd4XZXKHJYH5ACPNOQXE4JWJCJPA" Name="extRef" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="31" Path="aecQ23AYDTTGLNRDHRZABQAQH3XQ4"/>
+        <Presentation InheritanceMask="21">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <SetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="aecXWLPEIJAGRAXJG7SHDM4DH4X6I colBISYSN4WJ5AKXBKVP34WGF5EE4" Invoke="true">
+                <xsc:Presentation>extRefPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = val != null ? val.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().toString() : null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </SetterSources>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecXWLPEIJAGRAXJG7SHDM4DH4X6I colBISYSN4WJ5AKXBKVP34WGF5EE4" Invoke="true">
+                <xsc:Presentation>extRefPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null ? </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecQ23AYDTTGLNRDHRZABQAQH3XQ4">
+                <xsc:Presentation>UserGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQ23AYDTTGLNRDHRZABQAQH3XQ4 mth_loadByPidStr_____________" Invoke="true">
+                <xsc:Presentation>loadByPidStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecXWLPEIJAGRAXJG7SHDM4DH4X6I colBISYSN4WJ5AKXBKVP34WGF5EE4" Invoke="true">
+                <xsc:Presentation>extRefPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true) : null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+      <Property Id="colOBNSAADYD5CKFFOIDSKQI7TGLQ" Name="type" Nature="0" IsConst="false" IsOverride="true" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21" Path="acs7CM3W6GESFC4LH3RDDY6GITI7Q"/>
+        <Presentation InheritanceMask="61">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthAKKIPLUDCBB65HWRAPB4WZGDYU" Name="getRefVal" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="411" Path="pdcEntity____________________"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>switch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecXWLPEIJAGRAXJG7SHDM4DH4X6I colOBNSAADYD5CKFFOIDSKQI7TGLQ" Invoke="true">
+                <xsc:Presentation>type</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs7CM3W6GESFC4LH3RDDY6GITI7Q aciP6KPSHIYLVGIJGD6DCAVZNVDLQ" Invoke="true">
+                <xsc:Presentation>CfgManagement::RefType:Null</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: 
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs7CM3W6GESFC4LH3RDDY6GITI7Q aci2YSG3GVOINH2DD2OSNCS42TTHQ" Invoke="true">
+                <xsc:Presentation>CfgManagement::RefType:Inherit</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: 
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs7CM3W6GESFC4LH3RDDY6GITI7Q aciSFRFROAY5BFSXCSK7IJDSGPNRM" Invoke="true">
+                <xsc:Presentation>CfgManagement::RefType:Internal</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: return null;
+    case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs7CM3W6GESFC4LH3RDDY6GITI7Q aciRY73SXZKVRFRRD4M5T4P73XD34" Invoke="true">
+                <xsc:Presentation>CfgManagement::RefType:External</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>: return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3J2SACXEYNA6XKE3YRSSTS3BQY prd4XZXKHJYH5ACPNOQXE4JWJCJPA" Invoke="true">
+                <xsc:Presentation>extRef</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+return null;
+
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthYLZSFLG5WJBMTM2WGLATF7ANBY" Name="linkExt" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="acl3J2SACXEYNA6XKE3YRSSTS3BQY prd4XZXKHJYH5ACPNOQXE4JWJCJPA" Invoke="true">
+                <xsc:Presentation>extRef</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecQ23AYDTTGLNRDHRZABQAQH3XQ4">
+                <xsc:Presentation>UserGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQ23AYDTTGLNRDHRZABQAQH3XQ4 mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecXWLPEIJAGRAXJG7SHDM4DH4X6I colKOXIJGBJTJGYJAAVR2ASCGVMDI" Invoke="true">
+                <xsc:Presentation>srcRid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tblXWLPEIJAGRAXJG7SHDM4DH4X6I"/>
+    <Presentations ObjectTitleId="mlsGLUWEIUHYFEI7AUTKUALTXID7U">
+      <EditorPresentations>
+        <EditorPresentation Id="epr4SVORM2ZCRCZZE67ARJ6725SEI" Name="General" BasePresentationId="eprDF4Y6Z3KOJEWFMJZNEQ4BN6UGA" InheritanceMask="36016" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprDF4Y6Z3KOJEWFMJZNEQ4BN6UGA" RightsSourceId="eprDF4Y6Z3KOJEWFMJZNEQ4BN6UGA">
+          <AccessRules IsPublished="false"/>
+          <Model Id="aem4SVORM2ZCRCZZE67ARJ6725SEI" Name="General:Model" Type="15">
+            <AccessRules IsPublished="false"/>
+            <Headers>
+              <Src Name="Headeraem4SVORM2ZCRCZZE67ARJ6725SEI"/>
+            </Headers>
+            <Bodies>
+              <Src Name="Bodyaem4SVORM2ZCRCZZE67ARJ6725SEI"/>
+            </Bodies>
+            <MethodGroup Id="cmgENOIRC6FXJA7XPC3MUVZJVH4KA" Name="Root"/>
+            <PropertyGroup Id="cpgYDEPDXQWOJGCNLO424ZDVHMRLI" Name="Root"/>
+            <Properties>
+              <Property Id="prd4XZXKHJYH5ACPNOQXE4JWJCJPA" Name="extRef" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+                <AccessRules IsPublished="false"/>
+                <Type TypeId="31"/>
+                <EmbeddedClass Id="aetWFK3I2UIDBG4XGVQVTAK3YCMII" Name="EmbeddedClass" Type="3">
+                  <AccessRules IsPublished="false"/>
+                  <Headers>
+                    <Src Name="HeaderaetWFK3I2UIDBG4XGVQVTAK3YCMII"/>
+                  </Headers>
+                  <Bodies>
+                    <Src Name="BodyaetWFK3I2UIDBG4XGVQVTAK3YCMII"/>
+                  </Bodies>
+                  <MethodGroup Id="cmgZ5TS5QQ3RZETPNQKB7C26RB6XQ" Name="Root"/>
+                  <PropertyGroup Id="cpgYNMQJXFKINAHZC4YO6QOK3374E" Name="Root"/>
+                  <Properties/>
+                  <Methods>
+                    <Method Id="mthRW4PMU4LZZBPHNXA6VCQA6DQNQ" Name="isReadonly" Nature="0" IsOverride="true">
+                      <AccessRules/>
+                      <ReturnType TypeId="401" extStr="boolean"/>
+                      <Sources>
+                        <Src>
+                          <xsc:Item>
+                            <xsc:Java>return </xsc:Java>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:IdReference Path="acl3J2SACXEYNA6XKE3YRSSTS3BQY epr4SVORM2ZCRCZZE67ARJ6725SEI aem4SVORM2ZCRCZZE67ARJ6725SEI colOBNSAADYD5CKFFOIDSKQI7TGLQ" Invoke="true">
+                              <xsc:Presentation>type</xsc:Presentation>
+                            </xsc:IdReference>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:Java>.Value != </xsc:Java>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:IdReference Path="acs7CM3W6GESFC4LH3RDDY6GITI7Q aciRY73SXZKVRFRRD4M5T4P73XD34" Invoke="true">
+                              <xsc:Presentation>CfgManagement::RefType:External</xsc:Presentation>
+                            </xsc:IdReference>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:Java> || super.</xsc:Java>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthRW4PMU4LZZBPHNXA6VCQA6DQNQ" Invoke="true">
+                              <xsc:Presentation>isReadonly</xsc:Presentation>
+                            </xsc:IdReference>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:Java>();</xsc:Java>
+                          </xsc:Item>
+                        </Src>
+                      </Sources>
+                    </Method>
+                  </Methods>
+                </EmbeddedClass>
+                <DependentItems/>
+              </Property>
+              <Property Id="colOBNSAADYD5CKFFOIDSKQI7TGLQ" Name="type" Nature="8" IsConst="false" IsOverride="true" isDescriptionInherited="false">
+                <AccessRules/>
+                <Type TypeId="21" Path="acs7CM3W6GESFC4LH3RDDY6GITI7Q"/>
+                <EmbeddedClass Id="aetPUDVUFHYPFBLNLYABRFHQVDINE" Name="EmbeddedClass" Type="3">
+                  <AccessRules IsPublished="false"/>
+                  <Headers>
+                    <Src Name="HeaderaetPUDVUFHYPFBLNLYABRFHQVDINE"/>
+                  </Headers>
+                  <Bodies>
+                    <Src Name="BodyaetPUDVUFHYPFBLNLYABRFHQVDINE"/>
+                  </Bodies>
+                  <MethodGroup Id="cmgFFJUD4SQ5FDWBHNBEDKXUO3HLE" Name="Root"/>
+                  <PropertyGroup Id="cpg3LYCPDOI7BCTHDJ64GVR2QJ75M" Name="Root"/>
+                  <Properties/>
+                  <Methods>
+                    <Method Id="mth355YFA6F6VD7PDZ7HYK5BV2REE" Name="setInternalVal" Nature="0" IsOverride="true">
+                      <AccessRules Access="1"/>
+                      <Parameters>
+                        <Parameter Name="value" Id="mprCPADSGYOZVDJFH3NDRLZLQJNXA">
+                          <Type TypeId="400" extStr="java.lang.Object"/>
+                        </Parameter>
+                      </Parameters>
+                      <Sources>
+                        <Src>
+                          <xsc:Item>
+                            <xsc:Java>super.</xsc:Java>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:IdReference Path="adcKYSBC7GOBZHMXBPHXT5A6SMQI4 mth355YFA6F6VD7PDZ7HYK5BV2REE" Invoke="true">
+                              <xsc:Presentation>setInternalVal</xsc:Presentation>
+                            </xsc:IdReference>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:Java>(value);
+
+if (value != null) {
+    if (value != </xsc:Java>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:IdReference Path="acs7CM3W6GESFC4LH3RDDY6GITI7Q aciRY73SXZKVRFRRD4M5T4P73XD34" Invoke="true">
+                              <xsc:Presentation>CfgManagement::RefType:External</xsc:Presentation>
+                            </xsc:IdReference>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:Java>) {
+        </xsc:Java>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:IdReference Path="acl3J2SACXEYNA6XKE3YRSSTS3BQY epr4SVORM2ZCRCZZE67ARJ6725SEI aem4SVORM2ZCRCZZE67ARJ6725SEI prd4XZXKHJYH5ACPNOQXE4JWJCJPA" Invoke="true">
+                              <xsc:Presentation>extRef</xsc:Presentation>
+                            </xsc:IdReference>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:Java>.</xsc:Java>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                              <xsc:Presentation>setEnabled</xsc:Presentation>
+                            </xsc:IdReference>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:Java>(false);
+    } else {
+        </xsc:Java>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:IdReference Path="acl3J2SACXEYNA6XKE3YRSSTS3BQY epr4SVORM2ZCRCZZE67ARJ6725SEI aem4SVORM2ZCRCZZE67ARJ6725SEI prd4XZXKHJYH5ACPNOQXE4JWJCJPA" Invoke="true">
+                              <xsc:Presentation>extRef</xsc:Presentation>
+                            </xsc:IdReference>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:Java>.</xsc:Java>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                              <xsc:Presentation>setEnabled</xsc:Presentation>
+                            </xsc:IdReference>
+                          </xsc:Item>
+                          <xsc:Item>
+                            <xsc:Java>(true);
+    }
+}</xsc:Java>
+                          </xsc:Item>
+                        </Src>
+                      </Sources>
+                    </Method>
+                  </Methods>
+                </EmbeddedClass>
+                <DependentItems/>
+              </Property>
+            </Properties>
+            <Methods/>
+          </Model>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgKTXS2EQWTZDTDH2VGRT7PYFQSU" Name="General" Type="1">
+              <Properties>
+                <Property Id="colKOXIJGBJTJGYJAAVR2ASCGVMDI" Row="0" Column="0"/>
+                <Property Id="colNKM5TQLE5RHEZFGFLZYM7HRH3A" Row="1" Column="0"/>
+                <Property Id="colOBNSAADYD5CKFFOIDSKQI7TGLQ" Row="2" Column="0"/>
+                <Property Id="colXU6AK62EW5EWNE7KJGT4KVBNYQ" Row="3" Column="0"/>
+                <Property Id="colBIPNKBLZUVATBPJTKZWEHGDGZE" Row="5" Column="0"/>
+                <Property Id="prd4XZXKHJYH5ACPNOQXE4JWJCJPA" Row="4" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgKTXS2EQWTZDTDH2VGRT7PYFQSU" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfIGBTLFVJZJC7HBDYCPZIOEOXTU"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aecXWLPEIJAGRAXJG7SHDM4DH4X6I"/>
+  </AdsClassDefinition>
+</AdsDefinition>

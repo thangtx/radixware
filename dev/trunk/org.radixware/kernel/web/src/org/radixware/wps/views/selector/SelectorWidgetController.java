@@ -17,7 +17,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.dialogs.IFindAndReplaceDialog;
 import org.radixware.kernel.common.client.enums.EKeyboardModifier;
+import org.radixware.kernel.common.client.enums.ESelectorColumnHeaderMode;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.exceptions.BrokenEntityObjectException;
@@ -32,6 +35,8 @@ import org.radixware.kernel.common.client.models.GroupModelAsyncReader;
 import org.radixware.kernel.common.client.models.items.SelectorColumnModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.Pid;
+import org.radixware.kernel.common.client.utils.ClientValueFormatter;
+import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.common.client.views.ISelector;
 import org.radixware.kernel.common.client.widgets.selector.ISelectorWidget;
 import org.radixware.kernel.common.client.widgets.selector.SelectorSortUtils;
@@ -41,10 +46,13 @@ import org.radixware.kernel.common.enums.ESelectorColumnVisibility;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.wps.icons.WpsIcon;
 import org.radixware.wps.rwt.IGrid;
+import org.radixware.wps.rwt.IGrid.EColumnSizePolicy;
 
 public abstract class SelectorWidgetController {
-    
+    private final static String ROWS_LIMIT_FOR_SEARCH_CONFIG_PATH = 
+        SettingNames.SYSTEM+"/"+SettingNames.SELECTOR_GROUP+"/"+SettingNames.Selector.COMMON_GROUP+"/"+SettingNames.Selector.Common.ROWS_LIMIT_FOR_SEARCH;
     private final static class SelectorColumnDescriptor implements IGrid.ColumnDescriptor {
 
         private final SelectorColumnModelItem column;
@@ -72,6 +80,10 @@ public abstract class SelectorWidgetController {
     private final ISelector selector;
     private List<SelectorColumnModelItem> columns = new LinkedList<>();
     private final static String STATE_KEY = "headerState";
+    private final static String STATE_FORMAT_VERSION_KEY = "headerStateFormatVersion";
+    private FindInSelectorDialog findDialog;
+    private final IProgressHandle searchProgressHandle;;
+    
     private GroupModelAsyncReader.Listener listener = new GroupModelAsyncReader.Listener() {
         @Override
         public void afterChangeGroupModel() {
@@ -89,6 +101,8 @@ public abstract class SelectorWidgetController {
     
     protected abstract void addColumn(final int index, final SelectorColumnModelItem column);
     
+    protected abstract void removeColumn(final int index);
+    
     protected abstract void clearRows();       
 
     public SelectorWidgetController(GroupModel model, ISelector selector) {
@@ -101,6 +115,8 @@ public abstract class SelectorWidgetController {
         }
         this.model.getAsyncReader().addListener(listener);
         this.selector = selector;
+        IClientEnvironment env = model.getEnvironment();
+        searchProgressHandle = env.getProgressHandleManager().newStandardProgressHandle();
     }
 
     public List<SelectorColumnModelItem> getSelectorColumns() {
@@ -113,8 +129,8 @@ public abstract class SelectorWidgetController {
 
     public void refresh(final Property prop) {
     }
-
-    static String getTextToDisplay(final Property property) {
+    
+    public static String getTextToDisplay(final Property property) {
         if (property.isUnacceptableInputRegistered()){
             return property.getUnacceptableInput().getText();
         }else{        
@@ -196,7 +212,9 @@ public abstract class SelectorWidgetController {
     }
     
     public void displayLoadedEntities(final GroupModel model){
-        readMore(model, model.getEntitiesCount());
+        if (getRowCount()<model.getEntitiesCount()){
+            readMore(model, model.getEntitiesCount() - getRowCount());
+        }
     }
 
     public void readMore(GroupModel model) {
@@ -205,8 +223,8 @@ public abstract class SelectorWidgetController {
         }
         readMore(model, model.getReadPageSize());
     }
-
-    private void readMore(GroupModel model, int count) {
+    
+    private void readMore(final GroupModel model, final int count) {
         synchronized (readLock) {
             if (!readMore) {
                 return;
@@ -247,7 +265,37 @@ public abstract class SelectorWidgetController {
         }
     }
 
+    public FindInSelectorDialog getFindDialog() {
+        if (findDialog == null) {
+            initFindDialog();
+        }
+        return findDialog;
+    }
+    
+    public int getRowsLoadingLimit() {
+        return selector.getEnvironment().getConfigStore().readInteger(ROWS_LIMIT_FOR_SEARCH_CONFIG_PATH, 100);
+    }
+    
+    public IProgressHandle getSearchProgressHandle() {
+        return searchProgressHandle;
+    }
+    
+    private void initFindDialog() {
+        findDialog = new FindInSelectorDialog(selector.getEnvironment(), selector.getModel().getConfigStoreGroupName(), false);
+        findDialog.addFindActionListener(new IFindAndReplaceDialog.IFindActionListener() {
+            @Override
+            public void find() {
+                findDialog.acceptDialog();
+            }
+        });
+    }
+    
     public void processEntityRemoved(Pid pid) {
+    }
+    
+    public final void processErrorOnReceivingData(final Throwable exception) {
+        final String title = selector.getModel().getEnvironment().getMessageProvider().translate("ExplorerException", "Error on receiving data");     
+        selector.getModel().showException(title, exception);
     }
 
     public final void processColumnHeaderClick(final SelectorColumnModelItem columnItem,
@@ -263,11 +311,11 @@ public abstract class SelectorWidgetController {
         }
     }
 
-    public final void updateSortingIndicators(final IGrid grid) {
+    public final void updateSortingIndicators(final IGrid grid, final int startColumn) {
         final RadSortingDef currentSorting = model.getCurrentSorting();
         SelectorColumnModelItem columnItem;
         RadSortingDef.SortingItem sortingItem;
-        for (int i = grid.getColumnCount() - 1; i >= 0; i--) {
+        for (int i = grid.getColumnCount() - 1; i >= startColumn; i--) {
             columnItem = getSelectorColumn(grid,i);
             if (currentSorting == null) {
                 sortingItem = null;
@@ -290,31 +338,36 @@ public abstract class SelectorWidgetController {
         }
     }
 
-    public void storeHeaderSettings(IGrid grid) {//for Tree and Grid compability
-        ClientSettings settings = getModel().getEnvironment().getConfigStore();
-        String headerSetting = grid.getHeaderSettings();
-        settings.beginGroup(getModel().getConfigStoreGroupName());
-        settings.beginGroup(SettingNames.SYSTEM);
-        settings.beginGroup(SettingNames.Selector.COLUMNS_GROUP);
-        try {
-            if (headerSetting != null) {
-                settings.setValue(STATE_KEY, headerSetting);
+    public void storeHeaderSettings(final IGrid grid) {//for Tree and Grid compability
+        final String headerSetting = grid.getHeaderSettings();
+        if (headerSetting!=null && !headerSetting.isEmpty()){
+            final ClientSettings settings = getModel().getEnvironment().getConfigStore();        
+            settings.beginGroup(getModel().getConfigStoreGroupName());
+            settings.beginGroup(SettingNames.SYSTEM);
+            settings.beginGroup(SettingNames.Selector.COLUMNS_GROUP);
+            try {
+                settings.writeInteger(STATE_FORMAT_VERSION_KEY, 1);
+                settings.setValue(STATE_KEY, headerSetting);                
+            } finally {
+                settings.endGroup();
+                settings.endGroup();
+                settings.endGroup();
             }
-        } finally {
-            settings.endGroup();
-            settings.endGroup();
-            settings.endGroup();
         }
     }
 
-    public void restoreHeaderSettings(IGrid grid) {
-        ClientSettings settings = getModel().getEnvironment().getConfigStore();
+    public void restoreHeaderSettings(final IGrid grid) {
+        final ClientSettings settings = getModel().getEnvironment().getConfigStore();
         settings.beginGroup(getModel().getConfigStoreGroupName());
         settings.beginGroup(SettingNames.SYSTEM);
         settings.beginGroup(SettingNames.Selector.COLUMNS_GROUP);
         try {
+            final int formatVersion = settings.readInteger(STATE_FORMAT_VERSION_KEY, 0);            
             String headerSettings = settings.readString(STATE_KEY);
             if (headerSettings != null) {
+                if (formatVersion==0){
+                    headerSettings = headerSettings.replace(",content;", ",weak_content;").replace(",stretch;", ",weak_stretch;");
+                }
                 grid.setHeaderSettings(headerSettings);
             }
         } finally {
@@ -324,15 +377,15 @@ public abstract class SelectorWidgetController {
         }
     }
 
-    public void updateColumnsSizePolicy(final IGrid grid) {
+    public void updateColumnsSizePolicy(final IGrid grid, final int startColumn) {
         final int columnsCount = grid.getColumnCount();
-        for (int i = 0; i < columnsCount; i++) {
+        for (int i = startColumn; i < columnsCount; i++) {
             IGrid.EColumnSizePolicy columnResizeMode = getSizePolicy(grid,i);
             grid.getColumn(i).setSizePolicy(columnResizeMode);
         }
     }
     
-    public void updateColumnsVisibility(final IGrid grid, final List<IGrid.ColumnDescriptor> visible){
+    public void updateColumnsVisibility(final IGrid grid, final List<IGrid.ColumnDescriptor> visible, final int startColumn){
         final Set<SelectorColumnModelItem> newVisibleColumns = new HashSet<>();
         for (IGrid.ColumnDescriptor cd : visible) {
             SelectorColumnModelItem item = getSelectorColumnFromColumnDescriptor(cd);
@@ -340,7 +393,7 @@ public abstract class SelectorWidgetController {
         }
         
         final Set<SelectorColumnModelItem> currentVisibleColumns = new HashSet<>();
-        for (int i = 0; i < grid.getColumnCount(); i++) {            
+        for (int i = startColumn; i < grid.getColumnCount(); i++) {
             currentVisibleColumns.add(getSelectorColumn(grid, i));
         }
         
@@ -351,30 +404,28 @@ public abstract class SelectorWidgetController {
             if (newVisibleColumns.contains(item)){
                 item.setVisible(true);
                 if (!visibleInGrid){
-                    addColumn(indexInGrid, item);
+                    addColumn(indexInGrid + startColumn, item);
                 }
                 indexInGrid++;
             }else{
                 item.setVisible(false);
                 if (visibleInGrid){
-                    grid.removeColumn(indexInGrid);
+                    removeColumn(indexInGrid + startColumn);
                 }
             }
         }
         
         
-        if (grid.getColumnCount() == 0) {
+        if (grid.getColumnCount() == startColumn) {
             clearRows();
         }
-        updateSortingIndicators(grid);
-        updateColumnsSizePolicy(grid);        
+        updateSortingIndicators(grid, startColumn);
+        updateColumnsSizePolicy(grid, startColumn);
     }
         
     public List<IGrid.ColumnDescriptor> getAllColumnDescriptors() {
         final List<IGrid.ColumnDescriptor> descs = new LinkedList<>();
         if (getModel() != null) {
-            org.radixware.kernel.common.client.meta.RadSelectorPresentationDef.SelectorColumns columns = 
-                    getModel().getSelectorPresentationDef().getSelectorColumns();
             for (SelectorColumnModelItem column : getSelectorColumns()) {
                 if (!column.isForbidden()){
                     descs.add(new SelectorColumnDescriptor(column));
@@ -384,11 +435,13 @@ public abstract class SelectorWidgetController {
         return descs;
     }
     
-    public List<IGrid.ColumnDescriptor> getVisibleColumnDescriptors(final IGrid grid, final List<IGrid.ColumnDescriptor> all) {
+    public List<IGrid.ColumnDescriptor> getVisibleColumnDescriptors(final IGrid grid, final List<IGrid.ColumnDescriptor> all, final int startColumn) {
         final List<IGrid.ColumnDescriptor> descs = new LinkedList<>();
         final Set<SelectorColumnModelItem> items = new HashSet<>();
-        for (int i = 0; i < grid.getColumnCount(); i++) {
-            items.add(getSelectorColumn(grid, i));
+        for (int i = startColumn; i < grid.getColumnCount(); i++) {
+            if (grid.getColumn(i).isVisible()){
+                items.add(getSelectorColumn(grid, i));
+            }
         }
         for (IGrid.ColumnDescriptor cd : all) {
             if (items.contains(((SelectorColumnDescriptor) cd).getSelectorColumn())) {
@@ -405,26 +458,24 @@ public abstract class SelectorWidgetController {
 
     private static IGrid.EColumnSizePolicy getSizePolicy(final IGrid grid, final int colIndex){
         final SelectorColumnModelItem column = getSelectorColumn(grid, colIndex);
-        ESelectorColumnSizePolicy sizePolicy = column.getSizePolicy();
-        if (sizePolicy==ESelectorColumnSizePolicy.AUTO){
-            sizePolicy = column.getAutoSizePolicy();
-        }
+        final ESelectorColumnSizePolicy sizePolicy = getActualSizePolicy(column);        
         switch(sizePolicy){
             case RESIZE_BY_CONTENT:
-                return IGrid.EColumnSizePolicy.BY_CONTENT;
+                return IGrid.EColumnSizePolicy.WEAK_BY_CONTENT;
             case STRETCH:
-                return IGrid.EColumnSizePolicy.STRETCH;
+                return IGrid.EColumnSizePolicy.WEAK_STRETCH;
             default:
                 return IGrid.EColumnSizePolicy.INTERACTIVE;
         }
-    }
+    }        
     
     private static SelectorColumnModelItem getSelectorColumnFromColumnDescriptor(IGrid.ColumnDescriptor cd){
         return ((SelectorColumnDescriptor)cd).getSelectorColumn();
     }
     
     private static SelectorColumnModelItem getSelectorColumn(final IGrid grid, int colIndex){
-        return (SelectorColumnModelItem)grid.getColumn(colIndex).getUserData();
+        final Object userData = grid.getColumn(colIndex).getUserData();
+        return userData instanceof SelectorColumnModelItem ? (SelectorColumnModelItem)userData : null;        
     }
 
     static boolean canUseStandardCheckBox(final Property property) {
@@ -432,5 +483,148 @@ public abstract class SelectorWidgetController {
         return def.getType() == EValType.BOOL
                 && !def.isInheritable()
                 && property.getEnabledCommands().isEmpty();
+    }
+    
+    public static void refreshColumn(final IGrid grid, final SelectorColumnModelItem selectorColumn){
+        for (int i = grid.getColumnCount() - 1; i >= 1; i--) {
+            final IGrid.IColumn gridColumn = grid.getColumn(i);
+            if (gridColumn.getUserData() == selectorColumn) {//NOPMD
+                if (selectorColumn.getHeaderMode() == ESelectorColumnHeaderMode.ONLY_ICON) {
+                    gridColumn.setTitle("");
+                } else {
+                    final String headerTitle = 
+                            ClientValueFormatter.capitalizeIfNecessary(selectorColumn.getEnvironment(), selectorColumn.getTitle());
+                    gridColumn.setTitle(headerTitle);
+                }
+                updateColumnIconAndToolTip(gridColumn, selectorColumn);
+                final IGrid.EColumnSizePolicy columnResizeMode = getSizePolicy(grid,i);
+                if (columnResizeMode!=gridColumn.getSizePolicy()){
+                    gridColumn.setSizePolicy(columnResizeMode);
+                }
+                if (gridColumn.isVisible()!=selectorColumn.isVisible()){
+                    gridColumn.setVisible(selectorColumn.isVisible());
+                }
+                break;
+            }
+        }        
+    }
+    
+    public static void updateColumnIconAndToolTip(final IGrid.IColumn gridColumn, final SelectorColumnModelItem selectorColumn) {
+        final ESelectorColumnHeaderMode headerMode = selectorColumn.getHeaderMode();
+        if (headerMode == ESelectorColumnHeaderMode.ONLY_TEXT) {
+            gridColumn.setIcon(null);
+        } else {
+            gridColumn.setIcon((WpsIcon) selectorColumn.getHeaderIcon());
+        }
+        final String toolTip = selectorColumn.getHint();
+        if (headerMode == ESelectorColumnHeaderMode.ONLY_ICON && (toolTip == null || toolTip.isEmpty())) {
+            gridColumn.setToolTip(selectorColumn.getTitle());
+        } else {
+            gridColumn.setToolTip(toolTip);
+        }
+    }
+    
+    
+    public void restoreDefaultSettings(final IGrid grid, final boolean firstColumnMustBeVisible, final int startColumn){
+        boolean firstColumn = true;
+        final List<IGrid.ColumnDescriptor> visibleColumns = new LinkedList<>();
+        for (SelectorColumnModelItem column: getSelectorColumns()){            
+            if (getDefaultSizePolicy(column)!=getActualSizePolicy(column)){
+                column.setSizePolicy(column.getColumnDef().getSizePolicy());
+            }
+            if ((firstColumnMustBeVisible && firstColumn)
+                || (!column.isForbidden() && isVisible(column.getColumnDef().getVisibility()))){
+                visibleColumns.add(new SelectorColumnDescriptor(column));
+            }
+            firstColumn = false;
+        }
+        updateColumnsVisibility(grid, visibleColumns, startColumn);
+    }
+    
+    private static ESelectorColumnSizePolicy getDefaultSizePolicy(final SelectorColumnModelItem column){
+        final ESelectorColumnSizePolicy policy = column.getColumnDef().getSizePolicy();
+        return policy==ESelectorColumnSizePolicy.AUTO ? column.getAutoSizePolicy() : policy;
+    }
+    
+    private static ESelectorColumnSizePolicy getActualSizePolicy(final SelectorColumnModelItem column){
+        final ESelectorColumnSizePolicy policy = column.getSizePolicy();
+        return policy==ESelectorColumnSizePolicy.AUTO ? column.getAutoSizePolicy() : policy;
+    }    
+    
+    public boolean isDefaultColumnSettingsChanged(final IGrid grid, final boolean firstColumnIsAlwaysVisible){        
+        final Id lastVisibleColumnId = getLastVisibleColumnId(grid);
+        boolean firstColumn = true;
+        for (SelectorColumnModelItem column: getSelectorColumns()){            
+            if (getDefaultSizePolicy(column)!=getActualSizePolicy(column) 
+                && (column.getSizePolicy()!=ESelectorColumnSizePolicy.STRETCH || !column.getId().equals(lastVisibleColumnId))){
+                return true;
+            }
+            final boolean isVisibleByDefault = 
+                (firstColumnIsAlwaysVisible && firstColumn) || isVisible(column.getColumnDef().getVisibility());
+            if (!column.isForbidden() && isVisibleByDefault!=column.isVisible()){
+                return true;
+            }
+            firstColumn = false;
+        }
+        return false;
+    }
+    
+    private static Id getLastVisibleColumnId(final IGrid grid){
+        SelectorColumnModelItem column;
+        for (int i=grid.getColumnCount()-1; i>=0; i--){
+            column = getSelectorColumn(grid, i);
+            if (column!=null && grid.getColumn(i).isVisible()){
+                return column.getId();
+            }
+        }
+        return null;        
+    }
+    
+    private static boolean isVisible(final ESelectorColumnVisibility visibility){
+        return visibility==ESelectorColumnVisibility.INITIAL;
+    }    
+    
+    public static IGrid.IColumn addColumn(final IGrid grid, final int index, final SelectorColumnModelItem selectorColumn){
+        final ESelectorColumnHeaderMode headerMode = selectorColumn.getHeaderMode();        
+        final String headerTitle;
+        if (headerMode == ESelectorColumnHeaderMode.ONLY_ICON){            
+            headerTitle = "";
+        }else{
+            headerTitle = 
+                ClientValueFormatter.capitalizeIfNecessary(selectorColumn.getEnvironment(), selectorColumn.getTitle());
+        }        
+        final IGrid.IColumn gridColumn = grid.addColumn(index, headerTitle);
+        setupColumn(gridColumn, selectorColumn);
+        return gridColumn;
+    }
+    
+    public static void setupColumn(final IGrid.IColumn gridColumn, final SelectorColumnModelItem selectorColumn){
+        SelectorWidgetController.updateColumnIconAndToolTip(gridColumn, selectorColumn);
+        gridColumn.setUserData(selectorColumn);
+        gridColumn.setPersistenceKey(selectorColumn.getId().toString());
+        gridColumn.setObjectName("rx_selector_col_#"+selectorColumn.getId().toString());
+        gridColumn.setUserCanResizeByContent(true);
+        gridColumn.addSizePolicyListener(new IGrid.IColumn.ISizePolicyListener() {
+            @Override
+            public void sizePolicyChanged(IGrid.IColumn gridColumn, EColumnSizePolicy oldPolicy, EColumnSizePolicy newPolicy) {
+                if (gridColumn.getUserData() instanceof SelectorColumnModelItem){
+                    final SelectorColumnModelItem selectorColumn = (SelectorColumnModelItem)gridColumn.getUserData();
+                    ESelectorColumnSizePolicy sizePolicy;
+                    switch(newPolicy){
+                        case WEAK_BY_CONTENT:
+                            sizePolicy = ESelectorColumnSizePolicy.RESIZE_BY_CONTENT;
+                            break;
+                        case WEAK_STRETCH:
+                            sizePolicy = ESelectorColumnSizePolicy.STRETCH;
+                            break;
+                        default:
+                            sizePolicy = ESelectorColumnSizePolicy.MANUAL_RESIZE;
+                    }
+                    if (getActualSizePolicy(selectorColumn)!=sizePolicy){
+                        selectorColumn.setSizePolicy(sizePolicy);
+                    }
+                }
+            }
+        });        
     }
 }

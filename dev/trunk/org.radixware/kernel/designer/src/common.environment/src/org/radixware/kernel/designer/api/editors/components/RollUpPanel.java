@@ -29,6 +29,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.ads.ITransparency;
+import org.radixware.kernel.common.defs.ads.type.AdsTransparence;
 import org.radixware.kernel.designer.api.ApiEditorManager;
 import org.radixware.kernel.designer.api.ApiFilter;
 import org.radixware.kernel.designer.api.EditorState;
@@ -213,7 +215,15 @@ public class RollUpPanel extends CollapsablePanel implements IStatableEditor {
                 descriptionLabel.setVisible(false);
             }
 
-            final String htmlSignature = LinkGenerator.getDefault().getLinkedString(object).toHtml();
+            StringBuilder sb = new StringBuilder();
+            sb.append(LinkGenerator.getDefault().getLinkedString(object).toHtml().replace("</body>", "").replace("</html>", ""));
+            if (object instanceof ITransparency){
+                ITransparency transparency = (ITransparency) object;
+                if (AdsTransparence.isTransparent(transparency)){
+                    sb.append("<i> wrapper </i>");
+                }
+            }
+            final String htmlSignature = sb.toString();
             titleLabel.setText(htmlSignature);
         }
     }

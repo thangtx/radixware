@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,10 +27,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.impl.xb.xsdschema.ImportDocument;
 import org.apache.xmlbeans.impl.xb.xsdschema.IncludeDocument;
 import org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument;
+import org.radixware.kernel.common.svn.radixdoc.xmlexport.ManagerXmlSchemaExportDataProvider;
+import org.radixware.kernel.common.svn.radixdoc.xmlexport.ManagerXmlSchemaExportDataProvider.EnumData;
+import org.radixware.kernel.common.svn.radixdoc.xmlexport.ManagerXmlSchemaExportDataProvider.Localization;
+import org.radixware.kernel.common.svn.radixdoc.xmlexport.ManagerXmlSchemaExportDataProvider.Namespace2FileName;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.svn.RadixSvnException;
 import org.radixware.kernel.common.svn.SVN;
@@ -54,9 +61,24 @@ import org.xmlsoap.schemas.wsdl.TImport;
 import org.xmlsoap.schemas.wsdl.TTypes;
 
 public class XsdExporter extends AbstractSvnObserver {
+    
+    private static class FileInfo {
 
-    private final File outputDir;
+        String name;
+        boolean fromKernel;
+
+        public FileInfo(String name, boolean fromKernel) {
+            this.name = name;
+            this.fromKernel = fromKernel;
+        }
+    }
+    
+    private static final String KERNEL_XSD_PATH = "schemaorg_apache_xmlbeans/src/";
+    
     private Set<EIsoLanguage> langs;
+    private final Map<Id, AdsDefinitionDocument> xsdDefs = new HashMap<>();
+    private final Map<String, String> schemaNs2ModuleName = new HashMap<>();
+    private final File outputDir;
 
     public XsdExporter(SVNRepositoryAdapter repository, long revision, File outputDir, Set<EIsoLanguage> languages) {
         super(repository, revision);
@@ -67,7 +89,7 @@ public class XsdExporter extends AbstractSvnObserver {
     private List<String> listLayers() throws RadixSvnException {
         return listLayers("");
     }
-
+    
     private void checkSchemaImports(File file, SchemaDocument.Schema xSchema, Map<String, List<FileInfo>> ns2FileName) {
         for (ImportDocument.Import xImport : xSchema.getImportArray()) {
             String ns = xImport.getNamespace();
@@ -168,7 +190,7 @@ public class XsdExporter extends AbstractSvnObserver {
                         //String xsPreff = node.getPrefix().isEmpty() ? "" : node.getPrefix() + ":";
                         NodeList children = node.getChildNodes();
                         Node doc = null;
-                        String docText = "Enum \"" + definition.enumName + "\"";
+                        String docText = "Enum \"" + definition.getEnumName() + "\"";
 
                         if (children != null) {
                             loop:
@@ -200,17 +222,17 @@ public class XsdExporter extends AbstractSvnObserver {
                         node.appendChild(enumItems);
                         enumItems.appendChild(node.getOwnerDocument().createTextNode("\n\t"));
 
-                        Localization locale = titles.get(definition.id.toString());
+                        Localization locale = titles.get(definition.getId().toString());
                         List<EnumData.EnumItem> itemList = definition.getItems();
                         for (EnumData.EnumItem item : itemList) {
                             Element enumItem = node.getOwnerDocument().createElementNS(tUri, "enumItem");
                             enumItems.appendChild(enumItem);
-                            enumItem.setAttribute("Name", item.name);
-                            enumItem.setAttribute("Val", item.value);
+                            enumItem.setAttribute("Name", item.getName());
+                            enumItem.setAttribute("Val", item.getValue());
                             enumItems.appendChild(node.getOwnerDocument().createTextNode("\n\t"));
 
-                            if (item.titleId != null && locale != null) {
-                                Map<EIsoLanguage, String> vals = locale.translations.get(item.titleId);
+                            if (item.getTitleId() != null && locale != null) {
+                                Map<EIsoLanguage, String> vals = locale.getTranslation(item.getTitleId());
                                 if (vals != null) {
                                     List<EIsoLanguage> langList;
                                     if (langs != null) {//add all translations
@@ -262,11 +284,11 @@ public class XsdExporter extends AbstractSvnObserver {
         for (String layer : layers) {
             List<String> modules = listKernelModules(layer);
             for (String module : modules) {
-                processModule(module, true, ns2FileName, writtenFiles, enums, titles);
+                consoleProcessModule(module, true, ns2FileName, writtenFiles, enums, titles);
             }
             modules = listAdsModules(layer);
             for (String module : modules) {
-                processModule(module, false, ns2FileName, writtenFiles, enums, titles);
+                consoleProcessModule(module, false, ns2FileName, writtenFiles, enums, titles);
             }
         }
 
@@ -329,83 +351,6 @@ public class XsdExporter extends AbstractSvnObserver {
         }
     }
 
-    private class Localization {
-
-        Map<Id, Map<EIsoLanguage, String>> translations = new HashMap<>();
-
-        public void addTranslation(Id stringId, EIsoLanguage lang, String value) {
-            Map<EIsoLanguage, String> data = translations.get(stringId);
-            if (data == null) {
-                data = new HashMap<EIsoLanguage, String>();
-                translations.put(stringId, data);
-            }
-            data.put(lang, value);
-        }
-    }
-
-    private class EnumData {
-
-        String enumName;
-        Id id;
-        private Map<Id, EnumItem> items = new LinkedHashMap<>();
-        private List<EnumItem> sortedItems = null;
-
-        public EnumData(Id id) {
-            this.id = id;
-        }
-
-        public class EnumItem {
-
-            String name;
-            String value;
-            Id titleId;
-
-            public EnumItem(String name, String value, Id titleId) {
-                this.name = name;
-                this.value = value;
-                this.titleId = titleId;
-            }
-        }
-
-        public void addItem(Id id, String name, String value, Id titleId) {
-            EnumItem item = items.get(id);
-            if (item != null) {
-                if (titleId != null) {
-                    item.titleId = titleId;
-                }
-            } else {
-                items.put(id, new EnumItem(name, value, titleId));
-            }
-        }
-
-        public List<EnumItem> getItems() {
-            if (sortedItems == null) {
-                sortedItems = new ArrayList<>(items.values());
-                items = null;
-                Collections.sort(sortedItems, new Comparator<EnumItem>() {
-                    @Override
-                    public int compare(EnumItem o1, EnumItem o2) {
-                        String s1 = o1.name + "-" + o1.value;
-                        String s2 = o2.name + "-" + o2.value;
-                        return s1.compareTo(s2);
-                    }
-                });
-            }
-            return sortedItems;
-        }
-    }
-
-    private static class FileInfo {
-
-        String name;
-        boolean fromKernel;
-
-        public FileInfo(String name, boolean fromKernel) {
-            this.name = name;
-            this.fromKernel = fromKernel;
-        }
-    }
-
     private String getFilePath(String module, byte[] xmlBytes, Map<String, List<FileInfo>> ns2FileName, boolean fromKernel, String pathHint) throws XmlException, IOException {
         String[] parts = module.split("/");
         String prefix = parts[0] + "-" + parts[parts.length - 1] + "-";
@@ -461,36 +406,8 @@ public class XsdExporter extends AbstractSvnObserver {
         ns2FileName.put(targetNamespace, list);
         return result;
     }
-
-    private List<String> getTargetJarFiles(final String moduleBinDir, boolean isKernelModule) throws RadixSvnException {
-        if (isKernelModule) {
-            final List<String> result = new LinkedList<>();
-            repository.getDir(moduleBinDir, revision, new SVNRepositoryAdapter.EntryHandler() {
-
-                @Override
-                public void accept(SvnEntry svnde) throws RadixSvnException {
-                    if (svnde.getKind() == SvnEntry.Kind.FILE && svnde.getName().endsWith(".jar")) {
-                        result.add(SvnPath.append(moduleBinDir, svnde.getName()));
-                    }
-                }
-            });
-            return result;
-        } else {
-            final List<String> result = new LinkedList<>();
-            repository.getDir(moduleBinDir, revision, new SVNRepositoryAdapter.EntryHandler() {
-
-                @Override
-                public void accept(SvnEntry svnde) throws RadixSvnException {
-                    if (svnde.getKind() == SvnEntry.Kind.FILE && svnde.getName().endsWith(".jar") && (svnde.getName().startsWith("common") || svnde.getName().startsWith("locale"))) {
-                        result.add(SvnPath.append(moduleBinDir, svnde.getName()));
-                    }
-                }
-            });
-            return result;
-        }
-    }
-
-    private void processModule(String module, boolean isKernelModule, Map<String, List<FileInfo>> ns2fileName, List<File> writtenFiles, Map<String, EnumData> enums, Map<String, Localization> titles) throws RadixSvnException, IOException {
+    
+    private void consoleProcessModule(String module, boolean isKernelModule, Map<String, List<FileInfo>> ns2fileName, List<File> writtenFiles, Map<String, EnumData> enums, Map<String, Localization> titles) throws RadixSvnException, IOException {
         //look for enums
         String apiFileName = SvnPath.append(module, "api.xml");
         if (SVN.getKind(repository, apiFileName, revision) == SvnEntry.Kind.FILE) {
@@ -512,13 +429,12 @@ public class XsdExporter extends AbstractSvnObserver {
                                             enums.put(xEnumDef.getPublishing().getPlatformEnum(), data);
                                         }
                                     }
-                                    data.enumName = xEnumDef.getName();
+                                    data.setEnumName(xEnumDef.getName());
                                     if (xEnumDef.getItems() != null) {
                                         for (EnumItemDefinition xItem : xEnumDef.getItems().getItemList()) {
                                             data.addItem(xItem.getId(), xItem.getName(), xItem.getValue(), xItem.getTitleId());
                                         }
                                     }
-
                                 }
                             }
                         }
@@ -636,7 +552,231 @@ public class XsdExporter extends AbstractSvnObserver {
             }
         }
     }
-    private static final String KERNEL_XSD_PATH = "schemaorg_apache_xmlbeans/src/";
+    
+    public ManagerXmlSchemaExportDataProvider getDialogData(Set<Id> exportSchemasIds) throws RadixSvnException, IOException {
+        Map<Namespace2FileName, byte[]> xmlSchemasBytes = new HashMap<>();
+        Map<String, EnumData> enums = new LinkedHashMap<>();
+        Map<String, Localization> titles = new LinkedHashMap<>();
+        Map<String, Localization> schemasDoc = new LinkedHashMap<>();
+
+        List<String> layers = listLayers();
+        for (String layer : layers) {
+            List<String> modules = listKernelModules(layer);
+            for (String module : modules) {
+                dialogProcessModule(module, true, xmlSchemasBytes, enums, titles, schemasDoc);
+            }
+            modules = listAdsModules(layer);
+            for (String module : modules) {
+                dialogProcessModule(module, false, xmlSchemasBytes, enums, titles, schemasDoc);
+            }
+        }
+        
+        if (exportSchemasIds == null) {
+            exportSchemasIds = new HashSet<>(xsdDefs.keySet());
+        } else {
+            exportSchemasIds.addAll(xsdDefs.keySet());            
+        }
+        
+        ManagerXmlSchemaExportDataProvider xmlSchemaWrapCreator = new ManagerXmlSchemaExportDataProvider(xsdDefs, xmlSchemasBytes, schemasDoc, schemaNs2ModuleName, langs, enums, titles);
+        
+        return xmlSchemaWrapCreator;
+    }
+
+    private void dialogProcessModule(String module, boolean isKernelModule, Map<Namespace2FileName, byte[]> xmlSchemas, Map<String, EnumData> enums, Map<String, Localization> titles, Map<String, Localization> schemasDoc) throws RadixSvnException, IOException {
+        //look for enums
+        String apiFileName = SvnPath.append(module, "api.xml");
+        if (SVN.getKind(repository, apiFileName, revision) == SvnEntry.Kind.FILE) {
+            try {
+                String content = SVN.getFileAsStr(repository, apiFileName, revision);
+                if (content != null) {
+                    try {
+                        APIDocument xDoc = APIDocument.Factory.parse(content);
+                        APIDocument.API xApi = xDoc.getAPI();
+                        if (xApi != null) {
+                            for (AdsDefinitionElementType xDef : xApi.getDefinitionList()) {
+                                if (xDef.isSetAdsEnumDefinition()) {
+                                    EnumDefinition xEnumDef = xDef.getAdsEnumDefinition();
+                                    EnumData data = enums.get(xEnumDef.getId().toString());
+                                    if (data == null) {
+                                        data = new EnumData(xEnumDef.getId());
+                                        enums.put(xEnumDef.getId().toString(), data);
+                                        if (xEnumDef.getPublishing() != null && xEnumDef.getPublishing().getPlatformEnum() != null) {
+                                            enums.put(xEnumDef.getPublishing().getPlatformEnum(), data);
+                                        }
+                                    }
+                                    data.setEnumName(xEnumDef.getName());
+                                    if (xEnumDef.getItems() != null) {
+                                        for (EnumItemDefinition xItem : xEnumDef.getItems().getItemList()) {
+                                            data.addItem(xItem.getId(), xItem.getName(), xItem.getValue(), xItem.getTitleId());
+                                        }
+                                    }
+                                }
+
+                                if (xDef.isSetAdsXmlSchemeDefinition()) {
+                                    AdsDefinitionDocument xDefDoc = AdsDefinitionDocument.Factory.newInstance();
+                                    xDefDoc.addNewAdsDefinition().setAdsXmlSchemeDefinition(xDef.getAdsXmlSchemeDefinition());
+                                    xsdDefs.put(xDef.getAdsXmlSchemeDefinition().getId(), xDefDoc);
+                                    schemaNs2ModuleName.put(xDef.getAdsXmlSchemeDefinition().getTargetNamespace(), module);
+                                }
+                            }
+                        }
+                    } catch (XmlException ex) {
+                        //ignore
+                    }
+                }
+            } catch (RadixSvnException e) {
+                //ignore
+            }
+        }
+        String binDir = SvnPath.append(module, "bin");
+
+        if (SVN.getKind(repository, binDir, revision) == SvnEntry.Kind.DIRECTORY) {
+            //localize enumerations
+            List<String> jars = getTargetJarFiles(binDir, isKernelModule);
+            for (String commonJar : jars) {
+                if (SVN.getKind(repository, commonJar, revision) == SvnEntry.Kind.FILE) {
+                    File tmp = File.createTempFile("xml", null);
+                    try {
+                        FileOutputStream out = new FileOutputStream(tmp);
+                        try {
+                            repository.getFile(commonJar, revision, null, out);
+                        } finally {
+                            out.close();
+                        }
+                        JarFile jar = new JarFile(tmp);
+                        try {
+                            Enumeration<JarEntry> entries = jar.entries();
+                            while (entries.hasMoreElements()) {
+                                JarEntry e = entries.nextElement();
+                                if (!e.isDirectory()) {
+                                    String name = e.getName();
+
+                                    boolean isSchemaEntry = false;
+                                    boolean isEnumLocaleEntry = false;
+                                    boolean isXsdLocaleEntry = false;
+                                    String pathHint = null;
+                                    if (isKernelModule) {
+                                        isSchemaEntry = name.startsWith(KERNEL_XSD_PATH) && (name.endsWith(".xsd") || name.endsWith(".wsdl"));
+                                        if (isSchemaEntry) {
+                                            String[] parts = name.split("/");
+                                            pathHint = parts[parts.length - 1];
+                                        }
+                                    } else {
+                                        if (name.endsWith(".xml")) {
+                                            String[] parts = name.split("/");
+                                            if (parts.length > 2) {
+                                                if (parts[parts.length - 1].startsWith("xsd")) {
+                                                    if (Utils.equals(parts[parts.length - 2] + ".xml", parts[parts.length - 1])) {
+                                                        isSchemaEntry = true;
+                                                    }
+                                                } else if (parts[parts.length - 1].startsWith("mlbacs") && parts[parts.length - 1].endsWith(".xml")) {
+                                                    isEnumLocaleEntry = true;
+                                                } else if (parts[parts.length - 1].startsWith("mlbxsd") && parts[parts.length - 1].endsWith(".xml")) {
+                                                    isXsdLocaleEntry = true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (isSchemaEntry || isEnumLocaleEntry || isXsdLocaleEntry) {
+                                        byte[] xmlBytes = FileUtils.getZipEntryByteContent(e, jar);
+
+                                        if (isEnumLocaleEntry || isXsdLocaleEntry) {
+                                            try {
+                                                AdsDefinitionDocument xDoc = AdsDefinitionDocument.Factory.parse(new ByteArrayInputStream(xmlBytes));
+                                                if (xDoc.getAdsDefinition().isSetAdsLocalizingBundleDefinition()) {
+                                                    LocalizingBundleDefinition xDef = xDoc.getAdsDefinition().getAdsLocalizingBundleDefinition();
+                                                    String id = xDef.getId().toString().substring(3);
+                                                    Localization loc;
+                                                    if (isEnumLocaleEntry) {
+                                                        loc = titles.get(id);
+                                                        if (loc == null) {
+                                                            loc = new Localization();
+                                                            titles.put(id, loc);
+                                                        }
+                                                    } else {
+                                                        loc = schemasDoc.get(id);
+                                                        if (loc == null) {
+                                                            loc = new Localization();
+                                                            schemasDoc.put(id, loc);
+                                                        }
+                                                    }
+                                                    for (LocalizedString str : xDef.getStringList()) {
+                                                        for (LocalizedString.Value xVal : str.getValueList()) {
+                                                            loc.addTranslation(str.getId(), xVal.getLanguage(), xVal.getStringValue());
+                                                        }
+                                                    }
+                                                }
+                                            } catch (XmlException ex) {
+                                            }
+                                            continue;
+                                        }
+
+                                        String schemaNamespace = null;
+                                        try {
+                                            SchemaDocument xDoc = SchemaDocument.Factory.parse(new ByteArrayInputStream(xmlBytes));
+                                            if (xDoc.getSchema() != null && xDoc.getSchema().getTargetNamespace() != null) {
+                                                schemaNamespace = xDoc.getSchema().getTargetNamespace();
+                                            } else {
+                                                continue;
+                                            }
+                                        } catch (XmlException ex) {
+                                            try {
+                                                DefinitionsDocument xDoc = DefinitionsDocument.Factory.parse(new ByteArrayInputStream(xmlBytes));
+                                                if (xDoc.getDefinitions() != null && xDoc.getDefinitions().getTargetNamespace() != null) {
+                                                    schemaNamespace = xDoc.getDefinitions().getTargetNamespace();
+                                                } else {
+                                                    continue;
+                                                }
+                                            } catch (XmlException ex1) {
+                                                Logger.getLogger(XsdExporter.class.getName()).log(Level.SEVERE, null, ex1);
+                                            }
+                                        }
+
+                                        if (schemaNamespace != null && !schemaNamespace.isEmpty()) {
+                                            xmlSchemas.put(new Namespace2FileName(schemaNamespace, pathHint), xmlBytes);
+                                        }
+                                    }
+                                }
+                            }
+                        } finally {
+                            jar.close();
+                        }
+
+                    } finally {
+                        FileUtils.deleteFile(tmp);
+                    }
+                }
+            }
+        }
+    }
+    
+    private List<String> getTargetJarFiles(final String moduleBinDir, boolean isKernelModule) throws RadixSvnException {
+        if (isKernelModule) {
+            final List<String> result = new LinkedList<>();
+            repository.getDir(moduleBinDir, revision, new SVNRepositoryAdapter.EntryHandler() {
+
+                @Override
+                public void accept(SvnEntry svnde) throws RadixSvnException {
+                    if (svnde.getKind() == SvnEntry.Kind.FILE && svnde.getName().endsWith(".jar")) {
+                        result.add(SvnPath.append(moduleBinDir, svnde.getName()));
+                    }
+                }
+            });
+            return result;
+        } else {
+            final List<String> result = new LinkedList<>();
+            repository.getDir(moduleBinDir, revision, new SVNRepositoryAdapter.EntryHandler() {
+
+                @Override
+                public void accept(SvnEntry svnde) throws RadixSvnException {
+                    if (svnde.getKind() == SvnEntry.Kind.FILE && svnde.getName().endsWith(".jar") && (svnde.getName().startsWith("common") || svnde.getName().startsWith("locale"))) {
+                        result.add(SvnPath.append(moduleBinDir, svnde.getName()));
+                    }
+                }
+            });
+            return result;
+        }
+    }   
 
     private List<String> listKernelModules(String layer) throws RadixSvnException {
         final List<String> candidates = new LinkedList<>();

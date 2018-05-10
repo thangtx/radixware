@@ -19,6 +19,7 @@ import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.swing.text.View;
 import org.apache.xmlbeans.XmlObject;
@@ -45,6 +46,7 @@ import org.radixware.kernel.common.client.views.IEmbeddedView;
 import org.radixware.kernel.common.client.views.IEmbeddedViewContext;
 import org.radixware.kernel.common.client.views.ISelector;
 import org.radixware.kernel.common.client.views.IView;
+import org.radixware.kernel.common.client.widgets.IModifableComponent;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
@@ -88,9 +90,7 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
     private ComponentModificationRegistrator modificationRegistrator;
     private final ErrorView errWidget;
     private boolean editorWasRestricted = false;
-    private boolean updateWasRestricted = false;
-    private boolean createWasRestricted = false;
-    private boolean deleteWasRestricted = false;
+    private boolean prepareViewSchedulted = false;
     private final IEmbeddedViewContext viewContext;
     private boolean synchronizedWithParentView;
     private final ViewRestrictions initialRestrictions = new ViewRestrictions();
@@ -175,21 +175,6 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
                 restrictions.setEditorRestricted(true);
                 editorWasRestricted = true;
             }
-            if (parentModel.getContext().getRestrictions() != null && //parentModel may be  model of paragraph
-                    parentModel.getContext().getRestrictions().getIsUpdateRestricted()) {
-                if (!restrictions.getIsCreateRestricted()) {
-                    restrictions.setCreateRestricted(true);
-                    createWasRestricted = true;
-                }
-                if (!restrictions.getIsUpdateRestricted()) {
-                    restrictions.setUpdateRestricted(true);
-                    updateWasRestricted = true;
-                }
-                if (!restrictions.getIsDeleteRestricted()) {
-                    restrictions.setDeleteRestricted(true);
-                    deleteWasRestricted = true;
-                }
-            }
         }else if (newModel instanceof EntityModel){
             final EntityModel entityModel = (EntityModel)newModel;
             if (!entityModel.wasRead()){
@@ -210,9 +195,12 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
     protected void onViewCreated() {
         final QWidget viewWidget = (QWidget)embeddedView;
         viewWidget.hide();
-        viewWidget.setParent(this);
+        if (viewWidget.parent()!=this){
+            viewWidget.setParent(this);
+        }
         viewWidget.setAttribute(WidgetAttribute.WA_DeleteOnClose, true);
         layout().addWidget(viewWidget);
+        setFocusProxy(viewWidget);
         embeddedView.getRestrictions().add(initialRestrictions);        
     }
 
@@ -242,12 +230,15 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
         errWidget.hide();
         if (embeddedView != null) {
             close(true);
-        }
-        QWidget viewWidget;
+        }        
         setUpdatesEnabled(false);
         try {            
             if (model == null) {
                 createModelAndPrepareView();
+                if (model==null){//entity object creation was cancelled in event handler
+                    close(true);
+                    return;
+                }                
             }
             if (preparedView!=null){
                 embeddedView = preparedView;
@@ -256,7 +247,7 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
                 embeddedView = model.createView();
             }
             onViewCreated();
-            viewWidget = ((QWidget) embeddedView);
+            final QWidget viewWidget = ((QWidget) embeddedView);
             if (embeddedView instanceof Editor) {
                 ((Editor) embeddedView).open(model, modificationRegistrator);
                 if (childItemId!=null) {
@@ -309,12 +300,16 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
         final RadPresentationDef expectedPresentation = getExpectedPresentation();
         if (expectedPresentation!=null){
             cancelCreateView = false;
-            QApplication.postEvent(this, new CreateView(expectedPresentation));
+            if (!prepareViewSchedulted){
+                prepareViewSchedulted = true;
+                QApplication.postEvent(this, new CreateView(expectedPresentation));                
+            }
         }
         model = createModel();
         cancelCreateView = true;
         if (preparedView!=null 
-            && (expectedPresentation==null 
+            && (model==null
+                || expectedPresentation==null 
                 || !Utils.equals(expectedPresentation.getId(), model.getDefinition().getId()) )
             ){
             closePreparedView();
@@ -342,6 +337,7 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
     @Override
     public boolean close(final boolean forced) {
         cancelAsyncActions();
+        closePreparedView();
         if (model == null) {
             return true;
         }
@@ -355,11 +351,6 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
                 ((Selector) embeddedView).modifiedStateChanged.disconnect(this);
             }
             onViewClosed();
-            /*            final QWidget viewWidget = myView.asQWidget();
-            layout().removeWidget(viewWidget);
-            viewWidget.setParent(null);
-            //removing native resources to avoid widget usage in native code when java resources was already removed by GC.
-            viewWidget.disposeLater();*/
             setFocusProxy(null);
             embeddedView = null;
             OPENED_VIEWS.remove(this);
@@ -371,18 +362,6 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
                 if (editorWasRestricted && restrictions.canBeAllowed(ERestriction.EDITOR)) {
                     restrictions.setEditorRestricted(false);
                     editorWasRestricted = false;
-                }
-                if (createWasRestricted && restrictions.canBeAllowed(ERestriction.CREATE)) {
-                    restrictions.setCreateRestricted(false);
-                    createWasRestricted = false;
-                }
-                if (updateWasRestricted && restrictions.canBeAllowed(ERestriction.UPDATE)) {
-                    restrictions.setUpdateRestricted(false);
-                    updateWasRestricted = false;
-                }
-                if (deleteWasRestricted && restrictions.canBeAllowed(ERestriction.DELETE)) {
-                    restrictions.setDeleteRestricted(false);
-                    deleteWasRestricted = false;
                 }
             }
         }
@@ -422,6 +401,7 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
     }
 
     protected void processExceptionOnOpen(final Throwable exception) {
+        close(true);
         ObjectNotFoundError objectNotFound = null;
         for (Throwable err = exception; err != null && err.getCause() != err; err = err.getCause()) {
             if (err instanceof ObjectNotFoundError) {
@@ -438,12 +418,11 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
                 objectNotFound.inContextOf((GroupModel) model);
             }
         }
-
         final String name = objectName() != null && !objectName().isEmpty()
                 ? "\"" + objectName() + "\""
                 : getEnvironment().getMessageProvider().translate("EmbeddedViewErr", "widget");
         final String message = getEnvironment().getMessageProvider().translate("EmbeddedViewErr", "Can't open %s");
-        errWidget.show();
+        errWidget.show();        
         errWidget.setError(String.format(message, name), objectNotFound == null ? exception : objectNotFound);
     }
 
@@ -492,11 +471,13 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
     @Override
     protected void customEvent(final QEvent event) {
         if (event instanceof CreateView){
+            prepareViewSchedulted = false;
             event.accept();
             if (!cancelCreateView){
                 try{
                     preparedView = 
                         createViewByPresentation(((CreateView)event).presentation, getEnvironment());
+                    ((QWidget)preparedView).setParent(this);
                 }catch(Exception exception){
                     getEnvironment().getTracer().error(exception);
                 }
@@ -598,11 +579,16 @@ public class EmbeddedView extends ExplorerWidget implements IExplorerModelWidget
     }
 
     @SuppressWarnings("unused")
-    private void onModifiedStateChanged() {
+    protected void onModifiedStateChanged() {
         if (modificationRegistrator != null) {
             modificationRegistrator.getListener().notifyComponentModificationStateChanged(this, inModifiedStateNow());
         }
     }
+
+    @Override
+    public final Collection<IModifableComponent> getInnerComponents() {
+        return modificationRegistrator.getRegisteredComponents();
+    }    
 
     @Override
     public void setReadOnly(boolean isReadOnly) {

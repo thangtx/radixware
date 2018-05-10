@@ -341,7 +341,7 @@ public abstract class AdsUIProperty extends RadixObject {
 
         static {
             register("sizeType", ESizePolicy.class);
-            register("orientation", EOrientation.class);
+            register(AdsWidgetProperties.ORIENTATION, EOrientation.class);
             register("arrowType", EArrowType.class);
             register("cursor", ECursorShape.class);
             register("toolButtonStyle", EToolButtonStyle.class);
@@ -366,7 +366,7 @@ public abstract class AdsUIProperty extends RadixObject {
             register("frameShape", EFrameShape.class);
             register("reactionToIntermediateInput", EReactionToIntermediateInput.class);
             register("checkState", ECheckState.class);
-            register("arrayType", EArrayClassName.class);
+            register(AdsWidgetProperties.ARRAY_TYPE, EArrayClassName.class);
             register("layoutSizeConstraint", ESizeConstraint.class);
             register("resizeMode", EResizeMode.class);
         }
@@ -582,7 +582,7 @@ public abstract class AdsUIProperty extends RadixObject {
         static {
             register("alignment", EAlignment.class);
             register("textAlignment", EAlignment.class);
-            register("standardButtons", EStandardButton.class);
+            register(AdsWidgetProperties.STANDARD_BUTTONS, EStandardButton.class);
         }
 
         public static void register(String name, Class<? extends UIEnum> clazz) {
@@ -1019,11 +1019,11 @@ public abstract class AdsUIProperty extends RadixObject {
 
                 private String getPtopName() {
                     String propName = LocalizedStringRefProperty.this.getName();
-                    if (propName.equals("toolTip")) {
+                    if (propName.equals(AdsWidgetProperties.TOOLTIP)) {
                         return "Tool Tip";
                     } else if (propName.equals("statusTip")) {
                         return "Status Tip";
-                    } else if (propName.equals("windowTitle")) {
+                    } else if (propName.equals(AdsWidgetProperties.WINDOW_TITLE)) {
                         return "Window Title";
                     } else if (propName.equals("inputMask")) {
                         return "Input Mask";
@@ -1033,9 +1033,9 @@ public abstract class AdsUIProperty extends RadixObject {
                         return "Prefix";
                     } else if (propName.equals("specialValueText")) {
                         return "Special Value Text";
-                    } else if (propName.equals("title")) {
+                    } else if (propName.equals(AdsWidgetProperties.TITLE)) {
                         return "Title";
-                    } else if (propName.equals("label")) {
+                    } else if (propName.equals(AdsWidgetProperties.LABEL)) {
                         return "Label";
                     }
                     return "Text";
@@ -1053,7 +1053,7 @@ public abstract class AdsUIProperty extends RadixObject {
                 @Override
                 public EMultilingualStringKind getKind() {
                     String propName = LocalizedStringRefProperty.this.getName();
-                    if (propName.equals("toolTip") || propName.equals("statusTip") || propName.equals("specialValueText")) {
+                    if (propName.equals(AdsWidgetProperties.TOOLTIP) || propName.equals("statusTip") || propName.equals("specialValueText")) {
                         return EMultilingualStringKind.TOOLTIP;
                     }
                     return EMultilingualStringKind.TITLE;

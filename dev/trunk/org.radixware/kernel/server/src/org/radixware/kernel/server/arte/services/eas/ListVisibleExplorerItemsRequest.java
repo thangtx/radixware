@@ -35,7 +35,7 @@ final class ListVisibleExplorerItemsRequest extends SessionRequest {
     }
 
     final ListVisibleExplorerItemsDocument process(final ListVisibleExplorerItemsMess request) throws ServiceProcessFault, InterruptedException {
-        //trace("ListEdPresVisibleExpItemsRequest.process() started");
+        getArte().switchToReadonlyTransaction();
         final ListVisibleExplorerItemsRq rqParams = request.getListVisibleExplorerItemsRq();
         if (rqParams.getExplorerRoot()==null){
             throw EasFaults.newParamRequiedFault("ExplorerRoot", "ListVisibleExplorerItemsRq");
@@ -68,13 +68,18 @@ final class ListVisibleExplorerItemsRequest extends SessionRequest {
 
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {        
+        super.prepare(rqXml);
         prepare(((ListVisibleExplorerItemsMess) rqXml).getListVisibleExplorerItemsRq());
     }
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final ListVisibleExplorerItemsDocument doc = process((ListVisibleExplorerItemsMess) rq);
-        postProcess(rq, doc.getListVisibleExplorerItems().getListVisibleExplorerItemsRs());
+        ListVisibleExplorerItemsDocument doc = null;
+        try{
+            doc = process((ListVisibleExplorerItemsMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getListVisibleExplorerItems().getListVisibleExplorerItemsRs());
+        }
         return doc;
     }
 }

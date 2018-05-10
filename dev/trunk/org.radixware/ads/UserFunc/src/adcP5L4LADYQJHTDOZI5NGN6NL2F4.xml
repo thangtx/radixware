@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcP5L4LADYQJHTDOZI5NGN6NL2F4" Name="UserFuncUtils" Type="3" Environment="common">
+    <AccessRules Access="4" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcP5L4LADYQJHTDOZI5NGN6NL2F4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcP5L4LADYQJHTDOZI5NGN6NL2F4"/>
+    </Bodies>
+    <MethodGroup Id="cmgPDW5CO2HYVHEFPPOWPY2TNR4CY" Name="Root"/>
+    <PropertyGroup Id="cpg3GNXSQCWVNFQHAI3EFQGDGOH5U" Name="Root"/>
+    <Properties>
+      <Property Id="prdK35BAMQ7ABHHVE6ITJHC22ZG4E" Name="CHANGE_LOG_DATE_FORMAT" Nature="2" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="400" extStr="java.text.SimpleDateFormat"/>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>new java.text.SimpleDateFormat("dd-MM-YYYY HH:mm:ss");</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+      <Property Id="prdWYRGREQB45COJNJJCRNT6KZRI4" Name="XML_OPTIONS" Nature="2" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false" IsStatic="true"/>
+        <Type TypeId="400" extStr="org.apache.xmlbeans.XmlOptions"/>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>new org.apache.xmlbeans.XmlOptions() {
+    {
+        this.setSaveNamespacesFirst();
+        this.setSaveAggressiveNamespaces();
+        this.setSavePrettyPrint();
+    }
+};</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthY4IVWI3G2RA55FLEHJJWAZR4UU" Name="usedDefinitionsListToStr" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="usedWrappers" Id="mprZOJCUOLSXJE3FLS6E5QR5DXOF4">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.defs.ads.AdsDefinition"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (usedWrappers != null) {
+    StringBuilder sb = new StringBuilder();
+    boolean first = true;
+    for (org.radixware.kernel.common.defs.ads.AdsDefinition def : usedWrappers) {
+        if (first)
+            first = false;
+        else
+            sb.append(' ');
+        sb.append(def.getId());
+    }
+    if (sb.length() > 0) {
+        return sb.toString();
+    } else {
+        return null;
+    }
+} else {
+    return null;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthH5WJASQQWNFDFP5KEM3VQ7QED4" Name="getCompileResultStr" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="totalFuncs" Id="mprGVNV42IHFVHTDKMD5KBV4NAOCQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="totalFuncsWithErrors" Id="mprMDICNBKZPVGXBJOTMV2EID5SWQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="totalErrors" Id="mprS6L4VNI5EBAH3CP6BF3UT7VEYQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="totalWarnings" Id="mpr7VMR6FADZJAFRG65VU3GRWIZLQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return String.format(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsWOSYA444QZECVNQFNDFPHACGDA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+        totalFuncs, totalFuncsWithErrors, totalErrors, totalWarnings);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRNBDLVBY35FRDMRGLFTY6PLEUU" Name="getDescriptionWithLastRevisionDate" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="descr" Id="mprX5M57X2IBVGWJAFH73HM4FAQNM">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="lastRevDate" Id="mprDHPO6QLW6RCRNMPWO7VPRIFKGU">
+            <Type TypeId="12"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (descr != null || lastRevDate != null) {
+    final java.lang.StringBuilder sb = new java.lang.StringBuilder();
+    if (descr != null) {
+        sb.append(descr);
+    }
+    if (lastRevDate != null) {
+        if (sb.length() > 0) {
+            sb.append(' ');
+        }
+        sb.append('[').append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcP5L4LADYQJHTDOZI5NGN6NL2F4 prdK35BAMQ7ABHHVE6ITJHC22ZG4E" Invoke="true">
+                <xsc:Presentation>CHANGE_LOG_DATE_FORMAT</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.format(lastRevDate)).append(']');
+    }
+    return sb.toString();
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLK3VPOSRJNHWFMNNKLP5EWEXCU" Name="compareUserFuncSrc" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="thisSrc" Id="mprSUAKSPLDENFYTJZ2NGFSAT74LA">
+            <Type TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsUserFuncDefinitionDocument"/>
+          </Parameter>
+          <Parameter Name="otherSrc" Id="mprJCIF63N3BJHLPCVV4SGC4MFYLA">
+            <Type TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsUserFuncDefinitionDocument"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+          <Exception TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java><![CDATA[final boolean thisSrcNotNull = thisSrc != null && thisSrc.AdsUserFuncDefinition != null
+        && thisSrc.AdsUserFuncDefinition.Source != null;
+final boolean otherSrcNotNull = otherSrc != null && otherSrc.AdsUserFuncDefinition != null
+        && otherSrc.AdsUserFuncDefinition.Source != null;
+
+if (thisSrcNotNull && otherSrcNotNull) {
+    //Ugly but most simple way compare to xml elements
+    final ]]></xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451">
+                <xsc:Presentation>Xml</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xSrc1 = org.radixware.kernel.common.utils.XmlUtils.removeRepeatedNamespaceDeclarations(thisSrc.AdsUserFuncDefinition.Source);
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451">
+                <xsc:Presentation>Xml</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xSrc2 = org.radixware.kernel.common.utils.XmlUtils.removeRepeatedNamespaceDeclarations(otherSrc.AdsUserFuncDefinition.Source);
+    return java.util.Objects.equals(xSrc1.xmlText(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcP5L4LADYQJHTDOZI5NGN6NL2F4 prdWYRGREQB45COJNJJCRNT6KZRI4" Invoke="true">
+                <xsc:Presentation>XML_OPTIONS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>), xSrc2.xmlText(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcP5L4LADYQJHTDOZI5NGN6NL2F4 prdWYRGREQB45COJNJJCRNT6KZRI4" Invoke="true">
+                <xsc:Presentation>XML_OPTIONS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+} else {
+    return thisSrcNotNull == otherSrcNotNull;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRD6YFFNKZBBPRGS34JPZVF3YT4" Name="compareStreams" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="is1" Id="mprCQBCGAUZ4VFXLGOSAIKQCCACYU">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="is2" Id="mprLLZ7VR4H5JCBNAWG6OQPLW6WQI">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (is1 == null) {
+    return is2 == null;
+}
+
+int b1 = 0;
+int b2 = 0;
+while (true) {
+    b1 = is1.read();
+    b2 = is2.read();
+    if (b1 != b2 || b1 == -1) {
+        break;
+    }
+}
+return b1 == b2;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

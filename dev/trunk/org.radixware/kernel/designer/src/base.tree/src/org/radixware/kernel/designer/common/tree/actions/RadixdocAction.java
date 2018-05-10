@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.designer.common.tree.actions;
 
+import org.radixware.kernel.designer.common.dialogs.radixdoc.RadixdocSelectModulesPanel;
 import java.awt.Component;
 import java.awt.Container;
 import java.io.PrintWriter;

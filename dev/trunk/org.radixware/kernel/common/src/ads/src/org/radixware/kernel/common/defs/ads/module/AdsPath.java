@@ -14,9 +14,12 @@ package org.radixware.kernel.common.defs.ads.module;
 import java.util.List;
 import org.radixware.kernel.common.defs.*;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.dds.DdsPath;
+import org.radixware.kernel.common.defs.dds.DdsPrimaryKeyDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.Utils;
 
 /**
  * Path object is a wrapper for id sequence uniquely describing definition
@@ -61,6 +64,22 @@ public class AdsPath extends DefinitionPath {
         if (root instanceof AdsDefinition) {
             return ((AdsDefinition) root).findComponentDefinition(id);
         } else {
+            if (root instanceof DdsTableDef) {
+                final DdsTableDef table = (DdsTableDef) root;
+                switch (id.getPrefix()) {
+                    case DDS_COLUMN:
+                        return table.getColumns().findById(id, ExtendableDefinitions.EScope.LOCAL_AND_OVERWRITE);
+                    case DDS_TRIGGER:
+                        return table.getTriggers().findById(id, ExtendableDefinitions.EScope.LOCAL_AND_OVERWRITE);
+                    case DDS_INDEX:
+                        final DdsPrimaryKeyDef pk = table.getPrimaryKey();
+                        if (Utils.equals(pk.getId(), id)) {
+                            return SearchResult.single(pk);
+                        } else {
+                            return table.getIndices().findById(id, ExtendableDefinitions.EScope.LOCAL_AND_OVERWRITE);
+                        }
+                }
+            }
             return super.findComponent(root, id, initialContext);
         }
     }

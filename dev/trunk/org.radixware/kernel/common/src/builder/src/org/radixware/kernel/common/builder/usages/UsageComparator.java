@@ -233,7 +233,7 @@ public class UsageComparator {
             if (path[0].getPrefix() == EDefinitionIdPrefix.IMAGE) {
                 return module.getImages().findById(path[0]);
             }
-            AdsDefinition root = module.getDefinitions().findById(path[0]);
+            AdsDefinition root = module.getTopContainer().findById(path[0]);
             if (root == null) {
                 return null;
             }

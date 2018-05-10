@@ -13,7 +13,10 @@ package org.radixware.kernel.common.client.eas;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.exceptions.ClientException;
@@ -30,24 +33,7 @@ import org.radixware.schemas.eas.ReadMess;
 
 
 public class RequestHandle {
-
-    private final XmlObject request;
-    private final Class<? extends XmlObject> expectedResponseMessageClass;
-    private XmlObject response;
-    private ServiceClientException exception;
-    private boolean isActive;
-    private boolean wasCancelled;
-    private RequestExecutor executor;
-    private final List<IResponseListener> listeners = new ArrayList<IResponseListener>();
-    private java.lang.Object userData;
-    protected final IClientEnvironment environment;
-
-    protected RequestHandle(final IClientEnvironment environment, final XmlObject request, final Class<? extends XmlObject> responseClass) {
-        this.request = request;
-        this.environment = environment;
-        expectedResponseMessageClass = responseClass;
-    }
-
+    
     public final static class Factory {
 
         private Factory() {
@@ -127,6 +113,153 @@ public class RequestHandle {
                 RequestCreator.getObjectTitles(tableId, context, objects, environment.getDefManager());
             return new GetObjectTitlesRequestHandle(environment, request);
         }               
+    }       
+    
+    private abstract class AbstractNotificationTask implements Runnable{                
+        
+        private final IResponseListener listener;
+        
+        public AbstractNotificationTask(final IResponseListener listener){
+            this.listener = listener;
+        }
+        
+        @Override
+        public final void run() {
+            rListenersLock.lock();
+            try{
+                if (!listeners.contains(listener)){
+                    return;
+                }
+            }finally{
+                rListenersLock.unlock();
+            }
+            try{
+                notifyListener(listener);
+            }catch (Throwable ex) {
+                final String message = environment.getMessageProvider().translate("ExplorerError", "Unhandled exception on request result processing:\n%s");
+                final String exceptionStr = ClientException.getExceptionReason(environment.getMessageProvider(), ex) + "\n" + ClientException.exceptionStackToString(ex);
+                environment.getTracer().error(String.format(message, exceptionStr));
+            }
+            finally{
+                removeListener(listener);
+            }
+        }
+        
+        protected abstract void notifyListener(final IResponseListener listener);
+    }
+    
+    private final class NotifyExceptionTask extends AbstractNotificationTask{
+        
+        private final ServiceClientException exception;
+        
+        public NotifyExceptionTask(final IResponseListener listener, final ServiceClientException exception){
+            super(listener);
+            this.exception = exception;
+        }        
+
+        @Override
+        protected void notifyListener(final IResponseListener listener) {
+            listener.onServiceClientException(exception, RequestHandle.this);
+        }    
+    }
+    
+    private final class NotifyResponceReceivedTask extends AbstractNotificationTask{
+        
+        private final XmlObject response;
+        
+        public NotifyResponceReceivedTask(final IResponseListener listener, final XmlObject response){
+            super(listener);
+            this.response = response;
+        }
+
+        @Override
+        protected void notifyListener(final IResponseListener listener) {
+            listener.onResponseReceived(response, RequestHandle.this);
+        }
+    }
+    
+    private final class NotifyRequestCancelledTask extends AbstractNotificationTask{
+        
+        private final XmlObject request;
+        
+        public NotifyRequestCancelledTask(final IResponseListener listener, final XmlObject request){
+            super(listener);
+            this.request = request;
+        }
+
+        @Override
+        protected void notifyListener(final IResponseListener listener) {
+            listener.onRequestCancelled(request, RequestHandle.this);
+        }
+    }    
+    
+    private static interface INotificationTaskFactory{
+        AbstractNotificationTask newNotificationTask(final IResponseListener listener);
+    }    
+    
+    private final class NotifyExceptionTaskFactory implements INotificationTaskFactory{
+        
+        private final ServiceClientException exception;
+        
+        public NotifyExceptionTaskFactory(final ServiceClientException exception){
+            this.exception = exception;
+        }
+
+        @Override
+        public NotifyExceptionTask newNotificationTask(final IResponseListener listener) {
+            return new NotifyExceptionTask(listener, this.exception);
+        }                
+    }
+    
+    private final class NotifyResponceReceivedTaskFactory implements INotificationTaskFactory{
+        
+        private final XmlObject response;
+        
+        public NotifyResponceReceivedTaskFactory(final XmlObject response){
+            this.response = response;
+        }
+
+        @Override
+        public NotifyResponceReceivedTask newNotificationTask(final IResponseListener listener) {
+            return new NotifyResponceReceivedTask(listener, this.response);
+        }        
+    }
+    
+    private final class NotifyRequestCancelledTaskFactory implements INotificationTaskFactory{
+        
+        private final XmlObject request;
+        
+        public NotifyRequestCancelledTaskFactory(final XmlObject request){
+            this.request = request;                    
+        }
+        
+        @Override
+        public NotifyRequestCancelledTask newNotificationTask(final IResponseListener listener) {
+            return new NotifyRequestCancelledTask(listener, this.request);
+        }                
+    }
+
+    private final XmlObject request;
+    private final Class<? extends XmlObject> expectedResponseMessageClass;
+    private final ReentrantReadWriteLock rwStateLock = new ReentrantReadWriteLock();
+    private final Lock rStateLock = rwStateLock.readLock();
+    private final Lock wStateLock = rwStateLock.writeLock();
+    private final ReentrantReadWriteLock rwListenersLock = new ReentrantReadWriteLock();
+    private final Lock rListenersLock = rwListenersLock.readLock();
+    private final Lock wListenersLock = rwListenersLock.writeLock();
+    private XmlObject response;
+    private ServiceClientException exception;
+    private boolean isActive;
+    private boolean wasCancelled;
+    private RequestExecutor executor;
+    private final List<IResponseListener> listeners = new ArrayList<>();
+    private java.lang.Object userData;
+    protected final IClientEnvironment environment;
+
+    protected RequestHandle(final IClientEnvironment environment, final XmlObject request, final Class<? extends XmlObject> responseClass) {
+        this.request = request;
+        this.environment = environment;
+        expectedResponseMessageClass = responseClass;
     }
 
     public final XmlObject getRequest() {
@@ -138,207 +271,290 @@ public class RequestHandle {
     }
 
     public final boolean isActive() {
-        return isActive;
+        rStateLock.lock();
+        try{        
+            return isActive;
+        }finally{
+            rStateLock.unlock();
+        }
     }
 
     final void activate() {
-        isActive = true;
-        executor = null;
-        response = null;
-        exception = null;
-        wasCancelled = false;
-//        for (IResponseListener listener : listeners) {
-//            listener.registerRequestHandle(this);
-//        }
+        wStateLock.lock();
+        try{
+            isActive = true;
+            executor = null;
+            response = null;
+            exception = null;
+            wasCancelled = false;
+        }finally{
+            wStateLock.unlock();
+        }
     }
 
     public final boolean inProgress() {
-        return executor != null;
+        rStateLock.lock();
+        try{
+            return executor != null;
+        }finally{
+            rStateLock.unlock();
+        }
     }
 
-    void onExecuting(final RequestExecutor executor) {
-        this.executor = executor;
+    final boolean beforeExecute(final RequestExecutor executor) {
+        if (!hasListeners()){
+            return false;
+        }
+        wStateLock.lock();
+        try{
+            if (isActive){
+                this.executor = executor;                
+                return true;
+            }else{
+                return false;
+            }
+        }finally{
+            wStateLock.unlock();
+        }
     }
 
     public final boolean wasCancelled() {
-        return wasCancelled;
+        rStateLock.lock();
+        try{
+            return wasCancelled;
+        }finally{
+            rStateLock.unlock();
+        }
     }
 
     void onInterrupted() {
-        executor = null;
-        isActive = false;
-        wasCancelled = true;
+        wStateLock.lock();
+        try{
+            executor = null;
+            isActive = false;
+            wasCancelled = true;
+        }finally{
+            wStateLock.unlock();
+        }
     }
 
     public final boolean cancel() {
         if (!inProgress() && !isDone()) {
-            isActive = false;
-            wasCancelled = true;
-            notifyListeners();
-
-            return true;
-        } else {
-            if (executor != null) {
-                executor.breakRequest();
-                executor = null;
+            wStateLock.lock();
+            try{
                 isActive = false;
                 wasCancelled = true;
+            }finally{
+                wStateLock.unlock();
+            }
+            notifyListeners();
+            return true;
+        } else {
+            if (inProgress()) {
+                executor.breakRequest();
+                wStateLock.lock();
+                try{
+                    executor = null;
+                    isActive = false;
+                    wasCancelled = true;
+                }finally{
+                    wStateLock.unlock();
+                }
                 return true;
             } else {
-//                wasCancelled = true;
                 return false;
             }
         }
     }
 
     public final boolean isDone() {
-        return response != null || exception != null;
+        rStateLock.lock();
+        try{
+            return response != null || exception != null;
+        }finally{
+            rStateLock.unlock();
+        }
     }
 
     void setResponse(final XmlObject response) {
-        this.response = response;
-        isActive = false;
-        executor = null;
-        wasCancelled = false;
+        wStateLock.lock();
+        try{
+            this.response = response;
+            isActive = false;
+            executor = null;
+            wasCancelled = false;
+        }finally{
+            wStateLock.unlock();
+        }
     }
 
     void setException(final ServiceClientException exception) {
-        this.exception = exception;
-        isActive = false;
-        executor = null;
-        wasCancelled = false;
+        wStateLock.lock();
+        try{
+            this.exception = exception;
+            isActive = false;
+            executor = null;
+            wasCancelled = false;
+        }finally{
+            wStateLock.unlock();
+        }
     }
 
     public final XmlObject getResponse() throws ServiceClientException, InterruptedException {
-        if (!isDone()) {
-            throw new IllegalStateException("Response is not received yet");
-        } else if (wasCancelled) {
-            throw new InterruptedException();
-        } else if (exception != null) {
-            throw exception;
-        } else {
-            return response;
+        rStateLock.lock();
+        try{
+            if (!isDone()) {
+                throw new IllegalStateException("Response is not received yet");
+            } else if (wasCancelled) {
+                throw new InterruptedException();
+            } else if (exception != null) {
+                throw exception;
+            } else {
+                return response;
+            }
+        }finally{
+            rStateLock.unlock();
         }
     }
 
     public final ServiceClientException getServiceClientException() {
-        if (!isDone()) {
-            throw new IllegalStateException("Response is not received yet");
-        } else {
-            return exception;
+        rStateLock.lock();
+        try{
+            if (!isDone()) {
+                throw new IllegalStateException("Response is not received yet");
+            } else {
+                return exception;
+            }
+        }finally{
+            rStateLock.unlock();
         }
     }
 
     public void setUserData(java.lang.Object usrData) {
-        userData = usrData;
+        wStateLock.lock();
+        try{
+            userData = usrData;
+        }finally{
+            wStateLock.unlock();
+        }
     }
 
     public java.lang.Object getUserData() {
-        return userData;
+        rStateLock.lock();
+        try{
+            return userData;
+        }finally{
+            rStateLock.unlock();
+        }
     }
 
-//    @Override
-//    protected void customEvent(QEvent event) {
-//        if (event instanceof NotifyListenerEvent) {
-//            final IResponseListener listener = ((NotifyListenerEvent) event).listener;
-//            if (!listeners.contains(listener)) {
-//                return;
-//            }
-//            try {
-//                if (wasCancelled) {
-//                    listener.onRequestCancelled(request, this);
-//                } else if (response != null) {
-//                    listener.onResponseReceived(response, this);
-//                } else {
-//                    listener.onServiceClientException(exception, this);
-//                }
-//            } catch (Throwable ex) {
-//                final String message = environment.getMessageProvider().translate("ExplorerError", "Unhandled exception on request result processing:\n%s");
-//                final String exceptionStr = ClientException.getExceptionReason(environment.getMessageProvider(), ex) + "\n" + ClientException.exceptionStackToString(ex);
-//                environment.getTracer().error(String.format(message, exceptionStr));
-//            }
-//            removeListener(listener);
-//            if (!listeners.isEmpty()) {
-//                QApplication.postEvent(this, new NotifyListenerEvent(listeners.get(0)));
-//            }
-//        }
-//        super.customEvent(event);
-//    }
     void processAnswer() {
         notifyListeners();
     }
 
-    private class NotifyListenerTask implements Runnable{
-
-        private final IResponseListener listener;
-
-        public NotifyListenerTask(final IResponseListener listener){
-            this.listener = listener;
+    private void notifyListeners() {
+        final List<IResponseListener> copyListeners = new LinkedList<>();
+        rListenersLock.lock();
+        try{
+            copyListeners.addAll(listeners);
+        }finally{
+            rListenersLock.unlock();
         }
-
-        @Override
-        public void run() {
-            try {
-                synchronized(listeners){
-                    if (!listeners.contains(listener))
-                        return;
-                }
-                if (wasCancelled) {
-                    listener.onRequestCancelled(request, RequestHandle.this);
-                } else if (response != null) {
-                    listener.onResponseReceived(response, RequestHandle.this);
-                } else {
-                    listener.onServiceClientException(exception, RequestHandle.this);
-                }
-            } catch (Throwable ex) {
-                final String message = environment.getMessageProvider().translate("ExplorerError", "Unhandled exception on request result processing:\n%s");
-                final String exceptionStr = ClientException.getExceptionReason(environment.getMessageProvider(), ex) + "\n" + ClientException.exceptionStackToString(ex);
-                environment.getTracer().error(String.format(message, exceptionStr));
-            }
-            finally{
-                removeListener(listener);
+        if (!copyListeners.isEmpty()){
+            final INotificationTaskFactory taskFactory = createNotificationTaskFactory();
+            final IEasSession session = environment.getEasSession();
+            for (IResponseListener listener: copyListeners){
+                session.scheduleResponseNotificationTask(taskFactory.newNotificationTask(listener));
             }
         }
     }
-
-    private void notifyListeners() {
-        final List<IResponseListener> copyListeners = new ArrayList<IResponseListener>();
-        synchronized (listeners) {
-            copyListeners.addAll(listeners);
-        }
-        for (IResponseListener listener: copyListeners){
-            try {
-                environment.runInGuiThreadAsync(new NotifyListenerTask(listener));
-            } catch (Throwable ex) {
-                final String message = environment.getMessageProvider().translate("ExplorerError", "Unhandled exception on request result processing:\n%s");
-                final String exceptionStr = ClientException.getExceptionReason(environment.getMessageProvider(), ex) + "\n" + ClientException.exceptionStackToString(ex);
-                environment.getTracer().error(String.format(message, exceptionStr));
+    
+    private final INotificationTaskFactory createNotificationTaskFactory(){
+        rStateLock.lock();
+        try{
+            if (wasCancelled){
+                return new NotifyRequestCancelledTaskFactory(request);
+            }else if (exception!=null){
+                return new NotifyExceptionTaskFactory(exception);
+            }else{
+                return new NotifyResponceReceivedTaskFactory(response);
             }
-        }
+        }finally{
+            rStateLock.unlock();
+        }        
     }
 
     public final void addListener(final IResponseListener listener) {
-        synchronized (listeners) {
-            if (listener != null && !listeners.contains(listener)) {
-                listeners.add(listener);
+        if (listener!=null){
+            rListenersLock.lock();
+            try{
+                if (listeners.contains(listener)){
+                    return;
+                }
+            }finally{
+                rListenersLock.unlock();
+            }
+            final boolean newRegistration;
+            final boolean isDone;
+            wListenersLock.lock();
+            try{
+                isDone  = isDone();
+                if (listeners.contains(listener)){
+                    newRegistration = false;                    
+                }else{
+                    newRegistration = true;
+                    listeners.add(listener);
+                }
+            }finally{
+                wListenersLock.unlock();
+            }
+            if (newRegistration){
                 listener.registerRequestHandle(this);
+                if (isDone){
+                    final INotificationTaskFactory taskFactory = createNotificationTaskFactory();
+                    environment.getEasSession().scheduleResponseNotificationTask(taskFactory.newNotificationTask(listener));
+                }
             }
         }
     }
 
     public final void removeListener(final IResponseListener listener) {
-        synchronized (listeners) {
-            listeners.remove(listener);
-            listener.unregisterRequestHandle(this);
-            if (!hasListeners() && inProgress()) {
-                cancel();
+        if (listener!=null){
+            rListenersLock.lock();
+            try{
+                if (!listeners.contains(listener)){
+                    return;
+                }
+            }finally{
+                rListenersLock.unlock();
             }
+            final boolean unregistered;
+            wListenersLock.lock();
+            try{
+                unregistered = listeners.remove(listener);
+            }finally{
+                wListenersLock.unlock();
+            }
+            if (unregistered){
+                listener.unregisterRequestHandle(this);
+                rListenersLock.lock();
+                try{
+                    if (!hasListeners() && inProgress()){
+                        cancel();
+                    }
+                }finally{
+                    rListenersLock.unlock();
+                }
+            }            
         }
     }
 
     public boolean hasListeners() {
-        synchronized (listeners) {
+        rListenersLock.lock();
+        try{
             return !listeners.isEmpty();
+        }finally{
+            rListenersLock.unlock();
         }
     }
 }

@@ -36,6 +36,7 @@ public enum ETimingSection implements IKernelStrEnum {
     RDX_ARTE_SC_INVOKE("Radix.Arte.ServiceClient.Invoke"),
     RDX_ARTE_WAIT_ACTIVE("Radix.Arte.Wait.Active"),
     RDX_ARTE_RESOURCE_INVOKE("Radix.Arte.Resource.Invoke"),
+    RDX_ARTE_USER_FUNC_INVOKE("Radix.Arte.UserFunc.Invoke"),
     RDX_SQLCLASS("Radix.SqlClass"),
     RDX_SQLCLASS_QRYPREPARE("Radix.SqlClass.QryPrepare"),
     RDX_SQLCLASS_QRYEXEC("Radix.SqlClass.QryExec"),

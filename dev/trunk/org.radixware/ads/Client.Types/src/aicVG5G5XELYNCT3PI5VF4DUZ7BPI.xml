@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicVG5G5XELYNCT3PI5VF4DUZ7BPI" Name="IListWidget" Type="5" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.widgets.IListWidget"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicVG5G5XELYNCT3PI5VF4DUZ7BPI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicVG5G5XELYNCT3PI5VF4DUZ7BPI"/>
+    </Bodies>
+    <MethodGroup Id="cmg6H2QIDHJ3FDFDPESQ63JE3FTQ4" Name="Root"/>
+    <PropertyGroup Id="cpgHGZSZTSDZ5EATNJXN4CUUKQAMI" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthDBX2Q6RTH5AXFN5GOON7X5LNAU" Name="add" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="add(Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item" Id="mprSITCX7CO2ZCUZHFVZSIUUOQT6U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVEI4EDDUDNGMNBANQDEVGIG3MY" Name="addCurrentItemListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addCurrentItemListener(Lorg.radixware.kernel.common.client.widgets.IListWidget.ICurrentItemListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprK3ILGLLWFRBTDHFLSCKRVNLPUA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IListWidget.ICurrentItemListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthNMMRCXJOQVBNFBBPDW7J5N6NNI" Name="addDoubleClickListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addDoubleClickListener(Lorg.radixware.kernel.common.client.widgets.IListWidget.IDoubleClickListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprGMK75TFKZFGHXMDECY62OE7Y7A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IListWidget.IDoubleClickListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthU4DYIFX2OVEKJDPTIZAR3346KQ" Name="addFilterListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addFilterListener(Lorg.radixware.kernel.common.client.widgets.IListWidget.IFilterListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprUDI7KS3HAZHDVCSNWUMU3BDFWY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IListWidget.IFilterListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVHLP3NWURBBS3LTWQ5I5LIUKKU" Name="clear" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="clear()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mth3PR5GOND3VA2PHS4YIXYSBLLRY" Name="count" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="count()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthYW63BCRTFRH4PBPQ25GS6HU6PU" Name="getCurrent" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getCurrent()Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+      </Method>
+      <Method Id="mthC35G6ZY2UZHBXMBBT45UCOC2ZY" Name="getCurrentRow" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getCurrentRow()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthCXXUDMF6SBD4LBRAIUT3G4SUAY" Name="getFeatures" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getFeatures()Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.widgets.IListWidget.EFeatures;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.EnumSet">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IListWidget.EFeatures"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth7WKIQYVRVJHWZLINBBPW2KGBUE" Name="getItem" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getItem(I)Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprEH5RJ4LM3NEV7AK7XOTCCLXR5E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+      </Method>
+      <Method Id="mthCPS3EM22HJDU5N2BA3Q2HP5MEY" Name="getItems" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getItems()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthCDVVYANMUVGMLFJUGJE2PZMDPI" Name="getItemsComparator" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getItemsComparator()Ljava.util.Comparator&lt;Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Comparator">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mth5MCQ743F6VD5ZJGQ7OM7ODYAVY" Name="getTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getTextOptions()Lorg.radixware.kernel.common.client.text.TextOptions;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.text.TextOptions"/>
+      </Method>
+      <Method Id="mthX3TWPZ3CAJDWNCTVXO7YLS6XAA" Name="insert" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="insert(Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item" Id="mprAYFMWBF2FBFM3HG65VGMQCLHYY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+          </Parameter>
+          <Parameter Name="index" Id="mprPLCRLKNNGRHJHECT3FM4HY767M">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYXEJXT3YHZCG5AGJKMDJBBUPXE" Name="isSelectionEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="isSelectionEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthBKHN6RKMFRHATDYPZM2F52THHQ" Name="remove" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="remove(Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item" Id="mprKJ2KCSNGCNBQ3LVQ6KIUP7SSRU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthLIVOYT527VELDAYVGQLNJ75GCY" Name="removeCurrentItemListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeCurrentItemListener(Lorg.radixware.kernel.common.client.widgets.IListWidget.ICurrentItemListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprXHKSHV5DJFAANKDRXZ5X4XMJKI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IListWidget.ICurrentItemListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth24D6UXNBBJDOZMR2VQC7ZJ7NSQ" Name="removeDoubleClickListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeDoubleClickListener(Lorg.radixware.kernel.common.client.widgets.IListWidget.IDoubleClickListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprCGBI2YK74VAPPKAX6HMYE2BROE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IListWidget.IDoubleClickListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth36CCBGS2LRCPRP2U6BWAJN4PYA" Name="removeFilterListener" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeFilterListener(Lorg.radixware.kernel.common.client.widgets.IListWidget.IFilterListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprIMJBMTQX7NEYZPLEK34M2AOKDQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IListWidget.IFilterListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth35RHFNMDPRFAVN6ZZ4I74PKWBM" Name="removeRow" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeRow(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprPH5PNO5E4BEJBAS6B6SZ55JIAY">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthF7EXS3ZJRRELHFZTYV67HMJTXA" Name="setCurrent" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setCurrent(Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item" Id="mprGMQLSCYKPRBPXNZIBEJSF77OUA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthVLRHAS44KVB23FA47X4Q6X6VOA" Name="setCurrentRow" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setCurrentRow(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index" Id="mprSGNZB4IUOBGODADE3UMLLXT3OU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthHAP63XHVL5ALNGRGS6XWH2BEUY" Name="setFeatures" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setFeatures(Ljava.util.EnumSet&lt;Lorg.radixware.kernel.common.client.widgets.IListWidget.EFeatures;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="features" Id="mprYY264KOTAVEGNH2JNKCSKXDLVY">
+            <Type TypeId="400" extStr="java.util.EnumSet">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IListWidget.EFeatures"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth24NCYXVCXNHZBNBSJHEUVNSEU4" Name="setFocusToFilterString" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setFocusToFilterString()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthU7I2PROUX5GMTJYULUFNQJ6CWY" Name="setItems" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setItems(Ljava.util.List&lt;Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="items" Id="mprZT2SOJOUWBAKDFSG2Q2MEEP2YM">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthKKMWMV2PJNENLFSPIE4TAP2FR4" Name="setItemsComparator" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setItemsComparator(Ljava.util.Comparator&lt;Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="comparator" Id="mprKVQPFLCV5BAMJD7CRTOJ7UO6H4">
+            <Type TypeId="400" extStr="java.util.Comparator">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth6S5I6T3QUFCDHCHMB226PBCGEQ" Name="setSelectionEnabled" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setSelectionEnabled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isEnabled" Id="mprVKNIAP5L3ND6LEJOGOHA6V5DPI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth2DGIDDVDNBHIPP2KRCDMZCBP5E" Name="setTextOptions" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setTextOptions(Lorg.radixware.kernel.common.client.text.TextOptions;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="textOptions" Id="mprW3Y65LQ4TNGWTEVMQ7UJKIKOGE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.text.TextOptions"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthJS6YB3HFUVAURGYEYLI6CHT34U" Name="swapItems" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="swapItems(Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item1" Id="mprEZEHSMB6ARCBLH6FIXDMPUJ6KU">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+          </Parameter>
+          <Parameter Name="item2" Id="mprVQIIXTJU5JDAROTN5G734UFEJE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthOV4HHM2HBBFIHDJRKSMI7ERWJQ" Name="swapRows" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="swapRows(II)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="index1" Id="mprGOLVSOFECBESRLEXXH3HNXMUXM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="index2" Id="mpr5OGPNRWHUNFM7N7SVAEL3YVXAQ">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthAQGSHKFZWBBRNC7QN5IT23W37M" Name="addSelectionListener" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addSelectionListener(Lorg.radixware.kernel.common.client.widgets.IListWidget.ISelectionListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mprSDN7RUG275AC5E7E2PLFOM4YXM">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IListWidget.ISelectionListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthG6LDCQ27NFC6BMABE6GIVFEJBM" Name="getSelectedItems" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getSelectedItems()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthNMULPB4L7RAPPAGUZOY2CPDZUY" Name="getSelectedRows" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getSelectedRows()Ljava.util.List&lt;Ljava.lang.Integer;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Integer"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthXDFXBAXMTVDR5HR47XOFYAR24Q" Name="isItemSelected" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="isItemSelected(Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item" Id="mprCMX6M33CJRD6BHLLL2NRDH4VCI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthBJRTPTUGMFGTPMCP4ZMFCV4I54" Name="removeSelectionListener" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeSelectionListener(Lorg.radixware.kernel.common.client.widgets.IListWidget.ISelectionListener;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="listener" Id="mpr6EZ4B7FF75GY7LDIQDQYRM7ZKI">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IListWidget.ISelectionListener"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthYRY2ORKTARHJXHMDXFZXXFVKCE" Name="setItemSelected" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setItemSelected(Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="item" Id="mprUH2F5EJBS5DWNKVGKJRNG4JOOE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+          </Parameter>
+          <Parameter Name="isSelected" Id="mpr5772Y5Z275DLJOPCBWG7SR4X34">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthUV6W64AWDBH6NELLJPY2XFCNJ4" Name="setSelectedItems" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setSelectedItems(Ljava.util.Collection&lt;Lorg.radixware.kernel.common.client.widgets.ListWidgetItem;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="items" Id="mprNKLWRP24SJFWTMIFGKZFR75D3Y">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.ListWidgetItem"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

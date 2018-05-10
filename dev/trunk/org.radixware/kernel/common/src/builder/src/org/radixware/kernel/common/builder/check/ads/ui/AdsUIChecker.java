@@ -11,11 +11,19 @@
 
 package org.radixware.kernel.common.builder.check.ads.ui;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.ads.ui.AdsUIDef;
 import org.radixware.kernel.common.builder.check.ads.AdsDefinitionChecker;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.builder.check.common.RadixObjectCheckerRegistration;
+import org.radixware.kernel.common.defs.IVisitor;
+import org.radixware.kernel.common.defs.VisitorProviderFactory;
+import org.radixware.kernel.common.defs.ads.ui.AdsAbstractUIDef;
+import org.radixware.kernel.common.defs.ads.ui.AdsMetaInfo;
+import org.radixware.kernel.common.defs.ads.ui.AdsUIUtil;
+import org.radixware.kernel.common.defs.ads.ui.AdsWidgetDef;
 
 
 @RadixObjectCheckerRegistration
@@ -27,8 +35,23 @@ public class AdsUIChecker extends AdsDefinitionChecker<AdsUIDef> {
     }
 
     @Override
-    public void check(AdsUIDef ui, IProblemHandler problemHandler) {
+    public void check(final AdsUIDef ui, final IProblemHandler problemHandler) {
         super.check(ui, problemHandler);
+
+        ui.getWidget().visit(new IVisitor() {
+            @Override
+            public void accept(RadixObject object) {
+                if (object instanceof AdsWidgetDef) {
+                    AdsWidgetDef widget = (AdsWidgetDef) object;
+                    if (AdsUIUtil.isCustomWidget(widget)) {
+                        if (AdsMetaInfo.getCustomUI(widget) == null){
+                            error(ui, problemHandler, "Custom widget #" + widget.getClassName() + " not found");
+                        }
+                    }
+                }
+            }
+        }, VisitorProviderFactory.createDefaultVisitorProvider());
+
 //        if (ui instanceof AdsCustomEditorDef) {
 //            AdsCustomEditorDef editor = (AdsCustomEditorDef) ui;
 //            if (editor.getClassId() == null) {

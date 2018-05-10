@@ -13,6 +13,7 @@ package org.radixware.kernel.common.defs.ads.clazz.sql.report;
 import java.awt.Color;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition.ESaveMode;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportUtils;
 import org.radixware.kernel.common.enums.EReportBorderStyle;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.common.utils.XmlColor;
@@ -25,19 +26,20 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
     private boolean fgColorInherited = true;
     private final Font font;
     private final Border border;
+    private boolean isNewStyle = false;
 
     protected AdsReportAbstractAppearance() {
         this.font = new Font();
-        this.border = new Border();
+        this.border = new Border(this);
     }
 
     protected AdsReportAbstractAppearance(org.radixware.schemas.adsdef.ReportBand xBand) {
         this.font = new Font(xBand.getFont());
 
         if (xBand.isSetBorder()) {
-            this.border = new Border(xBand.getBorder());
+            this.border = new Border(xBand.getBorder(), this);
         } else {
-            this.border = new Border();
+            this.border = new Border(this);
         }
 
         if (xBand.isSetBgColor()) {
@@ -63,9 +65,9 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         }
 
         if (xCell.isSetBorder()) {
-            this.border = new Border(xCell.getBorder());
+            this.border = new Border(xCell.getBorder(), this);
         } else {
-            this.border = new Border();
+            this.border = new Border(this);
         }
 
         if (xCell.isSetBgColor()) {
@@ -91,7 +93,7 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         }
 
         if (xCell.isSetBorder()) {
-            this.border = new Border(xCell.getBorder());
+            this.border = new Border(xCell.getBorder(), this);
         } else {
             this.border = new Border();
         }
@@ -115,13 +117,18 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
     public Color getBgColor() {
         return bgColor;
     }
+    
+    //for editor
+    public Color getCurrentBgColor() {
+        return bgColor;
+    }
 
     public Color getAltBgColor() {
         return null;
     }
 
     protected abstract boolean isModeSupported(AdsReportForm.Mode mode);
-
+    
     public void setBgColor(Color bgColor) {
         assert (bgColor != null);
         if (!Utils.equals(this.bgColor, bgColor)) {
@@ -173,6 +180,7 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
     }
 
     public final class Font {
+        private boolean silentModified = false;
 
         private String name = "Arial";
         private String verticalAlign = null;
@@ -197,6 +205,7 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
             copyFont.underline = underline;
             copyFont.lineThrough = lineThrough;
             copyFont.verticalAlign = verticalAlign;
+            copyFont.silentModified = silentModified;
             return copyFont;
         }
 
@@ -229,7 +238,9 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
             assert (name != null);
             if (!Utils.equals(this.name, name)) {
                 this.name = name;
-                setEditState(EEditState.MODIFIED);
+                if (!isSilentModified()){
+                    setEditState(EEditState.MODIFIED);
+                }
             }
         }
 
@@ -248,7 +259,9 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
             assert (name != null);
             if (!Utils.equals(this.verticalAlign, name)) {
                 this.verticalAlign = name;
-                setEditState(EEditState.MODIFIED);
+                if (!isSilentModified()){
+                    setEditState(EEditState.MODIFIED);
+                }
             }
         }
 
@@ -266,7 +279,9 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         public void setBold(boolean bold) {
             if (this.bold != bold) {
                 this.bold = bold;
-                setEditState(EEditState.MODIFIED);
+                if (!isSilentModified()){
+                    setEditState(EEditState.MODIFIED);
+                }
             }
         }
 
@@ -284,7 +299,9 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         public void setItalic(boolean italic) {
             if (this.italic != italic) {
                 this.italic = italic;
-                setEditState(EEditState.MODIFIED);
+                if (!isSilentModified()){
+                    setEditState(EEditState.MODIFIED);
+                }
             }
         }
 
@@ -302,7 +319,9 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         public void setUnderline(boolean bold) {
             if (this.underline != bold) {
                 this.underline = bold;
-                setEditState(EEditState.MODIFIED);
+                if (!isSilentModified()){
+                    setEditState(EEditState.MODIFIED);
+                }
             }
         }
 
@@ -320,7 +339,9 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         public void setLineThrough(boolean lineThrough) {
             if (this.lineThrough != lineThrough) {
                 this.lineThrough = lineThrough;
-                setEditState(EEditState.MODIFIED);
+                if (!isSilentModified()){
+                    setEditState(EEditState.MODIFIED);
+                }
             }
         }
 
@@ -332,29 +353,30 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         }
 
         public double getSizePts() {
-            return mm2pts(getSizeMm());
+            return AdsReportUtils.mm2pts(getSizeMm());
         }
 
         public void setSizePts(double pts) {
-            setSizeMm(pts2mm(pts));
+            setSizeMm(AdsReportUtils.pts2mm(pts));
         }
 
         public void setSizeMm(double sizeMm) {
             if (this.sizeMm != sizeMm) {
                 this.sizeMm = sizeMm;
-                setEditState(EEditState.MODIFIED);
+                if (!isSilentModified()){
+                    setEditState(EEditState.MODIFIED);
+                }
             }
         }
 
-        private static final double MM2PTS_CONST = 25.4 / 72;
-
-        private double mm2pts(double mm) {
-            return mm / MM2PTS_CONST;
+        public boolean isSilentModified() {
+            return silentModified;
         }
 
-        private double pts2mm(double pts) {
-            return pts * MM2PTS_CONST;
+        public void setSilentModified(boolean silentModified) {
+            this.silentModified = silentModified;
         }
+
     }
 
     /**
@@ -365,84 +387,68 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         return font;
     }
 
-    public final class Border {
-
-        public static final double DEFAULT_THICKNESS_MM = 0.1;
-        private EReportBorderStyle style = EReportBorderStyle.SOLID;
-        private Color color = Color.BLACK;
-        private double thicknessMm = DEFAULT_THICKNESS_MM;
+    public final class Border extends BorderProperty {
         private boolean onTop = false, onBottom = false, onLeft = false, onRight = false;
+        private BorderProperty topBorder;
+        private BorderProperty leftBorder;
+        private BorderProperty bottomBorder;
+        private BorderProperty rightBorder;
 
         /**
          * Creates a new Border.
          */
-        protected Border() {
+        public Border() {
+        }
+        
+        protected Border(RadixObject owner){
+            super(owner);
         }
 
-        protected Border(org.radixware.schemas.adsdef.ReportBorder xBorder) {
-            this.color = XmlColor.parseColor(xBorder.getColor());
-            this.thicknessMm = xBorder.getThickness();
-            this.style = xBorder.getStyle();
+        protected Border(org.radixware.schemas.adsdef.ReportBorder xBorder, RadixObject owner) {
+            super(xBorder, owner);
+            
             this.onLeft = xBorder.getLeft();
             this.onRight = xBorder.getRight();
             this.onTop = xBorder.getTop();
             this.onBottom = xBorder.getBottom();
+            
+            if  (xBorder.isSetLeftBorder()){
+                leftBorder = new BorderProperty(xBorder.getLeftBorder(), AdsReportAbstractAppearance.this);
+            }
+            if (xBorder.isSetRightBorder()){
+                rightBorder = new BorderProperty(xBorder.getRightBorder(), AdsReportAbstractAppearance.this);
+            }
+            if  (xBorder.isSetTopBorder()){
+                topBorder = new BorderProperty(xBorder.getTopBorder(), AdsReportAbstractAppearance.this);
+            }
+            if  (xBorder.isSetBottomBorder()){
+                bottomBorder = new BorderProperty(xBorder.getBottomBorder(), AdsReportAbstractAppearance.this);
+            }
         }
 
         protected void appendTo(org.radixware.schemas.adsdef.ReportBorder xBorder, ESaveMode saveMode) {
-            xBorder.setColor(XmlColor.mergeColor(this.color));
-            xBorder.setThickness(this.thicknessMm);
-            xBorder.setStyle(this.style);
+            if (isDisplayed() &&  !isDetailBorder()) {
+                super.appendTo(xBorder, saveMode);
+            } else {
+                if (this.onLeft && leftBorder != null){
+                    leftBorder.appendTo(xBorder.addNewLeftBorder(), saveMode);
+                }
+                if (this.onRight && rightBorder != null){
+                    rightBorder.appendTo(xBorder.addNewRightBorder(), saveMode);
+                }
+                if (this.onTop && topBorder != null){
+                    topBorder.appendTo(xBorder.addNewTopBorder(), saveMode);
+                }
+                if (this.onBottom && bottomBorder != null){
+                    bottomBorder.appendTo(xBorder.addNewBottomBorder(), saveMode);
+                }
+            }
             xBorder.setLeft(this.onLeft);
             xBorder.setRight(this.onRight);
             xBorder.setTop(this.onTop);
-            xBorder.setBottom(this.onBottom);
+            xBorder.setBottom(this.onBottom);  
         }
-
-        /**
-         * @return border style.
-         */
-        public EReportBorderStyle getStyle() {
-            return style;
-        }
-
-        public void setStyle(EReportBorderStyle style) {
-            assert (style != null);
-            if (!Utils.equals(this.style, style)) {
-                this.style = style;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
-
-        /**
-         * @return border color.
-         */
-        public Color getColor() {
-            return color;
-        }
-
-        public void setColor(Color color) {
-            assert (color != null);
-            if (!Utils.equals(this.color, color)) {
-                this.color = color;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
-
-        /**
-         * @return border line thickness in millimeters.
-         */
-        public double getThicknessMm() {
-            return thicknessMm;
-        }
-
-        public void setThicknessMm(double thicknessMm) {
-            if (!Utils.equals(this.thicknessMm, thicknessMm)) {
-                this.thicknessMm = thicknessMm;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
-
+        
         /**
          * @return true if border line displayed on top, false otherwise.
          */
@@ -457,7 +463,7 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         public void setOnTop(boolean onTop) {
             if (this.onTop != onTop) {
                 this.onTop = onTop;
-                setEditState(EEditState.MODIFIED);
+                modified();
             }
         }
 
@@ -475,7 +481,7 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         public void setOnBottom(boolean onBottom) {
             if (this.onBottom != onBottom) {
                 this.onBottom = onBottom;
-                setEditState(EEditState.MODIFIED);
+                modified();
             }
         }
 
@@ -493,7 +499,7 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         public void setOnLeft(boolean onLeft) {
             if (this.onLeft != onLeft) {
                 this.onLeft = onLeft;
-                setEditState(EEditState.MODIFIED);
+                modified();
             }
         }
 
@@ -511,12 +517,281 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
         public void setOnRight(boolean onRight) {
             if (this.onRight != onRight) {
                 this.onRight = onRight;
-                setEditState(EEditState.MODIFIED);
+                modified();
             }
         }
 
         public boolean isDisplayed() {
             return onLeft || onRight || onTop || onBottom;
+        }
+        
+        public boolean isDetailBorder() {
+            return leftBorder != null || rightBorder != null || topBorder != null || bottomBorder != null;
+        }
+
+        public BorderProperty getTopBorder() {
+            if (topBorder == null) {
+                topBorder = new BorderProperty(getOwner());
+            }
+            return topBorder;
+        }
+
+        public BorderProperty getLeftBorder() {
+            if (leftBorder == null){
+                leftBorder = new BorderProperty(getOwner());
+            }
+            return leftBorder;
+        }
+
+        public BorderProperty getBottomBorder() {
+            if (bottomBorder == null){
+                bottomBorder = new BorderProperty(getOwner());
+            }
+            return bottomBorder;
+        }
+
+        public BorderProperty getRightBorder() {
+            if (rightBorder == null){
+                rightBorder = new BorderProperty(getOwner());
+            }
+            return rightBorder;
+        }
+        
+        public double getTopThicknessMm() {
+            if (topBorder != null){
+                return topBorder.getThicknessMm();
+            } else {
+                return getThicknessMm();
+            }
+        }
+        
+        public double getLeftThicknessMm() {
+            if (leftBorder != null){
+                return leftBorder.getThicknessMm();
+            } else {
+                return getThicknessMm();
+            }
+        }
+        
+        public double getBottomThicknessMm() {
+            if (bottomBorder != null){
+                return bottomBorder.getThicknessMm();
+            } else {
+                return getThicknessMm();
+            }
+        }
+        
+        public double getRightThicknessMm() {
+            if (rightBorder != null){
+                return rightBorder.getThicknessMm();
+            } else {
+                return getThicknessMm();
+            }
+        }
+                
+        public EReportBorderStyle getTopStyle(){
+            if (topBorder != null){
+                return topBorder.getStyle();
+            } else {
+                return getStyle();
+            } 
+        }
+        
+        public EReportBorderStyle getLeftStyle(){
+            if (leftBorder != null){
+                return leftBorder.getStyle();
+            } else {
+                return getStyle();
+            } 
+        }
+        
+        public EReportBorderStyle getBottomStyle(){
+            if (bottomBorder != null){
+                return bottomBorder.getStyle();
+            } else {
+                return getStyle();
+            } 
+        }
+        
+        public EReportBorderStyle getRightStyle(){
+            if (rightBorder != null){
+                return rightBorder.getStyle();
+            } else {
+                return getStyle();
+            } 
+        }
+        
+        public Color getTopColor(){
+            if (topBorder != null){
+                return topBorder.getColor();
+            } else {
+                return getColor();
+            } 
+        }
+        
+        public Color getLeftColor(){
+            if (leftBorder != null){
+                return leftBorder.getColor();
+            } else {
+                return getColor();
+            } 
+        }
+        
+        public Color getBottomColor(){
+            if (bottomBorder != null){
+                return bottomBorder.getColor();
+            } else {
+                return getColor();
+            } 
+        }
+        
+        public Color getRightColor(){
+            if (rightBorder != null){
+                return rightBorder.getColor();
+            } else {
+                return getColor();
+            } 
+        }
+        
+        public Border copy(boolean needOwner) {
+            Border border;
+            if (needOwner){
+                border = new Border(getOwner());
+            } else {
+                border = new Border();
+            }
+            border.setOnLeft(this.onLeft);
+            border.setOnRight(this.onRight);
+            border.setOnTop(this.onTop);
+            border.setOnBottom(this.onBottom); 
+            if (isDisplayed() &&  !isDetailBorder()) {
+                border.setColor(getColor());
+                border.setStyle(getStyle());
+                border.setThicknessMm(getThicknessMm());
+            } else {
+                if (this.onLeft && leftBorder != null){
+                    BorderProperty b = border.getLeftBorder();
+                    b.setColor(leftBorder.getColor());
+                    b.setThicknessMm(leftBorder.getThicknessMm());
+                    b.setStyle(leftBorder.getStyle());
+                }
+                if (this.onRight && rightBorder != null){
+                    BorderProperty b = border.getRightBorder();
+                    b.setColor(rightBorder.getColor());
+                    b.setThicknessMm(rightBorder.getThicknessMm());
+                    b.setStyle(rightBorder.getStyle());
+                }
+                if (this.onTop && topBorder != null){
+                    BorderProperty b = border.getTopBorder();
+                    b.setColor(topBorder.getColor());
+                    b.setThicknessMm(topBorder.getThicknessMm());
+                    b.setStyle(topBorder.getStyle());
+                }
+                if (this.onBottom && bottomBorder != null){
+                    BorderProperty b = border.getBottomBorder();
+                    b.setColor(bottomBorder.getColor());
+                    b.setThicknessMm(bottomBorder.getThicknessMm());
+                    b.setStyle(bottomBorder.getStyle());
+                }
+            }
+            return border;
+        }
+        
+        
+    }
+    
+    public class BorderProperty {
+        private final RadixObject owner;
+        public static final double DEFAULT_THICKNESS_MM = 0.1;
+        private EReportBorderStyle style = EReportBorderStyle.SOLID;
+        private Color color = Color.BLACK;
+        private double thicknessMm = DEFAULT_THICKNESS_MM;
+
+        public BorderProperty() {
+            owner = null;
+        }
+
+        protected BorderProperty(RadixObject owner) {
+            this.owner = owner;
+        }
+        
+        protected BorderProperty(org.radixware.schemas.adsdef.ReportBorderProperty xBorder, RadixObject owner) {
+            if (xBorder.isSetColor()){
+                this.color = XmlColor.parseColor(xBorder.getColor());
+            }
+            if (xBorder.isSetThickness()){
+                this.thicknessMm = xBorder.getThickness();
+            }
+            if (xBorder.isSetStyle()){
+                this.style = xBorder.getStyle();
+            }
+            this.owner = owner;
+        }
+
+        protected void appendTo(org.radixware.schemas.adsdef.ReportBorderProperty xBorder, ESaveMode saveMode) {
+            xBorder.setColor(XmlColor.mergeColor(this.color));
+            xBorder.setThickness(this.thicknessMm);
+            xBorder.setStyle(this.style);
+        }
+
+        /**
+         * @return border style.
+         */
+        public EReportBorderStyle getStyle() {
+            return style;
+        }
+
+        public void setStyle(EReportBorderStyle style) {
+            assert (style != null);
+            if (!Utils.equals(this.style, style)) {
+                this.style = style;
+                modified();
+            }
+        }
+
+        /**
+         * @return border color.
+         */
+        public Color getColor() {
+            return color;
+        }
+        
+        public void setColor(Color color) {
+            setColor(color, true);
+        }
+
+        void setColor(Color color, boolean update) {
+            assert (color != null);
+            if (!Utils.equals(this.color, color)) {
+                this.color = color;
+                if (update) {
+                    modified();
+                }
+            }
+        }
+
+        /**
+         * @return border line thickness in millimeters.
+         */
+        public double getThicknessMm() {
+            return thicknessMm;
+        }
+
+        public void setThicknessMm(double thicknessMm) {
+            if (!Utils.equals(this.thicknessMm, thicknessMm)) {
+                this.thicknessMm = thicknessMm;
+                modified();
+            }
+        }
+        
+        public void modified(){
+            if (owner != null){
+                owner.setEditState(EEditState.MODIFIED);
+            }
+        }
+
+        public RadixObject getOwner() {
+            return owner;
         }
     }
 
@@ -526,4 +801,14 @@ public abstract class AdsReportAbstractAppearance extends RadixObject {
     public Border getBorder() {
         return border;
     }
+
+    public boolean isNewStyle() {
+        return isNewStyle;
+    }
+
+    void setNewStyle(boolean isNewStyle) {
+        this.isNewStyle = isNewStyle;
+    }
+    
+    
 }

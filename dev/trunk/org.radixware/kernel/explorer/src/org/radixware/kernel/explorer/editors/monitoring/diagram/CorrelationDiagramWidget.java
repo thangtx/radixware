@@ -21,6 +21,7 @@ import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.dashboard.DiagramSettings;
 import org.radixware.kernel.explorer.editors.monitoring.diagram.AbstaractMetricView.CorrelationValue;
 import org.radixware.kernel.explorer.editors.monitoring.diagram.AbstaractMetricView.MetricValue;
@@ -31,8 +32,8 @@ import org.radixware.schemas.monitoringcommand.MetricValueRanges;
 
 public class CorrelationDiagramWidget extends DiagramWidget {
 
-    public CorrelationDiagramWidget(final QWidget parent) {
-        super(parent);
+    public CorrelationDiagramWidget(final IClientEnvironment env, final QWidget parent) {
+        super(env, parent);
         chart = ChartFactory.createPieChart(
                 null, // chart title
                 null, // data
@@ -60,6 +61,11 @@ public class CorrelationDiagramWidget extends DiagramWidget {
         return dataset;
     }
 
+    @Override
+    protected void createHorizontalAxisWidget(int posAxisX, QColor colorBackground) {
+        //Не используется для данного типа диаграм 
+    }
+    
     @Override
     public void update(/*List<MetricValue>*/DiagramRs diagRs, /*Timestamp begTime, Timestamp endTime,*/ DiagramSettings metricSettings, boolean isAsinc) {
         PiePlot plot = (PiePlot) chart.getPlot();

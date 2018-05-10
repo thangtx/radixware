@@ -18,20 +18,18 @@ package org.radixware.kernel.designer.uds.tree.actions;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import javax.swing.DefaultComboBoxModel;
-import org.radixware.kernel.common.types.Id;
-import org.radixware.schemas.udsdef.UserFunctionDefinition;
+import org.radixware.kernel.common.defs.ads.userfunc.xml.UserFuncImportInfo;
 
 
 class FuncChooser extends javax.swing.JPanel {
 
     private class Item {
 
-        Id id;
-        String title;
+        private final int id;
+        private final String title;
 
-        public Item(Id id, String title) {
+        public Item(int id, String title) {
             this.id = id;
             this.title = title;
         }
@@ -50,17 +48,18 @@ class FuncChooser extends javax.swing.JPanel {
     };
 
     /** Creates new form FuncChooser */
-    public FuncChooser(Map<Id, UserFunctionDefinition> map) {
+    public FuncChooser(List<UserFuncImportInfo> list) {
         initComponents();
-        List<Item> list = new LinkedList<Item>();
-        for (Map.Entry<Id, UserFunctionDefinition> e : map.entrySet()) {
-            list.add(new Item(e.getKey(), e.getValue().getName()));
+        List<Item> items = new LinkedList<Item>();
+        int index = 0;
+        for (UserFuncImportInfo e : list) {
+            items.add(new Item(index++, e.getName()));
         }
-        jComboBox1.setModel(new DefaultComboBoxModel(list.toArray(new Object[list.size()])));
+        jComboBox1.setModel(new DefaultComboBoxModel(items.toArray(new Object[list.size()])));
         jComboBox1.setSelectedIndex(0);
     }
 
-    public Id getSelectedId() {
+    public int getSelectedId() {
         return ((Item) jComboBox1.getSelectedItem()).id;
     }
 

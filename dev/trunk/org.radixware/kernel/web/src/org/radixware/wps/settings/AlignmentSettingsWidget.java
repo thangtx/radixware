@@ -23,20 +23,15 @@ import org.radixware.wps.rwt.UIObject;
 import org.radixware.wps.views.editors.valeditors.ValListEditorController;
 
 
-public class AlignmentSettingsWidget extends SettingsWidget {
+final class AlignmentSettingsWidget extends SettingsWidget {
 
     final private ValListEditorController<String> listStringController;
 
-    public AlignmentSettingsWidget(final WpsEnvironment env, final UIObject parent, final String gr, final String sub, final String n, List<org.radixware.wps.rwt.Alignment> alignList, Alignment defVal) {
-        super(env, parent, gr, sub, n, defVal);
+    public AlignmentSettingsWidget(final WpsEnvironment env, final UIObject parent, final String gr, final String sub, final String n, List<org.radixware.wps.rwt.Alignment> alignList) {
+        super(env, parent, gr, sub, n);
         final EditMaskList mask = new EditMaskList();
 
-        if (defVal != null) {
-            defaultValue = (int) defVal.getValue();//getDefaultSettings().readInteger(getSettingCfgName());
-        } else {
-            defaultValue = Alignment.RIGHT.ordinal();
-        }
-        MessageProvider messageProvider = e.getApplication().getMessageProvider();
+        MessageProvider messageProvider = getWpsEnvironment().getApplication().getMessageProvider();
         for (Alignment a : alignList) {
             if (a != null) {
                 String aTr  = messageProvider.translate("Settings Dialog", a.name());
@@ -53,14 +48,33 @@ public class AlignmentSettingsWidget extends SettingsWidget {
         this.add(container);
         container.add(((UIObject) listStringController.getValEditor()));
     }
+    
+    private Alignment getDefaultValue(){
+        final String value = readDefaultValue();
+        if (value==null || value.isEmpty()){
+            return Alignment.LEFT;
+        }else{
+            final int alignmentValue;
+            try{
+                alignmentValue =  Integer.parseInt(value);
+            }catch(NumberFormatException ex){
+                return Alignment.LEFT;
+            }
+            return Alignment.getForValue(alignmentValue);
+        }
+    }
 
     @Override
     public void readSettings(WpsSettings src) {
-        int value = src.readInteger(getSettingCfgName());
-        if (src.getValue(getSettingCfgName()) == null || "".equals(src.getValue(getSettingCfgName()))) {
-            value = (int)defaultValue;
+        final String settingName = getSettingCfgName();
+        final String valAsStr = src.getValue(settingName);
+        final Alignment v;
+        if (valAsStr == null || valAsStr.isEmpty()) {
+            v = getDefaultValue();
+        }else{
+            final int value = src.readInteger(settingName);
+            v = Alignment.getForValue(value);
         }
-        Alignment v = Alignment.getForValue(value);
         listStringController.setValue(v.name());
     }
 
@@ -73,6 +87,6 @@ public class AlignmentSettingsWidget extends SettingsWidget {
 
     @Override
     public void restoreDefaults() {
-        listStringController.setValue(Alignment.getForValue((int)defaultValue).name());
+        listStringController.setValue(getDefaultValue().name());
     }
 }

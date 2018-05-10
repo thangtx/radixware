@@ -17,6 +17,8 @@
 package org.radixware.kernel.designer.ads.editors.property;
 
 import java.awt.BorderLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -43,7 +45,20 @@ public class AdsObjectPropertPresentationPanel extends javax.swing.JPanel {
         panelForCreateList.add(createList, BorderLayout.CENTER);
         //lepObjectCreationPresentatin.addChangeListener(chlObjectCreationPresentatinListener);
         lepObjectClassCatalog.addChangeListener(chlObjectClassCatalogListener);
+        
+        isAutoSortInstantiatableClassCatalog.addItemListener(new ItemListener() {
 
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (!isMayModify || isReadOnly) {
+                    return;
+                }
+                if (objectPropertyPresentation != null) {
+                    objectPropertyPresentation.setAutoSortClasses(isAutoSortInstantiatableClassCatalog.isSelected());
+                }
+                update();
+            }
+        });
     }
     boolean isMayModify = true;
     boolean isReadOnly = false;
@@ -138,6 +153,7 @@ public class AdsObjectPropertPresentationPanel extends javax.swing.JPanel {
                 lepObjectClassCatalog.open(objectPropertyPresentation.findCreationClassCatalog().get(),
                         objectPropertyPresentation.getCreationClassCatalogId());
                 lepObjectClassCatalog.setEnabled(!isReadOnly);
+                isAutoSortInstantiatableClassCatalog.setEnabled(!isReadOnly);
             } else {
 //                lepObjectEditorPresentatin.setEnabled(false);
                 createList.setEnabled(false);
@@ -161,6 +177,7 @@ public class AdsObjectPropertPresentationPanel extends javax.swing.JPanel {
         lepObjectClassCatalog = new org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel();
         jLabel2 = new javax.swing.JLabel();
         panelForCreateList = new javax.swing.JPanel();
+        isAutoSortInstantiatableClassCatalog = new javax.swing.JCheckBox();
 
         jLabel2.setText(org.openide.util.NbBundle.getMessage(AdsObjectPropertPresentationPanel.class, "AdsObjectPropertPresentationPanel.jLabel2.text")); // NOI18N
 
@@ -168,36 +185,42 @@ public class AdsObjectPropertPresentationPanel extends javax.swing.JPanel {
         panelForCreateList.setLayout(panelForCreateListLayout);
         panelForCreateListLayout.setHorizontalGroup(
             panelForCreateListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 584, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         panelForCreateListLayout.setVerticalGroup(
             panelForCreateListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 77, Short.MAX_VALUE)
+            .addGap(0, 52, Short.MAX_VALUE)
         );
+
+        isAutoSortInstantiatableClassCatalog.setLabel(org.openide.util.NbBundle.getMessage(AdsObjectPropertPresentationPanel.class, "AdsObjectPropertPresentationPanel.isAutoSortInstantiatableClassCatalog.label")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelForCreateList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lepObjectClassCatalog, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE))
-            .addComponent(panelForCreateList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lepObjectClassCatalog, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(isAutoSortInstantiatableClassCatalog))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(panelForCreateList, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(lepObjectClassCatalog, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lepObjectClassCatalog, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(isAutoSortInstantiatableClassCatalog))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox isAutoSortInstantiatableClassCatalog;
     private javax.swing.JLabel jLabel2;
     private org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel lepObjectClassCatalog;
     private javax.swing.JPanel panelForCreateList;

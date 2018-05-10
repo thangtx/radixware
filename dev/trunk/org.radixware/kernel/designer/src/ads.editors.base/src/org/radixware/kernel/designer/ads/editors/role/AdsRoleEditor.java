@@ -49,13 +49,13 @@ public class AdsRoleEditor extends RadixObjectEditor<AdsRoleDef> {
     LocalizingEditorPanel localizingPaneList = null;
     @Override
     public boolean open(final OpenInfo info) {
-        final Boolean[] result = new Boolean[1];
+        role = getRadixObject();
         final CountDownLatch latch = new CountDownLatch(1);
-        ProgressUtils.showProgressDialogAndRun(new Runnable() {
+        final Boolean[] result = new Boolean[1];
+        final Runnable run = new Runnable() {
             @Override
             public void run() {
                 try {
-                    role = getRadixObject();
                     if (panel == null) {
                         addComponents();
                     }
@@ -65,13 +65,20 @@ public class AdsRoleEditor extends RadixObjectEditor<AdsRoleDef> {
                     latch.countDown();
                 }
             }
-        }, NbBundle.getMessage(AdsRoleEditor.class, "AdsRoleEditor.OpenMessage"));
+        };
 
-        try {
-            latch.await();
-        } catch (InterruptedException ex) {
-            //ignore
+        if (role.getModule() != null && role.getModule().isUserModule()) {
+            ProgressUtils.showProgressDialogAndRun(run,
+                    NbBundle.getMessage(AdsRoleEditor.class, "AdsRoleEditor.OpenMessage"));
+            try {
+                latch.await();
+            } catch (InterruptedException ex) {
+                //ignore
+            }
+        } else {
+            run.run();
         }
+
         return result[0];
     }
 

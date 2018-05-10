@@ -31,10 +31,10 @@ import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlException;
-import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import org.radixware.kernel.common.compiler.CompilerConstants;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.doc.AdsDocDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
 import org.radixware.kernel.common.defs.ads.module.APISupport;
 import org.radixware.kernel.common.defs.ads.module.AdsImageDef;
@@ -100,6 +100,7 @@ public class FSRepositoryAdsModule extends FSRepositoryModule<AdsModule> impleme
     }
     private Def2RepMap repositories = null;
     private Set<Id> ids = null;
+    private AdsModule owner = null;
     
     public FSRepositoryAdsModule(File moduleDir) {
         super(moduleDir);
@@ -206,14 +207,24 @@ public class FSRepositoryAdsModule extends FSRepositoryModule<AdsModule> impleme
         if (srcDir.isDirectory() && (injectionInfo == null || !injectionInfo.isHasAPIXml())) {
             
             final HashMap<String, FSRepositoryAdsDefinition> loadedFiles = new HashMap<>();
-            
+
+            // src
             File[] definitionFiles = listFiles(srcDir);
-            
             if (definitionFiles != null) {
                 for (File file : definitionFiles) {
                     loadedFiles.put(file.getName(), new FSRepositoryAdsDefinition(file));
                 }
             }
+            
+            // doc
+            File docDir = new File(srcDir, AdsModule.DOCUMENTATION_DIR_NAME);
+            File[] docFiles = listFiles(docDir);
+            if (docFiles != null) {
+                for (File file : docFiles) {
+                    loadedFiles.put(file.getName(), new FSRepositoryAdsDocDefinition(file));
+                }
+            }
+            
             return loadedFiles.values().toArray(new IRepositoryAdsDefinition[0]);
         } else {
             try {
@@ -293,7 +304,9 @@ public class FSRepositoryAdsModule extends FSRepositoryModule<AdsModule> impleme
                 return rep;
             }
         }
-        if (def instanceof AdsImageDef) {
+        if (def instanceof AdsDocDef) {
+            return new FSRepositoryAdsDocDefinition((AdsDocDef) def);
+        } else if (def instanceof AdsImageDef) {
             return new FSRepositoryAdsImageDefinition((AdsImageDef) def);
         } else if (def instanceof AdsLocalizingBundleDef) {
             return new FSRepositoryAdsLocaleDefinition((AdsLocalizingBundleDef) def, ((AdsLocalizingBundleDef) def).wasLoadedFromAPI());
@@ -546,4 +559,31 @@ public class FSRepositoryAdsModule extends FSRepositoryModule<AdsModule> impleme
         }
         
     }
+    
+    protected IRepositoryAdsDefinition[] getLoadedDefinitions() {
+        return repositories == null ? new IRepositoryAdsDefinition[0] : repositories.toArray();
+    }
+
+    @Override
+    public IRepositoryAdsDefinition getMlsRepository() {
+        FSRepositoryAdsLocaleDefinition localeRepository = null;
+        File dir = getDirectory();
+        if (owner == null && module != null){
+            setModule(module);
+        }
+        if (dir != null && owner != null){
+            File mlsDir = new File(dir, AdsModule.LOCALE_DIR_NAME);
+            Id mlbId = owner.getLocalizingBundleId();
+            localeRepository = new FSRepositoryAdsLocaleDefinition(mlsDir, mlbId);
+            FSRepositoryAdsLocalizedDef.checkLocalizingLayers(dir, mlbId, localeRepository);
+        }
+        return localeRepository;
+    }
+    
+    @Override
+    public void setModule(AdsModule module) {
+        owner = module;
+    }
+    
+    
 }

@@ -18,20 +18,41 @@ import org.radixware.schemas.msdl.Structure;
 
 public class MsdlStructureField extends MsdlField {
 
+    private byte[] extId;
+    private String extIdChar;
+
     public MsdlStructureField(Structure.Field field) {
         super(field);
+        extId = field.getExtId();
+        extIdChar = field.getExtIdChar();
+    }
+        
+    public byte[] getExtId() {
+        return extId;
+    }
+    
+    public String getExtIdChar() {
+        return extIdChar;
+    }
+
+    public void setExtId(byte[] extId) {
+        this.extId = extId;
+    }
+    
+    public void setExtIdChar(String extIdChar) {
+        this.extIdChar = extIdChar;
+    }
+    
+    public boolean isSetExtId() {
+        return extId != null || extIdChar != null;
     }
 
     @Override
     public Structure.Field getFullField() {
-        Structure.Field res = (Structure.Field)getField().copy();
-        fillAnyField(res,getModel().getFullField());
+        Structure.Field res = (Structure.Field)super.getFullField();
+        res.setExtId(extId);
+        res.setExtIdChar(extIdChar);
         return res;
-    }
-
-    @Override
-    public Structure.Field getField() {
-        return (Structure.Field)super.getField();
     }
 
     private class MsdlFieldModelClipboardSupport extends ClipboardSupport<MsdlStructureField> {
@@ -55,5 +76,4 @@ public class MsdlStructureField extends MsdlField {
     public ClipboardSupport<? extends MsdlStructureField> getClipboardSupport() {
         return new MsdlFieldModelClipboardSupport();
     }
-
 }

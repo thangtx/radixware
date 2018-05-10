@@ -19,8 +19,9 @@
       </Src>
     </Bodies>
     <MethodGroup Id="cmgE7QSZDFLJJD2BLAFGN4KVAE6SM" Name="Root">
-      <Group Id="cmgHO55AJBXORGQRFRY34YKZBUYOI" Name="Commands" Members="mthcmdMJ3LHGS7VRAQPH5FRH42MPOLZU mthZ7RDK4GMZBHFNBO62IGQLFEMMI mthNWKIDHBW2FD4HHSCLNXAEDSTEM"/>
+      <Group Id="cmgHO55AJBXORGQRFRY34YKZBUYOI" Name="Commands" Members="mthcmdMJ3LHGS7VRAQPH5FRH42MPOLZU"/>
       <Group Id="cmgB7MLJ7SIHVATBGIB37BWOKNVDM" Name="Pipeline" Members="mth7MEKN6RYYBASBPAYYLM556VGPM mthOC7IFQSQQNCXLAY4YULNTEVVL4 mthZEZONIMUSNHEJHOFQ7OPMP3CLU mthWE5I24A36RE3BGGGIIG4FYAV7M mthFST4X6BGFNA5PH6LQNOG73MSTQ mthHZIY6G7TCVCX3DR6QWA77MJJHI mthLB23XTDDKVGSRN5R4BPLLXUMFY mthZHFRUV5SQ5CYNG4JLLR26M4UWU mthIQ7FIDN6DFEYXJSX6G5WONK32M mthOK5OVIZTJ5CUTKASBMH6PUUWGQ mthEIEXINMQGJB35G65UDWFOOSDZU mthRJJVN7SZFRGFPKSWMK5OODDPHM mthTO3N6ZUC25BNLNVHR6WUL3OSCU mthB25WTYWZUJAJXMCSH7UVSSJMP4 mthAXJJZNLFOJGVBNHZN5AEP5GJGM mthNSQ7CEKCGFFWRLVESA72LZ7DEM"/>
+      <Group Id="cmgDBK37WPUFFCV7NNLPLPPP6ZGSU" Name="Test" Members="mthZ7RDK4GMZBHFNBO62IGQLFEMMI mthNWKIDHBW2FD4HHSCLNXAEDSTEM mthOWNMQOHB6VAGTDQZA53AWL5UOM"/>
     </MethodGroup>
     <PropertyGroup Id="cpgHCLACMR6XNDQDPASBJPTKTLBQE" Name="Root">
       <Group Id="cpgL7PJN3XCMJFZ7APC4VAZSPG2QA" Name="Props" Members="pruPP7HKPPLMNAKBORSWE6UXPKZ6E prdUJRUD3CHL5FBNFG66LVCMJRMBM pruUDEQ5D5FY5DZTGTTPZJIBJUPJA pruRPUDJXOH3FHTRHR3IXX3OZQVNY"/>
@@ -597,7 +598,7 @@ try {
               <xsc:IdReference Path="aecPNJV5QTXIBGJPBHK64RO3LH73A prdW53UTOGUQVGTXBHSL5YQSYWQ3I" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> = </xsc:Java>
+              <xsc:Java> = rs.CurStage.Data != null ? </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M"/>
@@ -609,7 +610,7 @@ try {
               <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(rs.CurStage.Data);
+              <xsc:Java>(rs.CurStage.Data) : null;
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
@@ -753,7 +754,7 @@ throw new </xsc:Java>
         </Sources>
       </Method>
       <Method Id="mthNSQ7CEKCGFFWRLVESA72LZ7DEM" Name="isSuitableForPipeline" Nature="0" IsOverride="true">
-        <AccessRules IsPublished="false"/>
+        <AccessRules/>
         <Parameters>
           <Parameter Name="pipeline" Id="mprJFPNVXZCZZD5XNXC5JOXG7FB6U">
             <Type TypeId="411" Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY"/>
@@ -774,16 +775,16 @@ throw new </xsc:Java>
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthZ7RDK4GMZBHFNBO62IGQLFEMMI" Name="debugPipeline" DescriptionId="mlsWP6XG2KCHBDQBOP4YOQXRASUJ4" Nature="0" IsOverride="false">
+      <Method Id="mthZ7RDK4GMZBHFNBO62IGQLFEMMI" Name="debugPipeline" DescriptionId="mlsCFQVBA4TA5BWBFKGO4AJWVR2FA" Nature="0" IsReflectiveCallable="true" IsOverride="false">
         <AccessRules IsStatic="true"/>
         <Parameters>
-          <Parameter Name="pipelineGuid" DescriptionId="mlsPOX6SUL7CJGAZEP4WHL2S7GFVU" Id="mpr6G72W6DT7ZAC3OTQWO5WJWIQ3E">
+          <Parameter Name="pipelineGuid" DescriptionId="mlsS6SHJCHPQ5CTNFTCNXN7WESBKY" Id="mpr6G72W6DT7ZAC3OTQWO5WJWIQ3E">
             <Type TypeId="21"/>
           </Parameter>
-          <Parameter Name="pipelinePid" DescriptionId="mls5UJOHON27NGW5BVZ6QMJPQO4EQ" Id="mprQ7RJL2KQZRBY7CNVYVU4OT7VWE">
+          <Parameter Name="pipelinePid" DescriptionId="mls3XFPZDISE5AGDIGOQOXMXCK6RE" Id="mprQ7RJL2KQZRBY7CNVYVU4OT7VWE">
             <Type TypeId="21"/>
           </Parameter>
-          <Parameter Name="sourceData" DescriptionId="mls2BZHINEPGFDRJGLCZJJAU7JBYA" Id="mpr4R26SSNH55CYFN7KKHRUYLBI4A">
+          <Parameter Name="sourceData" DescriptionId="mlsGTGPSMQOZJAIVFXNWMARCGA43M" Id="mpr4R26SSNH55CYFN7KKHRUYLBI4A">
             <Type TypeId="451"/>
           </Parameter>
         </Parameters>
@@ -804,12 +805,11 @@ throw new </xsc:Java>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsAWFTSUZV4BACJLCMBOGRI2G334"/>
+              <xsc:LocalizedString StringId="mls73GI4LFO7VBAZIF7RRKHPZ7AKE"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
-}
-else if (pipelinePid == null || pipelinePid.isEmpty()) {
+} else if (pipelinePid == null || pipelinePid.isEmpty()) {
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
@@ -819,12 +819,11 @@ else if (pipelinePid == null || pipelinePid.isEmpty()) {
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mls7YTTHADVIJAYRCLMTMMNBR4N3Q"/>
+              <xsc:LocalizedString StringId="mlsSWBKRSKNKJFXXJ6FZXOF5WPBLY"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
-}
-else if (sourceData == null) {
+} else if (sourceData == null) {
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
@@ -834,19 +833,18 @@ else if (sourceData == null) {
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsZCUTI3WULZEJ3KVYUV6JHBDSQA"/>
+              <xsc:LocalizedString StringId="mlsNLP3NVL3XVF4NG6NNL4EKENDCM"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
-}
-else {
+} else {
     final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>     pipe =  </xsc:Java>
+              <xsc:Java> pipe = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
@@ -889,7 +887,7 @@ else {
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(pipelineGuid), pipelinePid));
-    
+
     if (pipe == null) {
         throw new </xsc:Java>
             </xsc:Item>
@@ -900,200 +898,24 @@ else {
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsLYQ7USBLQZDJ7GFJVZPHLSYZ7A"/>
+              <xsc:LocalizedString StringId="mlsXKGLX4ZDEJEERHEDQIMFHOUGMM"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>+"guid="+pipelineGuid+",pid="+pipelinePid+</xsc:Java>
+              <xsc:Java> + "guid=" + pipelineGuid + ",pid=" + pipelinePid + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsXDTL2BV6OZFXPK2H4DFNE6JHMI"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);    
-    }
-    else {
-        for (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> item : pipe.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mthQT6QWPG525CLRBTJ7Z44F3X2AA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>()) {
-            if (item instanceof </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclBTAAJV7DFRH5JASKOUANWELKNA"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>) {
-                final </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRq"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> rq = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRq.Factory"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.newInstance();
-                
-                rq.addNewCurStage();
-                rq.CurStage.Data = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(sourceData);
-
-                </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthQ63BL22SRPNRDCISABIFNQAABA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsA65P3PZL6RET5DVF5DOPDK2KBM"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>+"guid="+pipelineGuid+",pid="+pipelinePid+</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsRM3D57HDDNDYBMQJHXB5M77RPY"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>,</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6GKQ2BYOTRFG7D7DJ5SYZSLMSE" Invoke="true"/>
+              <xsc:LocalizedString StringId="mlsRMBGAH7FENBOJND27XF4EVVDDQ"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
-                final </xsc:Java>
+    } else {
+        return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs"/>
+              <xsc:IdReference Path="aclBTAAJV7DFRH5JASKOUANWELKNA mthOWNMQOHB6VAGTDQZA53AWL5UOM" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> rs = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthL2ENLREVU5BLFBXCDY3F36CZJQ" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(((</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclBTAAJV7DFRH5JASKOUANWELKNA"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>)item).</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aclBTAAJV7DFRH5JASKOUANWELKNA pruPP7HKPPLMNAKBORSWE6UXPKZ6E" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>, rq);
-                </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthQ63BL22SRPNRDCISABIFNQAABA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsPF7I3YUB7REEBJPD6BTCEGFJ4U"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>+"guid="+pipelineGuid+",pid="+pipelinePid+</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsVTWGDEGZO5B7RA7VK5BH57TLNI"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>,</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6GKQ2BYOTRFG7D7DJ5SYZSLMSE" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);
-                
-                if (rs != null) {
-                    return </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(rs.CurStage.Data);
-                }
-                else {
-                    return null;
-                }
-            }
-        }
-        throw new </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsS6YNHPGKTVADZOCWY7HJ5B4U5Q"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>+"guid="+pipelineGuid+",pid="+pipelinePid+</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:LocalizedString StringId="mlsMSIYNR5INNGONDNWRW3XRRAJ7I"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);    
+              <xsc:Java>(pipe, sourceData);
     }
 }
 </xsc:Java>
@@ -1101,13 +923,13 @@ else {
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthNWKIDHBW2FD4HHSCLNXAEDSTEM" Name="debugPipeline" DescriptionId="mlsR4KDE4XJPBCNLFRNLJIGD65SQU" Nature="0" IsOverride="false">
+      <Method Id="mthNWKIDHBW2FD4HHSCLNXAEDSTEM" Name="debugPipeline" DescriptionId="mlsCYXGX4Q2TBDH5AMKVIYU7L4TFM" Nature="0" IsReflectiveCallable="true" IsOverride="false">
         <AccessRules IsStatic="true"/>
         <Parameters>
-          <Parameter Name="id" DescriptionId="mlsMIK6DZZC4JBGPAZEFMJCFI5BHQ" Id="mprPM4XBNV5JFCWXCGYUHDU44NPSI">
-            <Type TypeId="401" extStr="long"/>
+          <Parameter Name="id" DescriptionId="mlsHXV4TD7HYNHK5A6DVKIIABBXRY" Id="mprPM4XBNV5JFCWXCGYUHDU44NPSI">
+            <Type TypeId="2"/>
           </Parameter>
-          <Parameter Name="sourceData" DescriptionId="mlsFIWDJPJ23ZE2RKVQ6MJJDSFUH4" Id="mpr5QMW25NVTJAUNIBBHL7AXOL5PU">
+          <Parameter Name="sourceData" DescriptionId="mlsQR6KL355RNFCJIXLOW2QQYO3MM" Id="mpr5QMW25NVTJAUNIBBHL7AXOL5PU">
             <Type TypeId="451"/>
           </Parameter>
         </Parameters>
@@ -1128,19 +950,18 @@ else {
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsH4COPEPZ6NAD5O3BUVZAQKKUXM"/>
+              <xsc:LocalizedString StringId="mlsGSCIQECUYBA6HAAW63LJYTHM7I"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
-}
-else {
+} else {
     final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>     pipe = </xsc:Java>
+              <xsc:Java> pipe = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY"/>
@@ -1152,8 +973,8 @@ else {
               <xsc:IdReference Path="aecX6WI554KVVCZPGNLK7CSZLOMTY mth_loadByPK_________________" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(id,true);
-    
+              <xsc:Java>(id, true);
+
     if (pipe == null) {
         throw new </xsc:Java>
             </xsc:Item>
@@ -1164,39 +985,70 @@ else {
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsGPATDLS7ZBARTAQGMFBQMRI2LM"/>
+              <xsc:LocalizedString StringId="mlsNFLPYEZE4BB3DEEQIIFHZDK4ZY"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>+id+</xsc:Java>
+              <xsc:Java> + id + </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsJJ4RFJC3BNBENBVACSHESWWIKA"/>
+              <xsc:LocalizedString StringId="mls2KE7LV2IGFEQFMYXYJCV4A2YRU"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>);    
+              <xsc:Java>);
+    } else {
+        return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclBTAAJV7DFRH5JASKOUANWELKNA mthOWNMQOHB6VAGTDQZA53AWL5UOM" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(pipe, sourceData);
     }
-    else {
-        for (</xsc:Java>
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOWNMQOHB6VAGTDQZA53AWL5UOM" Name="doTest" Nature="0" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pipeline" Id="mprX4RDBK6JE5FBBPDBFYLZXJZXQ4">
+            <Type TypeId="411" Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY"/>
+          </Parameter>
+          <Parameter Name="xml" Id="mpr2M4EMZSLT5C2JJD5FCEAWXUQUY">
+            <Type TypeId="451"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451"/>
+        <ThrownExceptions>
+          <Exception TypeId="411" Path="axcJUFSBLVXVZEYDIHHN4G3GICTXI"/>
+        </ThrownExceptions>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>
+for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="aicC6PFHABKKZBO3N6RNZ66DMI5O4"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> item : pipe.</xsc:Java>
+              <xsc:Java> item : pipeline.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mthQT6QWPG525CLRBTJ7Z44F3X2AA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>()) {
-            if (item instanceof </xsc:Java>
+    if (item instanceof </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="aclBTAAJV7DFRH5JASKOUANWELKNA"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) {
-                final </xsc:Java>
+        final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRq"/>
@@ -1209,9 +1061,9 @@ else {
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.newInstance();
-                
-                rq.addNewCurStage();
-                rq.CurStage.Data = </xsc:Java>
+
+        rq.addNewCurStage();
+        rq.CurStage.Data = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M"/>
@@ -1223,9 +1075,9 @@ else {
               <xsc:IdReference Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M mthWYZNXNSWHJDTHL2W3Q4SYMUCAA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(sourceData);
+              <xsc:Java>(xml);
 
-                </xsc:Java>
+        </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
@@ -1234,29 +1086,60 @@ else {
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthQ63BL22SRPNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsETR7JMGTBZDKBES3PWEZ2OAY7U"/>
+              <xsc:LocalizedString StringId="mls7ENJ2S337RFNTO5M24S4WX3BIA"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>+id+</xsc:Java>
+              <xsc:Java> + pipeline.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mls4FEXFWPVUFFPTM7HJLK5WMHQTI"/>
+              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mth3O7LYVNX2RB47MNNKANF25LJTQ" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>,</xsc:Java>
+              <xsc:Java>() + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsMVBMUZ4CMNAHXDARNTP4RULHMQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6GKQ2BYOTRFG7D7DJ5SYZSLMSE" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
-                final </xsc:Java>
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthGE2TROLTCFEZVJT2IVTMEHBWFE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, "Test rq data: " + xml, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6GKQ2BYOTRFG7D7DJ5SYZSLMSE" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+        final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="451" Path="xsdNTKQF4ELCJG4PBYO4B7DR42TUQ" extStr="PipelineMessageRs"/>
@@ -1280,14 +1163,14 @@ else {
               <xsc:TypeDeclaration TypeId="411" Path="aclBTAAJV7DFRH5JASKOUANWELKNA"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>)item).</xsc:Java>
+              <xsc:Java>) item).</xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="aclBTAAJV7DFRH5JASKOUANWELKNA pruPP7HKPPLMNAKBORSWE6UXPKZ6E" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, rq);
-                </xsc:Java>
+        </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
@@ -1296,31 +1179,37 @@ else {
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthQ63BL22SRPNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsDUSUGKO3HBBC3IASBMWNB2OYAU"/>
+              <xsc:LocalizedString StringId="mls7QJKFPREY5GEHDMSLZ7GLNRRWQ"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>+id+</xsc:Java>
+              <xsc:Java> + pipeline.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsCGXM36VQGVFH7K4TRZPJY7PRLM"/>
+              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mth3O7LYVNX2RB47MNNKANF25LJTQ" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>,</xsc:Java>
+              <xsc:Java>() + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsRYDKBZHO4JERDPXOT5EIVR4QQY"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6GKQ2BYOTRFG7D7DJ5SYZSLMSE" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
-                
-                if (rs != null) {
-                    return </xsc:Java>
+
+        if (rs != null) {
+            return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:TypeDeclaration TypeId="411" Path="adcRFM6PQSFCBFLJA2M3OUDKZK34M"/>
@@ -1333,13 +1222,24 @@ else {
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(rs.CurStage.Data);
-                }
-                else {
-                    return null;
-                }
-            }
+        } else {
+            return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5IZTTGAZDVCCHJDHKJHBW5IQE4 mthNM3SXMVDOFEZBPPQ2D6BVQHYBI" Invoke="true"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(new byte[] {});
         }
-        throw new </xsc:Java>
+    }
+}
+throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
               <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true"/>
@@ -1348,19 +1248,22 @@ else {
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mls2M7UDRZDYNDDPPLU2B2N6W63H4"/>
+              <xsc:LocalizedString StringId="mlsAQGTXOYENRASLEJESQC6LI6QWA"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>+id+</xsc:Java>
+              <xsc:Java> + pipeline.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:LocalizedString StringId="mlsHXFG7LXEMZCOBF5WKJAYX7NAQM"/>
+              <xsc:IdReference Path="aicYOBV2IFRZ5D25C2WMZBEIOWPWY mth3O7LYVNX2RB47MNNKANF25LJTQ" Invoke="true"/>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>);    
-    }
-}
-</xsc:Java>
+              <xsc:Java>() + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsOIG2EBBQB5FUJCJBPTXWFQNNNM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -2167,27 +2070,35 @@ import org.xmlsoap.schemas.wsdl.DefinitionsDocument;</xsc:Java>
     final ByteArrayInputStream in = new ByteArrayInputStream(</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="adcWQXERQYKIJHFRLULJ7V3XR32C4"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="adcNC7RELKU45EFBK2XRUG6T2L5DE">
+                        <xsc:Presentation>Utils::Hex</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adcNC7RELKU45EFBK2XRUG6T2L5DE mthZYA6V7D5HFDZXKYBVLHCJKUE5U" Invoke="true"/>
+                      <xsc:IdReference Path="adcNC7RELKU45EFBK2XRUG6T2L5DE mthZYA6V7D5HFDZXKYBVLHCJKUE5U" Invoke="true">
+                        <xsc:Presentation>decode</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>(hex));
     return </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineMessageRqDocument"/>
+                      <xsc:TypeDeclaration TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="PipelineMessageRqDocument">
+                        <xsc:Presentation>ServiceBus.Cmd::CommandsXsd:PipelineMessageRqDocument</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.Factory.parse(in);
 } catch (</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                        <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> e) {
@@ -2195,7 +2106,9 @@ import org.xmlsoap.schemas.wsdl.DefinitionsDocument;</xsc:Java>
 } catch (</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU">
+                        <xsc:Presentation>Exceptions::XmlException</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> e) {
@@ -2203,7 +2116,9 @@ import org.xmlsoap.schemas.wsdl.DefinitionsDocument;</xsc:Java>
 } catch (</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="axc2UWNXV2AURHCDLWOI5MSDTSU2I"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="axc2UWNXV2AURHCDLWOI5MSDTSU2I">
+                        <xsc:Presentation>Exceptions::WrongFormatError</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> e) {

@@ -14,7 +14,6 @@ package org.radixware.kernel.server.dbq;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-import oracle.jdbc.OraclePreparedStatement;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;

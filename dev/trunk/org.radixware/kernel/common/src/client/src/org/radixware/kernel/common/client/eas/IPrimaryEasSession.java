@@ -25,13 +25,17 @@ public interface IPrimaryEasSession extends IEasSession{
             final String userName,
             final String password,
             EAuthType authType,
-            final Id desiredExplorerRootId)
+            final Id desiredExplorerRootId,
+            final Long replacedSessionId,
+            final boolean isWebDriverEnabled)
             throws ServiceClientException, InterruptedException;
     
     public CreateSessionRs open(final IEasClient soapConnection,
             final String stationName,
             final X509Certificate[] userCertificates,
-            final Id desiredExplorerRootId)
+            final Id desiredExplorerRootId,
+            final Long replacedSessionId,
+            final boolean isWebDriverEnabled)
             throws ServiceClientException, InterruptedException;    
     
     public CreateSessionRs open(final IEasClient soapConnection,
@@ -39,6 +43,8 @@ public interface IPrimaryEasSession extends IEasSession{
             final IKerberosCredentialsProvider krbCredentialsProvider,
             final ISpnegoGssTokenProvider authDelegate,
             final Id desiredExplorerRootId,
-            final X509Certificate[] userCertificates)
+            final X509Certificate[] userCertificates,
+            final Long replacedSessionId,
+            final boolean isWebDriverEnabled)
             throws ServiceClientException, InterruptedException;      
 }

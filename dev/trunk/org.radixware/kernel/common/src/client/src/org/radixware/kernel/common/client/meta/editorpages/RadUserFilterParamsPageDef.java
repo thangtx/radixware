@@ -58,8 +58,13 @@ final class RadUserFilterParamsPageDef extends RadStandardEditorPageDef {
             final ISqmlParameter parameter = parameters.getParameterById(propertyId);
             return parameter != null && !(parameter instanceof ISqmlModifiableParameter) == predefined;
         }
+
+        @Override
+        public boolean hasProperties() {
+            return !getPageItems().isEmpty();
+        }                
     }
-    private final Id rootGroupId = Id.Factory.newInstance(EDefinitionIdPrefix.ADS_PROPERTY_GROUP);
+    private final Id rootGroupId = Id.Factory.newInstance(EDefinitionIdPrefix.EDITOR_PAGE_PROP_GROUP);
     private final boolean predefined;
     private final PropertiesGroup group;
 
@@ -83,6 +88,11 @@ final class RadUserFilterParamsPageDef extends RadStandardEditorPageDef {
     public boolean isEmpty() {
         return group.getPageItems().isEmpty();
     }
+
+    @Override
+    public boolean hasProperties() {
+        return group.hasProperties();
+    }        
 
     @Override
     public boolean isPropertyDefined(Id propertyId) {

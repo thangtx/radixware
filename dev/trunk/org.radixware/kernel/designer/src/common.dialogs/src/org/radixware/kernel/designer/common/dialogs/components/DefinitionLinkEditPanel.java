@@ -473,7 +473,7 @@ public class DefinitionLinkEditPanel extends javax.swing.JPanel {
     private org.radixware.kernel.common.components.ExtendableTextField exTextField;
     // End of variables declaration//GEN-END:variables
 
-    private void chooseBtnActionPerformed(java.awt.event.ActionEvent evt) {
+    protected void chooseBtnActionPerformed(java.awt.event.ActionEvent evt) {
         if (cfgIterator != null) {
             definitionSequence = ChooseDefinitionSequence.chooseDefinitionSequence(cfgIterator);
             if (!definitionSequence.isEmpty()) {

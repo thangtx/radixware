@@ -8,12 +8,10 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.ads.clazz.members;
 
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.adsdef.AbstractMethodDefinition;
-
 
 public abstract class AdsSqlMethodDef extends AdsSystemMethodDef {
 
@@ -35,6 +33,11 @@ public abstract class AdsSqlMethodDef extends AdsSystemMethodDef {
 
     @Override
     public boolean canChangePublishing() {
+        return false;
+    }
+
+    @Override
+    public boolean needsDocumentation() {
         return false;
     }
 }

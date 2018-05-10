@@ -12,7 +12,7 @@
 package org.radixware.kernel.server.types.presctx;
 
 import org.radixware.kernel.common.types.Id;
-import org.radixware.kernel.server.types.Entity;
+import org.radixware.kernel.server.meta.presentations.RadEditorPresentationDef;
 import org.radixware.kernel.server.types.EntityGroup;
 import org.radixware.kernel.server.types.Pid;
 
@@ -20,13 +20,23 @@ import org.radixware.kernel.server.types.Pid;
 public final class ChildExplorerItemPresentationContext extends TreePresentationContext{
 
     private final Pid parentEntityPid;
+    private final RadEditorPresentationDef parentEntityPresentation;
     
-    public ChildExplorerItemPresentationContext(final Pid parentEntityPid, final Id explorerItemId, final EntityGroup group){
-        super(explorerItemId, group);
+    public ChildExplorerItemPresentationContext(final Pid parentEntityPid, 
+                                                                        final RadEditorPresentationDef parentEntityPresentation,
+                                                                        final Id explorerItemId, 
+                                                                        final EntityGroup group,
+                                                                        final Id selectorPresentationId){
+        super(explorerItemId, group, selectorPresentationId);
         this.parentEntityPid = parentEntityPid;
+        this.parentEntityPresentation = parentEntityPresentation;
     }
     
     public Pid getParentEntityPid(){
         return parentEntityPid;
     }    
+    
+    public RadEditorPresentationDef getParentEntityEditorPresentation(){
+        return parentEntityPresentation;
+    }
 }

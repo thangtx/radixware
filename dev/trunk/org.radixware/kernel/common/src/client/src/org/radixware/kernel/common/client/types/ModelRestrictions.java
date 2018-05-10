@@ -26,7 +26,7 @@ public abstract class ModelRestrictions extends Restrictions {
 
     private final EnumSet<ERestriction> PROGRAMMATICALLY_RESTRICTIONS = 
         EnumSet.of(ERestriction.CHANGE_POSITION, ERestriction.NOT_READ_ONLY_COMMANDS, ERestriction.MULTIPLE_SELECTION,
-                   ERestriction.MULTIPLE_DELETE, ERestriction.SELECT_ALL);
+                   ERestriction.MULTIPLE_DELETE, ERestriction.SELECT_ALL, ERestriction.MULTIPLE_CREATE, ERestriction.CALC_STATISTIC);
     
     private final EnumSet<ERestriction> predefinedRestrictions;
     private final EnumSet<ERestriction> serverRestrictions = EnumSet.noneOf(ERestriction.class);    
@@ -74,26 +74,28 @@ public abstract class ModelRestrictions extends Restrictions {
     
     private boolean isRestrictedInView(final ERestriction restriction){
         final IView view = getView();
-        if (view==null){
+        final ViewRestrictions restrictions = view==null ? null : view.getRestrictions();
+        if (restrictions==null){
             return false;
         }
-        return view.getRestrictions().isRestrictedInView(restriction);
+        return restrictions.isRestrictedInView(restriction);
     }
-    
-    private boolean isCommandRestrictedInView(final Id commandId){
+        
+    private boolean isCommandRestrictedInView(final Id commandId, final boolean isReadOnly){
         final IView view = getView();
         if (view==null){
             return false;
         }
-        return view.getRestrictions().isCommandRestrictedInView(commandId);
+        return view.getRestrictions().isCommandRestrictedInView(commandId, isReadOnly);
     }
     
     boolean isRestrictedInModel(final ERestriction restriction){
         return restrictions.contains(restriction) || serverRestrictions.contains(restriction);
     }
-    
-    boolean isCommandRestrictedInModel(final Id commandId){
-        if (restrictions.contains(ERestriction.ANY_COMMAND)) {
+        
+    boolean isCommandRestrictedInModel(final Id commandId, final boolean isReadOnly){
+        if ((restrictions.contains(ERestriction.NOT_READ_ONLY_COMMANDS) && !isReadOnly) || 
+            restrictions.contains(ERestriction.ANY_COMMAND)) {
             return (enabledCommandIds == null) || !enabledCommandIds.contains(commandId);
         } else {
             return false;
@@ -101,8 +103,14 @@ public abstract class ModelRestrictions extends Restrictions {
     }
 
     @Override
+    @Deprecated
     public boolean getIsCommandRestricted(final Id cmdId) {
-        return isCommandRestrictedInModel(cmdId) || isCommandRestrictedInView(cmdId);
+        return isCommandRestrictedInModel(cmdId, false) || isCommandRestrictedInView(cmdId, false);
+    }
+    
+    @Override
+    public boolean getIsCommandRestricted(final Id cmdId, final boolean isReadOnly) {
+        return isCommandRestrictedInModel(cmdId, isReadOnly) || isCommandRestrictedInView(cmdId, isReadOnly);
     }
 
     public boolean canBeAllowed(final ERestriction restriction) {

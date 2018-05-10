@@ -27,7 +27,6 @@ import org.radixware.kernel.common.msdl.enums.EEncoding;
 public class ExtHexPanel extends AbstractEditItem implements ActionListener {
 
     private byte[] parentValue;
-    private EEncoding parentViewType;
     private ActionListener al;
 
 
@@ -41,6 +40,10 @@ public class ExtHexPanel extends AbstractEditItem implements ActionListener {
 
     public void addActionListener(final ActionListener l) {
         al = l;
+    }
+    
+    public void removeActionListener(final ActionListener l) {
+        al = null;
     }
     
     @Override
@@ -57,15 +60,14 @@ public class ExtHexPanel extends AbstractEditItem implements ActionListener {
         hexPanel1.setEditable(state);
     }
         
-    public void setValue(byte[] value, byte[] parentValue, EEncoding viewType, EEncoding parentViewType) {
+    public void setValue(byte[] value, byte[] parentValue) {
         this.parentValue = parentValue;
-        this.parentViewType = parentViewType;
         setParentPanel1.setSelected(false);
-        hexPanel1.setValue(value, viewType);
+        hexPanel1.setValue(value);
         setParentPanel1.setEnabled(parentValueExists());
         if (value == null || value.length == 0) {
             setParentPanel1.setSelected(parentValueExists());
-            hexPanel1.setValue(parentValue, parentViewType);
+            hexPanel1.setValue(parentValue);
             hexPanel1.setEnabled(!parentValueExists());
         }
     }
@@ -132,7 +134,7 @@ public class ExtHexPanel extends AbstractEditItem implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof JCheckBox) {
             if (setParentPanel1.getSelected()) {
-                hexPanel1.setValue(parentValue, parentViewType);
+                hexPanel1.setValue(parentValue);
                 hexPanel1.setEnabled(false);
             }
             else

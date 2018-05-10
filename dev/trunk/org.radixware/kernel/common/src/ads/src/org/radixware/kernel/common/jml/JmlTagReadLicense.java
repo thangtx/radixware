@@ -18,6 +18,7 @@ import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.CodeWriter;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
+import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.jml.Jml.IHistory;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.scml.Scml;
@@ -28,11 +29,13 @@ import org.radixware.schemas.xscml.JmlType.Item;
 public class JmlTagReadLicense extends Jml.Tag {
 
     protected JmlTagReadLicense(final Item.ReadLicense xItem) {
+        super(xItem);
         this.license = xItem.getLicense();
         this.id = xItem.getId().intValue();
     }
 
     public JmlTagReadLicense() {
+        super(null);
     }
     private String license = null;
     private int id = 0;
@@ -55,7 +58,7 @@ public class JmlTagReadLicense extends Jml.Tag {
 
     @Override
     public void appendTo(Item item) {
-        Item.ReadLicense xReadLicense = item.addNewReadLicense();
+        Item.ReadLicense xReadLicense = item.addNewReadLicense();        
         xReadLicense.setId(BigInteger.valueOf(id));
         xReadLicense.setLicense(license);
     }
@@ -112,6 +115,8 @@ public class JmlTagReadLicense extends Jml.Tag {
                         if (licenseSupport == null) {
                             return false;
                         }
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
                         final int currentLineNumber = getThisLineNumber(printer);
                         final CodeGenResult generatedCode = licenseSupport.generateRead(license, id, currentLineNumber, JmlTagReadLicense.this);
                         if (generatedCode != null) {
@@ -120,7 +125,7 @@ public class JmlTagReadLicense extends Jml.Tag {
                             }
                             printer.println();
                         }
-
+                        WriterUtils.leaveHumanUnreadableBlock(printer);
                         return true;
                     }
                 };
@@ -192,10 +197,10 @@ public class JmlTagReadLicense extends Jml.Tag {
         problemHandler.accept(RadixProblem.Factory.newError(tag, "License tag should be placed in the separate line"));
     }
 
-    protected static abstract class LicenseCodeWriter extends CodeWriter {
+    protected static abstract class LicenseCodeWriter extends JmlTagWriter {
 
         public LicenseCodeWriter(JavaSourceSupport support, UsagePurpose usagePurpose, final Jml.Tag tag) {
-            super(support, usagePurpose);
+            super(support, usagePurpose, tag);
         }
 
         protected int getThisLineNumber(CodePrinter printer) {

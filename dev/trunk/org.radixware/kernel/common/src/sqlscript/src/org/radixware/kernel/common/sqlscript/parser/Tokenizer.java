@@ -16,64 +16,85 @@ import java.io.Reader;
 
 
 public class Tokenizer {
-
     private final Reader in;
     private final String delim;
+    private final char[] delimArray;
     private final String quotes;
-    private boolean spaceDelim=true;
+    private boolean spaceDelim = true;
 
-    public Tokenizer(Reader in) {
+    public Tokenizer(final Reader in) {
         this(in, " ", "\"");
     }
 
-    public Tokenizer(Reader in, String delim) {
+    public Tokenizer(final Reader in, final String delim) {
         this(in, delim, "\"");
     }
 
-    public Tokenizer(Reader in, String delim, String quotes) {
-        this.in = in;
-        this.delim = delim;
-        this.quotes = quotes;
+    public Tokenizer(final Reader in, final String delim, final String quotes) {
+        if (in == null) {
+            throw new IllegalArgumentException("Reader can't be null");
+        }
+        else if (delim == null) {
+            throw new IllegalArgumentException("String delimiter can't be null");
+        }
+        else if (quotes != null && quotes.length() == 0) {
+            throw new IllegalArgumentException("Non-null quotes can't be empty!");
+        }
+        else {
+            this.in = in;
+            this.delim = delim;
+            this.delimArray = delim.toCharArray();
+            this.quotes = quotes;
+        }
     }
 
     public Reader getReader() {
         return in;
     }
 
-    public String makeToken(String inStr, String delim, boolean spaceDelim) {
-        if (inStr.length() == 0) {
-            StringBuffer ret = new StringBuffer();
-            if (spaceDelim && quotes != null) {
-                ret.append(quotes.charAt(0));
-                ret.append(quotes.charAt(0));
-            } else {
-                ret.append(delim);
-            }
-            return ret.toString();
+    public String makeToken(final String inStr, final String delim, final boolean spaceDelim) {
+        if (inStr == null) {
+            throw new IllegalArgumentException("Input string can't be null");
         }
-        StringBuffer str = new StringBuffer(inStr);
-        for (int i = 0; i < str.length(); i++) {
-            if (spaceDelim) {
-                if (quotes.indexOf(str.charAt(i)) != -1 || str.charAt(i) == '\\') {
-                    str.insert(i++, '\\');
+        else {
+            if (inStr.length() == 0) {
+                final StringBuilder ret = new StringBuilder();
+
+                if (spaceDelim && quotes != null) {
+                    ret.append(quotes.charAt(0));
+                    ret.append(quotes.charAt(0));
+                } else {
+                    ret.append(delim);
                 }
-            } else {
-                if (delim.indexOf(str.charAt(i)) != -1 || str.charAt(i) == '\\') {
-                    str.insert(i++, '\\');
+                return ret.toString();
+            }
+
+            final StringBuilder str = new StringBuilder(inStr);
+
+            for (int i = 0; i < str.length(); i++) {
+                if (spaceDelim) {
+                    if (quotes.indexOf(str.charAt(i)) != -1 || str.charAt(i) == '\\') {
+                        str.insert(i++, '\\');
+                    }
+                } else {
+                    if (delim.indexOf(str.charAt(i)) != -1 || str.charAt(i) == '\\') {
+                        str.insert(i++, '\\');
+                    }
                 }
             }
+            if (spaceDelim && containsDelim(str.toString())) {
+                str.insert(0, quotes.charAt(0));
+                str.append(quotes.charAt(0));
+            }
+            return str.toString();
         }
-        if (spaceDelim && containsDelim(str.toString())) {
-            str.insert(0, quotes.charAt(0));
-            str.append(quotes.charAt(0));
-        }
-        return str.toString();
     }
 
-    private boolean containsDelim(String str) {
-        for (char c : delim.toCharArray()) {
-            if (str.indexOf(c) != -1)
+    private boolean containsDelim(final String str) {
+        for (char c : delimArray) {
+            if (str.indexOf(c) != -1) {
                 return true;
+            }
         }
         return false;
     }
@@ -82,13 +103,13 @@ public class Tokenizer {
         return nextToken(true);
     }
 
-    public String nextToken(boolean handleSpec) throws IOException {
+    public String nextToken(final boolean handleSpec) throws IOException {
+        final StringBuilder token = new StringBuilder();
         boolean escaped = false;
         boolean escape_used = false;
         boolean complex = false;
         int ch;
-
-        StringBuffer token = new StringBuffer();
+        
         while ((ch = in.read()) != -1) {
             if (spaceDelim && quotes.indexOf(ch) != -1) {
                 if (complex) {
@@ -140,17 +161,21 @@ public class Tokenizer {
         return null;
     }
 
-    public String getToken(boolean handleSpec) throws IOException {
-        String token = nextToken(handleSpec);
+    public String getToken(final boolean handleSpec) throws IOException {
+        final String token = nextToken(handleSpec);
+        
         if (token == null) {
             throw new IOException("Tokenizer : no more tokens");
         }
-        return token;
+        else {
+            return token;
+        }
     }
 
     public String getRest() throws IOException {
-        StringBuffer token = new StringBuffer();
+        final StringBuilder token = new StringBuilder();
         int ch;
+        
         while ((ch = in.read()) != -1) {
             token.append((char)ch);
         }

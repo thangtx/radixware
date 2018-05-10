@@ -12,8 +12,6 @@
 package org.radixware.kernel.common.msdl.fields.parser;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
 import org.apache.xmlbeans.XmlCursor;
@@ -33,6 +31,7 @@ import org.radixware.kernel.common.msdl.RootMsdlScheme;
 import org.radixware.kernel.common.msdl.fields.StructureFieldModel;
 import org.radixware.kernel.common.msdl.fields.parser.datasource.DataSourceByteBuffer;
 import org.radixware.kernel.common.msdl.fields.parser.datasource.IDataSource;
+import org.radixware.kernel.common.msdl.fields.parser.datasource.IDataSourceArray;
 import org.radixware.kernel.common.msdl.fields.parser.fieldlist.ExtByteBuffer;
 import org.radixware.kernel.common.msdl.fields.parser.piece.SmioPiece;
 import org.radixware.kernel.common.msdl.fields.parser.piece.SmioPieceEmbeddedLen;
@@ -52,8 +51,6 @@ public abstract class SmioField {
     protected static final String initError = "Can't initialize field";
     protected static final String readError = "Can't read field";
     protected static final String writeError = "Can't write field";
-    protected static final String preprocessorFunctionExecutionError = "Preprocessor function execution error";
-    private Method parseMethod, mergeMethod;
     protected String namespace;
     protected String elementName;
     public int fieldByteLen;
@@ -83,12 +80,11 @@ public abstract class SmioField {
 
     public SmioPiece getPiece() {
         piece = null;
-        piece = SmioPiece.Factory.newInstance(this, model.getField());
+        piece = model.getRootMsdlScheme().getParserFactory().createParser(this, model.getField());
         return piece;
     }
 
     public SmioField(AbstractFieldModel model) throws SmioError {
-        try {
             this.model = model;
             elementName = model.getName();
             if (model.getContainer() instanceof RootMsdlScheme) {
@@ -97,55 +93,23 @@ public abstract class SmioField {
 
             piece = null;
             namespace = model.getRootMsdlScheme().getNamespace();
-            Class preprocessorClass = model.getRootMsdlScheme().getPreprocessorClass();
-            if (preprocessorClass != null) {
-                if (getField().getParseFunctionName() != null) {
-                    parseMethod = preprocessorClass.getMethod(getField().getParseFunctionName(), new Class[]{byte[].class});
-                    if (parseMethod != null) {
-                        parseMethod.setAccessible(true);
-                    }
-                }
-                if (getField().getMergeFunctionName() != null) {
-                    mergeMethod = preprocessorClass.getMethod(getField().getMergeFunctionName(), new Class[]{byte[].class});
-                    if (mergeMethod != null) {
-                        mergeMethod.setAccessible(true);
-                    }
-                }
-            }
-
-        } catch (SmioException | NoSuchMethodException | SecurityException e) {
-            throw new SmioError(initError, e, model.getName());
-        }
     }
 
-    public byte[] executeParseFunction(byte[] from) throws SmioException {
-        if (parseMethod != null) {
-            try {
-                return (byte[]) parseMethod.invoke(parseMethod, new Object[]{from});
-            } catch (IllegalAccessException ex) {
-                throw new SmioException(preprocessorFunctionExecutionError, ex);
-            } catch (IllegalArgumentException ex) {
-                throw new SmioException(preprocessorFunctionExecutionError, ex);
-            } catch (InvocationTargetException ex) {
-                throw new SmioException(preprocessorFunctionExecutionError, ex);
-            }
+    private IDataSource tryExecuteParseFunction(IDataSource ids) throws SmioException, IOException {
+        if (ids instanceof IDataSourceArray && model.getRootMsdlScheme().getPreprocessorAccess() != null && getField().getParseFunctionName() != null) {
+            DataSourceByteBuffer byteBuffer = (DataSourceByteBuffer) ids;
+            byte[] result = model.getRootMsdlScheme().getPreprocessorAccess().read(getField().getParseFunctionName(), byteBuffer.getAll());
+            return new DataSourceByteBuffer(result);
         }
-        return from;
+        return ids;
     }
 
-    public byte[] executeMergeFunction(byte[] from) throws SmioException {
-        if (mergeMethod != null) {
-            try {
-                return (byte[]) mergeMethod.invoke(mergeMethod, new Object[]{from});
-            } catch (IllegalAccessException ex) {
-                throw new SmioException(preprocessorFunctionExecutionError, ex);
-            } catch (IllegalArgumentException ex) {
-                throw new SmioException(preprocessorFunctionExecutionError, ex);
-            } catch (InvocationTargetException ex) {
-                throw new SmioException(preprocessorFunctionExecutionError, ex);
-            }
+    private ByteBuffer tryExecuteMergeFunction(ByteBuffer buffer) throws SmioException {
+        if (model.getRootMsdlScheme().getPreprocessorAccess() != null && getField().getMergeFunctionName() != null) {
+            byte[] result = model.getRootMsdlScheme().getPreprocessorAccess().write(getField().getMergeFunctionName(), ParseUtil.extractByteBufferContent(buffer));
+            return ByteBuffer.wrap(result);
         }
-        return from;
+        return buffer;
     }
 
     protected boolean isNull(XmlObject obj) {
@@ -200,26 +164,21 @@ public abstract class SmioField {
         obj.setNil();
     }
     
-     private void parseLocal(XmlObject obj, IDataSource ids) throws SmioException, IOException {
-         parseLocal(obj, ids, true);
-     }
-
-    private void parseLocal(XmlObject obj, IDataSource ids, boolean prependRemaining) throws SmioException, IOException {
+    private void parseLocal(XmlObject obj, IDataSource ids) throws SmioException, IOException {
         IDataSource pids = null;
         SmioPiece p = null;
-        if ((this.getField().getIsRequired() == null || !this.getField().getIsRequired().booleanValue()) && (ids.available() == 0)) {
+        if ((this.getField().getIsRequired() == null || !this.getField().getIsRequired().booleanValue()) && !ids.hasAvailable()) {
             pids = ids;
         } else {
             p = getPiece();
             pids = p.parse(ids);
-            if (parseMethod != null && pids instanceof DataSourceByteBuffer) {
-                DataSourceByteBuffer dsbf = (DataSourceByteBuffer) pids;
-                pids = new DataSourceByteBuffer(executeParseFunction(dsbf.getAll()));
-            }
+            pids = tryExecuteParseFunction(pids);
         }
-        fieldByteLen = pids.available();
+        if (pids instanceof IDataSourceArray) {
+            fieldByteLen = ((IDataSourceArray) pids).available();
+        }
         XmlObject child = getOrCreateChild(obj);
-        if (pids.available() == 0) {
+        if (!pids.hasAvailable()) {
             setXmlObjectToNil(child);
         } else {
             boolean containsOddEl = false;
@@ -227,23 +186,13 @@ public abstract class SmioField {
                 containsOddEl = ((SmioPieceEmbeddedLen) p).isOddElementNeeded();
             }
             parseField(child, pids, containsOddEl);
-            if (prependRemaining && pids.available() > 0 && pids.getPosition() > 0) {
-                ids.prepend(pids);
-            } else if (!prependRemaining) {
-                ByteBuffer buf = ids.getByteBuffer();
-                buf.position(buf.position() - pids.available());
-            }
         }
     }
     
     public void parse(XmlObject obj, IDataSource ids) throws SmioException, IOException {
-        parse(obj, ids, true);
-    }
-
-    public void parse(XmlObject obj, IDataSource ids, boolean prependRemaining) throws SmioException, IOException {
         try {
             if (!model.getField().isSetAbstract() || model.getField().getAbstract() == Boolean.FALSE) {
-                parseLocal(obj, ids, prependRemaining);
+                parseLocal(obj, ids);
             }
         } catch (SmioException ex) {
             String fName = ex.getFieldName();
@@ -274,9 +223,7 @@ public abstract class SmioField {
             } else {
                 row = getFieldRowData(obj);
             }
-            if (mergeMethod != null) {
-                row = ByteBuffer.wrap(executeMergeFunction(ParseUtil.extractByteBufferContent(row)));
-            }
+            row = tryExecuteMergeFunction(row);
             ByteBuffer formatted = getPiece().merge(row);
             if (this instanceof SmioFieldSigned) {
                 SmioFieldSigned signed = (SmioFieldSigned) this;
@@ -374,6 +321,9 @@ public abstract class SmioField {
                     len = 1;
                 }
                 ret += len;
+            } else if (f.getFieldModel() instanceof StructureFieldModel) {
+                final StructureFieldModel sfm = (StructureFieldModel) f.getFieldModel();
+                ret += countStructureFieldLength(sfm.getFields());
             }
         }
         return ret;
@@ -405,15 +355,19 @@ public abstract class SmioField {
         return false;
     }
 
-    public boolean getIsBSD() throws SmioException {
+    public boolean getIsBCD() {
         return false;
     }
 
-    public boolean getIsHex() throws SmioException {
+    public boolean getIsHex() {
         return false;
     }
 
     public boolean needOddElementLen() {
         return false;
+    }
+    
+    public boolean isPadUsed() {
+        return getPiece() instanceof SmioPiecePadded;
     }
 }

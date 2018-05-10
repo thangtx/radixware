@@ -62,11 +62,13 @@ import org.radixware.kernel.explorer.text.ExplorerFont;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 
-public class ExplorerMessageBox extends QDialog implements IMessageBox {
-
-    public final Signal1<QAbstractButton> buttonClicked = new Signal1<>();
+public class ExplorerMessageBox extends QDialog implements IMessageBox {   
+    
     private static final Qt.WindowFlags WINDOW_FLAGS = calcWindowFlags();            
-    private static final Qt.Alignment CENTER_ALIGNMENT = new Qt.Alignment(Qt.AlignmentFlag.AlignCenter);
+    private static final Qt.Alignment CENTER_ALIGNMENT = new Qt.Alignment(Qt.AlignmentFlag.AlignCenter);        
+    private static int activeDialogs = 0;
+    
+    public final Signal1<QAbstractButton> buttonClicked = new Signal1<>();
     private final QCheckBox cbOption = new QCheckBox(this);
     private final QTextEdit teMessage = new QTextEdit(this);
     private final QLabel lbIcon = new QLabel(this);
@@ -217,9 +219,18 @@ public class ExplorerMessageBox extends QDialog implements IMessageBox {
             addStandardButton(qButtonType, qIcon, title);
         }     
     }
-    
-    
 
+    @Override
+    public void removeButton(final EDialogButtonType buttonType) {
+        final QMessageBox.StandardButton qButtonType = getQButton(buttonType);
+        if (qButtonType!=null){
+            final QAbstractButton button = button(qButtonType);
+            if (button!=null){
+                removeButton(button);
+            }
+        }
+    }
+        
     public final void removeButton(final QAbstractButton button) {
         customButtonList.removeAll(Collections.singleton(button));
         if (escapeButton == button) {//NOPMD
@@ -241,6 +252,15 @@ public class ExplorerMessageBox extends QDialog implements IMessageBox {
         }
         if (!buttonList.contains(defaultButton)) {
             defaultButton = null;
+        }
+        QAbstractButton button;
+        for (QMessageBox.StandardButton buttonType: QMessageBox.StandardButton.values()){
+            if (buttons.isSet(buttonType)){
+                button = button(buttonType);
+                if (button!=null){
+                    
+                }
+            }
         }
         autoAddOkButton = false;
         updateSize();
@@ -677,7 +697,9 @@ public class ExplorerMessageBox extends QDialog implements IMessageBox {
             configureStandardButton(QMessageBox.StandardButton.Ok, ClientIcon.Dialog.BUTTON_OK, Application.translate("ExplorerDialog", "OK"));
             configureStandardButton(QMessageBox.StandardButton.Cancel, ClientIcon.Dialog.BUTTON_CANCEL, Application.translate("ExplorerDialog", "Cancel"));
             configureStandardButton(QMessageBox.StandardButton.Yes, ClientIcon.Dialog.BUTTON_OK, Application.translate("ExplorerDialog", "Yes"));
+            configureStandardButton(QMessageBox.StandardButton.YesToAll, ClientIcon.Dialog.BUTTON_YES_TO_ALL, "");
             configureStandardButton(QMessageBox.StandardButton.No, ClientIcon.Dialog.BUTTON_CANCEL, Application.translate("ExplorerDialog", "No"));
+            configureStandardButton(QMessageBox.StandardButton.Abort, ClientIcon.Dialog.BUTTON_ABORT, "");
         }
 
         final Qt.WindowFlags windowFlags = new Qt.WindowFlags(WINDOW_FLAGS.value());
@@ -695,9 +717,11 @@ public class ExplorerMessageBox extends QDialog implements IMessageBox {
         setWindowFlags(windowFlags);
         setDefaultButton(defaultButton);
         Application.getInstance().getEnvironment().getProgressHandleManager().blockProgress();        
-        try{
+        activeDialogs++;
+        try{            
             return super.exec();
         }finally{
+            activeDialogs--;
             Application.getInstance().getEnvironment().getProgressHandleManager().unblockProgress();
         }
     }
@@ -775,11 +799,11 @@ public class ExplorerMessageBox extends QDialog implements IMessageBox {
     private void configureStandardButton(final QMessageBox.StandardButton standardButton, final ClientIcon icon, final String buttonText) {
         final QAbstractButton button = button(standardButton);
         if (button != null) {
-            if (!buttonsWithIcon.contains(getMessageBoxButton(standardButton))
+            if (icon!=null && !buttonsWithIcon.contains(getMessageBoxButton(standardButton))
                     && (button.icon() == null || button.icon().isNull())) {
                 button.setIcon(ExplorerIcon.getQIcon(icon));
             }
-            if (!buttonsWithText.contains(getMessageBoxButton(standardButton))) {
+            if (buttonText!=null && !buttonText.isEmpty() && !buttonsWithText.contains(getMessageBoxButton(standardButton))) {
                 button.setText(buttonText);
             }
         }
@@ -911,5 +935,9 @@ public class ExplorerMessageBox extends QDialog implements IMessageBox {
         layout.activate();
         setFixedHeight(layout.minimumSize().height());
         QCoreApplication.removePostedEvents(this, QEvent.Type.LayoutRequest.value());
+    }
+    
+    public static boolean isSomeMessageBoxActive(){
+        return activeDialogs>0;
     }
 }

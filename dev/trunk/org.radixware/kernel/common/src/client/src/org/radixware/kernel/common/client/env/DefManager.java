@@ -32,6 +32,7 @@ import org.radixware.kernel.common.client.meta.RadGroupHandlerDef;
 import org.radixware.kernel.common.client.meta.explorerItems.RadParagraphDef;
 import org.radixware.kernel.common.client.meta.RadReportPresentationDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
+import org.radixware.kernel.common.client.meta.TitledDefinition;
 
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.types.Icon;
@@ -205,6 +206,18 @@ public abstract class DefManager implements IRadixDefManager {
     public String getMlStringValue(final Id definitionId, final Id stringId) {
         return getMlStringBundleDef(definitionId).get(stringId);
     }
+    
+    @Override
+    public String getDefTitleById(final Id defId) {
+        if (defId != null && defId.getPrefix() == EDefinitionIdPrefix.USER_DEFINED_REPORT) {
+            final Definition def = getDefinition(defId);
+            if (def instanceof TitledDefinition){
+                return ((TitledDefinition)def).getTitle();
+            }
+        }
+        final Id titleId = getRepository().getDefinitionTitleId(defId);
+        return titleId==null ? null : getMlStringValue(defId, titleId);
+    }
 
     public String getEventTitleByCode(final String code) {
         if (code == null || code.isEmpty()) {
@@ -254,7 +267,7 @@ public abstract class DefManager implements IRadixDefManager {
     }
 
     public final boolean isOldVersionModeEnabled() {
-        return version.isNewVersionAvailable() || !version.isActualized();
+        return version.getTargetVersionNumber()>0 || !version.isActualized();
     }
 
     public AdsVersion getAdsVersion() {

@@ -85,6 +85,9 @@ public final class CustomTextOptions implements ITextOptionsProvider{
                     result.add(marker.name());
                 }
             }else{
+                if (markers.size()==1 && markers.iterator().next()==ETextOptionsMarker.CHOOSEN_OBJECT){
+                    result.addAll(currentKeys);
+                }
                 for (String key: currentKeys){
                     for (ETextOptionsMarker marker: markers){
                         result.add(key+","+marker.name());

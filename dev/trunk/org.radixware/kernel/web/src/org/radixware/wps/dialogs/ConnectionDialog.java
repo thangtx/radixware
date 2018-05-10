@@ -275,26 +275,4 @@ public class ConnectionDialog extends Dialog {
         }
         return result;
     }
-
-    public EasClient createEasClient() throws IllegalUsageError, KeystoreControllerException, CertificateUtilsException {
-        if (getConnection() == null) {
-            throw new IllegalUsageError("Connection is not defined");
-        }
-        final ConnectionOptions c = getConnection();
-        if (c.getSslOptions() == null) {
-            return new EasClient(env.getMessageProvider(), 
-                                 env.getTracer(), 
-                                 c.getInitialServerAddresses(), 
-                                 c.getStationName(), 
-                                 c.getAuthType(), 
-                                 null, null);
-        } else {            
-            final char[] keyStorePassword = c.getSslOptions().useSSLAuth() ? getPassword().toCharArray() : null;
-            return new EasClient(env, c.getInitialServerAddresses(),
-                                 c.getStationName(),
-                                 c.getAuthType(),
-                                 new SslContextFactory(c, env),
-                                 keyStorePassword);
-        }
-    }
 }

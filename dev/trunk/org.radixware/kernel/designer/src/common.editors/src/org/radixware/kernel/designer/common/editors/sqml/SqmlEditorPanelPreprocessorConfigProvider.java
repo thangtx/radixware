@@ -12,12 +12,19 @@
 package org.radixware.kernel.designer.common.editors.sqml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.swing.JOptionPane;
 import org.openide.util.Lookup;
 import org.radixware.kernel.common.enums.EOptionMode;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.repository.DbOptionValue;
+import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.sqml.Sqml;
+import org.radixware.kernel.common.sqml.tags.IfParamTag;
 import org.radixware.kernel.common.sqml.translate.ISqmlPreprocessorConfig;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.sqmlnb.DatabaseParameters;
 import org.radixware.kernel.designer.common.dialogs.sqmlnb.ISqmlPreprocessorConfigProvider;
 
@@ -44,6 +51,10 @@ public class SqmlEditorPanelPreprocessorConfigProvider implements ISqmlPreproces
             config = null;
         } else {
             config = new ISqmlPreprocessorConfig() {
+                
+                private Sqml lastSqml;
+                private Map<Id, ISqmlPreprocessorConfig.PreprocessorParameter> paramValues = new HashMap<>();
+                
                 @Override
                 public Object getProperty(String propertyName) {
                     final List<DbOptionValue> options = new ArrayList<>();
@@ -65,6 +76,50 @@ public class SqmlEditorPanelPreprocessorConfigProvider implements ISqmlPreproces
                     return null;
                 }
 
+                @Override
+                public ISqmlPreprocessorConfig.PreprocessorParameter getParameter(final Id paramId) {
+                    if (paramId == null) {
+                        return null;
+                    }
+                    if (paramValues.containsKey(paramId)) {
+                        return paramValues.get(paramId);
+                    }
+                    String paramName = paramId.toString();
+                    EValType valType = null;
+                    if (lastSqml != null) {
+                        for (Scml.Item item : lastSqml.getItems()) {
+                            if (item instanceof IfParamTag) {
+                                IfParamTag itag = (IfParamTag) item;
+                                if (itag.getParameterId().equals(paramId)) {
+                                    paramName = itag.getParameter().getName();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    final String paramNameFinal = paramName;
+                    final String value = JOptionPane.showInputDialog("Parameter '" + paramName+ ":");
+                    final PreprocessorParameter parameter = new PreprocessorParameter() {
+
+                        @Override
+                        public Object getValue() {
+                            return value;
+                        }
+
+                        @Override
+                        public Id getId() {
+                            return paramId;
+                        }
+
+                        @Override
+                        public String getName() {
+                            return paramNameFinal;
+                        }
+                    };
+                    paramValues.put(paramId, parameter);
+                    return parameter;
+                }
+                
                 @Override
                 public String getDbTypeName() {
                     try {
@@ -95,7 +150,7 @@ public class SqmlEditorPanelPreprocessorConfigProvider implements ISqmlPreproces
 
                 @Override
                 public Sqml copy(Sqml sqml) {
-                    return sqml.getClipboardSupport().copy();
+                    return lastSqml = sqml.getClipboardSupport().copy();
                 }
 
                 @Override

@@ -520,8 +520,20 @@ public class RadixWareDesignerIcon extends RadixIcon {
     public static class REPORT extends RadixWareDesignerIcon {
 
         public static final REPORT GRID = new REPORT("ads/report/grid.png");
+        public static final REPORT PREVIEW = new REPORT("ads/report/preview.svg");
 
         private REPORT(String uri) {
+            super(uri);
+        }
+    }
+    
+    public static class MLSTRING extends RadixWareDesignerIcon{
+        public static final MLSTRING AGREED_STR = new MLSTRING("mlstr/agreed.svg");
+        public static final MLSTRING DISAGREED_STR = new MLSTRING("mlstr/disagreed.svg");
+        public static final MLSTRING CHECKED_STR = new MLSTRING("mlstr/checked.svg");
+        public static final MLSTRING UNCHECKED_STR = new MLSTRING("mlstr/unchecked.svg");
+
+        private MLSTRING(String uri) {
             super(uri);
         }
     }

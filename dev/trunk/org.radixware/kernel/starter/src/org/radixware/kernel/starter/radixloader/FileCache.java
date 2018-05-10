@@ -50,9 +50,13 @@ public class FileCache {
         cache = new HashMap<>();
         nextCheckTime = new Date().getTime() + CHECK_EXPIRED_TIMEOUT_MILLIS;
     }
-
+    
     public byte[] readFileData(final FileMeta fileMeta, final RevisionMeta revMeta) throws IOException {
-        return getEntryData(null, fileMeta, revMeta);
+        return getEntryData(null, fileMeta, revMeta, null);
+    }
+
+    public byte[] readFileData(final FileMeta fileMeta, final RevisionMeta revMeta,long cacheTimeout) throws IOException {
+        return getEntryData(null, fileMeta, revMeta, cacheTimeout);
     }
 
     public byte[] readClassData(String name, Set<String> groupTypes, RevisionMeta revisionMeta) throws IOException {
@@ -81,8 +85,16 @@ public class FileCache {
         }
         return null;
     }
-
+    
     public byte[] readResourceData(String name, Set<String> groupTypes, String archive, RevisionMeta revisionMeta) throws IOException {
+        return readResourceDataImpl(name, groupTypes, archive, revisionMeta, null);
+    }
+    
+    public byte[] readResourceData(String name, Set<String> groupTypes, String archive, RevisionMeta revisionMeta, long cacheTimeout) throws IOException {
+        return readResourceDataImpl(name, groupTypes, archive, revisionMeta, cacheTimeout);
+    }    
+
+    private byte[] readResourceDataImpl(String name, Set<String> groupTypes, String archive, RevisionMeta revisionMeta, Long cacheTimeout) throws IOException {
         FileMeta meta = revisionMeta.findResources(name);
         if (archive != null) {
             while (meta != null) {
@@ -93,12 +105,16 @@ public class FileCache {
             }
         }
         if (meta != null && (groupTypes == null || groupTypes.contains(meta.getGroupType()))) {
-            return getEntryData(name, meta, revisionMeta);
+            return getEntryData(name, meta, revisionMeta, cacheTimeout);
         }
         return null;
     }
-
+    
     private byte[] getEntryData(final String name, FileMeta meta, RevisionMeta revisionMeta) throws IOException {
+        return getEntryData(name, meta, revisionMeta, null);
+    }
+
+    private byte[] getEntryData(final String name, FileMeta meta, RevisionMeta revisionMeta, Long cacheTimeout) throws IOException {
         final long current_time = System.currentTimeMillis();
 
         if (current_time >= nextCheckTime) {
@@ -123,7 +139,12 @@ public class FileCache {
             CacheEntry entry = cache.get(key);
             if (entry == null) {
                 entry = loaderAccessor.getFile(meta.getStore(), revisionMeta.getNum());
-                cache.put(key, entry);
+                if (cacheTimeout==null){
+                    cache.put(key, entry);
+                }else if (cacheTimeout!=0){
+                    entry.setExpireTimeout(cacheTimeout);
+                    cache.put(key, entry);
+                }//else do not keep entry in cache
             }
             entry.touch(current_time);
             return getEntryBytes(entry, name);

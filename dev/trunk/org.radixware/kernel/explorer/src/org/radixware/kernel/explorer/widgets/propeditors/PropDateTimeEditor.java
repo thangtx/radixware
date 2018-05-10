@@ -13,11 +13,9 @@ package org.radixware.kernel.explorer.widgets.propeditors;
 
 import java.sql.Timestamp;
 import org.radixware.kernel.common.client.editors.property.PropertyProxy;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.meta.mask.EditMaskDateTime;
-import org.radixware.kernel.common.client.models.items.ModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
-import org.radixware.kernel.explorer.editors.valeditors.ValDateTimeEditor;
-import org.radixware.kernel.common.client.utils.ClientValueFormatter;
 import org.radixware.kernel.explorer.editors.valeditors.ValEditorFactory;
 
 public class PropDateTimeEditor extends PropEditor {    
@@ -40,9 +38,6 @@ public class PropDateTimeEditor extends PropEditor {
     }
         
     private void setup(final Property property){
-        final String dialogTitle =
-            ClientValueFormatter.capitalizeIfNecessary(getEnvironment(), getProperty().getTitle());
-        ((ValDateTimeEditor)getValEditor()).setDialogTitle(dialogTitle);
         setPropertyProxy(new PropertyProxy(property){
                                 @Override
                                 public Object getPropertyValue() {
@@ -51,7 +46,7 @@ public class PropDateTimeEditor extends PropEditor {
                                         return timestamp;
                                     }
                                     final EditMaskDateTime mask = (EditMaskDateTime) getProperty().getEditMask();
-                                    return mask.copyFields((Timestamp) timestamp, getEnvironment().getLocale());
+                                    return mask.copyFields((Timestamp) timestamp, getEnvironment());
                                 }            
                             }
                 );
@@ -60,11 +55,9 @@ public class PropDateTimeEditor extends PropEditor {
     public static ValEditorFactory getValEditorFactory(){
         return ValEditorFactory.getDefault();
     }
-
+    
     @Override
-    public void refresh(final ModelItem changedItem) {
-        super.refresh(changedItem);
-        final ValDateTimeEditor valEditor = (ValDateTimeEditor) getValEditor();
-        valEditor.setDialogTitle(ClientValueFormatter.capitalizeIfNecessary(getEnvironment(), getProperty().getTitle()));
-    }
+    public final EWidgetMarker getWidgetMarker() {
+        return EWidgetMarker.DATE_TIME_PROP_EDITOR;
+    }      
 }

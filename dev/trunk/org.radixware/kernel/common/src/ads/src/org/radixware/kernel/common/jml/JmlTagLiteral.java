@@ -14,6 +14,7 @@ package org.radixware.kernel.common.jml;
 import java.text.MessageFormat;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
+import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.schemas.xscml.JmlType;
 import org.radixware.schemas.xscml.JmlType.Item;
@@ -24,6 +25,7 @@ public class JmlTagLiteral extends Jml.Tag {
     private String literal;
 
     JmlTagLiteral(JmlType.Item.Literal literal) {
+        super(literal);
         this.literal = literal.getLiteral();
     }
 
@@ -63,11 +65,14 @@ public class JmlTagLiteral extends Jml.Tag {
 
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(this, purpose) {
+                return new JmlTagWriter(this, purpose, JmlTagLiteral.this) {
 
                     @Override
                     public boolean writeCode(CodePrinter printer) {
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
                         printer.print(getLiteral());
+                        WriterUtils.leaveHumanUnreadableBlock(printer);
                         return true;
                     }
 

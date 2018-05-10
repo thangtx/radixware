@@ -40,9 +40,11 @@ import org.radixware.kernel.designer.common.dialogs.components.state.StateDispla
 import org.radixware.kernel.designer.common.editors.RadixObjectModalEditor;
 import org.radixware.kernel.designer.common.general.editors.IEditorFactory;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
-import org.radixware.kernel.designer.dds.script.uptriggers.UserPropTriggersUpdater;
+import org.radixware.kernel.designer.dds.script.defs.UserPropTriggersUpdater;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.designer.ads.editors.clazz.sql.AdsSqlClassBodyPanel;
+import org.radixware.kernel.designer.common.dialogs.utils.EditorOpenInfo;
 
 /**
  * DdsTableDef editor.
@@ -52,7 +54,7 @@ public final class DdsTableEditor extends RadixObjectModalEditor<DdsTableDef> {
 
     private final MainPanel mainPanel;
     private final ColumnsPanel columnsPanel;
-    private final ViewPanel viewPanel;
+    private final AdsSqlClassBodyPanel viewPanel;
     private final IndicesPanel indicesPanel;
     private final TriggersPanel triggersPanel;
     private final InitialValuesPanel initialValuesPanel;
@@ -82,8 +84,8 @@ public final class DdsTableEditor extends RadixObjectModalEditor<DdsTableDef> {
         columnsPanel.setReadOnly(readOnly);
 
         if (table instanceof DdsViewDef) {
-            viewPanel = new ViewPanel((DdsViewDef) copy);
-            viewPanel.setReadOnly(readOnly);
+            viewPanel = new AdsSqlClassBodyPanel();
+            viewPanel.open((DdsViewDef) copy, readOnly ? EditorOpenInfo.DEFAULT_READONLY: EditorOpenInfo.DEFAULT_EDITABLE);
         } else {
             viewPanel = null;
         }
@@ -221,16 +223,10 @@ public final class DdsTableEditor extends RadixObjectModalEditor<DdsTableDef> {
         if (table instanceof DdsViewDef) {
             final DdsViewDef view = (DdsViewDef) table;
             final DdsViewDef copyView = (DdsViewDef) copy;
-            RadixObjectsUtils.moveItems(copyView.getQuery().getItems(), view.getQuery().getItems());
+            RadixObjectsUtils.moveItems(copyView.getSqml().getItems(), view.getSqml().getItems());
             view.setDistinct(copyView.isDistinct());
             view.setWithOption(copyView.getWithOption());
-            final DdsViewDef.UsedTables usedTables = view.getUsedTables();
-            for (Id id : usedTables.getUsedTableIds()) {
-                usedTables.removeTableId(id);
-            }
-            for (Id id : copyView.getUsedTables().getUsedTableIds()) {
-                view.getUsedTables().addTableId(id);
-            }
+            view.getUsedTables().loadFrom(copyView.getUsedTables());
         }
         table.setDeprecated(copy.isDeprecated());
     }

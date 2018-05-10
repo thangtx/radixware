@@ -45,7 +45,28 @@ $_RWT_TABLE_LAYOUT_OBJ = {
             //                WpsUtils.iterateNames(unsizedRows[i],'td',function(c){
             //                    $(c).css('height',sizePerRow+'px');
             //                });                
-            //            }          
+            //            }
+            // grab elements as array, rather than as NodeList
+//            $($(layout).parent()).attr("onscroll", "runOnScroll()")
+            if ($(layout).attr("scrolledToRow") >= 0) {
+                var scrolledToRow = $(b.children[$(layout).attr("scrolledToRow")]);
+                var divWidth = $($(layout).parent()).height() - WpsUtils.getScrollbarHeight();
+                var divScrollTop = $(layout).parent().scrollTop();
+                var scrollToLength = 0;
+                if (scrolledToRow.position().top > divWidth) {
+                    scrollToLength = scrolledToRow.position().top + divScrollTop - divWidth + scrolledToRow.height();
+                } else if (scrolledToRow.position().top < 0){
+                    scrollToLength = scrolledToRow.position().top + divScrollTop; 
+                }
+
+                if (scrollToLength > 0) {
+                    $(layout).parent().scrollTop(scrollToLength);
+                    $($($(scrolledToRow).children("td:first")).children("div:first")).focus(function (e) {
+                        $RWT.currentFocusLayer().target = e.target;
+                    });
+                }
+                $(layout).removeAttr("scrolledToRow");
+            }
         }
         layout.rwt_layout = $_RWT_TABLE_LAYOUT_OBJ._layout;
     },
@@ -144,7 +165,7 @@ $_RWT_TABLE_LAYOUT_OBJ = {
         var THIS = $RWT.table_layout;
         var parentNode = splitter.parentNode;
         var w = $(parentNode).innerWidth() - 1;
-        var h = $(parentNode).innerHeight() - 1;        
+        var h = $(parentNode).innerHeight() - 1;
         var rows = [];
         var body = WpsUtils.findChildByLocalName(splitter, 'tbody');
         WpsUtils.iterateNames(body, 'tr', function (tr) {
@@ -193,7 +214,6 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                             ratio = (ratios[i + 1] - prev) / 2;
                         } else
                             ratio = 1;
-
                     }
                     if (i > 0) {
                         if (ratio <= ratios[i - 1]) {
@@ -224,9 +244,7 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                 var iw = $(component).innerWidth();
                 var elems = THIS._components(component);
                 var span = elems.handle;
-
                 var selfRatio = ratios[i];
-
                 if (i == 0) {
                     $(span).css('display', 'none');
                     if ($(elems.container).css('display') == 'none' && component != targetCell) {//component is collapsed                                            
@@ -248,7 +266,12 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                                 break;
                             }
                         }
-                        var part = (nextRatio - selfRatio) * h - dec;
+                        var part;
+                        if (rows.length == 1) {
+                            part = h - dec;
+                        } else {
+                            part = (nextRatio - selfRatio) * h - dec;
+                        }
                         $(component).height(part);
                         var ch = $(component).innerHeight() - dec;
                         if ($(span).css('display') != 'none') {
@@ -294,8 +317,6 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                         $(elems.container)
                                 .height(ch - 1)
                                 .width(iw - 1);
-
-
                     }
                 }
                 var content = WpsUtils.findFirstChild(elems.container);
@@ -328,7 +349,6 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                 //                .height(ch-1)
                 //                .width(iw-1);
                 $RWT._layoutNode(component, rr_rs, rqId);
-
                 if (i > 0 && span.inited != 'v') {
                     span.inited = 'v';
                     $(span).draggable({
@@ -337,7 +357,7 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                         distance: 1,
                         containment: splitter.parentNode,
                         zIndex: 3,
-                    helper: "clone",
+                        helper: "clone",
                         drag: function (e, ui) {
                             var table = THIS._splitterTable(this);
                             if (table) {
@@ -345,7 +365,6 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                                 var td = THIS._splitterCell(this);
                                 var currentSize = $(td).innerHeight();
                                 var newSize = currentSize - diff;
-
                                 if (newSize < 5) {
                                     diff = 5 - newSize;
                                     ui.position.top -= diff;
@@ -371,9 +390,8 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                             if (table) {
                                 var tr = THIS._splitterRow(this);
                                 if (tr) {
-                                    var top = ui.position.top;// - $(table.parentNode).position().top;
+                                    var top = ui.position.top; // - $(table.parentNode).position().top;
                                     tr.ratio = top / $(table.parentNode).innerHeight();
-
                                     var component = THIS._splitterComponentForRow(tr);
                                     if (component) {
                                         $RWT.actions.event(component, 'up-r', tr.ratio.toString(), function () {
@@ -389,7 +407,26 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                     });
                 }
             }
-
+            splitter.calcAdjustSize = function() {
+                var finalHeight, finalWidth;
+                for (i = 0; i < rows.length; i++) {
+                    var col = WpsUtils.findFirstChild(rows[i]);
+                    component = THIS._splitterComponentForCell(col);
+                    var adjustSizeNew = $RWT.getAdjustSize(component);
+                    if (adjustSizeNew != null) {
+                        var adjustHeight = adjustSizeNew.height;
+                        if (adjustHeight != null) {
+                            finalHeight = adjustHeight + adjustHeight * (ratios[i])/(1 - ratios[i]) + (finalHeight == null ? 0 : finalHeight);
+                        }
+                        if (finalWidth == null) {
+                            finalWidth = adjustSizeNew.width;
+                        } else if (adjustSizeNew.width > finalWidth) {
+                            finalWidth = adjustSizeNew.width;
+                        }
+                    }
+                }
+                return {"width" : finalWidth, "height" : finalHeight, "final" : true};
+            };
         } else if (rows.length == 1) {//horizontal
             var cols = [];
             WpsUtils.iterateNames(rows[0], 'td', function (td) {
@@ -410,7 +447,7 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                             if (ratio > 1)
                                 ratio = 1;
                             ratio += inc;
-                        }                        
+                        }
                         cols[i].ratio = ratio;
                         component.sv_ratio = ratio;
                         ratios.push(ratio);
@@ -427,14 +464,12 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                     component = THIS._splitterComponentForCell(cols[i])
                     $(component).height(h);
                     var ih = $(component).innerHeight();
-
                     elems = THIS._components(component);
                     span = elems.handle;
                     dec = i == 0 ? 0 : 5;
                     selfRatio = ratios[i];
                     nextRatio = i + 1 >= cols.length ? 1 : ratios[i + 1];
-
-                    part = (nextRatio - selfRatio) * w;
+                    part = cols.length == 1 ? w : (nextRatio - selfRatio) * w;
                     //automatically computed part
 
                     $(component).width(part);
@@ -450,7 +485,6 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                     var container = elems.container;
                     var cw = $(component).innerWidth() - dec - 1;
                     $(container).width(cw - 1).height(ih - 1);
-
                     content = WpsUtils.findFirstChild(container);
                     if (content != null) {
                         ciw = $(container).innerWidth();
@@ -475,7 +509,6 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                                     var td = THIS._splitterCell(this);
                                     var currentSize = $(td).innerWidth();
                                     var newSize = currentSize - diff;
-
                                     if (newSize < 5) {
                                         diff = 5 - newSize;
                                         ui.position.left -= diff;
@@ -501,7 +534,7 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                                 if (table) {
                                     var td = THIS._splitterCell(this);
                                     if (td) {
-                                        var left = ui.position.left;// - $(table.parentNode).position().left;
+                                        var left = ui.position.left; // - $(table.parentNode).position().left;
                                         td.ratio = left / $(table.parentNode).innerWidth();
                                         var component = THIS._splitterComponentForCell(td);
                                         if (component) {
@@ -516,8 +549,27 @@ $_RWT_TABLE_LAYOUT_OBJ = {
                     }
                 }
             }
+            splitter.calcAdjustSize = function() {
+                var finalHeight, finalWidth;
+                for (i = 0; i < cols.length; i++) {
+                    component = THIS._splitterComponentForCell(cols[i]);
+                    var adjustSizeNew = $RWT.getAdjustSize(component);
+                    if (adjustSizeNew != null) {
+                        var adjustWidth = adjustSizeNew.width;
+                        if (adjustWidth != null) {
+                            finalWidth = adjustWidth + adjustWidth * (ratios[i])/(1 - ratios[i]) + (finalWidth == null ? 0 : finalWidth);
+                        }
+                        if (finalHeight == null) {
+                            finalHeight = adjustSizeNew.height;
+                        } else if (adjustSizeNew.height > finalHeight) {
+                            finalHeight = adjustSizeNew.height;
+                        }
+                    }
+                }
+                return {"width" : finalWidth, "height" : finalHeight, "final" : true};
+            };
         }
-    },
+},
     _splitterTable: function (separator) {
         var p = separator.parentNode;
         while (p) {
@@ -677,13 +729,445 @@ $RWT.componentGrid = {
     },
     layout: function (grid) {
         $RWT.componentGrid.adjustHeight(grid);
+        var table = WpsUtils.findFirstChild(grid);
+        if (table) {
+            $RWT.componentGrid._iterateRows(table, function (tr) {
+                var max_content_height = 0;
+                var property_groups = [];                
+                $RWT.componentGrid._iterateRowCells(tr, function (td) {
+                    var cellContent = WpsUtils.findFirstChild(td);
+                    var space = $(grid).attr('spacing');
+                    if (cellContent!=null && cellContent.tagName == "LABEL") {
+                        if (Number(space) <= 0) {
+                            space = null;
+                            $(grid).attr('spacing', null);
+                            $(td).css('padding-right', 0);
+                        } else {
+                            $(td).css('padding-right', space);
+                        }
+                    }
+                });
+                for (var i = 0; i < property_groups.length; i++) {
+                    $(property_groups[i]).height(max_content_height);
+                }
+            });
+        }
+        grid.calcAdjustSize = function() {
+            var table = WpsUtils.findFirstChild(grid);
+            if (table) {
+                $RWT._layout_set[table.id] = null;
+                var adjustWidth = 0;
+                var width = 0;
+                var height = 0;
+                if ($(grid).attr('isAdjustWidth') == 'true') {
+                    var tbody = WpsUtils.findFirstChild(table);
+                    if (tbody != null) {
+                        $RWT._layout_set[tbody.id] = null; 
+                    }
+                    $RWT.componentGrid._iterateRows(table, function (tr) {
+                        var rowAdjustWidth = 0;
+                        $RWT._layout_set[tr.id] = null;
+                        
+                        function concatInputBoxWidth(elem) {
+                            $RWT._layout_set[elem.id] = null;
+                            if ($(elem).css('display') != 'none') {
+                                var inputBox = WpsUtils.findFirstChild(elem);
+                                if (inputBox && $(inputBox).css('display') != 'none') {                                
+                                    $RWT._layout_set[inputBox.id] = null;
+                                    if ($(inputBox).hasClass("rwt-input-box") && !$(inputBox).hasClass("rwt-check-box")) {
+                                        var textArea = $(inputBox).find("td")[0];
+                                        if ($(textArea).hasClass('rwt-value-icon')) {
+                                            textArea = $(inputBox).find("td")[1];
+                                        }
+                                        var propEditorDiff = $(WpsUtils.findFirstChild(inputBox)).width() - $(inputBox).width(); //diff between propEditor and it's inner table
+                                        propEditorDiff = propEditorDiff > 0 ? propEditorDiff : 0;
+                                        if (textArea != null && ($(textArea).width() - propEditorDiff) < 80) {
+                                            rowAdjustWidth += (80 - $(textArea).width() + propEditorDiff);
+                                            recFunc(textArea);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                        function recFunc(elem) {
+                            $RWT._layout_set[elem.id] = null;
+                            WpsUtils.iterateAll(elem, function(c) {
+                                recFunc(c);
+                            });
+                        }
+                        
+                        $RWT.componentGrid._iterateRowCells(tr, function (td) {
+                            $RWT._layout_set[td.id] = null;
+                            var cellContent = WpsUtils.findFirstChild(td);
+                            if (cellContent != null) {    
+                                concatInputBoxWidth(cellContent);
+                            }
+                        });
+                        if (rowAdjustWidth > adjustWidth) {
+                            adjustWidth = rowAdjustWidth;
+                        }
+                    });
+                } 
+                var propertiesGrid = table.parentNode;
+                if ($(grid).attr('isAdjustWidth') == 'true') {
+                    width = $(table).width() - $(propertiesGrid).width();
+                }
+                if ($(grid).attr('isAdjustHeight') == 'true') {
+                    height = $(table).height() - $(propertiesGrid).height();
+                }
+                return {"width" : width > 0 ? width + adjustWidth : adjustWidth, "height" : height > 0 ? height : null, "final" : true};
+            }
+            else return {"width" : null, "height" : null, "final" : true};
+        }
     },
+    _iterateRows: function (table, f) {//iterate header column cells
+        var tbody = $RWT.componentGrid._getDataBody(table);
+        if (tbody) {
+            if (WpsUtils.iterateNames(tbody, 'tr', f) === true) {
+                return;
+            }
+        }
+    },
+    _iterateRowCells: function (tr, f) {
+        WpsUtils.iterateNames(tr, 'td', function (td) {
+            if ($(td).css('display') != 'none') {
+                return f(td) === true;
+            }
+        });
+    },    
+    _getDataBody: function (table) {
+        return WpsUtils.findChildByLocalName(table, 'tbody');
+    },    
     adjustHeight: function (grid) {
         if (!grid.rwt_min_height) {
             grid.rwt_min_height = $RWT.componentGrid._min_height;
         }
         if ($(grid).attr('adjustHeight') == 'true') {
             $(grid).height($RWT.componentGrid._min_height(grid));
+        }
+    }
+}
+
+$RWT.propertiesGrid = {
+    BORDER_SPACING: 2,
+    CELL_PADDING: 1,
+    LABEL_CELL_LEFT_PADDING: 3,
+    GROUP_BOX_BORDER_WIDTH: 1,
+    
+    layout: function (grid) {
+        $RWT.componentGrid.layout(grid);
+        var table = WpsUtils.findFirstChild(grid);
+        if (table) {
+            table.innerTables = [];
+            table.columnsCount = 0;            
+            $RWT.propertiesGrid._iterateRows(table, function (tr) {
+                var max_content_height = 0;
+                var property_groups = [];
+                var column = 0;
+                tr.containsSpanCell = false;
+                $RWT.componentGrid._iterateRowCells(tr, function (td) {
+                    var cellContent = WpsUtils.findFirstChild(td);
+                    var spanAttr = td.getAttribute('colspan');
+                    var colSpan = spanAttr!=null;
+                    if (colSpan){
+                        tr.containsSpanCell = true;
+                    }
+                    td.role = td.getAttribute('role');
+                    td.span = spanAttr==null ? 0 : parseInt(spanAttr) || 0;
+                    if (cellContent!=null 
+                        && cellContent.nodeType == 1
+                        && td.role == 'group'){
+                        if ($(cellContent).attr('adjustMode')=='heightByContent'){
+                            $RWT.groupBox.layout(cellContent);
+                            var height = $(cellContent).innerHeight();
+                            if (max_content_height<height){
+                                max_content_height = height;
+                            }
+                        }else{
+                            property_groups.push(cellContent);
+                        }
+                        var innerTableId = td.getAttribute('innertable');
+                        if (innerTableId!=null){
+                            var elements = $('#' + innerTableId);
+                            var innerTable = elements == null || elements.length != 1 ? null : elements[0];
+                            if (innerTable!=null){                                    
+                                innerTable.externalSize = td.span;
+                                if (innerTable.externalSize>1){
+                                    innerTable.holderStartColumn = column;
+                                    innerTable.holderEndColumn = 
+                                        Math.min(column+innerTable.externalSize,table.columnsCount) - 1;
+                                    innerTable.holderTable = table;
+                                    var arrTables  = table.innerTables[column];
+                                    if (arrTables==null){
+                                        arrTables = [];
+                                        table.innerTables[column] = arrTables;
+                                    }
+                                    arrTables.push(innerTable);
+                                }
+                            }
+                        }                        
+                    }
+                    column++;
+                });
+                for (var i = 0; i < property_groups.length; i++) {
+                    $(property_groups[i]).height(max_content_height);
+                }
+                table.columnsCount = Math.max(table.columnsCount, column);
+            });
+            if (table.holderTable!=null || table.innerTables.length>0){
+                if (table.holderStartColumn!=null){
+                    $RWT.propertiesGrid._buildColumnsMap(table);
+                }
+                $(table).attr('table-layout','fixed');//manually set width to columns
+                table.columnsPadding = [];//left padding for label cell and right padding for editor cell
+                for (var i = 0; i < table.columnsCount; i++) {
+                    if (i % 2 == 0){
+                        table.columnsPadding[i] = $RWT.propertiesGrid.LABEL_CELL_LEFT_PADDING;
+                    }else{
+                        table.columnsPadding[i] = $RWT.propertiesGrid.CELL_PADDING;
+                    }
+                }
+                table.columns = [];
+                var column = 0;
+                WpsUtils.iterateNames(table, 'col', function(col){
+                    table.columns[column] = col;
+                    column++;
+                    return false;
+                });
+                grid.rwt_rnd_refine = $RWT.propertiesGrid._afterLayout;
+            }
+        }
+    },
+    _buildColumnsMap: function(table){
+        //mapping column index from outer table to column index from inner table
+        table.columnsMap = [];
+        if (table.externalSize==table.columnsCount 
+            && (table.holderTable.columnsCount<=table.holderStartColumn+table.externalSize)){                
+            for (var i=0; i<table.holderTable.columnsCount; i++){
+                if (i<table.holderStartColumn || i >= (table.holderStartColumn + table.externalSize)){
+                    table.columnsMap[i] = -1;
+                }else{
+                    table.columnsMap[i] = i - table.holderStartColumn;
+                }
+            }
+        }else{
+            for (var i=0; i<table.holderTable.columnsCount; i++){
+                table.columnsMap[i] = i==table.holderStartColumn ? 0 : -1;
+            }
+        }        
+    },
+    _iterateRows: function (table, f) {//iterate header column cells
+        var tbody = WpsUtils.findChildByLocalName(table, 'tbody');
+        if (tbody) {
+            if (WpsUtils.iterateNames(tbody, 'tr', f) === true) {
+                return;
+            }
+        }
+    },
+    _iterateRowCells: function (tr, f) {
+        WpsUtils.iterateNames(tr, 'td', function (td) {
+            if ($(td).css('display') != 'none') {
+                return f(td) === true;
+            }
+        });
+    },
+    _iterateTableCells: function (table, f){
+        var column = 0;
+        $RWT.propertiesGrid._iterateRows(table, function (tr) {
+            column = 0;
+            $RWT.propertiesGrid._iterateRowCells(tr, function (td) {
+                f(tr, column, td);
+                column++;
+            });
+        });
+    },
+    _iterateInnerTables: function (table, f) {
+        for (var column=0; column<table.columnsCount; column++){
+            var arrTables = table.innerTables[column];
+            if (arrTables!=null){
+                var innerTable;
+                for (var i=0; i<arrTables.length; i++){
+                    innerTable = arrTables[i];
+                    if (innerTable!=null){
+                        f(innerTable);
+                    }
+                }
+            }
+        }
+    },
+    _afterLayout: function(grid){
+        var table = WpsUtils.findFirstChild(grid);
+        if (table) {
+            $RWT.propertiesGrid._calcColumnsWidth(table);
+            if (table.holderStartColumn==null){//topmost table
+                $RWT.propertiesGrid._applyColumnsWidth(table, null);
+            }
+        }
+        return null;
+    },
+    _calcColumnsWidth: function(table){
+        var columnsWidth = [];
+        for (var column=0; column<table.columnsCount; column++){
+            columnsWidth[column] = -1;
+        }
+        
+        $RWT.propertiesGrid._iterateTableCells(table, function(tr, column, td){
+            if (column % 2 == 0 && 'label'==td.role){
+                columnsWidth[column] = Math.max(columnsWidth[column], $RWT.propertiesGrid._getCellWidth(td));
+            }            
+        });
+             
+        var maxInnerTablesRightPadding = [];
+        for (var column=0; column<table.columnsCount; column++){
+            maxInnerTablesRightPadding[column] = -1;
+        }
+        
+        var innerTableOffset = 
+            $RWT.propertiesGrid.BORDER_SPACING + $RWT.propertiesGrid.CELL_PADDING + $RWT.propertiesGrid.GROUP_BOX_BORDER_WIDTH;
+            
+        for (var column=0; column<table.columnsCount; column++){
+            var arrTables = table.innerTables[column];            
+            if (arrTables!=null){
+                var innerTable;
+                var maxLeftPadding = 0;
+                for (var i=0; i<arrTables.length; i++){
+                    innerTable = arrTables[i];
+                    if (innerTable!=null){
+                        var innerTableColumnsWidth = $RWT.propertiesGrid._unmapColumnsWidth(table, innerTable);
+                        for (var j=0; j<table.columnsCount; j++){
+                            columnsWidth[j] = Math.max(columnsWidth[j], innerTableColumnsWidth[j]);
+                        }
+                        if (innerTable.columnsCount>0){
+                            maxLeftPadding = Math.max(maxLeftPadding, innerTable.columnsPadding[0]);
+                            var endColumn = innerTable.holderEndColumn;
+                            var rightPadding = innerTable.columnsPadding[innerTable.columnsCount-1];
+                            maxInnerTablesRightPadding[endColumn] = 
+                                Math.max(maxInnerTablesRightPadding[endColumn], rightPadding);
+                        }
+                    }
+                }
+                table.columnsPadding[column] = maxLeftPadding + innerTableOffset;
+            }
+        }
+        
+        for (var column=1; column<table.columnsCount; column+=2){
+            if (maxInnerTablesRightPadding[column]>0){
+                table.columnsPadding[column]=maxInnerTablesRightPadding[column]+innerTableOffset;
+            }
+        }
+                
+        table.columnsWidth = columnsWidth;
+        return columnsWidth;
+    },
+    _applyColumnsWidth: function(table, outerColumnsWidth){
+        
+        if (outerColumnsWidth!=null){
+            for (var column=0; column<table.columnsCount; column+=2){
+                table.columnsWidth[column] = Math.max(table.columnsWidth[column], outerColumnsWidth[column]);
+            }
+        }
+        
+        var editorsWidth = table.parentNode.clientWidth;
+        for (var column=0; column<table.columnsCount; column++){
+            if (column % 2==0){
+                editorsWidth -= table.columnsWidth[column];
+            }            
+            editorsWidth -= (table.columnsPadding[column]  + $RWT.propertiesGrid.CELL_PADDING);            
+        }
+        
+        editorsWidth-=$RWT.propertiesGrid.BORDER_SPACING*(table.columnsCount+1);
+        
+        var editorsCount = table.columnsCount/2;
+        var editorWidth = editorsWidth/editorsCount;
+        
+        for (var column=1; column<table.columnsCount; column+=2){
+            table.columnsWidth[column] = editorWidth;
+        }
+        
+        for (var column=0; column<table.columnsCount; column++){
+            var width = table.columnsWidth[column] + table.columnsPadding[column]+$RWT.propertiesGrid.CELL_PADDING;
+            if (table.columns[column].alignedWidth!==width){
+                table.columns[column].alignedWidth = width;
+                $(table.columns[column]).width(width);
+            }
+        }
+        
+        $RWT.propertiesGrid._iterateTableCells(table, function(tr, column, td){
+            var cellContent = WpsUtils.findFirstChild(td);
+            if (cellContent!=null && cellContent.nodeType == 1){
+                if ('label'==td.role){
+                    var padding = table.columnsPadding[column];
+                    $RWT.propertiesGrid._setCellPadding(td, padding, -1);
+                }else if ('editor'==td.role){
+                    var padding;
+                    if (td.span>1){
+                        padding = table.columnsPadding[column+td.span-1];
+                    }else{
+                        padding = table.columnsPadding[column];
+                    }
+                    var width = tr.containsSpanCell==false ? table.columnsWidth[column] : -1;
+                    $RWT.propertiesGrid._setCellPadding(td, -1, padding);
+                }
+            }
+        });
+        
+        $RWT.propertiesGrid._iterateInnerTables(table, function(innerTable){
+            var mappedColumnsWidth = $RWT.propertiesGrid._mapColumnsWidth(table, innerTable);
+            $RWT.propertiesGrid._applyColumnsWidth(innerTable, mappedColumnsWidth);
+        });        
+    },
+    _mapColumnsWidth: function(outerTable, innerTable){
+        var mappedColumnsWidth = [];
+        for (var column=0; column<innerTable.columnsCount; column++){
+            mappedColumnsWidth[column] = -1;
+        }
+        var innerColumnIndex;        
+        for (var column=0; column<outerTable.columnsCount; column++){           
+            innerColumnIndex = innerTable.columnsMap[column];
+            if (innerColumnIndex>=0){
+                mappedColumnsWidth[innerColumnIndex] = outerTable.columnsWidth[column];
+            }
+        }
+        return mappedColumnsWidth;
+    },
+    _unmapColumnsWidth: function(outerTable, innerTable){
+        var columnsWidth = [];
+        var innerColumnIndex;
+        for (var column=0; column<outerTable.columnsCount; column++){
+            innerColumnIndex = innerTable.columnsMap[column];
+            if (innerColumnIndex>=0){
+                columnsWidth[column] = innerTable.columnsWidth[innerColumnIndex];
+            }else{
+                columnsWidth[column] = -1;
+            }
+        }
+        return columnsWidth;
+    },    
+    _getCellWidth: function(td){
+        if (td==null){
+            return -1;
+        }else{
+            var cellContent = WpsUtils.findFirstChild(td);            
+            if (cellContent!=null && cellContent.nodeType == 1){
+                return cellContent.offsetWidth;
+            }else{
+                return -1;
+            }
+        }
+    },
+    _setCellPadding: function(td, paddingLeft, paddingRight){
+        if (paddingLeft>=0 && td.alignedPaddingLeft!=paddingLeft){
+            td.alignedPaddingLeft = paddingLeft;
+            $(td).css("padding-left",paddingLeft+'px');
+        }
+        if (paddingRight>=0 && td.alignedPaddingRight!=paddingRight){
+            td.alignedPaddingRight = paddingRight;
+            if (paddingRight==1){
+                $(td).css("padding-right",null);
+            }else{
+                $(td).css("padding-right",paddingRight+'px');
+            }
         }
     }
 }

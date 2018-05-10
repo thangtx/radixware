@@ -17,10 +17,11 @@ import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.views.IPropEditor;
 import org.radixware.kernel.common.enums.EEditMaskType;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.types.IKernelStrEnum;
 
 public class PropertyStr extends SimpleProperty<Object> {
 
-    public PropertyStr(Model owner, RadPropertyDef propDef) {
+    public PropertyStr(final Model owner, final RadPropertyDef propDef) {
         super(owner, propDef);
     }
     
@@ -30,9 +31,18 @@ public class PropertyStr extends SimpleProperty<Object> {
     }        
 
     @Override
-    public void setValObjectImpl(Object x) {
-        setInternalVal(x);
+    public void setValObjectImpl(final Object value) {
+        setInternalVal(value);
     }
+    
+    @Override
+    protected void setInternalVal(final Object value) {
+        if (value!=null && value instanceof String==false && value instanceof IKernelStrEnum==false){
+            throw new IllegalArgumentException("Unexpected value type "+value.getClass().toString());
+        }
+        super.setInternalVal(value);
+    }    
+    
 
     @Override
     //Must be overriden if enum

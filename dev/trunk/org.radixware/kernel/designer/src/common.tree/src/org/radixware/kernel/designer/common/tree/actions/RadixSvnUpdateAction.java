@@ -61,7 +61,12 @@ public class RadixSvnUpdateAction extends RadixSvnAction {
 ////        } catch (AuthenticationCancelledException ex) {
 ////            return;
 ////        }
-        SvnUpdateOperation svnUpdateOperation = new SvnUpdateOperation(radixObjects, SvnBridge.getClientAdapter(radixObjects.get(0).getBranch().getFile().getParentFile()), context.getFiles(), "SVN Update", true);
+        SvnUpdateOperation svnUpdateOperation = new SvnUpdateOperation(
+                radixObjects, 
+                SvnBridge.getClientAdapter(radixObjects.get(0).getBranch().getFile().getParentFile()), 
+                context.getFiles(), 
+                "SVN Update", 
+                true);
         svnUpdateOperation.start();
 
     }

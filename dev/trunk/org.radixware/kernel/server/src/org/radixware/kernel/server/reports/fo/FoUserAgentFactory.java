@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 import java.util.logging.Level;
 import org.apache.avalon.framework.configuration.Configuration;
 import org.apache.avalon.framework.configuration.ConfigurationException;
@@ -22,6 +23,7 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.MimeConstants;
+import org.apache.fop.apps.io.ResourceResolverFactory;
 import static org.radixware.kernel.server.reports.fo.FopReportGenerator.DEFAULT_REPORT_DPI;
 import org.radixware.kernel.starter.log.StarterLog;
 import org.xml.sax.SAXException;
@@ -63,7 +65,7 @@ class FoUserAgentFactory {
 
         if (log instanceof org.apache.commons.logging.impl.Jdk14Logger) {
             org.apache.commons.logging.impl.Jdk14Logger jdk14Logger = (org.apache.commons.logging.impl.Jdk14Logger) log;
-            jdk14Logger.getLogger().setLevel(java.util.logging.Level.OFF);
+            jdk14Logger.getLogger().setLevel(java.util.logging.Level.SEVERE);
         } else if (log instanceof org.apache.commons.logging.impl.Log4JLogger) {
             //org.apache.commons.logging.impl.Log4JLogger log4JLogger = (org.apache.commons.logging.impl.Log4JLogger) log;
             System.out.println("-----------------------------------!");
@@ -71,7 +73,7 @@ class FoUserAgentFactory {
 //            log4JLogger.getLogger().setLevel(java.util.logging.Level.OFF);
         } else if (log instanceof StarterLog) {
             StarterLog st = (StarterLog) log;
-            st.setLevel(Level.OFF);
+            st.setLevel(Level.SEVERE);
         }
 
     }
@@ -86,9 +88,9 @@ class FoUserAgentFactory {
                 + "                    <value>flate</value>"
                 + "                </filterList>"
                 + "                <fonts>"
-                + "                    <!-- <directory>C:\\Windows\\Fonts</directory> -->"
+                //+ "                    <!-- <directory>C:\\Windows\\Fonts</directory> -->"
                 + "                    <auto-detect/>"
-                + "                    <!-- embedded fonts -->"
+                // + "                    <!-- embedded fonts -->"
                 + "                </fonts>"
                 + "            </renderer>"
                 + "            <renderer mime=\"text/plain\">"
@@ -99,9 +101,6 @@ class FoUserAgentFactory {
     }
 
     private static FOUserAgent createFoUserAgent() throws SAXException, IOException, ConfigurationException {
-        final DefaultConfigurationBuilder cfgBuilder = new DefaultConfigurationBuilder();
-        final InputStream cfgStream = new ByteArrayInputStream(getFopCfg().getBytes());
-        final Configuration cfg = cfgBuilder.build(cfgStream);
         disableWarningsOfClass("org.apache.fop.layoutmgr.BlockContainerLayoutManager");
         disableWarningsOfClass("org.apache.fop.layoutmgr.PageBreakingAlgorithm");
         disableWarningsOfClass("org.apache.fop.layoutmgr.BreakingAlgorithm");
@@ -138,8 +137,15 @@ class FoUserAgentFactory {
         disableWarningsOfClass("org.apache.fop.render.RendererFactory");
         disableWarningsOfClass("FOP");
         disableWarningsOfClass("org.apache.fop.apps.FopFactoryConfigurator");
-
-        FopFactoryBuilder builder = new FopFactoryBuilder(new File(".").toURI());
+        
+        String filePath = findFontsDir();
+        FopFactoryBuilder builder;
+        if (filePath != null){
+            builder = new FopFactoryBuilder(new File(filePath).toURI());
+        } else {
+            builder = new FopFactoryBuilder(new File("./fonts").toURI());
+        }
+        
         builder.setComplexScriptFeatures(true);
         builder.setSourceResolution(DEFAULT_REPORT_DPI);
         builder.setTargetResolution(DEFAULT_REPORT_DPI);
@@ -208,4 +214,16 @@ class FoUserAgentFactory {
             return createFoUserAgent();
         }
     }
+
+    public static String findFontsDir() {
+        Map<String, String> env = System.getenv();
+        for (String envName : env.keySet()) {
+            if (FONT_DIR_ENV.equals(envName)){
+                return env.get(envName);
+            }
+        }
+        return null;
+    }
+    
+    public static String FONT_DIR_ENV = "RDX_REPORT_EXT_FONTS_DIR";
 }

@@ -32,7 +32,7 @@ public class ExportBodyAction extends CookieAction {
         }
 
         public void exec() {
-            File file = ActionUtil.chooseFile(JFileChooser.SAVE_DIALOG, "Export User-Defined Function Sample");
+            File file = ActionUtil.chooseXmlFile(JFileChooser.SAVE_DIALOG, "Export User-Defined Function Sample");
             if (file != null) {
                 if (!file.getName().endsWith(".xml")) {
                     file = new File(file.getAbsolutePath() + ".xml");

@@ -19,6 +19,7 @@
             <xs:enumeration value="SeanceBusy"/>
             <xs:enumeration value="ReceiveTimeout"/>
             <xs:enumeration value="ConnectTimeout"/>
+            <xs:enumeration value="CaptureTimeout"/>
             <xs:enumeration value="ChannelNotFound"/>
         </xs:restriction>
     </xs:simpleType>
@@ -98,13 +99,17 @@
         <xs:attribute name="IsConnectSync" type="types:Bool"/>
         <xs:attribute name="LocalAddress" type="types:Str"/>
         <xs:attribute name="RemoteAddress" type="types:Str"/>
+        <xs:attribute name="CanReuse" type="types:Bool" use="optional"/>
     </xs:complexType>
     <xs:complexType name="ConnectRs">
         <xs:sequence>
             <xs:element name="ReceivedPacket" type="types:BinBase64" minOccurs="0"/>
             <xs:element name="ReceivedPackedHeaders" type="types:MapStrStr" minOccurs="0"/>
         </xs:sequence>
-        <xs:attribute name="SID" type="types:Str" use="required"/>
+        <xs:attribute name="SID" type="types:Str" use="optional"/>
+        <xs:attribute name="LocalAddress" type="types:Str" use="optional"/>
+        <xs:attribute name="RemoteAddress" type="types:Str" use="optional"/>
+        <xs:attribute name="Closed" type="types:Bool" use="optional"/>
     </xs:complexType>
     <xs:complexType name="CloseRq">
         <xs:attribute name="SID" type="types:Str" use="required"/>

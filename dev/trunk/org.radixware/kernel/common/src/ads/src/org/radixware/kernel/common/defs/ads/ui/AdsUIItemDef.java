@@ -51,6 +51,11 @@ public abstract class AdsUIItemDef extends AdsDefinition {
     }
 
     @Override
+    public boolean needsDocumentation() {
+        return false;
+    }
+
+    @Override
     public boolean isPublished() {
         AdsAbstractUIDef def = getOwnerUIDef();
         return def == null ? true : def.isPublished();

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdSWVEZ6BIIVCJHHLLWO5IQFMN4I" Name="ImpExpXsd" TargetNamespace="http://schemas.radixware.org/testcase-impExp.xsd" NeedsDoc="false" Environment="common"><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdXBC3TNLZQ3NRDCINABIFNQAABA" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.radixware.org/testcase-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/testcase-impExp.xsd" xmlns:rcmn="http://schemas.radixware.org/common.xsd" xmlns:types="http://schemas.radixware.org/types.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
+        
+    <xs:complexType name="TestCase">
+        <xs:complexContent>
+            <xs:extension base="rcmn:ImpExpEntity">
+                <xs:sequence>
+                    <xs:element name="TraceProfile" type="types:Str" minOccurs="1"/>
+                    <xs:element name="Notes" type="types:Str" minOccurs="0"/>
+                    <xs:element name="Childs" minOccurs="0">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="Item" type="this:TestCase" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="ExtGuid" type="types:Str" use="required"/>
+                <xs:attribute name="RunOnIs" type="types:Bool" use="required"/>
+                <xs:attribute name="GroupGuid" type="types:Str"/>
+                <xs:attribute name="ParentGuid" type="types:Str"/> 
+                <xs:attribute name="ParentClassGuid" type="types:Id"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="TestCase" type="this:TestCase"/>
+    <xs:complexType name="TestCaseGroup">
+        <xs:sequence>
+            <xs:element name="Item" type="this:TestCase" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="IsOwnerGroup" type="types:Bool"/>
+        <xs:attribute name="OwnerExtGuid" type="types:Str"/>
+        <xs:attribute name="OwnerClassGuid" type="types:Id"/>
+    </xs:complexType>
+    <xs:element name="TestCaseGroup" type="this:TestCaseGroup"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

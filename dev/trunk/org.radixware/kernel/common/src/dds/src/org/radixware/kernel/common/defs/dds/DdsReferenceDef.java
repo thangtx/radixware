@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.defs.dds;
 
+import org.radixware.kernel.common.defs.dds.radixdoc.DdsReferenceRadixdocSupport;
 import java.lang.reflect.Method;
 import org.radixware.kernel.common.enums.EDeleteMode;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.xmlbeans.XmlObject;
+import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.*;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.types.Id;
@@ -646,6 +648,10 @@ public class DdsReferenceDef extends DdsConstraintDef implements IRadixdocProvid
                 this.getColumnsInfo().add(item);
             }
         }
+        
+        if (xReference.isSetSuppressedWarnings()) {
+             this.warningsSupport = new Problems(this, xReference.getSuppressedWarnings());
+        }
     }
 
     public static final class Factory {
@@ -873,5 +879,42 @@ public class DdsReferenceDef extends DdsConstraintDef implements IRadixdocProvid
     @Override
     public boolean isRadixdocProvider() {
         return true;
+    }
+    
+    private Problems warningsSupport = null;
+
+    @Override
+    public RadixProblem.WarningSuppressionSupport getWarningSuppressionSupport(boolean createIfAbsent) {
+        synchronized (this) {
+            if (warningsSupport == null && createIfAbsent) {
+                warningsSupport = new Problems(this, null);
+            }
+            return warningsSupport;
+        }
+    }
+    
+    public static class Problems extends RadixProblem.WarningSuppressionSupport {
+        public static final int FK_INDEXED = 300100;
+
+        public Problems(DdsDefinition owner, List<Integer> warnings) {
+            super(owner);
+            if (warnings != null) {
+                int arr[] = new int[warnings.size()];
+                for (int i = 0; i < arr.length; i++) {
+                    arr[i] = warnings.get(i);
+                }
+                setSuppressedWarnings(arr);
+            }
+        }
+
+        @Override
+        public boolean canSuppressWarning(int code) {
+            switch (code) {
+                case FK_INDEXED:
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
 }

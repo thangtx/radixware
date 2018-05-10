@@ -61,9 +61,7 @@ public final class FileUploader {
     }
 
     public void setAcceptedMimeType(final String mimeType) {
-        if (mimeType != null && !mimeType.isEmpty()) {
-            input.setAttr("accept", mimeType);
-        }
+        input.setAttr("accept", mimeType);
     }
 
     public String getAcceptedMimeType() {
@@ -147,8 +145,8 @@ public final class FileUploader {
                     final String title =
                             environment.getMessageProvider().translate("ExplorerMessage", "Failed to Upload");
                     final String message =
-                            environment.getMessageProvider().translate("ExplorerMessage", "File \'" + selectedFile.getFileName() + "\' was not uploaded");
-                    environment.messageError(title, message);
+                            environment.getMessageProvider().translate("ExplorerMessage", "File \'%s\' was not uploaded");
+                    environment.messageError(title, String.format(message, selectedFile.getFileName()));
                     return false;
                 }
                 notifyUploadComplete(selectedFile.getFileName(), handler.getFileSize(), finalReader);

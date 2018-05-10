@@ -54,6 +54,8 @@ import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtCustomPageEditorDef;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtUIDef;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtWidgetDef;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.radixdoc.DocumentOptions;
 import org.radixware.kernel.common.radixdoc.IRadixdocPage;
@@ -98,6 +100,7 @@ public abstract class AdsAbstractUIDef<T extends AdsAbstractUIDef> extends AdsDe
                     AdsAbstractUIDef uiDef = uiAccessorIds.get(id);
                     if (uiDef != null) {
                         printer.println();
+                        WriterUtils.enterHumanUnreadableBlock(printer);
                         printer.println("@SuppressWarnings(\"deprecation\")");
                         printer.print("private ");
                         AdsType type = uiDef.getType(EValType.USER_CLASS, null);
@@ -114,6 +117,7 @@ public abstract class AdsAbstractUIDef<T extends AdsAbstractUIDef> extends AdsDe
                         } else {
                             printer.print(")getView();}");
                         }
+                        WriterUtils.leaveHumanUnreadableBlock(printer);
                     }
                 }
             }
@@ -145,7 +149,7 @@ public abstract class AdsAbstractUIDef<T extends AdsAbstractUIDef> extends AdsDe
             if (ui == null) {
                 return;
             }
-
+            WriterUtils.enterHumanUnreadableBlock(printer);
             try {
                 AdsDefinition parent;
                 Id editorPageId = null;
@@ -189,7 +193,7 @@ public abstract class AdsAbstractUIDef<T extends AdsAbstractUIDef> extends AdsDe
                         parentIsMatched = true;
                     }
                 }
-
+                
                 if (!parentIsMatched) {
                     printer.println("@SuppressWarnings(\"unused\")");
                 }
@@ -233,6 +237,7 @@ public abstract class AdsAbstractUIDef<T extends AdsAbstractUIDef> extends AdsDe
                 printer.leaveBlock();
             }
             printer.println('}');
+            WriterUtils.leaveHumanUnreadableBlock(printer);
         }
     }
 
@@ -317,6 +322,11 @@ public abstract class AdsAbstractUIDef<T extends AdsAbstractUIDef> extends AdsDe
     @Override
     public boolean isDeprecated() {
         return isDeprecated || super.isDeprecated();
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return ERuntimeEnvironmentType.COMMON_CLIENT;
     }
 
     public void setDeprecated(boolean isDeprecated) {

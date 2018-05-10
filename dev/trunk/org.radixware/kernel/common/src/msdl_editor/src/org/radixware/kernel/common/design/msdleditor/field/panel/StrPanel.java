@@ -26,16 +26,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
 import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
 import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
 import org.radixware.kernel.common.msdl.fields.StrFieldModel;
 import org.radixware.kernel.common.msdl.enums.EEncoding;
 import org.radixware.kernel.common.msdl.enums.EStrCharSet;
+import org.radixware.kernel.common.msdl.enums.EXmlBadCharAction;
 import org.radixware.schemas.msdl.StrField;
 
 
-public class StrPanel extends AbstractEditItem implements ActionListener {
+public class StrPanel extends AbstractMsdlPanel implements ActionListener {
     private StrField field;
     private AbstractFieldModel fieldModel;
     private boolean opened = false;
@@ -52,6 +53,7 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
         smodel.addElement(EEncoding.CP1251);
         smodel.addElement(EEncoding.CP1252);
         smodel.addElement(EEncoding.EBCDIC);
+        smodel.addElement(EEncoding.EBCDIC_CP1047);
         smodel.addElement(EEncoding.UTF8);
         simpleFieldPanel1.setEncodingComboBoxModel(smodel);
     }
@@ -64,6 +66,7 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
         }
         l.add(jLabel2);
         l.add(jLabel3);
+        l.add(xmlBadCharActionLabel);
         final ArrayList<JComponent> e = new ArrayList<>();
         e.add(jTextField1);
         if (enumPanel != null) {
@@ -71,11 +74,12 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
         }
         e.add(charSetPanel1);
         e.add(jTextField2);
+        e.add(xmlBadCharActionPanel1);
         DefaultLayout.doLayout(jPanel1, l, e, true);
     }
 
     public void open(StrFieldModel fieldModel, JPanel enumPanel) {
-        super.open(fieldModel.getMsdlField());
+        super.open(fieldModel, fieldModel.getMsdlField());
         opened = false;
         this.enumPanel = enumPanel;
         if (enumPanel != null) {
@@ -84,10 +88,13 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
         }
         field = fieldModel.getField();
         arrange();
-        simpleFieldPanel1.open(fieldModel, EEncoding.getInstance(fieldModel.getEncoding()));
+        simpleFieldPanel1.open(fieldModel, EEncoding.getInstance(fieldModel.calcEncoding(false)));
 
         charSetPanel1.addActionListener(this);
         charSetPanel1.getSetParentPanel().addActionListener(this);
+        
+        xmlBadCharActionPanel1.addActionListener(this);
+        xmlBadCharActionPanel1.getSetParentPanel().addActionListener(this);
         
         this.fieldModel = fieldModel;
         this.field = fieldModel.getField();
@@ -147,6 +154,9 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
             jTextField2.setText("");
         }
         
+        xmlBadCharActionPanel1.setAction(EXmlBadCharAction.getInstance(field.getXmlBadCharAction()),
+                EXmlBadCharAction.getInstance(fieldModel.getXmlBadCharAction()));
+        
         boolean overwrite = false;
         EStrCharSet charSet = charSetPanel1.getCharSet();
         if (charSet == EStrCharSet.None) {
@@ -167,7 +177,8 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
         super.update();
     }
 
-    public void save() {
+    @Override
+    protected void doSave() {
         boolean overwrite = false;
         EStrCharSet charSet = charSetPanel1.getCharSet();
         if (charSet != EStrCharSet.None) {
@@ -185,7 +196,8 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
             jTextField2.setEnabled(false);
             jTextField2.setText(fieldModel.getCharSetExp());
         }
-        fieldModel.setModified();
+        
+        field.setXmlBadCharAction(xmlBadCharActionPanel1.getAction().getValue());
     }
     
     /** This method is called from within the constructor to
@@ -204,8 +216,11 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
         jTextField2 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
+        xmlBadCharActionLabel = new javax.swing.JLabel();
+        xmlBadCharActionPanel1 = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.XmlBadCharActionPanel();
         simpleFieldPanel1 = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.SimpleFieldPanel();
 
+        setPreferredSize(new java.awt.Dimension(280, 140));
         addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 formFocusLost(evt);
@@ -234,6 +249,8 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
         jLabel3.setText(bundle1.getString("StrPanel.jLabel3.text")); // NOI18N
         jLabel3.setToolTipText(bundle1.getString("StrPanel.jLabel3.tootip")); // NOI18N
 
+        xmlBadCharActionLabel.setText(bundle1.getString("StrPanel.xmlBadCharActionLabel.text_2")); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -250,9 +267,13 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(charSetPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
+                            .addComponent(xmlBadCharActionLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField2)
+                            .addComponent(xmlBadCharActionPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -270,7 +291,11 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel3)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(xmlBadCharActionPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(xmlBadCharActionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -278,19 +303,15 @@ public class StrPanel extends AbstractEditItem implements ActionListener {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(simpleFieldPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE))
+            .addComponent(simpleFieldPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 441, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(69, 69, 69)
+                .addComponent(simpleFieldPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addComponent(simpleFieldPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(140, Short.MAX_VALUE)))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -334,6 +355,8 @@ private void jTextField1CaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIR
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.SimpleFieldPanel simpleFieldPanel1;
+    private javax.swing.JLabel xmlBadCharActionLabel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.XmlBadCharActionPanel xmlBadCharActionPanel1;
     // End of variables declaration//GEN-END:variables
 
     @Override

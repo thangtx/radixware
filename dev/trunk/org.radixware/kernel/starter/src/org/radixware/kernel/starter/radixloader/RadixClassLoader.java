@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.starter.radixloader;
 
+import com.sun.jna.Native;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -24,6 +25,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.apache.commons.logging.LogFactory;
 import org.radixware.kernel.starter.log.SafeLogger;
 import org.radixware.kernel.starter.meta.FileMeta;
 import org.radixware.kernel.starter.meta.RevisionMeta;
@@ -72,8 +74,11 @@ public class RadixClassLoader extends java.lang.ClassLoader {
     private boolean selfLoader = false;
     private final int id;//for debugging
     static private String[] own_packages = {"org.radixware.kernel.starter",
+        "org.radixware.kernel.common.svn",
         "org.tigris.subversion",
         "org.apache.commons.logging",
+        "org.apache.commons.codec",
+        "org.apache.http",
         "org.tmatesoft.svn",
         "com.trilead.ssh2",
         "sun.net.www.protocol.starter"};
@@ -329,11 +334,17 @@ public class RadixClassLoader extends java.lang.ClassLoader {
         if (!libFile.exists()) {
             throw new RadixLoaderException("Library file not exists: " + libAbsPath);
         }
+        try {
+            LogFactory.getLog(RadixClassLoader.class).info("Loading native library '" + libShortName + "' from module '" + kernelModuleName + "'...");
+            return getLibraryLoaderClass().getMethod("loadJNANativeLibrary", String.class, Class.class).invoke(null, new File(libAbsPath).getAbsolutePath(), type);
+        } catch (Throwable t) {
+            LogFactory.getLog(RadixClassLoader.class).info("Unable to load native library '" + libShortName + "' from module '" + kernelModuleName + "' via absolute path, trying to set jna.library.path...");
+        }
         System.setProperty("jna.library.path", libFile.getParentFile().getAbsolutePath());
         try {
-            return getLibraryLoaderClass().getMethod("loadJNANativeLibrary", String.class, Class.class).invoke(null, new File(libAbsPath).getName(), type);
+            return getLibraryLoaderClass().getMethod("loadJNANativeLibrary", String.class, Class.class).invoke(null, new File(libAbsPath).getAbsolutePath(), type);
         } catch (Exception ex) {
-            throw new RadixLoaderException("Call of LibraryLoader.loadJNANativeLibrary() error", ex);
+            throw new RadixLoaderException("Error calling LibraryLoader.loadJNANativeLibrary()", ex);
         }
     }
 

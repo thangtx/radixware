@@ -16,7 +16,7 @@ public class MultilingualEditorProgressHandle {
     }
 
     public void startProgress(Cancellable cancellable){
-        String title = "Searching multilingual strings...";
+        String title = "Searching multilanguage strings...";
         if (progress != null){
             finishProgress();
         }
@@ -26,14 +26,14 @@ public class MultilingualEditorProgressHandle {
             progress = factory.createHandle(title, cancellable); 
         }
         
-        editor.firePropertyChange(MultilingualEditor.PROGRESS_HANDLE, false, true);
+        editor.fireChange(MultilingualEditorUtils.PROGRESS_HANDLE, false, true);
         progress.start();
     }
     
     
     public void finishProgress(){
         if (!isInProcess()) return;
-        editor.firePropertyChange(MultilingualEditor.PROGRESS_HANDLE, true, false);
+        editor.fireChange(MultilingualEditorUtils.PROGRESS_HANDLE, true, false);
         progress.finish();
         progress = null;
     }

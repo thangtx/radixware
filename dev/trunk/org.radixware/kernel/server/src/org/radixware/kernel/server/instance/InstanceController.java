@@ -8,10 +8,14 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.instance;
 
+import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.Dimension;
+import java.awt.Window;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -40,7 +44,6 @@ import javax.swing.JViewport;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.trace.LocalTracer;
-import org.radixware.kernel.server.RadixLoaderActualizer;
 import org.radixware.kernel.server.Server;
 import org.radixware.kernel.server.SrvRunParams;
 import org.radixware.kernel.server.dialogs.RecoveryInstanceParamsDialog;
@@ -48,14 +51,32 @@ import org.radixware.kernel.server.exceptions.InvalidInstanceState;
 import org.radixware.kernel.starter.Starter;
 
 /**
- * ����������� ����������
- * �������
+ * ����������� ���������� �������
  *
  *
  */
 final class InstanceController extends WindowAdapter {
 
     private final InstanceView view;
+
+    private final InstanceListener disposeAfterStopListener = new InstanceListener() {
+
+        private final Runnable disposeRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                view.dispose();
+            }
+        };
+
+        @Override
+        public void stateChanged(final Instance unit, final InstanceState oldState, final InstanceState newState) {
+            if (newState == InstanceState.STOPPED) {
+                view.getInstance().unregisterListener(this);
+                SwingUtilities.invokeLater(disposeRunnable);
+            }
+        }
+    };
 
     InstanceController(final InstanceView instanceView) {
         view = instanceView;
@@ -97,7 +118,7 @@ final class InstanceController extends WindowAdapter {
                                             ((JDialog) e.getSource()).dispose();
                                         }
                                     }
-                                    Event event = new Event(this, e.oraDataSource, e.proxyOraUser, e.dbConnection, instanceId, "Recovery Instance #" + instanceId, false);
+                                    Event event = new Event(this, e.radixDataSource, e.proxyOraUser, e.dbConnection, instanceId, "Recovery Instance #" + instanceId, false);
                                     new LoginListenerImpl().actionPerformed(event);
                                 } catch (InstanceCreationError ex) {
                                     messageError(ExceptionTextFormatter.exceptionStackToString(ex));
@@ -128,6 +149,18 @@ final class InstanceController extends WindowAdapter {
 
     private class LoginListenerImpl implements Login.Listener {
 
+        private boolean isOkOption(Object selectedValue) {
+            if (selectedValue == null) {
+                return false;
+            }
+            if (selectedValue instanceof Integer) {
+                if (((Integer) selectedValue).intValue() == JOptionPane.OK_OPTION) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         @Override
         public void actionPerformed(final Event e) {
             try {
@@ -147,7 +180,7 @@ final class InstanceController extends WindowAdapter {
                         final javax.swing.JScrollPane scrollPane = new JScrollPane(tab);
                         final JViewport viewPort = new JViewport();
                         viewPort.setVisible(true);
-                        scrollPane.setPreferredSize(new Dimension(480, (warnings.size() + 2) * (tab.getRowHeight() + 3)));
+                        scrollPane.setPreferredSize(new Dimension(650, (warnings.size() + 2) * (tab.getRowHeight() + 3)));
                         scrollPane.setColumnHeader(viewPort);
                         final Box pane = Box.createVerticalBox();//new JPanel();
                         final JLabel lbl1 = new JLabel(Messages.ERR_DDS_VER_ON_START);
@@ -158,12 +191,36 @@ final class InstanceController extends WindowAdapter {
                         final JLabel lbl2 = new JLabel(Messages.START_ANYWAY);
                         lbl2.setAlignmentX(JComponent.LEFT_ALIGNMENT);
                         pane.add(lbl2);
-                        if (JOptionPane.showConfirmDialog(InstanceController.this.view.getFrame(), pane, Messages.TITLE_CONFIRM, JOptionPane.OK_CANCEL_OPTION)
-                                != JOptionPane.OK_OPTION) {
+                        
+                        JOptionPane confPane = new JOptionPane(pane, JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+                        
+                        confPane.addHierarchyListener(new HierarchyListener() {
+
+                            @Override
+                            public void hierarchyChanged(HierarchyEvent e) {
+                                Window window = SwingUtilities.getWindowAncestor(pane);
+                                if (window instanceof Dialog) {
+                                    Dialog dialog = (Dialog) window;
+                                    if (!dialog.isResizable()) {
+                                        dialog.setResizable(true);
+                                    }
+                                }
+                            }
+                        });
+                        JDialog dialog = confPane.createDialog(InstanceController.this.view.getFrame(), Messages.TITLE_CONFIRM);
+                        dialog.show();
+
+                        if (!isOkOption(confPane.getValue())) {
                             return;
                         }
+
+                        /*if (JOptionPane.showConfirmDialog(InstanceController.this.view.getFrame(), pane, Messages.TITLE_CONFIRM, JOptionPane.OK_CANCEL_OPTION)
+                                != JOptionPane.OK_OPTION) {
+                            return;
+                        }*/
                     }
                 }
+
                 final Runnable shutdownHook = new Runnable() {
 
                     @Override
@@ -196,7 +253,7 @@ final class InstanceController extends WindowAdapter {
                         }
                     }
                 });
-                InstanceController.this.view.getInstance().start(e.oraDataSource, e.proxyOraUser, e.dbConnection, e.instanceId, e.instanceName);
+                InstanceController.this.view.getInstance().start(e.radixDataSource, e.proxyOraUser, e.dbConnection, e.instanceId, e.instanceName);
 
             } catch (Throwable ex) {
                 messageError(ExceptionTextFormatter.getExceptionMess(ex));
@@ -268,22 +325,7 @@ final class InstanceController extends WindowAdapter {
 
     private void stopServer() {
         if (view.getInstance().getState() != InstanceState.STOPPED) {
-            view.getInstance().registerListener(new InstanceListener() {
-
-                @Override
-                public void stateChanged(final Instance unit, final InstanceState oldState, final InstanceState newState) {
-                    if (newState == InstanceState.STOPPED) {
-                        view.getInstance().unregisterListener(this);
-                        SwingUtilities.invokeLater(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                view.dispose();
-                            }
-                        });
-                    }
-                }
-            });
+            view.getInstance().registerListener(disposeAfterStopListener);
             if (view.getInstance().getState() != InstanceState.STOPPING) {
                 new Thread() {
 

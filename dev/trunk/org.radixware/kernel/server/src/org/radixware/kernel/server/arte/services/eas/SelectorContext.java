@@ -28,7 +28,7 @@ import org.radixware.kernel.server.types.presctx.SelectorPresentationContext;
 
 final class SelectorContext extends Context{
     
-    static final private Restrictions CONTEXTLESS_SEL_RESTR = Restrictions.Factory.newInstance(ERestriction.UPDATE.getValue().longValue() | ERestriction.CREATE.getValue().longValue() | ERestriction.DELETE.getValue().longValue() | ERestriction.DELETE_ALL.getValue().longValue() | ERestriction.ANY_COMMAND.getValue().longValue(), null, null, null);
+    static final private Restrictions CONTEXTLESS_SEL_RESTR = Restrictions.Factory.newInstance(ERestriction.UPDATE.getValue().longValue() | ERestriction.CREATE.getValue().longValue() | ERestriction.DELETE.getValue().longValue() | ERestriction.DELETE_ALL.getValue().longValue() | ERestriction.NOT_READ_ONLY_COMMANDS.getValue().longValue(), null, null, null);
     
     public final Id selectorPresentationId;
     public final Id classId;
@@ -106,7 +106,7 @@ final class SelectorContext extends Context{
 
     @Override
     SelectorPresentationContext getPresentationContext(EntityGroup entityGroup) {
-        return new SelectorPresentationContext(entityGroup);
+        return new SelectorPresentationContext(entityGroup, selectorPresentationId);
     }
     
 }

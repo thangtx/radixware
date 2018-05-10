@@ -104,13 +104,13 @@ public abstract class RadixdocXmlPage<T extends RadixObject> implements IRadixdo
         public final Text addMslId(ContentContainer element, Id bundleId, Id strId) {
             return addMslId(element, null, bundleId, strId);
         }
-        
+
         public final Text addMslId(ContentContainer element, Definition mslOwnerDef, Id bundleId, Id strId) {
             final Text text = element.addNewText();
             text.setEscape(false);
             text.setMeta(DefaultMeta.Text.MLSID);
-            String  mslIdString = "";
-            if(mslOwnerDef != null && mslOwnerDef.getModule() != null) {
+            String mslIdString = "";
+            if (mslOwnerDef != null && mslOwnerDef.getModule() != null) {
                 mslIdString += mslOwnerDef.getModule().getLayer().getURI() + "/" + mslOwnerDef.getModule().getSegment().getName().toLowerCase() + "/" + mslOwnerDef.getModule().getName() + " ";
             }
             mslIdString += bundleId.toString() + " " + strId.toString();
@@ -399,6 +399,17 @@ public abstract class RadixdocXmlPage<T extends RadixObject> implements IRadixdo
         final StringBuilder name = new StringBuilder();
         name.append(source.getTypeTitle()).append(' ').append(source.getName());
         getWriter().addStrTitle(titleBlock, name.toString());
+
         return headChapter;
+    }
+
+    @Override
+    public AbstractDefDocItem buildDocItem() {
+        return null;
+    }
+
+    @Override
+    public boolean isGenerateHtmlDoc() {
+        return true;
     }
 }

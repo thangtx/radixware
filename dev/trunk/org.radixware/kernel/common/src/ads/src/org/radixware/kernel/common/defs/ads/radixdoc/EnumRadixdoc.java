@@ -27,11 +27,16 @@ import org.radixware.kernel.common.enums.EEnumDefinitionItemViewFormat;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.defs.ads.module.AdsPath;
+import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.radixdoc.DefaultStyle;
 import org.radixware.kernel.common.radixdoc.DocumentOptions;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.schemas.radixdoc.AbstractDefDocItem;
+import org.radixware.schemas.radixdoc.AdsEnumDefDocItem;
 import org.radixware.schemas.radixdoc.Block;
 import org.radixware.schemas.radixdoc.ContentContainer;
+import org.radixware.schemas.radixdoc.EnumItemDocEntries;
+import org.radixware.schemas.radixdoc.EnumItemDocEntry;
 import org.radixware.schemas.radixdoc.Page;
 import org.radixware.schemas.radixdoc.Ref;
 import org.radixware.schemas.radixdoc.Table;
@@ -333,5 +338,72 @@ public class EnumRadixdoc extends AdsDefinitionRadixdoc<AdsEnumDef> {
         };
 
         new ItemsSummaryChapterFactory(source, summaryChapter).document();
+    }
+
+    @Override
+    public AbstractDefDocItem buildDocItem() {
+        AdsEnumDefDocItem result = AdsEnumDefDocItem.Factory.newInstance();
+        
+        result.setId(source.getId());
+        result.setName(source.getName());
+        result.setTitleId(source.getTitleId());
+        result.setDefinitionType(EDefType.ENUMERATION);
+        result.setDescriptionId(source.getDescriptionId());
+        result.setIsDepricated(source.isDeprecated());
+        result.setIsFinal(source.isFinal());
+        result.setIsPublished(source.isPublished());
+        result.setItemsType(source.getItemType().getName());
+        result.setIsOverwrite(source.isOverwrite());
+        
+        if (source.isPlatformEnumPublisher()) {
+            result.setPlatformEnum(source.getPublishedPlatformEnumName());
+        }
+        
+        if (source.getValueRanges() != null && source.getValueRanges().getRegexp() != null) {
+            result.addNewRestrictions().setRegExp(source.getValueRanges().getRegexp());            
+        }
+        
+        EnumItemDocEntries xItems = result.addNewEnumItemsDocEntries();
+               
+        List<AdsEnumItemDef> sortedItems = new ArrayList<>(source.getItems().list(ExtendableDefinitions.EScope.ALL));
+        Collections.sort(sortedItems, new Comparator<AdsEnumItemDef>() {
+
+            @Override
+            public int compare(AdsEnumItemDef o1, AdsEnumItemDef o2) {
+                
+                Object obj1 = o1.getValue().toObject(source.getItemType());
+                Object obj2 = o2.getValue().toObject(source.getItemType());                                              
+                
+                if (source.getItemType() == EValType.INT) {
+                    return ((Long) obj1).compareTo((Long) obj2);
+                } else {
+                    String strVal1 = String.valueOf(obj1);
+                    String strVal2 = String.valueOf(obj2);
+                    
+                    return strVal1.compareTo(strVal2);
+                }
+            }
+        });
+        
+        for (AdsEnumItemDef item : sortedItems) {
+            EnumItemDocEntry xItem = xItems.addNewEnumItemDocEntry();
+            
+            xItem.setViewOrder(String.valueOf(item.getViewOrder()));
+            xItem.setName(item.getName());
+            
+            String value;
+            if (source.getItemType() == EValType.INT && source.getItemsViewFormat() == EEnumDefinitionItemViewFormat.HEXADECIMAL) {
+                value = "0x" + Long.toHexString((Long) item.getValue().toObject(EValType.INT)).toUpperCase();
+            } else {
+                value = item.getValue().toString();
+            }
+            
+            xItem.setValue(value);
+            xItem.setTitleId(item.getTitleId());
+            xItem.setDescriptionId(item.getDescriptionId());
+            xItem.setDomains(item.getDomainsString());
+        }
+
+        return result;
     }
 }

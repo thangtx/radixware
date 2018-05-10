@@ -22,18 +22,21 @@ import javax.swing.Icon;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.IVisitor;
+import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObject.EEditState;
 import org.radixware.kernel.common.defs.SearchResult;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
+import org.radixware.kernel.common.defs.dds.DdsDefinition;
 import org.radixware.kernel.common.defs.localization.ILocalizedDef;
 import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
 import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.EMultilingualStringKind;
+import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.common.types.Id;
@@ -49,7 +52,7 @@ public class RowString {
     private boolean wasEdit = false;
     private final static int iconSize = 16;
     private final Icon needTranslateIcon = RadixWareIcons.MLSTRING_EDITOR.TRANSLATION_NOT_CHECKED.getIcon(iconSize, iconSize);
-    private final Icon translateIcon = RadixWareIcons.DIALOG.OK.getIcon(iconSize, iconSize);
+    private final Icon OkIcon = RadixWareIcons.DIALOG.OK.getIcon(iconSize, iconSize);
     private final Icon needTranslateDisabledIcon = RadixWareIcons.MLSTRING_EDITOR.TRANSLATION_NOT_CHECKED_DISABLED.getIcon(iconSize, iconSize);
     private final Icon translateDisabledIcon = RadixWareIcons.MLSTRING_EDITOR.TRANSLAT_DISABLED.getIcon(iconSize, iconSize);
     private final Icon sourceNotCheckedIcon = RadixWareIcons.MLSTRING_EDITOR.UNCHECKED_SOURCE.getIcon(iconSize, iconSize);
@@ -75,6 +78,12 @@ public class RowString {
     public boolean isRowUsed(){
         Definition definition = getTopLevelDef();
         if (definition != null && mlStringInfo == null) {
+            if (definition instanceof DdsDefinition) {
+                Module module = definition.getModule();
+                if (module != null) {
+                    definition = module;
+                }
+            }
             definition.visit(new IVisitor() {
                     @Override
                     public void accept(RadixObject radixObject) {
@@ -96,6 +105,17 @@ public class RowString {
                         return radixObject instanceof ILocalizedDef;
                     }
                 });
+            if (mlStringInfo == null){
+                Branch branch = definition.getBranch();
+                Layer layer = definition.getLayer();
+                if (branch != null && layer != null && layer.isReadOnly()) {
+                    for (Layer l : branch.getLayers()) {
+                        if (!l.isReadOnly() && l.isLocalizing() && l.getBaseLayerURIs().contains(layer.getURI())) {
+                            return true;
+                        }
+                    }
+                }
+            }
         }
         return mlStringInfo != null;
     }
@@ -126,21 +146,40 @@ public class RowString {
                 ILocalizingBundleDef ownerBundle = mlString.getOwnerBundle();
                 topLevelDef = ownerBundle.findBundleOwner();
             }
-            return topLevelDef == null ? "" : createContext(topLevelDef);
-        } else {
-            return strContext;
+            strContext = topLevelDef == null ? "" : createContext(topLevelDef);
         }
+        
+        return strContext;
     }
 
     public boolean isContextPublished() {
-        if (isRowUsed()) {
+        if (mlStringInfo != null) {
             return mlStringInfo.isPublished();
+        }
+        return false;
+    }
+    
+    public boolean isDifferentVersions(List<EIsoLanguage> sourceLangs, List<EIsoLanguage> translLangs) {
+        for (IMultilingualStringDef mlString : mlStrings) {
+            long maxVersion = mlString.getMaxLayerVersion();
+            for (EIsoLanguage lang : sourceLangs) {
+                long version = mlString.getVersion(lang);
+                if (version < maxVersion){
+                    return true;
+                }
+            }
+            for (EIsoLanguage lang : translLangs) {
+                long version = mlString.getVersion(lang);
+                if (version < maxVersion){
+                    return true;
+                }
+            }
         }
         return false;
     }
 
     public EMultilingualStringKind getMultilingualStringKind() {
-        if (isRowUsed()) {
+        if (mlStringInfo != null) {
             return mlStringInfo.getKind();
         }
         return null;
@@ -207,6 +246,15 @@ public class RowString {
     public String getComment() {
         return "";
     }
+    
+    public boolean isNeedTranslate(List<EIsoLanguage> langs) {
+        for (EIsoLanguage lang : langs) {
+            if (isNeedTranslate(lang)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public boolean isNeedTranslate(EIsoLanguage lang) {
         if (contextDef == null){
@@ -219,11 +267,14 @@ public class RowString {
         }
         
         if (layer.getLanguages().contains(lang)){
-            return true;
+            return !layer.isReadOnly();
         }
-        
-        for(Layer l:layer.getBranch().getLayers()){
-            if(l.isLocalizing() && 
+        Branch branch = layer.getBranch();
+        if (branch == null) {
+            return false;
+        }
+        for(Layer l: branch.getLayers()){
+            if(!l.isReadOnly() && l.isLocalizing() && 
                     l.getBaseLayerURIs().contains(layer.getURI()) 
                     && l.getLanguages().contains(lang)){
                 return true;
@@ -233,16 +284,16 @@ public class RowString {
         return false;
     }
 
-    public boolean needsCheck(List<EIsoLanguage> langs) {
+    public boolean isNeedsCheck(List<EIsoLanguage> langs) {
         for (EIsoLanguage lang : langs) {
-            if (needsCheck(lang)) {
+            if (isNeedsCheck(lang)) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean needsCheck(EIsoLanguage lang) {
+    public boolean isNeedsCheck(EIsoLanguage lang) {
         for (IMultilingualStringDef mlString : mlStrings) {
             if (mlString.getLanguages().contains(lang)) {
                 return mlString.getNeedsCheck(lang);
@@ -373,15 +424,15 @@ public class RowString {
             }
         }
     }
-
+    
     public Icon getIcon(List<EIsoLanguage> sourceLangs, List<EIsoLanguage> translLangs) {
         if ((!isSrcLangsInTranslList(sourceLangs, translLangs)) && (!hasCheckedTranslation(sourceLangs))) {
             return sourceNotCheckedIcon;
         }
-        if (needsCheck(translLangs)) {
+        if (isNeedsCheck(translLangs)) {
             return needTranslateIcon;
         }
-        return translateIcon;
+        return OkIcon;
     }
 
     public boolean isSrcLangsInTranslList(List<EIsoLanguage> sourceLangs, List<EIsoLanguage> translLangs) {
@@ -395,12 +446,12 @@ public class RowString {
 
     public Icon getIcon(EIsoLanguage lang, List<EIsoLanguage> sourceLangs) {
         if (getCanChangeStatus(lang, sourceLangs)) {
-            if (needsCheck(lang)) {
+            if (isNeedsCheck(lang)) {
                 return needTranslateIcon;
             }
-            return translateIcon;
+            return OkIcon;
         } else {
-            if (needsCheck(lang)) {
+            if (isNeedsCheck(lang)) {
                 return needTranslateDisabledIcon;
             }
             return translateDisabledIcon;
@@ -411,7 +462,7 @@ public class RowString {
         if ((!isSrcLangsInTranslList(sourceLangs, translLangs)) && (!hasCheckedTranslation(sourceLangs))) {
             return NbBundle.getMessage(RowString.class, "SRC_NOT_CHECKED");
         }
-        if (needsCheck(translLangs)) {
+        if (isNeedsCheck(translLangs)) {
             return NbBundle.getMessage(RowString.class, "TRANSLATION_NOT_CHAECKED");
         }
         return NbBundle.getMessage(RowString.class, "MLS_IS_CHECKED");
@@ -459,7 +510,7 @@ public class RowString {
     }
 
     public boolean isStrInComment() {
-        if (isRowUsed()){
+        if (mlStringInfo != null){
             return mlStringInfo.isInComment();
         }
         return false;
@@ -467,7 +518,7 @@ public class RowString {
 
     public boolean hasCheckedTranslation(List<EIsoLanguage> langs) {
         for (EIsoLanguage lang : langs) {
-            if (!needsCheck(lang)) {
+            if (!isNeedsCheck(lang)) {
                 return true;
             }
         }
@@ -514,7 +565,7 @@ public class RowString {
         
         return null;
     }
-
+    
     public String getChangeStatusAuthor(EIsoLanguage lang) {
         for (IMultilingualStringDef mlString : mlStrings) {
             if (mlString.getLanguages().contains(lang)) {
@@ -576,7 +627,60 @@ public class RowString {
     public boolean getWasEdit() {
         return wasEdit;
     }
-
+    
+    public void setAgreed(EIsoLanguage lang, boolean isAgreed) {
+        for (IMultilingualStringDef mlString : mlStrings) {
+            if (mlString.getLanguages().contains(lang)) {
+                mlString.setAgreed(lang, isAgreed);
+            }
+        }
+    }
+    
+    public boolean isAgreed(EIsoLanguage lang){
+        for (IMultilingualStringDef mlString : mlStrings) {
+            if (mlString.getLanguages().contains(lang)) {
+                return mlString.isAgreed(lang);
+            }
+        } 
+        return false;
+    }
+    
+    public String getAuthorChangeAgreedString(EIsoLanguage lang) {
+        for (IMultilingualStringDef mlString : mlStrings) {
+            if (mlString.getLanguages().contains(lang)) {
+                return mlString.getAuthorChangeAgreedString(lang);
+            }
+        }
+        
+        return null;
+    }
+    
+    public Timestamp getDateChangeAgreedString(EIsoLanguage lang) {
+        for (IMultilingualStringDef mlString : mlStrings) {
+            if (mlString.getLanguages().contains(lang)) {
+                return mlString.getTimeChangeAgreedString(lang);
+            }
+        }
+        
+        return null;
+    }
+    
+    public boolean isChangeAgreedString(final List<EIsoLanguage> sourceLangs, final List<EIsoLanguage> translLangs) {
+        for (EIsoLanguage lang : sourceLangs) {
+            String value = getAuthorChangeAgreedString(lang);
+            if (value != null && !value.isEmpty()) {
+                return true;
+            }
+        }
+        for (EIsoLanguage lang : translLangs) {
+            String value = getAuthorChangeAgreedString(lang);
+            if (value != null && !value.isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof RowString)) {

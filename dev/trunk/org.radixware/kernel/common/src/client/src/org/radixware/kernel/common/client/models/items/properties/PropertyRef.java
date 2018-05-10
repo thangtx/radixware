@@ -17,8 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import org.radixware.kernel.common.client.eas.EntityObjectTitles;
-import org.radixware.kernel.common.client.eas.EntityObjectTitlesProvider;
+import java.util.Stack;
 import org.radixware.kernel.common.client.errors.CantOpenEditorError;
 import org.radixware.kernel.common.client.errors.CantOpenSelectorError;
 import org.radixware.kernel.common.client.errors.ModelCreationError;
@@ -30,6 +29,7 @@ import org.radixware.kernel.common.client.meta.filters.RadFilterParamDef;
 import org.radixware.kernel.common.client.meta.RadParentRefPropertyDef;
 import org.radixware.kernel.common.client.meta.RadPropertyDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
+import org.radixware.kernel.common.client.meta.filters.RadFilterUserParamDef;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.FormModel;
 import org.radixware.kernel.common.client.models.GroupModel;
@@ -68,7 +68,8 @@ public class PropertyRef extends PropertyReference {
     private GroupModel.SelectionListener selectionListener;
     private boolean internalValueChange;//изменение значения происходит в результате setParent у другого свойства
     private IProgressHandle pHandle = null;
-    private final Map<Id, Object> propertyValues = new HashMap<>(16);
+    private final Map<Id, Object> propertyValues = new HashMap<>(16);            
+    private Stack<Reference> settingValues;//RADIX-12937 protection from recursive call of setParent method
 
     private IProgressHandle getProgressHandle() {
         if (pHandle == null) {
@@ -83,6 +84,9 @@ public class PropertyRef extends PropertyReference {
 
     public PropertyRef(Model owner, RadFilterParamDef def) {
         super(owner, def);
+        if (def instanceof RadFilterUserParamDef){
+            condition = ((RadFilterUserParamDef)def).getParentSelectorAdditionalCondition();
+        }
     }
 
     @Override
@@ -111,11 +115,11 @@ public class PropertyRef extends PropertyReference {
         return Collections.unmodifiableMap(propertyValues);
     }
 
-    public final void setCondition(org.radixware.schemas.xscml.Sqml condition) {
+    public final void setCondition(final org.radixware.schemas.xscml.Sqml condition) {
         this.condition = condition == null ? null : (org.radixware.schemas.xscml.Sqml) condition.copy();
     }
 
-    public final void setCondition(SqmlExpression expression) {
+    public final void setCondition(final SqmlExpression expression) {
         if (expression != null) {
             condition = expression.asXsqml();
         } else {
@@ -250,7 +254,7 @@ public class PropertyRef extends PropertyReference {
         Id entityId;
         for (PropertyList.Item p : propList.getItemList()) {
             if (p.getId().equals(getId())) {
-                final Reference value = (Reference) ValueConverter.easPropXmlVal2ObjVal(p, getDefinition().getType(), getParentTableId());
+                final Reference value = (Reference) ValueConverter.easPropXmlVal2ObjVal(p, getDefinition().getType(), getParentTableId(), getEnvironment().getDefManager());
                 values.add(new PropertyValue(getDefinition(), value));
             } else {
                 try {
@@ -269,7 +273,7 @@ public class PropertyRef extends PropertyReference {
                     } else {
                         entityId = null;
                     }
-                    final PropertyValue value = new PropertyValue(getEnvironment(), p, property.getDefinition(), entityId);
+                    final PropertyValue value = new PropertyValue(p, property.getDefinition(), entityId, owner);
                     if (property instanceof PropertyXml) {
                         try {
                             value.refineValue(((PropertyXml) property).castValue(value.getValue()));
@@ -294,53 +298,67 @@ public class PropertyRef extends PropertyReference {
     }
 
     private void setParent(final Reference reference) {
-        final PropertyList propList;
-        final Pid pid = reference == null ? null : reference.getPid();
-        try {
-            propList = executeSetParentRequest(pid);
-        } catch (ObjectNotFoundError error) {
-            if (reference != null) {
-                error.setContextReference(getEnvironment(), reference);
-            }
-            afterModify();//вернуть прежнее значение в редакторе свойства
-            throw new ParentRefSetterError(this, error);
-        } catch (ServiceClientException exception) {
-            afterModify();//вернуть прежнее значение в редакторе свойства
-            throw new ParentRefSetterError(this, exception);
+        if (settingValues!=null && !settingValues.isEmpty() && Objects.equals(settingValues.peek(), reference)){
+            return;//recursive call with the same value;
+        }        
+        if (settingValues==null){
+            settingValues = new Stack<>();
         }
-        if (propList != null && propList.getItemList() != null && !propList.getItemList().isEmpty()) {
-            final List<PropertyValue> newValues = parseSetParentResponse(propList, false);
-            Property property;
-            for (PropertyValue newValue : newValues) {
-                if (getId().equals(newValue.getPropertyDef().getId())) {
-                    setInternalVal((Reference) newValue.getValue());
-                } else {
-                    property = owner.getProperty(newValue.getPropertyDef().getId());
-                    try {
-                        //RADIX-3677
-                        if (newValue.getPropertyDef().getType() == EValType.PARENT_REF) {
-                            //to avoid recursive setParent
-                            final PropertyRef propertyRef = (PropertyRef) property;
-                            propertyRef.internalValueChange = true;
-                            try {
+        settingValues.push(reference);
+        try{
+            final PropertyList propList;
+            final Pid pid = reference == null ? null : reference.getPid();
+            try {
+                propList = executeSetParentRequest(pid);
+            } catch (ObjectNotFoundError error) {
+                if (reference != null) {
+                    error.setContextReference(getEnvironment(), reference);
+                }
+                afterModify();//вернуть прежнее значение в редакторе свойства
+                throw new ParentRefSetterError(this, error);
+            } catch (ServiceClientException exception) {
+                afterModify();//вернуть прежнее значение в редакторе свойства
+                throw new ParentRefSetterError(this, exception);
+            }
+            if (propList != null && propList.getItemList() != null && !propList.getItemList().isEmpty()) {
+                final List<PropertyValue> newValues = parseSetParentResponse(propList, false);
+                Property property;
+                for (PropertyValue newValue : newValues) {
+                    if (getId().equals(newValue.getPropertyDef().getId())) {
+                        setInternalVal((Reference) newValue.getValue());
+                    } else {
+                        property = owner.getProperty(newValue.getPropertyDef().getId());
+                        try {
+                            //RADIX-3677
+                            if (newValue.getPropertyDef().getType() == EValType.PARENT_REF) {
+                                //to avoid recursive setParent
+                                final PropertyRef propertyRef = (PropertyRef) property;
+                                propertyRef.internalValueChange = true;
+                                try {
+                                    changeInternalPropertyValue(property, newValue);
+                                } finally {
+                                    propertyRef.internalValueChange = false;
+                                }
+                            } else {
                                 changeInternalPropertyValue(property, newValue);
-                            } finally {
-                                propertyRef.internalValueChange = false;
                             }
-                        } else {
-                            changeInternalPropertyValue(property, newValue);
+                        } catch (Exception ex) {
+                            getEnvironment().processException(new SettingPropertyValueError(property, ex));
                         }
-                    } catch (Exception ex) {
-                        getEnvironment().processException(new SettingPropertyValueError(property, ex));
                     }
                 }
+                if (owner instanceof EntityModel) {
+                    ((EntityModel) owner).afterSetParent(this);
+                } else if (owner instanceof FormModel) {
+                    ((FormModel) owner).afterSetParent(this);
+                } else if (owner instanceof ReportParamDialogModel) {
+                    ((ReportParamDialogModel) owner).afterSetParent(this);
+                }
             }
-            if (owner instanceof EntityModel) {
-                ((EntityModel) owner).afterSetParent(this);
-            } else if (owner instanceof FormModel) {
-                ((FormModel) owner).afterSetParent(this);
-            } else if (owner instanceof ReportParamDialogModel) {
-                ((ReportParamDialogModel) owner).afterSetParent(this);
+        }finally{
+            settingValues.pop();
+            if (settingValues.isEmpty()){
+                settingValues = null;
             }
         }
     }
@@ -651,7 +669,7 @@ public class PropertyRef extends PropertyReference {
             if (propList != null && propList.getItemList() != null && !propList.getItemList().isEmpty()) {
                 for (PropertyList.Item p : propList.getItemList()) {
                     if (p.getId().equals(getId())) {
-                        return (Reference)ValueConverter.easPropXmlVal2ObjVal(p, getDefinition().getType(), getParentTableId());
+                        return (Reference)ValueConverter.easPropXmlVal2ObjVal(p, getDefinition().getType(), getParentTableId(), getEnvironment().getDefManager());
                     }
                 }
             }
@@ -666,10 +684,7 @@ public class PropertyRef extends PropertyReference {
                 final String message = "Object %1$s belongs to a different entity (%2$s)";
                 throw new IllegalArgumentException(String.format(message, ref.getPid().toString(), presentation.getTableId()));                
             }
-            final EntityObjectTitlesProvider titlesProvider = 
-                new EntityObjectTitlesProvider(getEnvironment(), presentation.getTableId(), createGroupContext());
-            titlesProvider.addEntityObjectPid(ref.getPid());
-            return titlesProvider.getTitles().getEntityObjectReference(ref.getPid());
+            return ref.actualizeTitle(getEnvironment(), presentation.getTableId(), createGroupContext());
         }
     }
 }

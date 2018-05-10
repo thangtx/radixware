@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import org.openide.nodes.Node;
 import org.openide.util.HelpCtx;
 import org.openide.util.actions.CookieAction;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObject.EEditState;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
@@ -52,7 +53,7 @@ public class AdsDefinitionReloadAction extends CookieAction {
                     try {
                         final AdsModule module = definition.getModule();
                         if (module != null) {
-                            final AdsDefinition def = module.getDefinitions().reload(definition);
+                            final RadixObject def = module.getTopContainer().reload(definition);
 
                             SwingUtilities.invokeLater(new Runnable() {
 

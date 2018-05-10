@@ -153,6 +153,7 @@ public class Release {
         //ads    
         //!! all ads meta should be first loaded and then linked
         stringBundles = loadAdsDefs(EDefType.LOCALIZING_BUNDLE, INITIAL_SIZE_L);
+        repository.getAdsIndices().fillEventCodeMlsMeta();
         explorerParagraphDefs = loadAdsDefs(EDefType.PARAGRAPH, INITIAL_SIZE_M);
         domainDefs = loadAdsDefs(EDefType.DOMAIN, INITIAL_SIZE_M);
         classDefs = loadAdsDefs(EDefType.CLASS, INITIAL_SIZE_XL);
@@ -194,6 +195,7 @@ public class Release {
 
     private void linkTableDefs() {
         for (DdsTableDef tableDef : getTableDefs()) {
+            tableDef.setFrozen(true);
             tableDef.findClassGuidColumn();
         }
     }
@@ -241,6 +243,11 @@ public class Release {
                     public RootMsdlScheme getMsdlScheme(Id id) {
                         throw new UnsupportedOperationException("Unsupported in ReleaseVirtualEnvironment");
                     }
+
+                    @Override
+                    public String getDefTitleById(Id defId) {
+                        return Release.this.getDefTitleById(defId);
+                    }                                        
                 };
             }
 
@@ -310,7 +317,7 @@ public class Release {
         }
         return list;
     }
-
+    
     public RadMlStringBundleDef getMlStringBundleDef(final Id id) {
         return stringBundles.getDef(id);
     }
@@ -440,6 +447,10 @@ public class Release {
 
     public Collection<RadClassDef> getAllClassDefsBasedOnTableByTabId(final Id tableId) {
         return repository.getAdsIndices().getAllClassDefsBasedOnTableByTabId(tableId);
+    }
+    
+    public Collection<Id> getAllClassIdsBasedOnTableByTabId(final Id tableId) {
+        return repository.getAdsIndices().getAllClassIdsBasedOnTableByTabId(tableId);
     }
 
     //dds

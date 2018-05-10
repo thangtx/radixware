@@ -96,7 +96,11 @@ public class ModuleRadixdoc extends RadixdocXmlPage<Module> {
                 ref.setPath(resolve(source, elem));
 
                 final Table.Row.Cell descCell = row.addNewCell();
-                getWriter().addText(descCell, elem.getDescription(), false);
+                if (elem.getDescriptionId() != null && elem.getDescriptionLocation() != null && elem.getDescriptionLocation().findExistingLocalizingBundle() != null) {
+                    getWriter().addMslId(descCell, elem, elem.getDescriptionLocation().findExistingLocalizingBundle().getId(), elem.getDescriptionId());
+                } else {
+                    getWriter().addText(descCell, elem.getDescription());
+                }
             }
 
             @Override
@@ -139,8 +143,11 @@ public class ModuleRadixdoc extends RadixdocXmlPage<Module> {
             @Override
             protected void documentElementSummary(Definition elem, Table table) {
                 final Table.Row row = table.addNewRow();
-                final Table.Row.Cell nameCell = row.addNewCell();
+                final Table.Row.Cell nameCell = row.addNewCell();                
                 final Ref ref = nameCell.addNewRef();
+                if (elem.isDeprecated()) {
+                    nameCell.setStyle(DefaultStyle.DEPRECATED);
+                }
                 final Resource resource = ref.addNewResource();
                 final IResource res = new RadixIconResource(elem.getIcon());
                 resource.setSource(res.getKey());
@@ -286,8 +293,9 @@ public class ModuleRadixdoc extends RadixdocXmlPage<Module> {
                 }
             }
         }
-
-        if (source.getDescription() != null && !source.getDescription().isEmpty()) {
+        boolean isSetDescription = source.getDescription() != null && !source.getDescription().isEmpty();
+        boolean isSetDescriptionId = source.getDescriptionId() != null && source.getDescriptionLocation() != null && source.getDescriptionLocation().findExistingLocalizingBundle() != null;
+        if (isSetDescriptionId || isSetDescription) {
             final Block descriptionDefinition = descriptionChapter.addNewBlock();
             descriptionDefinition.setStyle(DefaultStyle.DEFINITION);
 
@@ -297,7 +305,12 @@ public class ModuleRadixdoc extends RadixdocXmlPage<Module> {
             getWriter().addLocalizedText(title, ERadixdocPhrase.DESCRIPTION);
             getWriter().addText(title, ":");
 
-            getWriter().addText(descriptionDefinition.addNewBlock(), source.getDescription(), false);
+            final Block description = descriptionDefinition.addNewBlock();
+            if (isSetDescriptionId) {
+                getWriter().addMslId(description, source, source.getDescriptionLocation().findExistingLocalizingBundle().getId(), source.getDescriptionId());
+            } else {
+                getWriter().addText(description, source.getDescription());
+            }
         }
 
         if (source.isTest()) {

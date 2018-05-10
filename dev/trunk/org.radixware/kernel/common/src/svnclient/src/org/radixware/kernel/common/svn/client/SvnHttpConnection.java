@@ -17,7 +17,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,27 +45,39 @@ import java.util.logging.Logger;
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
-import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpRequest;
 import org.apache.http.HttpResponse;
+import org.apache.http.NoHttpResponseException;
 import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.Credentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.config.SocketConfig;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.AllowAllHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
+import org.apache.http.util.EntityUtils;
 import org.radixware.kernel.common.svn.RadixSvnException;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -73,6 +89,12 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SvnHttpConnection extends SvnConnection {
 
+    private static final boolean DISABLE_PREEMPTIVE_AUTHENTICATION = Boolean.getBoolean("rdx.svnclient.disable.preemptive.authentication");
+    private static final boolean DISABLE_KEEPCONNECT = Boolean.getBoolean("rdx.svnclient.disable.keepconnect");
+    private static final int HTTP_CONNECT_TIMEOUT_MILLIS = Integer.getInteger("rdx.svnclient.http.connect.timeout.millis", 30000);
+    private static final int HTTP_SO_TIMEOUT_MILLIS = Integer.getInteger("rdx.svnclient.http.so.timeout.millis", 30000);
+    private static final boolean NO_SUPPRESS_TRACE = Boolean.getBoolean("rdx.svnclient.no.suppress.trace");
+    //
     public static int DEPTH_ZERO = 0;
     public static int DEPTH_ONE = 1;
     public static int DEPTH_INFINITE = -1;
@@ -125,23 +147,37 @@ public class SvnHttpConnection extends SvnConnection {
     public static final String SVN_SVN_PROPERTY_PREFIX = "SS";
     public static final String SVN_APACHE_PROPERTY_PREFIX = "SA";
 
+    //Caching SAX Parser factory to avoid deadlock on Netbeans class loader mechanism.
+    //org.netbeans.ModuleManager$SystemClassLoader.getResourcesImpl
+    private static final SAXParserFactory SAX_PARSER_FACTORY = SAXParserFactory.newInstance();
+
     static {
-        java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.FINEST);
-        java.util.logging.Logger.getLogger("org.apache.http.headers").setLevel(java.util.logging.Level.FINEST);
-        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
-        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
-        System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "ERROR");
-        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "ERROR");
-        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.headers", "ERROR");
+        if (!NO_SUPPRESS_TRACE) {
+            java.util.logging.Logger.getLogger("org.apache.http.wire").setLevel(java.util.logging.Level.SEVERE);
+            java.util.logging.Logger.getLogger("org.apache.http.headers").setLevel(java.util.logging.Level.SEVERE);
+            final String logPropertName = "org.apache.commons.logging.Log";
+            final String logPropertyValue = System.getProperty(logPropertName);
+            if (logPropertyValue == null) {
+                System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+            }
+            System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+            System.setProperty("org.apache.commons.logging.simplelog.log.httpclient.wire", "ERROR");
+            System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "ERROR");
+            System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http.headers", "ERROR");
+        }
         WELL_KNOWN_NS_PREFIXES.put(DAV.Element.DAV_NAMESPACE, DAV_NAMESPACE_PREFIX);
         WELL_KNOWN_NS_PREFIXES.put(DAV.Element.SVN_NAMESPACE, SVN_NAMESPACE_PREFIX);
         WELL_KNOWN_NS_PREFIXES.put(DAV.Element.SVN_DAV_PROPERTY_NAMESPACE, SVN_DAV_PROPERTY_PREFIX);
         WELL_KNOWN_NS_PREFIXES.put(DAV.Element.SVN_SVN_PROPERTY_NAMESPACE, SVN_SVN_PROPERTY_PREFIX);
         WELL_KNOWN_NS_PREFIXES.put(DAV.Element.SVN_CUSTOM_PROPERTY_NAMESPACE, SVN_CUSTOM_PROPERTY_PREFIX);
         WELL_KNOWN_NS_PREFIXES.put(DAV.Element.SVN_APACHE_PROPERTY_NAMESPACE, SVN_APACHE_PROPERTY_PREFIX);
+        SAX_PARSER_FACTORY.setValidating(false);
     }
 
     private SvnHttpRepository repo;
+    private HttpClient client;
+    private RadixSvnHttpConnectionManager clientConnectionManager;
+    private Stack<Boolean> isIdempotent = new Stack<>();
 
     public URI getLocation() {
         return repo.getLocation();
@@ -150,7 +186,6 @@ public class SvnHttpConnection extends SvnConnection {
     public SvnHttpRepository getRepository() {
         return (SvnHttpRepository) repo;
     }
-    private HttpClient client;
 
     private final CredentialsProvider credentialsProvider = new CredentialsProvider() {
         final Map<AuthScope, Credentials> scope2Credentials = new HashMap<>();
@@ -204,14 +239,26 @@ public class SvnHttpConnection extends SvnConnection {
     private HttpClient getConnection(SvnRepository repo) throws RadixSvnException {
         if (client == null) {
             HttpClientBuilder builder = HttpClients.custom();
-            if ("https".equals(repo.getLocation().getScheme())) {
-                builder.setSSLContext(makeSSLContext(repo));
-            }
             builder.setDefaultCredentialsProvider(credentialsProvider);
-            builder.setHostnameVerifier(new AllowAllHostnameVerifier());
-            return client = builder.setMaxConnPerRoute(Integer.MAX_VALUE)
-                    .setMaxConnTotal(Integer.MAX_VALUE)
-                    .build();
+            final DefaultHttpRequestRetryHandler retryHandler = new DefaultHttpRequestRetryHandler(2, false) {
+
+                @Override
+                protected boolean handleAsIdempotent(HttpRequest request) {
+                    return !isIdempotent.isEmpty() && isIdempotent.peek();
+                }
+
+            };
+            builder.setRetryHandler(retryHandler);
+            if ("https".equals(repo.getLocation().getScheme())) {
+                clientConnectionManager = new RadixSvnHttpConnectionManager(makeSSLContext(repo));
+            } else {
+                clientConnectionManager = new RadixSvnHttpConnectionManager();
+            }
+            builder.setConnectionManager(clientConnectionManager);
+            builder.setDefaultRequestConfig(RequestConfig.custom().setConnectTimeout(HTTP_CONNECT_TIMEOUT_MILLIS).setSocketTimeout(HTTP_SO_TIMEOUT_MILLIS).build());
+            builder.setDefaultSocketConfig(SocketConfig.custom().setSoTimeout(HTTP_SO_TIMEOUT_MILLIS).build());
+            client = builder.build();
+            return client;
         } else {
             return client;
         }
@@ -241,6 +288,14 @@ public class SvnHttpConnection extends SvnConnection {
             request.addHeader("ContentType", "text/xml; charset=utf-8");
         }
 
+        if (!DISABLE_PREEMPTIVE_AUTHENTICATION && repo != null && repo.getCredentials() != null && repo.getCredentials().getAuthType() == SvnAuthType.SVN_PASSWORD) {
+            try {
+                request.addHeader((new BasicScheme()).authenticate(credentialsProvider.getCredentials(AuthScope.ANY), request, null));
+            } catch (AuthenticationException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }
+
         return request;
     }
 
@@ -265,6 +320,9 @@ public class SvnHttpConnection extends SvnConnection {
                 url = repo.getRootUrl() + "/" + path;
             }
         }
+        if (url != null && repo.getLocation().toString().startsWith(url) && !url.endsWith("/")) {
+            url = url + "/";
+        }
         return url;
     }
 
@@ -274,10 +332,19 @@ public class SvnHttpConnection extends SvnConnection {
         try {
             while (true) {
                 HttpUriRequest request = prepareRequest("OPTIONS", "");
-
-                HttpResponse rs = getConnection(repo).execute(request);
+                HttpClient httpCclient = getConnection(repo);
+                HttpResponse rs = null;
+                isIdempotent.push(true);
+                try {
+                    rs = httpCclient.execute(request);
+                } catch (NoHttpResponseException ex) {
+                    rs = httpCclient.execute(request);//RADIX-11587 - try again
+                } finally {
+                    isIdempotent.pop();
+                }
                 if (rs.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK) {
                     readResponse(200, rs.getEntity(), null);
+                    EntityUtils.consume(rs.getEntity());
                     return;
                 } else {
                     throw new RadixSvnException("Connection refused. Code: " + rs.getStatusLine().getStatusCode() + ": " + rs.getStatusLine().getReasonPhrase());
@@ -298,7 +365,7 @@ public class SvnHttpConnection extends SvnConnection {
     @Override
     public void close() {
         if (client != null) {
-            this.client.getConnectionManager().closeIdleConnections(10000, TimeUnit.MILLISECONDS);
+            this.client.getConnectionManager().closeIdleConnections(1000, TimeUnit.MILLISECONDS);
             this.client.getConnectionManager().closeExpiredConnections();
             this.client.getConnectionManager().shutdown();
             this.client = null;
@@ -395,9 +462,13 @@ public class SvnHttpConnection extends SvnConnection {
                     true, null, xmlBuffer);
         }
 
-        for (int i = 0; i < paths.length; i++) {
-            openCDataTag(SVN_NAMESPACE_PREFIX, "path", paths[i], xmlBuffer);
-        }
+        if (paths.length > 0) {//RADIX-12979
+            for (String path : paths) {
+                openCDataTag(SVN_NAMESPACE_PREFIX, "path", path, xmlBuffer);
+            }
+        } else {//RADIX-12979
+            xmlBuffer.append("<" + SVN_NAMESPACE_PREFIX + ":path></" + SVN_NAMESPACE_PREFIX + ":path>");//RADIX-12979
+        }//RADIX-12979
         closeXmlTag(SVN_NAMESPACE_PREFIX, "log-report", xmlBuffer);
         return new StringEntity(xmlBuffer.toString(), ContentType.TEXT_XML);
     }
@@ -462,8 +533,12 @@ public class SvnHttpConnection extends SvnConnection {
         openXmlTag(prefix, tagName, close, attrs, target);
     }
 
-    static void openCDataTag(String prefix, String name, String data, StringBuilder target) {
-        openXmlTag(prefix, name, false, null, target);
+    static void openCDataTag(final String prefix, final String name, final String data, final StringBuilder target) {
+        openCDataTag(prefix, name, data, null, target);
+    }
+
+    static private void openCDataTag(final String prefix, final String name, final String data, final Map<String, String> attributes, final StringBuilder target) {
+        openXmlTag(prefix, name, false, attributes, target);
         target.append("<![CDATA[").append(data).append("]]>");
         closeXmlTag(prefix, name, target);
     }
@@ -506,12 +581,13 @@ public class SvnHttpConnection extends SvnConnection {
     }
 
     void execPropFindRequest(final String path, String label, int dept, final DAV.Element[] properties, final Map<String, DAV.Properties> result) throws RadixSvnException {
+        isIdempotent.push(true);
         try {
             HttpPost builder = prepareRequest("PROPFIND", path);
             setDeptHeaders(builder, label, dept);
             builder.setEntity(getPropfindRequest(properties));
             HttpResponse rs = getConnection(repo).execute(builder);
-            processResponse(rs, new IPropAcceptor() {
+            processResponse(builder, rs, new IPropAcceptor() {
 
                 @Override
                 public void accept(String relativePath, QName name, String value, List<QName> children) {
@@ -531,7 +607,6 @@ public class SvnHttpConnection extends SvnConnection {
                                         }
                                     }
                                 }
-
                             }
                         }
                     } else {
@@ -554,16 +629,19 @@ public class SvnHttpConnection extends SvnConnection {
                 }
             });
 
+            EntityUtils.consume(rs.getEntity());
         } catch (IOException ex) {
             Logger.getLogger(SvnHttpConnection.class
                     .getName()).log(Level.SEVERE, null, ex);
             throw new RadixSvnException(ex);
         } finally {
+            isIdempotent.pop();
             cleanupConnection();
         }
     }
 
     public void get(final String path, final OutputStream out) throws RadixSvnException {
+        isIdempotent.push(true);
         try {
             HttpPost builder = prepareRequest("GET", path);
             HttpResponse rs = getConnection(repo).execute(builder);
@@ -583,6 +661,7 @@ public class SvnHttpConnection extends SvnConnection {
                         }
                     }
                 }
+                EntityUtils.consume(rs.getEntity());
             }
 
         } catch (IOException ex) {
@@ -590,15 +669,19 @@ public class SvnHttpConnection extends SvnConnection {
                     .getName()).log(Level.SEVERE, null, ex);
             throw new RadixSvnException(ex);
         } finally {
+            isIdempotent.pop();
             cleanupConnection();
         }
     }
 
-    private void processResponse(HttpResponse rs, IPropAcceptor acceptor) throws RadixSvnException, IOException {
+    private void processResponse(HttpPost rq, HttpResponse rs, IPropAcceptor acceptor) throws RadixSvnException, IOException {
         if (rs.getStatusLine().getStatusCode() == 200 || rs.getStatusLine().getStatusCode() == 207) {
             readResponse(rs.getStatusLine().getStatusCode(), rs.getEntity(), acceptor);
         } else {
-            throw new RadixSvnException("Server returned HTTP response code: " + rs.getStatusLine().getStatusCode() + " for URL: " + repo.getLocation().toString(), RadixSvnException.Type.IO, rs.getStatusLine().getStatusCode());
+            final int statusCode = rs.getStatusLine().getStatusCode();
+            final String url = rq.getURI().toString();
+            final String method = rq.getMethod();
+            throw new RadixSvnException("Server returned HTTP status code: " + statusCode + " for URL: " + url + ", method = " + method, RadixSvnException.Type.IO, statusCode);
         }
     }
 
@@ -610,9 +693,7 @@ public class SvnHttpConnection extends SvnConnection {
     private void readResponse(int code, HttpEntity response, final IPropAcceptor acceptor) throws IOException {
         if (code == 207) {
             try {
-                SAXParserFactory factory = SAXParserFactory.newInstance();
-                factory.setValidating(false);
-                SAXParser parser = factory.newSAXParser();
+                SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
 
                 class Element {
 
@@ -757,6 +838,9 @@ public class SvnHttpConnection extends SvnConnection {
                         if (attributes != null) {
                             for (int i = 0; i < attributes.getLength(); i++) {
                                 String name = attributes.getLocalName(i);
+                                if ("".equals(name)) {//aix fix
+                                    name = attributes.getQName(i);
+                                }
                                 if (name.startsWith("xmlns")) {
                                     int indexOfColon = name.indexOf(":");
                                     String prefix = "";
@@ -833,6 +917,7 @@ public class SvnHttpConnection extends SvnConnection {
         HttpEntity entity = new org.apache.http.entity.StringEntity(request.toString(), ContentType.TEXT_XML);
         checkout.setEntity(entity);
 
+        isIdempotent.push(true);
         try {
             HttpResponse rs = getConnection(repo).execute(checkout);
             Header header = rs.getFirstHeader(LOCATION_HEADER);
@@ -848,9 +933,11 @@ public class SvnHttpConnection extends SvnConnection {
                 }
                 return location;
             }
+            EntityUtils.consume(rs.getEntity());
         } catch (IOException ex) {
             throw new RadixSvnException(ex);
         } finally {
+            isIdempotent.pop();
             cleanupConnection();
         }
 
@@ -867,6 +954,7 @@ public class SvnHttpConnection extends SvnConnection {
 
         HttpPost checkout = prepareRequest("MKACTIVITY", SvnPath.append(url, UUID.randomUUID().toString()));
         String activityUrl = checkout.getRequestLine().getUri();
+        isIdempotent.push(true);
         try {
             HttpResponse rs = getConnection(repo).execute(checkout);
             if (rs.getStatusLine().getStatusCode() != 201) {
@@ -878,9 +966,11 @@ public class SvnHttpConnection extends SvnConnection {
                     throw new RadixSvnException("Unable to initialize tranzaction activity");
                 }
             }
+            EntityUtils.consume(rs.getEntity());
         } catch (IOException ex) {
             throw new RadixSvnException(ex);
         } finally {
+            isIdempotent.pop();
             cleanupConnection();
         }
         return activityUrl;
@@ -905,15 +995,14 @@ public class SvnHttpConnection extends SvnConnection {
         HttpEntity entity = new org.apache.http.entity.StringEntity(request.toString(), ContentType.TEXT_XML);
         checkout.setEntity(entity);
 
+        isIdempotent.push(true);
         try {
             HttpResponse rs = getConnection(repo).execute(checkout);
             if (rs.getStatusLine().getStatusCode() != 200) {
                 throw new RadixSvnException("Connection refused");
             }
 
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            factory.setValidating(false);
-            SAXParser parser = factory.newSAXParser();
+            SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
             final StringBuilder url = new StringBuilder();
             final boolean doParse[] = new boolean[]{false};
             parser.parse(rs.getEntity().getContent(), new DefaultHandler() {
@@ -943,11 +1032,13 @@ public class SvnHttpConnection extends SvnConnection {
             });
 
             activityCollectionUrl = url.length() == 0 ? null : url.toString();
+            EntityUtils.consume(rs.getEntity());
         } catch (IOException ex) {
             throw new RadixSvnException(ex);
         } catch (SAXException | ParserConfigurationException ex) {
             throw new RadixSvnException(ex);
         } finally {
+            isIdempotent.pop();
             cleanupConnection();
         }
 
@@ -962,6 +1053,7 @@ public class SvnHttpConnection extends SvnConnection {
             if (rs.getStatusLine().getStatusCode() != 201) {
                 throw new RadixSvnException("Unable to initialize collection");
             }
+            EntityUtils.consume(rs.getEntity());
         } catch (IOException ex) {
             throw new RadixSvnException(ex);
         } finally {
@@ -980,6 +1072,7 @@ public class SvnHttpConnection extends SvnConnection {
             if (rs.getStatusLine().getStatusCode() >= 300) {
                 throw new RadixSvnException("Unable to copy from " + src + " to " + dst);
             }
+            EntityUtils.consume(rs.getEntity());
         } catch (IOException ex) {
             throw new RadixSvnException("Unable to copy from " + src + " to " + dst, ex);
         } finally {
@@ -1002,6 +1095,7 @@ public class SvnHttpConnection extends SvnConnection {
             if (rs.getStatusLine().getStatusCode() != 204) {
                 throw new RadixSvnException("Unable to delete " + url);
             }
+            EntityUtils.consume(rs.getEntity());
         } catch (IOException ex) {
             throw new RadixSvnException("Unable to delete " + url, ex);
         } finally {
@@ -1021,6 +1115,7 @@ public class SvnHttpConnection extends SvnConnection {
             if (rs.getStatusLine().getStatusCode() != 204) {
                 throw new RadixSvnException("Unable to delete " + path);
             }
+            EntityUtils.consume(rs.getEntity());
         } catch (IOException ex) {
             throw new RadixSvnException("Unable to delete " + path, ex);
         } finally {
@@ -1029,7 +1124,11 @@ public class SvnHttpConnection extends SvnConnection {
     }
 
     private void cleanupConnection() {
-        if (client != null) {
+        cleanupConnection(false);
+    }
+
+    private void cleanupConnection(boolean force) {
+        if (client != null && (((force || DISABLE_KEEPCONNECT)) || (clientConnectionManager.isLeased()))) {
             client.getConnectionManager().shutdown();
             client = null;
         }
@@ -1093,9 +1192,7 @@ public class SvnHttpConnection extends SvnConnection {
                 if (rs.getStatusLine().getStatusCode() == 200) {
                     try {
 
-                        SAXParserFactory factory = SAXParserFactory.newInstance();
-                        factory.setValidating(false);
-                        SAXParser parser = factory.newSAXParser();
+                        SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
 
                         final boolean inBaseline[] = new boolean[]{false};
                         final int[] mode = new int[]{0};
@@ -1136,6 +1233,7 @@ public class SvnHttpConnection extends SvnConnection {
                             }
                         });
 
+                        EntityUtils.consume(rs.getEntity());
                         return summary;
                     } catch (IOException ex) {
                         throw new RadixSvnException("Unable to merge changes", ex);
@@ -1249,15 +1347,26 @@ public class SvnHttpConnection extends SvnConnection {
         builder.setEntity(request);
         builder.addHeader("Accept-Encoding", "svndiff1;q=0.9,svndiff;q=0.8");
         try {
+            isIdempotent.push(true);
             try {
                 HttpResponse rs = getConnection(repo).execute(builder);
                 if (rs.getStatusLine().getStatusCode() != 200) {
                     throw new RadixSvnException("Connection refused");
                 }
-                SAXParserFactory factory = SAXParserFactory.newInstance();
-                factory.setValidating(false);
-                SAXParser parser = factory.newSAXParser();
-                parser.parse(rs.getEntity().getContent(), handler);
+
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = rs.getEntity().getContent().read(buffer)) > -1) {
+                    baos.write(buffer, 0, len);
+                }
+                baos.flush();
+                EntityUtils.consume(rs.getEntity());
+
+                InputStream rsContent = new ByteArrayInputStream(baos.toByteArray());
+
+                SAXParser parser = SAX_PARSER_FACTORY.newSAXParser();
+                parser.parse(rsContent, handler);
             } catch (IOException | ParserConfigurationException ex) {
                 throw new RadixSvnException(ex);
             } catch (SAXException ex) {
@@ -1265,6 +1374,8 @@ public class SvnHttpConnection extends SvnConnection {
                     throw (RadixSvnException) ex.getCause();
                 }
                 throw new RadixSvnException(ex);
+            } finally {
+                isIdempotent.pop();
             }
 
         } finally {
@@ -1310,12 +1421,15 @@ public class SvnHttpConnection extends SvnConnection {
             post.setEntity(entity);
             try {
                 final HttpResponse rs = getConnection(repo).execute(post);
-                if (rs.getStatusLine().getStatusCode() == 204) {//no changes
+                final int code = rs.getStatusLine().getStatusCode();
+                if (code == 204) {//no changes
+                    EntityUtils.consume(rs.getEntity());
                     return;
                 }
-                if (rs.getStatusLine().getStatusCode() != 201) {
-                    throw new RadixSvnException("Unable to put diff window");
+                if (code != 201) {
+                    throw new RadixSvnException("Unable to put diff window (status code: " + code + ").");
                 }
+                EntityUtils.consume(rs.getEntity());
             } catch (IOException ex) {
                 throw new RadixSvnException("Unable to merge changes", ex);
             } finally {
@@ -1329,4 +1443,194 @@ public class SvnHttpConnection extends SvnConnection {
             cleanupConnection();
         }
     }
+
+    public static StringBuilder generateReplayRequest(long highRevision, long lowRevision, boolean sendDeltas) {
+        final StringBuilder xmlBuffer = new StringBuilder();
+        addXmlHeader(xmlBuffer);
+
+        openNamespaceDeclarationTag(SVN_NAMESPACE_PREFIX, "replay-report",
+                Collections.singleton(DAV.Element.SVN_NAMESPACE), WELL_KNOWN_NS_PREFIXES, null, xmlBuffer, true);
+
+        openCDataTag(SVN_NAMESPACE_PREFIX, "revision", String.valueOf(highRevision), xmlBuffer);
+        openCDataTag(SVN_NAMESPACE_PREFIX, "low-water-mark", String.valueOf(lowRevision), xmlBuffer);
+        openCDataTag(SVN_NAMESPACE_PREFIX, "send-deltas", sendDeltas ? "1" : "0", xmlBuffer);
+        closeXmlTag(SVN_NAMESPACE_PREFIX, "replay-report", xmlBuffer);
+        return xmlBuffer;
+    }
+
+    public static final String SVN_PREFIX = "svn:";
+    public static final String SVNKIT_PREFIX = "svnkit:";
+    public static final String SVN_ENTRY_PREFIX = "svn:entry:";
+    public static final String SVNKIT_ENTRY_PREFIX = "svnkit:entry:";
+    public static final String SVN_WC_PREFIX = "svn:wc:";
+
+    public static boolean isSVNProperty(String name) {
+        return name != null && (name.startsWith(SVN_PREFIX) || name.startsWith(SVNKIT_PREFIX));
+    }
+
+    public static boolean isSVNKitProperty(String name) {
+        return name != null && name.startsWith(SVNKIT_PREFIX);
+    }
+
+    public static String shortPropertyName(String longName) {
+        if (longName == null) {
+            return null;
+        }
+        if (longName.startsWith(SVN_ENTRY_PREFIX)) {
+            return longName.substring(SVN_ENTRY_PREFIX.length());
+        } else if (longName.startsWith(SVN_WC_PREFIX)) {
+            return longName.substring(SVN_WC_PREFIX.length());
+        } else if (longName.startsWith(SVN_PREFIX)) {
+            return longName.substring(SVN_PREFIX.length());
+        }
+        return longName;
+    }
+
+    private static void appendProperty(final StringBuilder xmlBuffer, final String name, SvnProperties.Value value) {
+        String prefix = isSVNProperty(name) && !isSVNKitProperty(name)
+                ? SVN_SVN_PROPERTY_PREFIX : SVN_CUSTOM_PROPERTY_PREFIX;
+
+        String tagName = shortPropertyName(name);
+        if (value == null) {
+            openXmlTag(prefix, tagName, true, null, xmlBuffer);
+            return;
+        }
+
+        Map<String, String> attrs = null;
+        String stringValue = value.getFinalString();
+        boolean isXMLSafe = false;
+        if (!isXMLSafe) {
+            attrs = new HashMap<>();
+            attrs.put(SVN_DAV_PROPERTY_PREFIX + ":encoding", "base64");
+            byte[] toDecode;// = null;
+            if (stringValue != null) {
+                try {
+                    toDecode = stringValue.getBytes("UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    toDecode = stringValue.getBytes();
+                }
+            } else {
+                toDecode = value.getBytes();
+            }
+
+            stringValue = javax.xml.bind.DatatypeConverter.printBase64Binary(toDecode);
+
+        }
+        openCDataTag(prefix, tagName, stringValue, attrs, xmlBuffer);
+    }
+
+    private static final Collection PROPERTY_UPDATE_NAMESPACES = new LinkedList();
+
+    static {
+        PROPERTY_UPDATE_NAMESPACES.add(DAV.Element.DAV_NAMESPACE);
+        PROPERTY_UPDATE_NAMESPACES.add(DAV.Element.SVN_DAV_PROPERTY_NAMESPACE);
+        PROPERTY_UPDATE_NAMESPACES.add(DAV.Element.SVN_SVN_PROPERTY_NAMESPACE);
+        PROPERTY_UPDATE_NAMESPACES.add(DAV.Element.SVN_CUSTOM_PROPERTY_NAMESPACE);
+    }
+
+    public static StringBuilder generatePropertyRequest(final String propertyName, final SvnProperties.Value value) {
+        final StringBuilder xmlBuffer = new StringBuilder();
+        addXmlHeader(xmlBuffer);
+
+        openNamespaceDeclarationTag(DAV_NAMESPACE_PREFIX, "propertyupdate",
+                PROPERTY_UPDATE_NAMESPACES, WELL_KNOWN_NS_PREFIXES, null, xmlBuffer, true);
+
+        final boolean mustRemove = value == null || value.isNull();
+        final String tagName = mustRemove ? "remove" : "set";
+
+        openXmlTag(DAV_NAMESPACE_PREFIX, tagName, false, null, xmlBuffer);
+        openXmlTag(DAV_NAMESPACE_PREFIX, "prop", false, null, xmlBuffer);
+
+        {
+            appendProperty(xmlBuffer, propertyName, value);
+        }
+
+        closeXmlTag(DAV_NAMESPACE_PREFIX, "prop", xmlBuffer);
+        closeXmlTag(DAV_NAMESPACE_PREFIX, tagName, xmlBuffer);
+
+        closeXmlTag(DAV_NAMESPACE_PREFIX, "propertyupdate", xmlBuffer);
+        return xmlBuffer;
+    }
+
+    public void propPatch(final String repositoryPath, final String locationPath, final String request) throws RadixSvnException {
+        try {
+
+            final HttpPost propPatch = prepareRequest("PROPPATCH", locationPath, true);
+            final HttpEntity entity = new org.apache.http.entity.StringEntity(request, ContentType.TEXT_XML);
+            propPatch.setEntity(entity);
+
+            try {
+                final HttpResponse rs = getConnection(repo).execute(propPatch);
+                final int statusCode = rs.getStatusLine().getStatusCode();
+                if (statusCode == 200 || statusCode == 207) {
+                    //is ok
+                } else {
+                    final String theString = slurp(rs.getEntity().getContent());
+                    throw new RadixSvnException("Unable to patch properties. Server response:\n " + theString, RadixSvnException.Type.IO, rs.getStatusLine().getStatusCode());
+                }
+                EntityUtils.consume(rs.getEntity());
+            } catch (IOException ex) {
+                throw new RadixSvnException("Unable to patch properties", ex);
+            }
+        } finally {
+            cleanupConnection();
+        }
+    }
+
+    private static String slurp(final InputStream is) {
+        final int bufferSize = 1024;
+        final char[] buffer = new char[bufferSize];
+        final StringBuilder out = new StringBuilder();
+        try (Reader in = new InputStreamReader(is, "UTF-8")) {
+            for (;;) {
+                int rsz = in.read(buffer, 0, buffer.length);
+                if (rsz < 0) {
+                    break;
+                }
+                out.append(buffer, 0, rsz);
+            }
+        } catch (UnsupportedEncodingException ex) {
+            /* ... */
+        } catch (IOException ex) {
+            /* ... */
+        }
+        return out.toString();
+    }
+
+    private static class RadixSvnHttpConnectionManager extends BasicHttpClientConnectionManager {
+
+        private final Field leasedField;
+
+        public RadixSvnHttpConnectionManager() {
+            super();
+            leasedField = getLeasedField();
+        }
+
+        public RadixSvnHttpConnectionManager(final SSLContext sslContext) {
+            super(RegistryBuilder.<ConnectionSocketFactory>create()
+                    .register("http", PlainConnectionSocketFactory.getSocketFactory())
+                    .register("https", new SSLConnectionSocketFactory(sslContext, new AllowAllHostnameVerifier()))
+                    .build(), null, null, null);
+            this.leasedField = getLeasedField();
+        }
+
+        private Field getLeasedField() {
+            try {
+                final Field result = BasicHttpClientConnectionManager.class.getDeclaredField("leased");
+                result.setAccessible(true);
+                return result;
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+
+        public boolean isLeased() {
+            try {
+                return leasedField.getBoolean(this);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
+    }
+
 }

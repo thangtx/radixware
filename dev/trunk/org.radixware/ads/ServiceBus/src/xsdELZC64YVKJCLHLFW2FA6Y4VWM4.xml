@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdELZC64YVKJCLHLFW2FA6Y4VWM4" Name="ImpExpXsd" TargetNamespace="http://schemas.radixware.org/sb-impExp.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/sb-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:rcmn="http://schemas.radixware.org/common.xsd" xmlns:this="http://schemas.radixware.org/sb-impExp.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:sbd="http://schemas.radixware.org/sb-diagram.xsd" xmlns:userFcn="http://schemas.radixware.org/userfunc-impexp.xsd">
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdELZC64YVKJCLHLFW2FA6Y4VWM4" Name="ImpExpXsd" TargetNamespace="http://schemas.radixware.org/sb-impExp.xsd" NeedsDoc="false" Environment="common"><ads:AccessRules IsFinal="true"/><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdL6YN6OJDTBHMPLJWIV3F6VGQCQ" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdLL3UFHA3MBDWJBXUX6GNNLJH7Q" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdXBC3TNLZQ3NRDCINABIFNQAABA" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdY5AELJNM7FG77FZD4ATT7SFMXA" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.radixware.org/sb-impExp.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xscml="http://schemas.radixware.org/xscml.xsd" xmlns:rcmn="http://schemas.radixware.org/common.xsd" xmlns:this="http://schemas.radixware.org/sb-impExp.xsd" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:sbd="http://schemas.radixware.org/sb-diagram.xsd" xmlns:userFcn="http://schemas.radixware.org/userfunc-impexp.xsd">
     <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
     <xs:import namespace="http://schemas.radixware.org/common.xsd" schemaLocation="common.xsd"/>
     <xs:import namespace="http://schemas.radixware.org/sb-diagram.xsd" schemaLocation="sb-diagram.xsd"/>
@@ -127,6 +133,7 @@
     </xs:simpleType>
     <xs:complexType name="NetChannel">
         <xs:sequence>
+            <xs:element name="Rid" type="types:Str" minOccurs="0"/>
             <xs:element name="Title" type="types:Str" nillable="false" minOccurs="0"/>
             <xs:element name="Address" type="types:Str" nillable="false"/>
             <xs:element name="LinkLevelProtocolKind" type="this:LinkLevelProtocolKind" nillable="false"/>
@@ -178,6 +185,7 @@
     </xs:simpleType>
     <xs:complexType name="Unit">
         <xs:sequence>
+            <xs:element name="Rid" type="types:Str" minOccurs="0"/>
             <xs:element name="Type" type="this:UnitType" nillable="false"/>
             <xs:element name="Use" type="types:Bool" nillable="false"/>
             <xs:element name="GuiTraceProfile" type="types:Str" nillable="false"/>

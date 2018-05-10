@@ -13,9 +13,16 @@
         <copy todir="${cluster}/modules/ext">
             <fileset dir="../../../utils/bin/" includes="utils.jar"/>
         </copy>
+        <zip destfile="${cluster}/modules/ext/xbean.jar">
+            <zipfileset src="../../../common/lib/xbean.jar">
+                <exclude name="org/w3c/**"/>
+            </zipfileset>
+        </zip>
         <copy todir="${cluster}/modules/ext">
-            <fileset dir="../../../common/lib" includes="httpcore-4.4.3.jar,httpclient-4.5.1.jar, serializer.jar, xalan-for-radix-1.0.jar, sqljet-1.1.10.jar, jna-4.1.0.jar , jsr173_1.0_api.jar, xbean.jar, swingx-1.6.4.jar, miglayout-3.7-swing.jar, javadbf-for-radix-1.0.jar, mail.jar,  antlr-runtime-3.4.jar, trilead-ssh2-1.0.0-build217.jar, commons-lang-2.6.jar, sequence-library-1.0.3.jar, commons-logging-1.1.1.jar, org.eclipse.jdt.core_3.9.2.v20140114-1555.jar, jettison-1.1.jar, DdsRadixDocCodeGenerator.jar, poi-3.11-20141221.jar, poi-ooxml-3.11-20141221.jar, poi-ooxml-schemas-3.11-20141221.jar"/>
+            <fileset dir="../../../common/lib" includes="httpcore-4.4.3.jar,httpclient-4.5.1.jar, serializer.jar, xalan-for-radix-1.0.jar, jna-4.1.0.jar , jsr173_1.0_api.jar, xbean_xpath.jar, swingx-1.6.4.jar, miglayout-3.7-swing.jar, javadbf-1.4.0.jar, mail.jar, trilead-ssh2-1.0.0-build217.jar, commons-lang-2.6.jar, commons-logging-1.1.1.jar, org.eclipse.jdt.core_3.9.2.v20140114-1555.jar, jettison-1.1.jar, DdsRadixDocCodeGenerator.jar, poi-3.11-20141221.jar, poi-ooxml-3.11-20141221.jar, poi-ooxml-schemas-3.11-20141221.jar, commons-codec-1.10.jar"/>
         </copy>
-        
+        <copy todir="${cluster}/modules/ext">
+            <fileset dir="../../../server/lib" includes="license-provider.jar"/>
+        </copy>
     </target>
 </project>

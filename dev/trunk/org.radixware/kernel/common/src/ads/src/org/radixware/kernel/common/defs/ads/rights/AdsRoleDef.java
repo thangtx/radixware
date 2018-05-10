@@ -990,25 +990,10 @@ public class AdsRoleDef extends AdsTitledDefinition implements IJavaSource, IOve
                 
         if (editorPresentationDef2 != null) {
             while (true) {
-                boolean isMustBreak = false;
-
-                if (editorPresentationDef2.isRightsInheritanceModeInherited()) {
-                    editorPresentationDef2 = editorPresentationDef2.findRightsInheritanceDefinePresentation().get();
-                } else if (editorPresentationDef2.getRightInheritanceMode().equals(EEditorPresentationRightsInheritanceMode.FROM_REPLACED)) {
-                    editorPresentationDef2 = editorPresentationDef2.findReplacedEditorPresentation().get();
-                } else if (editorPresentationDef2.getRightInheritanceMode().equals(EEditorPresentationRightsInheritanceMode.FROM_DEFINED)) {
-                    editorPresentationDef2 = editorPresentationDef2.findRightSourceEditorPresentation();
-                } else {
-                    isMustBreak = true;
-                }
-
+                editorPresentationDef2 = editorPresentationDef2.getInheritRightsFromPres();
                 if (editorPresentationDef2 == null) {
                     break;
-                }
-                if (isMustBreak) {
-                    break;
-                }
-                
+                }                
                 if (recursionBreaker.contains(editorPresentationDef2)){
                     break;
                 }

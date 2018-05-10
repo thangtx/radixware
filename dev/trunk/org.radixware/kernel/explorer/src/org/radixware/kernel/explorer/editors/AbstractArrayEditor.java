@@ -24,6 +24,7 @@ import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QKeyEvent;
 import com.trolltech.qt.gui.QAbstractItemView;
 import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QItemDelegate;
 import com.trolltech.qt.gui.QShowEvent;
 import com.trolltech.qt.gui.QTableWidget;
@@ -31,8 +32,10 @@ import com.trolltech.qt.gui.QTableWidgetItem;
 import com.trolltech.qt.gui.QToolButton;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.localization.MessageProvider;
@@ -126,6 +129,7 @@ public abstract class AbstractArrayEditor extends ExplorerWidget {
     private int firstArrayItemIndex = 1;
     private int minArrayItemsCount = -1;
     private int maxArrayItemsCount = -1;
+    private Map<QAction,QToolButton> customButtons;
 
     public AbstractArrayEditor(final IClientEnvironment environment, final QWidget parent) {
         super(environment, parent);
@@ -136,7 +140,11 @@ public abstract class AbstractArrayEditor extends ExplorerWidget {
         
     }
 
-    public AbstractArrayEditor(final IClientEnvironment environment, final QWidget parent, final boolean readonly, final boolean mandatory, final boolean duplicates) {
+    public AbstractArrayEditor(final IClientEnvironment environment, 
+                                            final QWidget parent, 
+                                            final boolean readonly, 
+                                            final boolean mandatory, 
+                                            final boolean duplicates) {
         super(environment, parent);
         isMandatory = mandatory;
         isReadonly = readonly;
@@ -145,6 +153,7 @@ public abstract class AbstractArrayEditor extends ExplorerWidget {
         fillValuesTable(null);
         eventListener.setProcessableEventTypes(EnumSet.of(QEvent.Type.KeyPress));
         ui_creator.valuesTable.installEventFilter(eventListener);
+        
     }
 
     protected final void setDelegate(final QItemDelegate delegate) {
@@ -353,10 +362,13 @@ public abstract class AbstractArrayEditor extends ExplorerWidget {
             downAction.setDisabled(moveMode == EItemMoveMode.NOT_MOVABLE || isReadonly || currentItem == null || currentItem.row() == lastRow);
             setDragDropEnabled(moveMode == EItemMoveMode.DRAG_DROP && !isReadonly);
         } else {
-            if (!clearValuesTable()) {
+            final String msg = Application.translate("ArrayEditor", "Do you really want to delete array?");
+            if (ui_creator.valuesTable.rowCount() > 0 
+                && !Application.messageConfirmation(Application.translate("ArrayEditor", "Confirm To Delete Array"), msg)) {
                 updateDefinedButtonState(true);
                 return;
             }
+            clearValuesTableImpl();
             ui_creator.stackedWidget.setCurrentIndex(1);
             upAction.setDisabled(true);
             downAction.setDisabled(true);
@@ -448,16 +460,21 @@ public abstract class AbstractArrayEditor extends ExplorerWidget {
     private boolean clearValuesTable() {
         finishEdit();
         final String msg = Application.translate("ArrayEditor", "Do you really want to delete all array items?");
-        if (ui_creator.valuesTable.rowCount() > 0 && !Application.messageConfirmation(Application.translate("ArrayEditor", "Confirm To Clear Array"), msg)) {
+        if (ui_creator.valuesTable.rowCount() > 0 
+            && !Application.messageConfirmation(Application.translate("ArrayEditor", "Confirm To Clear Array"), msg)) {
             return false;
         }
+        clearValuesTableImpl();
+        return true;
+    }
+    
+    private void clearValuesTableImpl(){
         final int count = ui_creator.valuesTable.rowCount();
         ui_creator.valuesTable.setRowCount(0);
         clearAction.setDisabled(true);
         delAction.setDisabled(true);        
         rowsRemoved.emit(0, count);
-        updateErrorMessage();
-        return true;
+        updateErrorMessage();        
     }
 
     @SuppressWarnings("unused")
@@ -675,9 +692,50 @@ public abstract class AbstractArrayEditor extends ExplorerWidget {
         } else if (action == downAction) {
             return ui_creator.downBtn;
         } else {
-            return null;
+            return customButtons==null ? null : customButtons.get(action);
         }
     }
+    
+    protected void insertCustomAction(final QAction action){
+        if (customButtons==null || !customButtons.containsKey(action)){
+            final QToolButton toolButton = new QToolButton(ui_creator.buttonsWidged);
+            final String actionName = action.objectName();
+            if (actionName!=null && !actionName.isEmpty()){
+                toolButton.setObjectName("custom_btn_for "+actionName);
+            }
+            toolButton.setFocusPolicy(Qt.FocusPolicy.TabFocus);        
+            final int index = ui_creator.vboxLayout3.count() - 4;//devider, upButton, downButton, verticalSpacer
+            ui_creator.vboxLayout3.insertWidget(index, toolButton);
+            action.setParent(this);
+            toolButton.setDefaultAction(action);
+            if (customButtons==null){
+                customButtons = new HashMap<>();
+            }
+            customButtons.put(action, toolButton);
+        }
+    }
+    
+    protected void removeCustomAction(final QAction action){
+        final QToolButton button = getToolButtonForAction(action);
+        if (button!=null){
+            ui_creator.vboxLayout3.removeWidget(button);
+            customButtons.remove(action);
+            if (customButtons.isEmpty()){
+                customButtons = null;
+            }
+        }        
+    }
+    
+    protected int getCurrentRow(){
+        return ui_creator.valuesTable.currentRow();
+    }
+    
+    protected void setCurrentRow(final int row){
+        if (row>-1 && row<ui_creator.valuesTable.rowCount()){
+            ui_creator.valuesTable.setCurrentCell(row, 0);
+        }
+    }
+    
     
     protected final void focusTable(){
         ui_creator.valuesTable.setFocus();
@@ -685,7 +743,7 @@ public abstract class AbstractArrayEditor extends ExplorerWidget {
 
     protected void insertToolButton(final QToolButton button, final int index) {
         ui_creator.vboxLayout3.insertWidget(index, button);
-    }
+    }    
 
     protected boolean onKeyEvent(final QKeyEvent keyEvent) {
         return false;
@@ -716,7 +774,7 @@ public abstract class AbstractArrayEditor extends ExplorerWidget {
      * Returns a number which the table's row numeration starts with
      * @return 
      */
-    protected int getFirstArrayItemIndex() {
+    public int getFirstArrayItemIndex() {
         return firstArrayItemIndex;
     }
     
@@ -762,6 +820,16 @@ public abstract class AbstractArrayEditor extends ExplorerWidget {
     public int length() {
         return ui_creator.valuesTable.rowCount();
     }
+
+    @Override
+    protected void closeEvent(final QCloseEvent event) {
+        if (customButtons!=null){
+            customButtons.clear();
+        }
+        super.closeEvent(event);
+    }
+    
+    
 
     @Override
     protected void customEvent(final QEvent qevent) {

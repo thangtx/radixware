@@ -34,13 +34,28 @@ public abstract class SvnRepository {
         }
 
         public static SvnRepository newInstance(URI location, SvnCredentials[] credentials, X509TrustManager trustManager) throws RadixSvnException {
-            SvnRepository repo = newInstanceImpl(location, "", credentials, trustManager);
+            location = location.normalize();
+            StringBuilder repoLocation = new StringBuilder();
+            repoLocation.append(location.getScheme());
+            repoLocation.append("://");
+            String authority = location.getAuthority();
+            if (authority.endsWith(":")) {
+                repoLocation.append(authority.substring(0, authority.length() - 1));
+            } else {
+                repoLocation.append(authority);
+            }
+
+            repoLocation.append(location.getPath());
+
+            String uriString = repoLocation.toString();
+            SvnRepository repo = newInstanceImpl(URI.create(uriString), "", credentials, trustManager);
             String root = repo.getRootUrl();
-            if (root.equals(location.toString())) {
+
+            if (root.equals(uriString)) {
                 return repo;
             } else {
                 try {
-                    String path = location.toString().substring(root.length());
+                    String path = uriString.substring(root.length());
                     if (path.startsWith("/")) {
                         path = path.substring(1);
                     }
@@ -225,8 +240,9 @@ public abstract class SvnRepository {
     }
 
     protected String getPathRelativeToMine(String path) throws RadixSvnException {
-        if(path == null)
+        if (path == null) {
             path = "";
+        }
         final String mPath = getPath();
         if (path.equals(".")) {
             return mPath;

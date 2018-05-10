@@ -23,7 +23,6 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jdt.core.compiler.CategorizedProblem;
-import org.eclipse.jdt.core.compiler.CharOperation;
 import org.eclipse.jdt.internal.compiler.CompilationResult;
 import org.eclipse.jdt.internal.compiler.classfmt.ClassFileConstants;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
@@ -429,7 +428,7 @@ public class AdsWorkspace {
                 if (m != clazz.getModule()) {
                     AdsDefinition def = null;
                     while (m != null) {
-                        def = ((AdsModule) m).getDefinitions().findById(clazz.getId());
+                        def = ((AdsModule) m).getTopContainer().findById(clazz.getId());
                         if (def != null) {
                             clazz = def;
                             break;
@@ -660,7 +659,6 @@ public class AdsWorkspace {
 
                 int count = 0;
                 for (int i = 0; i < purposeList.size(); i++) {
-                    final CodePrinter printer = CodePrinter.Factory.newJavaPrinter();
                     final JavaSourceSupport.UsagePurpose up = purposeList.get(i);
                     if (!Utils.equals(support.getSourceFileExtension(up), "java")) {
                         continue;

@@ -22,6 +22,7 @@ import org.radixware.kernel.common.client.models.RawEntityModelData;
 import org.radixware.kernel.common.client.models.items.Command;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.Restrictions;
+import org.radixware.kernel.common.client.views.IEditor;
 import org.radixware.kernel.common.client.views.ISelector;
 import org.radixware.kernel.common.enums.ECommandAccessibility;
 import org.radixware.kernel.common.types.Id;
@@ -99,8 +100,7 @@ public interface ICommandToolButton extends IToolButton, IModelWidget {
                     restrictions = null;
                 }
                 if (restrictions!=null){
-                    return restrictions.getIsCommandRestricted(cmd.getId())
-                           || (!cmd.getDefinition().isReadOnly() && restrictions.getIsNotReadOnlyCommandsRestricted());
+                    return restrictions.getIsCommandRestricted(cmd.getDefinition());
                 }
             }
             return false;            
@@ -127,14 +127,22 @@ public interface ICommandToolButton extends IToolButton, IModelWidget {
                     final ISelector selector = ((GroupModel) cmd.getOwner()).getGroupView();
                     entity = selector != null ? selector.getCurrentEntity() : null;
                 }
-                if (entity != null && entity.isEdited()) {
+                final IEditor editor = entity==null ? null : entity.getEntityView();
+                final boolean isModified = (editor !=null && editor.getActions().getUpdateAction().isEnabled())
+                                                       || (entity!=null && entity.isEdited());                
+                if (isModified) {
                     final String title = cmd.getEnvironment().getMessageProvider().translate("ExplorerMessage", "Confirm Apply Changes"),
                             msg = cmd.getEnvironment().getMessageProvider().translate("ExplorerMessage", "You must save your data before execute this command.\n Do you want to save your changes now?");
                     final PresentationChangedHandler handler = new PresentationChangedHandler(entity);
                     ((IContext.Entity) entity.getContext()).setPresentationChangedHandler(handler);
                     try {
-                        if (!cmd.getEnvironment().messageConfirmation(title, msg) || !entity.update()) {
+                        if (!cmd.getEnvironment().messageConfirmation(title, msg)) {
                             return;
+                        }
+                        if (editor==null){
+                            entity.update();
+                        }else{
+                            editor.getActions().getUpdateAction().trigger();
                         }
                     } catch (InterruptedException ex) {
                         return;

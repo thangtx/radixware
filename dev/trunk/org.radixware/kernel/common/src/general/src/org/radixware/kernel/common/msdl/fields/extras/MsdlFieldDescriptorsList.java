@@ -24,6 +24,7 @@ import org.radixware.kernel.common.msdl.fields.StructureFieldModel;
 import org.radixware.kernel.common.msdl.fields.parser.SmioField;
 import org.radixware.kernel.common.msdl.fields.parser.structure.BinArr;
 import org.radixware.kernel.common.msdl.MsdlStructureField;
+import org.radixware.kernel.common.msdl.fields.IExtIdBytesProvider;
 import org.radixware.kernel.common.msdl.fields.parser.structure.FieldNamesContainer;
 
 
@@ -31,11 +32,41 @@ public class MsdlFieldDescriptorsList implements Iterable<MsdlFieldDescriptor> {
 
     protected List<MsdlFieldDescriptor> descriptorList = new ArrayList<>(10);
     protected Map<String, MsdlFieldDescriptor> descriptorMap = new HashMap<>();
-    private FieldNamesContainer fieldNamesContainer = new FieldNamesContainer();
+    private final FieldNamesContainer fieldNamesContainer;
 
+    public MsdlFieldDescriptorsList(IExtIdBytesProvider provider) {
+        fieldNamesContainer = new FieldNamesContainer(provider);
+    }
+
+    public MsdlFieldDescriptorsList() {
+        this(null);
+    }
+    
     @Override
     public Iterator<MsdlFieldDescriptor> iterator() {
         return descriptorList.iterator();
+    }
+    
+    public Iterator<MsdlField> iteratorFields() {
+        final Iterator<MsdlFieldDescriptor> iter = iterator();
+        return new Iterator<MsdlField>() {
+
+            @Override
+            public boolean hasNext() {
+                return iter.hasNext();
+            }
+
+            @Override
+            public MsdlField next() {
+                return iter.next().getMsdlField();
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+
+        };
     }
 
     public void add(MsdlFieldDescriptor f) {

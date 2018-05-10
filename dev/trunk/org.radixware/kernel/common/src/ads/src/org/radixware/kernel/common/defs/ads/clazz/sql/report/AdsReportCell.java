@@ -10,7 +10,10 @@
  */
 package org.radixware.kernel.common.defs.ads.clazz.sql.report;
 
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportMarginMm;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.defs.ClipboardSupport;
 import org.radixware.kernel.common.defs.IVisitor;
@@ -19,15 +22,21 @@ import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.ads.AdsClipboardSupport;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsDefinition.ESaveMode;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportMarginTxt;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.utils.AdsReportUtils;
 import org.radixware.kernel.common.defs.ads.profiling.AdsProfileSupport;
 import org.radixware.kernel.common.defs.ads.profiling.AdsProfileSupport.IProfileable;
+import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.ENamingPolicy;
 import org.radixware.kernel.common.enums.EReportCellHAlign;
 import org.radixware.kernel.common.enums.EReportCellType;
 import org.radixware.kernel.common.enums.EReportCellVAlign;
+import org.radixware.kernel.common.enums.EReportTextFormat;
 import org.radixware.kernel.common.jml.Jml;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.common.utils.XmlColor;
+import org.radixware.schemas.adsdef.ReportCell;
 
 public abstract class AdsReportCell extends AdsReportWidget implements IProfileable {
 
@@ -39,15 +48,8 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
     private EReportCellHAlign hAlign = EReportCellHAlign.LEFT;
     private EReportCellVAlign vAlign = EReportCellVAlign.TOP;
     private boolean fontInherited = true;
-    private double marginTopMm = DEFAULT_MARGIN;
-    private double marginBottomMm = DEFAULT_MARGIN;
-    private double marginLeftMm = DEFAULT_MARGIN;
-    private double marginRightMm = DEFAULT_MARGIN;
-
-    private int marginTopRows = 0;
-    private int marginBottomRows = 0;
-    private int marginLeftCols = 0;
-    private int marginRightCols = 0;
+    private final AdsReportMarginMm marginMm = new AdsReportMarginMm(this, DEFAULT_MARGIN);
+    private final AdsReportMarginTxt marginTxt = new AdsReportMarginTxt(this);
     private boolean ignoreZebraSettings;
 
     private double lineSpacingMm = DEFAULT_LINE_SPACING;
@@ -57,13 +59,25 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
     private boolean snapBottomEdge = false;
     private final Jml jmlOnAdding;
     private AdsReportForm.Mode preferredMode = null;
+    private EReportTextFormat textFormat = EReportTextFormat.RICH;
+    private boolean useTxtPadding = true;
 
     // for server
     private String runTimeContent = "";
     private boolean visible = true;
+    
+    //----------------RADIX-10546----------------
+    private Id id = null;
+    private Id associatedColumnId = null;
+    private Id leftCellId = null;
+    private List<Id> rightCellIdList = null;
+    
+    private boolean changeTopOnMoving = true;
+    //-------------------------------------------
 
     protected AdsReportCell() {
         jmlOnAdding = Jml.Factory.newInstance(this, STR_ON_ADDING);
+        this.id = Id.Factory.newInstance(EDefinitionIdPrefix.REPORT_CELL);
     }
 
     protected AdsReportCell(org.radixware.schemas.adsdef.ReportCell xCell) {
@@ -81,45 +95,45 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
         vAlign = xCell.getVertAlign();
 
         if (xCell.isSetMargin()) {
-            marginTopMm = xCell.getMargin();
-            marginLeftMm = xCell.getMargin();
-            marginRightMm = xCell.getMargin();
-            marginBottomMm = xCell.getMargin();
+            marginMm.setTopMm(xCell.getMargin(), false);
+            marginMm.setLeftMm(xCell.getMargin(), false);
+            marginMm.setRightMm(xCell.getMargin(), false);
+            marginMm.setBottomMm(xCell.getMargin(), false);
         }
 
         if (xCell.isSetMarginTxt()) {
-            marginTopRows = xCell.getMarginTxt();
-            marginBottomRows = xCell.getMarginTxt();
-            marginLeftCols = xCell.getMarginTxt();
-            marginRightCols = xCell.getMarginTxt();
+            marginTxt.setTopRows(xCell.getMarginTxt(), false);
+            marginTxt.setLeftCols(xCell.getMarginTxt(), false);
+            marginTxt.setBottomRows(xCell.getMarginTxt(), false);
+            marginTxt.setRightCols(xCell.getMarginTxt(), false);
         }
 
         if (xCell.isSetTopMargin()) {
-            marginTopMm = xCell.getTopMargin();
+            marginMm.setTopMm(xCell.getTopMargin(), false);
         }
         if (xCell.isSetLeftMargin()) {
-            marginLeftMm = xCell.getLeftMargin();
+            marginMm.setLeftMm(xCell.getLeftMargin(), false);
         }
         if (xCell.isSetRightMargin()) {
-            marginRightMm = xCell.getRightMargin();
+            marginMm.setRightMm(xCell.getRightMargin(), false);
         }
         if (xCell.isSetBottomMargin()) {
-            marginBottomMm = xCell.getBottomMargin();
+            marginMm.setBottomMm(xCell.getBottomMargin(), false);
         }
 
         if (xCell.isSetTopMarginRows()) {
-            marginTopRows = xCell.getTopMarginRows();
+           marginTxt.setTopRows(xCell.getTopMarginRows(), false);
         }
 
         if (xCell.isSetBottomMarginRows()) {
-            marginBottomRows = xCell.getBottomMarginRows();
+            marginTxt.setBottomRows(xCell.getBottomMarginRows(), false);
         }
 
         if (xCell.isSetLeftMarginCols()) {
-            marginLeftCols = xCell.getLeftMarginCols();
+            marginTxt.setLeftCols(xCell.getLeftMarginCols(), false);;
         }
         if (xCell.isSetRightMarginCols()) {
-            marginLeftCols = xCell.getRightMarginCols();
+            marginTxt.setRightCols(xCell.getRightMarginCols(), false);;
         }
 
         if (xCell.isSetLineSpacing()) {
@@ -168,6 +182,34 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
          topMm = xCell.getTop();
          widthMm = xCell.getWidth();
          heightMm = xCell.getHeight();*/
+        if (xCell.isSetTextFormat()){
+            this.textFormat = xCell.getTextFormat();
+        }
+        if (xCell.isSetUseTxtPadding()){
+            useTxtPadding = xCell.getUseTxtPadding();
+        }
+        
+        if (xCell.isSetId()) {
+            this.id = xCell.getId();
+        } else {
+            this.id = Id.Factory.newInstance(EDefinitionIdPrefix.REPORT_CELL);
+        }
+        
+        if (xCell.isSetAssociatedColumnId()) {
+            associatedColumnId = xCell.getAssociatedColumnId();
+        }
+        
+        if (xCell.isSetLeftCellId()) {
+            leftCellId = xCell.getLeftCellId();
+        }
+        
+        if (xCell.isSetRightCellIdList()) {            
+            rightCellIdList = new ArrayList<>(xCell.getRightCellIdList().getIdList());
+        }
+        
+        if (xCell.isSetChangeTopOnMoving()) {
+            this.changeTopOnMoving = xCell.getChangeTopOnMoving();
+        }
     }
 
     protected AdsReportCell(org.radixware.schemas.adsdef.ReportBand.Cells.Cell xCell) {
@@ -188,55 +230,45 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
         }
 
         if (xCell.isSetMargin()) {
-            marginTopMm = xCell.getMargin();
-            marginLeftMm = xCell.getMargin();
-            marginRightMm = xCell.getMargin();
-            marginBottomMm = xCell.getMargin();
+            marginMm.setTopMm(xCell.getMargin(), false);
+            marginMm.setLeftMm(xCell.getMargin(), false);
+            marginMm.setRightMm(xCell.getMargin(), false);
+            marginMm.setBottomMm(xCell.getMargin(), false);
         }
 
         if (xCell.isSetMarginTxt()) {
-            marginTopRows = xCell.getMarginTxt();
-            marginBottomRows = xCell.getMarginTxt();
-            marginLeftCols = xCell.getMarginTxt();
-            marginRightCols = xCell.getMarginTxt();
+            marginTxt.setTopRows(xCell.getMarginTxt(), false);
+            marginTxt.setLeftCols(xCell.getMarginTxt(), false);
+            marginTxt.setBottomRows(xCell.getMarginTxt(), false);
+            marginTxt.setRightCols(xCell.getMarginTxt(), false);
         }
 
         if (xCell.isSetTopMargin()) {
-            marginTopMm = xCell.getTopMargin();
+            marginMm.setTopMm(xCell.getTopMargin(), false);
         }
         if (xCell.isSetLeftMargin()) {
-            marginLeftMm = xCell.getLeftMargin();
+            marginMm.setLeftMm(xCell.getLeftMargin(), false);
         }
         if (xCell.isSetRightMargin()) {
-            marginRightMm = xCell.getRightMargin();
+            marginMm.setRightMm(xCell.getRightMargin(), false);
         }
         if (xCell.isSetBottomMargin()) {
-            marginBottomMm = xCell.getBottomMargin();
+            marginMm.setBottomMm(xCell.getBottomMargin(), false);
         }
 
         if (xCell.isSetTopMarginRows()) {
-            marginTopRows = xCell.getTopMarginRows();
+           marginTxt.setTopRows(xCell.getTopMarginRows(), false);
         }
 
         if (xCell.isSetBottomMarginRows()) {
-            marginBottomRows = xCell.getBottomMarginRows();
+            marginTxt.setBottomRows(xCell.getBottomMarginRows(), false);
         }
 
         if (xCell.isSetLeftMarginCols()) {
-            marginLeftCols = xCell.getLeftMarginCols();
+            marginTxt.setLeftCols(xCell.getLeftMarginCols(), false);;
         }
         if (xCell.isSetRightMarginCols()) {
-            marginLeftCols = xCell.getRightMarginCols();
-        }
-
-        if (xCell.isSetLeftMargin()) {
-            marginLeftMm = xCell.getLeftMargin();
-        }
-        if (xCell.isSetRightMargin()) {
-            marginRightMm = xCell.getRightMargin();
-        }
-        if (xCell.isSetBottomMargin()) {
-            marginBottomMm = xCell.getBottomMargin();
+            marginTxt.setRightCols(xCell.getRightMarginCols(), false);;
         }
 
         if (xCell.isSetLineSpacing()) {
@@ -275,6 +307,32 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
         if (xCell.isSetIgnoreParentZebra()) {
             this.ignoreZebraSettings = xCell.getIgnoreParentZebra();
         }
+        
+        if (xCell.isSetTextFormat()){
+            this.textFormat = xCell.getTextFormat();
+        }
+        
+        if (xCell.isSetId()) {
+            this.id = xCell.getId();
+        } else {
+            this.id = Id.Factory.newInstance(EDefinitionIdPrefix.REPORT_CELL);
+        }
+        
+        if (xCell.isSetAssociatedColumnId()) {
+            associatedColumnId = xCell.getAssociatedColumnId();
+        }                
+        
+        if (xCell.isSetLeftCellId()) {
+            leftCellId = xCell.getLeftCellId();
+        }
+        
+        if (xCell.isSetRightCellIdList()) {            
+            rightCellIdList = new ArrayList<>(xCell.getRightCellIdList().getIdList());
+        }
+        
+        if (xCell.isSetChangeTopOnMoving()) {
+            this.changeTopOnMoving = xCell.getChangeTopOnMoving();
+        }
     }
 
     protected void appendTo(org.radixware.schemas.adsdef.ReportCell xCell, ESaveMode saveMode) {
@@ -311,30 +369,30 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
         xCell.setHorzAlign(hAlign);
         xCell.setVertAlign(vAlign);
 
-        if (!Utils.equals(marginTopMm, DEFAULT_MARGIN)) {
-            xCell.setTopMargin(marginTopMm);
+        if (!Utils.equals(marginMm.getTopMm(), DEFAULT_MARGIN)) {
+            xCell.setTopMargin(marginMm.getTopMm());
         }
-        if (!Utils.equals(marginLeftMm, DEFAULT_MARGIN)) {
-            xCell.setLeftMargin(marginLeftMm);
+        if (!Utils.equals(marginMm.getLeftMm(), DEFAULT_MARGIN)) {
+            xCell.setLeftMargin(marginMm.getLeftMm());
         }
-        if (!Utils.equals(marginRightMm, DEFAULT_MARGIN)) {
-            xCell.setRightMargin(marginRightMm);
+        if (!Utils.equals(marginMm.getRightMm(), DEFAULT_MARGIN)) {
+            xCell.setRightMargin(marginMm.getRightMm());
         }
-        if (!Utils.equals(marginBottomMm, DEFAULT_MARGIN)) {
-            xCell.setBottomMargin(marginBottomMm);
+        if (!Utils.equals(marginMm.getBottomMm(), DEFAULT_MARGIN)) {
+            xCell.setBottomMargin(marginMm.getBottomMm());
         }
 
-        if (marginBottomRows != 0) {
-            xCell.setTopMarginRows(marginTopRows);
+        if (marginTxt.getTopRows() != 0) {
+            xCell.setTopMarginRows(marginTxt.getTopRows());
         }
-        if (marginBottomRows != 0) {
-            xCell.setTopMarginRows(marginTopRows);
+        if (marginTxt.getBottomRows() != 0) {
+            xCell.setBottomMarginRows(marginTxt.getBottomRows());
         }
-        if (marginLeftCols != 0) {
-            xCell.setLeftMarginCols(marginLeftCols);
+        if (marginTxt.getLeftCols() != 0) {
+            xCell.setLeftMarginCols(marginTxt.getLeftCols());
         }
-        if (marginRightCols != 0) {
-            xCell.setRightMarginCols(marginRightCols);
+        if (marginTxt.getRightCols() != 0) {
+            xCell.setRightMarginCols(marginTxt.getRightCols());
         }
 
         if (!Utils.equals(lineSpacingMm, DEFAULT_LINE_SPACING)) {
@@ -370,6 +428,34 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
         if (ignoreZebraSettings) {
             xCell.setIgnoreParentZebra(true);
         }
+        if (textFormat != null && textFormat != EReportTextFormat.RICH) {
+            xCell.setTextFormat(textFormat);
+        }
+        if (!useTxtPadding) {
+            xCell.setUseTxtPadding(useTxtPadding);
+        }
+        
+        if (id != null) {
+            xCell.setId(id);
+        }
+        
+        if (associatedColumnId != null) {
+            xCell.setAssociatedColumnId(associatedColumnId);
+        } 
+        
+        if (leftCellId != null) {
+            xCell.setLeftCellId(leftCellId);
+        }
+        
+        if (rightCellIdList != null) {
+            ReportCell.RightCellIdList xList = xCell.addNewRightCellIdList();
+            
+            for (Id rightCellId : rightCellIdList) {                
+                xList.getIdList().add(rightCellId);
+            }
+        }
+        
+        xCell.setChangeTopOnMoving(this.changeTopOnMoving);
         /*xCell.setLeft(leftMm);
          xCell.setTop(topMm);
          xCell.setWidth(widthMm);
@@ -466,91 +552,75 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
      * @return text margin from edges in millimeters.
      */
     public double getMarginTopMm() {
-        return marginTopMm;
+        return marginMm.getTopMm();
     }
 
     public int getMarginTopRows() {
-        return marginTopRows;
+        return marginTxt.getTopRows();
     }
 
     public void setMarginTopRows(int rows) {
-        if (getMarginTopRows() != rows) {
-            marginTopRows = rows;
-            setEditState(EEditState.MODIFIED);
-        }
+        marginTxt.setTopRows(rows);
     }
 
     public void setMarginBottomRows(int rows) {
-        if (getMarginBottomRows() != rows) {
-            marginBottomRows = rows;
-            setEditState(EEditState.MODIFIED);
-        }
+        marginTxt.setBottomRows(rows);
     }
 
     public void setMarginLeftCols(int cols) {
-        if (getMarginLeftCols() != cols) {
-            marginLeftCols = cols;
-            setEditState(EEditState.MODIFIED);
-        }
+        marginTxt.setLeftCols(cols);
     }
 
     public void setMarginRightCols(int cols) {
-        if (getMarginRightCols() != cols) {
-            marginRightCols = cols;
-            setEditState(EEditState.MODIFIED);
-        }
+        marginTxt.setRightCols(cols);
     }
 
     public void setMarginTopMm(double marginMm) {
-        if (getMarginTopMm() != marginMm) {
-            marginTopMm = marginMm;
-            setEditState(EEditState.MODIFIED);
-        }
+        this.marginMm.setTopMm(marginMm);
     }
 
     public double getMarginBottomMm() {
-        return marginBottomMm;
+        return marginMm.getBottomMm();
     }
 
     public int getMarginBottomRows() {
-        return marginBottomRows;
+        return marginTxt.getBottomRows();
     }
 
     public void setMarginBottomMm(double marginMm) {
-        if (getMarginBottomMm() != marginMm) {
-            marginBottomMm = marginMm;
-            setEditState(EEditState.MODIFIED);
-        }
+        this.marginMm.setBottomMm(marginMm);
     }
 
     public double getMarginLeftMm() {
-        return marginLeftMm;
+        return marginMm.getLeftMm();
     }
 
     public int getMarginLeftCols() {
-        return marginLeftCols;
+        return marginTxt.getLeftCols();
     }
 
     public void setMarginLeftMm(double marginMm) {
-        if (getMarginLeftMm() != marginMm) {
-            marginLeftMm = marginMm;
-            setEditState(EEditState.MODIFIED);
-        }
+        this.marginMm.setLeftMm(marginMm);
     }
 
     public double getMarginRightMm() {
-        return marginRightMm;
+        return marginMm.getRightMm();
     }
 
     public int getMarginRightCols() {
-        return marginRightCols;
+        return marginTxt.getRightCols();
     }
 
+    public AdsReportMarginMm getMarginMm() {
+        return marginMm;
+    }
+
+    public AdsReportMarginTxt getMarginTxt() {
+        return marginTxt;
+    }
+    
     public void setMarginRightMm(double marginMm) {
-        if (getMarginRightMm() != marginMm) {
-            marginRightMm = marginMm;
-            setEditState(EEditState.MODIFIED);
-        }
+        this.marginMm.setRightMm(marginMm);
     }
 
     /**
@@ -559,10 +629,20 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
     public double getLineSpacingMm() {
         return lineSpacingMm;
     }
+    public double getLineSpacingPts() {
+        return AdsReportUtils.mm2pts(lineSpacingMm);
+    }
 
     public void setLineSpacingMm(double lineSpacingMm) {
         if (this.lineSpacingMm != lineSpacingMm) {
             this.lineSpacingMm = lineSpacingMm;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+    public void setLineSpacingPts(double lineSpacingPts) {
+        double newValMM = AdsReportUtils.pts2mm(lineSpacingPts);
+        if (this.lineSpacingMm != newValMM) {
+            this.lineSpacingMm = newValMM;
             setEditState(EEditState.MODIFIED);
         }
     }
@@ -635,6 +715,72 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
 
     public Jml getOnAdding() {
         return jmlOnAdding;
+    }
+
+    public Id getId() {
+        return id;
+    }
+
+    public void setId(Id id) {
+        this.id = id;
+    }        
+
+    public Id getAssociatedColumnId() {
+        return associatedColumnId;
+    }
+
+    public void setAssociatedColumnId(Id associatedColumnId) {
+        if (!Utils.equals(this.associatedColumnId, associatedColumnId)) {
+            this.associatedColumnId = associatedColumnId;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public Id getLeftCellId() {
+        return leftCellId;
+    }
+
+    public void setLeftCellId(Id leftCellId) {
+        if (!Utils.equals(this.leftCellId, leftCellId)) {
+            this.leftCellId = leftCellId;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public List<Id> getRightCellIdList() {
+        return rightCellIdList == null ? null : new ArrayList<>(rightCellIdList);
+    }
+
+    public void addRightCellId(Id rightCellId) {
+        if (rightCellIdList == null) {
+            rightCellIdList = new ArrayList<>();
+        }
+        
+        if (!rightCellIdList.contains(rightCellId)) {
+            rightCellIdList.add(rightCellId);
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+    
+    public void removeRightCellId(Id rightCellId) {
+        if (rightCellIdList == null) {
+            return;
+        }
+        
+        if (rightCellIdList.remove(rightCellId)) {
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public boolean isChangeTopOnMoving() {
+        return changeTopOnMoving;
+    }
+
+    public void setChangeTopOnMoving(boolean changeTopOnMoving) {
+        if (this.changeTopOnMoving != changeTopOnMoving) {
+            this.changeTopOnMoving = changeTopOnMoving;
+            setEditState(EEditState.MODIFIED);
+        }
     }
 
     /**
@@ -713,8 +859,10 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
             protected void afterDuplicate() {
                 super.afterDuplicate();
                 final AdsReportCell cell = getObject();
-                cell.setLeftMm(cell.getLeftMm() + AdsReportBand.GRID_SIZE_MM);
-                cell.setTopMm(cell.getTopMm() + AdsReportBand.GRID_SIZE_MM);
+                AdsReportForm form = cell.getOwnerForm();
+                double gridSizeMm = form != null ? form.getGridSizeMm() : AdsReportForm.DEFAULT_GRID_SIZE_MM;
+                cell.setLeftMm(cell.getLeftMm() + gridSizeMm);
+                cell.setTopMm(cell.getTopMm() + gridSizeMm);
             }
         }
 
@@ -726,6 +874,12 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
         protected XmlObject copyToXml() {
             final org.radixware.schemas.adsdef.ReportCell xCell = org.radixware.schemas.adsdef.ReportCell.Factory.newInstance();
             radixObject.appendTo(xCell, ESaveMode.NORMAL);
+            
+            xCell.setId(Id.Factory.newInstance(EDefinitionIdPrefix.REPORT_CELL));
+            xCell.setAssociatedColumnId(null);
+            xCell.setLeftCellId(null);
+            xCell.setRightCellIdList(null);
+            
             return xCell;
         }
 
@@ -876,4 +1030,27 @@ public abstract class AdsReportCell extends AdsReportWidget implements IProfilea
     public boolean isReportContainer() {
         return false;
     }
+
+    public EReportTextFormat getTextFormat() {
+        return textFormat;
+    }
+
+    public void setTextFormat(EReportTextFormat textFormat) {
+        if (textFormat != null && this.textFormat != textFormat) {
+            this.textFormat = textFormat;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public boolean isUseTxtPadding() {
+        return useTxtPadding;
+    }
+
+    public void setUseTxtPadding(boolean useTxtSpacePadding) {
+        if (this.useTxtPadding != useTxtSpacePadding) {
+            this.useTxtPadding = useTxtSpacePadding;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+    
 }

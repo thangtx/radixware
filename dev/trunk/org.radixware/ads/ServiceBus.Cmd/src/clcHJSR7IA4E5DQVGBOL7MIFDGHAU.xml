@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsContextlessCommandDefinition Id="clcHJSR7IA4E5DQVGBOL7MIFDGHAU" Name="GetNodeRefPropsInfoByRidCmd" Nature="2" IsReadOnlyCommand="true" IsVisible="false" IsConfirmationRequired="false" ClientEnvironment="explorer">
+    <AccessRules IsFinal="true"/>
+    <InType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="GetPropsInfoByRidDocument"/>
+    <OutType TypeId="451" Path="xsd6SM6ZD5MKVDEBL65ARE5Y7GKMQ" extStr="GetPropsInfoByRidDocument"/>
+    <Source>
+      <xsc:Item>
+        <xsc:Java>if (input == null || input.getGetPropsInfoByRid() == null) {
+    throw new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="axcFGLHWXKG3BB7TLTAJY2WUTIWIU mth3X6EGB3BRFGWJH4VNIE7PHVKRA" Invoke="true">
+          <xsc:Presentation>IllegalArgumentException</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>("Input must be not null");
+}
+for (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdXBC3TNLZQ3NRDCINABIFNQAABA" extStr="EditableProperty">
+          <xsc:Presentation>Common::CommonXsd:EditableProperty</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xProp : input.GetPropsInfoByRid.ItemList) {
+    if (xProp.isSetRid() &amp;&amp; xProp.isSetEntityId()) {
+        if (xProp.getEntityId() == </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E">
+          <xsc:Presentation>System::Unit</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>) { //only for unit so far...
+            final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E">
+          <xsc:Presentation>System::Unit</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> unit = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E">
+          <xsc:Presentation>System::Unit</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E mthKIMFIXCH6RD7RMAUG3EPCS3YWQ" Invoke="true">
+          <xsc:Presentation>loadByRid</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(xProp.getRid());
+            if (unit != null) {
+                xProp.Value = unit.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+          <xsc:Presentation>getPid</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>().toStr();
+            }
+        }
+    }
+}
+return input;</xsc:Java>
+      </xsc:Item>
+    </Source>
+  </AdsContextlessCommandDefinition>
+</AdsDefinition>

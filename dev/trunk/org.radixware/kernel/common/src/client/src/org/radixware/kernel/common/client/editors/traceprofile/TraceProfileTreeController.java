@@ -18,6 +18,7 @@ import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.exceptions.ExceptionMessage;
 import org.radixware.kernel.common.client.meta.RadEnumPresentationDef;
 import org.radixware.kernel.common.client.types.Icon;
+import org.radixware.kernel.common.client.views.IDialog;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
@@ -44,6 +45,8 @@ public final class TraceProfileTreeController<T extends IWidget> {
     
     private final static Id EVENT_SOURCE_ENUM_ID = Id.Factory.loadFrom("acsTNLJBZADHTNRDIPGABQAQNO6EY");    
     public static final String OPTOINS_ARE_UNSUPPORTED = "XXX:options_unsupported";
+    private static final EnumSet<EEventSource> EVENT_SOURCE_WITH_EXT_TRACE_OPTIONS = 
+        EnumSet.of(EEventSource.ARTE_DB, EEventSource.EAS);
     
     /**
      * Уровень важности сообщения.
@@ -582,6 +585,76 @@ public final class TraceProfileTreeController<T extends IWidget> {
         }else{
             updateNodesPresentation();
         }        
+    }
+    
+    /**
+     * Проверка на наличие дополнительных настроек трассировки.
+     * Метод позволяет проверить поддерживает ли указанный источник событий дополнительные настройки трассировки.
+     * @param eventSource источник событий
+     * @return <code>true</code>, если указанный источник событий поддерживает дополнительные настройки трассировки.
+     */
+    public static boolean eventSourceHasExtOptions(final String eventSource){
+        if (eventSource!=null){
+            try{
+                return EVENT_SOURCE_WITH_EXT_TRACE_OPTIONS.contains(EEventSource.getForValue(eventSource));
+            }catch(NoConstItemWithSuchValueError error){
+                return false;
+            }
+            
+        }
+        return false;
+    }
+    
+    /**
+     * Редактирование дополнительных настроек трассировки.
+     * Метод открывает редактор дополнительных настроек трассировки для указанного источника событий,
+     * если данный источник событий поддерживает дополнительные настройки.
+     * Вызывается при двойном клике по ячейке в колонке дополнительных настроек дерева профиля трассировки.
+     * @param eventSource источник событий
+     */
+    public void editExtOptions(final String eventSource){
+        if (eventSource!=null){
+            EEventSource eventSourceEnumItem;
+            try{
+                eventSourceEnumItem = EEventSource.getForValue(eventSource);
+            }catch(NoConstItemWithSuchValueError error){
+                return;
+            }
+            final TraceProfileTreeNode<T> node = treeNodesByEventSource.get(eventSource);
+            if (node!=null && !node.eventSeverityWasInherited()){
+                TraceProfile.EventSourceOptions currentOptions = node.getOptions();
+                if (currentOptions==null){
+                    currentOptions = new TraceProfile.EventSourceOptions(Collections.<String,Object>emptyMap());
+                }
+                EEventSeverity eventSeverity;
+                if (node.getEventSeverity()==null){
+                    eventSeverity = EEventSeverity.NONE;
+                }else{
+                    final String severityName = node.getEventSeverity().getValue();
+                    try{
+                        eventSeverity = EEventSeverity.getForName(severityName);
+                    }catch(NoConstItemWithSuchValueError error){
+                        eventSeverity = EEventSeverity.NONE;
+                    }
+                }
+                final ITraceProfileEventSourceOptionsEditor editor = 
+                    presenter.createEventSourceOptionsEditor(eventSourceEnumItem, eventSeverity, currentOptions);
+                if (editor!=null && editor.execDialog()==IDialog.DialogResult.ACCEPTED){
+                    final TraceProfile.EventSourceOptions newOptions = editor.getOptions();
+                    if (!currentOptions.toString().equals(newOptions.toString())){
+                        isEdited = true;
+                        final TraceProfileTreeController.EventSeverity currentSeverity;
+                        if (node.eventSeverityWasInherited()){
+                            currentSeverity = null;
+                        }else{
+                            currentSeverity = node.getEventSeverity();
+                        }
+                        node.changeEventSeverity(currentSeverity, newOptions.toString(), presenter);
+                        notifyListeners(node);
+                    }
+                }
+            }
+        }      
     }
     
     /**

@@ -20,6 +20,7 @@ public class FilterUtils {
     public static boolean rowFilter(RowString mlString,final FilterSettings filterSettings,List<EIsoLanguage> sourceLangs,List<EIsoLanguage> translLangs){
         return (FilterUtils.filterSearch(sourceLangs,mlString, filterSettings.getSerchText()))
                     && filterByPublishedContext(mlString,filterSettings) 
+                    && filterByVersion(mlString, filterSettings, sourceLangs, translLangs)
                     && filterByEmptyStr(filterSettings,mlString,sourceLangs,translLangs) 
                     && filterByCommentedContext(mlString,filterSettings)
                     && filterByShowMode(mlString, filterSettings.getStringTypes())
@@ -29,7 +30,7 @@ public class FilterUtils {
                     && filterParameters(mlString, filterSettings, translLangs);
     }
     
-    public static List<RowString> getFiltredData(List<RowString> mlStrings,final FilterSettings filterSettings,List<EIsoLanguage> sourceLangs,List<EIsoLanguage> translLangs){
+     public static List<RowString> getFiltredData(List<RowString> mlStrings,final FilterSettings filterSettings,List<EIsoLanguage> sourceLangs,List<EIsoLanguage> translLangs){
         if (mlStrings == null || filterSettings == null || filterSettings.isEmpty()) return mlStrings;
         
         List<RowString> filtredDeta = new ArrayList<>();
@@ -55,6 +56,11 @@ public class FilterUtils {
             return true;
         }
         EMultilingualStringKind strKind = mlString.getMultilingualStringKind();
+        
+        if (strKind == null && allowsType.size() == EMultilingualStringKind.values().length){
+            return true;
+        }
+        
         return allowsType.contains(strKind);
     }    
      
@@ -66,6 +72,10 @@ public class FilterUtils {
 
     private static boolean filterByPublishedContext(RowString mlString, final FilterSettings filterSettings) {
         return !filterSettings.isShowOnlyPulished() || mlString.isContextPublished();
+    }
+    
+    private static boolean filterByVersion(RowString mlString, final FilterSettings filterSettings, List<EIsoLanguage> sourceLangs, List<EIsoLanguage> translLangs) {
+        return !filterSettings.isShowOnlyDifferentVersions() || mlString.isDifferentVersions(sourceLangs, translLangs);
     }
     
     private static boolean filterByEmptyStr(final FilterSettings filterSettings,RowString mlString,List<EIsoLanguage> sourceLangs,List<EIsoLanguage> translLangs){
@@ -83,11 +93,11 @@ public class FilterUtils {
         if(lang==null){
             if(notTranslOnAllLangs){
                 for(EIsoLanguage l:translLangs)
-                    if(!mlString.needsCheck(l))
+                    if(!mlString.isNeedsCheck(l))
                         return false;
             }
             return true;
-        }else if(mlString.needsCheck(lang)){
+        }else if(mlString.isNeedsCheck(lang)){
             return true;
         }
         return false;

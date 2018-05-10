@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2017, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -139,9 +139,9 @@ public final class SapOptions {
         og.add(Messages.SERVICE_URI, getServiceUri())
                 .add(Messages.SAP, getSapId())
                 .add(Messages.ADDRESS, getAddress())
-                .add(Messages.SECURITY_PROTOCOL, getSecurityProtocol() == EPortSecurityProtocol.SSL ? "secured connection" : "plaintext connection");
+                .add(Messages.SECURITY_PROTOCOL, getSecurityProtocol().isTls() ? "secured connection" : "plaintext connection");
         
-          if (getSecurityProtocol() == EPortSecurityProtocol.SSL) {
+          if (getSecurityProtocol().isTls()) {
             og.add(Messages.SERVER_KEY_ALIASES, getServerKeyAliases() == null ? Messages.ANY : getServerKeyAliases().toString());
             og.add(Messages.CLIENT_CERT_ALIASES, getClientCertAliases() == null ? Messages.ANY : getClientCertAliases().toString());
             og.add(Messages.CHECK_CLIENT_CERT, getCheckClientCert());

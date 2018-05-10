@@ -115,8 +115,9 @@
                       <Component id="cbMatchCase" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="cbRegularExpression" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="cbSearchInTitles" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="cbSearchInXml" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="14" max="32767" attributes="0"/>
+                  <EmptySpace pref="46" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -130,7 +131,9 @@
                   <Component id="cbRegularExpression" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="cbSearchInTitles" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="cbSearchInXml" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="10" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -166,6 +169,16 @@
               <ResourceString bundle="org/radixware/kernel/designer/environment/actions/dialogs/Bundle.properties" key="FindInScmlCfgDialog.cbSearchInTitles.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="cbSearchInXml">
+          <Properties>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/radixware/kernel/designer/environment/actions/dialogs/Bundle.properties" key="FindInScmlCfgDialog.cbSearchInXml.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cbSearchInXmlActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

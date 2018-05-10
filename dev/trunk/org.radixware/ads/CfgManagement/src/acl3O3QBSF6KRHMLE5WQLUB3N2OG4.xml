@@ -23,19 +23,25 @@
               <xsc:Java>return (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colD6XH3IE6INFTHPWTRD6KMRUTBI" Invoke="true"/>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colD6XH3IE6INFTHPWTRD6KMRUTBI" Invoke="true">
+                <xsc:Presentation>parent</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == null || !(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colD6XH3IE6INFTHPWTRD6KMRUTBI" Invoke="true"/>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colD6XH3IE6INFTHPWTRD6KMRUTBI" Invoke="true">
+                <xsc:Presentation>parent</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> instanceof </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="acl3O3QBSF6KRHMLE5WQLUB3N2OG4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="acl3O3QBSF6KRHMLE5WQLUB3N2OG4">
+                <xsc:Presentation>CfgItem.Single</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>));
@@ -46,7 +52,90 @@
         </GetterSources>
       </Property>
     </Properties>
-    <Methods/>
+    <Methods>
+      <Method Id="mthD77F2HBL2FGSVPJHR3SEAMPWMA" Name="afterInit" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mprSMDSIZBE2FGA3AZU4TTXXJ4Q3I">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="phase" Id="mpr2NKHSVDLI5GCLEIQAWINI6IPLQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthD77F2HBL2FGSVPJHR3SEAMPWMA" Invoke="true">
+                <xsc:Presentation>afterInit</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src, phase);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colIRYZTYXM2NBDNOQQ5XMAGM3H6Y" Invoke="true">
+                <xsc:Presentation>srcAppVer</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth6U2XAAFFIFEB5AFSJDIWGPUT6Y" Invoke="true">
+                <xsc:Presentation>getAllLayerVersionsAsString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthXN4P2IHDOVHEVFNPVWBNKNLK4Y" Name="updateAppVersion" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1" IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4 colIRYZTYXM2NBDNOQQ5XMAGM3H6Y" Invoke="true">
+                <xsc:Presentation>srcAppVer</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mth6U2XAAFFIFEB5AFSJDIWGPUT6Y" Invoke="true">
+                <xsc:Presentation>getAllLayerVersionsAsString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
     <Entity EntityId="tblJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
     <Presentations ObjectTitleId="mls5HJDLPYAIJBFNKIG3UF6ICGZGM">
       <EditorPresentations>
@@ -95,23 +184,7 @@
           <ObjectTitleFormat Id="etfZCNHM3IEKVADFCXG7NBJBPLSLI"/>
         </EditorPresentation>
       </EditorPresentations>
-      <SelectorPresentations>
-        <SelectorPresentation Id="sprMQEXFCGPZJBLVA7BZDI5QHQKRY" Name="InternalLinks" BasePresentationId="spr2PZI4TZ34JEQNKVR5AXO6PWPNI" InheritanceMask="16561" Restrictions="32" EnabledCommandIds="" CreationEditorPresentationIds="eprO3XHJ6U74NDNHJ7GNTDUUNDEWE" EditorPresentationIds="eprO3XHJ6U74NDNHJ7GNTDUUNDEWE">
-          <AccessRules IsPublished="false"/>
-          <Condition>
-            <ConditionWhere/>
-            <ConditionFrom/>
-          </Condition>
-          <Addons AnyBaseFilterEnabled="true" AnyBaseSortingEnabled="true" CustomFilterEnabled="true" CustomSortingEnabled="false" FilterIsObligatory="false" DefaultSortingId="srtUSWUP7RXBJFXRMQNHD67PC2JIY">
-            <DefaultHint/>
-          </Addons>
-          <SelectorColumns>
-            <Column Align="-1" PropId="colIUQVQZZKPFBRLG7DTABUYGLYBQ" Visibility="1" SizePolicy="0"/>
-            <Column Align="-1" PropId="prdY3N4QO6NSRDXTCHP27YWP3WONM" Visibility="1" SizePolicy="0"/>
-            <Column Align="-1" PropId="col3DNFCTYB3ZDJZCRY4OGG7I66YA" Visibility="1" SizePolicy="0"/>
-            <Column Align="-1" PropId="colHUYIZ7QPTBE7FAGC4FA76QNHPY" Visibility="1" SizePolicy="3"/>
-          </SelectorColumns>
-        </SelectorPresentation>
+      <SelectorPresentations>        
       </SelectorPresentations>
     </Presentations>
     <Extends TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>

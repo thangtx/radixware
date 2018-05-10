@@ -37,10 +37,10 @@
           </Src>
         </GetterSources>
       </Property>
-      <Property Id="prdVBKGQNFRJZFAZDPD7FVXYNT2TM" Name="myData" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
-        <AccessRules Access="2" IsPublished="false"/>
+      <Property Id="prdVBKGQNFRJZFAZDPD7FVXYNT2TM" Name="myData" Nature="2" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="4" IsPublished="false"/>
         <Type TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="IntDocument"/>
-        <Presentation InheritanceMask="4">
+        <Presentation InheritanceMask="4" IsPresentable="false">
           <Editing IsDuplicatesEnabled="true"/>
         </Presentation>
         <GetterSources>
@@ -114,6 +114,13 @@ return </xsc:Java>
           </Src>
         </GetterSources>
       </Property>
+      <Property Id="pru6KLLO5QSCNFRJNZOEZRF7P2ZGA" Name="expLibsIds" Nature="1" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="4" IsPublished="false" IsDeprecated="true"/>
+        <Type TypeId="221"/>
+        <Presentation InheritanceMask="4" IsPresentable="false">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
     </Properties>
     <Methods>
       <Method Id="mthEBTC42HN7RENPIGWWSTFCC2IOQ" Name="linkImpObject" Nature="0" IsOverride="true">
@@ -137,22 +144,20 @@ return </xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecAM6HEX43SFCQTMG23G7JHOBCMA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecAM6HEX43SFCQTMG23G7JHOBCMA">
+                <xsc:Presentation>UserFuncLib</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecAM6HEX43SFCQTMG23G7JHOBCMA mthJKB2LE4C4VCC3NZLAQAU52NGBE" Invoke="true"/>
+              <xsc:IdReference Path="aecAM6HEX43SFCQTMG23G7JHOBCMA mthJKB2LE4C4VCC3NZLAQAU52NGBE" Invoke="true">
+                <xsc:Presentation>exportAll</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(data, </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aclYH7UPCDZRZENTM54YYZX7HHWP4 prdC7T3QJZRFVH7JKDQFFZVPMEAXI" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);</xsc:Java>
+              <xsc:Java>(data, null);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

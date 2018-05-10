@@ -26,7 +26,7 @@ public class SqmlTag_ElseIf  extends SqmlTag {
         super(environment,source);
     }
     
-    public SqmlTag_ElseIf(final IClientEnvironment environment, final int pos){
+    public SqmlTag_ElseIf(final IClientEnvironment environment, final long pos){
         super(environment,pos);
         setDisplayedInfo(null,"#ELSE");
     }

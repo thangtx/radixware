@@ -30,20 +30,26 @@
               <xsc:Java>if(cmdId==</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM cmdJSJIK2BKOFAP5DOLQIICYERBAQ"/>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM cmdJSJIK2BKOFAP5DOLQIICYERBAQ">
+                <xsc:Presentation>UserFunc:MoveToLibrary</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>){
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="tblW7BRVVQLHBE2FCNK7ZBRMAUJGM"/>
+              <xsc:IdReference Path="tblW7BRVVQLHBE2FCNK7ZBRMAUJGM">
+                <xsc:Presentation>System::LibUserFunc</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.toString() == this.Entity.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM col7UMAJND3ZHOBDCMTAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM col7UMAJND3ZHOBDCMTAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>upOwnerEntityId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
@@ -52,7 +58,9 @@
 return super.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthZ4QY527H2FFCVCSSDEH6EXQJAA" Invoke="true"/>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthZ4QY527H2FFCVCSSDEH6EXQJAA" Invoke="true">
+                <xsc:Presentation>isCommandDisabled</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(cmdId);</xsc:Java>
@@ -66,33 +74,43 @@ return super.</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM">
+                <xsc:Presentation>UserFunc</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthH3FIFU4J55HFTI553DLPDIWKOM" Invoke="true"/>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthH3FIFU4J55HFTI553DLPDIWKOM" Invoke="true">
+                <xsc:Presentation>getEntity</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
 if (e.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prd5HQW5K6ILZEC7LCIL66JEZNP7U" Invoke="true"/>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prd5HQW5K6ILZEC7LCIL66JEZNP7U" Invoke="true">
+                <xsc:Presentation>isValid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null &amp;&amp; e.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prd5HQW5K6ILZEC7LCIL66JEZNP7U" Invoke="true"/>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prd5HQW5K6ILZEC7LCIL66JEZNP7U" Invoke="true">
+                <xsc:Presentation>isValid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.booleanValue()) {
     return super.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthM23NRT7ZAJGWFDZSVWALEMS2QI" Invoke="true"/>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthM23NRT7ZAJGWFDZSVWALEMS2QI" Invoke="true">
+                <xsc:Presentation>calcSelectorRowStyle</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -100,13 +118,286 @@ if (e.</xsc:Java>
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsB5NBTSFMOFH55KBWCH5UJ7LWXU aciYOAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsB5NBTSFMOFH55KBWCH5UJ7LWXU aciYOAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Explorer.Env::SelectorStyle:VeryBad</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
 }
 
 </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth733NK3HNF5B3DB4PEGRDMWJYZ4" Name="setProp" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="id" Id="mprTKCT4MW73FDC7J23TR3KOV4T3E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+          <Parameter Name="val" Id="mprDZM65GEMSFFZXJC2MEL3VJH74Y">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM prdILZKB5MVKNAITADIRBN2C2BEZU">
+                <xsc:Presentation>UserFunc:isOwnerWasNotCreated</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==id &amp;&amp; val==</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="1">
+                <xsc:Presentation>Bool</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.TRUE){
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ownerPid = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apaJ6SOXKD3ZHOBDCMTAALOMT5GDM mthPVKLRJ66G5FJVNVQO4MUJK3Q5M" Invoke="true">
+                <xsc:Presentation>getContextOwnerPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    if (ownerPid!=null){
+        getEntity().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM col7YMAJND3ZHOBDCMTAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>upOwnerPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = ownerPid;
+    }
+}
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM col7YMAJND3ZHOBDCMTAALOMT5GDM">
+                <xsc:Presentation>UserFunc:upOwnerPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==id){
+    //RADIX-13426 Do not allow to modify upOwnerPid from client side
+    return;
+}
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mth733NK3HNF5B3DB4PEGRDMWJYZ4" Invoke="true">
+                <xsc:Presentation>setProp</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(id, val);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthPVKLRJ66G5FJVNVQO4MUJK3Q5M" Name="getContextOwnerPid" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (getPresentationContext() instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcMTLUZHWCQRBU5NNMBZK43EG73Q">
+                <xsc:Presentation>Types.Context::EntityPropertyPresentationContext</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>){
+    final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcMTLUZHWCQRBU5NNMBZK43EG73Q">
+                <xsc:Presentation>Types.Context::EntityPropertyPresentationContext</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> context = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcMTLUZHWCQRBU5NNMBZK43EG73Q">
+                <xsc:Presentation>Types.Context::EntityPropertyPresentationContext</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)getPresentationContext();        
+    if (context.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMTLUZHWCQRBU5NNMBZK43EG73Q mthKZFNKPPCBBDAZEDFJ4LQMSUD7E" Invoke="true">
+                <xsc:Presentation>getChildEntity</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getRadMeta().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y mthQD3WYMEL65FVHKRXSKTN3P2FRE" Invoke="true">
+                <xsc:Presentation>getPropById</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(context.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZ3RJU7V4YJC3FOX5QOJIYXGVZE mthPTTDUK53V5BJBNROX73AWMDKQU" Invoke="true">
+                <xsc:Presentation>getPropertyId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()).</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcB2WQJNOFRZFV7PGAJ7SCXJ5IPM mthEWMX5IHLKJE6PORLRFMT4NFPEM" Invoke="true">
+                <xsc:Presentation>getValType</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()==</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTV7UJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Meta::ValType:Object</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>){
+        return context.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMTLUZHWCQRBU5NNMBZK43EG73Q mthKZFNKPPCBBDAZEDFJ4LQMSUD7E" Invoke="true">
+                <xsc:Presentation>getChildEntity</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getPid().toString();
+    }
+}
+return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthEDZCPWDTMJE7TEFPR5PLXXEDQA" Name="doUpdate" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>getEntity().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthMIG2SQ22QZHQNLXRCLCWTQEV7Q" Invoke="true">
+                <xsc:Presentation>checkUserRights</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(true);
+
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthEDZCPWDTMJE7TEFPR5PLXXEDQA" Invoke="true">
+                <xsc:Presentation>doUpdate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthY72O3IGBUZES7N4LG6CMZSH5NI" Name="doCreate" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mpr7BU6R4AVJRBFLONFLVXCWAMQSU">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>getEntity().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthMIG2SQ22QZHQNLXRCLCWTQEV7Q" Invoke="true">
+                <xsc:Presentation>checkUserRights</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(false);
+
+return super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthY72O3IGBUZES7N4LG6CMZSH5NI" Invoke="true">
+                <xsc:Presentation>doCreate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthJ223PZLDQFFCVJQZR7HIJK3ICI" Name="createAsUserPropertyValue" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="ownerEntityAdapter" Id="mprMM5PZIZMTVEYBJ4ALM2K6PJA4Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.PresentationEntityAdapter"/>
+          </Parameter>
+          <Parameter Name="propertyId" Id="mprWXA5PR3VH5CZBB5573FBMQSASA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>getEntity().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthMIG2SQ22QZHQNLXRCLCWTQEV7Q" Invoke="true">
+                <xsc:Presentation>checkUserRights</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(false);
+
+super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcBEXZNUGFFVH7TCP42QQJBL5DGI mthJ223PZLDQFFCVJQZR7HIJK3ICI" Invoke="true">
+                <xsc:Presentation>createAsUserPropertyValue</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ownerEntityAdapter, propertyId);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

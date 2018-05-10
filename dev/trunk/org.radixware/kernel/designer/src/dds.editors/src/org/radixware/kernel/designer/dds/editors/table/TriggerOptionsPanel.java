@@ -26,14 +26,30 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.openide.util.NbBundle;
+import org.radixware.kernel.common.conventions.RadixdocConventions;
+import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
+import org.radixware.kernel.common.defs.HierarchyWalker;
 import org.radixware.kernel.common.defs.IFilter;
+import org.radixware.kernel.common.defs.IVisitor;
+import org.radixware.kernel.common.defs.Module;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObjects.ContainerChangedEvent;
 import org.radixware.kernel.common.defs.RadixObjects.ContainerChangesListener;
+import org.radixware.kernel.common.defs.VisitorProvider;
+import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
+import org.radixware.kernel.common.defs.ads.common.AdsVisitorProvider;
+import org.radixware.kernel.common.defs.ads.module.ModuleDefinitions;
 import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsTriggerDef;
 import org.radixware.kernel.common.defs.dds.providers.DdsVisitorProviderFactory;
 import org.radixware.kernel.common.defs.dds.utils.DbNameUtils;
+import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
+import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.radixdoc.RadixdocUtils;
+import org.radixware.kernel.common.repository.Branch;
+import org.radixware.kernel.common.repository.Layer;
+import org.radixware.kernel.common.repository.ads.AdsSegment;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.sqml.Sqml;
@@ -41,13 +57,16 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ConfigureDefinitionList;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ConfigureDefinitionListCfg;
+import org.radixware.kernel.designer.common.dialogs.components.localizing.HandleInfo;
+import org.radixware.kernel.designer.common.dialogs.components.localizing.LocalizingStringEditor;
+import org.radixware.kernel.designer.common.dialogs.components.localizing.LocalizingStringEditor.EEditorMode;
+import org.radixware.kernel.designer.common.dialogs.components.localizing.LocalizingStringEditor.Options;
 import org.radixware.kernel.designer.common.dialogs.components.state.IStateDisplayer;
 import org.radixware.kernel.designer.common.dialogs.components.state.StateDisplayer;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.ScmlDocument;
 import org.radixware.kernel.designer.common.dialogs.utils.NameAcceptorFactory;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
-import org.radixware.kernel.designer.dds.script.defs.DdsScriptGeneratorUtils;
-
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 
 public class TriggerOptionsPanel extends javax.swing.JPanel implements ContainerChangesListener, IUpdateable {
 
@@ -60,7 +79,6 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
 
 //        CheckForDuplicationProvider checkForDuplicationProvider = CheckForDuplicationProvider.Factory.newForRenaming(trigger);
 //        triggerNameEditPanel.setCheckForDuplicationProvider(checkForDuplicationProvider);
-
         triggerNameEditPanel.setCurrentName(trigger.getName());
         triggerAutoDbNameCheckBox.setSelected(trigger.isAutoDbName());
         triggerDbNameEditPanel.setDbName(trigger.getDbName());
@@ -92,15 +110,24 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
         sqmlEditorPanel.open(trigger.getBody());
         setReadOnly(trigger.isReadOnly());
 
-
         chIsDeprecated.setSelected(trigger.isDeprecated());
         updating = false;
+
+        if (trigger.getType() == DdsTriggerDef.EType.FOR_AUDIT && radixdocOwnerDef != null) {
+            ((LocalizingStringEditor) descriptionEditor).update(auditDescriptionHandleInfo);
+            ((LocalizingStringEditor) descriptionEditor).setReadonly(true);
+        } else {
+            ((LocalizingStringEditor) descriptionEditor).update(descriptionHandleInfo);
+        }
     }
 
     public interface TriggerChangeListener {
 
         public void triggerChanged(DdsTriggerDef trigger);
     }
+
+    private static final Id AUDIT_DESCRIPTION_ID = Id.Factory.loadFrom("mlsNDNKDELXRRF5LKEEN4SC35L4GI");
+
     private DdsTriggerDef trigger = null;
     private boolean readOnly = false;
     private boolean inherited = false;
@@ -108,6 +135,49 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
     private final ArrayList<TriggerChangeListener> listeners = new ArrayList<TriggerChangeListener>();
     private final StateDisplayer stateDisplayer = new StateDisplayer();
     private final JButton chooseColumnsButton;
+    private Definition radixdocOwnerDef;
+    private final HandleInfo descriptionHandleInfo = new HandleInfo() {
+        @Override
+        public Definition getAdsDefinition() {
+            return trigger;
+        }
+
+        @Override
+        public Id getTitleId() {
+            if (trigger.getDescriptionId() != null) {
+                return trigger.getDescriptionId();
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onAdsMultilingualStringDefChange(IMultilingualStringDef multilingualStringDef) {
+            if (multilingualStringDef != null) {
+                trigger.setDescriptionId(multilingualStringDef.getId());
+            } else {
+                trigger.setDescriptionId(null);
+            }
+        }
+
+        @Override
+        protected void onLanguagesPatternChange(EIsoLanguage language, String newStringValue) {
+            if (getAdsMultilingualStringDef() != null) {
+                getAdsMultilingualStringDef().setValue(language, newStringValue);
+            }
+        }
+    };
+    private final HandleInfo auditDescriptionHandleInfo = new HandleInfo() {
+        @Override
+        public Definition getAdsDefinition() {
+            return radixdocOwnerDef;
+        }
+
+        @Override
+        public Id getTitleId() {
+            return AUDIT_DESCRIPTION_ID;
+        }
+    };
 
     private class TriggerSqmlDocument extends ScmlDocument {
 
@@ -130,7 +200,9 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
         }
     }
 
-    /** Creates new form TriggerOptionsPanel */
+    /**
+     * Creates new form TriggerOptionsPanel
+     */
     public TriggerOptionsPanel() {
         initComponents();
 
@@ -175,7 +247,7 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
             }
         });
 
-       chIsDeprecated.addActionListener(new ActionListener() {
+        chIsDeprecated.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -234,6 +306,7 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
         chooseColumnsButton.setEnabled(!readOnly && !inherited);
         sqmlEditorPanel.setEditable(!readOnly && !inherited);
         chIsDeprecated.setEnabled(!readOnly && !inherited);
+        ((LocalizingStringEditor) descriptionEditor).setReadonly(readOnly);
     }
 
     public void setTrigger(DdsTriggerDef trigger, boolean inherited) {
@@ -251,6 +324,11 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
             return;
         }
         trigger.getColumnsInfo().getContainerChangesSupport().addEventListener(this);
+
+        if (radixdocOwnerDef == null) {            
+            radixdocOwnerDef = RadixdocUtils.getRadixdocOwnerDef(trigger.getLayer());
+        }
+
         update();
         this.setVisible(true);
         stateDisplayer.setVisible(true);
@@ -310,12 +388,18 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
 
     public void open(OpenInfo openInfo) {
         sqmlEditorPanel.open(trigger.getBody(), openInfo);
+        if (trigger.getType() == DdsTriggerDef.EType.FOR_AUDIT && radixdocOwnerDef != null) {
+            ((LocalizingStringEditor) descriptionEditor).update(auditDescriptionHandleInfo);
+            ((LocalizingStringEditor) descriptionEditor).setReadonly(true);
+        } else {
+            ((LocalizingStringEditor) descriptionEditor).update(descriptionHandleInfo);
+        }
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -345,6 +429,12 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
         extTextField = new org.radixware.kernel.common.components.ExtendableTextField();
         sqmlEditorPanel = new org.radixware.kernel.designer.common.editors.sqml.SqmlEditorPanel();
         chIsDeprecated = new javax.swing.JCheckBox();
+        descriptionEditor = LocalizingStringEditor.Factory.createEditor(
+            new Options()
+            .add(Options.COLLAPSABLE_KEY, true)
+            .add(Options.TITLE_KEY, "Description")
+            .add(Options.MODE_KEY, EEditorMode.MULTILINE)
+        );
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(TriggerOptionsPanel.class, "TriggerOptionsPanel.jLabel1.text")); // NOI18N
 
@@ -517,40 +607,53 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
 
         chIsDeprecated.setText(org.openide.util.NbBundle.getMessage(TriggerOptionsPanel.class, "TriggerOptionsPanel.chIsDeprecated.text")); // NOI18N
 
+        javax.swing.GroupLayout descriptionEditorLayout = new javax.swing.GroupLayout(descriptionEditor);
+        descriptionEditor.setLayout(descriptionEditorLayout);
+        descriptionEditorLayout.setHorizontalGroup(
+            descriptionEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        descriptionEditorLayout.setVerticalGroup(
+            descriptionEditorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(sqmlEditorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(descriptionEditor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(forEachRowCheckBox)
-                        .addGap(87, 87, 87)
-                        .addComponent(disabledCheckBox))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(triggerAutoDbNameCheckBox)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(triggerNameEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                                .addComponent(triggerNameEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(chIsDeprecated))
-                            .addComponent(triggerDbNameEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(triggerDbNameEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(forColumnsLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(extTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)))
+                        .addComponent(extTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(forEachRowCheckBox)
+                        .addGap(87, 87, 87)
+                        .addComponent(disabledCheckBox)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addComponent(sqmlEditorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -560,6 +663,8 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
                     .addComponent(triggerNameEditPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
                     .addComponent(chIsDeprecated))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(descriptionEditor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(triggerAutoDbNameCheckBox)
@@ -578,7 +683,7 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
                     .addComponent(forColumnsLabel)
                     .addComponent(extTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sqmlEditorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE))
+                .addComponent(sqmlEditorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -751,6 +856,7 @@ public class TriggerOptionsPanel extends javax.swing.JPanel implements Container
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JCheckBox chIsDeprecated;
     private javax.swing.JCheckBox deleteCheckBox;
+    private javax.swing.JPanel descriptionEditor;
     private javax.swing.JCheckBox disabledCheckBox;
     private org.radixware.kernel.common.components.ExtendableTextField extTextField;
     private javax.swing.JRadioButton forAuditRadioButton;

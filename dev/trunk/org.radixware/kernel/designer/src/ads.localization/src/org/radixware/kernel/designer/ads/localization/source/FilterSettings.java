@@ -25,6 +25,7 @@ public class FilterSettings {
     private boolean showOnlyPulished = false;
     private boolean showEmpty = true;
     private boolean showNotEmpty = true;
+    private boolean showOnlyDifferentVersions = false;
     private boolean isShowCommentedSrc = true;
     private boolean isShowNotChecked = true;
     
@@ -65,7 +66,7 @@ public class FilterSettings {
                                 creationTimeFilter.isEmpty() && 
                                 modifiedTimeFilter.isEmpty();
         boolean authorFilterUse = createBy.isEmpty() && modifiedBy.isEmpty();
-        return !isShowOnlyPulished() && isShowEmpty() && isShowNotEmpty() && isShowCommentedSrc() && isShowNotChecked()
+        return !isShowOnlyPulished() && isShowEmpty() && isShowNotEmpty() && isShowCommentedSrc() && isShowNotChecked() && !isShowOnlyDifferentVersions()
                 && (searchText == null || searchText.isEmpty())
                 && notTranslatedOn == null && !isNotTranslatedOnAll
                 && timeFilterUse && authorFilterUse && 
@@ -185,6 +186,12 @@ public class FilterSettings {
     public void setStringTypes(List<EMultilingualStringKind> stringTypes) {
         this.stringTypes = stringTypes;
     }
-    
-    
+
+    public boolean isShowOnlyDifferentVersions() {
+        return showOnlyDifferentVersions;
+    }
+
+    public void setShowOnlyUnversion(boolean showOnlyUnversion) {
+        this.showOnlyDifferentVersions = showOnlyUnversion;
+    }
 }

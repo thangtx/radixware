@@ -26,7 +26,9 @@ static
 {  </xsc:Java>
         </xsc:Item>
         <xsc:Item>
-          <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthA2LX7D74LNAI3DB3KWRBBTDSU4" Invoke="true"/>
+          <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthA2LX7D74LNAI3DB3KWRBBTDSU4" Invoke="true">
+            <xsc:Presentation>fillCharTable</xsc:Presentation>
+          </xsc:IdReference>
         </xsc:Item>
         <xsc:Item>
           <xsc:Java>(); }
@@ -44,7 +46,9 @@ static
        throw new </xsc:Java>
         </xsc:Item>
         <xsc:Item>
-          <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+          <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+            <xsc:Presentation>AppError</xsc:Presentation>
+          </xsc:IdReference>
         </xsc:Item>
         <xsc:Item>
           <xsc:Java>( "Failed to initialize SHA-1 messаge digest algorithm" );
@@ -113,7 +117,9 @@ for (int c = 0 ; c &lt; chars.length; c++){
                 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="3"/>
+              <xsc:TypeDeclaration TypeId="3">
+                <xsc:Presentation>Char</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.isUpperCase(symbol) &amp;&amp; 
@@ -122,14 +128,18 @@ for (int c = 0 ; c &lt; chars.length; c++){
                         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="3"/>
+              <xsc:TypeDeclaration TypeId="3">
+                <xsc:Presentation>Char</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.isUpperCase(chars[c+1]) :
                         c > 0 &amp;&amp; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="3"/>
+              <xsc:TypeDeclaration TypeId="3">
+                <xsc:Presentation>Char</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.isUpperCase(chars[c-1])
@@ -268,11 +278,11 @@ return sb.append(pad).toString();</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>String res="";
-for(Object obj : col) {
-	res+=(res!=""? delimeter :"")+obj.toString();
-	}
-return res;	</xsc:Java>
+              <xsc:Java>String res = "";
+for (Object obj : col) {
+    res += (res != "" ? delimeter : "") + String.valueOf(obj);
+}
+return res;</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -294,13 +304,14 @@ return res;	</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>int padLen=len-s.length();
-if(padLen&lt;=0) 
-   return s;
+              <xsc:Java>int padLen = len - (s == null ? 0 : s.length());
+if (padLen &lt;= 0)
+    return s;
 
-char[] pad=new char[padLen]; Arrays.fill(pad,ch);    
-StringBuilder sb= (s==null ? new StringBuilder() : new StringBuilder(s));
-return sb.insert(0,pad).toString();</xsc:Java>
+char[] pad = new char[padLen];
+Arrays.fill(pad, ch);
+StringBuilder sb = (s == null ? new StringBuilder() : new StringBuilder(s));
+return sb.insert(0, pad).toString();</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -398,7 +409,9 @@ return i>=0 ? s.substring(0,i+1) : "";</xsc:Java>
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthOGXFBL5QD3PBDHKOAAN7YHKUNI" Invoke="true"/>
+              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthOGXFBL5QD3PBDHKOAAN7YHKUNI" Invoke="true">
+                <xsc:Presentation>collectionToString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(col,", ");
@@ -427,7 +440,9 @@ return i>=0 ? s.substring(0,i+1) : "";</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> res = s==null?"":s;
@@ -439,13 +454,17 @@ if (res.length()&lt;len)
     res = padLead? </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthPAY6JM4LETOBDOMVABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthPAY6JM4LETOBDOMVABIFNQAABA" Invoke="true">
+                <xsc:Presentation>padLead</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(res, len, padChar): </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthDRFIKPENETOBDOMVABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthDRFIKPENETOBDOMVABIFNQAABA" Invoke="true">
+                <xsc:Presentation>padTrail</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(res, len, padChar);
@@ -533,7 +552,9 @@ return res;</xsc:Java>
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthPWTNHLJMNDOBDCPCABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="adcTOODFIMLETOBDOMVABIFNQAABA mthPWTNHLJMNDOBDCPCABIFNQAABA" Invoke="true">
+                <xsc:Presentation>sha1</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>( s!=null ? s.getBytes("utf-8") : null ) ;
@@ -541,12 +562,46 @@ return res;</xsc:Java>
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true"/>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mth5TTUPQZBRBFJPJTYFH3A54IZFY" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(e.getMessage(), e);
 }
 </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2OJZGD67LVFFBNMVZAREP3NGME" Name="isBlank" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprUDGI4RGGOBDQJN4A6PHWF4DU6Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.apache.commons.lang.StringUtils.isBlank(s);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth44PNOR5YVZH6DFYIO5GA5KIBDU" Name="isNotBlank" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="s" Id="mprUDGI4RGGOBDQJN4A6PHWF4DU6Y">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return org.apache.commons.lang.StringUtils.isNotBlank(s);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

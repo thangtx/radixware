@@ -17,12 +17,16 @@ import java.util.EnumSet;
 
 public enum EKeyboardModifier {
     
-    SHIFT(Event.SHIFT_MASK),CTRL(Event.CTRL_MASK),META(Event.META_MASK),ALT(Event.ALT_MASK);    
+    SHIFT(Event.SHIFT_MASK),
+    CTRL(Event.CTRL_MASK),
+    META(Event.META_MASK),
+    ALT(Event.ALT_MASK),
+    ANY(-1);
     
     private final int awtMask;
     
     private EKeyboardModifier(final int awtMask){
-        this.awtMask = awtMask;                
+        this.awtMask = awtMask;
     }
     
     public static EnumSet<EKeyboardModifier> fromAwtBitMask(final int bitMask){
@@ -33,5 +37,17 @@ public enum EKeyboardModifier {
             }
         }
         return modifiers;
+    }
+    
+    public static EnumSet<EKeyboardModifier> parseFromString(final String modifiers){
+        if (modifiers == null || modifiers.isEmpty()) {
+            return EnumSet.noneOf(EKeyboardModifier.class);
+        } else {            
+            try {
+                return fromAwtBitMask(Integer.parseInt(modifiers));
+            } catch (NumberFormatException exception) {
+                return EnumSet.noneOf(EKeyboardModifier.class);
+            }            
+        }        
     }
 }

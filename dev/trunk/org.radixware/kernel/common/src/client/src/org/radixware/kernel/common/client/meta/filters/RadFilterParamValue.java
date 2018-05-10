@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.common.client.meta.filters;
 
+import org.radixware.kernel.common.client.types.Reference;
+import org.radixware.kernel.common.client.utils.ValueConverter;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Id;
@@ -42,5 +44,13 @@ public final class RadFilterParamValue {
     
     public RadFilterParamValue changeParamId(final Id newParamId){
         return new RadFilterParamValue(newParamId, type, value);
+    }
+    
+    public org.radixware.schemas.eas.PropertyList.Item writeToXml(final org.radixware.schemas.eas.PropertyList.Item xml){        
+        final org.radixware.schemas.eas.PropertyList.Item paramXml = xml==null ? org.radixware.schemas.eas.PropertyList.Item.Factory.newInstance() : xml;
+        final Object rawValue = value==null ? null : ValueConverter.valAsStr2Obj(value, type);
+        paramXml.setId(paramId);
+        ValueConverter.objVal2EasPropXmlVal(rawValue, type, paramXml);
+        return paramXml;
     }
 }

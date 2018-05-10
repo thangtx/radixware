@@ -19,6 +19,7 @@ import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.CodeWriter;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 
 
@@ -29,6 +30,7 @@ public abstract class RadixObjectWriter<T extends RadixObject & IJavaSource> ext
     protected final T def;
 
     protected void writeCustomMarker(Definition def, CodePrinter printer, String mark) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         printer.print(DEFINITION_LOCATOR_START_MARKER);
         //printer.print(def.getId().toCharArray());
 
@@ -45,6 +47,7 @@ public abstract class RadixObjectWriter<T extends RadixObject & IJavaSource> ext
         printer.print(mark);
         printer.print('-');
         printer.println(DEFINITION_LOCATOR_END_MARKER);
+        WriterUtils.leaveHumanUnreadableBlock(printer);
     }
 
     protected RadixObjectWriter(JavaSourceSupport support, T target, UsagePurpose usagePurpose) {

@@ -348,7 +348,7 @@ public class AdsUIUtil {
             return null;
         }
 
-        if (name.equals("geometry") && node instanceof AdsLayout) {
+        if (name.equals(AdsWidgetProperties.GEOMETRY) && node instanceof AdsLayout) {
             RadixObject owner = node.getContainer();
             if (owner instanceof AdsWidgetDef) {
                 return getUiProperty(owner, name);
@@ -366,7 +366,7 @@ public class AdsUIUtil {
             prop = AdsMetaInfo.getPropByName(getQtClassName(node), name, node);
             if (prop != null) {
                 if (node instanceof AdsLayout.SpacerItem && "sizeHint".equals(name)) {
-                    AdsUIProperty.EnumValueProperty o = (AdsUIProperty.EnumValueProperty) AdsUIUtil.getUiProperty(node, "orientation");
+                    AdsUIProperty.EnumValueProperty o = (AdsUIProperty.EnumValueProperty) AdsUIUtil.getUiProperty(node, AdsWidgetProperties.ORIENTATION);
                     AdsUIProperty.SizeProperty size = (AdsUIProperty.SizeProperty) prop.duplicate();
                     if (EOrientation.Horizontal.equals(o.getValue())) {
                         size.setSize(40, 20);
@@ -390,7 +390,7 @@ public class AdsUIUtil {
             return;
         }
 
-        if (prop.getName().equals("geometry") && node instanceof AdsLayout) {
+        if (prop.getName().equals(AdsWidgetProperties.GEOMETRY) && node instanceof AdsLayout) {
             RadixObject owner = node.getContainer();
             if (owner instanceof AdsWidgetDef) {
                 setUiProperty(owner, prop);
@@ -602,7 +602,9 @@ public class AdsUIUtil {
         return clazz.equals(AdsMetaInfo.LIST_WIDGET_CLASS)
                 || clazz.equals(AdsMetaInfo.TABLE_WIDGET_CLASS)
                 || clazz.equals(AdsMetaInfo.TREE_WIDGET_CLASS)
-                || clazz.equals(AdsMetaInfo.COMBO_BOX_CLASS);
+                || clazz.equals(AdsMetaInfo.COMBO_BOX_CLASS)
+                || clazz.equals(AdsMetaInfo.TABLE_VIEW_CLASS)
+                || clazz.equals(AdsMetaInfo.TREE_VIEW_CLASS);
     }
 
     public static void addPropertyChangeListener(RadixObject node, PropertyChangeListener pcl) {
@@ -681,7 +683,7 @@ public class AdsUIUtil {
             return widget;
         }
 
-        AdsUIProperty.IntProperty p = (AdsUIProperty.IntProperty) getUiProperty(widget, "currentIndex");
+        AdsUIProperty.IntProperty p = (AdsUIProperty.IntProperty) getUiProperty(widget, AdsWidgetProperties.CURRENT_INDEX);
         assert p != null;
 
         Definitions<? extends AdsUIItemDef> ws = null;

@@ -66,6 +66,12 @@ final class CommonSelectorFilter implements IRadFilter, ICommonSelectorAddon{
     }
 
     @Override
+    public Sqml getAdditionalFrom() {
+        return null;
+    }
+        
+
+    @Override
     public final Id getId() {
         return id;
     }

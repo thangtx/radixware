@@ -55,7 +55,7 @@ public class CsvDelimiterPanel extends javax.swing.JPanel {
     }
     private volatile boolean opening = false;
 
-    public void open(final AdsReportClassDef report,final OpenInfo openInfo) {
+    public void open(final AdsReportClassDef report) {
         this.report = report;
         try {
             opening = true;

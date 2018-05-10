@@ -33,7 +33,7 @@ import org.radixware.schemas.product.JavaClasses;
 import org.radixware.schemas.product.UserReference;
 
 public class SrvAdsIndices {
-
+    protected final LocalTracer localTracer;
     private final Map<Id, DefMeta> metaByDefId;
     private final DefIdsByType defIdsByType;
     private final IdListsById descenderIdsByClassId;
@@ -41,13 +41,27 @@ public class SrvAdsIndices {
     private final IdListsByName defIdsByModule;
     private final IdListsByName defIdsByLayer;
     private final Map<Id, Collection<EntityUserReference>> entityUserReferences;
-    private final Map<String, EventCodeMeta> eventCodes;
+    protected final Map<String, EventCodeMeta> eventCodes;
     private final Set<String> executableClasses;
     private Set<Id> loadOnStartupClassIds;
     Collection<Id> rootDomainIds;
-
+    
+    protected SrvAdsIndices() {
+        localTracer = null;
+        metaByDefId = null;
+        defIdsByType = null;
+        descenderIdsByClassId = null;
+        defIdsByDomainId = null;
+        defIdsByModule = null;
+        defIdsByLayer = null;
+        entityUserReferences = null;
+        eventCodes = null;
+        executableClasses = null;
+    }
+    
     public SrvAdsIndices(final RevisionMeta revisionMeta, final ReleaseRepository repository, final LocalTracer tracer) {
         super();
+        localTracer = tracer;
         final List<LayerMeta> layers = new ArrayList<>(revisionMeta.getAllLayersSortedFromBottom());
         Collections.reverse(layers);
         defIdsByType = new DefIdsByType();

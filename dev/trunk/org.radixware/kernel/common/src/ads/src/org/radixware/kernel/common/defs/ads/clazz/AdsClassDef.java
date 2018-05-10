@@ -1236,6 +1236,8 @@ public abstract class AdsClassDef extends AdsTitledDefinition implements
                         ERuntimeEnvironmentType env = AdsClassDef.this.getClientEnvironment();
                         if (e != ERuntimeEnvironmentType.COMMON_CLIENT && (e == env || env == ERuntimeEnvironmentType.COMMON_CLIENT)) {
                             return EnumSet.of(CodeType.EXCUTABLE, CodeType.META);
+                        } else if (e != ERuntimeEnvironmentType.COMMON_CLIENT && e != env && getClassDefType() != FORM_HANDLER) {
+                            return EnumSet.of(CodeType.META);
                         } else {
                             return EnumSet.noneOf(CodeType.class);
                         }
@@ -1351,6 +1353,10 @@ public abstract class AdsClassDef extends AdsTitledDefinition implements
 
     @Override
     public ClipboardSupport<? extends AdsClassDef> getClipboardSupport() {
+        Module module = getModule();
+        if (module != null && module.getSegmentType() == ERepositorySegmentType.UDS){
+            return null;
+        }
         return new AdsClassClipboardSupport(this);
     }
 
@@ -1523,7 +1529,7 @@ public abstract class AdsClassDef extends AdsTitledDefinition implements
             return super.skip(object) || (!includeThis && object == this.object);
         }
     }
-
+    
     public boolean isCodeEditable() {
         if (isReadOnly()) {
             return false;
@@ -1532,18 +1538,20 @@ public abstract class AdsClassDef extends AdsTitledDefinition implements
         if (ovr == null) {
             return true;
         } else {
-
-            AdsDefinition topLevel = ovr.findTopLevelDef();
-            if (topLevel == null) {
-                return false;
-            } else {
-                return topLevel.getSaveMode() == ESaveMode.NORMAL;
+            while (ovr != null) {
+                AdsDefinition topLevel = ovr.findTopLevelDef();
+                if (topLevel == null || topLevel.getSaveMode() != ESaveMode.NORMAL) {
+                    return false;
+                }
+                ovr = ovr.getHierarchy().findOverwritten().get();
             }
+
+            return true;
 
         }
     }
 
-    public String getRuntimeLocalClassName() {
+    public String getRuntimeLocalClassName(boolean isHumanReadable) {
 
         if (isNested()) {
             final StringBuilder sb = new StringBuilder();
@@ -1554,16 +1562,18 @@ public abstract class AdsClassDef extends AdsTitledDefinition implements
                 } else {
                     sb.append('.');
                 }
+                Definition def;
                 if (adsClassDef instanceof PropertyPresentationEmbeddedClass) {
-                    sb.append(adsClassDef.getOwnerDef().getId().toString());
+                    def = adsClassDef.getOwnerDef();
                 } else {
-                    sb.append(adsClassDef.getId().toString());
+                    def = adsClassDef;
                 }
+                sb.append(JavaSourceSupport.getName(def, isHumanReadable));
+               
             }
             return sb.toString();
         }
-
-        return getId().toString();
+        return new String(JavaSourceSupport.getName(this, isHumanReadable));
     }
 
     @Override
@@ -1582,5 +1592,14 @@ public abstract class AdsClassDef extends AdsTitledDefinition implements
     @Override
     public boolean isRadixdocProvider() {
         return true;
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.CLASS;
+    }
+    
+    public boolean isTitleInherited() {
+        return false;
     }
 }

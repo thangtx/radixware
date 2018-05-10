@@ -16,7 +16,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -33,17 +32,16 @@ import org.radixware.wps.rwt.*;
 import org.radixware.wps.rwt.IGrid.IEditingOptions;
 import org.radixware.wps.rwt.tree.Tree.Column;
 import org.radixware.wps.rwt.tree.Tree.EditMaskRenderer;
-import org.radixware.wps.rwt.tree.Tree.EditingOptions;
 import org.radixware.wps.rwt.tree.Tree.ICellEditorProvider;
 import org.radixware.wps.rwt.tree.Tree.ICellRendererProvider;
 import org.radixware.wps.text.WpsTextOptions;
 
 public class Node extends UIObject {    
+    
+    private static Color DEFAULT_MARKED_BACKGROUND_COLOR = Color.decode("#6495ED");
 
     public static abstract class Children {
-
-        protected List<Node> nodes;
-        private Node owner;
+        
         public static final Children LEAF = new Children() {
             @Override
             public boolean isEmpty() {
@@ -54,8 +52,11 @@ public class Node extends UIObject {
             protected List<Node> createNodes() {
                 return Collections.emptyList();
             }
-        };
+        };        
 
+        protected List<Node> nodes;
+        private Node owner;        
+        
         public void reset() {
             synchronized (this) {
                 if (nodes != null) {
@@ -121,16 +122,19 @@ public class Node extends UIObject {
             if (nodes == null) {
                 nodes = createNodes();
             }
-            if (owner!=null && owner.getTree()!=null && owner.getTree().getSelectedNode()==node) {
-                owner.getTree().setSelectedNode(null);
+            final Tree tree = owner==null ? null : owner.getTree();
+            if (tree!=null && tree.getSelectedNode()==node) {
+                tree.setSelectedNode(null);
             }
-            node.setCurrentCell(null);
             nodes.remove(node);
-            node.setParent(null);
+            node.setCurrentCell(null);
+            if (tree==null){
+                node.setParent(null);
+            }else{
+                tree.dettachNode(node);
+            }
             update();
         }
-
-        protected abstract List<Node> createNodes();
 
         private void update() {
             if (owner != null) {
@@ -141,6 +145,12 @@ public class Node extends UIObject {
         protected final Node getOwnerNode() {
             return owner;
         }
+        
+        public boolean areChildrenLoaded() {
+            return nodes != null;
+        }
+        
+        protected abstract List<Node> createNodes();        
     }
 
     static class DefaultChildren extends Children {
@@ -235,27 +245,7 @@ public class Node extends UIObject {
 
         public abstract Node createNodeForKey(T key);
     }
-    private Children children;
-    private boolean isExpanded;
-    private boolean isAutoExpanded;
-    private Object userData;    
-    private static final Tree.DoubleClickListener NODE_DBL_CLICK_HANDLER = new Tree.DoubleClickListener() {
-        @Override
-        public void nodeDoubleClick(Node node) {
-
-            Tree tree = node.getTree();
-            if (tree != null) {
-                tree.dblClickNode(node);
-            }
-        }
-    };
-    private static final ButtonBase.ClickHandler BUTTON_CLICK_HANDLER = new ButtonBase.ClickHandler() {
-        @Override
-        public void onClick(IButton source) {
-            ((Button) source).toggleNode();
-        }
-    };
-
+    
     private class Button extends ButtonBase {
         
         boolean isExpanded;
@@ -267,7 +257,6 @@ public class Node extends UIObject {
             html.setCss("cursor", "pointer");
             html.setCss("position", "relative");
             html.setCss("left", "0px");
-            html.setCss("top", "-2px");
             setParent(Node.this);
             html.addClass("rwt-tree-node-indicator");
             addClickHandler(BUTTON_CLICK_HANDLER);
@@ -308,18 +297,12 @@ public class Node extends UIObject {
 
         private void toggleNode() {
             try {
-                getNode().toggle();
-                Tree tree = getTree();
-                if (tree != null) {
-                    Node node = tree.getSelectedNode();
-                    if (node != null) {
-                        Cell cell = node.getCurrentCell(getTree());
-                        if (cell == null) {
-                            cell = node.getNodeCell();
-                        }
-                        if (cell != null) {
-                            cell.setFocused(true);
-                        }
+                final Node node = getNode();
+                node.toggle();
+                if (getTree() != null) {
+                    Cell cell = node.getNodeCell();
+                    if (cell != null) {
+                        cell.setFocused(true);
                     }
                 }
             } catch (Throwable e) {
@@ -330,20 +313,235 @@ public class Node extends UIObject {
         private Node getNode() {
             return (Node) getParent().getParent();
         }
-    }
+    }    
+    
+    static class NodeRow extends Html {
 
-    private Cell getCurrentCell(final Tree tree) {
-        if (tree == null) {
+        private Node node;
+
+        public NodeRow() {
+            super("tr");
+        }
+
+        private void setNode(Node node) {
+            this.node = node;
+        }
+
+        Node getNode() {
+            return node;
+        }
+    }    
+    
+    private class ColumnInfo {
+
+        Object value;
+        private String objectName;
+        private WpsTextOptions textOptions;
+        private ICellRendererProvider cellRendererProvider;
+        private ICellEditorProvider cellEditorProvider;
+
+        public ICellEditorProvider getCellEditorProvider() {
+            if (cellEditorProvider != null) {
+                return cellEditorProvider;
+            }
+            Tree.Column column = getColumn();
+            if (column != null) {
+                return column.getCellEditorProvider();
+            } else {
+                return null;
+            }
+        }
+
+        public ICellRendererProvider getCellRendererProvider() {
+            if (cellRendererProvider != null) {
+                return cellRendererProvider;
+            }
+            final Cell cell = getIndex() >= 0 && getIndex() < getCells().size() ? getCells().get(getIndex()) : null;
+            final EditMask cellmask = cell == null ? null : cell.getEditingOptions().getEditMask();
+            if (cellmask != null) {
+                return new ICellRendererProvider() {
+                    @Override
+                    public INodeCellRenderer newCellRenderer(Node node, int columnIndex) {
+                        Cell cell = node.getCells().get(columnIndex);
+                        return new EditMaskRenderer(cellmask, getEnvironment(), cell);
+                    }
+                };
+            } else {
+                Tree.Column column = getColumn();
+                if (column != null) {
+                    return column.getCellRendererProvider();
+                } else {
+                    return null;
+                }
+            }
+        }
+
+        private Tree.Column getColumn() {
+            int index = getIndex();
+            if (index >= 0) {
+                Tree tree = getTree();
+                if (tree == null) {
+                    return null;
+                }
+                return tree.getColumn(index);
+            }
             return null;
         }
-        Node node = tree.getSelectedNode();
-        if (node == null) {
-            return null;
+
+        private int getIndex() {
+            for (int i = 0; i < columnInfos.size(); i++) {
+                if (columnInfos.get(i) == this) {
+                    return i;
+                }
+            }
+            return -1;
         }
-        return node.currentCell;
+        
+        public WpsTextOptions getTextOptions(){
+            return textOptions==null ? WpsTextOptions.EMPTY : textOptions;
+        }
+        
+        public boolean setTextOptions(final WpsTextOptions options){
+            if (options!=null && !options.equals(textOptions)){
+                textOptions = options;
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        public String getObjectName() {
+            return objectName;
+        }
+
+        public void setObjectName(final String objectName) {
+            this.objectName = objectName;
+        }
+                
+    }    
+    
+    public interface INodeCellRenderer {
+
+        public void update(final Node node, final int c, final Object value);
+
+        public void selectionChanged(Node node, int c, Object value, ICell cell, boolean isSelected);
+
+        public void rowSelectionChanged(boolean isRowSelected);
+
+        public UIObject getUI();
     }
 
-    protected final class Cell extends UIObject implements ICell {
+    public interface INodeCellEditor {
+
+        public void setValue(Node node, int c, Object value);
+
+        public Object getValue();
+
+        public void applyChanges();
+
+        public void cancelChanges();
+
+        public UIObject getUI();
+    }
+
+    public static class DefaultTreeCellRenderer extends UIObject implements INodeCellRenderer {
+
+        protected final Html label;
+
+        public DefaultTreeCellRenderer() {
+            super(new Div());
+            setHeight(20);
+
+            html.add(label = new Html("label"));            
+            this.label.setCss("padding-left", "3px");
+            this.label.setCss("position", "relative");
+            this.label.addClass("rwt-ui-element-text");
+            this.label.setCss("line-height", "20px");
+            html.setCss("overflow", "hidden");
+            html.setCss("display", "table-cell");
+            html.setCss("white-space", "nowrap");
+            setDefaultClassName("rwt-ui-element-text");
+        }
+
+        protected String getDisplayText(final Object value) {
+            return String.valueOf(value);
+        }
+
+        @Override
+        protected ICssStyledItem getBackgroundHolder() {
+            return label;
+        }
+
+        @Override
+        protected ICssStyledItem getForegroundHolder() {
+            return label;
+        }
+
+        @Override
+        protected ICssStyledItem getFontOptionsHolder() {
+            return label;
+        }
+
+        @Override
+        public void update(final Node node, final int c, final Object value) {
+            label.setInnerText(getDisplayText(value));
+        }
+
+        @Override
+        public void selectionChanged(Node node, int c, Object value, ICell cell, boolean isSelected) {
+        }
+
+        @Override
+        public void rowSelectionChanged(boolean isRowSelected) {
+        }
+
+        @Override
+        public UIObject getUI() {
+            return DefaultTreeCellRenderer.this;
+        }
+    }
+
+    public static class DefaultTreeColumnCellRenderer extends DefaultTreeCellRenderer {
+
+        private Html icon;
+
+        public DefaultTreeColumnCellRenderer() {
+            setDefaultClassName("rwt-ui-element");
+        }
+
+        @Override
+        public void update(Node node, int c, Object value) {
+            if (node != null && node.icon != null) {
+                if (this.icon == null) {
+                    this.icon = new Html("img");
+                    this.icon.setCss("width", "12px");
+                    this.icon.setCss("height", "12px");
+                    this.icon.setCss("top", "2px");
+                    this.icon.setCss("position", "relative");
+                    this.icon.setAttr("viewBox", "0 0 12 12");
+                    this.icon.setAttr("preserveAspectRatio", "xMinYMin");
+                    html.add(0, this.icon);
+                }
+                if (!Utils.equals(this.icon.getAttr("src"), node.icon.getURI(this))) {
+                    this.icon.setAttr("src", node.icon.getURI(this));
+                }
+            } else {
+                if (this.icon != null) {
+                    this.icon.remove();
+                    this.icon = null;
+                }
+            }
+
+            super.update(node, c, value);
+        }
+
+        @Override
+        public UIObject getUI() {
+            return DefaultTreeColumnCellRenderer.this;
+        }
+    }    
+    
+    protected final class Cell extends UIObject implements ICell {                
 
         protected INodeCellEditor editor = null;
         protected INodeCellRenderer renderer = null;
@@ -353,10 +551,11 @@ public class Node extends UIObject {
         private Html buttonContainer;
         private Html[] innerHtmls = null;
         private Object userData;
-        private Color markedBackground = Color.decode("#6495ED"), markedForeground = null;
+        private Color markedBackground = DEFAULT_MARKED_BACKGROUND_COLOR, markedForeground = null;
         private Color foreground, background;
+        private Color rendererForeground, rendererBackground;        
         private boolean foregroundSaved, backgroundSaved;
-        private final IEditingOptions editOpts = new EditingOptions(this);
+        private final IEditingOptions editOpts;
         private boolean isEditable = true;
         private boolean isSelected;
         private Div container = new Div();
@@ -366,9 +565,9 @@ public class Node extends UIObject {
             return editOpts;
         }
 
-        public Cell(int index) {
+        public Cell(final int index) {
             super(new Html("td"));
-
+            editOpts = new IGrid.EditingOptions(this);
             if (index == 0) {
                 innerHtmls = new Html[]{
                     new Html("table"),
@@ -405,6 +604,9 @@ public class Node extends UIObject {
             html.setAttr("onkeydown", "$RWT.tree.node.keyDown");            
             setParent(Node.this);
             setForeground(Node.this.getForeground());
+            if (index<getColumnInfosSize()){
+                setObjectName(getColumnInfo(index).getObjectName());
+            }
         }
 
         @Override
@@ -465,7 +667,8 @@ public class Node extends UIObject {
         }
 
         private void setCurrent(boolean clickAgain) {
-            Cell curCell = getCurrentCell(getTree());
+            final Tree tree = getTree();
+            Cell curCell = getCurrentCell(tree);
             if (curCell != this) {
                 Node oldNode = null;
                 Node curNode = getOwnerNode();
@@ -473,28 +676,14 @@ public class Node extends UIObject {
                 if (curCell != null) {
                     oldNode = curCell.getOwnerNode();
                     if (curCell.leaveEditMode(true)) {
-                        getTree().setSelectedNode(Node.this);
+                        tree.setSelectedNode(Node.this);
                         setCurrentCell(this);                        
                     }
                 } else {
-                    getTree().setSelectedNode(Node.this);
+                    if (tree!=null){
+                        tree.setSelectedNode(Node.this);
+                    }
                     setCurrentCell(this);                                    
-                }
-                if (oldNode != curNode) {
-                    if (oldNode != null) {
-                        for (Cell c : oldNode.dataCells) {
-                            if (c.renderer != null) {
-                                c.renderer.rowSelectionChanged(false);
-                            }
-                        }
-                    }
-                    if (curNode != null) {
-                        for (Cell c : curNode.dataCells) {
-                            if (c.renderer != null) {
-                                c.renderer.rowSelectionChanged(true);
-                            }
-                        }
-                    }
                 }
             } else {
                 enterEditMode();
@@ -612,44 +801,46 @@ public class Node extends UIObject {
                     editor = null;
                 }
 
-                if (renderer == null || rendererProvider != getCellRendererProvider(index)) {
+                if (getTree()!=null && (renderer == null || rendererProvider != getCellRendererProvider(index))) {
                     clearContent();
                     rendererProvider = getCellRendererProvider(index);
-                    renderer = rendererProvider.newCellRenderer(Node.this, index);
-                    renderer.getUI().setParent(this);
+                    installRenderer(rendererProvider.newCellRenderer(Node.this, index));
                 }
 
-                if (index > 0) {
-                    html.addClass("rwt-grid-row-cell");
-                }
-                renderer.update(Node.this, index, getCellValue(index));
-                if (container.childCount() == 0) {
-                    final UIObject cell = renderer.getUI();
-                    cell.setParent(null);//renew call
-                    container.add(cell.getHtml());
-                    cell.setParent(this);
-                    cell.getHtml().setAttr("role", "view");
-                }
-
-                if (columnTextOptions != null) {
-                    WpsTextOptions colOpts = getColumnTextOptions(index);
-                    if (colOpts != null && !colOpts.isEmpty()) {
-                        setBackground(colOpts.getBackgroundColor());
-                        setForeground(colOpts.getForegroundColor());
-                        if (colOpts.getAlignment() != null) {
-                            renderer.getUI().getHtml().setCss("text-align", colOpts.getAlignment().getCssPropertyValue());
-                        } else if (alignment != null) {
-                            renderer.getUI().getHtml().setCss("text-align", alignment.name());
-                        }
+                if (renderer!=null){
+                    renderer.update(Node.this, index, getCellValue(index));
+                    if (container.childCount() == 0) {
+                        final UIObject cell = renderer.getUI();
+                        cell.setParent(null);//renew call
+                        container.add(cell.getHtml());
+                        cell.setParent(this);
+                        cell.getHtml().setAttr("role", "view");
                     }
                 }
+                updateColumnTextOptions(index);
             }
             if (textOptions != null) {
                 setTextOptionsImpl(textOptions);
             }
         }
+        
+        private void updateColumnTextOptions(final int column){
+            if (!isEditMode()) {
+                WpsTextOptions colOpts = getColumnTextOptions(column);
+                if (colOpts != null && !colOpts.isEmpty() && renderer!=null) {
+                    setBackground(colOpts.getBackgroundColor());
+                    setForeground(colOpts.getForegroundColor());                    
+                    if (colOpts.getAlignment() != null) {
+                        renderer.getUI().getHtml().setCss("text-align", colOpts.getAlignment().getCssPropertyValue());
+                    } else if (alignment != null) {
+                        renderer.getUI().getHtml().setCss("text-align", alignment.name());
+                    }
+                }                
+            }
+        }
 
-        protected void updateCurrentState() {
+        @Override
+        public void updateRenderer() {
             if (editor == null && getTree() != null) {
                 Node n = Node.this;
                 int c = getIndex();
@@ -675,7 +866,9 @@ public class Node extends UIObject {
                     }
                 }
             }
-            this.renderer.update(Node.this, getIndex(), getCellValue(getIndex()));
+            if (renderer!=null){
+                renderer.update(Node.this, getIndex(), getCellValue(getIndex()));
+            }
         }
 
         public void setEditable(boolean isEditable) {
@@ -683,7 +876,11 @@ public class Node extends UIObject {
         }
 
         public boolean isEditable() {
-            Column column = getTree().getColumn(this.getIndex());
+            final Tree tree = getTree();
+            if (tree==null){
+                return false;
+            }
+            Column column = tree.getColumn(this.getIndex());
             if (column.getCellEditorProvider() != null) {
                 if (!Node.this.isEditable || (!column.isEditable())) {
                     return false;
@@ -703,12 +900,28 @@ public class Node extends UIObject {
             if (rendererProvider != newRendererProvider) {
                 rendererProvider = newRendererProvider;
             }
-            this.renderer = rendererProvider.newCellRenderer(Node.this, c);
-            this.renderer.getUI().setParent(this);
-            this.container.add(this.renderer.getUI().getHtml());
+            final UIObject cell = installRenderer(rendererProvider.newCellRenderer(Node.this, c));
+            this.container.add(cell.getHtml());
+        }
+        
+        private UIObject installRenderer(final INodeCellRenderer newRenderer){
+            this.renderer = newRenderer;
+            final UIObject cell = newRenderer.getUI();
+            cell.setParent(this);
+            if (rendererForeground!=null){
+                cell.setForeground(rendererForeground);
+            }
+            if (rendererBackground!=null){
+                cell.setBackground(background);
+            }
+            if (textOptions!=null){
+                cell.setTextOptions(textOptions);
+            }
+            return cell;
         }
 
         void markSelected(final boolean isSelected) {
+            Tree tree = getTree();
             if (this.isSelected!=isSelected){
                 this.isSelected = isSelected;
                 updateMarkedBackgound();
@@ -716,10 +929,12 @@ public class Node extends UIObject {
                 if (this.renderer != null) {
                     this.renderer.selectionChanged(Node.this, getIndex(), getCellValue(getIndex()), this, isSelected);
                 }
-                if (isSelected && Node.this.currentCell==this){
+                if (isSelected && (Node.this.currentCell==this || tree != null && tree.getSelectionStyle().contains(IGrid.ESelectionStyle.BACKGROUND_COLOR))){
                     html.removeChoosableMarker();
-                    currentCell.getHtml().addClass("rwt-grid-current-cell");
-                }else{
+                    if (Node.this.currentCell==this) {
+                        currentCell.getHtml().addClass("rwt-grid-current-cell");
+                    }   
+                }else {
                     html.markAsChoosable();
                     if (currentCell!=null){
                         currentCell.getHtml().removeClass("rwt-grid-current-cell");
@@ -735,10 +950,20 @@ public class Node extends UIObject {
             }
         }
         
+        public void setSelectedBackgroundColor(final Color color){
+            if (!Objects.equals(color, markedBackground)){
+                markedBackground = color==null ? DEFAULT_MARKED_BACKGROUND_COLOR : color;
+                updateMarkedBackgound();
+            }
+        }
+        
         private void updateMarkedBackgound(){
-            if (isSelected && getTree().getSelectionStyle().contains(IGrid.ESelectionStyle.BACKGROUND_COLOR)){
-                background = getBackground();
-                backgroundSaved = true;
+            final Tree tree = getTree();
+            if (isSelected && (tree==null || tree.getSelectionStyle().contains(IGrid.ESelectionStyle.BACKGROUND_COLOR))){
+                if (!backgroundSaved){
+                    background = getBackground();
+                    backgroundSaved = true;
+                }
                 if (!getHtml().containsClass("rwt-ui-selected-item")){
                     getHtml().addClass("rwt-ui-selected-item");                        
                 }                
@@ -754,9 +979,12 @@ public class Node extends UIObject {
         }
         
         private void updateMarkedForeground(){
-            if (isSelected && getTree().getSelectionStyle().contains(IGrid.ESelectionStyle.BACKGROUND_COLOR)){
-                foreground = getForeground();
-                foregroundSaved = true;
+            final Tree tree = getTree();
+            if (isSelected && (tree==null || tree.getSelectionStyle().contains(IGrid.ESelectionStyle.BACKGROUND_COLOR))){
+                if (!foregroundSaved){
+                    foreground = getForeground();
+                    foregroundSaved = true;
+                }
                 if (renderer != null) {
                     renderer.getUI().setForeground(markedForeground);
                 }
@@ -768,43 +996,30 @@ public class Node extends UIObject {
         }
 
         @Override
-        public void setForeground(Color c) {
+        public void setForeground(final Color c) {
             if (html.containsClass("rwt-ui-selected-item")) {
-                this.foreground = c;
+                foreground = c;
             }else{
                 if (renderer != null) {
                     renderer.getUI().setForeground(c);
                 }
+                rendererForeground = c;                
                 super.setForeground(c);
             }         
         }
 
         @Override
-        public void setBackground(Color c) {
+        public void setBackground(final Color c) {
             if (html.containsClass("rwt-ui-selected-item")) {
-                this.background = c;
+                background = c;
             }else{
                 if (renderer != null) {
                     renderer.getUI().setBackground(c);
                 }
+                rendererBackground = c;
                 super.setBackground(c);
             }
         }
-
-        /*
-        @Override
-        public Color getForeground() {
-            return this.foreground;
-        }
-
-        @Override
-        protected ICssStyledItem getForegroundHolder() {
-            if (renderer != null) {
-                return renderer.getUI().getForegroundHolder();
-            } else {
-                return html;
-            }
-        }*/
 
         @Override
         public void setTextOptions(final WpsTextOptions options) {
@@ -830,6 +1045,59 @@ public class Node extends UIObject {
         boolean isSelected(){
             return isSelected;
         }
+    }    
+
+    private static final Tree.DoubleClickListener NODE_DBL_CLICK_HANDLER = new Tree.DoubleClickListener() {
+        @Override
+        public void nodeDoubleClick(Node node) {
+
+            Tree tree = node.getTree();
+            if (tree != null) {
+                tree.dblClickNode(node);
+            }
+        }
+    };
+    
+    private static final ButtonBase.ClickHandler BUTTON_CLICK_HANDLER = new ButtonBase.ClickHandler() {
+        @Override
+        public void onClick(IButton source) {
+            ((Button) source).toggleNode();
+        }
+    };    
+    
+    private Children children;
+    private boolean isExpanded;
+    private boolean isAutoExpanded;
+    private Object userData;
+    private Cell currentCell = null;
+    private final Button button;
+    private WpsIcon icon = null;
+    private Alignment alignment;
+    private FilterRules filterRules;
+    private boolean isVisible = true;
+    boolean isHiddenRoot = false;    
+    int lastComputedLevel = -1;
+    private List<ColumnInfo> columnInfos = null;
+    private List<Cell> dataCells = null;
+    private boolean spanned = false;
+    private boolean isEditable = true;
+    private boolean isSelected;
+    private IGrid.AbstractRowHeaderCell rowHeaderCell;
+    private IGrid.VerticalHeaderCell verticalHeaderCell;
+
+    private Cell getCurrentCell(final Tree tree) {
+        if (tree == null) {
+            return null;
+        }
+        Node node = tree.getSelectedNode();
+        if (node == null) {
+            return null;
+        }
+        return node.currentCell;
+    }
+    
+    public int getCurrentCellIndex() {
+        return currentCell.getIndex();
     }
 
     public Object getUserData() {
@@ -838,52 +1106,33 @@ public class Node extends UIObject {
 
     public void setUserData(Object userData) {
         this.userData = userData;
-    }
-    private Cell currentCell = null;
-    private final Button button;
-    private WpsIcon icon = null;
-    private HashMap<Integer, WpsTextOptions> columnTextOptions;
-    private Alignment alignment;
-    private FilterRules filterRules;
+    }    
 
     public Node() {
-        this("Leaf");
+        this("Leaf", null, null, null);
     }
 
-    public Node(String displayName) {
-        this(displayName, null, null);
+    public Node(final String displayName) {
+        this(displayName, null, null, null);
     }
 
-    public Node(String displayName, WpsIcon icon) {
-        this(displayName, icon, Children.LEAF);
+    public Node(final String displayName, final WpsIcon icon) {
+        this(displayName, icon, Children.LEAF, null);
     }
 
-    public Node(String displayName, Children children) {
-        this(displayName, null, children);
+    public Node(final String displayName, final Children children) {
+        this(displayName, null, children, null);
     }
 
-    public Node(Children children) {
-        this("Leaf", null, children);
+    public Node(final Children children) {
+        this("Leaf", null, children, null);
     }
 
-    static class NodeRow extends Html {
-
-        private Node node;
-
-        public NodeRow() {
-            super("tr");
-        }
-
-        private void setNode(Node node) {
-            this.node = node;
-        }
-
-        Node getNode() {
-            return node;
-        }
+    public Node(final String displayName, final WpsIcon icon, final Children children) {
+        this(displayName, icon, children, null);
     }
-
-    public Node(String displayName, WpsIcon icon, Children children) {
+    
+    public Node(final String displayName, final WpsIcon icon, final Children children, final IGrid.AbstractRowHeaderCell headerCell) {
         super(new NodeRow());
         ensureColumnCount(-1,1);
         Cell nodeCell = dataCells.get(0);        
@@ -898,7 +1147,8 @@ public class Node extends UIObject {
         setChildNodes(children == null ? Children.LEAF : children);
         ((NodeRow) html).setNode(this);
         html.markAsChoosable();
-    }
+        this.rowHeaderCell = headerCell;
+    }    
 
     public Tree getTree() {
         UIObject parent = getParent();
@@ -942,21 +1192,14 @@ public class Node extends UIObject {
         }
     }
 
-    public void setColumnTextOptions(int index, WpsTextOptions options) {
-        if (columnTextOptions == null) {
-            columnTextOptions = new HashMap<>();
-        }
-        if (options != null) {
-            this.columnTextOptions.put(index, options);
+    public void setColumnTextOptions(final int index, final WpsTextOptions options) {
+        if (getColumnInfo(index).setTextOptions(options) && dataCells!=null && index<dataCells.size()){
+            dataCells.get(index).updateColumnTextOptions(index);
         }
     }
 
-    public WpsTextOptions getColumnTextOptions(int index) {
-        if (columnTextOptions != null && !columnTextOptions.isEmpty() && columnTextOptions.containsKey(index)) {
-            return columnTextOptions.get(index);
-        } else {
-            return WpsTextOptions.EMPTY;
-        }
+    public WpsTextOptions getColumnTextOptions(final int index) {
+        return getColumnInfo(index).getTextOptions();
     }
 
     public void setAlignment(Alignment align) {
@@ -984,7 +1227,7 @@ public class Node extends UIObject {
             }  
         }
     }
-
+    
     @Override
     public boolean isVisible() {
         return isVisible;
@@ -1057,7 +1300,7 @@ public class Node extends UIObject {
             cell.leaveEditMode(false);
         }
 
-        final Tree tree = getTree();        
+        final Tree tree = getTree();
         if (isExpanded) {
             if (children != Children.LEAF) {
                 if (isExpanded){
@@ -1086,11 +1329,7 @@ public class Node extends UIObject {
         if (tree != null) {
             tree.updateMaxLevel();
         }
-    }
-    
-    
-    private boolean isVisible = true;
-    boolean isHiddenRoot = false;
+    }        
 
     void setHiddenRoot(boolean isHiddenRoot) {
         this.isHiddenRoot = isHiddenRoot;
@@ -1114,14 +1353,23 @@ public class Node extends UIObject {
     private void checkVisibility(boolean checkLevels) {
         if (isHiddenRoot) {
             html.setCss("display", "none");
+            if (verticalHeaderCell!=null){
+                verticalHeaderCell.setVisible(false);
+            }
         }
         if (checkLevels) {
             updateLevel();
         }
         if (isVisible && !isHiddenRoot && isVisibleInTree()) {
             html.setCss("display", null);
+            if (verticalHeaderCell!=null){
+                verticalHeaderCell.setVisible(true);
+            }
         } else {
             html.setCss("display", "none");
+            if (verticalHeaderCell!=null){
+                verticalHeaderCell.setVisible(false);
+            }
         }
         if (children != null) {
             for (Node node : new ArrayList<>(children.getCreatedNodes())) {
@@ -1142,12 +1390,12 @@ public class Node extends UIObject {
         if (icon == null) {
             if (this.icon != null) {
                 this.icon = null;
-                this.getNodeCell().updateCurrentState();
+                this.getNodeCell().updateRenderer();
             }
         } else {
             if (this.icon == null || this.icon != icon) {
                 this.icon = icon;
-                this.getNodeCell().updateCurrentState();
+                this.getNodeCell().updateRenderer();
             }
         }
         updateInternalMargins();
@@ -1267,9 +1515,7 @@ public class Node extends UIObject {
                 ensureColumnCount(-1, tree.getColumnCount());
             }
         }
-    }
-    
-    int lastComputedLevel = -1;
+    }        
 
     void updateLevel() {
         int level = getLevel();
@@ -1277,9 +1523,15 @@ public class Node extends UIObject {
         if (tree != null && !tree.isRootVisible() && level > 0) {
             level--;
         }
-        lastComputedLevel = level;
-
-        this.button.getHtml().setCss("padding-left", String.valueOf(level * 15) + "px");
+        if (lastComputedLevel!=level){
+            lastComputedLevel = level;
+            this.button.getHtml().setCss("padding-left", String.valueOf(level * 15) + "px");
+            if (this.children != null) {
+                for (Node node : new ArrayList<>(this.children.getCreatedNodes())) {
+                    node.updateLevel();
+                }
+            }
+        }
     }
 
     void markAsSelected() {
@@ -1335,73 +1587,7 @@ public class Node extends UIObject {
             result[i] = path.get(i);
         }
         return result;
-    }
-
-    private class ColumnInfo {
-
-        Object value;
-        private ICellRendererProvider cellRendererProvider;
-        private ICellEditorProvider cellEditorProvider;
-
-        public ICellEditorProvider getCellEditorProvider() {
-            if (cellEditorProvider != null) {
-                return cellEditorProvider;
-            }
-            Tree.Column column = getColumn();
-            if (column != null) {
-                return column.getCellEditorProvider();
-            } else {
-                return null;
-            }
-        }
-
-        public ICellRendererProvider getCellRendererProvider() {
-            if (cellRendererProvider != null) {
-                return cellRendererProvider;
-            }
-            final Cell cell = getIndex() >= 0 && getIndex() < getCells().size() ? getCells().get(getIndex()) : null;
-            final EditMask cellmask = cell == null ? null : cell.getEditingOptions().getEditMask();
-            if (cellmask != null) {
-                return new ICellRendererProvider() {
-                    @Override
-                    public INodeCellRenderer newCellRenderer(Node node, int columnIndex) {
-                        Cell cell = node.getCells().get(columnIndex);
-                        return new EditMaskRenderer(cellmask, getEnvironment(), cell);
-                    }
-                };
-            } else {
-                Tree.Column column = getColumn();
-                if (column != null) {
-                    return column.getCellRendererProvider();
-                } else {
-                    return null;
-                }
-            }
-        }
-
-        private Tree.Column getColumn() {
-            int index = getIndex();
-            if (index >= 0) {
-                Tree tree = getTree();
-                if (tree == null) {
-                    return null;
-                }
-                return tree.getColumn(index);
-            }
-            return null;
-        }
-
-        private int getIndex() {
-            for (int i = 0; i < columnInfos.size(); i++) {
-                if (columnInfos.get(i) == this) {
-                    return i;
-                }
-            }
-            return -1;
-        }
-    }
-    
-    private List<ColumnInfo> columnInfos = null;
+    }    
 
     private ColumnInfo getColumnInfo(int columnIndex) {
         if (columnInfos == null) {
@@ -1433,138 +1619,9 @@ public class Node extends UIObject {
     private void removeColumnInfo(int columnIndex){
         columnInfos.remove(columnIndex);
     }
-
-    public interface INodeCellRenderer {
-
-        public void update(final Node node, final int c, final Object value);
-
-        public void selectionChanged(Node node, int c, Object value, ICell cell, boolean isSelected);
-
-        public void rowSelectionChanged(boolean isRowSelected);
-
-        public UIObject getUI();
-    }
-
-    public interface INodeCellEditor {
-
-        public void setValue(Node node, int c, Object value);
-
-        public Object getValue();
-
-        public void applyChanges();
-
-        public void cancelChanges();
-
-        public UIObject getUI();
-    }
-
-    public static class DefaultTreeCellRenderer extends UIObject implements INodeCellRenderer {
-
-        protected final Html label;
-
-        public DefaultTreeCellRenderer() {
-            super(new Div());
-            setHeight(14);
-
-            html.add(label = new Html("label"));
-            this.label.setCss("top", "3px");
-            this.label.setCss("left", "3px");
-        //    this.label.setCss("padding-right", "6px");
-            this.label.setCss("position", "relative");
-            //this.label.setCss("cursor", "inherit");
-            this.label.addClass("rwt-ui-element-text");            
-            html.setCss("overflow", "hidden");
-            html.setCss("display", "block");
-            html.setCss("white-space", "nowrap");
-            setDefaultClassName("rwt-ui-element-text");
-        }
-
-        protected String getDisplayText(final Object value) {
-            return String.valueOf(value);
-        }
-
-        @Override
-        protected ICssStyledItem getBackgroundHolder() {
-            return label;
-        }
-
-        @Override
-        protected ICssStyledItem getForegroundHolder() {
-            return label;
-        }
-
-        @Override
-        protected ICssStyledItem getFontOptionsHolder() {
-            return label;
-        }
-
-        @Override
-        public void update(final Node node, final int c, final Object value) {
-            label.setInnerText(getDisplayText(value));
-        }
-
-        @Override
-        public void selectionChanged(Node node, int c, Object value, ICell cell, boolean isSelected) {
-        }
-
-        @Override
-        public void rowSelectionChanged(boolean isRowSelected) {
-        }
-
-        @Override
-        public UIObject getUI() {
-            return DefaultTreeCellRenderer.this;
-        }
-    }
-
-    public static class DefaultTreeColumnCellRenderer extends DefaultTreeCellRenderer {
-
-        private Html icon;
-
-        public DefaultTreeColumnCellRenderer() {
-            this.label.setCss("top", "-2px");
-            setDefaultClassName("rwt-ui-element");
-        }
-
-        private Node getNode() {
-            UIObject parent = getParent();
-            if (parent == null) {
-                return null;
-            }
-
-            return (Node) parent.getParent();
-        }
-
-        @Override
-        public void update(Node node, int c, Object value) {
-            if (node != null && node.icon != null) {
-                if (this.icon == null) {
-                    this.icon = new Html("img");
-                    this.icon.setCss("width", "12px");
-                    this.icon.setCss("height", "12px");
-                    this.icon.setCss("top", "1px");
-                    this.icon.setCss("position", "relative");
-                    this.icon.setAttr("viewBox", "0 0 12 12");
-                    this.icon.setAttr("preserveAspectRatio", "xMinYMin");
-                    html.add(0, this.icon);
-                }
-                if (!Utils.equals(this.icon.getAttr("src"), node.icon.getURI(this))) {
-                    this.icon.setAttr("src", node.icon.getURI(this));
-                }
-            } else {
-                if (this.icon != null) {
-                    this.icon.remove();
-                    this.icon = null;
-                }
-            }
-
-            super.update(node, c, value);
-        }
-
-        @Override
-        public UIObject getUI() {
-            return DefaultTreeColumnCellRenderer.this;
-        }
+    
+    private int getColumnInfosSize(){
+        return columnInfos==null ? 0 : columnInfos.size();
     }
     
     private final ICellRendererProvider defaultRendererProvider = new ICellRendererProvider() {
@@ -1621,7 +1678,7 @@ public class Node extends UIObject {
     }
 
     public final int getCellsCount() {
-        return columnInfos == null ? 0 : columnInfos.size();
+        return getColumnInfosSize();
     }
 
     public final boolean isSpanned() {
@@ -1646,6 +1703,17 @@ public class Node extends UIObject {
     public void setTextOptions(final int columnIndex, final TextOptions options) {
         dataCells.get(columnIndex).setTextOptions((WpsTextOptions) options);
     }
+    
+    public void setCellObjectName(final int columnIndex, final String objectName){        
+        getColumnInfo(columnIndex).setObjectName(objectName);
+        if (dataCells!=null && columnIndex<dataCells.size()){
+            dataCells.get(columnIndex).setObjectName(objectName);
+        }
+    }
+    
+    public String getCellObjectName(final int columnIndex){
+        return columnIndex>=0 && columnIndex<getColumnInfosSize() ? getColumnInfo(columnIndex).getObjectName() : null;
+    }
 
     @Override
     public void setForeground(Color c) {
@@ -1653,7 +1721,7 @@ public class Node extends UIObject {
         if (dataCells != null) {
             for (Cell cell : dataCells) {
                 cell.setForeground(c);
-                cell.updateCurrentState();
+                cell.updateRenderer();
             }
         }
     }
@@ -1664,7 +1732,7 @@ public class Node extends UIObject {
         if (dataCells != null) {
             for (Cell cell : dataCells) {
                 cell.setBackground(c);
-                cell.updateCurrentState();
+                cell.updateRenderer();
             }
         }
     }
@@ -1687,17 +1755,21 @@ public class Node extends UIObject {
                 for (Cell cell : dataCells) {
                     cell.markSelected(selected);
                 }
+                for (Cell c : dataCells) {
+                    if (c.renderer != null) {
+                        c.renderer.rowSelectionChanged(selected);
+                    }
+                }
             }
         }
     }
-
-    @Deprecated
-    public void setSelectedNodeBackground(String color) {
-        /*if (dataCells != null && color != null) {
+    
+    public void setSelectedNodeBackground(Color color) {
+        if (dataCells != null && color != null) {
             for (Cell c : dataCells) {
-                c.setSelectedNodeColor(color);
+                c.setSelectedBackgroundColor(color);
             }
-        }*/
+        }
     }
 
     public void setSelectedNodeForeground(Color color) {
@@ -1733,12 +1805,7 @@ public class Node extends UIObject {
             }
         }
         return false;
-    }
-    
-    private List<Cell> dataCells = null;
-    private boolean spanned = false;
-    private boolean isEditable = true;
-    private boolean isSelected;
+    }    
 
     final void ensureColumnCount(final int index, final int addColumns) {
         ensureColumnCountImpl(index, spanned ? 1 : addColumns);
@@ -1821,11 +1888,6 @@ public class Node extends UIObject {
                 node.ensureColumnCount(index, addColumns);
             }
         }
-        if (initColCount == 1 && currentColumnCount > 1) {
-            getNodeCell().getHtml().addClass("rwt-grid-row-cell");
-        } else if (currentColumnCount == 1 && initColCount > 1) {
-            getNodeCell().getHtml().removeClass("rwt-grid-row-cell");
-        }
     }
 
     public List<Cell> getCells() {
@@ -1840,11 +1902,12 @@ public class Node extends UIObject {
     }
 
     void setCurrentCell(final Cell cell) {
+        Tree tree = getTree();
         if (currentCell!=cell){
             if (currentCell!=null){
                 currentCell.getHtml().removeClass("rwt-grid-current-cell");
                 currentCell.getHtml().removeClass("grid-current-cell");
-                if (Node.this.isSelected){
+                if (Node.this.isSelected && (tree == null || !(tree.getSelectionStyle().contains(IGrid.ESelectionStyle.BACKGROUND_COLOR)))){
                     currentCell.getHtml().markAsChoosable();
                 }else{
                     currentCell.getHtml().removeChoosableMarker();
@@ -1863,7 +1926,7 @@ public class Node extends UIObject {
                     currentCell.getHtml().addClass("grid-current-cell");
                 }
             }
-            if (getTree()!=null && getTree().getSelectedNode()==this){
+            if (tree!=null && tree.getSelectedNode()==this){
                 getTree().updateFrames();
             }        
         }
@@ -1900,5 +1963,20 @@ public class Node extends UIObject {
     
     boolean isMatchToFilter(final String filter){
         return filterRules==null ? true : filterRules.isMatchToSomeFilter(filter);
+    }    
+    
+    protected IGrid.AbstractRowHeaderCell createHeaderCell(){
+        return new IGrid.DefaultRowHeaderCell();
+    }
+    
+    public IGrid.AbstractRowHeaderCell getRowHeaderCell(){
+        if (rowHeaderCell==null){
+            rowHeaderCell = createHeaderCell();
+        }
+        return rowHeaderCell;
+    }    
+    
+    void setVerticalHeaderCell(final IGrid.VerticalHeaderCell cell){
+        verticalHeaderCell = cell;
     }
 }

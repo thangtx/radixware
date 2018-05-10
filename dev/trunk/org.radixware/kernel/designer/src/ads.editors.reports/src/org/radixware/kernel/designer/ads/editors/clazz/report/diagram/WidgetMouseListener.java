@@ -47,6 +47,9 @@ abstract class WidgetMouseListener extends MouseInputAdapter {
     }
 
     private void checkPopup(final MouseEvent e) {
+        if (e.isConsumed()){
+            return;
+        }
         if (e.isPopupTrigger()) {
             final int x = e.getX();
             final int y = e.getY();

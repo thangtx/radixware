@@ -137,7 +137,7 @@ public class AdsPageChecker<T extends AdsPage> extends AdsDefinitionChecker<T> {
                 if (((AdsVarObject) node).getType() == null) {
                     error(node, problemHandler, MessageFormat.format("Type is not defined for var node \"{0}\"", getName(node)));
                 } else {
-                    ((AdsVarObject) node).getType().check(node, problemHandler);
+                    ((AdsVarObject) node).getType().check(node, problemHandler, getHistory().getMap());
                 }
             }
             for (AdsPin pin : node.getPins()) {

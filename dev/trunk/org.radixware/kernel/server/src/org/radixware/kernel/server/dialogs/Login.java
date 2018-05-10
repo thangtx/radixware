@@ -22,10 +22,12 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,14 +49,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import oracle.jdbc.pool.OracleDataSource;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EKeyStoreType;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
 import org.radixware.kernel.common.ssl.KeystoreController;
 import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
-import org.radixware.kernel.server.RadixLoaderActualizer;
+import org.radixware.kernel.server.instance.RadixLoaderActualizer;
 import org.radixware.kernel.server.Server;
 
 import org.radixware.kernel.server.SrvRunParams;
@@ -62,6 +63,12 @@ import org.radixware.kernel.server.SrvRunParams.DecryptionException;
 import org.radixware.kernel.server.dbq.OraExCodes;
 import org.radixware.kernel.server.dialogs.AsyncComboBoxModel.Item;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
+import org.radixware.kernel.server.jdbc.RadixDataSourceFactory;
+import org.radixware.kernel.server.jdbc.RadixDataSource;
 import org.radixware.kernel.server.utils.RecoveryInstanceFactory;
 import org.radixware.kernel.server.utils.RecoveryInstanceFactory.InstanceCreationError;
 import org.radixware.kernel.server.widgets.Label;
@@ -79,9 +86,9 @@ public final class Login extends JDialog {
 
     public static final class Event extends ActionEvent {
 
-        public Event(final Object source, final OracleDataSource oraDataSource, final String proxyOraUser, final Connection dbConnection, final int instanceId, final String instanceName, final boolean isAutoStart) {
+        public Event(final Object source, final RadixDataSource radixDataSource, final String proxyOraUser, final Connection dbConnection, final int instanceId, final String instanceName, final boolean isAutoStart) {
             super(source, ActionEvent.ACTION_PERFORMED, "login");
-            this.oraDataSource = oraDataSource;
+            this.radixDataSource = radixDataSource;
             this.proxyOraUser = proxyOraUser;
             this.instanceName = instanceName;
             this.instanceId = instanceId;
@@ -92,7 +99,7 @@ public final class Login extends JDialog {
         public final int instanceId;
         public final String instanceName;
         public final Connection dbConnection;
-        public final OracleDataSource oraDataSource;
+        public final RadixDataSource radixDataSource;
         public final String proxyOraUser;
         private static final long serialVersionUID = 5539890398628603225L;
     }
@@ -109,6 +116,13 @@ public final class Login extends JDialog {
         }
     };
     private static final long serialVersionUID = -3645800640629520457L;
+    
+    private static final String qrySelectInstanceStmtSQL = "select i.id, i.title from rdx_instance i order by i.id";
+    private static final Stmt qrySelectInstanceStmt = new Stmt(qrySelectInstanceStmtSQL);
+    
+    private static final String qrySelectKeystoreStmtSQL = "select keystoretype, keystorepath from rdx_instance where id = ?";
+    private static final Stmt qrySelectKeystoreStmt = new Stmt(qrySelectKeystoreStmtSQL,Types.BIGINT);
+    
     private final JTextField edDbUrl;
     private final JTextField edSchema;
     private final JTextField edUser;
@@ -120,10 +134,18 @@ public final class Login extends JDialog {
     private final JComboBox cmbxAuthType;
     private final LocalTracer tracer;
     private volatile Connection dbConnection = null;
-    private volatile OracleDataSource oraDataSource = null;
+    private volatile RadixDataSource radixDataSource = null;
     private volatile String proxyOraUser = null;
     private final EDialogMode dialogMode;
     private final Runnable shutdownHook;
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
+    
+    private Login() {
+        this.edDbUrl = null;    this.edSchema = null;       this.edUser = null;
+        this.edPwd = null;      this.edKeystorePwd = null;  this.listener = null;
+        this.cmbxInst = null;   this.pane = null;           this.cmbxAuthType = null;
+        this.tracer = null;     this.dialogMode = null;     this.shutdownHook = null;
+    }
 
     public Login(final Frame owner, final Listener listener, final LocalTracer tracer, final EDialogMode dialogMode) {
         super(owner);
@@ -289,26 +311,19 @@ public final class Login extends JDialog {
                     }
                     while (true) {
                         final List<AsyncComboBoxModel.Item> data = new ArrayList<>();
-                        final PreparedStatement st = db.prepareStatement(
-                                "select i.id, i.title from rdx_instance i order by i.id");
-                        try {
-                            final ResultSet rs = st.executeQuery();
-                            try {
-                                while (rs.next()) {
-                                    data.add(new Item(Integer.valueOf(rs.getInt(1)), rs.getString(2)));
-                                }
-                                //                        data.add(CREATE_RECOVERY_INSTANCE_ITEM);
-                                return data;
-                            } finally {
-                                rs.close();
+                        try(final PreparedStatement st = ((RadixConnection)db).prepareStatement(qrySelectInstanceStmt);
+                            final ResultSet rs = st.executeQuery()) {
+                            
+                            while (rs.next()) {
+                                data.add(new Item(Integer.valueOf(rs.getInt(1)), rs.getString(2)));
                             }
+                            //                        data.add(CREATE_RECOVERY_INSTANCE_ITEM);
+                            return data;
                         } catch (SQLException e) {
                             if (e.getErrorCode() != OraExCodes.WALLET_IS_NOT_OPENED
                                     || !openOraWallet(db, e.getMessage())) {
                                 throw e;
                             }
-                        } finally {
-                            st.close();
                         }
                     }
                 }
@@ -571,7 +586,7 @@ public final class Login extends JDialog {
                 return;
             }
 
-            final Event event = new Event(Login.this, oraDataSource, proxyOraUser, dbConnection, -1, null, isAutoStart);
+            final Event event = new Event(Login.this, radixDataSource, proxyOraUser, dbConnection, -1, null, isAutoStart);
             Login.this.listener.actionPerformed(event);
             pane.setValue(JOptionPane.UNINITIALIZED_VALUE);
             return;
@@ -628,15 +643,12 @@ public final class Login extends JDialog {
 
         //[RADIX-4380] check server's keystore availability
         String errorMessage = null, errorTitle = null;
-        try {
+        
+        try (final PreparedStatement qry = ((RadixConnection)dbConnection).prepareStatement(qrySelectKeystoreStmt)) {
             //instance is not started yet, so we read it's settings explictly
             for (int i = 0; i < 1; i++) {
-                PreparedStatement qry = null;
-                try {
-                    qry = dbConnection.prepareStatement("select keystoretype, keystorepath from rdx_instance where id = ?");
-                    qry.setInt(1, instId);
-                    final ResultSet rs = qry.executeQuery();
-                    try {
+                try{qry.setInt(1, instId);
+                    try(final ResultSet rs = qry.executeQuery()) {
                         if (rs.next()) {
                             final EKeyStoreType keystoreType = EKeyStoreType.getForValue(rs.getLong("keystoretype"));
                             final String keystorePath = rs.getString("keystorepath");
@@ -645,24 +657,13 @@ public final class Login extends JDialog {
                             errorMessage = Messages.INSTANCE_SETTINGS_NOT_FOUND;
                             errorTitle = Messages.ERROR_WHILE_READING_INSTANCE_SETTINGS_FROM_DB;
                         }
-                    } finally {
-                        rs.close();
                     }
                 } catch (SQLException e) {
-                    if (e.getErrorCode() != OraExCodes.WALLET_IS_NOT_OPENED
-                            || !openOraWallet(dbConnection, e.getMessage())) {
+                    if (e.getErrorCode() != OraExCodes.WALLET_IS_NOT_OPENED || !openOraWallet(dbConnection, e.getMessage())) {
                         errorMessage = e.getMessage();
                         errorTitle = Messages.ERROR_WHILE_READING_INSTANCE_SETTINGS_FROM_DB;
                     } else {
                         i--;//try again
-                    }
-                } finally {
-                    try {
-                        if (qry != null) {
-                            qry.close();
-                        }
-                    } catch (SQLException e) {
-                        //do nothing
                     }
                 }
             }
@@ -687,7 +688,7 @@ public final class Login extends JDialog {
 
         dispose();
 
-        final Event event = new Event(Login.this, oraDataSource, proxyOraUser, dbConnection, instId, cmbxInst.getInstanceName(), isAutoStart);
+        final Event event = new Event(Login.this, radixDataSource, proxyOraUser, dbConnection, instId, cmbxInst.getInstanceName(), isAutoStart);
         Login.this.listener.actionPerformed(event);
     }
 
@@ -705,12 +706,12 @@ public final class Login extends JDialog {
             }
             dbConnection = null;
         }
-        if (oraDataSource != null) {
+        if (radixDataSource != null) {
             try {
-                oraDataSource.close();
+                radixDataSource.close();
             } catch (SQLException e2) {
             }
-            oraDataSource = null;
+            radixDataSource = null;
         }
         try {
             final String url = edDbUrl.getText();
@@ -720,18 +721,18 @@ public final class Login extends JDialog {
             final String password = authByPwd ? new String(edPwd.getPassword()) : "";
 
             SrvRunParams.setDbSchema(dbSchema);
-            oraDataSource = new OracleDataSource();
-            oraDataSource.setURL(url);
+            radixDataSource = RadixDataSourceFactory.getDataSource(URI.create(url));
+//            oraDataSource.setURL(url);
             SrvRunParams.setDbUrl(url);
-            oraDataSource.setUser(login);
-            oraDataSource.setPassword(password);
+            radixDataSource.setUser(login);
+            radixDataSource.setPassword(password);
             SrvRunParams.setExternalAuth(!authByPwd);
             if (authByPwd) {
                 SrvRunParams.setUser(login);
                 SrvRunParams.setDbPwd(password);
             }
             proxyOraUser = dbSchema.equals(login) ? null : dbSchema;
-            dbConnection = Instance.openNewDbConnection(null, null, null, oraDataSource, proxyOraUser, null);
+            dbConnection = Instance.openNewDbConnection(null, null, null, radixDataSource, proxyOraUser, null);
             tryAutoOpenOraWallet(dbConnection);
             return dbConnection;
         } catch (SQLException e) {

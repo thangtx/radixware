@@ -29,110 +29,116 @@ public abstract class DdsConstraintScriptGenerator<T extends DdsConstraintDef> i
     protected abstract DdsTableDef findOwnerTable(T constraint);
 
     @Override
-    public void getDropScript(CodePrinter cp, T constraint) {
-        DdsTableDef ownerTable = findOwnerTable(constraint);
-
-        cp.print("alter ");
-        if (ownerTable instanceof DdsViewDef) {
-            cp.print("view ");
-        } else {
-            cp.print("table ");
+    public void getDropScript(final CodePrinter cp, final T constraint) {
+        if (cp == null) {
+            throw new IllegalArgumentException("Code printer can't be null");
         }
-        cp.print(ownerTable.getDbName());
-        cp.print(" drop constraint " + constraint.getDbName());
-        if (constraint instanceof DdsUniqueConstraintDef) {
-            cp.print(" cascade");
+        else if (constraint == null) {
+            throw new IllegalArgumentException("Constraint can't be null");
         }
-        cp.printCommandSeparator();
-    }
+        else {
+            final DdsTableDef ownerTable = findOwnerTable(constraint);
 
-    @Override
-    public boolean isModifiedToDrop(T oldConstraint, T newConstraint) {
-        boolean oldDeferrable = oldConstraint.getDbOptions().contains(EDdsConstraintDbOption.DEFERRABLE);
-        boolean newDeferrable = newConstraint.getDbOptions().contains(EDdsConstraintDbOption.DEFERRABLE);
-        if (oldDeferrable != newDeferrable) {
-            return true;
-        }
-        boolean oldInitiallyDeferred = oldConstraint.getDbOptions().contains(EDdsConstraintDbOption.INITIALLY_DEFERRED);
-        boolean newInitiallyDeferred = newConstraint.getDbOptions().contains(EDdsConstraintDbOption.INITIALLY_DEFERRED);
-        if (oldInitiallyDeferred != newInitiallyDeferred) {
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void getAlterScript(CodePrinter cp, T oldConstraint, T newConstraint) {
-        DdsTableDef ownerTable = findOwnerTable(newConstraint);
-
-        String oldDbName = oldConstraint.getDbName();
-        String newDbName = newConstraint.getDbName();
-        if (!oldDbName.equals(newDbName)) {
-            cp.print("alter ");
-            if (ownerTable instanceof DdsViewDef) {
-                cp.print("view ");
-            } else {
-                cp.print("table ");
-            }
-            cp.print(ownerTable.getDbName());
-            cp.print(" rename constraint ");
-            cp.print(oldDbName);
-            cp.print(" to ");
-            cp.print(newDbName);
-            cp.printCommandSeparator();
-        }
-
-        boolean oldRely = oldConstraint.getDbOptions().contains(EDdsConstraintDbOption.RELY);
-        boolean newRely = newConstraint.getDbOptions().contains(EDdsConstraintDbOption.RELY);
-        boolean relyChanged = (oldRely != newRely);
-
-        boolean oldDisable = oldConstraint.getDbOptions().contains(EDdsConstraintDbOption.DISABLE);
-        boolean newDisable = newConstraint.getDbOptions().contains(EDdsConstraintDbOption.DISABLE);
-        boolean disableChanged = (oldDisable != newDisable);
-
-        boolean oldNovalidate = oldConstraint.getDbOptions().contains(EDdsConstraintDbOption.NOVALIDATE);
-        boolean newNovalidate = newConstraint.getDbOptions().contains(EDdsConstraintDbOption.NOVALIDATE);
-        boolean novalidateChanged = (oldNovalidate != newNovalidate);
-
-        if (relyChanged || disableChanged || novalidateChanged) {
-            cp.print("alter ");
-            if (ownerTable instanceof DdsViewDef) {
-                cp.print("view ");
-            } else {
-                cp.print("table ");
-            }
-            cp.print(ownerTable.getDbName());
-            cp.print(" modify constraint ");
-            cp.print(newConstraint.getDbName());
-
-            if (relyChanged) {
-                cp.print(newRely ? " rely" : " norely");
-            }
-            if (disableChanged) {
-                cp.print(newDisable ? " disable" : " enable");
-            }
-            if (novalidateChanged) {
-                cp.print(newNovalidate ? " novalidate" : " validate");
+            cp.print("alter ").print(ownerTable instanceof DdsViewDef ? "view " : "table ").print(ownerTable.getDbName()).print(" drop constraint " + constraint.getDbName());
+            if (constraint instanceof DdsUniqueConstraintDef) {
+                cp.print(" cascade");
             }
             cp.printCommandSeparator();
         }
     }
 
-    public void getCreateDbOptionsScript(CodePrinter cp, EnumSet<EDdsConstraintDbOption> dbOptions) {
-        if (dbOptions.contains(EDdsConstraintDbOption.DEFERRABLE)) {
-            cp.print(" deferrable");
+    @Override
+    public boolean isModifiedToDrop(final T oldConstraint, final T newConstraint) {
+        if (oldConstraint == null) {
+            throw new IllegalArgumentException("Old constraint can't be null");
         }
-        if (dbOptions.contains(EDdsConstraintDbOption.INITIALLY_DEFERRED)) {
-            cp.print(" initially deferred");
+        else if (newConstraint == null) {
+            throw new IllegalArgumentException("New constraint can't be null");
         }
-        if (dbOptions.contains(EDdsConstraintDbOption.RELY)) {
-            cp.print(" rely");
+        else {
+            boolean oldDeferrable = oldConstraint.getDbOptions().contains(EDdsConstraintDbOption.DEFERRABLE);
+            boolean newDeferrable = newConstraint.getDbOptions().contains(EDdsConstraintDbOption.DEFERRABLE);
+            if (oldDeferrable != newDeferrable) {
+                return true;
+            }
+            boolean oldInitiallyDeferred = oldConstraint.getDbOptions().contains(EDdsConstraintDbOption.INITIALLY_DEFERRED);
+            boolean newInitiallyDeferred = newConstraint.getDbOptions().contains(EDdsConstraintDbOption.INITIALLY_DEFERRED);
+            return oldInitiallyDeferred != newInitiallyDeferred;
         }
-        if (dbOptions.contains(EDdsConstraintDbOption.DISABLE)) {
-            cp.print(" disable");
+    }
+
+    @Override
+    public void getAlterScript(final CodePrinter cp, final T oldConstraint, final T newConstraint) {
+        if (cp == null) {
+            throw new IllegalArgumentException("Code printer can't be null");
         }
-        if (dbOptions.contains(EDdsConstraintDbOption.NOVALIDATE)) {
-            cp.print(" novalidate");
+        else if (oldConstraint == null) {
+            throw new IllegalArgumentException("Old constraint can't be null");
+        }
+        else if (newConstraint == null) {
+            throw new IllegalArgumentException("New constraint can't be null");
+        }
+        else {
+            final DdsTableDef ownerTable = findOwnerTable(newConstraint);
+            final String oldDbName = oldConstraint.getDbName();
+            final String newDbName = newConstraint.getDbName();
+            
+            if (!oldDbName.equals(newDbName)) {
+                cp.print("alter ").print(ownerTable instanceof DdsViewDef ? "view " : "table ").print(ownerTable.getDbName()).print(" rename constraint ").print(oldDbName).print(" to ").print(newDbName).printCommandSeparator();
+            }
+
+            final boolean oldRely = oldConstraint.getDbOptions().contains(EDdsConstraintDbOption.RELY);
+            final boolean newRely = newConstraint.getDbOptions().contains(EDdsConstraintDbOption.RELY);
+            final boolean relyChanged = (oldRely != newRely);
+
+            final boolean oldDisable = oldConstraint.getDbOptions().contains(EDdsConstraintDbOption.DISABLE);
+            final boolean newDisable = newConstraint.getDbOptions().contains(EDdsConstraintDbOption.DISABLE);
+            final boolean disableChanged = (oldDisable != newDisable);
+
+            final boolean oldNovalidate = oldConstraint.getDbOptions().contains(EDdsConstraintDbOption.NOVALIDATE);
+            final boolean newNovalidate = newConstraint.getDbOptions().contains(EDdsConstraintDbOption.NOVALIDATE);
+            final boolean novalidateChanged = (oldNovalidate != newNovalidate);
+
+            if (relyChanged || disableChanged || novalidateChanged) {
+                cp.print("alter ").print(ownerTable instanceof DdsViewDef ? "view " : "table ").print(ownerTable.getDbName()).print(" modify constraint ").print(newConstraint.getDbName());
+
+                if (relyChanged) {
+                    cp.print(newRely ? " rely" : " norely");
+                }
+                if (disableChanged) {
+                    cp.print(newDisable ? " disable" : " enable");
+                }
+                if (novalidateChanged) {
+                    cp.print(newNovalidate ? " novalidate" : " validate");
+                }
+                cp.printCommandSeparator();
+            }
+        }
+    }
+
+    public void getCreateDbOptionsScript(final CodePrinter cp, final EnumSet<EDdsConstraintDbOption> dbOptions) {
+        if (cp == null) {
+            throw new IllegalArgumentException("Code printer can't be null");
+        }
+        else if (dbOptions == null) {
+            throw new IllegalArgumentException("Database options can't be null");
+        }
+        else {
+            if (dbOptions.contains(EDdsConstraintDbOption.DEFERRABLE)) {
+                cp.print(" deferrable");
+            }
+            if (dbOptions.contains(EDdsConstraintDbOption.INITIALLY_DEFERRED)) {
+                cp.print(" initially deferred");
+            }
+            if (dbOptions.contains(EDdsConstraintDbOption.RELY)) {
+                cp.print(" rely");
+            }
+            if (dbOptions.contains(EDdsConstraintDbOption.DISABLE)) {
+                cp.print(" disable");
+            }
+            if (dbOptions.contains(EDdsConstraintDbOption.NOVALIDATE)) {
+                cp.print(" novalidate");
+            }
         }
     }
 }

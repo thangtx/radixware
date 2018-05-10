@@ -1,0 +1,23 @@
+
+class TestPublicProperty {
+
+    public Long getProp() {
+	return null;
+    }
+
+    public void setProp(Long l) {
+    }
+}
+
+class Test {
+
+    static public void main(String[] args) {
+	TestPublicProperty t = new TestPublicProperty();
+	if (1 > 2) {
+	    t.Prop = 3;
+	} else { 
+	    System.out.print(t.Prop); 
+	}
+    }
+
+}

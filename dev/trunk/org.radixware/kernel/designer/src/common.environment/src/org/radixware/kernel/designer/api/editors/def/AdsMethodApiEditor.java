@@ -12,9 +12,17 @@
 package org.radixware.kernel.designer.api.editors.def;
 
 import java.awt.GridBagConstraints;
+import java.awt.datatransfer.FlavorEvent;
+import java.awt.datatransfer.FlavorListener;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.MethodReturnValue;
+import org.radixware.kernel.designer.ads.method.actions.descriptions.CopyMethodAction;
+import org.radixware.kernel.designer.ads.method.actions.descriptions.PasteMethodAction;
+import org.radixware.kernel.designer.api.ApiEditorManager;
 import org.radixware.kernel.designer.api.ApiFilter;
 import org.radixware.kernel.designer.api.IApiEditor;
 import org.radixware.kernel.designer.api.IApiEditorFactory;
@@ -28,6 +36,7 @@ import org.radixware.kernel.designer.api.editors.components.OverviewBrick;
 import org.radixware.kernel.designer.common.annotations.registrators.ApiEditorFactoryRegistration;
 import org.radixware.kernel.designer.common.dialogs.components.description.DescriptionEditor;
 import org.radixware.kernel.designer.common.dialogs.components.description.MixedDescriptionWrapper;
+import org.radixware.kernel.designer.common.dialogs.utils.ClipboardUtils;
 
 
 public class AdsMethodApiEditor extends AdsDefinitionApiEditor<AdsMethodDef> {
@@ -50,6 +59,44 @@ public class AdsMethodApiEditor extends AdsDefinitionApiEditor<AdsMethodDef> {
         public MethodOverviewBrick(AdsMethodDef object, GridBagConstraints constraints, BrickFactory factory) {
             super(object, constraints, factory);
         }
+
+        @Override
+        protected void buildToolbar() {
+           final GridBagConstraints constraints = new GridBagConstraints();
+            constraints.gridx = 0;
+            constraints.fill = GridBagConstraints.BOTH;
+            constraints.anchor = GridBagConstraints.CENTER;
+            
+            JPanel toolbarPanel = new JPanel();
+            toolbarPanel.setLayout(new BoxLayout(toolbarPanel, BoxLayout.LINE_AXIS));
+            JButton copyButton = new JButton(new CopyMethodAction(getSource()));
+            final PasteMethodAction pasteAction = new PasteMethodAction(getSource()){
+
+                @Override
+                public void afterPaste() {
+                    ApiEditorManager.getDefault().refreshBrowser();
+                }
+                
+            };
+            copyButton.setToolTipText("Copy method descriptions");
+            
+            final JButton pasteButton = new JButton(pasteAction);
+            pasteButton.setEnabled(pasteAction.canPaste());
+            ClipboardUtils.getClipboard().addFlavorListener(new FlavorListener() {
+
+                @Override
+                public void flavorsChanged(FlavorEvent e) {
+                    pasteButton.setEnabled(pasteAction.canPaste());
+                }
+            });
+            pasteButton.setToolTipText("Paste method descriptions");
+            toolbarPanel.add(copyButton);
+            toolbarPanel.add(pasteButton);
+            
+            getBricks().add(new SimpleBrick(source, toolbarPanel, constraints, TOOLBAR, null));
+        }
+        
+        
 
         @Override
         protected void buildDescription() {
@@ -97,7 +144,7 @@ public class AdsMethodApiEditor extends AdsDefinitionApiEditor<AdsMethodDef> {
             return super.create(key, object, constraints);
         }
     }
-
+    
     public AdsMethodApiEditor(AdsMethodDef source) {
         super(source);
     }

@@ -13,6 +13,7 @@ package org.radixware.kernel.designer.ads.common.sql;
 
 import org.radixware.kernel.common.defs.IFilter;
 import org.radixware.kernel.common.defs.VisitorProvider;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsDynamicPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsParameterPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.common.AdsVisitorProviders;
@@ -92,6 +93,8 @@ public class AdsSqlClassVisitorProviderFactory {
                     if (parameterProperty.calcDirection() == EParamDirection.OUT) {
                         return false;
                     }
+                    return true;
+                } else if (property instanceof AdsDynamicPropertyDef) {
                     return true;
                 } else {
                     return false;

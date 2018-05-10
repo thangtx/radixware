@@ -13,6 +13,7 @@ package org.radixware.kernel.designer.ads.editors.clazz.report.diagram;
 
 import java.awt.Toolkit;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
 
 
 public class MmUtils {
@@ -23,14 +24,14 @@ public class MmUtils {
     public static double roundToTenth(final double d) {
         return Math.round(10.0 * d) / 10.0;
     }
-
-    public static double snapToGrid(final double d) {
-        if (AdsReportFormDiagramOptions.getDefault().isSnapToGrid()) {
-            long c = Math.round(d / AdsReportBand.GRID_SIZE_MM);
-            return AdsReportBand.GRID_SIZE_MM * c;
-        } else {
-            return d;
+    
+    public static double snapToGrid(final double d, final AdsReportForm form) {
+        double gridSizeMm = form != null ? form.getGridSizeMm() : AdsReportForm.DEFAULT_GRID_SIZE_MM;
+        if (form == null || form.isSnapToGrid()){
+            long c = Math.round(d / gridSizeMm);
+            return gridSizeMm * c;
         }
+        return d;
     }
 
     public static int mm2px(final double mm) {

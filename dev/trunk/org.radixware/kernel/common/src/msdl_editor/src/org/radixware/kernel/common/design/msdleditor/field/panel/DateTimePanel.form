@@ -16,7 +16,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="simpleFieldPanel1" alignment="1" pref="316" max="32767" attributes="0"/>
+          <Component id="simpleFieldPanel1" alignment="1" pref="445" max="32767" attributes="0"/>
           <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
@@ -36,18 +36,28 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="jLabel1" max="32767" attributes="1"/>
-                      <Component id="jLabel2" alignment="0" pref="54" max="32767" attributes="1"/>
+                      <Component id="lbLenient" max="32767" attributes="0"/>
+                      <Component id="lbFormat" max="32767" attributes="1"/>
+                      <Component id="lbPattern" alignment="0" max="32767" attributes="1"/>
+                      <Component id="lbUtc" max="32767" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="dateTimeFormatPanel1" pref="238" max="32767" attributes="0"/>
-                      <Component id="dateTimePatternPanel1" pref="238" max="32767" attributes="1"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <EmptySpace min="-2" pref="290" max="-2" attributes="0"/>
+                          <Component id="lenientPanel" min="-2" pref="50" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="dateTimeFormatPanel1" alignment="1" max="32767" attributes="0"/>
+                              <Component id="dateTimePatternPanel1" alignment="1" pref="374" max="32767" attributes="1"/>
+                              <Component id="timeZonePanel" alignment="0" max="32767" attributes="0"/>
+                          </Group>
+                      </Group>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -56,13 +66,23 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel1" pref="20" max="32767" attributes="1"/>
+                      <Component id="lbFormat" max="32767" attributes="1"/>
                       <Component id="dateTimeFormatPanel1" alignment="0" min="-2" max="-2" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jLabel2" pref="20" max="32767" attributes="1"/>
-                      <Component id="dateTimePatternPanel1" alignment="1" max="32767" attributes="1"/>
+                      <Component id="lbPattern" max="32767" attributes="1"/>
+                      <Component id="dateTimePatternPanel1" alignment="1" pref="26" max="32767" attributes="1"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="lbUtc" pref="26" max="32767" attributes="0"/>
+                      <Component id="timeZonePanel" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="lenientPanel" max="32767" attributes="0"/>
+                      <Component id="lbLenient" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -70,7 +90,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="jLabel1">
+        <Component class="javax.swing.JLabel" name="lbFormat">
           <Properties>
             <Property name="horizontalAlignment" type="int" value="4"/>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -82,13 +102,36 @@
         </Component>
         <Component class="org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimePatternPanel" name="dateTimePatternPanel1">
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel2">
+        <Component class="javax.swing.JLabel" name="lbPattern">
           <Properties>
             <Property name="horizontalAlignment" type="int" value="4"/>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="org/radixware/kernel/common/design/msdleditor/field/panel/Bundle.properties" key="DateTimePanel.jLabel2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="org/radixware/kernel/common/design/msdleditor/field/panel/Bundle.properties" key="DateTimePanel.lbPattern.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lbUtc">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="11"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/radixware/kernel/common/design/msdleditor/field/panel/Bundle.properties" key="DateTimePanel.lbUtc.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lbLenient">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="11"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="org/radixware/kernel/common/design/msdleditor/field/panel/Bundle.properties" key="DateTimePanel.lbLenient.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+          </Properties>
+        </Component>
+        <Component class="org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtBoolPanel" name="lenientPanel">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="lenientPanel.setDefaultParentValue(true);"/>
+          </AuxValues>
+        </Component>
+        <Component class="org.radixware.kernel.common.design.msdleditor.field.panel.simple.DateTimeZonePanel" name="timeZonePanel">
         </Component>
       </SubComponents>
     </Container>

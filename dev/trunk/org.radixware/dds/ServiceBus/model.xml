@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Model xmlns="http://schemas.radixware.org/ddsdef.xsd" xmlns:com="http://schemas.radixware.org/commondef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" Id="prj5N3LTDN4SBBL3PUGGBRPUACFHQ" DbNamePrefix="RDX_SB">
   <Tables>
-    <Table Id="tblX6WI554KVVCZPGNLK7CSZLOMTY" Name="Pipeline" DbName="RDX_SB_PIPELINE" UserExtMask="65536">
+    <Table Id="tblX6WI554KVVCZPGNLK7CSZLOMTY" Name="Pipeline" DbName="RDX_SB_PIPELINE" UserExtMask="65568">
       <Columns>
         <Column Id="colNQ7ACV4LNVHNBGGPWFPOCPH2P4" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnHAWTB62FZVELZCBCHIJR23VADA" TemplateId="cdmN4HG25YEYZCLLGEB3KQ2WTP7EU"/>
         <Column Id="colOE3X3Z3RC5ANFOCA72MDUTOIVQ" Name="classGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="CLASSGUID"/>
@@ -55,6 +55,17 @@
           <UniqueConstraint Id="unqA6OUUXK3SNEGBHTLVICSL74XGU" DbName="UNQ_RDX_SB_PIPELINE_PIPELINE" Rely="true"/>
         </Index>
       </Indices>
+      <Triggers>
+        <Trigger Id="trgZ2IKQMDZBRFZHKMYK4ZCQXF3ME" Name="UserPropOwn" DbName="UPO_X6WI554KVVCZPGNLK7CSZLOMTY" AutoDbName="false" Type="FOR_USER_PROPS" ActuationTime="AFTER" TriggeringEventMask="1">
+          <Body>
+            <xsc:Item>
+              <xsc:Sql>begin
+   RDX_ENTITY.UserPropOnDelOwner('tblX6WI554KVVCZPGNLK7CSZLOMTY', :old.ID);
+end;</xsc:Sql>
+            </xsc:Item>
+          </Body>
+        </Trigger>
+      </Triggers>
       <Placement PosX="240" PosY="163"/>
     </Table>
     <Table Id="tblPNJV5QTXIBGJPBHK64RO3LH73A" Name="PipelineNode" DbName="RDX_SB_PIPELINENODE" UserExtMask="65568">

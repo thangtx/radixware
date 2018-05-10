@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.clazz.report;
 
 import javax.swing.event.DocumentEvent;
@@ -17,36 +16,33 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportFormat;
 import org.radixware.kernel.common.enums.ETriadDelimeterType;
 import org.radixware.kernel.designer.common.dialogs.components.KernelEnumComboBoxModel;
 
-
-public class IntFormatPanel extends javax.swing.JPanel {
-    private boolean readOnly = false;
-    private final AdsReportFormat cell;
-
+public final class IntFormatPanel extends AbstractFormatPanel {        
     /**
      * Creates new form IntFornatPanel
      */
     public IntFormatPanel(final AdsReportFormat cell, boolean isReadOnly) {
-        initComponents();
-        this.cell=cell;
-        readOnly=isReadOnly;
-        triadDelimeterTextField.getDocument().addDocumentListener(new DocumentListener(){
-
+        super(cell, isReadOnly);
+        
+        initComponents();                
+        triadDelimeterTextField.getDocument().addDocumentListener(new DocumentListener() {
+            
             @Override
             public void insertUpdate(DocumentEvent de) {
-                 changedUpdate(de); 
+                changedUpdate(de);
             }
-
+            
             @Override
             public void removeUpdate(DocumentEvent de) {
-                 changedUpdate( de);
+                changedUpdate(de);
             }
-
+            
             @Override
-            public void changedUpdate(DocumentEvent de) {  
-                if(cell!=null &&!updating){
-                    final ETriadDelimeterType delimeterType = getDelimTypeModel().getSelectedItemSource(); 
-                    if(delimeterType==ETriadDelimeterType.SPECIFIED)
+            public void changedUpdate(DocumentEvent de) {
+                if (cell != null && !updating) {
+                    final ETriadDelimeterType delimeterType = getDelimTypeModel().getSelectedItemSource();
+                    if (delimeterType == ETriadDelimeterType.SPECIFIED) {
                         cell.setTriadDelimeter(triadDelimeterTextField.getText());
+                    }
                 }
             }
         });
@@ -54,27 +50,30 @@ public class IntFormatPanel extends javax.swing.JPanel {
         updateEnableState();
     }
     
-    private boolean updating=false;
-     private void setupInitialValues() {
-        updating=true;
+    private boolean updating = false;
+    
+    @Override
+    protected void setupInitialValues() {
+        updating = true;
         if (cell.getTriadDelimeter() != null) {
             triadDelimeterTextField.setText(cell.getTriadDelimeter());
         }
-        getDelimTypeModel().setSelectedItemSource(cell.getTriadDelimeterType());     
-        updating=false;
+        getDelimTypeModel().setSelectedItemSource(cell.getTriadDelimeterType());
+        updating = false;
     }
-     
-     private KernelEnumComboBoxModel<ETriadDelimeterType> getDelimTypeModel() {
+    
+    private KernelEnumComboBoxModel<ETriadDelimeterType> getDelimTypeModel() {
         return ((KernelEnumComboBoxModel<ETriadDelimeterType>) cmbDelimType.getModel());
     }
-
+    
     private void updateEnableState() {
-        cmbDelimType.setEnabled(!readOnly);
+        cmbDelimType.setEnabled(!isReadOnly);
         final ETriadDelimeterType delimeterType = getDelimTypeModel().getSelectedItemSource();
-        final boolean specified = !readOnly && delimeterType == ETriadDelimeterType.SPECIFIED;
+        final boolean specified = !isReadOnly && delimeterType == ETriadDelimeterType.SPECIFIED;
         triadDelimeterTextField.setEnabled(specified);
         lblTriadDelim.setEnabled(specified);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

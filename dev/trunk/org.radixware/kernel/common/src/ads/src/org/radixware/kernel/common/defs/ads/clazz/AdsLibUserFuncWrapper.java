@@ -19,6 +19,7 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.RadixObjectWriter;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EMethodNature;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.CodePrinter;
@@ -97,6 +98,11 @@ public class AdsLibUserFuncWrapper extends AdsMethodDef {
         }; //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
+    }
+    
     private static class WrapperClassCodeWriter extends RadixObjectWriter<AdsLibUserFuncWrapper> {
 
         public WrapperClassCodeWriter(JavaSourceSupport support, AdsLibUserFuncWrapper target, JavaSourceSupport.UsagePurpose usagePurpose) {

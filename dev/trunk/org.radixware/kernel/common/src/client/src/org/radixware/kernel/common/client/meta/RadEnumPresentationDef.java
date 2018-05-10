@@ -23,6 +23,7 @@ import org.radixware.kernel.common.defs.IEnumDef;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EEditMaskEnumOrder;
+import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
@@ -88,7 +89,11 @@ public class RadEnumPresentationDef extends NamedDefinition {
         }
 
         public String getTitle() {
-            return kernelEnumItem.getTitle(RadEnumPresentationDef.this.getApplication());
+            return kernelEnumItem.getTitle(RadEnumPresentationDef.this.getApplication());            
+        }
+        
+        public String getTitle(final EIsoLanguage language){
+            return kernelEnumItem.getTitle(RadEnumPresentationDef.this.getApplication(), language);
         }
 
         public Icon getIcon() {

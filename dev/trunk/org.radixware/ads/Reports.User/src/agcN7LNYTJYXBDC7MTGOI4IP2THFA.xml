@@ -529,6 +529,74 @@ return helper.</xsc:Java>
           </Src>
         </Sources>
       </Method>
+      <Method Id="mthcmdV7ZS2BHSLNAZPEDEC4UNDFZ5LI" Name="onCommand_Export" Nature="1" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="input" Id="mprOG525S5P4VBQTN7P2XL7IACGIQ">
+            <Type TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afhT27JXGWQCNCUTCTDADND5Z3XKY">
+                <xsc:Presentation>CfgExportForm.UserReportGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> form = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="afhT27JXGWQCNCUTCTDADND5Z3XKY">
+                <xsc:Presentation>CfgExportForm.UserReportGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null);
+if (input != null) {
+    form.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdUSYI3KQHCFDLZJ3AO5A5DOBC64" Invoke="true">
+                <xsc:Presentation>expModulesIds</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+    for (org.radixware.schemas.types.MapStrStr.Entry e : input.MapStrStr.EntryList) {
+        form.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhT27JXGWQCNCUTCTDADND5Z3XKY prdUSYI3KQHCFDLZJ3AO5A5DOBC64" Invoke="true">
+                <xsc:Presentation>expModulesIds</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.add(e.Key);
+    }
+}
+return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, form);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
     </Methods>
     <Entity EntityId="tblN7LNYTJYXBDC7MTGOI4IP2THFA"/>
     <Presentations>
@@ -541,9 +609,9 @@ return helper.</xsc:Java>
           <AccessRules IsPublished="false"/>
           <OutType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
         </Command>
-        <Command Id="cmdV7ZS2BHSLNAZPEDEC4UNDFZ5LI" Name="Export" TitleId="mls3WJM37ETNJGFVJO6RDCHIYZQMU" Nature="1" IconId="imgYGRKUM6D5NFB7HJSZFG3KGBC6M" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
+        <Command Id="cmdV7ZS2BHSLNAZPEDEC4UNDFZ5LI" Name="Export" TitleId="mls3WJM37ETNJGFVJO6RDCHIYZQMU" Nature="3" IconId="imgYGRKUM6D5NFB7HJSZFG3KGBC6M" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">
           <AccessRules IsPublished="false"/>
-          <InType TypeId="411" Path="afhT27JXGWQCNCUTCTDADND5Z3XKY"/>
+          <InType TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
           <OutType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
         </Command>
         <Command Id="cmdNOBRWVO6NVFBBMIRDHKLC5IHQM" Name="Import" TitleId="mlsAEN3VOYPVZF6FEJOV6N2S6CPR4" Nature="2" IconId="imgEVEBHW62BFDDBLQVX2YPL7ZERM" IsVisible="true" IsConfirmationRequired="false" ClientEnvironment="explorer" Accessibility="0" Scope="2">

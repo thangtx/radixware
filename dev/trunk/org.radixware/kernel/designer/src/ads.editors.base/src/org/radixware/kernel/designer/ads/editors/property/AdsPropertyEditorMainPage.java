@@ -21,11 +21,16 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.AbstractAction;
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import net.miginfocom.swing.MigLayout;
 import org.radixware.kernel.common.defs.SearchResult;
 import org.radixware.kernel.common.defs.ads.AdsValAsStr;
 import org.radixware.kernel.common.defs.ads.clazz.AdsInterfaceClassDef;
@@ -40,10 +45,11 @@ import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EPropNature;
-import org.radixware.kernel.designer.ads.editors.clazz.property.PublishingPropertyRefPanel;
+import org.radixware.kernel.designer.ads.common.dialogs.DeprecatedPanel;
 import org.radixware.kernel.designer.common.dialogs.choosetype.ChooseType;
 import org.radixware.kernel.designer.common.dialogs.choosetype.TypeEditPanel;
 import org.radixware.kernel.designer.common.dialogs.choosetype.TypeEditorModel;
+import org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel;
 import org.radixware.kernel.designer.common.dialogs.components.DescriptionPanel;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.LocalizingEditorPanel;
 import org.radixware.kernel.designer.common.dialogs.components.values.ValueChangeEvent;
@@ -100,6 +106,15 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
             update();
         }
     };
+    private ChangeListener publishingPropertyRefListener = new ChangeListener() {
+
+        @Override
+        public void stateChanged(ChangeEvent e) {
+            if (prop instanceof AdsParentPropertyDef) {
+                parentRefsPanel.setVisible(updateParentRefs());
+            }
+        }
+    };
     private ValueChangeListener initValueListener = new ValueChangeListener() {
         @Override
         public void valueChanged(ValueChangeEvent e) {
@@ -125,6 +140,7 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
     private volatile JCheckBox isInvisibleForArteCb = null;
     private volatile boolean isInvisibleForArteCbUpdate = false;
     private final JCheckBox chbAbstract;
+    private DeprecatedPanel deprecatedPanel;
 
 //    public AdsPropertyEditorPanel getMainPanel() {
 //        return mainPanel;
@@ -153,6 +169,14 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
         });
 
         setBackground(Color.MAGENTA);
+        publishingPropertyRefPanel.setClearable(false);
+        deprecatedPanel = new DeprecatedPanel(jchkDepricated);
+        jPanel1.setLayout(new MigLayout());
+        jPanel1.add(jchbIsOverride, "grow 0, shrink");
+        jPanel1.add(deprecatedPanel, "grow 0, shrink");
+        jPanel1.add(jchkStatic, "wrap");
+        jPanel1.add(jchbIsOverride, "grow 0, shrink");
+        jPanel1.add(jchkReadOnly, "grow 0, shrink");
         //adsPropertyEditorMainPanel.
     }
 
@@ -394,12 +418,18 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
 //        }
 
         //---------------------------Depricated--------------------------
-        this.jchkDepricated.setSelected(prop.getAccessFlags().isDeprecated());
-        this.jchkDepricated.setEnabled(!prop.getNature().equals(EPropNature.FIELD) && !isReadOnly);
+        deprecatedPanel.setAccessFlags(prop.getAccessFlags());
+        deprecatedPanel.setDefaultListenr();
+        deprecatedPanel.setDeprecatedSelected(prop.getAccessFlags().isDeprecated());
+        deprecatedPanel.setDeprecatedEnabled(!prop.getNature().equals(EPropNature.FIELD) && !isReadOnly);
+        deprecatedPanel.setExpirationReleaseEnabled(jchkDepricated.isEnabled());
         
         getDescriptionPanel().open(prop);
         getDescriptionPanel().setReadonly(isReadOnly);
-        
+
+        parentRefsPanel.setVisible(false);
+        publishingPropertyRefPanel.removeChangeListener(publishingPropertyRefListener);
+                
         if (prop instanceof AdsDetailColumnPropertyDef) {
             setViewAsAdsDetailColumnPropertyDef();
         } else if (prop instanceof AdsDetailRefPropertyDef) {
@@ -416,6 +446,8 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
             setViewAsAdsInnateRefPropertyDef();
         } else if (prop instanceof AdsParentPropertyDef) {
             setViewAsAdsParentPropertyDef();
+            parentRefsPanel.setVisible(updateParentRefs());
+            publishingPropertyRefPanel.addChangeListener(publishingPropertyRefListener);
         } else if (prop instanceof AdsPropertyPresentationPropertyDef) {
             setViewAsAdsPropertyPresentationPropertyDef();
         } else if (prop instanceof AdsUserPropertyDef) {
@@ -436,6 +468,30 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
 
 //        AdsType t2 = typeEditPanel.getCurrentType().resolve(prop);
 
+    }
+    
+    private boolean updateParentRefs() {
+        if (prop instanceof AdsParentPropertyDef) {
+            final ArrayList<AdsPropertyDef> pathItems = new ArrayList<>();
+            ((AdsParentPropertyDef) prop).getParentInfo().findOriginalProperty(pathItems);
+            if (pathItems.isEmpty()) {
+                return false;
+            }
+            parentRefsPanel.removeAll();
+            parentRefsPanel.setLayout(new BoxLayout(parentRefsPanel, BoxLayout.PAGE_AXIS));
+            for (AdsPropertyDef adsPropertyDef : pathItems) {
+                parentRefsPanel.add(new javax.swing.Box.Filler(new java.awt.Dimension(0, 10), new java.awt.Dimension(0, 10), new java.awt.Dimension(jPanel21.getMaximumSize().width, 10)));
+                DefinitionLinkEditPanel linkEditPanel = new DefinitionLinkEditPanel();
+                linkEditPanel.open(adsPropertyDef, adsPropertyDef.getId());
+                parentRefsPanel.add(linkEditPanel);
+            }
+            
+            jPanel21.revalidate();
+            jPanel21.repaint();
+
+            return true;
+        }
+        return false;
     }
 
     public void open(AdsPropertyDef prop, boolean isReadOnly) {
@@ -581,22 +637,24 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
         propertyRefPanel = new javax.swing.JPanel();
         jInfoLabel1 = new javax.swing.JLabel();
         publishingPropertyRefPanel = new org.radixware.kernel.designer.ads.editors.clazz.property.PublishingPropertyRefPanel();
+        parentRefsPanel = new javax.swing.JPanel();
         overwrittenPanel = new javax.swing.JPanel();
         overwrittenLablel = new javax.swing.JLabel();
         overwrittenDefinitionLinkEditPanel = new org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel();
         overriddenPanel = new javax.swing.JPanel();
         overriddenLablel = new javax.swing.JLabel();
         overriddenDefinitionLinkEditPanel = new org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel();
-        jchbIsOverride = new javax.swing.JCheckBox();
-        jchkReadOnly = new javax.swing.JCheckBox();
-        jchkStatic = new javax.swing.JCheckBox();
-        jchkDepricated = new javax.swing.JCheckBox();
-        jchbIsOverwrite = new javax.swing.JCheckBox();
         envSelectorPanel = new org.radixware.kernel.designer.ads.editors.base.EnvSelectorPanel();
         accessorsAccessPanel = new AccessorsAccessPanel();
         accessPropertyPanel = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         accessPanel = new org.radixware.kernel.designer.ads.common.dialogs.AccessPanel();
+        jPanel1 = new javax.swing.JPanel();
+        jchbIsOverwrite = new javax.swing.JCheckBox();
+        jchbIsOverride = new javax.swing.JCheckBox();
+        jchkDepricated = new javax.swing.JCheckBox();
+        jchkReadOnly = new javax.swing.JCheckBox();
+        jchkStatic = new javax.swing.JCheckBox();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
 
@@ -634,8 +692,8 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
         propertyRefPanelLayout.setHorizontalGroup(
             propertyRefPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(propertyRefPanelLayout.createSequentialGroup()
-                .addComponent(jInfoLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jInfoLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(publishingPropertyRefPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -653,6 +711,10 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
 
         jPanel21.add(propertyRefPanel);
 
+        parentRefsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(AdsPropertyEditorMainPage.class, "AdsPropertyEditorMainPage.parentRefsPanel.border.title"))); // NOI18N
+        parentRefsPanel.setLayout(new javax.swing.BoxLayout(parentRefsPanel, javax.swing.BoxLayout.PAGE_AXIS));
+        jPanel21.add(parentRefsPanel);
+
         overwrittenLablel.setText(org.openide.util.NbBundle.getMessage(AdsPropertyEditorMainPage.class, "AdsPropertyEditorMainPage.overwrittenLablel.text")); // NOI18N
         overwrittenLablel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 5));
 
@@ -661,9 +723,9 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
         overwrittenPanelLayout.setHorizontalGroup(
             overwrittenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(overwrittenPanelLayout.createSequentialGroup()
-                .addComponent(overwrittenLablel)
-                .addGap(18, 18, 18)
-                .addComponent(overwrittenDefinitionLinkEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(overwrittenLablel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(overwrittenDefinitionLinkEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
                 .addContainerGap())
         );
         overwrittenPanelLayout.setVerticalGroup(
@@ -685,9 +747,9 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
         overriddenPanelLayout.setHorizontalGroup(
             overriddenPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(overriddenPanelLayout.createSequentialGroup()
-                .addComponent(overriddenLablel)
-                .addGap(22, 22, 22)
-                .addComponent(overriddenDefinitionLinkEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(overriddenLablel, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(overriddenDefinitionLinkEditPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 428, Short.MAX_VALUE)
                 .addContainerGap())
         );
         overriddenPanelLayout.setVerticalGroup(
@@ -699,10 +761,36 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
 
         jPanel21.add(overriddenPanel);
 
+        envSelectorPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 8, 0, 8));
+
+        accessorsAccessPanel.setLayout(null);
+
+        accessPropertyPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 8, 0, 8));
+        accessPropertyPanel.setLayout(new java.awt.BorderLayout());
+
+        jLabel5.setLabelFor(accessPanel);
+        jLabel5.setText(org.openide.util.NbBundle.getMessage(AdsPropertyEditorMainPage.class, "AdsPropertyEditorMainPage.jLabel5.text")); // NOI18N
+        accessPropertyPanel.add(jLabel5, java.awt.BorderLayout.WEST);
+        accessPropertyPanel.add(accessPanel, java.awt.BorderLayout.CENTER);
+
+        jchbIsOverwrite.setText(org.openide.util.NbBundle.getMessage(AdsPropertyEditorMainPage.class, "AdsPropertyEditorMainPage.jchbIsOverwrite.text")); // NOI18N
+        jchbIsOverwrite.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jchbIsOverwriteActionPerformed(evt);
+            }
+        });
+
         jchbIsOverride.setText(org.openide.util.NbBundle.getMessage(AdsPropertyEditorMainPage.class, "AdsPropertyEditorMainPage.jchbIsOverride.text")); // NOI18N
         jchbIsOverride.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jchbIsOverrideActionPerformed(evt);
+            }
+        });
+
+        jchkDepricated.setText(org.openide.util.NbBundle.getMessage(AdsPropertyEditorMainPage.class, "AdsPropertyEditorMainPage.jchkDepricated.text")); // NOI18N
+        jchkDepricated.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jchkDepricatedActionPerformed(evt);
             }
         });
 
@@ -720,31 +808,39 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
             }
         });
 
-        jchkDepricated.setText(org.openide.util.NbBundle.getMessage(AdsPropertyEditorMainPage.class, "AdsPropertyEditorMainPage.jchkDepricated.text")); // NOI18N
-        jchkDepricated.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jchkDepricatedActionPerformed(evt);
-            }
-        });
-
-        jchbIsOverwrite.setText(org.openide.util.NbBundle.getMessage(AdsPropertyEditorMainPage.class, "AdsPropertyEditorMainPage.jchbIsOverwrite.text")); // NOI18N
-        jchbIsOverwrite.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jchbIsOverwriteActionPerformed(evt);
-            }
-        });
-
-        envSelectorPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 8, 0, 8));
-
-        accessorsAccessPanel.setLayout(null);
-
-        accessPropertyPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 8, 0, 8));
-        accessPropertyPanel.setLayout(new javax.swing.BoxLayout(accessPropertyPanel, javax.swing.BoxLayout.LINE_AXIS));
-
-        jLabel5.setText(org.openide.util.NbBundle.getMessage(AdsPropertyEditorMainPage.class, "AdsPropertyEditorMainPage.jLabel5.text")); // NOI18N
-        jLabel5.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 8));
-        accessPropertyPanel.add(jLabel5);
-        accessPropertyPanel.add(accessPanel);
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jchbIsOverwrite)
+                    .addComponent(jchbIsOverride))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jchkDepricated)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jchkStatic))
+                    .addComponent(jchkReadOnly))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jchkDepricated)
+                            .addComponent(jchkStatic))
+                        .addComponent(jchkReadOnly))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jchbIsOverwrite)
+                        .addComponent(jchbIsOverride)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -754,37 +850,18 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
             .addComponent(jPanel21, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(panelInitVal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(envSelectorPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jchbIsOverwrite)
-                    .addComponent(jchbIsOverride))
-                .addGap(14, 14, 14)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jchkDepricated)
-                        .addGap(18, 18, 18)
-                        .addComponent(jchkStatic))
-                    .addComponent(jchkReadOnly))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(accessPropertyPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(accessorsAccessPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(descriptionPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(descriptionPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jchbIsOverwrite)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jchkStatic)
-                        .addComponent(jchkDepricated)))
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jchbIsOverride)
-                    .addComponent(jchkReadOnly))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addComponent(accessPropertyPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(accessorsAccessPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -802,7 +879,9 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -817,10 +896,10 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
 }//GEN-LAST:event_jchbIsOverwriteActionPerformed
 
     private void jchkDepricatedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jchkDepricatedActionPerformed
-        if (!isMayModify || isReadOnly) {
-            return;
-        }
-        prop.getAccessFlags().setDeprecated(this.jchkDepricated.isSelected());
+//        if (!isMayModify || isReadOnly) {
+//            return;
+//        }
+//        prop.getAccessFlags().setDeprecated(this.jchkDepricated.isSelected());
 }//GEN-LAST:event_jchkDepricatedActionPerformed
 
     private void jchkStaticActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jchkStaticActionPerformed
@@ -862,6 +941,7 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
     private javax.swing.JLabel jInfoLabel1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel21;
     private javax.swing.JPanel jPanelTypes;
@@ -877,6 +957,7 @@ class AdsPropertyEditorMainPage extends javax.swing.JPanel {
     private javax.swing.JLabel overwrittenLablel;
     private javax.swing.JPanel overwrittenPanel;
     private javax.swing.JPanel panelInitVal;
+    private javax.swing.JPanel parentRefsPanel;
     private javax.swing.JPanel propertyRefPanel;
     private org.radixware.kernel.designer.ads.editors.clazz.property.PublishingPropertyRefPanel publishingPropertyRefPanel;
     private org.radixware.kernel.designer.common.dialogs.choosetype.TypeEditPanel typeEditPanel;

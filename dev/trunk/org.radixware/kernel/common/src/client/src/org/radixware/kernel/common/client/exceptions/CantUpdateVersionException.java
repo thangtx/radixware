@@ -20,10 +20,21 @@ public class CantUpdateVersionException extends RuntimeException implements ICli
 
     static final long serialVersionUID = -3813374675631531822L;
     private final String reason;
+    private final boolean restartScheduled;
 
     public CantUpdateVersionException(final String reason) {
         this.reason = reason;
+        restartScheduled = false;
     }
+    
+    protected CantUpdateVersionException(final boolean restartScheduled) {
+        this.reason = "";
+        this.restartScheduled = restartScheduled;
+    }    
+    
+    public boolean restartScheduled(){
+        return restartScheduled;
+    }    
 
     @Override
     public String getTitle(MessageProvider mp) {

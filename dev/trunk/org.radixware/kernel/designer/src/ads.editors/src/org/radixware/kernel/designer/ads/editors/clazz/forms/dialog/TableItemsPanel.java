@@ -15,6 +15,7 @@ import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -469,9 +470,13 @@ public class TableItemsPanel extends JPanel implements ContainerChangesListener 
             final WidgetItem item = ((PropTableModel) table.getModel()).getItem();
             UIPropertySupport sup = new UIPropertySupport(prop, uiDef,item) {
                 @Override
-                public void setValue(Object val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                    super.setValue(val);
-                    itemModel.fireTableCellUpdated(item);
+                public void setValue(Object val) {
+                    try {
+                        super.setValue(val);
+                        itemModel.fireTableCellUpdated(item);
+                    } catch (Throwable ex) {
+                        java.util.logging.Logger.getLogger(UIPropertySupport.class.getName()).log(Level.WARNING, "Can not change property", ex);
+                    }
                 }
             };
             return new PropertyPanel(sup, PropertyPanel.PREF_TABLEUI);

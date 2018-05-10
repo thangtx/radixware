@@ -61,12 +61,14 @@ import static org.radixware.kernel.common.enums.EPropNature.USER;
 import org.radixware.kernel.common.enums.EPropertyValueStorePossibility;
 import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
+import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.radixdoc.DefaultAttributes;
 import org.radixware.kernel.common.radixdoc.DefaultStyle;
 import org.radixware.kernel.common.radixdoc.RadixIconResource;
 import org.radixware.schemas.radixdoc.Block;
 import org.radixware.schemas.radixdoc.ContentContainer;
 import org.radixware.schemas.radixdoc.ElementList;
+import org.radixware.schemas.radixdoc.Ref;
 import org.radixware.schemas.radixdoc.Table;
 
 public class PropertyDetailsChapterFactory extends DetailMembersChapterFactory<AdsPropertyDef> {
@@ -88,26 +90,68 @@ public class PropertyDetailsChapterFactory extends DetailMembersChapterFactory<A
     @Override
     void documentMemberDetail(AdsPropertyDef member, ContentContainer contentBlock) {
         contentBlock.setStyle(DefaultStyle.NAMED);
-        
-        final Block title = clWriter.addBlockTitle(contentBlock);
-        final TypeDocument typeDoc = new TypeDocument();
-        
-        typeDoc.addString(member.getTypeTitle()).addString(" ").addType(member.getValue().getType(), classDoc.getSource());
-        clWriter.documentType(title, typeDoc, classDoc.getSource());
 
+        final Block title = clWriter.addBlockTitle(contentBlock);
         final RadixIconResource resource = new RadixIconResource(member.getIcon());
         title.addNewResource().setSource(resource.getKey());
         clWriter.addText(title, member.getName()).setStyle(DefaultStyle.IDENTIFIER);
         classDoc.addResource(resource);
-        
+
         final Block descriptionBlock = contentBlock.addNewBlock();
         descriptionBlock.setStyle(DefaultStyle.DESCRIPTION);
         
-        clWriter.setAttribute(contentBlock, DefaultAttributes.ANCHOR, member.getId().toString());
+        final TypeDocument typeDoc = new TypeDocument();        
+        typeDoc.addString(member.getTypeTitle()).addString(" ").addType(member.getValue().getType(), classDoc.getSource());
+        clWriter.documentType(descriptionBlock, typeDoc, classDoc.getSource());
+        clWriter.addText(descriptionBlock, " " + member.getName());
+        
+        descriptionBlock.addNewBlock();
+
+        clWriter.setAttribute(contentBlock, DefaultAttributes.ANCHOR, classDoc.getIdentifier(member));
         clWriter.documentDescription(descriptionBlock, member);
 
+        if (member.isOverride()) {
+            AdsPropertyDef parentDef = member.getHierarchy().findOverridden().get();
+            if (parentDef != null) {
+                Table overrideTable = clWriter.addNewTable(descriptionBlock, "Overrides");
+                clWriter.addRefRow(overrideTable, null, parentDef, parentDef.getModule());
+                clWriter.appendStyle(overrideTable, DefaultStyle.GENERAL_ATTRIBUTES);
+            }
+        }
+        
+        if (member.isOverwrite()) {
+            AdsPropertyDef parentDef = member.getHierarchy().findOverwritten().get();
+            if (parentDef != null) {
+                Table overwriteTable = clWriter.addNewTable(descriptionBlock, "Overwrites");
+                clWriter.addRefRow(overwriteTable, null, parentDef, parentDef.getModule());
+                clWriter.appendStyle(overwriteTable, DefaultStyle.GENERAL_ATTRIBUTES);
+            }
+        }
+                
         //Common property options
         Table notPresentAttrTable = clWriter.addGeneralAttrTable(descriptionBlock);
+        //Title
+        if (member instanceof IAdsPresentableProperty) {
+            ServerPresentationSupport presentSupport = ((IAdsPresentableProperty) member).getPresentationSupport();
+            if (presentSupport != null) {
+                PropertyPresentation presentation = presentSupport.getPresentation();
+                if (presentation != null) {
+                    if (presentation.getTitleId() != null) {
+                        AdsDefinition def = presentation.findTitleOwner();
+                        if (def != null) {
+                            clWriter.addStr2MslIdRow(notPresentAttrTable, "Title", def.getLocalizingBundleId(), presentation.getTitleId());
+                        } else {
+                            clWriter.addAllStrRow(notPresentAttrTable, "Title", "");
+                        }
+                    } else {
+                        if (presentation.isPresentable()) {
+                            clWriter.addAllStrRow(notPresentAttrTable, "Title", "");
+                        }
+                    }
+                }
+            }
+        }
+
         List<String> modifiers = new ArrayList<>();
         modifiers.add(member.getAccessFlags().getAccessMode().getAsStr());
         if (member.isOverwrite()) {
@@ -259,7 +303,15 @@ public class PropertyDetailsChapterFactory extends DetailMembersChapterFactory<A
     }
 
     private void generateInnateColumnPropertyDoc(AdsInnateColumnPropertyDef colProp, Table contentTable) {
-        clWriter.addStr2RefRow(contentTable, "Database column", colProp.getColumnInfo().findColumn(), getClassDoc().getSource());
+        DdsColumnDef ddsCol = colProp.getColumnInfo().findColumn();
+
+        clWriter.addStr2RefRow(contentTable, "Database column", ddsCol, getClassDoc().getSource());
+
+        try {
+            clWriter.addStr2RefRow(contentTable, "Sequence", ddsCol.getSequence(), getClassDoc().getSource());
+        } catch (DefinitionNotFoundError ex) {
+        }
+
         writeInheritanceInfo(colProp, contentTable);
     }
 
@@ -342,7 +394,7 @@ public class PropertyDetailsChapterFactory extends DetailMembersChapterFactory<A
                 if (presentation != null && presentation.isPresentable()) {
 
                     Block titlesBlock = detailBlock.addNewBlock();
-                    Table titlesTable = clWriter.setBlockCollapsibleAndAddTable(titlesBlock, "Titles");
+                    Table titlesTable = clWriter.setBlockCollapsibleAndAddTable(titlesBlock, "Other titles");
                     generateTitlesInfo(presentation, titlesTable);
 
                     Block presentInfoBlock = detailBlock.addNewBlock();
@@ -366,18 +418,18 @@ public class PropertyDetailsChapterFactory extends DetailMembersChapterFactory<A
     }
 
     private void generateTitlesInfo(PropertyPresentation presentation, Table titlesTable) {
-        if (presentation.getTitleId() != null) {
-            clWriter.addStr2MslIdRow(titlesTable, "Title", presentation.getOwnerProperty().getLocalizingBundleId(), presentation.getTitleId());
-        } else {
-            clWriter.addAllStrRow(titlesTable, "Title", "");
-        }
         if (presentation.getEditOptions().getNullValTitleId() != null) {
             clWriter.addStr2MslIdRow(titlesTable, "Display instead of '<Not Defined>'", presentation.getOwnerProperty().getLocalizingBundleId(), presentation.getEditOptions().getNullValTitleId());
         } else {
             clWriter.addAllStrRow(titlesTable, "Display instead of '<Not Defined>'", "");
         }
         if (presentation.getHintId() != null) {
-            clWriter.addStr2MslIdRow(titlesTable, "Tool Tip", presentation.getOwnerProperty().getLocalizingBundleId(), presentation.getHintId());
+            AdsDefinition def = presentation.findHintOwner();
+            if (def != null) {
+                clWriter.addStr2MslIdRow(titlesTable, "Tool Tip", def.getLocalizingBundleId(), presentation.getHintId());
+            } else {
+                clWriter.addAllStrRow(titlesTable, "Tool Tip", "");
+            }
         } else {
             clWriter.addAllStrRow(titlesTable, "Tool Tip", "");
         }

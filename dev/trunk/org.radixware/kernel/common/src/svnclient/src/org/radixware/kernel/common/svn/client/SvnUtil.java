@@ -13,6 +13,8 @@ package org.radixware.kernel.common.svn.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,13 +54,13 @@ public class SvnUtil {
 
     public static Date parseDate(String value) {
 
-        if (value == null) {
+        if (value == null || value.isEmpty()) {
             return null;
         }
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
-            return format.parse(value);
+            return format.parse(value.substring(0, value.length() - 4));
         } catch (ParseException ex) {
             return null;
         }
@@ -100,5 +102,13 @@ public class SvnUtil {
         int hi = (b >> 4) & 0xf;
         return Integer.toHexString(hi) + Integer.toHexString(lo);
     }
-    private static char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    private static final char[] HEX = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    
+    public static String urlDecode(String url) {
+        try {
+            return URLDecoder.decode(url, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            throw new RuntimeException("Should never happen exception", ex);
+        }
+    }
 }

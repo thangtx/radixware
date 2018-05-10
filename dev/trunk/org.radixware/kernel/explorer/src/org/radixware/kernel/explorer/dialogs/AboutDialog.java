@@ -12,14 +12,12 @@
 package org.radixware.kernel.explorer.dialogs;
 
 import com.trolltech.qt.core.QRect;
-import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.QSizeF;
 import com.trolltech.qt.core.QTimerEvent;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QAccessible;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QColor;
-import com.trolltech.qt.gui.QCursor;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QDialogButtonBox;
 import com.trolltech.qt.gui.QFrame;
@@ -33,7 +31,8 @@ import com.trolltech.qt.gui.QStyle;
 import com.trolltech.qt.gui.QTextEdit;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -41,11 +40,17 @@ import java.util.TimeZone;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.eas.DatabaseInfo;
 import org.radixware.kernel.common.client.env.ClientIcon;
+import org.radixware.kernel.common.client.env.ProductInstallationOptions;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.types.TimeZoneInfo;
 import org.radixware.kernel.common.utils.SystemTools;
-import org.radixware.kernel.explorer.env.Application;
+import org.radixware.kernel.common.utils.Utils;
+import org.radixware.kernel.common.utils.VersionNumber;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
+import org.radixware.kernel.starter.meta.LayerMeta;
+import org.radixware.kernel.starter.meta.RevisionMeta;
+import org.radixware.kernel.starter.radixloader.RadixDirLoader;
 import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.radixware.kernel.starter.radixloader.RadixLoaderException;
 import org.radixware.kernel.starter.radixloader.RadixSVNLoader;
@@ -87,23 +92,8 @@ public final class AboutDialog extends QDialog {
         setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, true);
         
         setWindowTitle(mp.translate("About", "About RadixWare Explorer"));
-        setWindowIcon(ExplorerIcon.getQIcon(ClientIcon.Dialog.ABOUT));
-        
-        final QSize screenSize = QApplication.desktop().availableGeometry(QCursor.pos()).size();
-
-        final int horizontalLimit;
-        if (screenSize.width() <= 1024) {
-            horizontalLimit = screenSize.width();
-        } else {
-            horizontalLimit = Math.min(screenSize.width() - 480, 1000);
-        }
-        final int verticalLimit;
-        if (screenSize.height() <= 800) {
-            verticalLimit = screenSize.height() - 50;
-        } else {
-            verticalLimit = Math.min(screenSize.height() - 280, 1000);
-        }
-        setMaximumSize(horizontalLimit, verticalLimit);
+        setWindowIcon(ExplorerIcon.getQIcon(ClientIcon.Dialog.ABOUT));        
+        setMaximumSize(WidgetUtils.shrinkWindowSize(WidgetUtils.MAXIMUM_SIZE, WidgetUtils.MAXIMUM_SIZE));
         
         teGeneralInformation.setObjectName("Rdx.AboutDialog.teGeneralInformation");
         teGeneralInformation.setReadOnly(true);
@@ -239,31 +229,70 @@ public final class AboutDialog extends QDialog {
             if (dbInfo!=null && !dbInfo.isEmpty()){
                 writeDatabaseInformation(html, dbInfo);
             }
+            writeProductInstallationOptions(html, environment.getProductInstallationOptions());
         }
         html.append("</body></html>");
         return html.toString();
     }
     
     private void writeProductVersions(final StringBuilder html){
-        html.append("<p align=\"center\"><h3>");
-        html.append(mp.translate("About", "Version Information"));
-        html.append("</h3></p>");
+        final RevisionMeta revisionMeta = RadixLoader.getInstance().getCurrentRevisionMeta();
+        final String kernelVersionString =  revisionMeta.getKernelLayerVersionsString();        
+        final String appVersionString = revisionMeta.getAppLayerVersionsString();
+        final String layerColumnWidth;
+        final String versionColumnWidth;
+        if (!appVersionString.isEmpty() && appVersionString.startsWith(kernelVersionString)){
+            layerColumnWidth = "70%";
+            versionColumnWidth = "30%";
+        }else{
+            layerColumnWidth = "37%";
+            versionColumnWidth = "63%";
+        }
+        writeHeader(html, mp.translate("About", "Version Information"));
         html.append("<table border=\"1\" width=\"100%\">");
-        html.append("<tr><th width=\"70%\">");
+        html.append("<tr><th width=\"");
+        html.append(layerColumnWidth);
+        html.append("\">");
         html.append(mp.translate("About", "Layer Name"));
         html.append("</th>");
-        html.append("<th width=\"30%\">");
+        html.append("<th width=\"");
+        html.append(versionColumnWidth);
+        html.append("\">");
         html.append(mp.translate("About", "Version"));
         html.append("</th></tr>");
-        final LinkedHashMap<String, String> versions = Application.getVersionInfo();
-        for (Map.Entry<String, String> entry : versions.entrySet()) {
-            html.append("<tr><td>");
-            html.append(entry.getKey());
-            html.append("</td><td align=\"center\"> ");
-            html.append(entry.getValue());
-            html.append("</td></tr>");
+        final Map<String,VersionNumber> appVersionByUri = Utils.parseVersionsByKey(appVersionString);
+        final Map<String,VersionNumber> kernelVersionByUri = Utils.parseVersionsByKey(kernelVersionString);
+        final List<LayerMeta> layers = revisionMeta.getAllLayersSortedFromBottom();
+        String appVersion, kernelVersion;
+        String layerUri;
+        VersionNumber versionNumber;
+        for (LayerMeta layer: layers){
+            layerUri = layer.getUri();
+            versionNumber = appVersionByUri.get(layerUri);
+            appVersion = versionNumber==null ? layer.getReleaseNumber() : versionNumber.toString();
+            versionNumber = kernelVersionByUri.get(layerUri);
+            kernelVersion = versionNumber==null ? layer.getReleaseNumber() : versionNumber.toString();
+            writeVersionsToTable(html, layerUri, appVersion==null ? "" : appVersion, kernelVersion==null ? "" : kernelVersion);
         }
-        html.append("</table>");        
+        html.append("</table>");
+    }
+    
+    private void writeVersionsToTable(final StringBuilder table, final String layerUri, final String appVersion, final String kernelVersion){
+        table.append("<tr><td>");
+        table.append(layerUri);
+        table.append("</td><td align=\"center\"> ");        
+        if (kernelVersion.equals(appVersion)){
+            table.append(appVersion);
+        }else{
+            table.append(mp.translate("About", "Application"));
+            table.append(": ");
+            table.append(appVersion);
+            table.append(", ");
+            table.append(mp.translate("About", "Kernel"));
+            table.append(": ");
+            table.append(kernelVersion);
+        }
+        table.append("</td></tr>");
     }
     
     private void writeQtVersion(final StringBuilder html){
@@ -274,9 +303,7 @@ public final class AboutDialog extends QDialog {
     }
     
     private void writeStarterInformation(final StringBuilder html, final RadixLoader rxLoader){
-        html.append("<p align=\"center\"><h3>");
-        html.append(mp.translate("About", "Starter Information"));
-        html.append("</h3></p>");
+        writeHeader(html, mp.translate("About", "Starter Information"));
 
         html.append("<table border=\"0\"><tr><td>");
         html.append(mp.translate("About", "Revision number: "));            
@@ -293,7 +320,13 @@ public final class AboutDialog extends QDialog {
             html.append("</td></tr><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
             html.append(rxLoader.getRoot());                
             html.append("</td></tr>");
-        }            
+        }else if (rxLoader instanceof RadixDirLoader){
+            html.append("<tr><td>");
+            html.append(mp.translate("About", "Working directory:"));
+            html.append("</td></tr><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            html.append(rxLoader.getRoot().getAbsolutePath());
+            html.append("</td></tr>");            
+        }
         html.append("<tr><td>");
         html.append(mp.translate("About", "Directory for temporary files:"));
         html.append("</td></tr><tr><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
@@ -314,9 +347,7 @@ public final class AboutDialog extends QDialog {
     }
     
     private void writeSystemInformation(final StringBuilder html){
-        html.append("<p align=\"center\"><h3>");
-        html.append(mp.translate("About", "System Information"));
-        html.append("</h3></p>");
+        writeHeader(html, mp.translate("About", "System Information"));
 
         html.append("<table border=\"0\">");
         html.append("<tr><td>Java:</td>");
@@ -333,7 +364,7 @@ public final class AboutDialog extends QDialog {
         html.append(mp.translate("About", "System:"));
         html.append("&nbsp;</td>");
         html.append("<td align=\"left\" style=\"white-space: nowrap;\">");
-        final String osVersion = System.getProperty("os.version").replaceAll("-", "\u2011");
+        final String osVersion = System.getProperty("os.version").replace("-", "\u2011");
         html.append(String.format(mp.translate("About", "%s %s running on %s; %s; %s_%s"),
                 System.getProperty("os.name"), osVersion, System.getProperty("os.arch"),
                 System.getProperty("file.encoding"), System.getProperty("user.language"), System.getProperty("user.country")));
@@ -342,9 +373,7 @@ public final class AboutDialog extends QDialog {
     }
     
     private void writeDatabaseInformation(final StringBuilder html, final DatabaseInfo dbInfo){
-        html.append("<p align=\"center\"><h3>");
-        html.append(mp.translate("About", "Database Information"));
-        html.append("</h3></p>");
+        writeHeader(html, mp.translate("About", "Database Information"));
 
         if (dbInfo.getProductName()!=null 
             && dbInfo.getProductVersion()!=null 
@@ -411,6 +440,40 @@ public final class AboutDialog extends QDialog {
         }
         html.append("</td></tr>");
         html.append("</table>");        
+    }
+    
+    private void writeProductInstallationOptions(final StringBuilder html, final ProductInstallationOptions options){
+        final List<String> optionNames = new ArrayList<>(options.getOptionNames());        
+        if (!optionNames.isEmpty()){
+            Collections.sort(optionNames);
+            writeHeader(html, mp.translate("About", "Product Installation Options"));
+            html.append("<table border=\"1\" width=\"100%\">");
+            html.append("<tr><th width=\"70%\">");
+            html.append(mp.translate("About", "Parameter"));
+            html.append("</th>");
+            html.append("<th width=\"30%\">");
+            html.append(mp.translate("About", "Value"));
+            html.append("</th></tr>");
+            String value;
+            for (String optionName: optionNames){
+                value = options.getOptionValue(optionName);
+                if (value==null || value.isEmpty()){
+                    value = mp.translate("About", "Enabled");
+                }
+                html.append("<tr><td>");
+                html.append(optionName);
+                html.append("</td><td align=\"center\"> ");
+                html.append(value);
+                html.append("</td></tr>");                
+            }
+            html.append("</table>");
+        }
+    }
+    
+    private static void writeHeader(final StringBuilder html, final String header){
+        html.append("<p align=\"center\"><h3>");
+        html.append(header);
+        html.append("</h3></p>");        
     }
     
 }

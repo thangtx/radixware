@@ -81,6 +81,11 @@ public class ProgressDialogResource implements IProgressDialogResource {
         public void setText(String text) {
             progressHandle.setText(text);
         }
+
+        @Override
+        public String getText() {
+            return progressHandle.getText();
+        }                
         
         @Override
         public void setValue(int value) {
@@ -89,11 +94,18 @@ public class ProgressDialogResource implements IProgressDialogResource {
         
         @Override
         public void setCanCancel(boolean canCancel) {
+            //cancel button in wait dialog is not supported in WEB yet
         }
+
+        @Override
+        public void setCancelButtonTitle(String title) {
+            //cancel button in wait dialog is not supported in WEB yet
+        }                
     }
+    
     private final WpsEnvironment env;
     private Process process;
-    private Stack<Process> processes = new Stack<Process>();
+    private Stack<Process> processes = new Stack<>();
     
     public ProgressDialogResource(WpsEnvironment env) {
         this.env = env;
@@ -151,6 +163,9 @@ public class ProgressDialogResource implements IProgressDialogResource {
         }
         if (request.isSetCancellable()) {
             pm.setCanCancel(request.isSetCancellable());
+        }
+        if (request.isSetCancelButtonTitle()){
+            pm.setCancelButtonTitle(request.getCancelButtonTitle());
         }
         if (request.isSetProgress()) {
             pm.setValue(Math.round(request.getProgress()));

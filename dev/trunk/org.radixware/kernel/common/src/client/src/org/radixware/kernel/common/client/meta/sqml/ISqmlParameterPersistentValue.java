@@ -24,6 +24,8 @@ public interface ISqmlParameterPersistentValue {
     String getValAsStr();
 
     Id getEditorPresentationId();
+    
+    boolean isReadOnly();
 
     ISqmlParameterPersistentValue copy();
 }

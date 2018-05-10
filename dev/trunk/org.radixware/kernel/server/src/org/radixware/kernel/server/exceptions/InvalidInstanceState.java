@@ -15,5 +15,10 @@ public class InvalidInstanceState extends InvalidState {
 	public InvalidInstanceState(final String mess) {
 		super(mess);
 	}
+    
+    public InvalidInstanceState(final String mess, final Throwable cause) {
+        super(mess, cause);
+    }
+    
 	private static final long serialVersionUID = 3925532103421080647L;
 }

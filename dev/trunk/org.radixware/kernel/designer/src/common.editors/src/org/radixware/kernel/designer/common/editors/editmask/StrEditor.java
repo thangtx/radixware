@@ -323,6 +323,8 @@ class StrEditor extends Editor {
         edPattern.setEnabled(!readOnly);
         chMatchCase.setEnabled(!readOnly);
         cbValidatorType.setEnabled(!readOnly);
+        jLabel1.setEnabled(!readOnly);
+        jLabel2.setEnabled(!readOnly);
 
     }
 

@@ -25,7 +25,7 @@ public class SnapBottomEdgeAction extends AbstractAction {
     //private final JCheckBoxMenuItem spanBottomEdgeItem;
 
     public SnapBottomEdgeAction(final AdsReportFormDiagram diagram/*,JCheckBoxMenuItem spanBottomEdgeItem*/) {
-        super("Snap to bottom edge",RadixWareIcons.REPORT.SNAP_BOTTOM_EDGE.getIcon());
+        super("Snap to Bottom Edge",RadixWareIcons.REPORT.SNAP_BOTTOM_EDGE.getIcon());
         this.diagram = diagram;
         //this.spanBottomEdgeItem=spanBottomEdgeItem;
     }

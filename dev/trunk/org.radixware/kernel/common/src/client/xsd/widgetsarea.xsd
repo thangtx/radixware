@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:this="http://schemas.radixware.org/widgetsarea.xsd" 
+           xmlns:types="http://schemas.radixware.org/types.xsd"
+           targetNamespace="http://schemas.radixware.org/widgetsarea.xsd"
+           elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    
+    <xs:complexType name="Widget">
+        <xs:sequence>
+            <xs:element name="Context" type="xs:anyType" minOccurs="0" maxOccurs="1"/>  
+        </xs:sequence>    
+        <xs:attribute name="controllerClassName" type="types:Str" use="required"/>
+        <xs:attribute name="Name" type="types:Str" use="required"/>
+        <xs:attribute name="gridLeft" type="xs:int" use="required"/>
+        <xs:attribute name="gridTop" type="xs:int" use="required"/>
+        <xs:attribute name="gridWidth" type="xs:int" use="required"/>
+        <xs:attribute name="gridHeight" type="xs:int" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="Tab">
+        <xs:sequence>
+            <xs:element name="Widget" type="this:Widget" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence> 
+        <xs:attribute name="Name" type="types:Str" use="required"/>
+        <xs:attribute name="Index" type="types:Int" use="required"/>
+    </xs:complexType>
+    
+    <xs:complexType name="WidgetsArea">
+        <xs:sequence>
+            <xs:element name="Tab" type="this:Tab"  minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="gridHeight" type="xs:int"/>
+        <xs:attribute name="gridWidth" type="xs:int"/>
+        <xs:attribute name="activeTabIndex" type="xs:int"/> 
+    </xs:complexType>
+    
+    <xs:element name="WidgetsArea" type="this:WidgetsArea"/>
+</xs:schema>    

@@ -45,6 +45,8 @@ import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPageDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsProperiesGroupDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.IPagePropertyGroup;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.components.CommonRadixObjectPopupMenu;
 import org.radixware.kernel.designer.common.dialogs.components.CommonRadixObjectPopupMenu.IRadixObjectPopupMenuOwner;
@@ -67,6 +69,7 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
     private AdsEditorPageDef editorPage;
     private JCheckBox chGlueToLeft;
     private JCheckBox chGlueToRight;
+    private ICurrentGroupListener currentGroupListener;
 
     public UsedPropertiesTable(AdsEditorPageDef page) {
         this.editorPage = page;
@@ -116,6 +119,8 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
                 }
             } else if (sel instanceof Definition) {
                 return (Definition) sel;
+            } else if (sel instanceof RadixObject){
+                return (RadixObject) sel;
             }
         }
         return null;
@@ -152,13 +157,7 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
                             //selection.setGlutToRight(false);
                         }
                         chGlueToRight.setSelected(selection.isGlutToRight());
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                table.revalidate();
-                                table.repaint();
-                            }
-                        });
+                        updateTabel();
                     }
                 }
             }
@@ -176,13 +175,7 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
                             model.setGlutToLeft(selection, false);
                         }
                         chGlueToLeft.setSelected(selection.isGlutToLeft());
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                table.revalidate();
-                                table.repaint();
-                            }
-                        });
+                        updateTabel();
                     }
                 }
             }
@@ -349,14 +342,16 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
         MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
             public void mouseReleased(MouseEvent e) {
-                super.mouseReleased(e);
-                if (e.getClickCount() == 2) {
-                    final Point origin = e.getPoint();
-                    int row = table.rowAtPoint(origin);
-                    int column = table.columnAtPoint(origin);
+                if (!editorPage.isReadOnly()) {
+                    super.mouseReleased(e);
+                    if (e.getClickCount() == 2) {
+                        final Point origin = e.getPoint();
+                        int row = table.rowAtPoint(origin);
+                        int column = table.columnAtPoint(origin);
 
-                    if (row != -1 && column != -1) {
-                        getDoubleClickSupport().fireEvent(new RadixObjectChooserPanel.DoubleClickChooserEvent(row));
+                        if (row != -1 && column != -1) {
+                            getDoubleClickSupport().fireEvent(new RadixObjectChooserPanel.DoubleClickChooserEvent(row));
+                        }
                     }
                 }
             }
@@ -407,23 +402,25 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
     @Override
     public void removeAll(Object[] objects) {
         for (Object obj : objects) {
-            assert (obj instanceof Id);
-            model.removeItem((Id) obj);
+            if (obj instanceof Id){
+                model.removeItem((Id) obj);
+            } else if  (obj instanceof AdsEditorPageDef.PagePropertyRef){
+                model.removeItem((AdsEditorPageDef.PagePropertyRef) obj);
+            }
             //     changeSupport.fireChange();
         }
     }
 
     @Override
     public final void updateContent() {
-        table.setEnabled(!editorPage.isReadOnly());
         if (model == null) {
             model = new EditorPagePropTableModel();
         }
-        model.open(editorPage);
+        model.open(editorPage, getCurrentGroup());
+        model.setCurrentGroupListener(currentGroupListener);
         table.setModel(model);
-        if (addColumnButton != null) {
-            addColumnButton.setEnabled(model.getColumnCount() < 10);
-        }
+        updateTabel();
+        setReadonly(editorPage.isReadOnly());
     }
 
     @Override
@@ -445,7 +442,12 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
         if (row > -1 && row < model.getRowCount()) {
             EditorPagePropTableModel.PageItem ref = (EditorPagePropTableModel.PageItem) model.getValueAt(row, table.getSelectedColumn());
             if (ref != null) {
-                return new Object[]{ref.getPropertyId()};
+                Id id = ref.getPropertyId();
+                if (id != null){
+                    return new Object[]{id};
+                } else {
+                    return new Object[]{ref.getPropertyRef()};
+                }
             }
         }
         return new Object[0];
@@ -459,7 +461,13 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
     @Override
     public boolean hasSelection() {
         int row = getSelectedIndex();
-        return row > -1 && row < model.getRowCount();
+        if (row > -1 && row < model.getRowCount()){
+            EditorPagePropTableModel.PageItem selection = getSelectedItem();
+            if (selection != null){
+                return selection.getPropertyId() != null;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -473,7 +481,7 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
 
     @Override
     public void setSelectedItems(Object[] items) {
-        assert (items[0] instanceof Id);
+//        assert (items[0] instanceof Id);
 //        final int row = model.getRowIndexByProperty((Id) items[0]);
 //        final int column = model.getColumnIndexByProperty((Id) items[0]);
 //
@@ -490,7 +498,12 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
 
     @Override
     public void setReadonly(boolean readonly) {
-        table.setEnabled(!readonly);
+        if (addColumnButton != null) {
+            addColumnButton.setEnabled(!readonly && model.getColumnCount() < 10);
+        }
+        if (removeColumnButton != null) {
+            removeColumnButton.setEnabled(!readonly);
+        }
     }
 
     @Override
@@ -541,4 +554,25 @@ public class UsedPropertiesTable implements IRadixObjectChooserLeftComponent, IR
         return doubleClickSupport;
     }
     private RadixObjectChooserPanel.DoublieClickChooserSupport doubleClickSupport;
+
+    public void setCurrentGroupListener(ICurrentGroupListener currentGroupListener) {
+        this.currentGroupListener = currentGroupListener;
+    }
+
+    public IPagePropertyGroup getCurrentGroup() {
+        if (currentGroupListener != null){
+            return currentGroupListener.getCurrentPagePropertyGroup();
+        }
+        return editorPage.getProperties();
+    }
+    
+    private void updateTabel() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                table.revalidate();
+                table.repaint();
+            }
+        });
+    }
 }

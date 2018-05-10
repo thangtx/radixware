@@ -43,6 +43,7 @@ public class Splitter extends UIObject implements ISplitter {
         public Cell(UIObject component, Orientation orientation, ClientSettings settings) {
             super(new Div());
             handle.addClass("divider");
+            handle.addClass("rwt-ui-element-with-border");
             content.addClass("content");
             html.add(handle);
             html.add(content);

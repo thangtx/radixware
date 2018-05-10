@@ -180,15 +180,15 @@ public class ChartAppearancePanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         buttonGroup2 = new javax.swing.ButtonGroup();
-        gridPanel = new javax.swing.JPanel();
-        cbAxisGridX = new javax.swing.JCheckBox();
-        cdAxisGridY = new javax.swing.JCheckBox();
-        chartOrientationPanel = new javax.swing.JPanel();
-        rbHorizontalOrientation = new javax.swing.JRadioButton();
-        rbVerticalOrientation = new javax.swing.JRadioButton();
+        legendPanel = new javax.swing.JPanel();
+        rbBottomLegend = new javax.swing.JRadioButton();
+        rbTopLegend = new javax.swing.JRadioButton();
+        rbLeftLegend = new javax.swing.JRadioButton();
+        rbRightLegend = new javax.swing.JRadioButton();
         axisSpacePanel = new javax.swing.JPanel();
         topAxisSpaceSpinner = new javax.swing.JSpinner();
         lbTopAxisSpace = new javax.swing.JLabel();
@@ -198,69 +198,65 @@ public class ChartAppearancePanel extends javax.swing.JPanel {
         leftAxisSpaceSpinner = new javax.swing.JSpinner();
         bottomAxisSpaceSpinner = new javax.swing.JSpinner();
         rightAxisSpaceSpinner = new javax.swing.JSpinner();
-        legendPanel = new javax.swing.JPanel();
-        rbBottomLegend = new javax.swing.JRadioButton();
-        rbTopLegend = new javax.swing.JRadioButton();
-        rbLeftLegend = new javax.swing.JRadioButton();
-        rbRightLegend = new javax.swing.JRadioButton();
+        gridPanel = new javax.swing.JPanel();
+        cbAxisGridX = new javax.swing.JCheckBox();
+        cdAxisGridY = new javax.swing.JCheckBox();
+        chartOrientationPanel = new javax.swing.JPanel();
+        rbHorizontalOrientation = new javax.swing.JRadioButton();
+        rbVerticalOrientation = new javax.swing.JRadioButton();
 
-        setPreferredSize(new java.awt.Dimension(400, 258));
+        setMinimumSize(new java.awt.Dimension(400, 350));
+        setPreferredSize(new java.awt.Dimension(400, 350));
+        setLayout(new java.awt.GridBagLayout());
 
-        gridPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.gridPanel.border.title"))); // NOI18N
+        legendPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.legendPanel.border.title"))); // NOI18N
 
-        cbAxisGridX.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.cbAxisGridX.text")); // NOI18N
+        buttonGroup2.add(rbBottomLegend);
+        rbBottomLegend.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbBottomLegend.text")); // NOI18N
 
-        cdAxisGridY.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.cdAxisGridY.text")); // NOI18N
+        buttonGroup2.add(rbTopLegend);
+        rbTopLegend.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbTopLegend.text")); // NOI18N
 
-        javax.swing.GroupLayout gridPanelLayout = new javax.swing.GroupLayout(gridPanel);
-        gridPanel.setLayout(gridPanelLayout);
-        gridPanelLayout.setHorizontalGroup(
-            gridPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(gridPanelLayout.createSequentialGroup()
+        buttonGroup2.add(rbLeftLegend);
+        rbLeftLegend.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbLeftLegend.text")); // NOI18N
+
+        buttonGroup2.add(rbRightLegend);
+        rbRightLegend.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbRightLegend.text")); // NOI18N
+
+        javax.swing.GroupLayout legendPanelLayout = new javax.swing.GroupLayout(legendPanel);
+        legendPanel.setLayout(legendPanelLayout);
+        legendPanelLayout.setHorizontalGroup(
+            legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(legendPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(gridPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cbAxisGridX, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cdAxisGridY))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rbTopLegend)
+                    .addComponent(rbLeftLegend)
+                    .addComponent(rbRightLegend)
+                    .addComponent(rbBottomLegend))
+                .addContainerGap(144, Short.MAX_VALUE))
         );
-        gridPanelLayout.setVerticalGroup(
-            gridPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(gridPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(cbAxisGridX)
+        legendPanelLayout.setVerticalGroup(
+            legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(legendPanelLayout.createSequentialGroup()
+                .addComponent(rbBottomLegend)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cdAxisGridY)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        chartOrientationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.chartOrientationPanel.border.title"))); // NOI18N
-
-        buttonGroup1.add(rbHorizontalOrientation);
-        rbHorizontalOrientation.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbHorizontalOrientation.text")); // NOI18N
-
-        buttonGroup1.add(rbVerticalOrientation);
-        rbVerticalOrientation.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbVerticalOrientation.text")); // NOI18N
-
-        javax.swing.GroupLayout chartOrientationPanelLayout = new javax.swing.GroupLayout(chartOrientationPanel);
-        chartOrientationPanel.setLayout(chartOrientationPanelLayout);
-        chartOrientationPanelLayout.setHorizontalGroup(
-            chartOrientationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(chartOrientationPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(chartOrientationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rbHorizontalOrientation)
-                    .addComponent(rbVerticalOrientation))
-                .addContainerGap(194, Short.MAX_VALUE))
-        );
-        chartOrientationPanelLayout.setVerticalGroup(
-            chartOrientationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, chartOrientationPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(rbHorizontalOrientation)
+                .addComponent(rbTopLegend)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(rbVerticalOrientation)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(rbLeftLegend)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rbRightLegend)
+                .addGap(0, 127, Short.MAX_VALUE))
         );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 2);
+        add(legendPanel, gridBagConstraints);
 
         axisSpacePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.axisSpacePanel.border.title"))); // NOI18N
 
@@ -309,7 +305,7 @@ public class ChartAppearancePanel extends javax.swing.JPanel {
                     .addComponent(lbRightAxisSpace))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(axisSpacePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rightAxisSpaceSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                    .addComponent(rightAxisSpaceSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
                     .addComponent(leftAxisSpaceSpinner, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(topAxisSpaceSpinner, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(bottomAxisSpaceSpinner))
@@ -334,77 +330,89 @@ public class ChartAppearancePanel extends javax.swing.JPanel {
                 .addGroup(axisSpacePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbRightAxisSpace)
                     .addComponent(rightAxisSpaceSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(13, Short.MAX_VALUE))
-        );
-
-        legendPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.legendPanel.border.title"))); // NOI18N
-
-        buttonGroup2.add(rbBottomLegend);
-        rbBottomLegend.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbBottomLegend.text")); // NOI18N
-
-        buttonGroup2.add(rbTopLegend);
-        rbTopLegend.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbTopLegend.text")); // NOI18N
-
-        buttonGroup2.add(rbLeftLegend);
-        rbLeftLegend.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbLeftLegend.text")); // NOI18N
-
-        buttonGroup2.add(rbRightLegend);
-        rbRightLegend.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbRightLegend.text")); // NOI18N
-
-        javax.swing.GroupLayout legendPanelLayout = new javax.swing.GroupLayout(legendPanel);
-        legendPanel.setLayout(legendPanelLayout);
-        legendPanelLayout.setHorizontalGroup(
-            legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(legendPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rbTopLegend)
-                    .addComponent(rbLeftLegend)
-                    .addComponent(rbRightLegend)
-                    .addComponent(rbBottomLegend))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-        legendPanelLayout.setVerticalGroup(
-            legendPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(legendPanelLayout.createSequentialGroup()
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(0, 2, 0, 2);
+        add(axisSpacePanel, gridBagConstraints);
+
+        gridPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.gridPanel.border.title"))); // NOI18N
+
+        cbAxisGridX.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.cbAxisGridX.text")); // NOI18N
+
+        cdAxisGridY.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.cdAxisGridY.text")); // NOI18N
+
+        javax.swing.GroupLayout gridPanelLayout = new javax.swing.GroupLayout(gridPanel);
+        gridPanel.setLayout(gridPanelLayout);
+        gridPanelLayout.setHorizontalGroup(
+            gridPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(gridPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(rbBottomLegend)
+                .addGroup(gridPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbAxisGridX, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cdAxisGridY))
+                .addContainerGap(128, Short.MAX_VALUE))
+        );
+        gridPanelLayout.setVerticalGroup(
+            gridPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(gridPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(cbAxisGridX)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(rbTopLegend)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(rbLeftLegend)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(rbRightLegend)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addComponent(cdAxisGridY)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(axisSpacePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(gridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(8, 8, 8)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(legendPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(chartOrientationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(gridPanel, gridBagConstraints);
+
+        chartOrientationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.chartOrientationPanel.border.title"))); // NOI18N
+
+        buttonGroup1.add(rbHorizontalOrientation);
+        rbHorizontalOrientation.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbHorizontalOrientation.text")); // NOI18N
+
+        buttonGroup1.add(rbVerticalOrientation);
+        rbVerticalOrientation.setText(org.openide.util.NbBundle.getMessage(ChartAppearancePanel.class, "ChartAppearancePanel.rbVerticalOrientation.text")); // NOI18N
+
+        javax.swing.GroupLayout chartOrientationPanelLayout = new javax.swing.GroupLayout(chartOrientationPanel);
+        chartOrientationPanel.setLayout(chartOrientationPanelLayout);
+        chartOrientationPanelLayout.setHorizontalGroup(
+            chartOrientationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(chartOrientationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(chartOrientationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rbHorizontalOrientation)
+                    .addComponent(rbVerticalOrientation))
+                .addContainerGap(128, Short.MAX_VALUE))
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(gridPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(chartOrientationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(axisSpacePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(legendPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        chartOrientationPanelLayout.setVerticalGroup(
+            chartOrientationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, chartOrientationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(rbHorizontalOrientation)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rbVerticalOrientation)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {axisSpacePanel, legendPanel});
-
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        add(chartOrientationPanel, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
     private void topAxisSpaceSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_topAxisSpaceSpinnerStateChanged

@@ -12,6 +12,7 @@ package org.radixware.kernel.server.instance.arte;
 
 import java.awt.BorderLayout;
 import java.awt.AWTKeyStroke;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
@@ -23,11 +24,20 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ComponentAdapter;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
@@ -48,12 +58,24 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
 import org.apache.commons.logging.LogFactory;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.CategoryToolTipGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.StackedBarRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.ui.RectangleInsets;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.utils.DebugUtils;
 import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.instance.InstanceConfigStore;
 import org.radixware.kernel.server.instance.InstanceState;
+import org.radixware.kernel.server.instance.InstanceView;
+import org.radixware.kernel.server.monitoring.ArteWaitStats;
 import org.radixware.kernel.server.units.ServerItemView;
-import org.radixware.kernel.server.units.Unit;
 import org.radixware.kernel.server.widgets.TraceSettings;
 import org.radixware.kernel.server.widgets.TableWithSeverityColumnRenderer;
 import org.radixware.kernel.server.widgets.TraceView;
@@ -61,7 +83,7 @@ import org.radixware.kernel.server.widgets.TraceView;
 public class ArtesPanel extends JPanel {
 
     private static final long serialVersionUID = 4961007823381517945L;
-    private static final long TIC_MILLIS = 500;
+    private static final long TIC_MILLIS = 1000;
 
     private final class TableChangedListener implements TableModelListener {
 
@@ -83,6 +105,7 @@ public class ArtesPanel extends JPanel {
         private final String[] HEADER = {Messages.COL_SEVERITY, Messages.COL_SEQ_NUM, Messages.COL_STATE, Messages.COL_USAGE};
         private final List<TableModelListener> listeners;
         private final Instance instance;
+        private List<ArteInstance> snapshot = new ArrayList<>();
 
         public ArteInstancesModel(final Instance instance) {
             this.instance = instance;
@@ -90,22 +113,31 @@ public class ArtesPanel extends JPanel {
         }
 
         public void update() {
-            SwingUtilities.invokeLater(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            for (TableModelListener listener : listeners) {
-                                if (listener instanceof TableChangedListener) {
-                                    listener.tableChanged(new TableModelEvent(ArteInstancesModel.this));
+            final InstanceView instanceView = instance.getViewIfCreated();
+            if (instanceView != null && !instanceView.isDisposing()) {
+                SwingUtilities.invokeLater(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                final ArtePool artePool = instance.getArtePool();
+                                if (artePool != null) {
+                                    snapshot = new ArrayList<>(instance.getArtePool().getInstances(true));
+                                } else {
+                                    snapshot = Collections.emptyList();
+                                }
+                                for (TableModelListener listener : listeners) {
+                                    if (listener instanceof TableChangedListener) {
+                                        listener.tableChanged(new TableModelEvent(ArteInstancesModel.this));
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+            }
         }
 
         public ArteInstance getArteHandlerAt(final int row) {
             try {
-                return instance.getArtePool().getInstances(true).get(row);
+                return snapshot.get(row);
             } catch (Exception ex) {
                 return null;
             }
@@ -118,7 +150,7 @@ public class ArtesPanel extends JPanel {
 
         @Override
         public int getRowCount() {
-            return instance.getArtePool() != null ? instance.getArtePool().getInstances(false).size() : 0;
+            return snapshot.size();
         }
 
         @Override
@@ -171,8 +203,9 @@ public class ArtesPanel extends JPanel {
                     }
                 }
                 case 3: {
-                    final String workTimePercent = Byte.toString(arteInstance.getStatistic().getWorkTimePercent());
-                    return workTimePercent + "%";
+//                    final String workTimePercent = Byte.toString(arteInstance.getStatistic().getWorkTimePercent());
+//                    return workTimePercent + "%";
+                    return arteInstance;
                 }
                 default:
                     return null;
@@ -306,6 +339,7 @@ public class ArtesPanel extends JPanel {
             private static final long serialVersionUID = 1552549028233029619L;
             private static final int DEFAULT_ROW_HEIGHT = 26;
             private final ArtePopupMenu popup;
+            private final ArteLoadCellRenderer loadCellRenderer = new ArteLoadCellRenderer();
 
             public ArteInstancesTable(final ArteInstancesModel model) {
                 super(model);
@@ -325,10 +359,10 @@ public class ArtesPanel extends JPanel {
                 getColumnModel().getColumn(0).setMinWidth(DEFAULT_ROW_HEIGHT);
                 getColumnModel().getColumn(0).setPreferredWidth(DEFAULT_ROW_HEIGHT);
                 getColumnModel().getColumn(1).setPreferredWidth(100);
-//				int width = ArtesPanel.this.getWidth() - DEFAULT_ROW_HEIGHT - 104;
-//				for (int i = 2; i < getColumnCount(); i++)
-//					getColumnModel().getColumn(i).setPreferredWidth(width / (getColumnCount() - 2));
+                getColumnModel().getColumn(3).setCellRenderer(loadCellRenderer);
+                getColumnModel().getColumn(1).setPreferredWidth(100);
                 setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+                getColumnModel().getColumn(3).setPreferredWidth(300);
                 final Set<AWTKeyStroke> forwardKeys = getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
                 final Set<AWTKeyStroke> newForwardKeys = new HashSet<AWTKeyStroke>(forwardKeys);
                 newForwardKeys.add(KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0));
@@ -371,6 +405,26 @@ public class ArtesPanel extends JPanel {
                 };
                 final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false);
                 registerKeyboardAction(actionListener, enter, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+                loadCellRenderer.setGrapMode(InstanceConfigStore.restoreArtesUsageVisual());
+                final JPopupMenu headerPopup = new JPopupMenu();
+                final JCheckBoxMenuItem cbGraphicalUsage = new JCheckBoxMenuItem(ArteMessages.USAGE_GRAPH);
+                cbGraphicalUsage.setSelected(loadCellRenderer.grapMode);
+                headerPopup.add(cbGraphicalUsage);
+                cbGraphicalUsage.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        loadCellRenderer.setGrapMode(cbGraphicalUsage.isSelected());
+                        InstanceConfigStore.storeArtesUsageVisual(cbGraphicalUsage.isSelected());
+                    }
+                });
+                getTableHeader().addMouseListener(new MouseAdapter() {
+                    public void mouseClicked(MouseEvent me) {
+                        if (SwingUtilities.isRightMouseButton(me)) {
+                            headerPopup.show(getTableHeader(), me.getX(), me.getY());
+                        }
+                    }
+                });
             }
 
             private void updateSettings() {
@@ -419,6 +473,11 @@ public class ArtesPanel extends JPanel {
     public void stop() {
         if (thread != null) {
             thread.interrupt();
+            try {
+                thread.join(5000);
+            } catch (InterruptedException ex) {
+                LogFactory.getLog(ArtesPanel.class).warn("Interrupted while waiting for ArtesPanel termination", ex);
+            }
         }
         thread = null;
     }
@@ -428,7 +487,8 @@ public class ArtesPanel extends JPanel {
             thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while (true) {
+                    final InstanceView instanceView = instance.getViewIfCreated();
+                    while (instanceView != null && !instanceView.isDisposing()) {
                         arteInstancesModel.update();
                         try {
                             Thread.sleep(TIC_MILLIS);
@@ -438,8 +498,9 @@ public class ArtesPanel extends JPanel {
                         }
                     }
                 }
-            }, "Arte Instances GUI Updater Thread of " + instance.getFullTitle());
+            }, "ARTE Instances GUI Updater Thread of " + instance.getFullTitle());
             thread.setPriority(Thread.NORM_PRIORITY - 1);
+            thread.setDaemon(true);
             thread.start();
         }
     }
@@ -458,9 +519,7 @@ public class ArtesPanel extends JPanel {
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(final ComponentEvent e) {
-                if (instance.getState() == InstanceState.STARTED) {
-                    start();
-                }
+                start();
             }
 
             @Override
@@ -481,12 +540,15 @@ public class ArtesPanel extends JPanel {
         clearTraceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for (ArteInstance arteInstance : instance.getArtePool().getInstances(false)) {
-                    final ServerItemView view = arteInstance.getView();
-                    if (view != null) {
-                        final TraceView traceView = view.getTraceList();
-                        if (traceView != null) {
-                            traceView.clearTrace();
+                final ArtePool artePool = instance.getArtePool();
+                if (artePool != null) {
+                    for (ArteInstance arteInstance : artePool.getInstances(false)) {
+                        final ServerItemView view = arteInstance.getView();
+                        if (view != null) {
+                            final TraceView traceView = view.getTraceList();
+                            if (traceView != null) {
+                                traceView.clearTrace();
+                            }
                         }
                     }
                 }
@@ -498,12 +560,33 @@ public class ArtesPanel extends JPanel {
         traceProfileButton.setToolTipText(TraceView.Messages.BTN_TRACE_PROFILE);
         traceProfileButton.addActionListener(
                 new ActionListener() {
-                    private String lastOverriddenProfile = "Event";
+                    private String lastOverriddenProfile = null;
+                    private boolean isProfileOverriden = false;
 
                     @Override
                     public void actionPerformed(final ActionEvent ev) {
+                        if (!isProfileOverriden) {
+                            lastOverriddenProfile = null;
+                            boolean differentProfiles = false;
+                            if (instance.getArtePool() != null) {
+                                for (ArteInstance arteInstance : instance.getArtePool().getInstances(false)) {
+                                    if (lastOverriddenProfile == null) {
+                                        lastOverriddenProfile = arteInstance.getTrace().getProfiles().getGuiTraceProfile();
+                                    } else {
+                                        differentProfiles = !lastOverriddenProfile.equals(arteInstance.getTrace().getProfiles().getGuiTraceProfile());
+                                        break;
+                                    }
+                                }
+                            }
+                            if (lastOverriddenProfile == null) {
+                                lastOverriddenProfile = Messages.MES_WAIT_FOR_ARTE;
+                            } else if (differentProfiles) {
+                                lastOverriddenProfile = Messages.MES_DIFFERENT_PROFILES;
+                            }
+                        }
                         final String newProfile = TraceView.editProfile(lastOverriddenProfile, ArtesPanel.this);
                         if (newProfile != null) {
+                            isProfileOverriden = true;
                             lastOverriddenProfile = newProfile;
                             for (ArteInstance arteInstance : instance.getArtePool().getInstances(false)) {
                                 arteInstance.getTrace().overrideGuiProfile(newProfile);
@@ -513,6 +596,148 @@ public class ArtesPanel extends JPanel {
                 });
         traceProfileButton.setFocusable(false);
         toolbar.add(traceProfileButton);
+    }
+
+    private static class ArteLoadCellRenderer implements TableCellRenderer {
+
+        private boolean grapMode;
+        private final Map<ArteInstance, RendererInfo> arteToChart = new WeakHashMap<>();
+        private static final int COUNT = 60;
+
+        public void setGrapMode(boolean grapMode) {
+            this.grapMode = grapMode;
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (value instanceof ArteInstance) {
+                final ArteInstance arteInst = (ArteInstance) value;
+                final List<ArteWaitsHistoryItem> history = arteInst.getWaitsHistory();
+                RendererInfo info = arteToChart.get(arteInst);
+                if (info == null) {
+                    DefaultCategoryDataset dataset = new MyDataset();
+                    for (int i = 0; i < 4; i++) {
+                        for (int j = 0; j < COUNT; j++) {
+                            dataset.addValue((Number) (i == 3 ? 100 : 0), i, j);
+                        }
+                    }
+                    JFreeChart chart = ChartFactory.createStackedBarChart(
+                            null,
+                            "time",
+                            "percent",
+                            dataset,
+                            PlotOrientation.VERTICAL,
+                            false,
+                            true,
+                            false);
+                    info = new RendererInfo(chart);
+                    ((CategoryPlot) chart.getPlot()).getRenderer().setSeriesPaint(0, new Color(54, 219, 39));
+                    ((CategoryPlot) chart.getPlot()).getRenderer().setSeriesPaint(1, new Color(249, 246, 57));
+                    ((CategoryPlot) chart.getPlot()).getRenderer().setSeriesPaint(2, new Color(150, 251, 255));
+                    ((CategoryPlot) chart.getPlot()).getRenderer().setSeriesPaint(3, new Color(220, 224, 232));
+                    ((CategoryPlot) chart.getPlot()).getRenderer().setSeriesPaint(4, new Color(255, 255, 255));
+                    ((CategoryPlot) chart.getPlot()).getRenderer().setBaseToolTipGenerator(new CategoryToolTipGenerator() {
+
+                        @Override
+                        public String generateToolTip(CategoryDataset cd, int i, int i1) {
+                            final Number val = cd.getValue(i, i1);
+                            switch (i) {
+                                case 0:
+                                    return "<html><div style='margin:0 -3 0 -3; padding: 0 3 0 3; background:#050505;'><font color=#36db27>CPU: " + val + "</font></div></html>";
+                                case 1:
+                                    return "<html><div style='margin:0 -3 0 -3; padding: 0 3 0 3; background:#050505;'><font color=#f9f639>DB: " + val + "</font></div></html>";
+                                case 2:
+                                    return "<html><div style='margin:0 -3 0 -3; padding: 0 3 0 3; background:#050505;'><font color=#96fbff>EXT: " + val + "</font></div></html>";
+                                case 3:
+                                    return "<html><div style='margin:0 -3 0 -3; padding: 0 3 0 3; background:#050505;'><font color=#dce0e8>OTHER: " + val + "</font></div></html>";
+                                case 4:
+                                    return "<html><div style='margin:0 -3 0 -3; padding: 0 3 0 3; background:#050505;'><font color=#ffffff>IDLE: " + val + "</font></div></html>";
+                                default:
+                                    return "UNKNOWN";
+                            }
+                        }
+                    });
+                    ((CategoryPlot) chart.getPlot()).getDomainAxis().setVisible(false);
+                    ((CategoryPlot) chart.getPlot()).getDomainAxis().setUpperMargin(0);
+                    ((CategoryPlot) chart.getPlot()).getDomainAxis().setLowerMargin(0);
+                    ((CategoryPlot) chart.getPlot()).getDomainAxis().setCategoryMargin(0);
+                    ((CategoryPlot) chart.getPlot()).getRangeAxis().setVisible(false);
+                    ((CategoryPlot) chart.getPlot()).getRangeAxis().setUpperMargin(0);
+                    ((CategoryPlot) chart.getPlot()).getRangeAxis().setLowerMargin(0);
+                    ((CategoryPlot) chart.getPlot()).setDomainGridlinesVisible(false);
+                    ((CategoryPlot) chart.getPlot()).setRangeGridlinesVisible(false);
+                    ((CategoryPlot) chart.getPlot()).setRangeCrosshairVisible(false);
+                    ((CategoryPlot) chart.getPlot()).setInsets(new RectangleInsets(4, 0, 4, 0));
+                    ((CategoryPlot) chart.getPlot()).setOutlineVisible(false);
+                    arteToChart.put(arteInst, info);
+                }
+
+                if (grapMode) {
+
+                    int existingIdx = history.size() - 1;
+                    while (existingIdx >= 0) {
+                        if (info.lastItem != null && info.lastItem.getTimestampMillis() >= history.get(existingIdx).getTimestampMillis()) {
+                            break;
+                        }
+                        existingIdx--;
+                    }
+                    for (int i = existingIdx + 1; i < history.size(); i++) {
+                        info.lastItem = history.get(i);
+                        final MyDataset dataset = (MyDataset) info.chart.getCategoryPlot().getDataset();
+                        dataset.updatedEnabled = false;
+                        dataset.addValue((Number) (100. * info.lastItem.getWaitStats().getCpuNanos() / info.lastItem.getWaitStats().totalNanos()), 0, info.lastItem.getTimestampMillis());
+                        dataset.addValue((Number) (100. * info.lastItem.getWaitStats().getDbNanos() / info.lastItem.getWaitStats().totalNanos()), 1, info.lastItem.getTimestampMillis());
+                        dataset.addValue((Number) (100. * info.lastItem.getWaitStats().getExtNanos() / info.lastItem.getWaitStats().totalNanos()), 2, info.lastItem.getTimestampMillis());
+                        dataset.addValue((Number) (100. * info.lastItem.getWaitStats().getOtherNanos() / info.lastItem.getWaitStats().totalNanos()), 3, info.lastItem.getTimestampMillis());
+                        dataset.addValue((Number) (100. * info.lastItem.getWaitStats().getIdleNanos() / info.lastItem.getWaitStats().totalNanos()), 4, info.lastItem.getTimestampMillis());
+                        dataset.updatedEnabled = true;
+                        dataset.removeColumn(0);
+                    }
+                    return info.chartPanel;
+                } else {
+                    ArteWaitStats stats = history.isEmpty() ? new ArteWaitStats(0, 0, 0, 0, 0) : history.get(history.size() - 1).getWaitStats();
+                    final String text = String.format("cpu:%02d db:%02d ext:%02d other:%02d idle:%02d",
+                            (int) Math.min(100. * stats.getCpuNanos() / stats.totalNanos(), 99),
+                            (int) Math.min(100. * stats.getDbNanos() / stats.totalNanos(), 99),
+                            (int) Math.min(100. * stats.getExtNanos() / stats.totalNanos(), 99),
+                            (int) Math.min(100. * stats.getOtherNanos() / stats.totalNanos(), 99),
+                            (int) Math.min(100. * stats.getIdleNanos() / stats.totalNanos(), 99)
+                    );
+                    return info.textRenderer.getTableCellRendererComponent(table, text, isSelected, hasFocus, row, column);
+                }
+            } else {
+                return null;
+            }
+        }
+
+        private static final class MyDataset extends DefaultCategoryDataset {
+
+            private boolean updatedEnabled;
+
+            @Override
+            protected void fireDatasetChanged() {
+                if (updatedEnabled) {
+                    super.fireDatasetChanged();
+                }
+            }
+
+        }
+
+        private static final class RendererInfo {
+
+            private final JFreeChart chart;
+            private ArteWaitsHistoryItem lastItem;
+            private final ChartPanel chartPanel;
+            private final TableWithSeverityColumnRenderer textRenderer = new TableWithSeverityColumnRenderer();
+
+            public RendererInfo(final JFreeChart chart) {
+                this.chart = chart;
+                this.chartPanel = new ChartPanel(chart);
+                chartPanel.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+            }
+
+        }
+
     }
 
     private static final class Messages {
@@ -539,6 +764,8 @@ public class ArtesPanel extends JPanel {
             TLP_DEBUG = bundle.getString("TLP_DEBUG");
             TLP_NONE = bundle.getString("TLP_NONE");
             MES_BUSY_BY = bundle.getString("MES_BUSY_BY");
+            MES_WAIT_FOR_ARTE = bundle.getString("MES_WAIT_FOR_ARTE");
+            MES_DIFFERENT_PROFILES = bundle.getString("MES_DIFFERENT_PROFILES");
         }
         static final String COL_NAME;
         static final String COL_SEQ_NUM;
@@ -559,5 +786,7 @@ public class ArtesPanel extends JPanel {
         static final String TLP_DEBUG;
         static final String TLP_NONE;
         static final String MES_CAPTURED;
+        static final String MES_WAIT_FOR_ARTE;
+        static final String MES_DIFFERENT_PROFILES;
     }
 }

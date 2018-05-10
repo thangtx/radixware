@@ -90,9 +90,9 @@ public final class Release {
     }
 
     private IAdsClassLoader createClassLoader() throws IOException, XMLStreamException {
-        Iterator ps = javax.imageio.spi.ServiceRegistry.lookupProviders(IAdsClassLoader.class);
+        final Iterator<IAdsClassLoader> ps = ServiceLoader.load(IAdsClassLoader.class).iterator();
         if (ps.hasNext()) {
-            return (IAdsClassLoader) ps.next();
+            return ps.next();
         } else {
             return AdsClassLoader.createInstance(env, version);
         }

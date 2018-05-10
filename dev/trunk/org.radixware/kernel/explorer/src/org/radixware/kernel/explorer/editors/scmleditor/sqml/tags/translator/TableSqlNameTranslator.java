@@ -13,6 +13,7 @@ package org.radixware.kernel.explorer.editors.scmleditor.sqml.tags.translator;
 
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
+import org.radixware.kernel.common.html.Html;
 
 
 public class TableSqlNameTranslator extends  SqmlTagTranslator{
@@ -47,14 +48,7 @@ public class TableSqlNameTranslator extends  SqmlTagTranslator{
     }
     
     private String createTitle(final String s) {
-        String res="";
-        if (s.indexOf('<') != -1) {
-            res = s.replaceAll("<", " ");//&#60;
-        }
-        if (s.indexOf('>') != -1) {
-            res = s.replaceAll(">", " ");//&#62;
-        }
-        return "<b>Table:  </b>" + res;
+        return "<b>Table:  </b>" + Html.string2HtmlString(s);
     }
 
     @Override

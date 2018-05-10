@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicUJUGYU6NTZAWZFMLO4X44NW4KY" Name="IReportPreviewEnvironment" Type="5" Environment="server">
+    <AccessRules IsPublished="false" IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.server.reports.IReportPreviewEnvironment"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicUJUGYU6NTZAWZFMLO4X44NW4KY"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicUJUGYU6NTZAWZFMLO4X44NW4KY"/>
+    </Bodies>
+    <MethodGroup Id="cmgWLQOGC7UONF4NHQQ2BKSDXRWIE" Name="Root"/>
+    <PropertyGroup Id="cpgB53FPJTC7ZCSTCZM6NVVKFQVUM" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthBGWE5ME3QRHB7LGCNPOJMRE454" Name="findReportClassById" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="findReportClassById(Lorg.radixware.kernel.common.types.Id;)Ljava.lang.Class&lt;*>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprI2UKRSXQWNFVDCOTVMNH23TKIY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Class">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?"/>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthQYCKE5W545BS3LYITE5TL5I3C4" Name="getTestResultSet" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getTestResultSet(Lorg.radixware.kernel.server.types.Report;)Ljava.sql.ResultSet;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprMVWXVFAMMJBK3MRC5XNGBD5VNY">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Report"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.sql.ResultSet"/>
+      </Method>
+      <Method Id="mthUSMGZVXNEZDOXPQX2HB4FIF4DQ" Name="close" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="close()V"/>
+        </AccessRules>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

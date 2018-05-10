@@ -21,6 +21,8 @@ import org.radixware.kernel.common.enums.EEventContextType;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.editors.monitoring.UnitsWidget;
+import org.radixware.kernel.explorer.editors.monitoring.tree.UnitsTree.ExpandCommandEvent;
+import org.radixware.schemas.monitoringcommand.SysMonitoringRq;
 
 public abstract class TreeItem extends QTreeWidgetItem {
 
@@ -54,10 +56,18 @@ public abstract class TreeItem extends QTreeWidgetItem {
         return super.operator_less(qtwi);
     }
 
-    protected TreeItem(UnitsWidget.IdsGetter idsGetter, final MetricInfoGetter.TreeItemInfo metricInfo, final Model groupModel) {
+    protected TreeItem(UnitsWidget.IdsGetter idsGetter, final MetricInfoGetter.TreeItemInfo metricInfo, final Model groupModel, QTreeWidgetItem parent) {
+        super(parent);
         this.metricInfo = metricInfo;
         this.groupModel = groupModel;
         this.idsGetter = idsGetter;
+    }
+    
+    public boolean isCalculated() {
+        return true;
+    }
+
+    protected void setIsCalculated(boolean isCalc) {
     }
 
     public MetricInfoGetter.TreeItemInfo getMetricInfo() {
@@ -99,6 +109,9 @@ public abstract class TreeItem extends QTreeWidgetItem {
      return  icon;
      }*/
     protected abstract void updateMetricDate(MetricInfoGetter metricInfo);
+    protected ExpandCommandEvent getExpandEvent(SysMonitoringRq sysMonitoringRq) {
+        return null;
+    }
 
     protected void updateText(int index) {
         String text = this.text(index);

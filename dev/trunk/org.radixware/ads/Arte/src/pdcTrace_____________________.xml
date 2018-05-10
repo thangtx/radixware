@@ -13,13 +13,17 @@
           <xsc:Java>private static final org.radixware.kernel.server.arte.Trace $trace$ = </xsc:Java>
         </xsc:Item>
         <xsc:Item>
-          <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+          <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+            <xsc:Presentation>Arte</xsc:Presentation>
+          </xsc:TypeDeclaration>
         </xsc:Item>
         <xsc:Item>
           <xsc:Java>.</xsc:Java>
         </xsc:Item>
         <xsc:Item>
-          <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+          <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+            <xsc:Presentation>getInstance</xsc:Presentation>
+          </xsc:IdReference>
         </xsc:Item>
         <xsc:Item>
           <xsc:Java>().getTrace();</xsc:Java>
@@ -28,7 +32,7 @@
     </Bodies>
     <MethodGroup Id="cmgAGBP5UQCIFAD7AHW64QTKGHHMI" Name="Root">
       <Group Id="cmgV6ML2SVAVVFXXLRZ6O6MGEUW24" Name="Puts" Members="mthS7A5F7KSRPNRDCISABIFNQAABA mthD6XIGP2SRPNRDCISABIFNQAABA mthQ63BL22SRPNRDCISABIFNQAABA mthUALS3BVVSTNRDDXBABIFNQAAAE mthXVQVCB5YSTNRDDXBABIFNQAAAE mthP66N3O2SRPNRDCISABIFNQAABA mthUVXH2WARWLOBDLJLAAMPGXSZKU mth4LIUO5IRWLOBDLJLAAMPGXSZKU mthPB2YHBYRWLOBDLJLAAMPGXSZKU mthP6MDTEKFYDOBDPM5AAN7YHKUNI mthNBTTEVVYKFBCJHWEKSM7ZA4NQI mthGE2TROLTCFEZVJT2IVTMEHBWFE mthV3PTWJBEIVFCXOHTDIMKUBSTKE mthBTHKZVV325D7JIHRVZHPM3JGME mthHHZF2VURANARLA6CHIWQO4QMHI mthY3JQETPD45AFFMO4PDVM2PT4KA"/>
-      <Group Id="cmgJBOOSKQHI5DQFFYVZFDPWRMNW4" Name="Context" Members="mth3MY3U3VYSTNRDDXBABIFNQAAAE mth65IS54NZSTNRDDXBABIFNQAAAE mthA2VYUFF2STNRDDXBABIFNQAAAE mth6QHX4XF2STNRDDXBABIFNQAAAE mthHEJCEHKN6LNRDA2JAAMPGXSZKU mthRLY3WC2M6LNRDA2JAAMPGXSZKU"/>
+      <Group Id="cmgJBOOSKQHI5DQFFYVZFDPWRMNW4" Name="Context" Members="mth3MY3U3VYSTNRDDXBABIFNQAAAE mth65IS54NZSTNRDDXBABIFNQAAAE mthA2VYUFF2STNRDDXBABIFNQAAAE mth6QHX4XF2STNRDDXBABIFNQAAAE mthHEJCEHKN6LNRDA2JAAMPGXSZKU mthRLY3WC2M6LNRDA2JAAMPGXSZKU mthVXFEI2AAYFECNLRFANIAKR4DOM"/>
       <Group Id="cmgLEXOH4VVBNFSHO4DXSBEC43OQI" Name="Utils" Members="mthI2EAXRIFRTNRDCISABIFNQAABA mth437JREGOQPORDMNEABIFNQAABA mthFT5KSJQYDLPBDFHQABIFNQAABA mthTY5OZ6WJOVETBO7TD5XVEWALEQ mthUYRFE2NUMBGLVEZAALXQRL7QJU"/>
     </MethodGroup>
     <PropertyGroup Id="cpgM4Z2MN3N65HVNCCHPD45FXVIQM" Name="Root"/>
@@ -82,7 +86,9 @@
               <xsc:Java>$trace$.put(code, new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="221"/>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(word1, word2));</xsc:Java>
@@ -170,7 +176,9 @@
               <xsc:Java>$trace$.put(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5WAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>EventSeverity:Error</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, mess, eventSource.getValue() );</xsc:Java>
@@ -187,7 +195,9 @@
               <xsc:Java>return $trace$.getMinSeverity()&lt;=</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>EventSeverity:Debug</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.getValue().longValue();</xsc:Java>
@@ -224,13 +234,17 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U">
+                <xsc:Presentation>Utils::ExceptionTextFormatter</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(e);</xsc:Java>
@@ -254,7 +268,9 @@
               <xsc:Java>$trace$.put(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci6CAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>EventSeverity:Warning</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> , 
@@ -277,7 +293,9 @@
               <xsc:Java>$trace$.put(code, new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="221"/>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>());</xsc:Java>
@@ -307,7 +325,9 @@
               <xsc:Java>$trace$.put(code, new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="221"/>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(word1, word2, word3));</xsc:Java>
@@ -331,7 +351,9 @@
               <xsc:Java>$trace$.put(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci52AUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>EventSeverity:Event</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>,
@@ -342,7 +364,7 @@
         </Sources>
       </Method>
       <Method Id="mthRLY3WC2M6LNRDA2JAAMPGXSZKU" Name="addContextProfile" DescriptionId="mls45BFUTGL3VEQ7O3GCRJPCMKXCM" Nature="0" IsOverride="false">
-        <AccessRules IsStatic="true"/>
+        <AccessRules IsStatic="true" IsDeprecated="true"/>
         <Parameters>
           <Parameter Name="extraProfile" DescriptionId="mls6A5ZF3BRKVEZLKM7GO4FZTEPPU" Id="mprDNEUV756E5F3DHCSSBSVFBRXQA">
             <Type TypeId="21"/>
@@ -373,7 +395,9 @@
               <xsc:Java>$trace$.put(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>EventSeverity:Debug</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, mess, eventSource.getValue());</xsc:Java>
@@ -415,7 +439,9 @@
               <xsc:Java>$trace$.put(code, new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="221"/>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(word1));</xsc:Java>
@@ -474,7 +500,9 @@
               <xsc:Java>return $trace$.getMinSeverity(eventSource.getValue())&lt;=</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsFRO5RTQOG7NRDJH2ACQMTAIZT4 aci5SAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>EventSeverity:Debug</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.getValue().longValue();</xsc:Java>
@@ -561,7 +589,9 @@
               <xsc:Java>$trace$.put(code, new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="221"/>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(word1), timeMillis == null ? -1 : timeMillis.longValue());</xsc:Java>
@@ -585,7 +615,9 @@
               <xsc:Java>$trace$.put(code, new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="221"/>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), timeMillis == null ? -1 : timeMillis.longValue());</xsc:Java>
@@ -616,7 +648,9 @@
               <xsc:Java>$trace$.put(severity, null, new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="221"/>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(mess), eventSource.getValue(), false, timeMillis == null ? -1 : timeMillis.longValue(), true);
@@ -632,6 +666,33 @@ return $trace$.getDbLog().getLastEventId();</xsc:Java>
           <Src>
             <xsc:Item>
               <xsc:Java>return $trace$.getDbLog();</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthVXFEI2AAYFECNLRFANIAKR4DOM" Name="addContextProfile" DescriptionId="mlsJSC2VSPCSJEFVHN6ZFOK4IXYTY" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="extraProfile" DescriptionId="mlsS4YQ22XLVRBVTOQONFV6VVMZ5E" Id="mprDNEUV756E5F3DHCSSBSVFBRXQA">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="contextObject" Id="mprVH67HJTDTFAQDGAA3HDQPHLEK4">
+            <Type TypeId="411" Path="pdcEntity____________________"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object" DescriptionId="mlsUNTWEFZY65FWRMUXT7KTDC3W5E"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return $trace$.addTargetLog(extraProfile, contextObject.getRadMeta().getName() + "[" + contextObject.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthJ66JVZJF57NRDIMQAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getPid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().toString() + "]");</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

@@ -56,6 +56,12 @@ public class LocalizingEditorPanel extends LocalizingStringEditor {
                 .add(Options.TITLE_KEY, "Title")
                 .add(Options.MODE_KEY, EEditorMode.MULTILINE));
     }
+    
+    public LocalizingEditorPanel(String title, boolean expand) {
+        this(new Options().add(Options.COLLAPSABLE_KEY, true)
+                .add(Options.TITLE_KEY, title)
+                .add(Options.MODE_KEY, EEditorMode.MULTILINE));
+    }
 
     public Map<EIsoLanguage, String> getLanguages2PatternsMap() {
         return super.getValueMap();

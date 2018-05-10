@@ -89,7 +89,7 @@ public abstract class DelegateLogFactory {
         @Override
         public boolean isLoggable(Level level) {
             if (explicitLevel != null) {
-                if (level == null || level.intValue() <= explicitLevel.intValue()) {
+                if (level == null || level.intValue() < explicitLevel.intValue()) {
                     return false;
                 }
                 return true;

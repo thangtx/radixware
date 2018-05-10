@@ -12,7 +12,7 @@
       <Group Id="cmgELUK74YHUZCCHIRT3LAFVUQ7YQ" Name="Events" Members="mthFMXUFM5J25E4TNM4PR73F6V3E4 mthPT5PMP2WVZGUDB7OTLOE2SBWKE mth4D6ME6VX45BYVNJXZPBTAA7KP4 mthKNZ5Z7AS6RFRPIX6ZD5JDKEC34 mthD77F2HBL2FGSVPJHR3SEAMPWMA"/>
       <Group Id="cmgW3MT3JWY4NGTZDHND7ARFTLKTQ" Name="Commands" Members="mthcmdH7CSTES2KXOBDCI5AALOMT5GDM mthcmdMO45KAISRVGT7FIO7PYK7PJZHA mthKCWHXIL7EBCLDPP6YYLGCXWM2I"/>
       <Group Id="cmgC4KGRKISKBHOZJQYNHHYFSOQMY" Name="API" Members="mthVW4XVUSPYFHDVM34UMIJ6K4SAY"/>
-      <Group Id="cmgKMOYGPDLMZFLZINQNGORJPBR4Q" Name="Utils" Members="mthRBZIQR6ZLBAXNLIAI7GQ32OKEA mthOYESDQBEI7OBDCIPAALOMT5GDM mthTFDZVHABK3OBDCI6AALOMT5GDM mthF3BI3BNXO5CFDGMGUXZFJLQ2NM mthKQ6M3EO7LFD4LFMIEWKYBICRRI mthYR6SLPU7YJASTMQUTZ46V3OW4Y mth66JBT4643VCQFMKDWTCYHZWLOQ mth_loadByPK_________________ mth_loadByPidStr_____________"/>
+      <Group Id="cmgKMOYGPDLMZFLZINQNGORJPBR4Q" Name="Utils" Members="mthRBZIQR6ZLBAXNLIAI7GQ32OKEA mthOYESDQBEI7OBDCIPAALOMT5GDM mthTFDZVHABK3OBDCI6AALOMT5GDM mthF3BI3BNXO5CFDGMGUXZFJLQ2NM mthKQ6M3EO7LFD4LFMIEWKYBICRRI mthYR6SLPU7YJASTMQUTZ46V3OW4Y mth66JBT4643VCQFMKDWTCYHZWLOQ mth_loadByPK_________________ mth_loadByPidStr_____________ mthU74P7LLCEJHITLPQV6CMHB2QWQ"/>
       <Group Id="cmgLLAJNN4JPFDDHMEHYV7IQUUFTU" Name="ImpExp" Members="mthXVXS6VLKENHMXKBA3WUS4MOVQE mthDFPK7HUY4VCUJEM2KPCPSFGORY"/>
     </MethodGroup>
     <PropertyGroup Id="cpgCY7Z3RDVDFBHDGYW6ZSYIUP3LY" Name="Root">
@@ -484,26 +484,34 @@ return true;</xsc:Java>
               <xsc:Java>if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true">
+                <xsc:Presentation>offsetDir</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == null)
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true"/>
+              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true">
+                <xsc:Presentation>PropertyIsMandatoryError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM">
+                <xsc:Presentation>CalendarItem:offsetDir</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -511,7 +519,9 @@ return true;</xsc:Java>
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mthYR6SLPU7YJASTMQUTZ46V3OW4Y" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mthYR6SLPU7YJASTMQUTZ46V3OW4Y" Invoke="true">
+                <xsc:Presentation>checkDay</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -519,7 +529,9 @@ return true;</xsc:Java>
 int offset = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue();
@@ -527,19 +539,25 @@ if (offset &lt; 1 || offset > 7)
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcPHBYRYF6B5ENHEMQSPK5QSW3HE mthBUNWDD53GNBOVP53HW7ZJJAISY" Invoke="true"/>
+              <xsc:IdReference Path="axcPHBYRYF6B5ENHEMQSPK5QSW3HE mthBUNWDD53GNBOVP53HW7ZJJAISY" Invoke="true">
+                <xsc:Presentation>InvalidPropertyValueError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem:offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);</xsc:Java>
@@ -793,26 +811,34 @@ try{
               <xsc:Java>if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true">
+                <xsc:Presentation>offsetDir</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == null)
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true"/>
+              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true">
+                <xsc:Presentation>PropertyIsMandatoryError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM">
+                <xsc:Presentation>CalendarItem:offsetDir</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -820,7 +846,9 @@ try{
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mthYR6SLPU7YJASTMQUTZ46V3OW4Y" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mthYR6SLPU7YJASTMQUTZ46V3OW4Y" Invoke="true">
+                <xsc:Presentation>checkDay</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -828,7 +856,9 @@ try{
 int offset = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue();
@@ -836,19 +866,25 @@ if (offset &lt; 1 || offset > 31)
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcPHBYRYF6B5ENHEMQSPK5QSW3HE mthBUNWDD53GNBOVP53HW7ZJJAISY" Invoke="true"/>
+              <xsc:IdReference Path="axcPHBYRYF6B5ENHEMQSPK5QSW3HE mthBUNWDD53GNBOVP53HW7ZJJAISY" Invoke="true">
+                <xsc:Presentation>InvalidPropertyValueError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem:offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);</xsc:Java>
@@ -864,26 +900,34 @@ if (offset &lt; 1 || offset > 31)
               <xsc:Java>if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colKMHFBYXXI3OBDCIPAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colKMHFBYXXI3OBDCIPAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>ownerCalendar</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == null)
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true"/>
+              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true">
+                <xsc:Presentation>PropertyIsMandatoryError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colKMHFBYXXI3OBDCIPAALOMT5GDM"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colKMHFBYXXI3OBDCIPAALOMT5GDM">
+                <xsc:Presentation>CalendarItem:ownerCalendar</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);</xsc:Java>
@@ -1328,26 +1372,34 @@ catch(</xsc:Java>
               <xsc:Java>if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == null)
   throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true"/>
+              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true">
+                <xsc:Presentation>PropertyIsMandatoryError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem:offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);</xsc:Java>
@@ -1363,26 +1415,34 @@ catch(</xsc:Java>
               <xsc:Java>if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true">
+                <xsc:Presentation>offsetDir</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == null)
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true"/>
+              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true">
+                <xsc:Presentation>PropertyIsMandatoryError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM">
+                <xsc:Presentation>CalendarItem:offsetDir</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -1390,7 +1450,9 @@ catch(</xsc:Java>
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mthYR6SLPU7YJASTMQUTZ46V3OW4Y" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mthYR6SLPU7YJASTMQUTZ46V3OW4Y" Invoke="true">
+                <xsc:Presentation>checkDay</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -1398,7 +1460,9 @@ catch(</xsc:Java>
 int offset = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue();
@@ -1406,19 +1470,25 @@ if (offset &lt; 1 || offset > 92)
     throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcPHBYRYF6B5ENHEMQSPK5QSW3HE mthBUNWDD53GNBOVP53HW7ZJJAISY" Invoke="true"/>
+              <xsc:IdReference Path="axcPHBYRYF6B5ENHEMQSPK5QSW3HE mthBUNWDD53GNBOVP53HW7ZJJAISY" Invoke="true">
+                <xsc:Presentation>InvalidPropertyValueError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem:offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);</xsc:Java>
@@ -1736,6 +1806,97 @@ return item;</xsc:Java>
           </Src>
         </Sources>
       </Method>
+      <Method Id="mthU74P7LLCEJHITLPQV6CMHB2QWQ" Name="checkDayOfYear" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsFinal="true" IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true">
+                <xsc:Presentation>offsetDir</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcVJF5JAPGOFGNTBCL7ZCV2Z23QI mth3WUC6KAVARHDPENEMA3PZH2IBM" Invoke="true">
+                <xsc:Presentation>PropertyIsMandatoryError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM">
+                <xsc:Presentation>CalendarItem:offsetDir</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mthYR6SLPU7YJASTMQUTZ46V3OW4Y" Invoke="true">
+                <xsc:Presentation>checkDay</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+int offset = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>offset</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue();
+if (offset &lt; 1 || offset > 366) {
+    throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcPHBYRYF6B5ENHEMQSPK5QSW3HE mthBUNWDD53GNBOVP53HW7ZJJAISY" Invoke="true">
+                <xsc:Presentation>InvalidPropertyValueError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>CalendarItem:offset</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
     </Methods>
     <Entity EntityId="tblCRD53OZ5I3OBDCIOAALOMT5GDM">
       <AccessAreas Type="None"/>
@@ -1889,70 +2050,63 @@ return item;</xsc:Java>
                 <Sources>
                   <Src>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA">
+                        <xsc:Presentation>Explorer.Models::EntityModel</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java> holder = </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="apc5TBMZNK57JHZHNTMFQ2GHVTJSA"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="apc5TBMZNK57JHZHNTMFQ2GHVTJSA">
+                        <xsc:Presentation>Explorer.Context::Utils</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="apc5TBMZNK57JHZHNTMFQ2GHVTJSA mthIP672GUHBNEIRAHNGG72UVNLW4" Invoke="true"/>
+                      <xsc:IdReference Path="apc5TBMZNK57JHZHNTMFQ2GHVTJSA mthIP672GUHBNEIRAHNGG72UVNLW4" Invoke="true">
+                        <xsc:Presentation>getHolderEntity</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>(this);
-//System.out.println("rereadCalendar\t holder: " + holder);
-if (holder != null) {
-//        System.out.println("holder.read()");
-    if (!holder.isEdited() &amp;&amp; holder.</xsc:Java>
+if (holder instanceof </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthEUO6VJYY2VF7LDWA6ANU5P4V6M" Invoke="true"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="aicIASQS32IWFGPBP65VMU67FWT4M">
+                        <xsc:Presentation>ICalendarModel</xsc:Presentation>
+                      </xsc:TypeDeclaration>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> &amp;&amp; !holder.isEdited() &amp;&amp; holder.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthEUO6VJYY2VF7LDWA6ANU5P4V6M" Invoke="true">
+                        <xsc:Presentation>getEntityView</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>() != null) {
-        holder.</xsc:Java>
+    ((</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mthEUO6VJYY2VF7LDWA6ANU5P4V6M" Invoke="true"/>
+                      <xsc:TypeDeclaration TypeId="411" Path="aicIASQS32IWFGPBP65VMU67FWT4M">
+                        <xsc:Presentation>ICalendarModel</xsc:Presentation>
+                      </xsc:TypeDeclaration>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:Java>().Actions.RereadAction.trigger();
-    }
-
-} else {
-    </xsc:Java>
+                      <xsc:Java>)holder).</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I"/>
+                      <xsc:IdReference Path="aicIASQS32IWFGPBP65VMU67FWT4M mth2WRJS2YYNVEHNHCNPHIT4DBTQQ" Invoke="true">
+                        <xsc:Presentation>updateResultCalendar</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:Java> group = </xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:TypeDeclaration TypeId="411" Path="apc5TBMZNK57JHZHNTMFQ2GHVTJSA"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>.</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="apc5TBMZNK57JHZHNTMFQ2GHVTJSA mth2DVWAIEBUVEYNGHK63E73NCA24" Invoke="true"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>(this);
-    group.</xsc:Java>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:IdReference Path="adcZ3N2ZQF7BVGB7NZZIGQP5RUK5I mthZXE6WCYOH5BDBAFPP42T4QYQVI" Invoke="true"/>
-                    </xsc:Item>
-                    <xsc:Item>
-                      <xsc:Java>().Actions.RereadAction.trigger();
-}
-</xsc:Java>
+                      <xsc:Java>();    
+}</xsc:Java>
                     </xsc:Item>
                   </Src>
                 </Sources>
@@ -1962,7 +2116,9 @@ if (holder != null) {
                 <Sources>
                   <Src>
                     <xsc:Item>
-                      <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM epr62PPCZHVI3OBDCIPAALOMT5GDM aem62PPCZHVI3OBDCIPAALOMT5GDM mth23557U3TTJA4JJIUIIFNDAA4PM" Invoke="true"/>
+                      <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM epr62PPCZHVI3OBDCIPAALOMT5GDM aem62PPCZHVI3OBDCIPAALOMT5GDM mth23557U3TTJA4JJIUIIFNDAA4PM" Invoke="true">
+                        <xsc:Presentation>rereadCalendar</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>();</xsc:Java>
@@ -1975,7 +2131,9 @@ if (holder != null) {
                 <Sources>
                   <Src>
                     <xsc:Item>
-                      <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM epr62PPCZHVI3OBDCIPAALOMT5GDM aem62PPCZHVI3OBDCIPAALOMT5GDM mth23557U3TTJA4JJIUIIFNDAA4PM" Invoke="true"/>
+                      <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM epr62PPCZHVI3OBDCIPAALOMT5GDM aem62PPCZHVI3OBDCIPAALOMT5GDM mth23557U3TTJA4JJIUIIFNDAA4PM" Invoke="true">
+                        <xsc:Presentation>rereadCalendar</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>();</xsc:Java>
@@ -1991,21 +2149,27 @@ if (holder != null) {
                       <xsc:Java>super.</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth7X7O4RPENFCDZELLNSKEQOPN4Q" Invoke="true"/>
+                      <xsc:IdReference Path="adc2BBVYOFJVBDTDPNKMVD7H7WLQA mth7X7O4RPENFCDZELLNSKEQOPN4Q" Invoke="true">
+                        <xsc:Presentation>afterRead</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>();
 if(</xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM prd2GIQGZG3NVGEXBOUJIN7RRQIF4" Invoke="true"/>
+                      <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM prd2GIQGZG3NVGEXBOUJIN7RRQIF4" Invoke="true">
+                        <xsc:Presentation>isFirst</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.Value == true)
     </xsc:Java>
                     </xsc:Item>
                     <xsc:Item>
-                      <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+                      <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                        <xsc:Presentation>oper</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>.setReadonly(true);</xsc:Java>
@@ -2018,7 +2182,9 @@ if(</xsc:Java>
                 <Sources>
                   <Src>
                     <xsc:Item>
-                      <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM epr62PPCZHVI3OBDCIPAALOMT5GDM aem62PPCZHVI3OBDCIPAALOMT5GDM mth23557U3TTJA4JJIUIIFNDAA4PM" Invoke="true"/>
+                      <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM epr62PPCZHVI3OBDCIPAALOMT5GDM aem62PPCZHVI3OBDCIPAALOMT5GDM mth23557U3TTJA4JJIUIIFNDAA4PM" Invoke="true">
+                        <xsc:Presentation>rereadCalendar</xsc:Presentation>
+                      </xsc:IdReference>
                     </xsc:Item>
                     <xsc:Item>
                       <xsc:Java>();</xsc:Java>

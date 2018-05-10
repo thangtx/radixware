@@ -15,13 +15,21 @@ import org.radixware.kernel.common.sqlscript.parser.SQLConstants.StatementType;
 
 
 public class SQLParseShowErrorsStatement extends SQLParseStatement {
-    private String objectType;
-    private String objectName;
+    private final String objectType;
+    private final String objectName;
 
-    public SQLParseShowErrorsStatement(SQLPosition position, String objectType, String objectName) {
+    public SQLParseShowErrorsStatement(final SQLPosition position, final String objectType, final String objectName) {
         super(position, StatementType.ST_SHOW_ERRORS);
-        this.objectType = objectType;
-        this.objectName = objectName;
+        if (objectType == null || objectType.isEmpty()) {
+            throw new IllegalArgumentException("Object type can't be null or empty");
+        }
+        else if (objectName == null || objectName.isEmpty()) {
+            throw new IllegalArgumentException("Object name can't be null or empty");
+        }
+        else {
+            this.objectType = objectType;
+            this.objectName = objectName;
+        }
     }
 
     public String getObjectType() {
@@ -30,5 +38,10 @@ public class SQLParseShowErrorsStatement extends SQLParseStatement {
 
     public String getObjectName() {
         return objectName;
+    }
+
+    @Override
+    public String toString() {
+        return "SQLParseShowErrorsStatement{" + "objectType=" + objectType + ", objectName=" + objectName + '}';
     }
 }

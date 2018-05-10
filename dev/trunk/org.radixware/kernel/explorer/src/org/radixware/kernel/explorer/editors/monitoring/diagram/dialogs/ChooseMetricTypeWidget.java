@@ -51,8 +51,7 @@ final class ChooseMetricTypeWidget extends QWidget {
         String lbText= Application.translate("SystemMonitoring" ,"Metric Type List");
         QLabel lb = new QLabel(lbText+":", this);
         listWidget = new QListWidget(this);       
-        listWidget.itemActivated.connect(this, "onItemClick(QListWidgetItem)");
-        listWidget.itemClicked.connect(this, "onItemClick(QListWidgetItem)");
+        listWidget.currentItemChanged.connect(this, "onItemClick(QListWidgetItem, QListWidgetItem)");
         listWidget.itemDoubleClicked.connect(this,"onItemDoubleClick(QListWidgetItem)");
         createMetricTypeList();
 
@@ -72,17 +71,17 @@ final class ChooseMetricTypeWidget extends QWidget {
     public void reopen(){
         QListWidgetItem item=listWidget.currentItem();
         if(item!=null){
-            onItemClick(item);
+            onItemClick(item, null);
         }
     }
     
     @SuppressWarnings("unused")
-    protected void onItemClick(QListWidgetItem item){
+    protected void onItemClick(QListWidgetItem curr, QListWidgetItem prev){
         EntityModel entityModel=null;
         boolean isMetricDefined=false;
-        if(item!=null && item instanceof MetricWidgetItem){
-            entityModel=/*((MetricWidgetItem)item).getStateCount()>0 ?*/ ((MetricWidgetItem)item).getEntity();// : null;
-            isMetricDefined= ((MetricWidgetItem)item).isMetricDefined();
+        if(curr!=null && curr instanceof MetricWidgetItem){
+            entityModel=/*((MetricWidgetItem)item).getStateCount()>0 ?*/ ((MetricWidgetItem)curr).getEntity();// : null;
+            isMetricDefined= ((MetricWidgetItem)curr).isMetricDefined();
         }           
         parent_.setType(entityModel,false,isMetricDefined);        
     }
@@ -122,9 +121,9 @@ final class ChooseMetricTypeWidget extends QWidget {
                }
                if(listWidget.count()>0){
                    listWidget.setCurrentRow(0);
-                   onItemClick(listWidget.item(0));
+                   onItemClick(listWidget.item(0), null);
                }else{
-                   onItemClick(null);
+                   onItemClick(null, null);
                }
             }
         } catch (InterruptedException ex) { 

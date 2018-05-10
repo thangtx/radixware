@@ -1,0 +1,29 @@
+
+class TestProperty1 {
+
+    public String field;
+}
+
+class TestProperty2 {
+
+    public TestProperty1 field;
+}
+
+class TestProperty3 {
+
+    public TestProperty2 getProp2() {
+	return null;
+    }
+}
+
+class Test {
+
+    public TestProperty3 getProp() {
+	return null;
+    }
+
+    static public void main(String[] args) {
+	Test t = new Test();
+	int l = t.Prop.Prop2.field.field.length();
+    }
+}

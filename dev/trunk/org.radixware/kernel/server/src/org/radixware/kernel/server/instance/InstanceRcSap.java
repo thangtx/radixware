@@ -13,15 +13,12 @@ package org.radixware.kernel.server.instance;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -46,14 +43,19 @@ import org.radixware.kernel.server.exceptions.InvalidUnitState;
 import org.radixware.kernel.server.sap.Sap;
 import org.radixware.kernel.server.trace.TraceBuffer;
 import org.radixware.kernel.common.trace.TraceItem;
+import org.radixware.kernel.server.Server;
+import org.radixware.kernel.server.SrvRunParams;
 import org.radixware.kernel.server.SrvRunParams.UnableToLoadOptionsFromFile;
 import org.radixware.kernel.server.SrvRunParams.ConfigFileNotSpecifiedException;
 import org.radixware.kernel.server.SrvRunParams.OptionProcessingResult;
 import org.radixware.kernel.server.aio.ServiceServerSeance;
 import org.radixware.kernel.server.instance.arte.ArteInstance;
+import org.radixware.kernel.server.instance.arte.IArteRequest;
 import org.radixware.kernel.server.units.Unit;
 import org.radixware.kernel.server.units.UnitListener;
 import org.radixware.kernel.server.units.UnitState;
+import org.radixware.kernel.starter.radixloader.RadixLoader;
+import org.radixware.schemas.systeminstancecontrol.AbortUnitMess;
 import org.radixware.schemas.systeminstancecontrol.ActionStateEnum;
 import org.radixware.schemas.systeminstancecontrol.ActualizeVerMess;
 import org.radixware.schemas.systeminstancecontrol.ApplyConfigFileOptionsMess;
@@ -73,15 +75,19 @@ import org.radixware.schemas.systeminstancecontrol.MakeThreadDumpMess;
 import org.radixware.schemas.systeminstancecontrol.ReloadArtePoolMess;
 import org.radixware.schemas.systeminstancecontrol.Response;
 import org.radixware.schemas.systeminstancecontrol.RestartAllUnitsMess;
+import org.radixware.schemas.systeminstancecontrol.RestartInstanceMess;
 import org.radixware.schemas.systeminstancecontrol.RestartUnitMess;
 import org.radixware.schemas.systeminstancecontrol.SimpleResponse;
 import org.radixware.schemas.systeminstancecontrol.StartAllUnitsMess;
 import org.radixware.schemas.systeminstancecontrol.StartUnitMess;
 import org.radixware.schemas.systeminstancecontrol.StopAllUnitsMess;
+import org.radixware.schemas.systeminstancecontrol.StopInstanceMess;
 import org.radixware.schemas.systeminstancecontrol.StopUnitMess;
 import org.radixware.schemas.systeminstancecontrol.TraceLevelEnum;
 import org.radixware.schemas.systeminstancecontrol.UnitCommandMess;
 import org.radixware.schemas.systeminstancecontrol.UnitRequest;
+import org.radixware.schemas.systeminstancecontrol.UpgradeInstanceMess;
+import org.radixware.schemas.systeminstancecontrolWsdl.AbortUnitDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.ActualizeVerDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.ApplyConfigFileOptionsDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.ArteCommandDocument;
@@ -93,12 +99,15 @@ import org.radixware.schemas.systeminstancecontrolWsdl.InstanceMaintenanceDocume
 import org.radixware.schemas.systeminstancecontrolWsdl.MakeThreadDumpDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.ReloadArtePoolDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.RestartAllUnitsDocument;
+import org.radixware.schemas.systeminstancecontrolWsdl.RestartInstanceDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.RestartUnitDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.StartAllUnitsDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.StartUnitDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.StopAllUnitsDocument;
+import org.radixware.schemas.systeminstancecontrolWsdl.StopInstanceDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.StopUnitDocument;
 import org.radixware.schemas.systeminstancecontrolWsdl.UnitCommandDocument;
+import org.radixware.schemas.systeminstancecontrolWsdl.UpgradeInstanceDocument;
 
 /**
  * Класс, реализующий сервис удаленного управления инстанцией.
@@ -120,7 +129,8 @@ final class InstanceRcSap extends Sap {
                 dispatcher,
                 instance.getTrace().newTracer(EEventSource.INSTANCE_SERVICE.getValue()),
                 10, //maxSeanceCount
-                30 //rqWaitTimeout
+                30, //rqWaitTimeout
+                "InstanceRcSap"
         );
         this.instance = instance;
     }
@@ -251,7 +261,7 @@ final class InstanceRcSap extends Sap {
                         }
                     }, "InstanceRcService.stopAllUnits").start();
                     actionResult = ActionStateEnum.SCHEDULED;
-                } else if (event.rqEnvBodyContent instanceof StartUnitMess || event.rqEnvBodyContent instanceof RestartUnitMess || event.rqEnvBodyContent instanceof StopUnitMess) {
+                } else if (event.rqEnvBodyContent instanceof StartUnitMess || event.rqEnvBodyContent instanceof RestartUnitMess || event.rqEnvBodyContent instanceof StopUnitMess || event.rqEnvBodyContent instanceof AbortUnitMess) {
                     final UnitRequest rq;
                     if (event.rqEnvBodyContent instanceof StartUnitMess) {
                         rq = ((StartUnitMess) event.rqEnvBodyContent).getStartUnitRq();
@@ -263,11 +273,18 @@ final class InstanceRcSap extends Sap {
                         final RestartUnitDocument restartUnitDoc = RestartUnitDocument.Factory.newInstance();
                         rsDoc = restartUnitDoc;
                         rs = restartUnitDoc.addNewRestartUnit().addNewRestartUnitRs();
-                    } else { //if (event.rqEnvBodyContent instanceof StopUnitMess) {
+                    } else if (event.rqEnvBodyContent instanceof StopUnitMess) {
                         rq = ((StopUnitMess) event.rqEnvBodyContent).getStopUnitRq();
                         final StopUnitDocument stopUnitDoc = StopUnitDocument.Factory.newInstance();
                         rsDoc = stopUnitDoc;
                         rs = stopUnitDoc.addNewStopUnit().addNewStopUnitRs();
+                    } else if (event.rqEnvBodyContent instanceof AbortUnitMess) {
+                        rq = ((AbortUnitMess) event.rqEnvBodyContent).getAbortUnitRq();
+                        final AbortUnitDocument abortUnitDoc = AbortUnitDocument.Factory.newInstance();
+                        rsDoc = abortUnitDoc;
+                        rs = abortUnitDoc.addNewAbortUnit().addNewAbortUnitRs();
+                    } else {
+                        throw new IllegalArgumentException("Unsupported request type: " + event.rqEnvBodyContent.getClass().getName());
                     }
                     final int unitId = rq.getUnitId();
                     Unit loadedUnit;
@@ -343,7 +360,7 @@ final class InstanceRcSap extends Sap {
                                 }
                             }, "InstanceRcService.restartUnit #" + String.valueOf(unit.getId())).start();
                             actionResult = ActionStateEnum.SCHEDULED;
-                        } else { //if (event.rqEnvBodyContent instanceof StopUnitMess) {
+                        } else if (event.rqEnvBodyContent instanceof StopUnitMess) {
                             new Thread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -359,6 +376,14 @@ final class InstanceRcSap extends Sap {
                                 }
                             }, "InstanceRcService.stopUnit #" + String.valueOf(unit.getId())).start();
                             actionResult = ActionStateEnum.SCHEDULED;
+                        } else if (event.rqEnvBodyContent instanceof AbortUnitMess) {
+                            if (unit.abortAndUnload(reason)) {
+                                actionResult = ActionStateEnum.DONE;
+                            } else {
+                                actionResult = ActionStateEnum.FAILED;
+                            }
+                        } else {
+                            throw new IllegalArgumentException("Illegal request type: " + event.rqEnvBodyContent.getClass().getName());
                         }
                     } catch (InvalidUnitState e) {
                         throw new ServiceProcessClientFault(ExceptionEnum.WRONG_STATE.toString(), String.valueOf(e.getMessage()), e, null);
@@ -453,11 +478,13 @@ final class InstanceRcSap extends Sap {
                     }
                 } else if (event.rqEnvBodyContent instanceof GetDiagnosticInfoMess) {
                     GetDiagnosticInfoRq rq = ((GetDiagnosticInfoMess) event.rqEnvBodyContent).getGetDiagnosticInfoRq();
+                    final boolean instanceStateHistoryRequired = rq.isSetInstanceStateHistoryRequired() && rq.getInstanceStateHistoryRequired() && rq.isSetInstanceStateHistoryStartTimeMillis();
+                    final long instanceStateHistoryStartTimeMillis = instanceStateHistoryRequired ? rq.getInstanceStateHistoryStartTimeMillis() : 0;
 
                     final GetDiagnosticInfoDocument doc = GetDiagnosticInfoDocument.Factory.newInstance();
                     rsDoc = doc;
                     rs = doc.addNewGetDiagnosticInfo().addNewGetDiagnosticInfoRs();
-                    ((GetDiagnosticInfoRs) rs).setDiagnosticInfoStr(DiagnosticInfoUtils.getDiagnosticSnapshot());
+                    ((GetDiagnosticInfoRs) rs).setDiagnosticInfoStr(DiagnosticInfoUtils.getDiagnosticSnapshot(instanceStateHistoryRequired, instanceStateHistoryStartTimeMillis));
 
                     actionResult = ActionStateEnum.DONE;
                 } else if (event.rqEnvBodyContent instanceof ArteCommandMess) {
@@ -466,7 +493,7 @@ final class InstanceRcSap extends Sap {
                     ArteInstance arteInst = instance.getArtePool().findArteInstBySerial(serial);
                     if (arteInst == null) {
                         actionResult = ActionStateEnum.FAILED;
-                        resultComment = "Can't find ARTE instance with serial: " + serial;
+                        resultComment = "Can't find ARTE with serial: " + serial;
                     }
                     ArteCommandDocument arteDoc = ArteCommandDocument.Factory.newInstance();
 
@@ -513,6 +540,27 @@ final class InstanceRcSap extends Sap {
                         calendar.setTimeInMillis(sensitiveTraceEndTimeMillis);
                         doc.ensureGetStatus().ensureGetStatusRs().setSensitiveDataTracingFinishTime(calendar);
                     }
+                    doc.ensureGetStatus().ensureGetStatusRs().setAppVersion(RadixLoader.getInstance().getRevisionMeta(instance.getLastMaxAcceptableRevision()).getAppLayerVersionsString());
+                    doc.ensureGetStatus().ensureGetStatusRs().setKernelVersion(RadixLoader.getInstance().getRevisionMeta(instance.getLastMaxAcceptableRevision()).getKernelLayerVersionsString());
+                    doc.ensureGetStatus().ensureGetStatusRs().setCurRevision(instance.getLastMaxAcceptableRevision());
+                    if (instance.getLastMaxAcceptableRevision() < instance.getLatestVersion()) {
+                        doc.ensureGetStatus().ensureGetStatusRs().setPendingAppVersion(RadixLoader.getInstance().getRevisionMeta(instance.getLatestVersion()).getAppLayerVersionsString());
+                        doc.ensureGetStatus().ensureGetStatusRs().setArteCount((long) instance.getArtePool().getSize());
+                        int countWithoutLastVer = 0;
+                        int countProcessingCurVer = 0;
+                        for (ArteInstance inst : instance.getArtePool().getInstances(false)) {
+                            final List<Long> cachedRevisions = inst.getCachedVersionsSnapshot();
+                            if (cachedRevisions == null || !cachedRevisions.contains(instance.getLatestVersion())) {
+                                countWithoutLastVer++;
+                            }
+                            final IArteRequest requestSnapshot = inst.getRequest();
+                            if (requestSnapshot != null && requestSnapshot.getVersion() < instance.getLatestVersion()) {
+                                countProcessingCurVer++;
+                            }
+                        }
+                        doc.ensureGetStatus().ensureGetStatusRs().setArteWithoutPendingVersionCount((long) countWithoutLastVer);
+                        doc.ensureGetStatus().ensureGetStatusRs().setArteProcessingCurVerCount((long) countProcessingCurVer);
+                    }
                     actionResult = ActionStateEnum.DONE;
                 } else if (event.rqEnvBodyContent instanceof GetArteClassLoadingProfileMess) {
                     final GetArteClassLoadingProfileDocument doc = GetArteClassLoadingProfileDocument.Factory.newInstance();
@@ -522,6 +570,50 @@ final class InstanceRcSap extends Sap {
                         doc.ensureGetArteClassLoadingProfile().ensureGetArteClassLoadingProfileRs().addItem(className);
                     }
                     actionResult = ActionStateEnum.DONE;
+                } else if (event.rqEnvBodyContent instanceof StopInstanceMess) {
+                    final StopInstanceDocument doc = StopInstanceDocument.Factory.newInstance();
+                    rsDoc = doc;
+                    new Thread(new Runnable() {
+                        public void run() {
+                            final Long timeout = ((StopInstanceMess) event.rqEnvBodyContent).getStopInstanceRq().getTimeout();
+                            if (timeout == null) {
+                                instance.stop(reason);
+                            } else {
+                                instance.stop(reason, timeout.intValue());
+                                if (SrvRunParams.getIsGuiOn() && instance.getView() != null) {
+                                    instance.getView().dispose();
+                                } else {
+                                    Server.returnFromMain();
+                                }
+                            }
+                        }
+
+                    }, "Instance Stopper Thread").start();
+                    rs = doc.ensureStopInstance().ensureStopInstanceRs();
+                    actionResult = ActionStateEnum.SCHEDULED;
+                } else if (event.rqEnvBodyContent instanceof RestartInstanceMess) {
+                    final RestartInstanceDocument doc = RestartInstanceDocument.Factory.newInstance();
+                    rsDoc = doc;
+                    instance.restartServer(reason, 0, ((RestartInstanceMess)event.rqEnvBodyContent).addNewRestartInstanceRq().getTimeoutSeconds());
+                    rs = doc.ensureRestartInstance().ensureRestartInstanceRs();
+                    actionResult = ActionStateEnum.SCHEDULED;
+                } else if (event.rqEnvBodyContent instanceof UpgradeInstanceMess) {
+                    final UpgradeInstanceDocument doc = UpgradeInstanceDocument.Factory.newInstance();
+                    final UpgradeInstanceMess rqMess = (UpgradeInstanceMess) event.rqEnvBodyContent;
+                    rsDoc = doc;
+                    if (rqMess.isSetPreloadNextVersionMess()) {
+                        instance.preloadNextVersion();
+                        rs = doc.addNewUpgradeInstance().addNewPreloadNextVersionMess().addNewPreloadNextVersionRs();
+                    } else if (rqMess.isSetStopUsingCurAppVersionMess()) {
+                        instance.stopUsingCurAppVersion(rqMess.getStopUsingCurAppVersionMess().getStopUsingCurAppVersionRq().getMaxWaitSec());
+                        rs = doc.addNewUpgradeInstance().addNewStopUsingCurAppVersionMess().addNewStopUsingCurAppVersionRs();
+                    } else if (rqMess.isSetStartUsingNextAppVersionMess()) {
+                        instance.startUsingNextAppVersion();
+                        rs = doc.addNewUpgradeInstance().addNewStartUsingNextAppVersionMess().addNewStartUsingNextAppVersionRs();
+                    } else {
+                        throw new ServiceProcessClientFault(ExceptionEnum.INVALID_REQUEST.toString(), "UpgradInstance request does not contain any valid subelement", null, null);
+                    }
+                    actionResult = ActionStateEnum.SCHEDULED;
                 } else {
                     final XmlObject rq = event.rqEnvBodyContent;
                     if (instance.getTrace().getMinSeverity() == EEventSeverity.DEBUG.getValue().longValue()) {

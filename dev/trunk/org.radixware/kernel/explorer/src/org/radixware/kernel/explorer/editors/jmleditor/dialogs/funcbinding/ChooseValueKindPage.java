@@ -54,6 +54,7 @@ public class ChooseValueKindPage extends QWizardPage {
         boolean allowConstant = true;
         boolean allowDbLink = true;
         boolean allowParam = true;
+        boolean allowNullVal = true;
 
         if (parent.getTargetParamType() == null) {
             allowConstant = false;
@@ -63,20 +64,23 @@ public class ChooseValueKindPage extends QWizardPage {
             if (parent.getTargetParamType().getArrayDimensionCount() > 0) {
                 allowConstant = false;
             }
+            allowNullVal = !isPrimitiveType(parent.getTargetParamType());
         }
         QHBoxLayout valLayout = null;
         if (allowConstant) {
-            valLayout = new QHBoxLayout();
-            rbValEditor = new QRadioButton(Application.translate("JmlEditor", "Set value"));
-            rbValEditor.setObjectName("rbValEditor");
-            rbValEditor.clicked.connect(this, "valueSelected()");
-            valLayout.setContentsMargins(20, 0, 0, 0);
-
             bindingValEditor = new BindingValueEditorProvider(parent.getTargetParamType(), parent.getFlow().getUserFunc(), parent.getEnvironment(), this);
             bindingValEditor.valueChanged.connect(this, "valueChanged(Object)");
             if (bindingValEditor.isSet()) {
+                valLayout = new QHBoxLayout();
+                rbValEditor = new QRadioButton(Application.translate("JmlEditor", "Set value"));
+                rbValEditor.setObjectName("rbValEditor");
+                rbValEditor.clicked.connect(this, "valueSelected()");
+                valLayout.setContentsMargins(20, 0, 0, 0);
+                
                 bindingValEditor.getEditor().setSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed);
                 valLayout.addWidget(bindingValEditor.getEditor());
+            } else {
+                rbValEditor = null;
             }
         } else {
             bindingValEditor = null;
@@ -102,9 +106,15 @@ public class ChooseValueKindPage extends QWizardPage {
 
         }
 
-        rbNullVal = new QRadioButton(Application.translate("JmlEditor", "NULL"));
-        rbNullVal.setObjectName("rbNullVal");
-        rbNullVal.clicked.connect(this, "nullValSelected()");
+        if (allowNullVal) {
+            rbNullVal = new QRadioButton(Application.translate("JmlEditor", "NULL"));
+            rbNullVal.setObjectName("rbNullVal");
+            rbNullVal.clicked.connect(this, "nullValSelected()");
+        } else {
+            rbNullVal = null;
+        }
+        final boolean isUfOwnerEnabled;
+        final boolean isDbObjectEnabled;
         if (allowDbLink) {
             rbDbObjest = new QRadioButton(Application.translate("JmlEditor", "DB Object"));
             rbDbObjest.setObjectName("rbDbObjest");
@@ -120,20 +130,22 @@ public class ChooseValueKindPage extends QWizardPage {
 
             final AdsDefinition def = AdsUserFuncDef.Lookup.findTopLevelDefinition(parent.getFlow().getUserFunc(), parent.getFlow().getUserFunc().getOwnerClassId());
             final AdsTypeDeclaration ownerType = AdsTypeDeclaration.Factory.newInstance((AdsClassDef) def);
-            final boolean isUfOwnerEnabled = AdsUserFuncDef.areTypesBindable(parent.getFlow().getUserFunc(), parent.getTargetParamType(), ownerType);
-            rbUfOwner.setVisible(isUfOwnerEnabled);
-
-            final boolean isDbObjectEnabled = parent.getTargetParamType().getTypeId() == EValType.USER_CLASS;
-            rbDbObjest.setVisible(isDbObjectEnabled);
+            isUfOwnerEnabled = AdsUserFuncDef.areTypesBindable(parent.getFlow().getUserFunc(), parent.getTargetParamType(), ownerType);
+            isDbObjectEnabled = parent.getTargetParamType().getTypeId() == EValType.USER_CLASS;
         } else {
             rbDbObjest = null;
             rbUfOwner = null;
             rbDbProperty = null;
+            isUfOwnerEnabled = false;
+            isDbObjectEnabled = false;
         }
 
         final QVBoxLayout vbox = new QVBoxLayout();
         vbox.setObjectName("vbox");
-        vbox.addWidget(rbNullVal);
+        groupBox.setLayout(vbox);
+        if (allowNullVal) {
+            vbox.addWidget(rbNullVal);
+        }
         if (allowConstant && bindingValEditor.isSet()) {
             vbox.addWidget(rbValEditor);
             vbox.addLayout(valLayout);
@@ -142,13 +154,14 @@ public class ChooseValueKindPage extends QWizardPage {
             vbox.addWidget(rbDbObjest);
             vbox.addWidget(rbDbProperty);
             vbox.addWidget(rbUfOwner);
+            rbUfOwner.setVisible(isUfOwnerEnabled);
+            rbDbObjest.setVisible(isDbObjectEnabled);
         }
         if (allowParam) {
             vbox.addWidget(rbParam);
             vbox.addLayout(paramLayout);
         }
 
-        groupBox.setLayout(vbox);
         layout.addWidget(groupBox);
         this.setLayout(layout);
         init(xBinding);
@@ -157,6 +170,10 @@ public class ChooseValueKindPage extends QWizardPage {
     @Override
     public void initializePage() {
         wizard.getFlow().setMode(WizardFlow.Mode.CHOOSE_KIND);
+    }
+    
+    private boolean isPrimitiveType(final AdsTypeDeclaration type) {
+        return type.getTypeId() == EValType.JAVA_TYPE && type.getArrayDimensionCount() == 0;
     }
 
     private void init(final ParametersBindingType.ParameterBinding xBinding) {
@@ -194,7 +211,7 @@ public class ChooseValueKindPage extends QWizardPage {
                 if (wizard.getTargetParamType().getTypeId() != EValType.USER_CLASS) {
                     val = ValueConverter.easPropXmlVal2ObjVal(xBinding.getExternalValue().getValue(), Utils.convertType(wizard.getTargetParamType()), null);
                 }
-                if (val == null) {
+                if (val == null && rbNullVal != null) {
                     rbNullVal.setChecked(true);
                     nullValSelected();
                 } else {
@@ -211,8 +228,15 @@ public class ChooseValueKindPage extends QWizardPage {
                     rbParam.setChecked(xBinding.isSetParameter());
                 }
             } else {
-                rbNullVal.setChecked(true);
-                nullValSelected();
+                if (rbNullVal != null) {
+                    rbNullVal.setChecked(true);
+                    nullValSelected();
+                } else {
+                    if (rbValEditor != null) {
+                        rbValEditor.setChecked(true);
+                    }
+                    valueSelected();
+                }
                 /*final boolean isDbObjectEnabled = wizard.getTargetParamType().getTypeId() == EValType.USER_CLASS;
                  if (rbDbObjest != null && isDbObjectEnabled) {
                  rbDbObjest.setChecked(true);
@@ -296,6 +320,7 @@ public class ChooseValueKindPage extends QWizardPage {
         setValueEnable(true);
         setFinalPage(true);
         wizard.getFlow().setTargetType(WizardFlow.TargetType.VALUE);
+        wizard.getFlow().setValue(bindingValEditor.getValue());
     }
 
     @SuppressWarnings("unused")

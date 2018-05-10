@@ -32,6 +32,7 @@ import org.radixware.kernel.common.client.text.ITextOptionsProvider;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
+import org.radixware.kernel.common.client.utils.ValueConverter;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EEditMaskType;
 import org.radixware.kernel.common.enums.EValType;
@@ -248,36 +249,20 @@ public class MultiValEditor extends QStackedWidget {
 
     public ValAsStr getValue() {
         final Object objValue = getCurrentValEditor().getValue();
-        if (objValue != null) {
-            final EValType finalValType;
-            if (currentValType == EValType.BLOB) {
-                finalValType = EValType.BIN;
-            } else if (currentValType == EValType.CLOB) {
-                finalValType = EValType.STR;
-            } else {
-                finalValType = currentValType;
-            }
-            return ValAsStr.Factory.newInstance(getCurrentValEditor().getValue(), finalValType);
-        } else {
+        if (objValue == null) {
             return null;
+        }else{
+            return ValueConverter.obj2ValAsStr(objValue, currentValType);
         }
     }
 
     @SuppressWarnings("unchecked")
     public void setValue(final ValAsStr value) {
-        if (value != null) {
-            final EValType finalValType;
-            if (currentValType == EValType.BLOB) {
-                finalValType = EValType.BIN;
-            } else if (currentValType == EValType.CLOB) {
-                finalValType = EValType.STR;
-            } else {
-                finalValType = currentValType;
-            }
-            final Object objValue = value.toObject(finalValType);
-            getCurrentValEditor().setValue(objValue);
+        if (value == null) {
+            getCurrentValEditor().setValue(null);            
         } else {
-             getCurrentValEditor().setValue(null);
+            final Object objValue = ValueConverter.valAsStr2Obj(value, currentValType);
+            getCurrentValEditor().setValue(objValue);            
         }
     }
 

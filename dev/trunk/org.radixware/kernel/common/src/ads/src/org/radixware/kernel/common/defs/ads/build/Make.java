@@ -25,9 +25,11 @@ import org.eclipse.jdt.core.compiler.CharOperation;
 import org.eclipse.jdt.internal.compiler.ClassFile;
 import org.eclipse.jdt.internal.compiler.CompilationResult;
 import org.eclipse.jdt.internal.compiler.ICompilerRequestor;
+import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.AdsCompilationUnit;
 import org.eclipse.jdt.internal.compiler.lookup.AdsCompilationUnitDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.AdsTypeRequestor;
+import org.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
 import org.radixware.kernel.common.compiler.lookup.AdsWorkspace;
 import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import org.radixware.kernel.common.check.IProblemHandler;
@@ -45,6 +47,8 @@ import org.radixware.kernel.common.defs.VisitorProviderFactory;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportModelClassDef;
+import org.radixware.kernel.common.defs.ads.command.AdsContextlessCommandDef;
+import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
 import org.radixware.kernel.common.defs.ads.module.AdsImageDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
@@ -57,10 +61,14 @@ import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.SharedData;
 import org.radixware.kernel.common.defs.ads.src.xml.AdsXmlJavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.ui.AdsCustomReportDialogDef;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtCustomReportDialogDef;
+import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtUIDef;
 import org.radixware.kernel.common.defs.ads.xml.AbstractXmlDefinition;
+import org.radixware.kernel.common.defs.ads.xml.IXmlDefinition;
+import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
+import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.FileUtils;
@@ -68,6 +76,30 @@ import org.radixware.kernel.common.utils.IValueSet;
 import org.radixware.kernel.common.utils.JarFiles;
 
 public class Make extends JavaAction {
+
+    public static class MutabilityStatistics {
+
+        long metaDefinitionsCount;
+        long xmlDefinitionsCount;
+        long enumMetaCount;
+        long clcMetaCount;
+        long otherMutable;
+        long total;
+        long otherImmutable;
+
+        public void reset() {
+            metaDefinitionsCount = 0;
+            xmlDefinitionsCount = 0;
+            otherMutable = 0;
+            otherImmutable = 0;
+            clcMetaCount = 0;
+            total = 0;
+            enumMetaCount = 0;
+        }
+
+    }
+
+    public static MutabilityStatistics mcStat = new MutabilityStatistics();
 
     public static class SessionDataDir implements SharedData.Item {
 
@@ -213,10 +245,12 @@ public class Make extends JavaAction {
         private final Make make;
         private final Set<Definition> savedXmlSts = new HashSet<>();
         private final Map<String, UnitProcessingStatus> processedDeclarations = new HashMap<>();
+        private final ERuntimeEnvironmentType env;
 
-        public Requestor(IProblemHandler problemHandler, Make make) {
+        public Requestor(IProblemHandler problemHandler, Make make, ERuntimeEnvironmentType env) {
             this.problemHandler = problemHandler;
             this.make = make;
+            this.env = env;
         }
 
         public UnitProcessingStatus getUnitProcessingStatus(AdsWorkspace.DeclarationData compilationUnit) {
@@ -292,26 +326,29 @@ public class Make extends JavaAction {
         public void acceptDefinition(Definition definition) {
             if (definition instanceof AbstractXmlDefinition && !savedXmlSts.contains(definition)) {
                 AbstractXmlDefinition xmlDef = (AbstractXmlDefinition) definition;
-                if (xmlDef.isTransparent()) {
-                    XmlObject xDoc = xmlDef.getXmlDocument();
-                    if (xDoc != null) {
-                        final JavaSourceSupport support = xmlDef.getJavaSourceSupport();
-                        final JavaFileSupport fileSupport = new JavaFileSupport((IJavaSource) definition, xmlDef.getUsageEnvironment());
-                        final File xmlTsRoot = fileSupport.getPackagesRoot(EKind.SOURCE);
-                        File srcFile = new File(xmlTsRoot, ((AdsXmlJavaSourceSupport) support).getContentResourceName());
+                final JavaSourceSupport support = xmlDef.getJavaSourceSupport();
+                final JavaFileSupport fileSupport = new JavaFileSupport((IJavaSource) definition, xmlDef.getUsageEnvironment());
+                final File xmlTsRoot = fileSupport.getPackagesRoot(EKind.SOURCE);
+                try {
+                    if (xmlDef.isTransparent()) {
+                        XmlObject xDoc = xmlDef.getXmlDocument();
+                        if (xDoc != null) {
+                            File srcFile = new File(xmlTsRoot, ((AdsXmlJavaSourceSupport) support).getContentResourceName());
 
-                        try {
                             srcFile.getParentFile().mkdirs();
                             xDoc.save(srcFile, new XmlOptions().setSavePrettyPrint().setSaveNamespacesFirst());
                             make.registerBinaries(ERuntimeEnvironmentType.COMMON, definition, new File[]{srcFile});
-                        } catch (IOException ex) {
-                            Logger.getLogger(Make.class.getName()).log(Level.SEVERE, null, ex);
-                            if (problemHandler != null) {
-                                problemHandler.accept(RadixProblem.Factory.newError(xmlDef, "Unable to save xml content to build output location"));
-                            }
                         }
+                    } else {
+                        final File[] additionalFiles = xmlDef.saveXBeansTs(xmlTsRoot, problemHandler);
+                        make.registerBinaries(ERuntimeEnvironmentType.COMMON, definition, additionalFiles);
                     }
                     savedXmlSts.add(definition);
+                } catch (IOException ex) {
+                    Logger.getLogger(Make.class.getName()).log(Level.SEVERE, null, ex);
+                    if (problemHandler != null) {
+                        problemHandler.accept(RadixProblem.Factory.newError(xmlDef, "Unable to save xml content to build output location"));
+                    }
                 }
             }
 
@@ -333,6 +370,64 @@ public class Make extends JavaAction {
                     }
                     UnitProcessingStatus status = result.hasErrors() ? UnitProcessingStatus.FAIL : UnitProcessingStatus.SUCCESS;
                     ClassFile[] classFiles = result.getClassFiles();
+                    TypeDeclaration[] compiledTypes = declaration.types;
+
+                    if (env == ERuntimeEnvironmentType.SERVER || env == ERuntimeEnvironmentType.COMMON) {
+                        Definition def = declaration.getContextDefinition();
+
+                        Set<String> set = make.workingSet.get(def.getModule());
+                        if (set == null) {
+                            set = new HashSet<>();
+                            make.workingSet.put(def.getModule(), set);
+                        }
+                        boolean isMeta = declaration.getUsagePurpose().getCodeType() == JavaSourceSupport.CodeType.META;
+                        boolean isException = def instanceof AdsClassDef && ((AdsClassDef) def).getClassDefType() == EClassType.EXCEPTION;
+                        boolean isXml = def instanceof IXmlDefinition;
+                        boolean isEnumMeta = isMeta && (def instanceof AdsEnumDef);
+                        boolean isClcMeta = isMeta && (def instanceof AdsContextlessCommandDef);
+                        if (isMeta || isException || isXml) {
+
+                            for (int i = 0; i < compiledTypes.length; i++) {
+                                TypeDeclaration type = compiledTypes[i];
+                                String className = CompilerUtils.MutabilityCheckResult.getClassName(type.binding);
+
+                                set.add(className);
+                                make.mutabilityCheck.put(className, true);
+                                if (isMeta) {
+                                    if (isEnumMeta) {
+                                        mcStat.enumMetaCount++;
+                                    } else if (isClcMeta) {
+                                        mcStat.clcMetaCount++;
+                                    } else {
+                                        mcStat.metaDefinitionsCount++;
+                                    }
+                                } else if (isXml) {
+                                    mcStat.xmlDefinitionsCount++;
+                                } else {
+                                    mcStat.otherImmutable++;
+                                }
+                                mcStat.total++;
+
+                            }
+                        } else {
+                            if (compiledTypes != null) {
+                                for (int i = 0; i < compiledTypes.length; i++) {
+                                    TypeDeclaration type = compiledTypes[i];
+                                    if (type != null && type.binding != null) {
+                                        String className = CompilerUtils.MutabilityCheckResult.getClassName(type.binding);
+                                        set.add(className);
+                                        if (CompilerUtils.isImmutable(type.binding, make.mutabilityCheck)) {
+                                            mcStat.otherImmutable++;
+                                        } else {
+                                            mcStat.otherMutable++;
+                                        }
+                                        mcStat.total++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     try {
                         if (classFiles != null) {
                             Definition definition = declaration.getContextDefinition();
@@ -384,12 +479,28 @@ public class Make extends JavaAction {
                                                 if (!additionalFiles.isEmpty()) {
                                                     if (writtenFiles != null) {
                                                         additionalFiles.addAll(Arrays.asList(writtenFiles));
-
                                                     }
                                                     writtenFiles = additionalFiles.toArray(new File[additionalFiles.size()]);
                                                 }
                                             }
-
+                                        }
+                                    }
+                                    if (definition instanceof AdsRwtUIDef) {
+                                        AdsRwtUIDef rwtUIDef = (AdsRwtUIDef) definition;
+                                        final JavaSourceSupport sup = rwtUIDef.getJavaSourceSupport();
+                                        Set<JavaSourceSupport.CodeType> set = sup.getSeparateFileTypes(env);
+                                        if (set.contains(JavaSourceSupport.CodeType.ADDON)) {
+                                            final File[] additionalFiles = support.writePackageContent(sup.getSourceFileWriter(), true, JavaSourceSupport.CodeType.ADDON, problemHandler);
+                                            if (make != null && additionalFiles.length > 0) {
+                                                if (writtenFiles == null) {
+                                                    writtenFiles = additionalFiles;
+                                                } else {
+                                                    File[] newArr = new File[writtenFiles.length + additionalFiles.length];
+                                                    System.arraycopy(writtenFiles, 0, newArr, 0, writtenFiles.length);
+                                                    System.arraycopy(additionalFiles, 0, newArr, writtenFiles.length, additionalFiles.length);
+                                                    writtenFiles = newArr;
+                                                }
+                                            }
                                         }
                                     }
                                     if (make != null) {
@@ -419,32 +530,20 @@ public class Make extends JavaAction {
                                         while (sb.length() < 16) {
                                             sb.append(' ');
                                         }
-                                        String env = sb.toString();
+                                        final String env = sb.toString();
                                         final RadixProblem radixProblem;
                                         if (problem.isError()) {
-
                                             radixProblem = RadixProblem.Factory.newError(source, env + problem.getMessage(), info);
-
-//                                            AdsWorkspace.SessionData sessionData = declaration.getWorkspace().getSessionData();
-//                                            if (sessionData != null) {
-//                                                char[][] packageName = declaration.currentPackage.getImportName();
-//                                                if (declaration.types != null) {
-//                                                    for (int i = 0; i < declaration.types.length; i++) {
-//                                                        char[][] name = CharOperation.arrayConcat(packageName, declaration.types[i].name);
-//                                                        sessionData.setAsProblemUnit(name);
-//                                                    }
-//                                                }
-//                                            }
                                         } else if (problem.isWarning()) {
                                             Definition def = source.getOwnerDefinition();
                                             AdsDefinition adsDef = null;
-                                            while (def != null) {
-                                                if (def instanceof AdsDefinition) {
-                                                    adsDef = (AdsDefinition) def;
-                                                    break;
+                                                while (def != null) {
+                                                    if (def instanceof AdsDefinition) {
+                                                        adsDef = (AdsDefinition) def;
+                                                        break;
+                                                    }
+                                                    def = def.getOwnerDefinition();
                                                 }
-                                                def = def.getOwnerDefinition();
-                                            }
                                             if (adsDef == null || !adsDef.isCompilerWarningSuppressed(problem.getID())) {
                                                 radixProblem = RadixProblem.Factory.newWarning(source, env + problem.getMessage(), info);
                                             } else {
@@ -498,18 +597,6 @@ public class Make extends JavaAction {
         }
     }
 
-    private Collection<Definition> getDistributable(ERuntimeEnvironmentType env) {
-        if (resultMap == null) {
-            return Collections.emptySet();
-        } else {
-            Map<Definition, File[]> envMap = resultMap.get(env);
-            if (envMap == null) {
-                return Collections.emptySet();
-            }
-            return new ArrayList<>(envMap.keySet());
-        }
-    }
-
     private Map<Definition, File[]> getDistributableData(ERuntimeEnvironmentType env) {
         if (resultMap == null) {
             return Collections.emptyMap();
@@ -522,157 +609,8 @@ public class Make extends JavaAction {
         }
     }
 
-    private static class Cluster {
-
-        private List<Module> modules = new ArrayList<>();
-        private Set<Id> dependsFrom = new HashSet<>();
-        private Set<Id> moduleIds = new HashSet<>();
-
-        public Cluster(Module module) {
-            addModule(module);
-        }
-
-        public final void addModule(Module module) {
-            this.modules.add(module);
-            this.moduleIds.add(module.getId());
-            this.dependsFrom.addAll(module.getDependences().getModuleIds());
-            this.dependsFrom.remove(module.getId());
-        }
-
-        public boolean dependsFrom(Cluster another) {
-            for (Id id : this.dependsFrom) {
-                if (another.moduleIds.contains(id)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public String getDisplayName() {
-            if (modules.size() > 5) {
-                return String.valueOf(modules.size()) + " modules";
-            } else {
-                StringBuilder sb = new StringBuilder();
-                boolean first = true;
-                for (Module module : modules) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        sb.append(", ");
-                    }
-                    sb.append(module.getQualifiedName());
-                }
-                return sb.toString();
-            }
-        }
-    }
-
-    public static class Clusters {
-
-        List<Cluster> clusters = new LinkedList<>();
-
-        public void addModule(Module module) {
-            Cluster cluster = null;
-            final Id moduleId = module.getId();
-            for (Cluster c : clusters) {
-                if (c.dependsFrom.contains(moduleId)) {//cluster depends from module
-                    Set<Id> dependsFrom = module.getDependences().getModuleIds();
-                    for (Id id : dependsFrom) {
-                        if (c.moduleIds.contains(id)) {
-                            //cycle dependece. add module to cluster;
-                            cluster = c;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (cluster != null) {
-                cluster.addModule(module);
-            } else {
-                cluster = new Cluster(module);
-                clusters.add(cluster);
-            }
-
-        }
-        private static boolean DEBUG = false;
-
-        public List<Cluster> sort() {
-
-            while (true) {
-                boolean mergeOccurs = false;
-                for (int i = 0; i < clusters.size(); i++) {
-                    Cluster one = clusters.get(i);
-                    for (int j = i + 1; j < clusters.size();) {
-                        Cluster anoter = clusters.get(j);
-                        if (one.dependsFrom(anoter) && anoter.dependsFrom(one)) {
-                            for (Module m : anoter.modules) {
-                                one.addModule(m);
-                            }
-                            mergeOccurs = true;
-                            clusters.remove(j);
-                        } else {
-                            j++;
-                        }
-                    }
-                }
-                if (!mergeOccurs) {
-                    break;
-                }
-            }
-
-            List<Cluster> result = new LinkedList<>();
-
-            Set<Cluster> dependsFrom = new HashSet<>();
-
-            for (int t = 0; t < clusters.size(); t++) {
-                if (DEBUG) {
-                    System.out.println("<<<<<<<<<<<<<<<<<<<<<<<");
-                    for (Cluster c : result) {
-                        System.out.println(c.getDisplayName());
-                    }
-                    System.out.println("-----------------------");
-                    for (Cluster c : clusters) {
-                        System.out.println(c.getDisplayName());
-                    }
-                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>");
-                }
-                Cluster c = clusters.get(t);
-                dependsFrom.clear();
-                deepDepends(c, dependsFrom);
-                int insertAfter = -1;
-                for (int i = 0; i < result.size(); i++) {
-                    Cluster cl = result.get(i);
-                    if (dependsFrom.contains(cl)) {
-                        insertAfter = i;
-                    }
-                }
-                if (insertAfter + 1 >= result.size()) {
-                    result.add(c);
-                } else {
-                    result.add(insertAfter + 1, c);
-                }
-            }
-            clusters.clear();
-            clusters.addAll(result);
-            return clusters;
-        }
-
-        private void deepDepends(Cluster c, Set<Cluster> results) {
-            List<Cluster> locals = new LinkedList<>();
-            for (int i = 0; i < clusters.size(); i++) {
-                Cluster d = clusters.get(i);
-                if (c != d && c.dependsFrom(d)) {
-                    locals.add(d);
-                }
-            }
-            for (Cluster d : locals) {
-                if (!results.contains(d)) {
-                    results.add(d);
-                    deepDepends(d, results);
-                }
-            }
-        }
-    }
+    private final Map<String, Boolean> mutabilityCheck = new HashMap<>();
+    private final Map<Module, Set<String>> workingSet = new HashMap<>();
 
     public void compile(Layer contextLayer, Collection<Definition> definitions, ERuntimeEnvironmentType env, final IProblemHandler problemHandler, final Map<Id, Id> idReplaceMap, boolean force, boolean userMode, IProgressHandle progressHandler, ICancellable cancellable) {
         //System.gc();
@@ -704,25 +642,11 @@ public class Make extends JavaAction {
             compiler = new org.radixware.kernel.common.compiler.Compiler(problemHandler);
         }
 
-        //build clasters
-//        Clusters clusters = new Clusters();
-//        for (Module module : modules.keySet()) {
-//            clusters.addModule(module);
-//        }
-//        List<Cluster> clustersInOrder = clusters.sort();
-//        if (progressHandler != null) {
-//            progressHandler.switchToDeterminate(clustersInOrder.size());
-//            progressHandler.setDisplayName("Build " + contextLayer.getName() + "(" + env.getName() + "): ");
-//        }
         if (progressHandler != null) {
             progressHandler.switchToDeterminate(modules.size());
             progressHandler.setDisplayName("Build " + contextLayer.getName() + "(" + env.getName() + "): ");
         }
         int progress = 0;
-//        for (Cluster c : clustersInOrder) {
-//        List<Definition> listToCompile = new ArrayList<>();
-
-        //
         final List<Module> allModules = new ArrayList<>(modules.keySet());
         Collections.sort(allModules, new Comparator< Module>() {
             @Override
@@ -730,7 +654,7 @@ public class Make extends JavaAction {
                 return o1.getName().compareTo(o2.getName());
             }
         });
-        final Requestor requestor = new Requestor(problemHandler, this);
+        final Requestor requestor = new Requestor(problemHandler, this, env);
         try {
             for (Module module : allModules) {
 
@@ -738,43 +662,30 @@ public class Make extends JavaAction {
                     break;
                 }
 
-                List<Definition> moduleList = modules.get(module);
-                if (moduleList == null) {
-                    if (module instanceof AdsModule) {
-                        if (((AdsModule) module).getJavaSourceSupport().isSeparateFilesRequired(env)) {
-                            moduleList = Collections.singletonList((Definition) module);
-                        } else {
-                            moduleList = Collections.emptyList();
-                        }
-                    } else {
-                        continue;
-                    }
-                } else {
-                    Collections.sort(moduleList, new Comparator<Definition>() {
-                        @Override
-                        public int compare(Definition o1, Definition o2) {
-                            return o1.getId().compareTo(o2.getId());
-                        }
-                    });
-                    if (module instanceof AdsModule) {
-                        if (((AdsModule) module).getJavaSourceSupport().isSeparateFilesRequired(env)) {
-                            moduleList.add(module);
-                        }
-                    }
+                final List<Definition> moduleList = modules.get(module);
 
-                    //}
-                    if (progressHandler != null) {
-                        //progressHandler.setDisplayName("Build cluster: " + c.getDisplayName() + " (" + env.getName() + "): ");
-                        progressHandler.setDisplayName("Build module: " + module.getQualifiedName() + " (" + env.getName() + "): ");
+                Collections.sort(moduleList, new Comparator<Definition>() {
+                    @Override
+                    public int compare(Definition o1, Definition o2) {
+                        return o1.getId().compareTo(o2.getId());
                     }
-                    if (!moduleList.isEmpty()) {
-                        compiler.compile(contextLayer, moduleList, env, requestor, force, null, cancellable, false);
+                });
+                if (module instanceof AdsModule) {
+                    if (((AdsModule) module).getJavaSourceSupport().isSeparateFilesRequired(env)) {
+                        moduleList.add(module);
                     }
-                    if (progressHandler != null) {
-                        progressHandler.progress(progress++);
-                    }
-
                 }
+
+                if (progressHandler != null) {
+                    progressHandler.setDisplayName("Build module: " + module.getQualifiedName() + " (" + env.getName() + "): ");
+                }
+                if (!moduleList.isEmpty()) {
+                    compiler.compile(contextLayer, moduleList, env, requestor, force, null, cancellable, false);
+                }
+                if (progressHandler != null) {
+                    progressHandler.progress(progress++);
+                }
+
             }
         } finally {
             for (Module module : modules.keySet()/*c.modules*/) {
@@ -796,7 +707,7 @@ public class Make extends JavaAction {
             List<Definition> compileList = new LinkedList<>();
             compileList.add(definition);
 
-            compiler.compile(definition.getLayer(), compileList, env, new Requestor(problemHandler, this), force, null, null, userMode);
+            compiler.compile(definition.getLayer(), compileList, env, new Requestor(problemHandler, this, env), force, null, null, userMode);
         }
         compiler = null;
     }
@@ -812,7 +723,7 @@ public class Make extends JavaAction {
             List<Definition> compileList = new LinkedList<>();
             compileList.add(definition);
 
-            compiler.compile(sharedWorkspace, compileList, new Requestor(sharedWorkspace.getReporter().getRadixProblemHandler(), this), force, null, null, userMode);
+            compiler.compile(sharedWorkspace, compileList, new Requestor(sharedWorkspace.getReporter().getRadixProblemHandler(), this, sharedWorkspace.getEnvType()), force, null, null, userMode);
         }
         compiler = null;
     }
@@ -1028,6 +939,7 @@ public class Make extends JavaAction {
         //private AdsModule module;
         private ERuntimeEnvironmentType ret;
         private final SharedData sharedData;
+        private Make make;
         private static FileFilter filter = new FileFilter() {
             @Override
             public boolean accept(File file) {
@@ -1039,8 +951,9 @@ public class Make extends JavaAction {
             super(module, sc);
             this.ret = sc;
             this.sharedData = sharedData;
-
+            this.make = make;
             writeMetaInfServices(module, sc);
+            generateMutabilityReport(module, sc);
         }
         private static final String[] META_INF_DIR = {"META-INF", "services"};
 
@@ -1053,6 +966,13 @@ public class Make extends JavaAction {
             }
 
             return file;
+        }
+
+        private File getMetaInfDir(AdsModule module, ERuntimeEnvironmentType env) {
+
+            File file = JavaFileSupport.getBaseDirOrJarFile(module, env, EKind.SOURCE);
+
+            return new File(file, META_INF_DIR[0]);
         }
 
         private void writeMetaInfServices(AdsModule module, ERuntimeEnvironmentType env) {
@@ -1090,6 +1010,7 @@ public class Make extends JavaAction {
 
             try {
                 if (sourceDir != null && destJar != null) {
+
                     JarFiles.mkJar(sourceDir, destJar, filter, false);
                     return destJar;
                 }
@@ -1097,6 +1018,70 @@ public class Make extends JavaAction {
                 problemHandler.accept(RadixProblem.Factory.newError(getModule(), "Can not create jar file"));
             }
             return null;
+        }
+
+        private void generateMutabilityReport(AdsModule module, ERuntimeEnvironmentType env) {
+            if (env != ERuntimeEnvironmentType.COMMON && env != ERuntimeEnvironmentType.SERVER) {
+                return;
+            }
+
+            StringBuilder content = new StringBuilder();
+            Set<String> set = make.workingSet.remove(module);
+            if (set != null) {
+                for (String binding : set) {
+                    Boolean result = make.mutabilityCheck.get(binding);
+                    if (result != null && result) {
+                        content.append(binding).append("\n");
+                    }
+                }
+            }
+//            //print mutability stat
+//            System.out.println("------------------------ begin mutability report --------------------------");
+//            System.out.println("Meta classes (all immutable): " + mcStat.metaDefinitionsCount);
+//            System.out.println("Enum meta classes (all immutable): " + mcStat.enumMetaCount);
+//            System.out.println("Clc meta classes (all immutable): " + mcStat.clcMetaCount);
+//            System.out.println("Xml classes: (all immutable)" + mcStat.xmlDefinitionsCount);
+//            System.out.println("Other immutable: " + mcStat.otherImmutable);
+//            System.out.println("All mutable: " + mcStat.otherMutable);
+//            System.out.println("Total: " + mcStat.total);
+//
+//            System.out.println("------------------------ end mutability report --------------------------");
+            if (content.length() > 0) {
+                final File rootDir = getMetaInfDir(module, env);
+
+                if (!rootDir.exists()) {
+                    rootDir.mkdirs();
+                }
+
+                File indexFile = new File(rootDir, "immutable.index");
+                try {
+                    FileUtils.writeToFile(indexFile, content.toString(), "UTF-8");
+//            Collections.sort(mutable, new Comparator<CompilerUtils.MutabilityCheckResult>() {
+//
+//                @Override
+//                public int compare(CompilerUtils.MutabilityCheckResult o1, CompilerUtils.MutabilityCheckResult o2) {
+//                    return o1.getClassName().compareTo(o2.getClassName());
+//                }
+//            });
+//            Collections.sort(immutable, new Comparator<CompilerUtils.MutabilityCheckResult>() {
+//
+//                @Override
+//                public int compare(CompilerUtils.MutabilityCheckResult o1, CompilerUtils.MutabilityCheckResult o2) {
+//                    return o1.getClassName().compareTo(o2.getClassName());
+//                }
+//            });
+//            System.out.println("Immutable classes. Total " + immutable.size());
+//            for (CompilerUtils.MutabilityCheckResult result : immutable) {
+//                System.out.println(result.toString());
+//            }
+                } catch (IOException ex) {
+                    //ignore
+                }
+            }
+//            System.out.println("Mmutable classes. Total " + mutable.size());
+//            for (CompilerUtils.MutabilityCheckResult result : mutable) {
+//                System.out.println(result.toString());
+//            }
         }
 
         //returns jar file pathname for specified definition  if definition in distribution list of current module or null
@@ -1119,6 +1104,7 @@ public class Make extends JavaAction {
                 File destJar = JavaFileSupport.getBaseDirOrJarFile(getModule(), ret, EKind.BINARY);
                 try {
                     if (binaries != null && sourceDir != null && destJar != null) {
+
                         JarFiles.mkJar(sourceDir, destJar, new FileFilter() {
                             @Override
                             public boolean accept(File pathname) {

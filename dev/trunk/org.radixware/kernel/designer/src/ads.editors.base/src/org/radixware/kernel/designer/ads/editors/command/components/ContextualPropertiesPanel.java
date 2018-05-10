@@ -52,7 +52,9 @@ public class ContextualPropertiesPanel extends javax.swing.JPanel {
     private JCheckBox readOnlyCheck = new JCheckBox(NbBundle.getMessage(ContextualPropertiesPanel.class, "AdsCommand-ReadOnlyTip"));
     private JCheckBox showBtnCheck = new JCheckBox(NbBundle.getMessage(ContextualPropertiesPanel.class, "ScopeProperties-ShowBtn"));
     private JComboBox scopeAccessBox = new JComboBox();
-
+    private final JCheckBox rereadAfterExecute = new JCheckBox(NbBundle.getMessage(ContextualPropertiesPanel.class, "ScopeProperties-Reread"));
+    private final JCheckBox traceGUIActivity = new JCheckBox(NbBundle.getMessage(ContextualPropertiesPanel.class, "ScopeProperties-TraceGUIActivity"));
+    
     /**
      * Creates new form ContextualPropertiesPanel
      */
@@ -114,21 +116,62 @@ public class ContextualPropertiesPanel extends javax.swing.JPanel {
                 }
             }
         });
+        
+                
+        rereadAfterExecute.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                ((AdsScopeCommandDef) command).getPresentation().setRereadAfterExecute(rereadAfterExecute.isSelected());
+            }
+        });
+        
+        traceGUIActivity.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                command.getPresentation().setTraceGuiActivity(traceGUIActivity.isSelected());
+            }
+        });
     }
 
     private void accessBoxItemChanged(Object selected) {
         AdsScopeCommandDef.CommandPresentation presentation = ((AdsScopeCommandDef) command).getPresentation();
+        ECommandAccessibility oldAccessibility = presentation.getAccessebility();
+        ECommandAccessibility newAccessibility = ECommandAccessibility.getForTitle((String) selected);
         if (scopeAccessBox.isEditable()) {
-            ECommandAccessibility val = ECommandAccessibility.getForTitle((String) selected);
+            ECommandAccessibility val = newAccessibility;
             if (val != null) {//model.contains(selected)){(AdsScopeCommandDef.CommandPresentation)((AdsScopeCommandDef)command).getPresentation()
                 scopeAccessBox.setBorder(defaultBorder);
                 scopeAccessBox.setEditable(false);
                 presentation.setAccessebility(val);
             }
         } else {
-            presentation.setAccessebility(ECommandAccessibility.getForTitle((String) selected));
+            presentation.setAccessebility(newAccessibility);
+        }
+        boolean newForFix = newAccessibility == ECommandAccessibility.ONLY_FOR_FIXED;
+        if (oldAccessibility != newAccessibility && (newForFix || oldAccessibility == ECommandAccessibility.ONLY_FOR_FIXED)){
+            
+            if (newForFix) {
+                rereadAfterExecute.setSelected(true);
+            } else {
+                rereadAfterExecute.setSelected(false);
+            }
+            
+            checkRereadBtnEnabled();
         }
     }
+    
+    private void checkRereadBtnEnabled() {
+        ECommandAccessibility accessibility = ((AdsScopeCommandDef) command).getPresentation().getAccessebility();
+        if (accessibility == ECommandAccessibility.ONLY_FOR_FIXED) {
+            rereadAfterExecute.setEnabled(true);
+        } else {
+            rereadAfterExecute.setEnabled(false);
+        }
+        
+        rereadAfterExecute.setSelected(((AdsScopeCommandDef) command).getPresentation().isRereadAfterExecute());
+    }
+    
     private Border defaultBorder;
 
     public void open(final AdsCommandDef command) {
@@ -184,6 +227,18 @@ public class ContextualPropertiesPanel extends javax.swing.JPanel {
 
         gbl.setConstraints(showBtnCheck, c);
         content.add(showBtnCheck);
+        
+        c.gridx++;
+        gbl.setConstraints(traceGUIActivity, c);
+        content.add(traceGUIActivity);
+        
+        
+        if (isScope && ((AdsScopeCommandDef) command).getPresentation().canReread()) {
+            c.insets = new Insets(0, 10, 0, 0);
+            c.gridx++;
+            gbl.setConstraints(rereadAfterExecute, c);
+            content.add(rereadAfterExecute);
+        }
 
     }
     private boolean isUpdate = false;
@@ -194,6 +249,7 @@ public class ContextualPropertiesPanel extends javax.swing.JPanel {
             confirmCheck.setSelected(command.getPresentation().getIsConfirmationRequired());
             localCheck.setSelected(command.getData().isLocal());
             readOnlyCheck.setSelected(command.getData().isReadOnlyCommand());
+            traceGUIActivity.setSelected(command.getPresentation().isTraceGuiActivity());
 
             if (command instanceof AdsScopeCommandDef) {
                 ECommandAccessibility accessibility = ((AdsScopeCommandDef.CommandPresentation) command.getPresentation()).getAccessebility();
@@ -206,6 +262,8 @@ public class ContextualPropertiesPanel extends javax.swing.JPanel {
                     scopeAccessBox.setSelectedItem(accessibility.getName());
                     scopeAccessBox.setEditable(false);
                 }
+                
+                checkRereadBtnEnabled();
             }
 
             showBtnCheck.setSelected(command.getPresentation().getIsVisible());

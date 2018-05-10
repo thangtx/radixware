@@ -11,12 +11,16 @@
 
 package org.radixware.kernel.common.defs.ads.ui.rwt;
 
+import org.apache.xmlbeans.XmlObject;
+import org.radixware.kernel.common.defs.ClipboardSupport;
+import org.radixware.kernel.common.defs.ads.AdsClipboardSupport;
 import org.radixware.kernel.common.defs.ads.ui.AdsCustomWidgetModelClassDef;
 import org.radixware.kernel.common.defs.ads.ui.AdsDialogModelClassDef;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.adsdef.AbstractDialogDefinition;
+import org.radixware.schemas.adsdef.AdsDefinitionDocument;
 import org.radixware.schemas.adsdef.AdsDefinitionElementType;
 
 
@@ -68,5 +72,30 @@ public class AdsRwtCustomWidgetDef extends AdsRwtCustomDialogDef {
     @Override
     public boolean isSaveable() {
         return true;
+    }
+    
+    private class AdsRwtCustomWidgetClipboardSupport extends AdsClipboardSupport<AdsRwtCustomWidgetDef> {
+
+        public AdsRwtCustomWidgetClipboardSupport() {
+            super(AdsRwtCustomWidgetDef.this);
+        }
+
+        @Override
+        protected XmlObject copyToXml() {
+            AdsDefinitionDocument xDef = AdsDefinitionDocument.Factory.newInstance();
+            AdsRwtCustomWidgetDef.this.appendTo(xDef.addNewAdsDefinition(), ESaveMode.NORMAL);
+            return xDef.getAdsDefinition().getAdsWebCustomWidgetDefinition();
+        }
+
+        @Override
+        protected AdsRwtCustomWidgetDef loadFrom(XmlObject xmlObject) {
+            AbstractDialogDefinition xDef = (AbstractDialogDefinition) xmlObject;
+            return AdsRwtCustomWidgetDef.Factory.loadFrom(xDef);
+        }
+    }
+
+    @Override
+    public ClipboardSupport<? extends AdsRwtCustomWidgetDef> getClipboardSupport() {
+        return new AdsRwtCustomWidgetClipboardSupport();
     }
 }

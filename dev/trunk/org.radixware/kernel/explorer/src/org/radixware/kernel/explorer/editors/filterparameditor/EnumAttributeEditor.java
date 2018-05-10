@@ -59,7 +59,7 @@ final class EnumAttributeEditor extends AbstractAttributeEditor<ISqmlEnumDef> {
 
     protected EnumAttributeEditor(IClientEnvironment environment, final boolean isReadonly, final QWidget parent) {
         super(environment);
-        lbEnumLabel = new QLabel(getAttribute().getTitle(), parent);
+        lbEnumLabel = new QLabel(getAttribute().getTitle(environment), parent);
         lbEnumLabel.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed);
         lbEnumLabel.setObjectName("lbEnumLabel");
         final EnumSet<SqmlTreeModel.ItemType> items =

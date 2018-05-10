@@ -1,0 +1,20 @@
+declare
+    cursor ${from}_c is select ${colList} from ${from};
+    type ${from}_c_t is table of ${from}_c%rowtype;
+    ${from}_c_a ${from}_c_t;
+begin
+    open ${from}_c;
+    loop
+        fetch ${from}_c bulk collect into ${from}_c_a limit 1000;
+        exit when ${from}_c%notfound;
+        forall i in ${from}_c_a.First..${from}_c_a.Last
+            insert into ${to} values ${from}_c_a(i);
+        commit;
+        truncate ${from}_c_a;
+        end loop;
+    close ${from}_c;
+end;
+/
+
+drop table ${from}
+/

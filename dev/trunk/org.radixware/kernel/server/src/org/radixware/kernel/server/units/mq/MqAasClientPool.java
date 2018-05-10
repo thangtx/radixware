@@ -11,10 +11,11 @@
  */
 package org.radixware.kernel.server.units.mq;
 
-import org.radixware.kernel.common.enums.EEventSeverity;
-import org.radixware.kernel.common.enums.EEventSource;
+import java.util.Objects;
+import org.radixware.kernel.common.enums.EMqProcOrder;
 import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.server.aio.AadcAffinity;
 import org.radixware.kernel.server.sc.AasClientPool;
 import org.radixware.kernel.server.sc.SingleSeanceAasClient;
 import org.radixware.schemas.aasWsdl.InvokeDocument;
@@ -41,8 +42,17 @@ public class MqAasClientPool extends AasClientPool {
         xInvokeDoc.getInvoke().getInvokeRq().setPID(String.valueOf(processorId));
         xInvokeDoc.getInvoke().getInvokeRq().setMethodId("mthXRTT576Z7FA2NPFSNC2IHGK6GI");
         xInvokeDoc.getInvoke().getInvokeRq().addNewParameters().addNewItem().setXml(xProcessRqDoc);
+        
+        AadcAffinity affinity;
+        if (mqUnit.getInstance().getAadcInstMemberId() == null || mqUnit.getOptions().procOrder == EMqProcOrder.ARBITRARY) {
+            affinity = null;
+        } else if (mqUnit.getOptions().procOrder == EMqProcOrder.SEQUENTIAL) {
+            affinity = new AadcAffinity(0, 60000);
+        } else {
+            affinity = new AadcAffinity(Objects.hashCode(msg.getPartitionId()));
+        }
 
-        invoke(new MqAasInvokeItem(msg, xInvokeDoc, null, timeout, scpName, true));
+        invoke(new MqAasInvokeItem(msg, xInvokeDoc, null, timeout, scpName, true, affinity));
     }    
     
     @Override

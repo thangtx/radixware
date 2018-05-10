@@ -43,8 +43,12 @@ import org.radixware.kernel.common.defs.ads.type.AdsClassType;
 import org.radixware.kernel.common.defs.ads.type.AdsTransparence;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
+import org.radixware.kernel.common.defs.ads.type.IDeprecatedInheritable;
+import org.radixware.kernel.common.defs.doc.IRadixDocObject;
 import org.radixware.kernel.common.defs.localization.ILocalizedDef;
 import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
+import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
+import org.radixware.kernel.common.defs.localization.LocalizedDescribableRef;
 import org.radixware.kernel.common.enums.*;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.scml.LineMatcher.DefaultLocationDescriptor;
@@ -56,6 +60,7 @@ import org.radixware.schemas.adsdef.AbstractMethodDefinition;
 import org.radixware.schemas.adsdef.AccessRules;
 import org.radixware.schemas.adsdef.MethodDefinition;
 import org.radixware.schemas.adsdef.UsageDescription;
+import org.radixware.schemas.adsdef.UserFuncProfile;
 import org.radixware.schemas.xscml.TypeDeclaration;
 
 /**
@@ -65,7 +70,7 @@ import org.radixware.schemas.xscml.TypeDeclaration;
  * </li> <li>"Override" annotation handling</li> </ul>
  *
  */
-public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource, IOverridable<AdsMethodDef>, IOverwritable<AdsMethodDef>, IProfileable, ITransparency, IAccessible {
+public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource, IOverridable<AdsMethodDef>, IOverwritable<AdsMethodDef>, IProfileable, ITransparency, IAccessible, ILocalizedDescribable.Inheritable, IDeprecatedInheritable {
 
     public interface MethodComponent {
 
@@ -100,25 +105,38 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
                 }
             }
         }
+        
+        setDescriptionInherited(true);
+        if (isDescriptionInherited() && super.getDescriptionId() != null){
+            super.setDescriptionId(null);
+        }
     }
 
     @Override
     public void afterOverwrite() {
         setOverwrite(true);
+        setDescriptionInherited(true);
+        if (isDescriptionInherited() && super.getDescriptionId() != null){
+            super.setDescriptionId(null);
+        }
     }
 
     @Override
     public boolean allowOverwrite() {
         return true;
     }
+    
+    
 
     /**
      * Base class for method parameter and method return value
      */
-    public static abstract class MethodValue extends Value implements MethodComponent, ILocalizedDescribable, IDescribable {
+    public static abstract class MethodValue extends Value implements MethodComponent, ILocalizedDescribable, IDescribable, IRadixDocObject, ILocalizedDescribable.Inheritable {
 
         private String description;
         private Id descriptionId;
+        private boolean isDescriptionInherited = true;
+        protected LocalizedDescribableRef describableRef;
 
 //        protected MethodValue(String name, String description) {
 //            super(name);
@@ -128,19 +146,25 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
 //            this(xDef, description, null);
 //        }
         protected MethodValue(AdsTypeDeclaration type, String name, String description, Id descriptionId) {
+            this(type, name, description, descriptionId, true);
+        }
+        
+        protected MethodValue(AdsTypeDeclaration type, String name, String description, Id descriptionId, boolean isDescriptionInherited) {
             super(name, type);
             this.description = description;
             this.descriptionId = descriptionId;
+            this.isDescriptionInherited = isDescriptionInherited;
         }
 
         protected MethodValue(AdsTypeDeclaration type) {
             super(type);
         }
-
-        protected MethodValue(TypeDeclaration xDef, AdsTypeDeclaration defaultType, String description, Id descriptionId) {
+        
+        protected MethodValue(TypeDeclaration xDef, AdsTypeDeclaration defaultType, String description, Id descriptionId, boolean isDescriptionInherited) {
             super(AdsTypeDeclaration.Factory.loadFrom(xDef, defaultType == null ? AdsTypeDeclaration.Factory.undefinedType() : defaultType));
             this.description = description;
             this.descriptionId = descriptionId;
+            this.isDescriptionInherited = isDescriptionInherited;
         }
 
         @Override
@@ -150,7 +174,7 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
 
         @Override
         public Id getDescriptionId() {
-            return descriptionId;
+            return getDescriptionId(isDescriptionInherited());
         }
 
         @Override
@@ -162,6 +186,8 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
 
         @Override
         public void setDescriptionId(Id id) {
+            if (isDescriptionInherited()) return;
+            
             if (!Objects.equals(id, descriptionId)) {
                 this.descriptionId = id;
                 setEditState(EEditState.MODIFIED);
@@ -173,8 +199,73 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
         }
 
         @Override
+        public AdsDefinition getDescriptionLocation(boolean inherited) {
+            RadixObject value = getDescriptionOwner(inherited);
+            if (value == null) {
+                return null;
+            }
+            return RadixObjectsUtils.findContainer(value, AdsDefinition.class);
+        }
+        
+        @Override
         public AdsDefinition getDescriptionLocation() {
-            return RadixObjectsUtils.findContainer(this, AdsDefinition.class);
+            return getDescriptionLocation(isDescriptionInherited());
+        }
+        
+        @Override
+        public boolean isDescriptionInheritable() {
+            if (descriptionId == null && description != null && !description.isEmpty()) {
+                return false;
+            }
+
+            return getOwnerMethod() != null && getOwnerMethod().getDescriptionInheritable();
+        }
+
+        @Override
+        public boolean isDescriptionInherited() {
+            if (!isDescriptionInheritable()) {
+                return false;
+            }
+            return isDescriptionInherited;
+        }
+
+        @Override
+        public void setDescriptionInherited(boolean inherit) {
+            boolean isInherit = isDescriptionInherited();
+            if (inherit != isInherit) {
+                isDescriptionInherited = inherit;
+                setEditState(EEditState.MODIFIED);
+            }
+        }
+
+        @Override
+        public Id getDescriptionId(boolean inherited) {
+            if (inherited) {
+                MethodValue owner = (MethodValue) getDescriptionOwner(inherited);
+                if (owner == this) {
+                    return null;
+                } else {
+                    return owner.getDescriptionId();
+                }
+            }
+            return descriptionId;
+        }
+
+        private RadixObject getDescriptionOwner(boolean inherited) {
+            if (inherited && describableRef != null && describableRef.getVersion() == ILocalizingBundleDef.version.get()) {
+                ILocalizedDescribable def = describableRef.get();
+                if (def instanceof RadixObject) {
+                    return (RadixObject) def;
+                }
+            }
+            RadixObject value = ProfileUtilities.getDescriptionInheritanceOwner(inherited, getOwnerMethod(), this);
+            if (value == null) {
+                return null;
+            }
+            if (value != this)  {
+                describableRef = new LocalizedDescribableRef((ILocalizedDescribable) value);
+            }
+            return value;
         }
 
         @Override
@@ -182,6 +273,16 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
             return description;
         }
 
+        @Override
+        public EDocGroup getDocGroup() {
+            return EDocGroup.METHOD_PARAMETER;
+        }
+
+        @Override
+        public ERuntimeEnvironmentType getDocEnvironment() {
+            return getOwnerMethod().getDocEnvironment();
+        }
+        
         protected final void removeDescriptionString() {
             final AdsMultilingualStringDef localizedString = getDescriptionLocation().findLocalizedString(getDescriptionId());
             if (localizedString != null) {
@@ -615,7 +716,7 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
             return AdsMethodDef.this.getNature() == EMethodNature.PRESENTATION_SLOT || AdsMethodDef.this.isReadOnly();
         }
 
-        private List<MethodParameter> findMethodParameterByType(List<MethodParameter> source, AdsTypeDeclaration type) {
+        List<MethodParameter> findMethodParameterByType(List<MethodParameter> source, AdsTypeDeclaration type) {
             if (type == null || source == null || source.isEmpty()) {
                 return null;
             }
@@ -630,7 +731,7 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
             return result.isEmpty() ? null : result;
         }
 
-        private List<MethodParameter> findMethodParameterByName(List<MethodParameter> source, String name) {
+        List<MethodParameter> findMethodParameterByName(List<MethodParameter> source, String name) {
             if (name == null || name.isEmpty() || source == null || source.isEmpty()) {
                 return null;
             }
@@ -644,7 +745,7 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
             }
             return result.isEmpty() ? null : result;
         }
-
+        
         public boolean syncTo(AdsMethodDef source) {
             if (source == null) {
                 return false;
@@ -689,6 +790,11 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
                     }
                 }
             }
+            boolean sourceDeprecated = source.isDeprecated();
+            if (isDeprecated() != sourceDeprecated) {
+                getAccessFlags().setDeprecated(sourceDeprecated);
+                getAccessFlags().setExpirationRelease(source.getAccessFlags().getExpirationRelease());
+            }
 
             setEditState(EEditState.MODIFIED);
             return true;
@@ -710,6 +816,9 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
     protected boolean reflectiveCallable = false;
     protected final AdsProfileSupport profileSupport = new AdsProfileSupport(this);
     private ERuntimeEnvironmentType usageEnvironment;
+    private boolean isDescriptionInherited;
+    private boolean isSetIsDescriptionInherited = true;
+    LocalizedDescribableRef describableRef;
 
     protected AdsMethodDef(AdsMethodDef source, boolean overwrite) {
         super(source.getId(), source.getName());
@@ -718,6 +827,7 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
         this.profile = new Profile(source.getProfile());
         this.isOverride = true;
         this.isOverwrite = overwrite;
+        this.isDescriptionInherited = source.isDescriptionInherited? source.isDescriptionInherited : isDescriptionInheritable();
 
 //        if (source.suppressedWarnings != null) {
 //            this.suppressedWarnings = new ArrayList<String>(suppressedWarnings);
@@ -770,6 +880,14 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
             this.usageEnvironment = xDef.getEnvironment();
         }
 
+        if (xDef.isSetIsDescriptionInherited()) {
+            this.isDescriptionInherited = xDef.getIsDescriptionInherited();
+        } else {
+            this.isDescriptionInherited = isDescriptionInheritable()
+                    ? xDef.isSetDescriptionId() ? xDef.getDescriptionId() == null : true
+                    : false;
+            isSetIsDescriptionInherited = false;
+        }
     }
 
     protected AdsMethodDef(Id id, String name) {
@@ -781,16 +899,51 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
         this.isConstructor = isConstructor;
         this.isOverride = false;
         this.profile = new Profile();
+        this.isDescriptionInherited = isDescriptionInheritable();
     }
 
     protected AdsMethodDef(String name, boolean isConstructor) {
         this(Id.Factory.newInstance(EDefinitionIdPrefix.ADS_CLASS_METHOD), name, isConstructor);
+    }
+    
+    public void updateSignature(String newName, AdsTypeDeclaration retType, 
+            List<MethodParameter> params, List<AdsMethodThrowsList.ThrowsListItem> exceptions) {
+        final Profile p = getProfile();
+        if (!p.returnValue.getType().equals(retType)) {
+            p.returnValue.setType(retType);
+        }
+        if (!p.parameters.list().equals(params)) {
+            p.parameters.clear();
+            for (MethodParameter param : params) {
+                p.parameters.add(param);
+            }
+        }
+        if (!p.throwsList.list().equals(exceptions)) {
+            p.throwsList.clear();
+            for (AdsMethodThrowsList.ThrowsListItem throwItem : exceptions) {
+                p.throwsList.add(throwItem);
+            }
+        }
+        if (!getName().equals(newName)) {
+            setName(newName);
+        }
+        setEditState(EEditState.MODIFIED);
     }
 
     @Override
     public AdsAccessFlags getAccessFlags() {
         return getProfile().getAccessFlags();
     }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.METHOD;
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+       return this.getOwnerDef().getDocEnvironment();
+    }        
 
     public Profile getProfile() {
         return profile;
@@ -847,7 +1000,9 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
 //        if (suppressedWarnings != null && !suppressedWarnings.isEmpty()) {
 //            xMethod.setSuppressedWarnings(suppressedWarnings);
 //        }
-
+        if (isSetIsDescriptionInherited){
+            xMethod.setIsDescriptionInherited(isDescriptionInherited);
+        }
         if (getTransparence() != null) {
             getTransparence().appendTo(xMethod.getAccessRules().addNewTransparence());
         }
@@ -863,6 +1018,19 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
                 }
                 xMethod.setSuppressedWarnings(list);
             }
+        }
+    }
+    
+    public void appendTo(UserFuncProfile xUfProfile) {
+        xUfProfile.setMethodName(getName());
+        getProfile().getReturnValue().getType().appendTo(xUfProfile.addNewReturnType());
+        for (MethodParameter param : getProfile().getParametersList()) {
+            UserFuncProfile.Parameters xParams = xUfProfile.ensureParameters();
+            param.appendTo(xParams.addNewParameter());
+        }
+        for (AdsMethodThrowsList.ThrowsListItem item : getProfile().getThrowsList()) {
+            UserFuncProfile.ThrownExceptions xExs = xUfProfile.ensureThrownExceptions();
+            item.getException().appendTo(xExs.addNewException());
         }
     }
 
@@ -1139,7 +1307,7 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
             }
         }
     }
-
+    
     @Override
     public boolean canBeFinal() {
         return super.canBeFinal() && !getProfile().getAccessFlags().isAbstract() && !isConstructor;
@@ -1309,19 +1477,19 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
             }
             
         }
-
-        if (getProfile().getReturnValue() != null && getProfile().getReturnValue().getDescriptionId() != null) {
-            ids.add(new DescriptionMultilingualStringInfo(getProfile().getReturnValue(), this));
+        MethodReturnValue returnVal = getProfile().getReturnValue();
+        if (returnVal != null && !returnVal.isDescriptionInherited() &&  returnVal.getDescriptionId() != null) {
+            ids.add(new DescriptionMultilingualStringInfo(returnVal, this));
         }
 
         for (MethodParameter parameter : getProfile().getParametersList()) {
-            if (parameter.getDescriptionId() != null) {
+            if (!parameter.isDescriptionInherited() && parameter.getDescriptionId() != null) {
                 ids.add(new DescriptionMultilingualStringInfo(parameter, this));
             }
         }
 
         for (ThrowsListItem throwsListItem : getProfile().getThrowsList()) {
-            if (throwsListItem.getDescriptionId() != null) {
+            if (!throwsListItem.isDescriptionInherited() && throwsListItem.getDescriptionId() != null) {
                 ids.add(new DescriptionMultilingualStringInfo(throwsListItem, this));
             }
         }
@@ -1352,4 +1520,96 @@ public abstract class AdsMethodDef extends AdsClassMember implements IJavaSource
             return false;
         }
     }
+
+    @Override
+    public boolean isDescriptionInheritable() {
+        if (getDescriptionId() == null && getDescription() != null && !getDescription().isEmpty()) return false;
+        
+        return getDescriptionInheritable();
+    }
+    
+    public boolean getDescriptionInheritable() {
+        return isOverride() || isOverwrite();
+    }
+
+    @Override
+    public boolean isDescriptionInherited() {
+        return isDescriptionInherited;
+    }
+
+    @Override
+    public void setDescriptionInherited(boolean inherit) {
+        if (!isDescriptionInheritable()) return;
+        
+        boolean isInherit = isDescriptionInherited();
+        if (inherit != isInherit) {
+            isDescriptionInherited = inherit;
+            isSetIsDescriptionInherited = true;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    @Override
+    public void setDescriptionId(Id id) {
+        if (isDescriptionInherited()) return;
+        
+        super.setDescriptionId(id);
+    }
+
+    @Override
+    public Id getDescriptionId() {
+        return getDescriptionId(isDescriptionInherited());
+    }
+
+    @Override
+    public Id getDescriptionId(boolean inherited) {
+        if (inherited){
+           Definition owner = getDescriptionLocation(inherited);
+            if (owner == this){
+                return null;
+            }else {
+                return owner.getDescriptionId();
+            }
+        }
+        return super.getDescriptionId();
+    }
+
+    @Override
+    public Definition getDescriptionLocation() {
+        return getDescriptionLocation(isDescriptionInherited());
+    }
+
+    @Override
+    public Definition getDescriptionLocation(boolean inherited) {
+        Definition owner = super.getDescriptionLocation();
+        if (owner == this && inherited){
+            if (describableRef != null) {
+                if (describableRef.getVersion() == ILocalizingBundleDef.version.get()) {
+                    ILocalizedDescribable def = describableRef.get();
+                    if (def instanceof Definition) {
+                        return (Definition) def;
+                    }
+                }
+            }
+            
+            AdsMethodDef ovr = getHierarchy().findOverwritten().get();
+            while (ovr != null) {
+                if (!ovr.isDescriptionInherited()) {
+                    describableRef = new LocalizedDescribableRef(ovr);
+                    return ovr;
+                }
+                ovr = ovr.getHierarchy().findOverwritten().get();
+            }
+            ovr = getHierarchy().findOverridden().get();
+            while (ovr != null) {
+                if (!ovr.isDescriptionInherited()) {
+                    describableRef = new LocalizedDescribableRef(ovr);
+                    return ovr;
+                }
+                ovr = ovr.getHierarchy().findOverridden().get();
+            }
+        }
+        return owner;
+    }
+
 }

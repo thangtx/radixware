@@ -11,34 +11,21 @@
 
 package org.radixware.kernel.common.client.dialogs;
 
+import org.radixware.kernel.common.enums.EFileDialogOpenMode;
+import java.util.EnumSet;
 import org.radixware.kernel.common.enums.EFileSelectionMode;
 import org.radixware.kernel.common.enums.EMimeType;
 
 
 public interface IFileDialogSettings {
 
-    public enum EFileDialogOpenMode {
-
-        LOAD, SAVE
-    }
-
     public String getFileDialogTitle();
-
-    public void setFileDialogTitle(String title);
-
-    public void setFileSelectionMode(EFileSelectionMode mode);
 
     public EFileSelectionMode getFileSelectionMode();
 
-    public void setMimeType(EMimeType type);
-
-    public EMimeType getMimeType();
+    public EnumSet<EMimeType> getMimeTypes();
 
     public String getInitialPath();
-
-    public void setInitialPath(String path);
-    
-    public void setFileDialogOpenMode(EFileDialogOpenMode openMode);
     
     public EFileDialogOpenMode getFileDialogOpenMode();
 }

@@ -30,10 +30,14 @@ public class ValStrEditorController extends InputBoxController<String, EditMaskS
     private IButton memoButton;
     private IMemoController memoController;
     private DropDownTextAreaDelegate dropDownDelegate;
+    
+    public ValStrEditorController(final IClientEnvironment env, final LabelFactory factory) {
+        super(env, factory);
+        setEditMask(new EditMaskStr());
+    }
 
     public ValStrEditorController(final IClientEnvironment env) {
-        super(env);
-        setEditMask(new EditMaskStr());
+        this(env, null);
     }
 
     public IMemoController getMemoController() {
@@ -125,7 +129,7 @@ public class ValStrEditorController extends InputBoxController<String, EditMaskS
             return super.calcValidationResult(value);
         } else {
             final String text = getEditMask().toStr(getEnvironment(), value);
-            if (text.replaceAll("\n", "").matches("[^\\p{Cc}\\p{Cn}]*")) {
+            if (text.replace("\n", "").matches("[^\\p{Cc}\\p{Cn}]*")) {
                 getInputBox().setValueController(null);//edit only throw drop down text area
                 return getEditMask().validate(getEnvironment(), value);
             } else {

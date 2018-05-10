@@ -14,6 +14,7 @@ import java.util.*;
 import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.MimeConstants;
 import org.radixware.kernel.common.defs.RadixObjects;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance.Border;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance.Font;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
@@ -22,13 +23,17 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportDbImageCel
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportWidget;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportWidgetContainer;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContainer;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.AdjustedCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.CellContents;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.CellParagraph;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.CellsUtils;
 import org.radixware.kernel.common.enums.EReportCellType;
 import org.radixware.kernel.common.enums.EReportLayout;
 import org.radixware.kernel.server.reports.ReportGenerationException;
 
 public class CellsAdjuster {
 
-    private static final double MM_TO_PS_COEFFICIENT = 2834.64567; // from FOP sources
+    public static final double MM_TO_PS_COEFFICIENT = 2834.64567; // from FOP sources
     private static final double PS_TO_MM_COEFFICIENT = 1.0 / MM_TO_PS_COEFFICIENT;
     private static org.apache.fop.fonts.FontInfo fontInfoCache = null;
 
@@ -47,12 +52,12 @@ public class CellsAdjuster {
         return fontInfoCache;
     }
 
-    public org.apache.fop.fonts.Font lookupFopFont(final Font font) throws ReportGenerationException {
+    public static org.apache.fop.fonts.Font lookupFopFont(final Font font) throws ReportGenerationException {
         final org.apache.fop.fonts.FontInfo fontInfo = getFontInfo();
 
         final int font_weight = (font.isBold() ? org.apache.fop.fonts.Font.WEIGHT_BOLD : org.apache.fop.fonts.Font.WEIGHT_NORMAL);
         final String style = (font.isItalic() ? org.apache.fop.fonts.Font.STYLE_ITALIC : org.apache.fop.fonts.Font.STYLE_NORMAL);
-        final int fontHeightPs = (int) (MM_TO_PS_COEFFICIENT * font.getSizeMm());
+        final int fontHeightPs = Math.round((float) (MM_TO_PS_COEFFICIENT * font.getSizeMm()));
 
         final org.apache.fop.fonts.FontTriplet triplet = fontInfo.fontLookup(font.getName(), style, font_weight);
         final org.apache.fop.fonts.Font fopFont = fontInfo.getFontInstance(triplet, fontHeightPs);
@@ -61,7 +66,7 @@ public class CellsAdjuster {
     }
 
     public static double getCharWidthMm(final char c, final org.apache.fop.fonts.Font fopFont) {
-        final int charWidthPs = fopFont.getCharWidth(c);
+        final double charWidthPs = fopFont.getFontMetrics().getWidth(fopFont.mapChar(c), fopFont.getFontSize()) / 1000d;
         return PS_TO_MM_COEFFICIENT * charWidthPs;
     }
 
@@ -71,41 +76,44 @@ public class CellsAdjuster {
 
         double lineWidthMm = 0.0, maxWidthMm = 0.0;
         //int line=0;
-        for (int l = 0; l < adjustedCell.getLineCount(); l++) {
-            List<CellContents> list = adjustedCell.getContentsByLine(l);
-            for (int j = 0; j < list.size(); j++) {
-                CellContents cont = list.get(j);
-                final Font font = cont.getFont();
-                final org.apache.fop.fonts.Font fopFont = lookupFopFont(font);
+        for (int p = 0; p < adjustedCell.getParagraphsCount(); p++) {
+            CellParagraph cellParagraph = adjustedCell.getParagraph(p);
+            for (int l = 0; l < cellParagraph.getLinesCount(); l++) {
+                List<CellContents> list = cellParagraph.getContentsByLine(l);
+                for (int j = 0; j < list.size(); j++) {
+                    CellContents cont = list.get(j);
+                    final Font font = cont.getFont();
+                    final org.apache.fop.fonts.Font fopFont = lookupFopFont(font);
 
-                String content = cont.getText();//cell.getRunTimeContent();
-                if (content != null) {
-                    //boolean wasNewLine=false;
-                    int prevPos = 0;
-                    for (int i = 0; i < content.length(); i++) {
-                        final char c = content.charAt(i);
+                    String content = cont.getText();//cell.getRunTimeContent();
+                    if (content != null) {
+                        //boolean wasNewLine=false;
+                        int prevPos = 0;
+                        for (int i = 0; i < content.length(); i++) {
+                            final char c = content.charAt(i);
 
-                        if (c == '\n') {
-                            lineWidthMm = 0.0;
+                            if (c == '\n') {
+                                lineWidthMm = 0.0;
                             //wordWidthMm = 0.0;
-                            //insPos = 0;                            
-                            //wasNewLine=true;
-                            maxWidthMm = Math.max(maxWidthMm, lineWidthMm);
+                                //insPos = 0;                            
+                                //wasNewLine=true;
+                                maxWidthMm = Math.max(maxWidthMm, lineWidthMm);
 
-                            cont.setText(new String(content.substring(prevPos, i + 1)));
-                            /*if(l!=line){
-                             adjustedCell.changeLine(cont, l, line);
-                             }
-                             line++;
-                             CellContents secondContent=new CellContents(cont);
-                             secondContent.setText(new String(content.substring(i+1)));
-                             adjustedCell.addCellContent(secondContent, line); */
-                            splitContent(adjustedCell, new int[]{i + 1, j}, l);
-                            prevPos = i + 1;
-                            //break;
-                        } else {
-                            double charWidthMm = getCharWidthMm(c, fopFont);
-                            lineWidthMm += charWidthMm;
+                                cont.setText(new String(content.substring(prevPos, i + 1)));
+                                /*if(l!=line){
+                                 adjustedCell.changeLine(cont, l, line);
+                                 }
+                                 line++;
+                                 CellContents secondContent=new CellContents(cont);
+                                 secondContent.setText(new String(content.substring(i+1)));
+                                 adjustedCell.addCellContent(secondContent, line); */
+                                CellsUtils.splitContent(cellParagraph, new int[]{i + 1, j}, l);
+                                prevPos = i + 1;
+                                //break;
+                            } else {
+                                double charWidthMm = getCharWidthMm(c, fopFont);
+                                lineWidthMm += charWidthMm;
+                            }
                         }
                     }
                 }
@@ -128,129 +136,115 @@ public class CellsAdjuster {
         AdjustedCell adjustedCell = adjustedCellContents.get(cell);
         //String runTimeContent="";
         StringBuilder sb = new StringBuilder();
-        for (int l = 0; l < adjustedCell.getLineCount(); l++) {//cycle by lines
-            List<CellContents> list = adjustedCell.getContentsByLine(l);
-            double lineWidthMm = 0.0, wordWidthMm = 0.0;
-            double maxWidthMm = cell.getWidthMm() - /*cell.getMarginMm() * 2*/ (cell.getMarginLeftMm() + cell.getMarginRightMm());
-            int insPos[] = new int[]{0, 0};
-            for (int j = 0; j < list.size(); j++) {//cycle by cell contants                
-                CellContents content = list.get(j);
-                final Font font = content.getFont();
-                final org.apache.fop.fonts.Font fopFont = lookupFopFont(font);
+        double maxWidthMm = cell.getWidthMm() - /*cell.getMarginMm() * 2*/ (cell.getMarginLeftMm() + cell.getMarginRightMm());
+        for (int p = 0; p < adjustedCell.getParagraphsCount(); p++) {
+            CellParagraph cellParagraph = adjustedCell.getParagraph(p);
+            for (int l = 0; l < cellParagraph.getLinesCount(); l++) {//cycle by lines
+                List<CellContents> list = cellParagraph.getContentsByLine(l);
+                double lineWidthMm = 0.0, wordWidthMm = 0.0;
+
+                int insPos[] = new int[]{0, 0};
+                for (int j = 0; j < list.size(); j++) {//cycle by cell contants                
+                    CellContents content = list.get(j);
+                    final Font font = content.getFont();
+                    final org.apache.fop.fonts.Font fopFont = lookupFopFont(font);
 
                 //double lineWidthMm = 0.0, wordWidthMm = 0.0;
-                //double maxWidthMm = cell.getWidthMm() - /*cell.getMarginMm() * 2*/(cell.getMarginLeftMm()+cell.getMarginRightMm());
-                //int insPos = 0;
-                boolean inQuotes = false;
-                //int lastSignificantCharPos = 0;
+                    //double maxWidthMm = cell.getWidthMm() - /*cell.getMarginMm() * 2*/(cell.getMarginLeftMm()+cell.getMarginRightMm());
+                    //int insPos = 0;
+                    boolean inQuotes = false;
+                    //int lastSignificantCharPos = 0;
+                    String text = content.getText();//cell.getRunTimeContent();
 
-                String text = content.getText();//cell.getRunTimeContent();
-                if (text != null) {
-                    for (int i = 0; i < text.length(); i++) {
-                        final char c = text.charAt(i);
+                    if (text != null) {
+                        for (int i = 0; i < text.length(); i++) {
+                            final char c = text.charAt(i);
 
                         //if (c != '\n' && c != '\r' && c != '\t' && c != ' ') {
-                        //    lastSignificantCharPos = i;
-                        // }
-                        if (c == '\n') {
-                            i++;
-                            insPos[0] = i;
-                            insPos[1] = j;
-                            splitContent(adjustedCell, insPos, l);
-                            lineWidthMm = 0.0;
-                            wordWidthMm = 0.0;
-                            insPos[0] = 0;
-                            break;
-                        } else {
-                            double charWidthMm = getCharWidthMm(c, fopFont);
-                            if (lineWidthMm > 0 && lineWidthMm + charWidthMm > maxWidthMm && c != ' ') {//??????? ?? ????????? ??????
-                                if (insPos[0] == 0) {
-                                    insPos[0] = i;
-                                    insPos[1] = j;
-                                    wordWidthMm = 0;
-                                }
-                                //content = text.substring(0, insPos) + "\n" + text.substring(insPos);
-                                //prevPos=i+1;
-                                splitContent(adjustedCell, insPos, l);
-
+                            //    lastSignificantCharPos = i;
+                            // }
+                            if (c == '\n') {
                                 i++;
-                                insPos[0] = 0;
-                                lineWidthMm = wordWidthMm;
-                                break;
-                            }
-
-                            lineWidthMm += charWidthMm;
-
-                            if (c == '(' || c == '{' || c == '[' || c == '$' || (c == '"' && !inQuotes)) {
-                                wordWidthMm = charWidthMm;
                                 insPos[0] = i;
                                 insPos[1] = j;
-                            } else if (c == ' ' || c == ';' /*|| c == ',' || c == ':' || c == '.'*/ || c == ')' || c == ']' || c == '}' || c == '!' || c == '?' || c == '%' || (c == '"' && inQuotes) || c == '-') {
-                                wordWidthMm = 0;
-                                insPos[0] = i + 1;
-                                insPos[1] = j;
-                            } else if ((c == ',' || c == ':' || c == '.') && (!isNumber(text, i + 1))) {
-                                wordWidthMm = 0;
-                                insPos[0] = i + 1;
-                                insPos[1] = j;
+                                CellsUtils.splitContent(cellParagraph, insPos, l);
+                                lineWidthMm = 0.0;
+                                wordWidthMm = 0.0;
+                                insPos[0] = 0;
+                                break;
                             } else {
-                                wordWidthMm += charWidthMm;
-                            }
+                                double charWidthMm = getCharWidthMm(c, fopFont);
+                                if (lineWidthMm > 0 && lineWidthMm + charWidthMm > maxWidthMm && c != ' ') {//??????? ?? ????????? ??????
+                                    if (insPos[0] == 0) {
+                                        insPos[0] = i;
+                                        insPos[1] = j;
+                                        wordWidthMm = 0;
+                                    }
+                                //content = text.substring(0, insPos) + "\n" + text.substring(insPos);
+                                    //prevPos=i+1;
+                                    CellsUtils.splitContent(cellParagraph, insPos, l);
 
-                            if (c == '"') {
-                                inQuotes = !inQuotes;
+                                    i++;
+                                    insPos[0] = 0;
+                                    lineWidthMm = wordWidthMm;
+                                    break;
+                                }
+
+                                lineWidthMm += charWidthMm;
+
+                                if (c == '(' || c == '{' || c == '[' || c == '$' || (c == '"' && !inQuotes)) {
+                                    wordWidthMm = charWidthMm;
+                                    insPos[0] = i;
+                                    insPos[1] = j;
+                                } else if (c == ' ' || c == ';' /*|| c == ',' || c == ':' || c == '.'*/ || c == ')' || c == ']' || c == '}' || c == '!' || c == '?' || c == '%' || (c == '"' && inQuotes) || c == '-') {
+                                    wordWidthMm = 0;
+                                    insPos[0] = i + 1;
+                                    insPos[1] = j;
+                                } else if ((c == ',' || c == ':' || c == '.') && (!CellsUtils.isNumber(text, i + 1))) {
+                                    wordWidthMm = 0;
+                                    insPos[0] = i + 1;
+                                    insPos[1] = j;
+                                } else {
+                                    wordWidthMm += charWidthMm;
+                                }
+
+                                if (c == '"') {
+                                    inQuotes = !inQuotes;
+                                }
                             }
                         }
-                    }
 
                     //if (lastSignificantCharPos < text.length()) {
-                    //    text = text.substring(0, lastSignificantCharPos + 1);
-                    //}
-                    // sb.append(text);
-                    //runTimeContent+=text;
+                        //    text = text.substring(0, lastSignificantCharPos + 1);
+                        //}
+                        // sb.append(text);
+                        //runTimeContent+=text;
+                    }
                 }
             }
         }
-        for (int l = 0; l < adjustedCell.getLineCount(); l++) {
-            List<CellContents> list = adjustedCell.getContentsByLine(l);
-            for (int j = 0; j < list.size(); j++) {
-                sb.append(list.get(j).getText());
+        for (int p = 0; p < adjustedCell.getParagraphsCount(); p++) {
+            CellParagraph cellParagraph = adjustedCell.getParagraph(p);
+            for (int l = 0; l < cellParagraph.getLinesCount(); l++) {
+                List<CellContents> list = cellParagraph.getContentsByLine(l);
+                StringBuilder textLine = new StringBuilder();
+                for (int j = 0; j < list.size(); j++) {
+                    sb.append(list.get(j).getText());
+                    textLine.append(list.get(j).getText());
+                    CellContents contents = list.get(j);
+                    final org.apache.fop.fonts.Font fopFont = lookupFopFont(contents.getFont());
+                    String text = contents.getText();
+                    double w = 0;
+
+                    for (int i = 0; i < text.length(); i++) {
+                        w += getCharWidthMm(text.charAt(i), fopFont);
+                    }
+                }
+                //compute line length
+
             }
         }
         cell.setRunTimeContent(sb.toString());
-    }
-
-    private void splitContent(AdjustedCell adjustedCell,/*CellContents content,*/ int[] insPos, int line/*,int contentIndex*/) {
-        int charIndex = insPos[0];
-        int contentIndex = insPos[1];
-
-        CellContents content = adjustedCell.getContentsByLine(line).get(contentIndex);
-        String text = content.getText();
-        content.setText(new String(text.substring(0, charIndex)));
-
-        CellContents secondContent = new CellContents(content);
-        secondContent.setText(new String(text.substring(charIndex)));
-        int newContentIndex = 0;
-        adjustedCell.insertCellContent(newContentIndex, secondContent, line + 1);
-
-        for (int i = contentIndex + 1; i < adjustedCell.getContentsByLine(line).size(); i++) {
-            CellContents c = adjustedCell.getContentsByLine(line).get(i);
-            newContentIndex++;
-            adjustedCell.moveToNexLine(c, line, newContentIndex);
-            i--;
-        }
-    }
-
-    private boolean isNumber(String content, int charPos) {
-        if ((charPos < content.length()) && ((content.charAt(charPos) == '0')
-                || (content.charAt(charPos) == '1') || (content.charAt(charPos) == '2')
-                || (content.charAt(charPos) == '3') || (content.charAt(charPos) == '4')
-                || (content.charAt(charPos) == '5') || (content.charAt(charPos) == '6')
-                || (content.charAt(charPos) == '7') || (content.charAt(charPos) == '8')
-                || (content.charAt(charPos) == '9'))) {
-            return true;
-        }
-        return false;
     }
 
     public static int calcLineCount(final AdsReportCell cell) {
@@ -287,15 +281,15 @@ public class CellsAdjuster {
         for (AdsReportWidget widget : band.getWidgets()) {
             if (!widget.isReportContainer()) {
                 AdsReportCell cell = (AdsReportCell) widget;
-                List<CellContents> cellContant = HtmlParser.getCellContant((AdsReportCell) cell);
+                List<CellContents> cellContant = CellsUtils.getCellContant((AdsReportCell) cell);
                 AdjustedCell adjustedCell = new AdjustedCell();
 
                 List<CellContents> line = new ArrayList<>();
                 for (CellContents content : cellContant) {
-                    createLines(content, line, adjustedCell);
+                    CellsUtils.createLines(content, line, adjustedCell);
                 }
                 if (!line.isEmpty()) {
-                    adjustedCell.getLineCellContents().add(line);
+                    adjustedCell.createParagraph(line);
                 }
                 adjustedCellContents.put(cell, adjustedCell);
 
@@ -312,26 +306,6 @@ public class CellsAdjuster {
                 adjustCellContent((IReportWidgetContainer) widget);
             }
         }
-    }
-
-    private void createLines(CellContents content, List<CellContents> line, AdjustedCell adjustedCell) {
-        String text = content.getText();
-        int index = text.indexOf('\n');
-        if (text != null && index != -1) {
-            CellContents prev = new CellContents(content);
-            prev.setText(new String(text.substring(0, index + 1)));
-            line.add(prev);
-            adjustedCell.getLineCellContents().add(new ArrayList<>(line));
-
-            line.clear();
-            CellContents next = new CellContents(content);
-            next.setText(new String(text.substring(index + 1)));
-            createLines(next, line, adjustedCell);
-            //line.add(next);
-        } else {
-            line.add(content);
-        }
-
     }
 
     public void adjustCellsPosition(AdsReportBand container) {
@@ -690,12 +664,18 @@ public class CellsAdjuster {
             cell.setHeightMm(chartCell.getAdjustHeightMm());
         } else if (cell.isAdjustHeight()) {
             AdjustedCell adjustedCell = adjustedCellContents.get(cell);
-            double contentHeightMm = 0;
-            for (int i = 0; i < adjustedCell.getLineCount(); i++) {
-                contentHeightMm += adjustedCell.getLineFontSize(i);
+            double contentHeightMm = adjustedCell.getContentHeight(cell.getLineSpacingMm());
+            Border b = cell.getBorder();
+            double borderThickness = 0;
+            if (b != null){
+                if (b.getOnTop()){
+                    borderThickness += b.getTopThicknessMm();
+                }
+                if (b.getOnBottom()){
+                    borderThickness += b.getBottomThicknessMm();
+                }
             }
-            final int contentLineCount = adjustedCell.getLineCount();
-            cell.setHeightMm(/*cell.getMarginMm() * 2 */cell.getMarginTopMm() + cell.getMarginBottomMm() + contentHeightMm/*cell.getFont().getSizeMm() * contentLineCount*/ + cell.getLineSpacingMm() * (contentLineCount - 1));
+            cell.setHeightMm(/*cell.getMarginMm() * 2 */borderThickness + cell.getMarginTopMm() + cell.getMarginBottomMm() + contentHeightMm/*cell.getFont().getSizeMm() * contentLineCount*/);
         }
     }
 

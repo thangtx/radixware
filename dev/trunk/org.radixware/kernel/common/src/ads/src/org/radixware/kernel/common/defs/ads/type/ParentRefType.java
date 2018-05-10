@@ -78,9 +78,9 @@ public class ParentRefType extends AdsClassType.EntityObjectType {
         }
 
         @Override
-        public char[][] getPackageNameComponents(UsagePurpose env) {
+        public char[][] getPackageNameComponents(UsagePurpose env, boolean isHumanReadable) {
             if (source != null) {
-                return super.getPackageNameComponents(env);
+                return super.getPackageNameComponents(env, isHumanReadable);
             } else {
                 switch (env.getEnvironment()) {
                     case EXPLORER:
@@ -96,7 +96,7 @@ public class ParentRefType extends AdsClassType.EntityObjectType {
         }
 
         @Override
-        public char[] getLocalTypeName(UsagePurpose env) {
+        public char[] getLocalTypeName(UsagePurpose env, boolean isHumanReadable) {
             switch (env.getEnvironment()) {
                 case EXPLORER:
                 case WEB:
@@ -114,7 +114,7 @@ public class ParentRefType extends AdsClassType.EntityObjectType {
                     if (source == null) {
                         return RADIX_TYPE_ENTITY;
                     } else {
-                        return super.getLocalTypeName(env);
+                        return super.getLocalTypeName(env, isHumanReadable);
                     }
                 default:
                     throw new DefinitionError("Unsupported usage purpose: ", ParentRefType.this);

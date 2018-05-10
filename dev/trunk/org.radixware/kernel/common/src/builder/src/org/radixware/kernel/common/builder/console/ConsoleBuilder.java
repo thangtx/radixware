@@ -12,6 +12,8 @@ package org.radixware.kernel.common.builder.console;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -43,7 +45,7 @@ import org.radixware.kernel.common.utils.FileUtils;
 public class ConsoleBuilder {
 
     public static final String BUILD_QUIET = "console.build.quiet";
-
+    
     public static enum EBuildTarget {
 
         CLEAN("clean", EBuildActionType.CLEAN, 1),
@@ -108,7 +110,13 @@ public class ConsoleBuilder {
     private int argPos;
     private boolean performCheck;
     private String dbUrl, dbUser, dbPwd;
+    private boolean apiDocCheck;
     private boolean apiDocCheckOnly;
+    private boolean exactTypesDocCheck;
+    private Path csvReportPath;
+    private Path detailsFilePath;
+    private boolean isMultithread = false;
+    private boolean ignoreErrors = false;
 
     public static void main(String[] args) throws IOException {
         try {
@@ -130,13 +138,22 @@ public class ConsoleBuilder {
         this.args = args;
         argPos = 0;
 
-        apiDocCheckOnly = matchApiDocCheck();
+        apiDocCheckOnly = matchApiDocCheckOnly();
         if (apiDocCheckOnly) {
             buildTargets = Collections.singletonList(EBuildTarget.API_DOC_STAT);
         }
+
         performCheck = matchCheck();
 
-        buildTargets = new LinkedList<EBuildTarget>();
+        apiDocCheck = matchApiDocCheck();
+        
+        exactTypesDocCheck = matchExactTypesDocCheck();
+
+        csvReportPath = matchCsvReportPath();
+        
+        detailsFilePath = matchDetailsFilePath();
+
+        buildTargets = new LinkedList<>();
 
         EBuildTarget target = matchBuildTarget();
         while (target != null) {
@@ -219,6 +236,16 @@ public class ConsoleBuilder {
             } else {
                 throw new IllegalConsoleArgumentException("Db password expected at argument " + (argPos + 1));
             }
+        }
+        
+        if (argPos < args.length && args[argPos].equals("-multithread")) {
+            argPos++;
+            isMultithread = true;
+        }
+        
+        if (argPos < args.length && args[argPos].equals("-ignoreErrors")) {
+            argPos++;
+            ignoreErrors = true;
         }
 
         if (argPos != args.length) {
@@ -306,11 +333,59 @@ public class ConsoleBuilder {
         return false;
     }
 
-    private boolean matchApiDocCheck() {
+    private boolean matchApiDocCheckOnly() {
         if (argPos >= args.length) {
             return false;
         }
         if ("api-doc-stat".equals(args[argPos])) {
+            argPos++;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean matchApiDocCheck() {
+        if (argPos >= args.length) {
+            return false;
+        }
+        if ("docreport".equals(args[argPos])) {
+            argPos++;
+            return true;
+        }
+        return false;
+    }
+
+    private Path matchCsvReportPath() {
+        if (argPos >= args.length) {
+            return null;
+        }
+        if ("-csvReportPath".equals(args[argPos])) {
+            argPos++;
+            Path result = Paths.get(args[argPos]);
+            argPos++;
+            return result;
+        }
+        return null;
+    }
+    
+    private Path matchDetailsFilePath() {
+        if (argPos >= args.length) {
+            return null;
+        }
+        if ("-detailsFilePath".equals(args[argPos])) {
+            argPos++;
+            Path result = Paths.get(args[argPos]);
+            argPos++;
+            return result;
+        }
+        return null;
+    }
+    
+    private boolean matchExactTypesDocCheck() {
+        if (argPos >= args.length) {
+            return false;
+        }
+        if ("-printExactTypesStat".equals(args[argPos])) {
             argPos++;
             return true;
         }
@@ -372,15 +447,29 @@ public class ConsoleBuilder {
                     //ignore
                 }
 
-            } : null);
+            } : null, isMultithread, ignoreErrors);
             BuildActionExecutor executor = new BuildActionExecutor(buildEnv);
 
             if (performCheck || apiDocCheckOnly) {
                 long time = System.currentTimeMillis();
                 buildEnv.getBuildDisplayer().getDialogUtils().messageInformation("Check started...");
                 CheckOptions options = buildEnv.getCheckOptions();
+                if (apiDocCheck) {
+                    options.setCheckDocumentation(true);
+                } else {
+                    options.setCheckDocumentation(false);
+                }
                 if (apiDocCheckOnly) {
                     options.setCheckDocumentation(true);
+                }
+                if (exactTypesDocCheck) {
+                    options.setCheckExactDefTypesDoc(exactTypesDocCheck);
+                }
+                if (csvReportPath != null) {
+                    options.setCsvReportPath(csvReportPath);
+                }
+                if (detailsFilePath != null) {
+                    options.setDetailsFilePath(detailsFilePath);
                 }
                 final IProblemHandler ph = apiDocCheckOnly ? new IProblemHandler() {
 
@@ -399,15 +488,15 @@ public class ConsoleBuilder {
 
                 docReport = checker.getCheckHistory().findItemByClass(RadixObjectChecker.DocumentationStatusReport.class);
 
-                if (buildEnv.getBuildProblemHandler().wasErrors()) {
+                    if (buildEnv.getBuildProblemHandler().wasErrors()) {
+                        time = System.currentTimeMillis() - time;
+                        String timeString = MessageFormat.format("{0,time,mm:ss}", time);
+                        throw new BuildError("Check failed after " + timeString + ". Total errors: " + buildEnv.getBuildProblemHandler().getErrorsCount() + ", total warnings: " + buildEnv.getBuildProblemHandler().getWarningsCount());
+                    }
                     time = System.currentTimeMillis() - time;
-                    String timeString = MessageFormat.format("{0,time,mm:ss}", time);
-                    throw new BuildError("Check failed after " + timeString + ". Total errors: " + buildEnv.getBuildProblemHandler().getErrorsCount() + ", total warnings: " + buildEnv.getBuildProblemHandler().getWarningsCount());
+                    buildEnv.getBuildDisplayer().getDialogUtils().messageInformation(MessageFormat.format("Check completed in {0,time,mm:ss}", time) + ". Total warnings: " + buildEnv.getBuildProblemHandler().getWarningsCount());
+                    buildEnv.getBuildProblemHandler().clear();
                 }
-                time = System.currentTimeMillis() - time;
-                buildEnv.getBuildDisplayer().getDialogUtils().messageInformation(MessageFormat.format("Check completed in {0,time,mm:ss}", time) + ". Total warnings: " + buildEnv.getBuildProblemHandler().getWarningsCount());
-                buildEnv.getBuildProblemHandler().clear();
-            }
 
             if (!apiDocCheckOnly) {
                 for (EBuildTarget buildTarget : buildTargets) {
@@ -446,7 +535,7 @@ public class ConsoleBuilder {
     }
 
     private Map<String, EBuildTarget> createActionTypeMap() {
-        Map<String, EBuildTarget> ret = new HashMap<String, EBuildTarget>();
+        Map<String, EBuildTarget> ret = new HashMap<>();
         for (EBuildTarget buildTarget : EBuildTarget.values()) {
             ret.put(buildTarget.getAlias(), buildTarget);
         }
@@ -454,7 +543,7 @@ public class ConsoleBuilder {
     }
 
     private Map<String, EBuildEnv> createEnvMap() {
-        Map<String, EBuildEnv> ret = new HashMap<String, EBuildEnv>();
+        Map<String, EBuildEnv> ret = new HashMap<>();
         for (EBuildEnv buildEnv : EBuildEnv.values()) {
             ret.put(buildEnv.getAlias(), buildEnv);
         }

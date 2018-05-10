@@ -8,13 +8,14 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.sqml.translate;
 
 import org.radixware.kernel.common.sqml.Sqml;
-
+import org.radixware.kernel.common.types.Id;
 
 public interface ISqmlPreprocessorConfig {
+
+    public PreprocessorParameter getParameter(final Id paramId);
 
     /**
      * @return value of the specified property
@@ -39,4 +40,13 @@ public interface ISqmlPreprocessorConfig {
      * copy (otherwise).
      */
     public boolean alwaysCreateCopy();
+    
+    public static interface PreprocessorParameter {
+
+        public Object getValue();
+
+        public Id getId();
+
+        public String getName();
+    }
 }

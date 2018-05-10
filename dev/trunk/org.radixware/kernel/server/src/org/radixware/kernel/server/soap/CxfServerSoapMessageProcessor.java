@@ -43,7 +43,7 @@ import org.radixware.kernel.common.soap.IServerSoapMessageProcessor;
 import org.radixware.kernel.common.soap.ProcessException;
 import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.utils.SoapFormatter;
-import org.radixware.kernel.server.instance.ObjectCache;
+import org.radixware.kernel.common.cache.ObjectCache;
 import org.radixware.kernel.server.sap.SapOptions;
 
 

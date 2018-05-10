@@ -13,6 +13,7 @@ package org.radixware.kernel.designer.environment.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,11 +22,14 @@ import javax.swing.Action;
 import org.openide.util.Lookup;
 import org.radixware.kernel.common.defs.HierarchyWalker;
 import org.radixware.kernel.common.defs.dds.DdsDefinition;
+import org.radixware.kernel.common.defs.dds.DdsModule;
+import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.repository.Layer;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 import org.radixware.kernel.designer.dds.script.ScriptDefinitionsCollector;
-import org.radixware.kernel.designer.dds.script.defs.DdsScriptGeneratorUtils;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 
 /**
  *
@@ -87,12 +91,30 @@ public class GenerateRunRoleScriptAction extends AbstractContextAwareAction impl
                     continue;
                 }
                 final Set<DdsDefinition> definitions = new HashSet<>();
-                Layer.HierarchyWalker walker = new Layer.HierarchyWalker();                
+                Layer.HierarchyWalker walker = new Layer.HierarchyWalker();
                 walker.go(layer, new Layer.HierarchyWalker.Acceptor<Layer>() {
 
                     @Override
                     public void accept(HierarchyWalker.Controller<Layer> controller, Layer radixObject) {
                         ScriptDefinitionsCollector.collect(radixObject, definitions);
+                        if ("org.radixware".equals(radixObject.getURI())) {
+                            DdsModule module = (DdsModule) radixObject.getDds().getModules().findById(Id.Factory.loadFrom("mdlRDXHIPHG5FCYHE2A3TM2I6EYDA"));
+                            if (module != null) {
+                                for (String idStr : new String[]{"tblORVQD2YE4NHNFIWAJEJ7HU7WQU", "tblS7BCGIOOOJCLFPXNR3QFQPQY5Q", "tblINNX25XRZ5EIPLHILBZDENFNY4"}) {
+                                    Id id = Id.Factory.loadFrom(idStr);
+                                    try {
+                                         DdsTableDef table = module.getModelManager().getModel().getTables().findById(id);
+                                        if (table != null) {
+                                            if (!definitions.contains(table)) {
+                                                definitions.add(table);
+                                            }
+                                        }
+                                    } catch (IOException ex) {
+                                        //ignore
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
 

@@ -11,7 +11,6 @@
 package org.radixware.wps;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.security.GeneralSecurityException;
@@ -27,34 +26,46 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.ietf.jgss.GSSContext;
 import org.ietf.jgss.GSSException;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.client.Clipboard;
 import org.radixware.kernel.common.client.IClientApplication;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.RunParams;
 import org.radixware.kernel.common.client.dialogs.IMessageBox;
+import org.radixware.kernel.common.client.eas.AbstractEasSession;
 import org.radixware.kernel.common.client.eas.EasClient;
 import org.radixware.kernel.common.client.eas.EasSession;
 import org.radixware.kernel.common.client.eas.IEasSession;
 import org.radixware.kernel.common.client.eas.connections.ConnectionOptions;
 import org.radixware.kernel.common.client.eas.resources.IResourceManager;
 import org.radixware.kernel.common.client.editors.traceprofile.TraceProfileTreeController;
+import org.radixware.kernel.common.client.env.AdsVersion;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.DefManager;
+import org.radixware.kernel.common.client.env.EntryPointRequest;
 import org.radixware.kernel.common.client.env.EnvironmentVariables;
+import org.radixware.kernel.common.client.env.IEntryPointHandler;
 import org.radixware.kernel.common.client.env.IEventLoop;
+import org.radixware.kernel.common.client.env.ProductInstallationOptions;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.env.progress.ProgressHandleManager;
+import org.radixware.kernel.common.client.errors.AccessViolationError;
+import org.radixware.kernel.common.client.errors.AuthError;
+import org.radixware.kernel.common.client.errors.CredentialsWasNotDefinedError;
 import org.radixware.kernel.common.client.errors.EasError;
 import org.radixware.kernel.common.client.errors.IClientError;
+import org.radixware.kernel.common.client.errors.KerberosError;
+import org.radixware.kernel.common.client.errors.UnsupportedDefinitionVersionError;
 import org.radixware.kernel.common.client.errors.WrongPasswordError;
 import org.radixware.kernel.common.client.exceptions.CantUpdateVersionException;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.exceptions.ExceptionMessage;
+import org.radixware.kernel.common.client.exceptions.NoSapsForCurrentVersion;
 import org.radixware.kernel.common.client.exceptions.SignatureException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinitions;
-import org.radixware.kernel.common.client.meta.sqml.impl.SqmlDefinitions;
+import org.radixware.kernel.common.client.meta.sqml.SqmlDefinitionsLoader;
 import org.radixware.kernel.common.client.models.groupsettings.FilterSettingsStorage;
 import org.radixware.kernel.common.client.models.groupsettings.Filters;
 import org.radixware.kernel.common.client.models.groupsettings.GroupSettingsStorage;
@@ -68,6 +79,8 @@ import org.radixware.kernel.common.client.types.ExplorerRoot;
 import org.radixware.kernel.common.client.types.TimeZoneInfo;
 import org.radixware.kernel.common.client.utils.ClientValueFormatter;
 import org.radixware.kernel.common.client.utils.IContextEnvironment;
+import org.radixware.kernel.common.client.utils.ISecretStore;
+import org.radixware.kernel.common.client.utils.TokenProcessor;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
 import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.common.client.widgets.IMainStatusBar;
@@ -80,10 +93,10 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.enums.EIsoCountry;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.EMimeType;
 import org.radixware.kernel.common.environment.IEnvironmentAccessor;
 import org.radixware.kernel.common.environment.IRadixEnvironment;
 import org.radixware.kernel.common.exceptions.CertificateUtilsException;
-import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.KeystoreControllerException;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
@@ -91,18 +104,18 @@ import org.radixware.kernel.common.exceptions.ServiceCallFault;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.kerberos.KerberosCredentials;
 import org.radixware.kernel.common.kerberos.KerberosException;
-import org.radixware.kernel.common.ssl.CertificateUtils;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.FileUtils;
+import org.radixware.kernel.common.utils.Hex;
+import org.radixware.kernel.starter.meta.LayerMeta;
+import org.radixware.kernel.starter.radixloader.RadixClassLoader;
 import org.radixware.kernel.starter.radixloader.RadixLoaderException;
+import org.radixware.schemas.clientstate.ConnectionParams;
 import org.radixware.schemas.eas.CreateSessionRs;
 import org.radixware.schemas.eas.Definition;
-import org.radixware.wps.settings.SettingsDialog;
-import org.radixware.wps.dialogs.ChangePasswordDialog;
 import org.radixware.wps.dialogs.IDialogDisplayer;
 import org.radixware.wps.dialogs.LogonDialog;
 import org.radixware.wps.dialogs.TraceDialog;
-import org.radixware.wps.rwt.MainStatusBar;
 import org.radixware.wps.rwt.MessageBox;
 import org.radixware.wps.rwt.RootPanel;
 import org.radixware.wps.rwt.UIObject;
@@ -114,10 +127,32 @@ import org.radixware.wps.settings.ISettingsChangeListener;
 import org.radixware.wps.text.DefaultTextOptionsProvider;
 import org.radixware.wps.tree.TreeManager;
 import org.radixware.wps.views.RwtAction;
+import org.radixware.wps.views.admin.AdminPanel;
 
 public class WpsEnvironment implements IClientEnvironment {
+    
+    static EasSessionFactory sessionFactory = null;
+    static ConnectionsFactory connectionsFactory = null;
+    static boolean test_mode = false;
+    static final long PING_PERIOD = 3 * 1000;
+    
+    enum CheckConnectionState {
+        DONE,
+        FAULT,
+        CANCELLED
+    }    
+    
+    abstract static class EasSessionFactory {
 
-    private static class DelegateClassLoader extends ClassLoader implements IEnvironmentAccessor {
+        public abstract EasSession createSession(WpsEnvironment env);
+    }
+
+    abstract static class ConnectionsFactory {
+
+        public abstract ConnectionOptions createConnection(WpsEnvironment env);
+    }    
+
+    private final static class DelegateClassLoader extends ClassLoader implements IEnvironmentAccessor {
 
         private final IClientApplication env;
 
@@ -132,48 +167,20 @@ public class WpsEnvironment implements IClientEnvironment {
         }
     }
 
-    private class UpdateVersionController implements TreeManager.IUpdateVersionController {
+    private final static class RwtSyncTaskExecutor<T> implements Runnable{
 
-        private WpsApplication preparedApplication;
-
-        @Override
-        public boolean prepareNewVersion(Collection<Id> changedDefinitions) {
-            preparedApplication = null;
-            try {
-                preparedApplication = context.application.server.getLatestAppVersion(false, false, changedDefinitions);
-                return canUpdateToNewVersion();
-            } catch (RadixLoaderException exception) {
-                final String message = getMessageProvider().translate("ExplorerError", "Can't load runtime components");
-                getTracer().error(message, exception);
-                final String title = getMessageProvider().translate("ExplorerMessage", "Can't Update Version");
-                messageInformation(title, message);
-                return false;
-            }
-        }
-
-        @Override
-        public void switchToNewVersion() {
-            if (preparedApplication != null) {
-                switchToNewApplicationContext(preparedApplication);
-                preparedApplication = null;
-            }
-        }
-    }
-    
-    private static class RwtSyncTaskExecutor<T> implements Runnable{
-        
         private final static int TIMEOUNT_IN_SECONDS = 5*60;
-        
+
         private final Callable<T> task;
         private final CountDownLatch latch = new CountDownLatch(1);
         private final Object semaphore = new Object();
         private Exception exception;
-        private T result;        
-        
+        private T result;
+
         public RwtSyncTaskExecutor(final Callable<T> tsk){
             task = tsk;
         }
-        
+
         public T execute(final HttpSessionContext context) throws InterruptedException,ExecutionException{
             context.scheduleTask(this);
             if (latch.await(TIMEOUNT_IN_SECONDS, TimeUnit.SECONDS)){
@@ -202,8 +209,24 @@ public class WpsEnvironment implements IClientEnvironment {
         }
     }
     
-    private static class MessageBoxTask implements Callable<EDialogButtonType>{
-        
+    private final class EasResponseNotificator implements AbstractEasSession.IResponseNotificationScheduler{
+
+        @Override
+        public void block() {       
+        }
+
+        @Override
+        public void unblock() {
+        }
+
+        @Override
+        public void scheduleNotificationTask(final Runnable task) {
+            WpsEnvironment.this.runInGuiThreadAsync(task);
+        }
+    }
+
+    private final static class MessageBoxTask implements Callable<EDialogButtonType>{
+
         private final String title;
         private final String message;
         private final EDialogIconType dialogType;
@@ -211,11 +234,11 @@ public class WpsEnvironment implements IClientEnvironment {
         private final IDialogDisplayer displayer;
         private final String detailsTitle;
         private final String details;
-        
-        public MessageBoxTask(final String title, 
-                              final String message, 
-                              final EDialogIconType dialogIconType,
-                              final Set<EDialogButtonType> buttons,
+
+        public MessageBoxTask(final String title,
+                final String message,
+                final EDialogIconType dialogIconType,
+                final Set<EDialogButtonType> buttons,
                               final IDialogDisplayer displayer){
             this.title = title;
             this.message = message;
@@ -225,11 +248,11 @@ public class WpsEnvironment implements IClientEnvironment {
             detailsTitle = null;
             details = null;
         }
-        
-        public MessageBoxTask(final String title, 
-                              final String message,                                                            
-                              final IDialogDisplayer displayer,
-                              final String detailsTitle,
+
+        public MessageBoxTask(final String title,
+                final String message,
+                final IDialogDisplayer displayer,
+                final String detailsTitle,
                               final String details){
             this.title = title;
             this.message = message;
@@ -238,7 +261,7 @@ public class WpsEnvironment implements IClientEnvironment {
             this.displayer = displayer;
             this.detailsTitle = detailsTitle;
             this.details = details;
-        }        
+        }
 
         @Override
         public EDialogButtonType call() throws Exception {
@@ -248,15 +271,45 @@ public class WpsEnvironment implements IClientEnvironment {
                 return new MessageBox(displayer, title, message, null, buttons, dialogType).execMessageBox();
             }
         }
-    }
+    }        
+    
+    private class UpdateVersionController implements TreeManager.IUpdateVersionController {
+
+        private WpsApplication preparedApplication;
+
+        @Override
+        public boolean prepareNewVersion(final Collection<Id> changedDefinitions, final long version) {
+            preparedApplication = null;
+            try {
+                preparedApplication = 
+                    context.application.server.getLatestAppVersion(false, false, changedDefinitions, version);
+                return canUpdateToVersion(version);
+            } catch (RadixLoaderException exception) {
+                final String message = getMessageProvider().translate("ExplorerError", "Can't load runtime components");
+                getTracer().error(message, exception);
+                final String title = getMessageProvider().translate("ExplorerMessage", "Can't Update Version");
+                messageInformation(title, message);
+                return false;
+            }
+        }
+
+        @Override
+        public void switchToNewVersion() {
+            if (preparedApplication != null) {
+                switchToNewApplicationContext(preparedApplication);
+                preparedApplication = null;
+            }
+        }
+    }    
 
     private class WpsEventLoop implements IEventLoop {
 
         private final AtomicBoolean isInProgress = new AtomicBoolean(false);
         private final AtomicBoolean wasFinished = new AtomicBoolean(false);
-        private final List<Runnable> scheduledTasks = new LinkedList<>();        
+        private final Object semaphore = new Object();
+        private final List<Runnable> scheduledTasks = new LinkedList<>();
         private volatile CountDownLatch latch;
-        
+
         private boolean isGuiThread(){
             return WpsEnvironment.this.getApplication().isInGuiThread();
         }
@@ -264,7 +317,24 @@ public class WpsEnvironment implements IClientEnvironment {
         @Override
         public void scheduleTask(final Runnable task) {
             if (task != null) {
-                scheduledTasks.add(task);
+                synchronized(semaphore){
+                    scheduledTasks.add(task);
+                }
+            }
+        }
+        
+        private void runScheduledTasks(){
+            List<Runnable> tasks;
+            synchronized(semaphore){
+                tasks = new ArrayList<>(scheduledTasks);
+                scheduledTasks.clear();
+            }
+            for (Runnable task : tasks) {
+                try {
+                    task.run();
+                } catch (RuntimeException exception) {
+                    Logger.getLogger(WpsEnvironment.class.getName()).log(Level.SEVERE, null, exception);
+                }
             }
         }
 
@@ -272,22 +342,15 @@ public class WpsEnvironment implements IClientEnvironment {
         @SuppressWarnings("SleepWhileInLoop")
         public void start() {//timerSemaphore must be does not captured here!            
             final boolean isGuiThread = isGuiThread();
-            synchronized (this) {                
+            synchronized (semaphore) {
                 isInProgress.set(true);
                 wasFinished.set(false);
                 if (!isGuiThread){
                     latch = new CountDownLatch(1);
                 }
             }
-            try {                
-                for (Runnable task : scheduledTasks) {
-                    try {
-                        task.run();
-                    } catch (RuntimeException exception) {
-                        Logger.getLogger(WpsEnvironment.class.getName()).log(Level.SEVERE, null, exception);
-                    }
-                }
-                scheduledTasks.clear();                
+            try {
+                runScheduledTasks();
                 if (isGuiThread){
                     while (!wasFinished.get()) {
                         processEvents();
@@ -296,6 +359,7 @@ public class WpsEnvironment implements IClientEnvironment {
                         } catch (InterruptedException ex) {
                             Logger.getLogger(WpsEnvironment.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        runScheduledTasks();
                     }
                 }else{
                     try{
@@ -311,8 +375,9 @@ public class WpsEnvironment implements IClientEnvironment {
 
         @Override
         public void stop() {
-            synchronized (this) {
+            synchronized (semaphore) {
                 wasFinished.set(true);
+                scheduledTasks.clear();
                 if (latch!=null){
                     latch.countDown();
                     latch  =null;
@@ -325,11 +390,10 @@ public class WpsEnvironment implements IClientEnvironment {
             return isInProgress.get();
         }
     }
-        
+
     private final ArrayList<WeakReference<ISettingsChangeListener>> settingsRefs = new ArrayList<>();
     private TimeZoneInfo serverTimeZoneInfo;
     private final WpsLocaleManager localeManager = new WpsLocaleManager(this);
-    //   private WpsApplication env;
     private EasSession session;
     private EasClient client;
     final HttpSessionContext context;
@@ -340,102 +404,40 @@ public class WpsEnvironment implements IClientEnvironment {
     private List<Id> contextlessCommands = null;
     private Set<EDrcServerResource> allowedResources = null;
     private final UpdateVersionController updateVersionController = new UpdateVersionController();
-    public final Action connectAction;
-    public final Action disconnectAction;
-    public final Action changePasswordAction;
-    public final Action checkForUpdatesAction;
+    private final EasResponseNotificator responseNotificator = new EasResponseNotificator();
     public final Action showTraceAction;
-    public final Action appearanceSettingsAction;    
     private final List<IClientEnvironment.ConnectionListener> connectionListeners = new LinkedList<>();
+    private final EIsoLanguage defaultLanguage;
     private ConnectionOptions connection = null;
+    private List<ExplorerRoot> explorerRootsList = null;
+    private ProductInstallationOptions productInstallationOptions;
     private boolean disposed;//NOPMD (need for debug reasons)
     private Clipboard clipboard;
-    private MainStatusBar statusBar;
     private TraceDialog traceDialog;
     private FilterSettingsStorage filterSettingsStorage = new FilterSettingsStorage();
     private DefaultTextOptionsProvider textOptionsProvider;
-
-    private final static class Icons extends ClientIcon.CommonOperations {
-
-        private Icons(final String fileName) {
-            super(fileName, true);
-        }
-        public final static Icons APPEARANCE_SETTINGS = new Icons("classpath:images/appearance_settings.svg");
-    }
-
-    //final RwtAction checkForUpdatesAction;
-    abstract static class EasSessionFactory {
-
-        public abstract EasSession createSession(WpsEnvironment env);
-    }
-
-    abstract static class ConnectionsFactory {
-
-        public abstract ConnectionOptions createConnection(WpsEnvironment env);
-    }
-    static EasSessionFactory sessionFactory = null;
-    static ConnectionsFactory connectionsFactory = null;
-    static boolean test_mode = false;
-
+    private long lastPingTime = 0;    
+    private boolean eventsBlocked = false;
+    private boolean inUnsupportedVersionProcess;
+    private boolean connectFirstTime = true;
+    
     WpsEnvironment(final HttpSessionContext context) {
         this.context = context;
         tracer = new DefaultClientTracer(this);
         tracer.setBuffer(tracer.createTraceBuffer());
         treeManager = new TreeManager(this, updateVersionController);
 
-        final EIsoLanguage clientLanguage
-                = context == null ? null : context.getHttpConnectionOptions().getClientLanguage();
-        if (clientLanguage != null
-                && clientLanguage != localeManager.getLanguage()
-                && localeManager.getSupportedLanguages().contains(clientLanguage)) {
+        
+        final EIsoLanguage clientLanguage = localeManager.autoSelectLanguage(context.getHttpConnectionOptions(), null);
+        if (clientLanguage != null && clientLanguage != localeManager.getLanguage()) {
             localeManager.changeLocale(clientLanguage, null);
         }
+        
+        defaultLanguage = localeManager.getLanguage();
         clipboard = new Clipboard(this);
         checkThreadState();
-        appearanceSettingsAction = new RwtAction(this, Icons.APPEARANCE_SETTINGS);
-        appearanceSettingsAction.setEnabled(false);
-        appearanceSettingsAction.addActionListener(new Action.ActionListener() {
-            @Override
-            public void triggered(Action action) {
-                runAppearanceSettingsDialog();
-            }
-        });
-
-        connectAction = new RwtAction(this, ClientIcon.Connection.CONNECT);
-
-        connectAction.addActionListener(new Action.ActionListener() {
-            @Override
-            public void triggered(Action action) {
-                connectAction();
-            }
-        });
-        disconnectAction = new RwtAction(this, ClientIcon.Connection.DISCONNECT);
-
-        disconnectAction.setEnabled(false);
-        disconnectAction.addActionListener(new Action.ActionListener() {
-            @Override
-            public void triggered(Action action) {
-                disconnectAction();
-            }
-        });
-        changePasswordAction = new RwtAction(this, ClientIcon.Connection.KEY);
-        checkForUpdatesAction = new RwtAction(this, ClientIcon.CommonOperations.REFRESH, getMessageProvider().translate("EnvironmentAction", "&Check for Updates"));
-        checkForUpdatesAction.addActionListener(new Action.ActionListener() {
-            @Override
-            public void triggered(Action action) {
-                checkForUpdates();
-            }
-        });
-        changePasswordAction.setVisible(false);
-        changePasswordAction.addActionListener(new Action.ActionListener() {
-            @Override
-            public void triggered(Action action) {
-                changePasswordAction();
-            }
-        });
-
-        showTraceAction = new RwtAction(this, null);
-        showTraceAction.addActionListener(new Action.ActionListener() {
+        
+        showTraceAction = createAction(ClientIcon.Dialog.TRACE, "show_trace", new Action.ActionListener() {
             @Override
             public void triggered(final Action action) {
                 if (traceDialog == null) {
@@ -452,30 +454,35 @@ public class WpsEnvironment implements IClientEnvironment {
                     }
                 }
             }
-        });
+        });        
+        
         textOptionsProvider = new DefaultTextOptionsProvider(this);
-
-        this.rootPanel = new DefaultRootPanel(this);
-        if (context != null) {
-            this.rootPanel.setTitle(WpsApplication.getProductName());
+        
+        if (context!=null && context.getHttpConnectionOptions().isAdminPanel()){
+            rootPanel = new AdminPanel(this);
+        }else{
+            rootPanel = new DefaultRootPanel(this);
         }
-        rootPanel.addStatusBarListener(new RootPanel.StatusBarListener() {
-            @Override
-            public void statusBarOpened(final MainStatusBar statusBar) {
-                WpsEnvironment.this.initStatusBar(statusBar);
-            }
-
-            @Override
-            public void statusBarClosed(final MainStatusBar statusBar) {
-                if (statusBar == WpsEnvironment.this.statusBar) {//NOPMD
-                    closeStatusBar();
-                }
-            }
-        });
+        if (context != null) {
+            rootPanel.setTitle(WpsApplication.getProductName());
+        }
+        
         updateTranslations();
+    }
+    
+    private RwtAction createAction(final ClientIcon icon, final String name, final Action.ActionListener listener){
+        final RwtAction action = new RwtAction(this, icon);
+        action.setObjectName(name);
+        if (listener!=null){
+            action.addActionListener(listener);
+        }
+        return action;
     }
 
     void dispose() {
+        if (phManager!=null){
+            phManager.disableSelfCheck();
+        }
         disconnect(true);
         synchronized (this) {
             if (settings != null) {
@@ -490,6 +497,7 @@ public class WpsEnvironment implements IClientEnvironment {
         Sortings.clearCache(this);
         TraceProfileTreeController.clearCache(this);
         EnvironmentVariables.clearAll(this);
+        tracer.close();
         disposed = true;
     }
 
@@ -552,53 +560,13 @@ public class WpsEnvironment implements IClientEnvironment {
         }
     }
 
-    private void initStatusBar(final MainStatusBar statusBar) {
-        this.statusBar = statusBar;
-        /*
-        final HorizontalBox container = new HorizontalBox();
-        container.addSpace();
-        container.setSizePolicy(UIObject.SizePolicy.EXPAND, UIObject.SizePolicy.EXPAND);
-        {
-            final AbstractContainer labelContainer = new AbstractContainer();
-            statusBarLabel = new Label();
-            statusBarLabel.setTextWrapDisabled(true);
-            statusBarLabel.setHSizePolicy(UIObject.SizePolicy.EXPAND);
-            statusBarLabel.setText(getMessageProvider().translate("StatusBar", "Disconnected"));
-            statusBarLabel.getHtml().setCss("font-weight", "bold");
-            statusBarLabel.getHtml().setCss("line-height", statusBar.getHeight() + "px");
-            labelContainer.getHtml().setCss("overflow", "hidden");
-            labelContainer.add(statusBarLabel);
-            labelContainer.setHSizePolicy(UIObject.SizePolicy.EXPAND);
-            container.add(labelContainer);
-            container.addSpace();
-        }
-        {
-            container.add(new TraceTrayItem(this));
-            container.addSpace();
-        }
-        statusBar.add(container);*/
-        statusBar.setText(getMessageProvider().translate("StatusBar", "Disconnected"));
-        statusBar.add(new TraceTrayItem(this));
-        statusBar.addSpace();        
-    }
-
-    private void closeStatusBar() {        
-        final List<UIObject> children = statusBar.getItems();
-        for (UIObject child : children) {
-            if (child instanceof ITrayItem) {
-                ((ITrayItem) child).onTrayClose();
-            }
-        }
-        statusBar = null;
-    }
-
     private void updateTranslations() {
-        connectAction.setToolTip(getMessageProvider().translate("EnvironmentAction", "Connect..."));
-        disconnectAction.setToolTip(getMessageProvider().translate("EnvironmentAction", "Disconnect"));
-        changePasswordAction.setToolTip(getMessageProvider().translate("EnvironmentAction", "Change Password..."));
-        checkForUpdatesAction.setToolTip(getMessageProvider().translate("EnvironmentAction", "Check for Updates"));
-        appearanceSettingsAction.setToolTip(getMessageProvider().translate("EnvironmentAction", "Appearance Settings"));
+        showTraceAction.setText(getMessageProvider().translate("EnvironmentAction", "Trace"));
+        rootPanel.updateTranslations();
+        ((TreeManager) this.getTreeManager()).translate();        
     }
+    
+    
     private final Object appLock = new Object();
 
     void switchToNewApplicationContext(final WpsApplication app) {
@@ -618,7 +586,7 @@ public class WpsEnvironment implements IClientEnvironment {
     public EDialogButtonType messageBox(final String title, final String message, final EDialogIconType icon, final Set<EDialogButtonType> buttons) {
         try {
             return runInGuiThread(new MessageBoxTask(title, message, icon, buttons, context.dialogDisplayer));
-        } catch (InterruptedException ex) {            
+        } catch (InterruptedException ex) {
         } catch (ExecutionException ex) {
             getTracer().error(ex);
         }
@@ -643,6 +611,11 @@ public class WpsEnvironment implements IClientEnvironment {
     @Override
     public boolean isCustomSortingsAccessible() {
         return isServerResourceAccessible(EDrcServerResource.EAS_SORTING_CREATION);
+    }
+
+    @Override
+    public boolean isUserFuncDevelopmentAccessible() {
+        return isServerResourceAccessible(EDrcServerResource.USER_FUNC_DEV);
     }
 
     protected boolean isServerResourceAccessible(EDrcServerResource resource) {
@@ -674,14 +647,7 @@ public class WpsEnvironment implements IClientEnvironment {
 
     @Override
     public IMessageBox newMessageBoxDialog(final String message, final String title, final EDialogIconType icon, final Set<EDialogButtonType> buttons) {
-        return new MessageBox(this.getDialogDisplayer(), title, message, null/*details*/, buttons,icon);
-    }
-
-    enum CheckConnectionState {
-
-        DONE,
-        FAULT,
-        CANCELLED
+        return new MessageBox(this.getDialogDisplayer(), title, message, null/*details*/, buttons, icon);
     }
 
     public IDialogDisplayer getDialogDisplayer() {
@@ -709,15 +675,29 @@ public class WpsEnvironment implements IClientEnvironment {
             throw new IllegalUsageError("Connection is not defined");
         }
         if (!useSsl) {
-            return new EasClient(WpsEnvironment.this.getMessageProvider(), session.getSessionTrace(), c.getInitialServerAddresses(), stationName, c.getAuthType(), null, null);
+            return new EasClient(WpsEnvironment.this.getMessageProvider(), 
+                                             session.getSessionTrace(), 
+                                             c.getInitialServerAddresses(), 
+                                             stationName, 
+                                             c.getAuthType(), 
+                                             c.getAddressTranslationFilePath(), 
+                                             c.isSapDiscoveryEnabled(),
+                                             null, 
+                                             null);
         } else {
+            final ISecretStore secretStore = getApplication().newSecretStore();            
             final char[] trustStorePassword = c.getSslOptions().getTrustStorePassword();
+            if (trustStorePassword!=null && trustStorePassword.length>0){
+                secretStore.setSecret(new TokenProcessor().encrypt(trustStorePassword));
+            }
             return new EasClient(this,
                     c.getInitialServerAddresses(),
                     stationName,
                     c.getAuthType(),
+                    c.getAddressTranslationFilePath(),
+                    c.isSapDiscoveryEnabled(),
                     new SslContextFactory(c, this),
-                    trustStorePassword == null ? new char[]{} : trustStorePassword);
+                    secretStore);
         }
     }
 
@@ -782,13 +762,17 @@ public class WpsEnvironment implements IClientEnvironment {
 
                 final KerberosCredentials serviceCredentials
                         = WebServer.getInstance().getKerberosServiceCredentials();
-                final WebServerRunParams.KrbWpsOptions krbOptions = WebServerRunParams.getKerberosOptions();
+                final WebServerRunParams.KrbWpsOptions krbOptions = context.getRunParams().getKerberosOptions();
                 boolean transmitClientCertificates = false;
                 KrbClientCredentialsProvider krbCredsProvider;
                 final LogonDialog dialog;
-                if (serviceCredentials != null) {
-                    final HttpSessionContext.NegotiateAuthResult authResult
-                            = context.negotiateAuthentication(serviceCredentials);
+                if (serviceCredentials != null && krbOptions.isKerberosOptionsEnabled()) { 
+                    final HttpSessionContext.NegotiateAuthResult authResult;
+                    if (krbOptions.isSpnego()) {
+                        authResult = context.negotiateAuthentication(serviceCredentials);
+                    } else {
+                        authResult = null;
+                    }
                     if (authResult != null && authResult.isNtlmRequested()) {
                         final String traceMessage
                                 = getMessageProvider().translate("TraceMessage", "Using of unsupported NTLM authentication protocol requested");
@@ -803,7 +787,7 @@ public class WpsEnvironment implements IClientEnvironment {
                     String userName;
                     if (isCertAuth) {
                         krbCredsProvider = new KrbClientCredentialsProvider(krbOptions, null);
-                        userName = getUserNameFromCertificate(clientCertificates[0]);
+                        userName = context.getHttpConnectionOptions().getUserNameFromCertificate();
                         transmitClientCertificates = true;
                         {
                             final String traceMessage
@@ -891,7 +875,7 @@ public class WpsEnvironment implements IClientEnvironment {
                     return CheckConnectionState.CANCELLED;
                 } else if (isCertificateProvided) {
                     krbCredsProvider = null;
-                    final String userName = getUserNameFromCertificate(clientCertificates[0]);
+                    final String userName = context.getHttpConnectionOptions().getUserNameFromCertificate();
                     {
                         final String traceMessage
                                 = messageProvider.translate("TraceMessage", "Certificate provided for \"%1$s\" account");
@@ -912,249 +896,374 @@ public class WpsEnvironment implements IClientEnvironment {
                     }
                 } else {
                     krbCredsProvider = null;
-                    dialog = new LogonDialog(this);
+                    HttpConnectionOptions options = context.getHttpConnectionOptions();
+                    dialog = new LogonDialog(this, options.getUserName(), options.getStationName(), false);
                 }
                 //  X509Certificate[] cert = WebServer.getKeystoreController() != null ? clientCert : null;
                 //boolean autoConnectDone = false;
                 for (;;) {
-                    String userName = null;
-                    if (krbCredsProvider != null) {
-                        userName = dialog.getUserName();
-                        connection = getValidConnectionOptions(userName, false);
-                        if (connection == null) {
-                            return CheckConnectionState.CANCELLED;
-                        }
-                    } else if (isCertificateProvided) {
-                        userName = getUserNameFromCertificate(clientCertificates[0]);
-                        connection = getValidConnectionOptions(userName, true);
-                        if (connection != null && connection.getAuthType() != EAuthType.CERTIFICATE) {
-                            connection = null;//need other connection
-                        }
-                    }
-                    String stationName = context.getHttpConnectionOptions().getStationName();
-                    EAuthType authType = null;
-                    final boolean needForLoginDialog;
-                    if (userName == null || userName.isEmpty() || connection == null) {
-                        needForLoginDialog = true;
-                    } else {
-                        if (stationName == null || stationName.isEmpty()) {
-                            stationName = connection.getStationName();
-                        }
-                        authType = connection.getAuthType();
-                        needForLoginDialog
-                                = stationName == null || stationName.isEmpty();
-                        if (needForLoginDialog) {
-                            final String traceMessage
-                                    = messageProvider.translate("TraceMessage", "Station name was not defined in connection options. User must define value of this option.");
-                            getTracer().debug(String.format(traceMessage));
-                        }
-                    }
+                    String userName;
                     String password = null;
-                    if (needForLoginDialog) {
-                        if (dialog.execDialog() != DialogResult.ACCEPTED) {
-                            return CheckConnectionState.CANCELLED;
+                    String pwdHash1 = null;
+                    String pwdHash256 = null;
+                    try {
+                        if (krbCredsProvider != null) {
+                            userName = dialog.getUserName();
+                            connection = getValidConnectionOptions(userName, false);
+                            if (connection == null) {
+                                return CheckConnectionState.CANCELLED;
+                            }
+                        } else if (isCertificateProvided) {
+                            userName = context.getHttpConnectionOptions().getUserNameFromCertificate();
+                            connection = getValidConnectionOptions(userName, true);
+                            if (connection != null && connection.getAuthType() != EAuthType.CERTIFICATE) {
+                                connection = null;//need other connection
+                            }
+                        } else {
+                            userName = context.getHttpConnectionOptions().getUserName();
+                            password = connectFirstTime ? context.getHttpConnectionOptions().getPassword() : null;
+                            pwdHash1 = connectFirstTime ? context.getHttpConnectionOptions().getPwdHash1() : null;
+                            pwdHash256 = connectFirstTime ? context.getHttpConnectionOptions().getPwdHash256() : null;
+                            connection = getValidConnectionOptions(userName, true);
+                            if (connection != null && connection.getAuthType() != EAuthType.PASSWORD) {
+                                connection = null;
+                            }
+                            if (password==null && pwdHash1 == null && pwdHash256 == null){
+                                connection = null;
+                            }
                         }
-                        userName = dialog.getUserName();
-                        connection = getValidConnectionOptions(userName, false);
-                        if (connection == null) {
-                            continue;
+                        String stationName = context.getHttpConnectionOptions().getStationName();
+
+                        EAuthType authType = null;
+                        final boolean needForLoginDialog;
+                        if (userName == null || userName.isEmpty() || connection == null) {
+                            needForLoginDialog = true;
+                        } else {
+                            if (stationName == null || stationName.isEmpty()) {
+                                stationName = connection.getStationName();
+                            }
+                            authType = connection.getAuthType();
+                            needForLoginDialog
+                                    = stationName == null || stationName.isEmpty();
+                            if (needForLoginDialog) {
+                                final String traceMessage
+                                        = messageProvider.translate("TraceMessage", "Station name was not defined in connection options. User must define value of this option.");
+                                getTracer().debug(String.format(traceMessage));
+                            }
                         }
+                        if (needForLoginDialog) {
+                            if (dialog.execDialog() != DialogResult.ACCEPTED) {
+                                return CheckConnectionState.CANCELLED;
+                            }
+                            userName = dialog.getUserName();
+                            connection = getValidConnectionOptions(userName, false);
+                            if (connection == null) {
+                                continue;
+                            }
 
-                        authType = connection.getAuthType();
+                            authType = connection.getAuthType();
 
-                        password = dialog.getPassword();
-                        if (authType == EAuthType.PASSWORD && (password == null || password.isEmpty()) && WebServerRunParams.getIsDevelopmentMode()) {
-                            password = userName;
-                        }
+                            password = dialog.getPassword();
+                            if (authType == EAuthType.PASSWORD && (password == null || password.isEmpty()) && WebServerRunParams.getIsDevelopmentMode()) {
+                                password = userName;
+                            }
 
-                        if (password == null) {
-                            password = "";
-                        }
+                            if (password == null) {
+                                password = "";
+                            }
 
-                        setLanguage(dialog.getLanguage());
-                        stationName = dialog.getStationName();
+                            setLanguage(dialog.getLanguage());
+                            stationName = dialog.getStationName();
 
-                        final boolean isKerberosAuthRequired = krbOptions != null && krbOptions.isKerberosAuthRequired();
+                            final boolean isKerberosAuthRequired = krbOptions != null && krbOptions.isKerberosAuthRequired();
 
-                        if (isKerberosAuthRequired && authType != EAuthType.KERBEROS) {
-                            final String traceMessage
-                                    = getMessageProvider().translate("TraceMessage", "Kerberos authentication required but connection options contains another authentication type");
-                            getTracer().debug(traceMessage);
-                            final String title = getMessageProvider().translate("ExplorerMessage", "Can't establish connection");
-                            final String message = getMessageProvider().translate("ExplorerError", "Unable to identify the user");
-                            messageInformation(title, message);
-                            continue;
-                        } else if (authType == EAuthType.KERBEROS && krbCredsProvider == null) {
-                            if (krbOptions == null || krbOptions.getRemoteAuthScheme() != ERemoteKerberosAuthScheme.RADIX) {
-                                final String traceMessage;
-                                if (krbOptions == null) {
-                                    traceMessage
-                                            = getMessageProvider().translate("TraceMessage", "Kerberos authentication disabled but connection options contains kerberos authentication type");
-                                } else {
-                                    traceMessage
-                                            = getMessageProvider().translate("TraceMessage", "Transfer of user name and password is not allowed for kerberos authentication type");
-                                }
+                            if (isKerberosAuthRequired && authType != EAuthType.KERBEROS) {
+                                final String traceMessage
+                                        = getMessageProvider().translate("TraceMessage", "Kerberos authentication required but connection options contains another authentication type");
                                 getTracer().debug(traceMessage);
                                 final String title = getMessageProvider().translate("ExplorerMessage", "Can't establish connection");
                                 final String message = getMessageProvider().translate("ExplorerError", "Unable to identify the user");
                                 messageInformation(title, message);
                                 continue;
-                            }
-                            krbCredsProvider = new KrbClientCredentialsProvider(this, userName, password.toCharArray());
-                        } else if (authType == EAuthType.CERTIFICATE) {
+                            } else if (authType == EAuthType.KERBEROS && krbCredsProvider == null) {
+                                if (krbOptions == null || krbOptions.getRemoteAuthScheme() != ERemoteKerberosAuthScheme.RADIX) {
+                                    final String traceMessage;
+                                    if (krbOptions == null) {
+                                        traceMessage
+                                                = getMessageProvider().translate("TraceMessage", "Kerberos authentication disabled but connection options contains kerberos authentication type");
+                                    } else {
+                                        traceMessage
+                                                = getMessageProvider().translate("TraceMessage", "Transfer of user name and password is not allowed for kerberos authentication type");
+                                    }
+                                    getTracer().debug(traceMessage);
+                                    final String title = getMessageProvider().translate("ExplorerMessage", "Can't establish connection");
+                                    final String message = getMessageProvider().translate("ExplorerError", "Unable to identify the user");
+                                    messageInformation(title, message);
+                                    continue;
+                                }
+                                krbCredsProvider = new KrbClientCredentialsProvider(this, userName, password.toCharArray());
+                            } else if (authType == EAuthType.CERTIFICATE) {
 
-                            final boolean validCertificate
-                                    = isCertificateProvided && userName.equals(getUserNameFromCertificate(clientCertificates[0]));
-                            if (!validCertificate) {
-                                final String traceMessage
-                                        = getMessageProvider().translate("TraceMessage", "Certificate was not provided for user \"%1$s\"");
-                                getTracer().debug(String.format(traceMessage, userName));
-                                final String title = getMessageProvider().translate("ExplorerMessage", "Can't establish connection");
-                                final String message = getMessageProvider().translate("ExplorerError", "Unable to identify the user");
-                                messageInformation(title, message);
-                                continue;
-                            }
-                        }
-                    }
-                    setStatusBarLabel(getMessageProvider().translate("StatusBar", "Connecting..."));
-
-                    connection.setStationName(stationName);
-                    tracer.getProfile().setDefaultSeverity(connection.getEventSeverity());
-                    try {
-                        this.session = sessionFactory != null && test_mode ? sessionFactory.createSession(this) : new EasSession(this);
-                        if (stationName == null || stationName.isEmpty()) {
-                            stationName = connection.getStationName();
-                        }
-
-                        EasClient easClient = createEasClient(connection, stationName, connection.getSslOptions() != null);
-                        checkThreadState();
-                        final CreateSessionRs response;
-                        dialog.clear();
-                        if (krbCredsProvider == null) {
-                            if (authType == EAuthType.CERTIFICATE) {
-                                response
-                                        = session.open(easClient, stationName, clientCertificates, connection.getExplorerRootId(null));
-                            } else {
-                                response
-                                        = session.open(easClient, stationName, userName, password, EAuthType.PASSWORD, connection.getExplorerRootId(null));
+                                final boolean validCertificate
+                                        = isCertificateProvided && userName.equals(context.getHttpConnectionOptions().getUserNameFromCertificate());
+                                if (!validCertificate) {
+                                    final String traceMessage
+                                            = getMessageProvider().translate("TraceMessage", "Certificate was not provided for user \"%1$s\"");
+                                    getTracer().debug(String.format(traceMessage, userName));
+                                    final String title = getMessageProvider().translate("ExplorerMessage", "Can't establish connection");
+                                    final String message = getMessageProvider().translate("ExplorerError", "Unable to identify the user");
+                                    messageInformation(title, message);
+                                    continue;
+                                }
                             }
                         } else {
-                            final SpnegoGssTokenProvider gssProvider;
-                            if (krbCredsProvider.isDirectAuthentication() || transmitClientCertificates) {
-                                gssProvider = null;
-                            } else {
-                                gssProvider = new SpnegoGssTokenProvider(null, context, this);
-                            }
-                            final String spn = connection.getKerberosOptions().getServicePrincipalName();
-                            krbCredsProvider.setServicePrincipalName(spn);
-                            if (transmitClientCertificates) {
-                                response
-                                        = session.open(easClient, stationName, krbCredsProvider, gssProvider, connection.getExplorerRootId(null), clientCertificates);
-                            } else {
-                                response
-                                        = session.open(easClient, stationName, krbCredsProvider, gssProvider, connection.getExplorerRootId(null), null);
-                            }
+                            EIsoLanguage lang = localeManager.autoSelectLanguage(context.getHttpConnectionOptions(), connection);
+                            setLanguage(lang);
                         }
+                        setStatusBarLabel(getMessageProvider().translate("StatusBar", "Connecting..."));
 
-                        this.client = easClient;
-                        connection.setConnectedUserName(response.getUser());
+                        connection.setStationName(stationName);
+                        tracer.getProfile().setDefaultSeverity(connection.getEventSeverity());
+                        try {
+                            this.session = sessionFactory != null && test_mode ? sessionFactory.createSession(this) : new EasSession(this, responseNotificator);
+                            if (stationName == null || stationName.isEmpty()) {
+                                stationName = connection.getStationName();
+                            }
 
-                        setContextlessCommands(response.getContextlessCommands());
-                        setServerResources(response.getServerResources());
+                            EasClient easClient = createEasClient(connection, stationName, connection.getSslOptions() != null);
+                            checkThreadState();
+                            CreateSessionRs response = null;
+                            dialog.clear();
+                            for (int i=1; i<=3; i++){
+                                try{
+                                    if (krbCredsProvider == null) {
+                                        if (authType == EAuthType.CERTIFICATE) {
+                                            response
+                                                    = session.open(easClient, 
+                                                                           stationName, 
+                                                                           clientCertificates, 
+                                                                           connection.getExplorerRootId(null),
+                                                                           null,
+                                                                           false);
+                                        } else if (pwdHash1 != null && !pwdHash1.isEmpty() || pwdHash256 != null && !pwdHash256.isEmpty()) {
+                                           PasswordHash pwdHash = null;
+                                            if (pwdHash1 != null && !pwdHash1.isEmpty() && pwdHash256 != null && !pwdHash256.isEmpty()) {
+                                                int length = (pwdHash1.length() + pwdHash256.length())/2 + 2;
+                                                final byte[] pwdHashArray = new byte[length];
+                                                byte[] pwdHash1ByteArr = Hex.decode(pwdHash1);
+                                                pwdHashArray[0] = (byte)pwdHash1ByteArr.length;
+                                                System.arraycopy(pwdHash1ByteArr, 0, pwdHashArray, 1, pwdHash1ByteArr.length);
+                                                byte[] pwdHash256ByteArr = Hex.decode(pwdHash256);
+                                                pwdHashArray[pwdHash1ByteArr.length + 1] = (byte)pwdHash256ByteArr.length;
+                                                System.arraycopy(pwdHash256ByteArr, 0, pwdHashArray, pwdHash1ByteArr.length + 2, pwdHash256ByteArr.length);
+                                                pwdHash = PasswordHash.Factory.fromBytes(pwdHashArray);
+                                            } else if (pwdHash1 != null && !pwdHash1.isEmpty()) {
+                                                pwdHash = PasswordHash.Factory.fromBytes(Hex.decode(pwdHash1), PasswordHash.Algorithm.SHA1);
+                                            } else {
+                                                pwdHash = PasswordHash.Factory.fromBytes(Hex.decode(pwdHash256), PasswordHash.Algorithm.SHA256);
+                                            }
+                                            response = session.open(easClient, stationName, userName, pwdHash, connection.getExplorerRootId(null), null, false);
+                                        } else {
+                                            response
+                                                    = session.open(easClient, 
+                                                                           stationName, 
+                                                                           userName, 
+                                                                           password, 
+                                                                           EAuthType.PASSWORD, 
+                                                                           connection.getExplorerRootId(null),
+                                                                           null,
+                                                                           false);
+                                        }
+                                    } else {
+                                        final SpnegoGssTokenProvider gssProvider;
+                                        if (krbCredsProvider.isDirectAuthentication() || transmitClientCertificates) {
+                                            gssProvider = null;
+                                        } else {
+                                            gssProvider = new SpnegoGssTokenProvider(null, context, this);
+                                        }
+                                        final String spn = connection.getKerberosOptions().getServicePrincipalName();
+                                        krbCredsProvider.setServicePrincipalName(spn);
+                                        if (transmitClientCertificates) {
+                                            response
+                                                    = session.open(easClient, 
+                                                                           stationName, 
+                                                                           krbCredsProvider, 
+                                                                           gssProvider, 
+                                                                           connection.getExplorerRootId(null), 
+                                                                           clientCertificates,
+                                                                           null,
+                                                                           false);
+                                        } else {
+                                            response
+                                                    = session.open(easClient, 
+                                                                           stationName, 
+                                                                           krbCredsProvider, 
+                                                                           gssProvider, 
+                                                                           connection.getExplorerRootId(null), 
+                                                                           null,
+                                                                           null,
+                                                                           false);
+                                        }
+                                    }
+                                    break;
+                                }catch(UnsupportedDefinitionVersionError | NoSapsForCurrentVersion exception){
+                                    if (!processUnsupportedVersionException(exception)){
+                                        return CheckConnectionState.FAULT;
+                                    }
+                                }                            
+                            }
 
-                        final org.radixware.schemas.eas.TimeZone timeZone = response.getServerTimeZone();
-                        serverTimeZoneInfo = timeZone == null ? null : TimeZoneInfo.parse(timeZone);
-                        getConfigStore().endAllGroups();
-                        getConfigStore().syncDb(true);
+                            if (response==null){
+                                cleanup(false);
+                                return CheckConnectionState.FAULT;                            
+                            }
 
-                        getTracer().getBuffer().setMaxSize(getConfigStore().readInteger(SettingNames.SYSTEM + "_TRACE_MAX_SIZE", 500));
-                        final String traceProfile = context.getHttpConnectionOptions().getTraceProfile();
-                        if (traceProfile == null || traceProfile.isEmpty()) {
-                            getTracer().readProfileFromString((String) getConfigStore().value(SettingNames.SYSTEM + "_TRACE_PROFILE", getTraceProfile()));
-                        } else {
-                            getTracer().readProfileFromString(traceProfile);
-                        }
+                            this.client = easClient;
+                            connection.setConnectedUserName(response.getUser());
+                            setContextlessCommands(response.getContextlessCommands());
+                            setServerResources(response.getServerResources());
+                            productInstallationOptions = ProductInstallationOptions.loadOptions(response.getProductInstallationOptions());
 
-                        final List<ExplorerRoot> explorerRoots = ExplorerRoot.loadFromResponse(response.getExplorerRoots(), this);
+                            final org.radixware.schemas.eas.TimeZone timeZone = response.getServerTimeZone();
+                            serverTimeZoneInfo = timeZone == null ? null : TimeZoneInfo.parse(timeZone);
+                            getConfigStore().endAllGroups();
+                            for (int i=1; i<=3; i++){
+                                try{
+                                    getConfigStore().syncDb(true);
+                                    break;
+                                }catch(UnsupportedDefinitionVersionError exception){
+                                    if (!processUnsupportedVersionException(exception)){
+                                        return CheckConnectionState.FAULT;
+                                    }
+                                }
+                            }
 
-                        if (explorerRoots == null || explorerRoots.isEmpty()) {
-                            messageError(getMessageProvider().translate("ExplorerMessage", "Connection failed"),
-                                    getMessageProvider().translate("ExplorerMessage", "You have no rights to use the system"));
-                            cleanup(false);
-                            return CheckConnectionState.FAULT;
-                        } else {
 
-                            final IExplorerTree tree = getTreeManager().openTree(explorerRoots, rootPanel.getExplorerView());
+                            getTracer().getBuffer().setMaxSize(getConfigStore().readInteger(SettingNames.SYSTEM + "_TRACE_MAX_SIZE", 500));
+                            final String traceProfile = context.getHttpConnectionOptions().getTraceProfile();
+                            if (traceProfile == null || traceProfile.isEmpty()) {
+                                getTracer().readProfileFromString((String) getConfigStore().value(SettingNames.SYSTEM + "_TRACE_PROFILE", getTraceProfile()));
+                            } else {
+                                getTracer().readProfileFromString(traceProfile);
+                            }
 
-                            if (tree == null) {
+                            final List<ExplorerRoot> explorerRoots = ExplorerRoot.loadFromResponse(response.getExplorerRoots(), this);
+
+                            if (explorerRoots == null || explorerRoots.isEmpty()) {
+                                messageError(getMessageProvider().translate("ExplorerMessage", "Connection failed"),
+                                        getMessageProvider().translate("ExplorerMessage", "You have no rights to use the system"));
                                 cleanup(false);
                                 return CheckConnectionState.FAULT;
                             } else {
-                                final List<IExplorerTreeNode> rootNodes = tree.getRootNodes();
-                                final IExplorerTreeNode rootNode
-                                        = rootNodes == null || rootNodes.isEmpty() ? null : rootNodes.get(0);
-                                connected(response, rootNode);
-                                notifyConnected();
-                                return CheckConnectionState.DONE;
+                                IExplorerTree tree = null;
+                                for (int i=1; i<=3; i++){
+                                    try{
+                                        tree = getTreeManager().openTree(explorerRoots, rootPanel.getExplorerView(), null);
+                                        break;
+                                    }catch(UnsupportedDefinitionVersionError | NoSapsForCurrentVersion exception){
+                                        if (!processUnsupportedVersionException(exception)){
+                                            return CheckConnectionState.FAULT;
+                                        }                                    
+                                    }
+                                }                                
+
+                                if (tree == null) {
+                                    getTreeManager().closeAll(true);
+                                    rootPanel.getExplorerView().close();
+                                    cleanup(false);
+                                    return CheckConnectionState.FAULT;
+                                } else {
+                                    explorerRootsList = explorerRoots;
+                                    final List<IExplorerTreeNode> rootNodes = tree.getRootNodes();
+                                    final IExplorerTreeNode rootNode
+                                            = rootNodes == null || rootNodes.isEmpty() ? null : rootNodes.get(0);
+                                    connected(response, rootNode);
+                                    notifyConnected();
+                                    String entryPoint = connectFirstTime ? context.getHttpConnectionOptions().getEntryPoint() : null;
+                                    if (entryPoint != null && !entryPoint.isEmpty()) {
+                                        handleEntryPoint(entryPoint, context.getHttpConnectionOptions().getCustomParams());
+                                    }
+                                    return CheckConnectionState.DONE;
+                                }
+                            }
+
+                        } catch(CredentialsWasNotDefinedError error){
+                            treeManager.closeAll(true);
+                            RunParams.removeRestoringContextParam();
+                            cleanup(false);
+                            processException(error);
+                        }catch (WrongPasswordError error) {
+                            if (error.getLocalizedMessage() != null && !error.getLocalizedMessage().isEmpty()) {
+                                final String traceMessage =
+                                    getMessageProvider().translate("ExplorerMessage", "Unable to establish connection\n%1$s");
+                                getTracer().event(String.format(traceMessage, error.getLocalizedMessage()));
+                                messageError(getMessageProvider().translate("ExplorerMessage", "Connection Error"), error.getLocalizedMessage());
+                            }
+                            treeManager.closeAll(true);
+                            RunParams.removeRestoringContextParam();
+                            cleanup(false);
+                        } catch (AccessViolationError error){
+                        final String messageTitle = getMessageProvider().translate("ExplorerMessage", "Unable to Establish Connection");
+                        final String messageText =
+                            getMessageProvider().translate("ExplorerMessage", "You do not have permission to login. Please contact your system administrator.");
+                        messageError(messageTitle, messageText);                        
+                        treeManager.closeAll(true);
+                        RunParams.removeRestoringContextParam();
+                        cleanup(false);
+                        if (needForLoginDialog) {
+                            continue;
+                        } else {
+                            return CheckConnectionState.CANCELLED;
+                        }
+                        } catch (InterruptedException ex) {
+                            cleanup(false);
+                            if (needForLoginDialog) {
+                                continue;
+                            } else {
+                                return CheckConnectionState.CANCELLED;
+                            }
+                        } catch (ServiceClientException | IllegalUsageError | KeystoreControllerException | GeneralSecurityException ex) {
+                            cleanup(false);
+                            processException(ex);
+                            if (needForLoginDialog) {
+                                continue;
+                            } else {
+                                return CheckConnectionState.CANCELLED;
+                            }
+                        } catch (EasError error){
+                            final String reason;
+                            if (error instanceof IClientError){
+                                reason = ((IClientError)error).getLocalizedMessage(getMessageProvider());
+                            }else{
+                                reason = error.getLocalizedMessage();
+                            }
+                            final EEventSeverity severity;
+                            if (error.getSouceFault()==null){
+                                severity = EEventSeverity.ERROR;
+                            }else{
+                                severity = ClientException.getFaultSeverity(error.getSouceFault());
+                            }
+                            final String traceMessage =
+                                    getMessageProvider().translate("ExplorerMessage", "Failed to establish connection") + "\n" + reason;
+                            final String title;
+                            if (error instanceof IClientError){
+                                title = ((IClientError)error).getTitle(getMessageProvider());
+                            }else{
+                                title = getMessageProvider().translate("ExplorerMessage", "Connection Problem");
+                            }
+                            messageError(title, reason);
+                            getTracer().put(severity, traceMessage);
+                            treeManager.closeAll(true);
+                            RunParams.removeRestoringContextParam();
+                            cleanup(false);
+                            if (!needForLoginDialog) {
+                                return CheckConnectionState.CANCELLED;
                             }
                         }
-
-                    } catch (WrongPasswordError error) {
-                        if (error.getLocalizedMessage() != null && !error.getLocalizedMessage().isEmpty()) {
-                            final String traceMessage
-                                    = getMessageProvider().translate("ExplorerMessage", "Can't establish connection") + "\n" + error.getLocalizedMessage();
-                            getTracer().error(traceMessage);
-                            messageError(getMessageProvider().translate("ExplorerMessage", "Connection Error"), error.getLocalizedMessage());
+                        } finally {
+                            connectFirstTime = false;
                         }
-                        treeManager.closeAll(true);
-                        RunParams.removeRestoringContextParam();
-                        cleanup(false);
-                    } catch (InterruptedException ex) {
-                        cleanup(false);
-                        if (needForLoginDialog) {
-                            continue;
-                        } else {
-                            return CheckConnectionState.CANCELLED;
-                        }
-                    } catch (ServiceClientException | IllegalUsageError | KeystoreControllerException | GeneralSecurityException ex) {
-                        cleanup(false);
-                        processException(ex);
-                        if (needForLoginDialog) {
-                            continue;
-                        } else {
-                            return CheckConnectionState.CANCELLED;
-                        }
-                    } catch (EasError error){
-                        final String reason;
-                        if (error instanceof IClientError){
-                            reason = ((IClientError)error).getLocalizedMessage(getMessageProvider());
-                        }else{
-                            reason = error.getLocalizedMessage();
-                        }
-                        final EEventSeverity severity;
-                        if (error.getSouceFault()==null){
-                            severity = EEventSeverity.ERROR;
-                        }else{
-                            severity = ClientException.getFaultSeverity(error.getSouceFault());
-                        }
-                        final String traceMessage =
-                                getMessageProvider().translate("ExplorerMessage", "Can't establish connection") + "\n" + reason;
-                        final String title;
-                        if (error instanceof IClientError){
-                            title = ((IClientError)error).getTitle(getMessageProvider());
-                        }else{
-                            title = getMessageProvider().translate("ExplorerMessage", "Connection Problem");
-                        }
-                        messageError(title, reason);                        
-                        getTracer().put(severity, traceMessage);                        
-                        treeManager.closeAll(true);
-                        RunParams.removeRestoringContextParam();
-                        cleanup(false);
-                        if (!needForLoginDialog) {
-                            return CheckConnectionState.CANCELLED;
-                        }
-                    }
-                }
+            }
             } else {
                 return CheckConnectionState.DONE;
             }
@@ -1162,7 +1271,31 @@ public class WpsEnvironment implements IClientEnvironment {
             cleanup(false);
             processException(e);
             return CheckConnectionState.FAULT;
+        } catch(KerberosError er) {
+            cleanup(false);
+            processException(er);
+            context.setAfterError();
+            return CheckConnectionState.CANCELLED;
         }
+    }
+    
+    private boolean processUnsupportedVersionException(final Throwable exception){
+        final long requiredVersion;
+        if (exception instanceof UnsupportedDefinitionVersionError){
+            requiredVersion = ((UnsupportedDefinitionVersionError)exception).getRequiredVersion();
+        }else if (exception instanceof NoSapsForCurrentVersion){
+            requiredVersion = ((NoSapsForCurrentVersion)exception).getRequiredVersion();
+        }else{
+            cleanup(false);
+            return false;
+        }
+        if (canUpdateToVersion(requiredVersion)){
+            switchToVersion(requiredVersion);
+            return true;
+        }else{
+            cleanup(false);
+            return false;
+        }        
     }
 
     private KrbClientCredentialsProvider doBasicAuth(final WebServerRunParams.KrbWpsOptions options) {
@@ -1219,15 +1352,7 @@ public class WpsEnvironment implements IClientEnvironment {
         return connectionOptions;
     }
 
-    private String getUserNameFromCertificate(X509Certificate certificate) {
-        final String certAttr = WebServerRunParams.getCertAttrForUserName();
-        final Map<String, String> dn
-                = CertificateUtils.parseDistinguishedName(certificate.getSubjectDN().getName());
-        return dn.get(certAttr);
-    }
-
     private void connected(final CreateSessionRs response, final IExplorerTreeNode rootNode) {
-        connectAction.setEnabled(false);
         //connection.setConnectedUserName(response.getUser());
         final String mainWindowTitleTemplate = getMessageProvider().translate("MainWindow", "%s Explorer - Connection \"%s\", User \"%s\", Station \"%s\"");
         final String topLayerName = WpsApplication.getProductName();
@@ -1237,87 +1362,15 @@ public class WpsEnvironment implements IClientEnvironment {
         if (rootNode != null && rootNode.isValid()) {
             getMainWindow().setIcon(rootNode.getView().getIcon());
         }
-        if (!response.isSetCanChangePassword() || response.getCanChangePassword()) {
-            changePasswordAction.setVisible(true);
-        }
-        disconnectAction.setEnabled(true);
         if (traceDialog != null) {
             traceDialog.init();
         }
-        {            
-            final List<UIObject> children = statusBar.getItems();
-            TraceTrayItem traceTrayItem;
-            for (UIObject child : children) {
-                if (child instanceof TraceTrayItem) {
-                    traceTrayItem = ((TraceTrayItem) child);
-                    if (!traceTrayItem.isVisible()) {
-                        traceTrayItem.setVisible(true);
-                        traceTrayItem.setIcon(getApplication().getImageManager().getIcon(ClientIcon.TraceLevel.DEBUG));
-                    }
-                    break;
-                }
-            }
-        }
-        appearanceSettingsAction.setEnabled(true);
+        rootPanel.onConnected(response);
     }
 
-    private void connectAction() {
-        if (session == null) {
-            checkConnection();
-        }
-    }
-
-    private void disconnectAction() {
-        final String title = 
-            getMessageProvider().translate("ExplorerMessage", "Confirm to Disconnect");
-        final String message = 
-            getMessageProvider().translate("ExplorerMessage", "Do you really want to disconnect?");
-        if (messageConfirmation(title, message)){        
-            disconnect();
-        }
-    }
-
-    private void runAppearanceSettingsDialog() {
-        SettingsDialog dialog = new SettingsDialog(this);
-        dialog.execDialog();
-    }
-
-    private void changePasswordAction() {
-        ChangePasswordDialog dialog = new ChangePasswordDialog(this);
-        {
-            final String title = getMessageProvider().translate("ChangePasswordDialog", "Change Password for '%s' Account");
-            dialog.setTitle(String.format(title, getUserName()));
-        }
-        while (dialog.execDialog() == DialogResult.ACCEPTED) {
-            try {
-                getEasSession().changePassword(dialog.getOldPassword(), dialog.getNewPassword());
-                final String title = getMessageProvider().translate("ExplorerMessage", "Success!");
-                final String message = getMessageProvider().translate("ExplorerMessage", "Your password was successfully updated!");
-                messageInformation(title, message);
-                return;
-            } catch (InterruptedException ex) {
-            } catch (ServiceCallFault fault) {
-                final String title = getMessageProvider().translate("ChangePasswordDialog", "Can`t Change Password");
-                if (org.radixware.schemas.eas.ExceptionEnum.INVALID_PASSWORD.toString().equals(fault.getFaultString())) {
-                    final String message = getMessageProvider().translate("ChangePasswordDialog", "Current password is not correct");
-                    messageError(title, message);
-                } else {
-                    processException(title, fault);
-                    if (!ClientException.isSpecialFault(fault)) {
-                        return;
-                    }
-                }
-            } catch (ServiceClientException ex) {
-                processException(ex);
-            } finally {
-                dialog.clear();
-            }
-        }
-    }
-
-    private boolean disconnect() {
+    public boolean disconnect() {
         return disconnect(false);
-    }
+    }        
 
     private boolean disconnect(final boolean forced) {
         if (session == null) {
@@ -1330,27 +1383,9 @@ public class WpsEnvironment implements IClientEnvironment {
         if (treeManager.closeAll(forced)) {
             if (session.isBusy()) {
                 session.breakRequest();
-            } else {
-                synchronized (this) {
-                    if (settings != null && !forced) {
-                        try {
-                            settings.syncDb(false);
-                            settings.close();
-                            settings.endAllGroups();
-                        } catch (EasError error) {
-                            final String message = error.getMessage();
-                            if (message!=null && !message.isEmpty()){
-                                Logger.getLogger(WpsEnvironment.class.getName()).log(Level.INFO, "Unable to synchronize config store: {0}", message);
-                            }else{
-                                Logger.getLogger(WpsEnvironment.class.getName()).log(Level.INFO, "Unable to synchronize config store");
-                            }
-                        } catch (Throwable e) {
-                            Logger.getLogger(WpsEnvironment.class.getName()).log(Level.SEVERE, "Error on config store dispose", e);
-                        }
-                    }
-                }
+            } else if (!forced){
+                pushSettings();
             }
-            //getTraceDialog().clear();
             if (filterSettingsStorage != null) {
                 filterSettingsStorage.clear();
             }
@@ -1358,9 +1393,30 @@ public class WpsEnvironment implements IClientEnvironment {
             allowedResources = null;
             cleanup(false/*always close session*/);
             notifyDisconnected(forced);
+            settings.endAllGroups();
+            EnvironmentVariables.clearAll(this);
             return true;
         }
         return false;
+    }
+    
+    private void pushSettings(){
+        if (settings != null) {
+            try {
+                settings.syncDb(false);
+            } catch (EasError | AuthError error) {
+                final String message = error.getMessage();
+                if (message!=null && !message.isEmpty()){
+                    Logger.getLogger(WpsEnvironment.class.getName()).log(Level.INFO, "Unable to synchronize config store: {0}", message);
+                }else{
+                    Logger.getLogger(WpsEnvironment.class.getName()).log(Level.INFO, "Unable to synchronize config store");
+                }
+            } catch (HttpSessionTerminatedError e){
+                throw e;
+            } catch (Throwable e) {
+                Logger.getLogger(WpsEnvironment.class.getName()).log(Level.SEVERE, "Error on config store dispose", e);
+            }
+        }
     }
 
     private void cleanup(final boolean forced) {
@@ -1375,11 +1431,10 @@ public class WpsEnvironment implements IClientEnvironment {
         }
         if (connection != null) {
             connection.setConnectedUserName(null);
+            connection = null;
         }
-        connectAction.setEnabled(true);
-        disconnectAction.setEnabled(false);
-        changePasswordAction.setVisible(false);
-        appearanceSettingsAction.setEnabled(false);
+        setLanguage(defaultLanguage);
+        rootPanel.cleanup(forced);
         if (traceDialog != null) {
             traceDialog.clear();
         }
@@ -1402,6 +1457,11 @@ public class WpsEnvironment implements IClientEnvironment {
     public String getStationName() {
         return connection == null ? context.getHttpConnectionOptions().getStationName() : connection.getStationName();
     }
+
+    @Override
+    public String getConnectionName() {
+        return connection==null ? null : connection.getName();
+    }        
 
     @Override
     public TimeZoneInfo getServerTimeZoneInfo() {
@@ -1449,7 +1509,7 @@ public class WpsEnvironment implements IClientEnvironment {
                 showTraceAction.trigger();
             }
         }
-    }
+    }        
 
     @Override
     public final MessageProvider getMessageProvider() {
@@ -1488,7 +1548,7 @@ public class WpsEnvironment implements IClientEnvironment {
     public String getTraceProfile() {
         if (context.getHttpConnectionOptions().getTraceProfile() == null
                 || context.getHttpConnectionOptions().getTraceProfile().isEmpty()) {
-            return WebServerRunParams.getTraceProfile();
+            return context.getRunParams().getTraceProfile();
         } else {
             return context.getHttpConnectionOptions().getTraceProfile();
         }
@@ -1499,7 +1559,7 @@ public class WpsEnvironment implements IClientEnvironment {
     @Override
     public String getTraceFile() {
         if (traceFile == null) {
-            String traceDir = WebServerRunParams.getTraceDir();
+            String traceDir = context.getRunParams().getTraceDir();
             if (traceDir == null) {
                 traceFile = NO_TRACE_FILE;
             } else {
@@ -1539,6 +1599,21 @@ public class WpsEnvironment implements IClientEnvironment {
         if (e instanceof InterruptedException) {
             return;
         }
+        if (e instanceof HttpSessionTerminatedError){
+            throw (HttpSessionTerminatedError)e;            
+        }
+        for (Throwable err = e; err != null && err.getCause() != err; err = err.getCause()) {            
+            if (err instanceof UnsupportedDefinitionVersionError){
+                final UnsupportedDefinitionVersionError error = (UnsupportedDefinitionVersionError)err;
+                processUnsupportedVersionException(error.processQuiet(), error.getRequiredVersion());
+                return;                
+            }else if (err instanceof NoSapsForCurrentVersion) {
+                final NoSapsForCurrentVersion error = (NoSapsForCurrentVersion)err;
+                final boolean quiet = !RunParams.isDevelopmentMode();                
+                processUnsupportedVersionException(quiet, error.getRequiredVersion());
+                return;
+            }
+        }        
         final ExceptionMessage exceptionMessage = new ExceptionMessage(this, e);
         final String dialogTitle;
         if (title == null || title.isEmpty()) {
@@ -1560,11 +1635,34 @@ public class WpsEnvironment implements IClientEnvironment {
             disconnect(true);
         }
     }
+    
+    private void processUnsupportedVersionException(final boolean quiet, final long requiredVersion){
+        getDefManager().getAdsVersion().makeUnsupported();
+        if (inUnsupportedVersionProcess){
+            return;
+        }
+        inUnsupportedVersionProcess = true;
+        try{            
+            if (canUpdateToVersion(requiredVersion)){
+                final MessageProvider mp = getMessageProvider();
+                final String title = mp.translate("ExplorerMessage", "Confirm to Update Version");
+                final String message = mp.translate("ExplorerMessage",
+                    "Current version is no longer supported. It is impossible to continue work until updates will be installed.\n"
+                    + "Do you want to update now (all your unsaved data will be lost) ?");
+
+                if (quiet || messageConfirmation(title, message)) {
+                    switchToVersion(requiredVersion);
+                }
+            }
+        }finally{
+            inUnsupportedVersionProcess = false;
+        }
+    }
 
     @Override
     public void messageInformation(String title, String message) {
         final EnumSet<EDialogButtonType>  buttons = EnumSet.of(EDialogButtonType.CLOSE);
-        messageBox(title, message, EDialogIconType.INFORMATION, buttons);        
+        messageBox(title, message, EDialogIconType.INFORMATION, buttons);
     }
 
     @Override
@@ -1576,7 +1674,7 @@ public class WpsEnvironment implements IClientEnvironment {
     @Override
     public void messageError(String title, String message) {
         final EnumSet<EDialogButtonType>  buttons = EnumSet.of(EDialogButtonType.CLOSE);
-        messageBox(title, message, EDialogIconType.CRITICAL, buttons);    
+        messageBox(title, message, EDialogIconType.CRITICAL, buttons);
     }
 
     @Override
@@ -1632,9 +1730,9 @@ public class WpsEnvironment implements IClientEnvironment {
 
         final String windowTitle = ClientValueFormatter.capitalizeIfNecessary(this, title);
         try{
-            runInGuiThread(new MessageBoxTask(windowTitle, message, getDialogDisplayer(), detailsBuilder.toString(), trace));                
+            runInGuiThread(new MessageBoxTask(windowTitle, message, getDialogDisplayer(), detailsBuilder.toString(), trace));
         }catch(InterruptedException ex){
-            
+
         }catch(ExecutionException ex){
             getTracer().error(ex.getCause());
         }
@@ -1643,7 +1741,7 @@ public class WpsEnvironment implements IClientEnvironment {
     @Override
     public boolean messageConfirmation(final String title, final String message) {
         final EnumSet<EDialogButtonType>  buttons = EnumSet.of(EDialogButtonType.YES, EDialogButtonType.NO);
-        return messageBox(title, message, EDialogIconType.QUESTION, buttons) == EDialogButtonType.YES;        
+        return messageBox(title, message, EDialogIconType.QUESTION, buttons) == EDialogButtonType.YES;
     }
 
     @Override
@@ -1662,7 +1760,25 @@ public class WpsEnvironment implements IClientEnvironment {
 
     public Id selectExplorerRootId(final List<ExplorerRoot> explorerRoots) {
         if (connection != null) {
-            return explorerRoots == null ? connection.selectExplorerRootId() : connection.getExplorerRootId(explorerRoots);
+            if (explorerRoots != null) {
+                if (connectFirstTime) {
+                    String explorerRootIdStr = context.getHttpConnectionOptions().getExplorerRootId();
+                    if (explorerRootIdStr != null && !explorerRootIdStr.isEmpty()) {
+                        Id id = Id.Factory.loadFrom(explorerRootIdStr);
+                        for (ExplorerRoot explorerRoot : explorerRoots) {
+                            if (explorerRoot.getId().equals(id)) {
+                                return id;
+                            }
+                        }
+                        final String str = getMessageProvider().translate("ExplorerMessage", "Explorer root %1$s is not accessible");
+                        getTracer().warning(String.format(str, explorerRootIdStr));
+                        return connection.getExplorerRootId(explorerRoots);
+                    }
+                }
+                return connection.getExplorerRootId(explorerRoots);
+            } else {
+                return connection.selectExplorerRootId(explorerRootsList);
+            }
         }
         return null;
     }
@@ -1729,12 +1845,8 @@ public class WpsEnvironment implements IClientEnvironment {
     public ISqmlDefinitions getSqmlDefinitions() {
         synchronized (this) {
             if (sqmlDefinitions == null) {
-                try {
-                    sqmlDefinitions = new SqmlDefinitions(this, getDefManager().getRepository().getBranch());
-                } catch (IOException ex) {
-                    throw new DefinitionError("Can't init branch", ex);
-                }
-            }
+                sqmlDefinitions = SqmlDefinitionsLoader.getInstance().load(this);
+            }   
             return sqmlDefinitions;
         }
     }
@@ -1766,7 +1878,32 @@ public class WpsEnvironment implements IClientEnvironment {
     }
 
     public void sendFileToTerminal(String desc, File file, String mimeType, boolean open, boolean deleteOnDownload) {
-        rootPanel.requestDownload(desc, ((WpsApplication) getApplication()).registerFileResource(desc, file, mimeType, open, deleteOnDownload), open);
+        final String fileName;
+        if (mimeType==null){
+            fileName = desc;
+        }else{
+            EMimeType type;
+            try{
+                type = EMimeType.getForValue(mimeType);
+            }catch(NoConstItemWithSuchValueError error){
+                type = null;
+            }
+            if (type!=null 
+                && type!=EMimeType.ALL_SUPPORTED
+                && type!=EMimeType.ALL_FILES
+                && type.getExt()!=null
+                && !type.getExt().isEmpty()){
+                final String fileExt = "."+type.getExt();
+                if (desc.endsWith(fileExt)){
+                    fileName = desc;
+                }else{
+                    fileName = desc+fileExt;
+                }
+            }else{
+                fileName = desc;
+            }
+        }
+        rootPanel.requestDownload(desc, ((WpsApplication) getApplication()).registerFileResource(fileName, file, mimeType, open, deleteOnDownload), open);
     }
 
     public String registerResource(String desc, File file, String mimeType) {
@@ -1777,30 +1914,60 @@ public class WpsEnvironment implements IClientEnvironment {
         return "rwtext/file/" + ((WpsApplication) getApplication()).registerFileResource(desc, file, mimeType, false, false);
     }
 
-    private boolean canUpdateToNewVersion() {
-        if (WpsAdsVersion.isKernelModified()) {
-            final String title = getMessageProvider().translate("ExplorerMessage", "Can't Update Version");
-            final String message = getMessageProvider().translate("ExplorerMessage", "New version found. It is necessary to restart WEB Presentation Server to install this version.\nPlease contact your system administrator.");
+    private boolean canUpdateToVersion(final long version) {
+        final long currentVersion = getDefManager().getAdsVersion().getNumber();    
+        if (currentVersion!=version && WpsAdsVersion.isKernelModified()) {
+            final MessageProvider mp = getMessageProvider();
+            final String title = mp.translate("ExplorerMessage", "Version Mismatch");
+            final String messageTemplate = mp.translate("ExplorerMessage", "Web Presentation Server version (%1$s) does not correspond to  radix application server version (%2$s).\nPlease contact your system administrator.");
+            final String message = String.format(messageTemplate, String.valueOf(currentVersion), String.valueOf(version));
             messageInformation(title, message);
             return false;
         }
         return true;
     }
+    
+    public void checkForUpdates() {
+        if (getTreeManager() != null) {
+            try {
+                final AdsVersion version = getDefManager().getAdsVersion();
+                final Collection<Id> definitionIds = version.checkForUpdates(this);
+                final long newVersionNumber = version.getTargetVersionNumber();
+                if (newVersionNumber>-1) {
+                    if (canUpdateToVersion(newVersionNumber)) {
+                        final String title = getMessageProvider().translate("ExplorerMessage", "Confirm to Update Version");
+                        final String message = getMessageProvider().translate("ExplorerMessage", "New version found. Do you want to update now?");
+                        if (messageConfirmation(title, message)) {
+                            updateToVersion(definitionIds, newVersionNumber);
+                        }
+                    }
+                } else {
+                    final String message = getMessageProvider().translate("ExplorerMessage", "There are no updates available for web explorer");
+                    messageInformation(null, message);
+                }
+            } catch (CantUpdateVersionException ex) {
+                ex.showMessage(this);
+            }
+        }
+    }
 
-    public void updateToCurrentVersion() {
-        if (canUpdateToNewVersion()) {
+    public void switchToVersion(final long versionNumber) {        
+        final AdsVersion adsVersion = getDefManager().getAdsVersion();        
+        final long targetVersion = versionNumber>-1 ? versionNumber : adsVersion.getTargetVersionNumber();
+        if (canUpdateToVersion(targetVersion)) {
             IProgressHandle handle = getProgressHandleManager().newProgressHandle();
             try {
                 handle.startProgress(getMessageProvider().translate("ExplorerMessage", "Updating Version"), false);
-                updateToCurrentVersionImpl(getDefManager().getAdsVersion().checkForUpdates(this));
+                final Collection<Id> changedDefs = adsVersion.prepareSwitchVersion(this, versionNumber, true);
+                updateToVersion(changedDefs, versionNumber);
             } finally {
                 handle.finishProgress();
             }
         }
     }
 
-    private void updateToCurrentVersionImpl(final Collection<Id> changedDefs) {
-        if (updateVersionController.prepareNewVersion(changedDefs)) {
+    private void updateToVersion(final Collection<Id> changedDefs, final long versionNumber) {
+        if (updateVersionController.prepareNewVersion(changedDefs, versionNumber)) {
             updateVersionController.switchToNewVersion();
             if (treeManager != null && treeManager.isOpened()) {
                 treeManager.updateVersion(this.context.application.getCreateReason());
@@ -1837,7 +2004,7 @@ public class WpsEnvironment implements IClientEnvironment {
                     return null;
                 }
             }
-            final long softFileSizeLimitMb = WebServerRunParams.getUploadSoftLimitMb();
+            final long softFileSizeLimitMb = context.getRunParams().getUploadSoftLimitMb();
             if (softFileSizeLimitMb >= 0) {
                 final long softFileSizeLimit = softFileSizeLimitMb * 1024l * 1024l;
                 if (softFileSizeLimit < fileDescriptor.getFileSize()) {
@@ -1867,35 +2034,14 @@ public class WpsEnvironment implements IClientEnvironment {
         return this.rootPanel.getUploadURL(id, uuid);
     }
 
-    private void checkForUpdates() {
-        if (getTreeManager() != null) {
-            try {
-                final Collection<Id> definitionIds = getDefManager().getAdsVersion().checkForUpdates(this);
-                if (getDefManager().getAdsVersion().isNewVersionAvailable()) {
-                    if (canUpdateToNewVersion()) {
-                        final String title = getMessageProvider().translate("ExplorerMessage", "Confirm to Update Version");
-                        final String message = getMessageProvider().translate("ExplorerMessage", "New version found. Do you want to update now?");
-                        if (messageConfirmation(title, message)) {
-                            updateToCurrentVersionImpl(definitionIds);
-                        }
-                    }
-                } else {
-                    final String message = getMessageProvider().translate("ExplorerMessage", "There are no updates available for web explorer");
-                    messageInformation(null, message);
-                }
-            } catch (CantUpdateVersionException ex) {
-                ex.showMessage(this);
-            }
-        }
+    @Override
+    public IMainStatusBar getStatusBar() {
+        return rootPanel.getMainStatusBar();
     }
 
     @Override
-    public IMainStatusBar getStatusBar() {
-        return statusBar;
-    }        
-
-    @Override
     public String setStatusBarLabel(final String text) {
+        final IMainStatusBar statusBar = getStatusBar();
         if (statusBar==null){
             return null;
         }else{
@@ -1908,10 +2054,7 @@ public class WpsEnvironment implements IClientEnvironment {
     public void writeToCookies(final String name, final String value) {
         rootPanel.writeToCookies(name, value);
     }
-    private long lastPingTime = 0;
-    private static final long PING_PERIOD = 3 * 1000;
-    private boolean eventsBlocked = false;
-
+    
     void blockEvents() {
         eventsBlocked = true;
     }
@@ -1944,6 +2087,8 @@ public class WpsEnvironment implements IClientEnvironment {
         if (getApplication().isInGuiThread()){
             try{
                 return task.call();
+            }catch(HttpSessionTerminatedError ex){
+                throw ex;
             }catch(Exception ex){
                 throw new ExecutionException(ex);
             }
@@ -1956,7 +2101,7 @@ public class WpsEnvironment implements IClientEnvironment {
     @Override
     public void runInGuiThreadAsync(final Runnable task) {
         context.scheduleTask(task);
-    }        
+    }
 
     @Override
     public String signText(String text, X509Certificate certificate) throws SignatureException {
@@ -2000,6 +2145,10 @@ public class WpsEnvironment implements IClientEnvironment {
     public void removeConnectionListener(final ConnectionListener listener) {
         connectionListeners.remove(listener);
     }
+    
+    public WebServerRunParams getRunParams(){
+        return context.getRunParams();
+    }
 
     public long getSessionTimeOut() {
         return context.rqCheckDelay;
@@ -2008,4 +2157,46 @@ public class WpsEnvironment implements IClientEnvironment {
     public EWebBrowserEngineType getBrowserEngineType() {
         return context.getHttpConnectionOptions().getBrowserEngineType();
     }
+    
+    public LinkedHashMap<String, String> getVersionInfo() {
+        final LinkedHashMap<String, String> versions = new LinkedHashMap<>();
+        if (WpsEnvironment.class.getClassLoader() instanceof RadixClassLoader) {
+            final RadixClassLoader loader = getDefManager().getClassLoader();
+            List<LayerMeta> layers = loader.getRevisionMeta().getAllLayersSortedFromBottom();
+            String releaseNumber;
+            for (LayerMeta layer : layers) {
+                releaseNumber = layer.getReleaseNumber();
+                versions.put(layer.getUri(), releaseNumber == null ? "" : releaseNumber);
+            }
+        }
+        return versions;
+    }
+
+    @Override
+    public void writeConnectionParametersToXml(ConnectionParams xml) {
+    }
+
+    @Override
+    public ProductInstallationOptions getProductInstallationOptions() {
+        return productInstallationOptions;
+    }
+    
+    private void handleEntryPoint(String entryPoint, Map<String, String> customParams) {
+        List<IEntryPointHandler> entryList = new ArrayList<>();
+        for (IEntryPointHandler handler: ServiceLoader.load(IEntryPointHandler.class, getDefManager().getClassLoader())){
+            entryList.add(handler);
+        }
+        Collections.sort(entryList, new Comparator<IEntryPointHandler>() {
+            @Override
+            public int compare(IEntryPointHandler o1, IEntryPointHandler o2) {
+                return -Integer.compare(o1.getPriority(), o2.getPriority());
+            }
+        });
+        
+        for (IEntryPointHandler handler : entryList) {
+            if (handler.handle(new EntryPointRequest(this, entryPoint, customParams))) {
+                break;
+            }
+        }
+    }  
 }

@@ -20,13 +20,16 @@ import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportWidget;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsSubReport;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.utils.events.IRadixEventListener;
 import org.radixware.kernel.common.utils.events.RadixEvent;
 import org.radixware.kernel.common.utils.events.RadixEventSource;
+import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.selection.SelectionEvent;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
 
-public class AdsReportFormDiagram extends AbstractAdsReportWidget {
+ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
 
     public static final Color BG_COLOR = Color.LIGHT_GRAY;
     public static final Color FORM_COLOR = new Color(245, 245, 245);
@@ -36,11 +39,12 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
     private final Map<AdsReportBand, AdsReportBandWidget> band2Widget = new HashMap<>();
     private EIsoLanguage language;
     private AdsReportForm.Mode mode = AdsReportForm.Mode.GRAPHICS;
+    private final AdsReportSelectionWidget selectionWidget;
     private final AdsReportForm.IChangeListener changeListener = new AdsReportForm.IChangeListener() {
 
         @Override
         public void onEvent(AdsReportForm.ChangedEvent e) {
-            updateLater();
+           updateLater();
         }
     };
     private final IRadixEventListener<RadixEvent> eventListener = new IRadixEventListener<RadixEvent>() {
@@ -61,8 +65,9 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
             }
         });
     }
-    private final FormMouseListener mouseListener;
+    private final FormListener mouseListener;
     private final RadixEventSource<IRadixEventListener<RadixEvent>, RadixEvent> selectionSupport = new RadixEventSource<>();
+    private final RadixEventSource<IRadixEventListener<SelectionEvent>, SelectionEvent> innerSelectionSupport = new RadixEventSource<>();
 
     public AdsReportFormDiagram(AdsReportForm form, final AdsReportFormUndoRedo undoRedo) {
         super(null, form);
@@ -80,7 +85,10 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
         topLeftRuler.setLocation(0, Ruler.THICKNESS_PX);
 
         setOpaque(true);
-        mouseListener = new FormMouseListener(this);
+        selectionWidget = new AdsReportSelectionWidget();
+        add(selectionWidget);
+        selectionWidget.attachTo(this);
+        mouseListener = new FormListener(this);
         addMouseListener(mouseListener);
         form.addChangeListener(changeListener);
         AdsReportFormDiagramOptions.getDefault().addChangeListener(eventListener);
@@ -115,13 +123,13 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
 
             return result + MmUtils.mm2px(form.getMargin().getBottomMm());
         } else {
-            int result = Ruler.THICKNESS_PX + TxtUtils.rows2Px(form.getMargin().getTopRows());
+            int result = Ruler.THICKNESS_PX + TxtUtils.rows2Px(form.getMarginTxt().getTopRows());
 
             for (AdsReportBand band : form.getBands()) {
                 result += calcBandWidgetHeightPx(band);
             }
 
-            return result + TxtUtils.rows2Px(form.getMargin().getBottomRows());
+            return result + TxtUtils.rows2Px(form.getMarginTxt().getBottomRows());
         }
     }
 
@@ -147,10 +155,10 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
             bottomLeftRuler.setLocation(0, getHeight() - bottomLeftRulerHeightPx);
             bottomLeftRuler.setSize(Ruler.THICKNESS_PX, bottomLeftRulerHeightPx);
         } else {
-            final int topLeftRulerHeightPx = TxtUtils.rows2Px(form.getMargin().getTopRows());
+            final int topLeftRulerHeightPx = TxtUtils.rows2Px(form.getMarginTxt().getTopRows());
             topLeftRuler.setSize(Ruler.THICKNESS_PX, topLeftRulerHeightPx - 1);
 
-            final int bottomLeftRulerHeightPx = TxtUtils.rows2Px(form.getMargin().getBottomRows());
+            final int bottomLeftRulerHeightPx = TxtUtils.rows2Px(form.getMarginTxt().getBottomRows());
             bottomLeftRuler.setLocation(0, getHeight() - bottomLeftRulerHeightPx);
             bottomLeftRuler.setSize(Ruler.THICKNESS_PX, bottomLeftRulerHeightPx);
         }
@@ -176,10 +184,10 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
         for (AdsReportBand band : new HashSet<>(band2Widget.keySet())) {
             if (!bands.contains(band)) {
                 final AdsReportBandWidget bandWidget = band2Widget.remove(band);
-                remove(bandWidget);
                 if (bandWidget.isSelected()) {
-                    fireSelectionChanged();
+                    fireSelectionChanged(new SelectionEvent(bandWidget, false));
                 }
+                remove(bandWidget);
             }
         }
     }
@@ -199,7 +207,7 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
         }
     }
 
-      private void updateBandWidgets() {
+    private void updateBandWidgets() {
         int widthPx = calcWidthPx();
         if (mode == AdsReportForm.Mode.GRAPHICS) {
             int bandTopPx = Ruler.THICKNESS_PX + MmUtils.mm2px(form.getMargin().getTopMm());
@@ -215,7 +223,7 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
                 bandTopPx += bandWidgetHeightPx;
             }
         } else {
-            int bandTopPx = Ruler.THICKNESS_PX + TxtUtils.rows2Px(form.getMargin().getTopRows());
+            int bandTopPx = Ruler.THICKNESS_PX + TxtUtils.rows2Px(form.getMarginTxt().getTopRows());
 
             for (AdsReportBand band : form.getBands()) {
                 final AdsReportBandWidget bandWidget = findOrCreateBandWidget(band);
@@ -234,18 +242,26 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
         update();
 
         for (RadixObject target = openInfo.getTarget(); target != null; target = target.getContainer()) {
-            if (target instanceof AdsReportCell) {
-                final AdsReportCell cell = (AdsReportCell) target;
+            if (target instanceof AdsReportWidget) {
+                final AdsReportWidget cell = (AdsReportWidget) target;
                 final AdsReportBand band = cell.getOwnerBand();
                 final AdsReportBandWidget bandWidget = findBandWidget(band);
                 final AdsReportSelectableWidget cellWidget = bandWidget.findCellWidget(cell);
-                AdsReportWidgetUtils.selectCell(cellWidget);
+                fireSelectionChanged(new SelectionEvent(cellWidget, true));
                 break;
             }
             if (target instanceof AdsReportBand) {
                 final AdsReportBand band = (AdsReportBand) target;
                 final AdsReportBandWidget bandWidget = findBandWidget(band);
-                AdsReportWidgetUtils.selectBand(bandWidget);
+                fireSelectionChanged(new SelectionEvent(bandWidget, true));
+                break;
+            }
+            if (target instanceof AdsSubReport){
+                final AdsSubReport subReport = (AdsSubReport) target;
+                final AdsReportBand band = subReport.getOwnerBand();
+                final AdsReportBandWidget bandWidget = findBandWidget(band);
+                final AdsSubReportWidget subReportWidget = bandWidget.findSubReportWidget(subReport);
+                fireSelectionChanged(new SelectionEvent(subReportWidget, true));
                 break;
             }
         }
@@ -262,7 +278,7 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
         removeOldBandWidgets();
         updateBandWidgets();
     }
-
+    
     private void paintBackground(Graphics g) {
         g.setColor(BG_COLOR);
         g.fillRect(0, 0, getWidth(), getHeight());
@@ -304,42 +320,82 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
     public void addSelectionListener(IRadixEventListener<RadixEvent> listener) {
         selectionSupport.addEventListener(listener);
     }
-
+    
     @Override
-    protected void fireSelectionChanged() {
-        selectionSupport.fireEvent(new RadixEvent());
+    protected void fireSelectionChanged(SelectionEvent event) {
+        //selected and unselected widgets
+        innerSelectionSupport.fireEvent(event);
+        //fire all changes
+        selectionSupport.fireEvent(event);
     }
 
-    public List<RadixObject> getSelectedObjects() {
-        final List<RadixObject> result = new ArrayList<>();
-        for (AdsReportBandWidget bandWidget : getBandWidgets()) {
-            if (bandWidget.isSelected()) {
-                result.addAll(getSelectedCells(bandWidget.bandSubWidget));
+    protected void addWidgetSelectionListener(IRadixEventListener<SelectionEvent> listener) {
+        innerSelectionSupport.addEventListener(listener);
+    }
+    
+    protected void removeWidgetSelectionListener(IRadixEventListener<SelectionEvent> listener) {
+        innerSelectionSupport.removeEventListener(listener);
+    }
+    
+    protected void attachToSelectionWidget(AbstractAdsReportWidget widget) {
+        selectionWidget.attachTo(widget);
+    }
+    
+    protected void detachFromSelectionWidget(AbstractAdsReportWidget widget) {
+        selectionWidget.detachFrom(widget);
+    }
+    
+    public void setSelectedObjects(List<RadixObject> objects){
+        fireSelectionChanged(new SelectionEvent(this, true));
+        if (objects == null || objects.isEmpty() || (objects.size() == 1 && objects.contains(getForm()))){
+            return;
+        }
+        for (RadixObject object : objects){
+            AbstractAdsReportWidget widget = findWidget((RadixObject) object);
+            if (widget instanceof AdsReportAbstractSelectableWidget){
+                AdsReportAbstractSelectableWidget selectableWidget = (AdsReportAbstractSelectableWidget) widget;
+                fireSelectionChanged(new SelectionEvent(selectableWidget, objects.size() > 1, selectableWidget.isSelected()));
+            }
+        }
+    }
 
-                for (AdsSubReportWidget subReportWidget : bandWidget.getSubReportWidgets()) {
-                    if (subReportWidget.isSelected()) {
-                        result.add(subReportWidget.getSubReport());
-                    }
-                }
-                if (result.isEmpty()) {
-                    result.add((AdsReportBand) bandWidget.getReportWidgetContainer());
+    public List<AdsReportAbstractSelectableWidget> getSelectedWidgets() {
+        final List<AdsReportAbstractSelectableWidget> result = new ArrayList<>();
+        for (AdsReportBandWidget bandWidget : getBandWidgets()) {
+            result.addAll(getSelectedCellWidgets(bandWidget.bandSubWidget));
+
+            for (AdsSubReportWidget subReportWidget : bandWidget.getSubReportWidgets()) {
+                if (subReportWidget.isSelected()) {
+                    result.add(subReportWidget);
                 }
             }
+            if (bandWidget.isSelected()) {
+                result.add(bandWidget);
+            }
+        }
+        return result;
+    }
+    
+    public List<RadixObject> getSelectedObjects() {
+        final List<RadixObject> result = new ArrayList<>();
+        List<AdsReportAbstractSelectableWidget> widgets = getSelectedWidgets();
+        for (AdsReportAbstractSelectableWidget widget : widgets){
+            result.add(widget.getRadixObject());
         }
         if (result.isEmpty()) {
             result.add(form);
         }
         return result;
     }
-
-    public List<RadixObject> getSelectedCells(AdsReportBaseContainer subBandWidget) {
-        final List<RadixObject> result = new ArrayList<>();
+    
+    protected List<AdsReportAbstractSelectableWidget> getSelectedCellWidgets(AdsReportBaseContainer subBandWidget) {
+        final List<AdsReportAbstractSelectableWidget> result = new ArrayList<>();
         for (AdsReportSelectableWidget cellWidget : subBandWidget.getCellWidgets()) {
             if (cellWidget.isSelected()) {
-                result.add(cellWidget.getCell());
+                result.add(cellWidget);
             }
             if (cellWidget.getCell().isReportContainer()) {
-                result.addAll(getSelectedCells((AdsReportBaseContainer) cellWidget));
+                result.addAll(getSelectedCellWidgets((AdsReportBaseContainer) cellWidget));
             }
         }
         return result;
@@ -354,9 +410,6 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
     }
 
     public void setMode(AdsReportForm.Mode mode) {
-        if (this.form != null) {
-            this.form.convertToTextMode();
-        }
         this.mode = mode;
         this.form.setMode(mode);
     }
@@ -367,5 +420,42 @@ public class AdsReportFormDiagram extends AbstractAdsReportWidget {
 
     public AdsReportFormUndoRedo getUndoRedo() {
         return undoRedo;
+    }
+    
+    public AdsReportForm getForm(){
+        return form;
+    }
+    
+    public AbstractAdsReportWidget findWidget(RadixObject radixObject) {
+        if (radixObject instanceof AdsReportForm) {
+            return this;
+        }
+
+        if (radixObject instanceof AdsReportWidget) {
+            final AdsReportWidget cell = (AdsReportWidget) radixObject;
+            final AdsReportBand band = cell.getOwnerBand();
+            final AdsReportBandWidget bandWidget = findBandWidget(band);
+            final AdsReportSelectableWidget cellWidget = bandWidget.findCellWidget(cell);
+            return cellWidget;
+        }
+        if (radixObject instanceof AdsReportBand) {
+            final AdsReportBand band = (AdsReportBand) radixObject;
+            final AdsReportBandWidget bandWidget = findBandWidget(band);
+            return bandWidget;
+        }
+        if (radixObject instanceof AdsSubReport) {
+            final AdsSubReport subReport = (AdsSubReport) radixObject;
+            final AdsReportBand band = subReport.getOwnerBand();
+            final AdsReportBandWidget bandWidget = findBandWidget(band);
+            final AdsSubReportWidget subReportWidget = bandWidget.findSubReportWidget(subReport);
+            return subReportWidget;
+        }
+
+        return null;
+    }
+
+    @Override
+    public RadixObject getRadixObject() {
+        return form;
     }
 }

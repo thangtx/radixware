@@ -114,11 +114,7 @@ public class AdsDefinitionScope extends ClassScope implements IAdsScope {
         FieldDeclaration[] fields = adsContext().fields;
         if (fields != null) {
             Java2JmlConverter converter = new Java2JmlConverter(((AdsTypeDeclaration) this.referenceContext()).locator);
-            for (int i = 0; i < fields.length; i++) {
-                if (!(fields[i] instanceof JMLFieldDeclaration)) {
-                    fields[i] = (FieldDeclaration) converter.convertToJML(fields[i], adsContext().initializerScope);
-                }
-            }
+            converter.convertFields(fields, adsContext().initializerScope);
         }
         super.buildFields();
     }
@@ -195,30 +191,7 @@ public class AdsDefinitionScope extends ClassScope implements IAdsScope {
 
         final Java2JmlConverter converter = new Java2JmlConverter(locator);
 
-        if (methodDecl.thrownExceptions != null) {
-            converter.convertToJML(methodDecl.thrownExceptions, scope);
-        }
-        if (methodDecl.annotations != null) {
-            converter.convertToJML(methodDecl.annotations, scope);
-        }
-        if (methodDecl.arguments != null) {
-            converter.convertToJML(methodDecl.arguments, scope);
-        }
-        if (methodDecl instanceof MethodDeclaration) {
-            if (((MethodDeclaration) methodDecl).typeParameters != null) {
-                converter.convertToJML(((MethodDeclaration) methodDecl).typeParameters, scope);
-            }
-        }
-        if (methodDecl instanceof ConstructorDeclaration) {
-            ConstructorDeclaration init = (ConstructorDeclaration) methodDecl;
-            if (init.constructorCall != null) {
-                init.constructorCall = (ExplicitConstructorCall) converter.convertToJML(init.constructorCall, scope);
-            }
-        }
-
-        if (methodDecl.statements != null) {
-            converter.convertToJML(methodDecl.statements, scope);
-        }
+        converter.convertMethod(methodDecl, scope);
         return scope.createMethod(methodDecl);
     }
 

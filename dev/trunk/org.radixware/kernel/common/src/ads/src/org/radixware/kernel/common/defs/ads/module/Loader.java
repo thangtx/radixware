@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.ads.module;
 
 import java.io.File;
@@ -35,6 +34,8 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.AdsProcedureClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsStatementClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
 import org.radixware.kernel.common.defs.ads.command.AdsContextlessCommandDef;
+import org.radixware.kernel.common.defs.ads.doc.AdsDocMapDef;
+import org.radixware.kernel.common.defs.ads.doc.AdsDocTopicDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.explorerItems.AdsParagraphExplorerItemDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
@@ -59,7 +60,6 @@ import org.radixware.kernel.common.upgrade.Upgrader;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.schemas.adsdef.AdsDefinitionDocument;
 import org.radixware.schemas.adsdef.ClassDefinition;
-
 
 public class Loader {
 
@@ -123,29 +123,33 @@ public class Loader {
     }
 
     static AdsDefinition loadFromRepository(AdsDefinition result, IRepositoryAdsDefinition repository, final File file, boolean isUserModule, boolean fromAPI) throws IOException, XmlException {
-        long fileTime = (file != null ? file.lastModified() : 0L);
+        try {
+            long fileTime = (file != null ? file.lastModified() : 0L);
 
-        final XmlObject xmlObject = Upgrader.loadFromRepository(repository);
-        final AdsDefinitionDocument xDoc = (AdsDefinitionDocument) xmlObject.changeType(AdsDefinitionDocument.type);
-        if (result == null) {
-            result = loadFrom(xDoc, isUserModule, fromAPI);
-            result.setFileLastModifiedTime(fileTime);
-        } else {
-            if (result instanceof AdsLocalizingBundleDef && xDoc.getAdsDefinition() != null && xDoc.getAdsDefinition().isSetAdsLocalizingBundleDefinition()) {
-                ((AdsLocalizingBundleDef) result).loadStrings(xDoc.getAdsDefinition().getAdsLocalizingBundleDefinition());
-                if (result.getFileLastModifiedTime() < fileTime) {
-                    result.setFileLastModifiedTime(fileTime);
+            final XmlObject xmlObject = Upgrader.loadFromRepository(repository);
+            final AdsDefinitionDocument xDoc = (AdsDefinitionDocument) xmlObject.changeType(AdsDefinitionDocument.type);
+            if (result == null) {
+                result = loadFrom(xDoc, isUserModule, fromAPI);
+                result.setFileLastModifiedTime(fileTime);
+            } else {
+                if (result instanceof AdsLocalizingBundleDef && xDoc.getAdsDefinition() != null && xDoc.getAdsDefinition().isSetAdsLocalizingBundleDefinition()) {
+                    ((AdsLocalizingBundleDef) result).loadStrings(xDoc.getAdsDefinition().getAdsLocalizingBundleDefinition());
+                    if (result.getFileLastModifiedTime() < fileTime) {
+                        result.setFileLastModifiedTime(fileTime);
+                    }
                 }
             }
-        }
-        if (file != null/* && !(result instanceof AdsLocalizingBundleDef)*/) {
-            final Id defId = result.getId();
-            final Id idFromFile = AdsDefinition.fileName2DefinitionId(file);
-            if (!Utils.equals(defId, idFromFile)) {
-                throw new DefinitionError("Definition identifier '" + String.valueOf(defId) + "' must be equal to its file '" + file.getName() + "'.");
+            if (file != null/* && !(result instanceof AdsLocalizingBundleDef)*/) {
+                final Id defId = result.getId();
+                final Id idFromFile = AdsDefinition.fileName2DefinitionId(file);
+                if (!Utils.equals(defId, idFromFile)) {
+                    throw new DefinitionError("Definition identifier '" + String.valueOf(defId) + "' must be equal to its file '" + file.getName() + "'.");
+                }
             }
+            return result;
+        } catch (Throwable t) {
+            throw new LoadDefFromFileExcepion(file, t);
         }
-        return result;
     }
 
     private static final AdsDefinition loadFrom(org.radixware.schemas.adsdef.AdsDefinitionDocument xDoc, boolean isUserModuleContext, boolean fromAPI) {
@@ -257,6 +261,10 @@ public class Loader {
                 result = AdsRwtCustomPropEditorDef.Factory.loadFrom(xDefRoot.getAdsWebCustomPropEditorDefinition());
             } else if (xDefRoot.isSetAdsWebCustomWidgetDefinition()) {
                 result = AdsRwtCustomWidgetDef.Factory.loadFrom(xDefRoot.getAdsWebCustomWidgetDefinition());
+            } else if (xDefRoot.isSetAdsDocumentationTopicDefinition()) {
+                result = AdsDocTopicDef.Factory.loadFrom(xDefRoot.getAdsDocumentationTopicDefinition());
+            } else if (xDefRoot.isSetAdsDocumentationMapDefinition()) {
+                result = AdsDocMapDef.Factory.loadFrom(xDefRoot.getAdsDocumentationMapDefinition());
             } else {
                 throw new DefinitionError("Unsupported definition format");
             }
@@ -268,5 +276,33 @@ public class Loader {
         }
 
         return result;
+    }
+
+    public static class LoadDefFromFileExcepion extends IOException {
+
+        private final File file;
+
+        public LoadDefFromFileExcepion(File file) {
+            this.file = file;
+        }
+
+        public LoadDefFromFileExcepion(File file, String message) {
+            super(message);
+            this.file = file;
+        }
+
+        public LoadDefFromFileExcepion(File file, String message, Throwable cause) {
+            super(message, cause);
+            this.file = file;
+        }
+
+        public LoadDefFromFileExcepion(File file, Throwable cause) {
+            super(cause);
+            this.file = file;
+        }
+
+        public File getFile() {
+            return file;
+        }
     }
 }

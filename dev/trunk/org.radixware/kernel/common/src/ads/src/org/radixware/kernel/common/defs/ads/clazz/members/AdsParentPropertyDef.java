@@ -24,6 +24,7 @@ import org.radixware.kernel.common.defs.ads.clazz.AdsPropertyGroup;
 import org.radixware.kernel.common.defs.ads.type.AdsClassType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
+import org.radixware.kernel.common.defs.localization.LocalizedDescribableRef;
 import org.radixware.kernel.common.enums.EPropNature;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EValType;
@@ -139,6 +140,9 @@ public class AdsParentPropertyDef extends AdsTablePropertyDef {
         public AdsPropertyDef findOriginalProperty(List<AdsPropertyDef> pathItems, IProblemHandler problemHandler) {
             if (originalPropertyId != null && parentPath != null && parentPath.parentRefIds != null) {
                 AdsClassDef clazz = getOwnerClass();
+                if (clazz == null) {
+                    return null;
+                }
                 for (Id id : parentPath.parentRefIds) {
                     AdsPropertyDef refProp = clazz.getProperties().findById(id, EScope.ALL).get();
                     if (refProp != null) {
@@ -327,14 +331,13 @@ public class AdsParentPropertyDef extends AdsTablePropertyDef {
     }
     
     @Override
-    public Definition getDescriptionLocation(){
-        Definition owner = super.getDescriptionLocation();
-        if (isDescriptionInherited() && owner == this){
-            if (!isOverride() && !isOverwrite()){
-                AdsPropertyDef property = getParentInfo().findOriginalProperty();
-                if (property != null){
-                    return property;
-                }
+    public Definition getDescriptionLocation(boolean inherited){
+        Definition owner = super.getDescriptionLocation(inherited);
+        if (inherited && owner == this) {
+            AdsPropertyDef property = getParentInfo().findOriginalProperty();
+            if (property != null && !property.isDescriptionInherited()) {
+                describableRef = new LocalizedDescribableRef(property);
+                return property;
             }
         }
         return owner;

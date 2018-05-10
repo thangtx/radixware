@@ -29,26 +29,35 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.RunParams;
+import org.radixware.kernel.common.enums.EFileDialogOpenMode;
 import org.radixware.kernel.common.client.dialogs.IFileDialogSettings;
 import org.radixware.kernel.common.client.editors.property.PropEditorController;
 import org.radixware.kernel.common.client.editors.property.PropEditorOptions;
 import org.radixware.kernel.common.client.editors.property.PropertyProxy;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
+import org.radixware.kernel.common.client.errors.UnsupportedDefinitionVersionError;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.models.items.ModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.models.items.properties.SimpleProperty;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
+import org.radixware.kernel.common.client.utils.ValueConverter;
 import org.radixware.kernel.common.client.views.IPropEditor;
 import org.radixware.kernel.common.client.views.IPropertyStorePossibility;
 import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.client.widgets.ICommandToolButton;
+import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EMimeType;
 import org.radixware.kernel.common.enums.EPropertyValueStorePossibility;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.explorer.env.Application;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.widgets.ExplorerWidget;
 import org.radixware.kernel.explorer.widgets.IExplorerModelWidget;
 
@@ -98,6 +107,7 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
     final public Signal0 focused = new Signal0();
     final public Signal0 unfocused = new Signal0();
     private boolean focusOutEventScheduled;
+    private boolean preparedForClear;
     private MouseButtonHandler mouseButtonHandler;
     protected final PropEditorController controller;
     protected final QEventFilter focusListener = new QEventFilter(this){
@@ -134,18 +144,19 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
         @Override
         @SuppressWarnings("unchecked")
         public void writePropertyValue(final Object value) {
-            IFileDialogSettings settings = property.getFileDialogSettings(IFileDialogSettings.EFileDialogOpenMode.SAVE);            
-            final EMimeType type = settings.getMimeType();
+            IFileDialogSettings settings = property.getFileDialogSettings(EFileDialogOpenMode.SAVE);            
+            final EnumSet<EMimeType> types = settings.getMimeTypes();
             final String fileFilter;
-            if (type!=null){
-                final StringBuilder mimeTypeBuilder = new StringBuilder();
-                mimeTypeBuilder.append(type.getName().toUpperCase());
-                mimeTypeBuilder.append("  (*.").append(type.getExt()).append(");; ");
-                mimeTypeBuilder.append(getEnvironment().getMessageProvider().translate("PropertyEditor", "All Files"));
-                mimeTypeBuilder.append("(*.*)");
-                fileFilter = mimeTypeBuilder.toString();
+            if (types==null || types.isEmpty()){
+                fileFilter = null;
             }else{
-                fileFilter = "";
+                final StringBuilder mimeTypeBuilder = new StringBuilder(WidgetUtils.getQtFileDialogFilter(types,getEnvironment().getMessageProvider()));
+                if (!types.contains(EMimeType.ALL_FILES)){
+                    mimeTypeBuilder.append(";;");
+                    mimeTypeBuilder.append(getEnvironment().getMessageProvider().translate("PropertyEditor", "All Files"));
+                    mimeTypeBuilder.append(" (*.*)");
+                }
+                fileFilter = mimeTypeBuilder.toString();                
             }
             final QFileDialog dialog = 
                 new QFileDialog(null, settings.getFileDialogTitle(), settings.getInitialPath(), fileFilter);
@@ -192,18 +203,9 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
 
         @Override
         public Object readPropertyValue(InputStream stream) {
-            IFileDialogSettings settings = property.getFileDialogSettings(IFileDialogSettings.EFileDialogOpenMode.LOAD);
-            EMimeType type = settings.getMimeType();
+            IFileDialogSettings settings = property.getFileDialogSettings(EFileDialogOpenMode.LOAD);            
             final Object currentValue = property.getValueObject();
-            final String fileFilter;
-            if (type != null) {
-                final StringBuilder mimeTypeBuilder = new StringBuilder();
-                mimeTypeBuilder.append(type.getName().toLowerCase());
-                mimeTypeBuilder.append("  (*.").append(type.getExt()).append(')');
-                fileFilter = mimeTypeBuilder.toString();
-            }else{
-                fileFilter = "";
-            }
+            final String fileFilter = WidgetUtils.getQtFileDialogFilter(settings.getMimeTypes(),getEnvironment().getMessageProvider());
             final QFileDialog dialog = 
                 new QFileDialog(null, settings.getFileDialogTitle(), settings.getInitialPath(), fileFilter);
             dialog.setFileMode(QFileDialog.FileMode.ExistingFile);
@@ -264,6 +266,7 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
     
     void setProperty(final Property property) {
         setPropertyImpl(property);
+        preparedForClear = false;
     }
 
     private void setPropertyImpl(final Property property) {
@@ -298,32 +301,20 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
             controller.setPropertyStorePossibility(null);
         }
     }
-
+    
+    @SuppressWarnings("unchecked")//invalid java warning on controller.getStandardButtons() call
     protected final void addStandardButtons() {
-        final IButton ownValBtn = controller.getOwnValButton();
-        if (ownValBtn != null) {
-            addButton(ownValBtn);
+        final List<IButton> buttons = controller.getStandardButtons();
+        for (IButton button: buttons){
+            addButton(button);
         }
-        final IButton customDlgBtn = controller.getCustomDialogButton();
-        if (customDlgBtn != null) {
-            addButton(customDlgBtn);
-        }
-        if (getProperty() instanceof SimpleProperty) {
-            final IButton loadFromFileBtn = controller.getLoadFromFileButton();
-            if (loadFromFileBtn != null) {
-                addButton(loadFromFileBtn);
-            }
-            final IButton saveToFileButton = controller.getSaveToFileButton();
-            if (saveToFileButton != null) {
-                addButton(saveToFileButton);
-            }
-        }
-        addCommandButtons();
+        addCommandButtons(controller.getCommandToolButtons());
     }
 
     @SuppressWarnings("unchecked")//invalid java warning on controller.getCommandToolButtons() call
-    protected final void addCommandButtons() {
-        final List<ICommandToolButton> commandButtons = controller.getCommandToolButtons();
+    protected void addCommandButtons(final List<ICommandToolButton> commandButtons) {
+        final List<ICommandToolButton> buttons = new ArrayList<>(commandButtons);
+        Collections.reverse(buttons);        
         for (ICommandToolButton commandButton : commandButtons) {
             addButton(commandButton);
         }
@@ -392,7 +383,9 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
     @Override
     public void refresh(ModelItem changedItem) {
         focusOutEventScheduled = false;
-        controller.refresh(changedItem);
+        if (!preparedForClear){
+            controller.refresh(changedItem);
+        }
     }
 
     @Override
@@ -407,7 +400,9 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
      */
     @Override
     public final void finishEdit() {
-        controller.finishEdit();
+        if (!preparedForClear){
+            controller.finishEdit();
+        }
     }
 
     @Override
@@ -417,7 +412,7 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
                 focusOutEventScheduled = true;
                 if (MouseButtonHandler.isLeftMouseButtonPressed()){
                     installMouseButtonHanlder();
-                }else{
+                }else if (!preparedForClear) {
                     Application.processEventWhenEasSessionReady(this, new FocusOutEvent());//RADIX-7675
                 }
             }
@@ -448,7 +443,7 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
         if (event instanceof FocusOutEvent) {
             event.accept();
             if (focusOutEventScheduled) {
-                if (this.nativeId() == 0) {
+                if (this.nativeId() == 0 || preparedForClear) {
                     focusOutEventScheduled = false;                    
                 } else {                    
                     if (MouseButtonHandler.isLeftMouseButtonPressed()){//RADIX-7675
@@ -460,6 +455,8 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
                             controller.focusEvent(false, false);
                         } catch (RuntimeException exception) {
                             getEnvironment().getTracer().error(exception);
+                        } catch (UnsupportedDefinitionVersionError error){
+                            getEnvironment().processException(error);
                         }
                     }
                 }
@@ -472,26 +469,35 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
     @Override
     protected void focusOutEvent(final QFocusEvent event) {
         super.focusOutEvent(event);
-        controller.focusOutEvent(event.reason() == Qt.FocusReason.PopupFocusReason);
+        if (!preparedForClear){
+            controller.focusOutEvent(event.reason() == Qt.FocusReason.PopupFocusReason);
+        }
     }
 
     @Override
     protected void closeEvent(QCloseEvent event) {
-        if (!controller.close()) {
-            event.ignore();
-        } else {
-            QApplication.removePostedEvents(this, QEvent.Type.User.value());
+        if (controller.close()) {
+            if (!preparedForClear){
+                prepareForClear();
+            }
             removeMouseButtonHandler();
             edited.disconnect();
             focused.disconnect();
             unfocused.disconnect();
+            if (getProperty()!=null){
+                setProperty(null);
+            }
             super.closeEvent(event);
+        }else{
+            event.ignore();
         }
     }
 
     void clear() {
-        controller.clear();
-        QApplication.removePostedEvents(this, QEvent.Type.User.value());
+        if (!preparedForClear){
+            prepareForClear();
+        }
+        controller.clear();        
         removeMouseButtonHandler();
         edited.disconnect();
         focused.disconnect();
@@ -500,6 +506,14 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
         setVisible(false);
         setParent(null);
     }
+    
+    public void prepareForClear(){
+        if (!preparedForClear){
+            preparedForClear = true;            
+            QApplication.removePostedEvents(this, QEvent.Type.User.value());
+            focusOutEventScheduled = false;
+        }
+    }    
 
     protected abstract void closeEditor();
 
@@ -507,9 +521,27 @@ public abstract class AbstractPropEditor extends ExplorerWidget implements IProp
 
     protected abstract void updateEditor(Object value, PropEditorOptions options);
 
-    protected abstract Object getCurrentValueInEditor();
+    protected abstract Object getCurrentValueInEditor();    
+    
+    public final String getValueAsStr(){
+        final Object value = getCurrentValueInEditor();
+        if (value==null){
+            return null;
+        }
+        final EValType type = getProperty().getType();
+        final ValAsStr valAsStr = ValueConverter.obj2ValAsStr(value, type);
+        return valAsStr==null ? null : valAsStr.toString();
+    }
+    
+    public final boolean valueIsNull(){
+        return getCurrentValueInEditor()==null;
+    }
     
     protected UnacceptableInput getUnacceptableInput(){
         return null;
     }
+    
+    public EWidgetMarker getWidgetMarker(){
+        return EWidgetMarker.PROP_EDITOR;
+    }    
 }

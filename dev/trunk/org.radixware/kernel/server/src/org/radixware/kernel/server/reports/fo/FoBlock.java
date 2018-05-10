@@ -43,6 +43,18 @@ class FoBlock extends FoObject {
         writeText(value);
     }
 
+    public void setMargin(double marginMM) throws XMLStreamException {
+        writeMm("margin", marginMM);
+    }
+
+    public void setLeftMargin(double marginMM) throws XMLStreamException {
+        writeMm("margin-left", marginMM);
+    }
+
+    public void setRightMargin(double marginMM) throws XMLStreamException {
+        writeMm("margin-right", marginMM);
+    }
+
     public FoExternalGraphic addNewExternalGraphic() throws XMLStreamException {
         return new FoExternalGraphic(this);
     }
@@ -65,4 +77,11 @@ class FoBlock extends FoObject {
         writeAttribute("text-align", "justify");
     }
 
+    public void setBackgroundColor(String rgbColor) throws XMLStreamException {
+        writeColor("background-color", rgbColor);
+    }
+
+    public void setFontSize(double valueMm) throws XMLStreamException {
+        writeMm("font-size", valueMm);
+    }
 }

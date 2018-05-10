@@ -24,9 +24,11 @@ import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.meta.editorpages.RadContainerEditorPageDef;
+import org.radixware.kernel.common.client.meta.editorpages.RadCustomEditorPageDef;
 import org.radixware.kernel.common.client.meta.editorpages.RadStandardEditorPageDef;
 import org.radixware.kernel.common.client.models.items.EditorPageModelItem;
 import org.radixware.kernel.common.client.models.items.ModelItem;
+import org.radixware.kernel.common.client.models.items.PropertiesGroupModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.ArrId;
 import org.radixware.kernel.common.client.views.ITabSetWidget;
@@ -54,7 +56,7 @@ public class TabSet extends TabLayout implements ITabSetWidget {
 
     public TabSet(WpsEnvironment env, IView parentView, List<EditorPageModelItem> pages, Id ownerId) {
         this.env = env;
-
+        setObjectName("rx_tab_set_#"+ownerId.toString());
         settingsKey = parentView.getModel().getConfigStoreGroupName() + "/" + SettingNames.SYSTEM + "/" + RECENTLY_OPENED_PAGES_KEY + "/" + ownerId;
         final ClientSettings settings = env.getConfigStore();
         final boolean needToRestoreActiveTab;
@@ -68,7 +70,7 @@ public class TabSet extends TabLayout implements ITabSetWidget {
             settings.endGroup();
             settings.endGroup();
         }
-        
+
         final String storedPages = settings.readString(settingsKey,"");
 
         if (storedPages==null || storedPages.isEmpty()){
@@ -83,7 +85,7 @@ public class TabSet extends TabLayout implements ITabSetWidget {
                 recentlyOpenedPages = new ArrId();
             }
         }
-        
+
         int index = 0;
         int indexInRecentlyOpenedPages = Integer.MAX_VALUE;
         for (EditorPageModelItem editorPageModelItem : pages) {
@@ -105,7 +107,7 @@ public class TabSet extends TabLayout implements ITabSetWidget {
                             EEventSource.EXPLORER);
                     break;
                 }
-            } else if (editorPageModelItem.def instanceof RadStandardEditorPageDef) {                
+            } else if (editorPageModelItem.def instanceof RadStandardEditorPageDef) {
                 final RadStandardEditorPageDef pageDef = (RadStandardEditorPageDef)editorPageModelItem.def;                
                 if (pageDef.isEmpty()) {
                     continue;
@@ -121,7 +123,7 @@ public class TabSet extends TabLayout implements ITabSetWidget {
                     if (storedIndex>-1 && storedIndex<indexInRecentlyOpenedPages) {
                         indexInRecentlyOpenedPages = storedIndex;
                         index = visiblePages.size();
-                    }                    
+                    }
                 }
                 visiblePages.add(editorPage.getEditorPageId());
             }
@@ -138,13 +140,17 @@ public class TabSet extends TabLayout implements ITabSetWidget {
     }
 
     private Tab addTab(int index, EditorPage editorPage) {
-        EditorPageModelItem modelItem = editorPage.getEditorPageModelItem();
-        TabLayout.Tab tab = addTab(index, modelItem.getTitle());
+        final EditorPageModelItem modelItem = editorPage.getEditorPageModelItem();
+        final TabLayout.Tab tab = addTab(index, calcEffectiveTitle(modelItem));
+        if (modelItem.getDefinition() instanceof RadCustomEditorPageDef) {
+            tab.getHtml().setCss("overflow-y", "auto");
+        }
         tab.setEnabled(modelItem.isEnabled());
         tab.setIcon(modelItem.getIcon());
         tab.setTitleColor(modelItem.getTitleColor());
         tab.add(editorPage);
         tab.setUserData(editorPage);
+        tab.setObjectName("editor_page_#"+modelItem.getId().toString());
         return tab;
     }
 
@@ -164,13 +170,13 @@ public class TabSet extends TabLayout implements ITabSetWidget {
             if (!openedPages.contains(pageId)) {
                 page.bind();
                 openedPages.add(pageId);
-            } 
+            }
             return true;
         }else{
             return false;
         }
     }
-        
+
 
     private EditorPage getEditorPageById(Id pageId) {
         for (EditorPage page : editorPages) {
@@ -204,16 +210,62 @@ public class TabSet extends TabLayout implements ITabSetWidget {
                 int index = pageIndex(page);
                 tab = addTab(index, page);
                 tab.setEnabled(modelItem.isEnabled());
-                //setTabEnabled(idx, modelItem.isEnabled());
                 visiblePages.add(modelItem.getId());
             } else if (tab != null) {
-                tab.setTitle(modelItem.getTitle());
+                tab.setTitle(calcEffectiveTitle(modelItem));
                 tab.setEnabled(modelItem.isEnabled());
                 tab.setIcon(modelItem.getIcon());
                 tab.setTitleColor(modelItem.getTitleColor());
             }
             updateSubscribedProperties(modelItem);
         }
+    }
+
+    private String calcEffectiveTitle(final EditorPageModelItem page){
+        if (page.getDefinition() instanceof RadStandardEditorPageDef && !pageHasVisibleItem(page)){
+            final List<EditorPageModelItem> childPages = page.getChildPages();
+            EditorPageModelItem visiblePage = null;
+            for (EditorPageModelItem childPage: childPages){
+                if (childPage.isVisible()){
+                    if (visiblePage==null){
+                        visiblePage = childPage;
+                    }else{
+                        return page.getTitle();
+                    }
+                }
+            }
+            if (visiblePage==null){
+                return page.getTitle();
+            }else{
+                final String pageTitle = page.getTitle();
+                final String innerPageTitle = calcEffectiveTitle(visiblePage);
+                if (pageTitle==null || pageTitle.isEmpty()){
+                    return innerPageTitle;
+                }else if (innerPageTitle==null || innerPageTitle.isEmpty()){
+                    return pageTitle;
+                }else{
+                    return pageTitle+". "+innerPageTitle;
+                }
+            }
+        }else{
+            return page.getTitle();
+        }
+    }
+
+    private static boolean pageHasVisibleItem(final EditorPageModelItem page){
+        final Collection<Property> properties = page.getProperties();
+        for (Property property: properties){
+            if (property.isVisible()){
+                return true;
+            }
+        }
+        final Collection<PropertiesGroupModelItem> groups = page.getPropertyGroups();
+        for (PropertiesGroupModelItem group: groups){
+            if (group.isVisible()){
+                return true;
+            }
+        }
+        return false;
     }
 
     private int pageIndex(final EditorPage editorPage) {
@@ -247,6 +299,22 @@ public class TabSet extends TabLayout implements ITabSetWidget {
             }
         }
         return false;
+    }
+
+    @Override
+    public void setFocused(boolean focused) {
+        if (editorPages != null && !editorPages.isEmpty() && focused) {
+            Tab tab = getCurrentTab();
+            if (tab == null) {
+                if (editorPages != null && !editorPages.isEmpty()) {
+                    editorPages.get(0).setFocused(true);
+                }
+            } else {
+                getEditorPage(tab).setFocused(true);
+            }
+        } else {
+            super.setFocused(focused);
+        }
     }
 
     @Override
@@ -303,7 +371,7 @@ public class TabSet extends TabLayout implements ITabSetWidget {
         }
     }
 
-    public void close() {        
+    public void close() {
         final ClientSettings settings = env.getConfigStore();
         final int currentIndex = getCurrentIndex();
         if (currentIndex > -1 && currentIndex < visiblePages.size()) {
@@ -318,7 +386,7 @@ public class TabSet extends TabLayout implements ITabSetWidget {
                 }
             }
             settings.writeString(settingsKey, recentlyOpenedPages.toString());
-        }        
+        }
 
         Collection<Property> pageProperties;
         for (EditorPage page : editorPages) {

@@ -8,20 +8,22 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.msdl.fields;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.radixware.kernel.common.exceptions.SmioException;
 import org.radixware.kernel.common.msdl.MsdlField;
+import org.radixware.kernel.common.msdl.MsdlUnitContext;
 import org.radixware.schemas.msdl.SimpleField;
 import org.radixware.kernel.common.msdl.enums.EEncoding;
+import org.radixware.kernel.common.msdl.fields.parser.SmioCoder;
 
 
 public abstract class SimpleFieldModel extends AbstractFieldModel {
 
     protected Set<String> encodingSet = new HashSet<>();
-    
+
     public SimpleFieldModel(MsdlField container, SimpleField field) {
         super(container,field);
     }
@@ -30,8 +32,25 @@ public abstract class SimpleFieldModel extends AbstractFieldModel {
     public SimpleField getField() {
         return (SimpleField)super.getField();
     }
-    
+
     public boolean isAcceptableEncoding(EEncoding enc) {
         return !encodingSet.isEmpty() ? encodingSet.contains(enc.getValue()) : true;
+    }
+
+    public String getAcceptableEncoding(String enc) {
+        if (enc != null && isAcceptableEncoding(EEncoding.getInstance(enc))) {
+            return enc;
+        }
+        return null;
+    }
+
+    public final byte[] getNullIndicatorSelf(SmioCoder coder) throws SmioException {
+        final String chars = getField().isSetNullIndicatorChar()
+                ? getField().getNullIndicatorChar() : getNullIndicatorChar(true);
+        final byte[] bytes = getField().isSetNullIndicator()
+                ? getField().getNullIndicator() : getNullIndicator(true);
+        final String unit = getField().isSetNullIndicatorUnit() ? getField().getNullIndicatorUnit()
+                : getUnit(true, new MsdlUnitContext(MsdlUnitContext.EContext.NULL_INDICATOR));
+        return getValueConsiderUnit(coder, bytes, chars, unit);
     }
 }

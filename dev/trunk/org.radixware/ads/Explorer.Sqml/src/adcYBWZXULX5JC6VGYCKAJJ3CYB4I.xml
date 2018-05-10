@@ -14,24 +14,28 @@
     <PropertyGroup Id="cpgJKQBETJ65ZEW5GLECD2D7ZC45Q" Name="Root"/>
     <Properties>
       <Property Id="prdTUCH6RRNKJHSHJ3T2YQ2WO5G5A" Name="tableId" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
       </Property>
       <Property Id="prdUC4IVHG2YBGKNIITJNBVJUS4VM" Name="selPresentationId" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
       </Property>
       <Property Id="prd6AA2JUSMFRAGNDL4GRZ55AZKVQ" Name="selPresentationClassId" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
       </Property>
       <Property Id="prdECY6RVBM3BDYVNTSIH4RH7Z3IE" Name="id" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
       </Property>
       <Property Id="prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Name="name" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="21"/>
+      </Property>
+      <Property Id="prd6GDUBRJRQBHLVFWQCX4O6YYZNY" Name="additionalCondition" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="451" Path="xsdY5AELJNM7FG77FZD4ATT7SFMXA" extStr="Sqml"/>
       </Property>
     </Properties>
     <Methods>
@@ -66,7 +70,9 @@
               <xsc:Java>return new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcW4W7LGW2DZFG3PRUR3PVFTBJPU mthHD6765O36FEIDHFNAYCIJW5SGY" Invoke="true"/>
+              <xsc:IdReference Path="adcW4W7LGW2DZFG3PRUR3PVFTBJPU mthHD6765O36FEIDHFNAYCIJW5SGY" Invoke="true">
+                <xsc:Presentation>EditMaskNone</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();</xsc:Java>
@@ -116,7 +122,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prd6AA2JUSMFRAGNDL4GRZ55AZKVQ" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prd6AA2JUSMFRAGNDL4GRZ55AZKVQ" Invoke="true">
+                <xsc:Presentation>selPresentationClassId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -133,7 +141,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdUC4IVHG2YBGKNIITJNBVJUS4VM" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdUC4IVHG2YBGKNIITJNBVJUS4VM" Invoke="true">
+                <xsc:Presentation>selPresentationId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -161,7 +171,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdTUCH6RRNKJHSHJ3T2YQ2WO5G5A" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdTUCH6RRNKJHSHJ3T2YQ2WO5G5A" Invoke="true">
+                <xsc:Presentation>tableId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -178,7 +190,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTZ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciTZ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Meta::ValType:ParentRef</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -222,7 +236,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Invoke="true">
+                <xsc:Presentation>name</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -239,7 +255,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Invoke="true">
+                <xsc:Presentation>name</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -267,7 +285,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdECY6RVBM3BDYVNTSIH4RH7Z3IE" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdECY6RVBM3BDYVNTSIH4RH7Z3IE" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -295,7 +315,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Invoke="true">
+                <xsc:Presentation>name</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -312,7 +334,9 @@
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Invoke="true">
+                <xsc:Presentation>name</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -342,35 +366,45 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdECY6RVBM3BDYVNTSIH4RH7Z3IE" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdECY6RVBM3BDYVNTSIH4RH7Z3IE" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = paramId;
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdTUCH6RRNKJHSHJ3T2YQ2WO5G5A" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdTUCH6RRNKJHSHJ3T2YQ2WO5G5A" Invoke="true">
+                <xsc:Presentation>tableId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = tableId;
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prd6AA2JUSMFRAGNDL4GRZ55AZKVQ" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prd6AA2JUSMFRAGNDL4GRZ55AZKVQ" Invoke="true">
+                <xsc:Presentation>selPresentationClassId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = selPresentationClassId;
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdUC4IVHG2YBGKNIITJNBVJUS4VM" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdUC4IVHG2YBGKNIITJNBVJUS4VM" Invoke="true">
+                <xsc:Presentation>selPresentationId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = selPresentationId;
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdBHYAAXUKWVBVFGQQBEEL7O2DYI" Invoke="true">
+                <xsc:Presentation>name</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = name;</xsc:Java>
@@ -387,13 +421,17 @@
               <xsc:Java>return new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>[]{this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdECY6RVBM3BDYVNTSIH4RH7Z3IE" Invoke="true"/>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prdECY6RVBM3BDYVNTSIH4RH7Z3IE" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>};</xsc:Java>
@@ -408,6 +446,91 @@
           <Src>
             <xsc:Item>
               <xsc:Java>return false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthGKT5A736SFC6TC3ZJBCU5NG2AY" Name="getMaxArrayItemsCount" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return -1;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLL4VDNNWPZDHDMOR2XMTGACSWU" Name="getMinArrayItemsCount" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <ReturnType TypeId="401" extStr="int"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return -1;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthX4RHB436S5BX3BE2LEFLJEYIK4" Name="getParentSelectorAdditionalCondition" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.xscml.Sqml"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prd6GDUBRJRQBHLVFWQCX4O6YYZNY" Invoke="true">
+                <xsc:Presentation>additinalCondition</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>==null ? null : (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdY5AELJNM7FG77FZD4ATT7SFMXA" extStr="Sqml">
+                <xsc:Presentation>Meta::XscmlXsd:Sqml</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prd6GDUBRJRQBHLVFWQCX4O6YYZNY" Invoke="true">
+                <xsc:Presentation>additinalCondition</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.copy());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth6GHZ2GYAMRH65ELITH3LHCV6VU" Name="setParentSelectorAdditionalCondition" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="condition" Id="mprZBHV3BLUM5H3LPDL2CFY3WCTTM">
+            <Type TypeId="451" Path="xsdY5AELJNM7FG77FZD4ATT7SFMXA" extStr="Sqml"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYBWZXULX5JC6VGYCKAJJ3CYB4I prd6GDUBRJRQBHLVFWQCX4O6YYZNY" Invoke="true">
+                <xsc:Presentation>additinalCondition</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>= condition==null ? null : (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdY5AELJNM7FG77FZD4ATT7SFMXA" extStr="Sqml">
+                <xsc:Presentation>Meta::XscmlXsd:Sqml</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)(condition.copy());</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

@@ -11,7 +11,18 @@
 
 package org.radixware.kernel.common.client.tree;
 
+import org.radixware.kernel.common.client.tree.nodes.IExplorerTreeNode;
+import org.radixware.kernel.common.client.types.Icon;
+import org.radixware.kernel.common.client.widgets.actions.Action;
+
 
 public interface IExplorerTreePresenter {
-    IExplorerTree getView();    
+    IExplorerTree getView();
+    void setFocus();
+    void removeNode(IExplorerTreeNode node);
+    boolean isNodeExists(IExplorerTreeNode node);
+    void setCurrent(IExplorerTreeNode node);
+    void scrollTo(IExplorerTreeNode node);
+    void resizeToContents();
+    Action createAction(final Icon icon, final String title);
 }

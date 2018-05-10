@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.dbq;
 
 import java.util.Collections;
@@ -37,7 +36,6 @@ import org.radixware.kernel.common.defs.IParameterDef;
 import org.radixware.kernel.common.sqml.tags.ElseIfTag;
 import org.radixware.kernel.common.sqml.tags.EndIfTag;
 import org.radixware.kernel.common.sqml.tags.TargetDbPreprocessorTag;
-
 
 class SqmlEnvironment implements ISqmlEnvironment {
 

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcTJXJQZLEZJF2PJDN426QISOB7M" Name="CfgSettingsProviderForActualize" Type="3" Environment="server">
+    <AccessRules Access="4" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcTJXJQZLEZJF2PJDN426QISOB7M"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcTJXJQZLEZJF2PJDN426QISOB7M"/>
+    </Bodies>
+    <MethodGroup Id="cmgWHMF65ODSJAQ3OGHOMZVWDSAMI" Name="Root"/>
+    <PropertyGroup Id="cpgJLLNB4YDJBCYHMKTZW3VTVMD6E" Name="Root"/>
+    <Properties>
+      <Property Id="prdWF2KM4KK4NFOFARP6RJYRC3VCM" Name="itemId2ActualizeFlag" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="2"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="1"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </Type>
+        <InitialValue>
+          <Jml>
+            <xsc:Item>
+              <xsc:Java>new java.util.HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="1">
+                <xsc:Presentation>Bool</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();</xsc:Java>
+            </xsc:Item>
+          </Jml>
+        </InitialValue>
+      </Property>
+      <Property Id="prdRDJTXIQIZFGBXNF5CDJKE4C7NQ" Name="isItemCreationAllowed" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="401" extStr="boolean"/>
+      </Property>
+      <Property Id="prdNQ7AZ6B7I5DEDKRHP6OYTGTKMU" Name="curItem" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="4" IsPublished="false"/>
+        <Type TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth5KRKFDOL6ZB6VB6YWT2646AOHU" Name="setItemActualizeStatus" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="itemId" Id="mprD7EU4BIRRFHSDOT7MLAEDH6ABY">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="wasActualized" Id="mprGE6R4OFLPJFZ3BWKXP5QLBSHAM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTJXJQZLEZJF2PJDN426QISOB7M prdWF2KM4KK4NFOFARP6RJYRC3VCM" Invoke="true">
+                <xsc:Presentation>itemId2ActualizeFlag</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.put(itemId, wasActualized);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth57SFNF4UCZAGXGVUKX7W7WZMQI" Name="wasItemActualized" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="itemId" Id="mpr5Y2B42KTNJDZ3B5P4SO5DSOCQA">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="1">
+                <xsc:Presentation>Bool</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> wasActualized = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTJXJQZLEZJF2PJDN426QISOB7M prdWF2KM4KK4NFOFARP6RJYRC3VCM" Invoke="true">
+                <xsc:Presentation>itemId2ActualizeFlag</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.get(itemId);
+return wasActualized != null ? wasActualized.booleanValue() : false;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mth2WHGE4XCPRCLXANJWTPI5BD6ZI" Name="isItemsCreationAllowed" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="401" extStr="boolean"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTJXJQZLEZJF2PJDN426QISOB7M prdRDJTXIQIZFGBXNF5CDJKE4C7NQ" Invoke="true">
+                <xsc:Presentation>isItemCreationAllowed</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKJOZGPZTNJEZTMSBPUKWZWUGFM" Name="getSettings" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="item" Id="mpr5S6D44DHFFEXTOQWRVCDF3PW6M">
+            <Type TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="SettingsDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthOWVKKF243FHBNEPQDFWXJLKC34" Name="CfgSettingsProviderForActualize" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="isItemsCreationAllowed" Id="mprTSMBMOWLNJCG5K47ELOV5RLVVE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adcTJXJQZLEZJF2PJDN426QISOB7M prdRDJTXIQIZFGBXNF5CDJKE4C7NQ" Invoke="true">
+                <xsc:Presentation>isItemCreationAllowed</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = isItemsCreationAllowed;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicIHTJDUE3M5BWJGZTEPBOEFI2WI"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.designer.dds.script.defs;
 
+import org.radixware.kernel.common.scml.ScmlCodePrinter;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 import org.radixware.kernel.common.defs.dds.DdsFunctionDef;
 import org.radixware.kernel.common.defs.dds.DdsParameterDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
@@ -20,14 +22,12 @@ import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.designer.dds.script.IScriptGenerationHandler;
 
-
 public class DdsFunctionScriptGenerator {
 
     public static void getHeaderScript(CodePrinter cp, DdsFunctionDef function) {
         String descriptionLines[] = DdsScriptGeneratorUtils.splitDescription(function.getDescription());
         for (String descriptionLine : descriptionLines) {
-            cp.print("\t-- ");
-            cp.println(descriptionLine);
+            cp.print("\t-- ").println(descriptionLine);
         }
 
         cp.print('\t');
@@ -60,13 +60,10 @@ public class DdsFunctionScriptGenerator {
 
             final String paramDescriptionLines[] = DdsScriptGeneratorUtils.splitDescription(param.getDescription());
             for (String paramDescriptionLine : paramDescriptionLines) {
-                cp.print("-- ");
-                cp.print(paramDescriptionLine);
-                cp.print("\n\t\t");
+                cp.print("-- ").print(paramDescriptionLine).print("\n\t\t");
             }
 
-            cp.print(param.getDbName());
-            cp.print(' ');
+            cp.print(param.getDbName()).print(' ');
 
             switch (param.getDirection()) {
                 case IN:
@@ -80,15 +77,13 @@ public class DdsFunctionScriptGenerator {
                     break;
             }
 
-            cp.print(' ');
-            cp.print(param.getDbType());
+            cp.print(' ').print(param.getDbType());
 
             final String defaultValueSql = param.getDefaultVal();
             if (defaultValueSql == null) {
                 cp.print(" := null");
             } else if (!defaultValueSql.isEmpty()) {
-                cp.print(" := ");
-                cp.print(defaultValueSql);
+                cp.print(" := ").print(defaultValueSql);
             }
         }
 
@@ -97,8 +92,7 @@ public class DdsFunctionScriptGenerator {
         }
 
         if (resultValType != null) {
-            cp.print(" return ");
-            cp.print(function.getResultDbType());
+            cp.print(" return ").print(function.getResultDbType());
         }
 
         if (function.isDeterministic()) {

@@ -12,13 +12,16 @@
 package org.radixware.kernel.designer.ads.editors.clazz.report.chart;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Map;
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
+import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeListener;
 import org.openide.util.ChangeSupport;
@@ -62,7 +65,6 @@ public class AdsReportChartAppearance extends javax.swing.JPanel {
         c.insets = new Insets(0, 2, 10, 2);
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 1.0;
-
         String title=NbBundle.getMessage(AdsReportChartAppearance.class, "AdsReportChartAppearance.chartTitle.text");
         chartTitle.setTitle(title);
         gbl.setConstraints(chartTitle, c);
@@ -70,8 +72,7 @@ public class AdsReportChartAppearance extends javax.swing.JPanel {
 
         c.gridx = 0;
         c.gridy = 1;
-        c.insets = new Insets(0, 0, 6, 0);
-        c.weightx = 1.0;
+        c.insets = new Insets(0, 0, 6, 0);        
         gbl.setConstraints(appearancePanel, c);
         content.add(appearancePanel);
 
@@ -131,7 +132,7 @@ public class AdsReportChartAppearance extends javax.swing.JPanel {
 
         c.gridx = 0;
         c.gridy = 5;
-        c.insets = new Insets(10, 0, 0, 0);
+        c.insets = new Insets(10, 10, 0, 0);
         foregrAlphapanel = new ForegroundAlphaPanel();
         gbl.setConstraints(foregrAlphapanel, c);
         content.add(foregrAlphapanel);
@@ -141,10 +142,13 @@ public class AdsReportChartAppearance extends javax.swing.JPanel {
         c.insets = new Insets(10, 0, 0, 0);
         minPlotSizePanel = new MinPlotSizePanel();
         gbl.setConstraints(minPlotSizePanel, c);
-        content.add(minPlotSizePanel);
-
+        
+        content.add(minPlotSizePanel);        
         this.setLayout(new BorderLayout());
-        this.add(content, BorderLayout.NORTH);
+        JScrollPane scroller = new JScrollPane();        
+        scroller.setViewportBorder(BorderFactory.createEmptyBorder());
+        scroller.setViewportView(content);
+        this.add(scroller, BorderLayout.CENTER);
     }
 
     @SuppressWarnings("deprecation")

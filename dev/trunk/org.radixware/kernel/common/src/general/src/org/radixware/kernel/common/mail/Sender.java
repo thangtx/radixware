@@ -31,8 +31,8 @@ import javax.swing.JOptionPane;
 import org.radixware.kernel.common.dialogs.AuthenticationCancelledException;
 import org.radixware.kernel.common.dialogs.LoginDialog;
 import org.radixware.kernel.common.exceptions.ExceptionHandler;
-import org.radixware.kernel.common.mail.enums.EAuthentication;
-import org.radixware.kernel.common.mail.enums.ESecureConnection;
+import org.radixware.kernel.common.mail.enums.EMailAuthentication;
+import org.radixware.kernel.common.mail.enums.EMailSecureConnection;
 import org.radixware.kernel.common.utils.Reference;
 
 public class Sender {
@@ -69,10 +69,10 @@ public class Sender {
         }
         props.put("mail.smtp.host", settings.host);
         props.put("mail.smtp.port", String.valueOf(settings.port));
-        if (settings.authentication != EAuthentication.NONE) {
+        if (settings.authentication != EMailAuthentication.NONE) {
             props.put("mail.smtp.auth", "true");
         }
-        if (settings.secureConnection == ESecureConnection.TLS_ENCRYPTION) {
+        if (settings.secureConnection == EMailSecureConnection.TLS_ENCRYPTION) {
             props.put("mail.smtp.starttls.required", "true");
             props.put("mail.smtp.starttls.enable", "true");
             props.put("mail.smtp.ssl.trust", "*");
@@ -148,7 +148,7 @@ public class Sender {
 
         final Transport tr = session.getTransport("smtp");
         String password = null;
-        if (settings.authentication != EAuthentication.NONE) {
+        if (settings.authentication != EMailAuthentication.NONE) {
             if (settings.rememberPassword && settings.password != null) {
                 password = settings.getPassword();
             } else {

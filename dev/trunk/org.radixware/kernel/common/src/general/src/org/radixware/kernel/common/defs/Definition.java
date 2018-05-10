@@ -8,30 +8,33 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.radixware.kernel.common.defs.doc.IRadixDocObject;
 import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
 import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
 import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
 
 /**
- * <p>Base interface for all objects of DDS and ADS.</p>
+ * <p>
+ * Base interface for all objects of DDS and ADS.</p>
  *
  */
-public abstract class Definition extends RadixObject implements IDescribable, IDefinition, ILocalizedDescribable {
+public abstract class Definition extends RadixObject implements IDescribable, IDefinition, ILocalizedDescribable, IRadixDocObject {
 
     public static final String DEFINITION_TYPE_TITLE = "Definition";
     public static final String DEFINITION_TYPES_TITLE = "Definitions";
-    private Id id;
+    public Id id;
     private final Object pathLinkLock = new Object();
 
     private static final class PathLink {
@@ -311,11 +314,39 @@ public abstract class Definition extends RadixObject implements IDescribable, ID
 
     @Override
     public boolean setDescription(EIsoLanguage language, String description) {
-        
+
         return false;
     }
 
     public String getLocalizedStringValue(EIsoLanguage language, Id stringId) {
         return null;
+    }
+
+    public String getAPIDescription() {
+        return getToolTip();
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return null;
+    }
+
+    /**
+     * Отображать ApiBrowser(API) в контекстном меню
+     */
+    public boolean showApiBrowser() {
+        return true;
+    }
+
+    /**
+     * Является дефиниция ребенком модуля
+     */
+    public boolean isTopLevelDefinition() {
+        return true;
     }
 }

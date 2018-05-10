@@ -12,6 +12,9 @@
 package org.radixware.kernel.common.client.editors.traceprofile;
 
 import org.radixware.kernel.common.client.widgets.IWidget;
+import org.radixware.kernel.common.enums.EEventSeverity;
+import org.radixware.kernel.common.enums.EEventSource;
+import org.radixware.kernel.common.trace.TraceProfile;
 
 /**
  * Интерфейс управления графическим представлением узлов дерева профиля трассировки.
@@ -46,4 +49,15 @@ public interface ITraceProfileTreePresenter<T extends IWidget> {
      * Вызывается из метода {@link TraceProfileTreeController#rereadEventSources()  rereadEventSources}.
      */
     void destroyPresentations();
+
+    /**
+     * Создает диалог редактирования дополнительных настроек трассировки для заданного источника событий.
+     * Вызывается при двойном клике по ячейке в колонке дополнительных настроек дерева профиля трассировки.
+     * @param eventSource источник события, для которого нужно открыть диалог дополнительных настроек трассировки
+     * @param eventSeverity текущий уровень трассировки для данного источника событий
+     * @param options текущие значения дополнительных настроек трассировки для данного источника событий
+     * @return инстанция диалога редактирования дополнительных настроек трассировки или <code>null</code> 
+     * если для указанного источника событий нет дополнительных настроек трассировки.
+     */
+    ITraceProfileEventSourceOptionsEditor createEventSourceOptionsEditor(final EEventSource eventSource, final EEventSeverity eventSeverity, final TraceProfile.EventSourceOptions options);
 }

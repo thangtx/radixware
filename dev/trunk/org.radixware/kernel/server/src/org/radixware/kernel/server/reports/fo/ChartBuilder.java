@@ -127,31 +127,25 @@ public abstract class ChartBuilder {
             DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
             Document document = domImpl.createDocument(null, "svg", null);
             SVGGraphics2D svgGenerator = new SVGGraphics2D(document);
-            svgGenerator.setSVGCanvasSize(new Dimension(mm2px(cell.getWidthMm()), mm2px(cell.getHeightMm())));
             //svgGenerator.getGeneratorContext().setPrecision(6);
             ChartRenderingInfo info = new ChartRenderingInfo();
-            chart.draw(svgGenerator, new Rectangle2D.Double(0, 0, mm2px(cell.getWidthMm()), mm2px(cell.getHeightMm())), info);
-            PlotRenderingInfo plotInfo = info.getPlotInfo();
+
             if (cell.getPlotMinSizeEnable()) {
-                if (plotInfo.getPlotArea() != null) {
-                    double delta = cell.getMinPlotHeightMm() - plotInfo.getPlotArea().getHeight();
-                    cell.setAdjustHeightMm(delta > 0 ? cell.getHeightMm() + delta : cell.getHeightMm());
-                    delta = plotInfo.getPlotArea() == null ? cell.getMinPlotWidthMm() : cell.getMinPlotWidthMm() - plotInfo.getPlotArea().getWidth();
-                    cell.setAdjustWidthMm(delta > 0 ? cell.getWidthMm() + delta : cell.getWidthMm());
-                } else {
-                    if (plotInfo.getDataArea() != null) {
-                        AdsReportForm ownerForm = cell.getOwnerForm();
-                        double pageWidth = ownerForm.getPageWidthMm() - ownerForm.getMargin().getLeftMm() - ownerForm.getMargin().getRightMm();
-                        double width = Math.max(cell.getMinPlotWidthMm(), cell.getWidthMm()) + plotInfo.getDataArea().getWidth();
-                        cell.setAdjustWidthMm(width > pageWidth ? pageWidth : width);
-                        cell.setAdjustHeightMm(Math.max(cell.getMinPlotHeightMm(), cell.getHeightMm()) + plotInfo.getDataArea().getHeight());
-                    } else {
-                        cell.setAdjustHeightMm(Math.max(cell.getMinPlotHeightMm(), cell.getHeightMm()));
-                        cell.setAdjustWidthMm(Math.max(cell.getMinPlotWidthMm(), cell.getWidthMm()));
-                    }
-                }
-                svgGenerator.setSVGCanvasSize(new Dimension(mm2px(cell.getAdjustWidthMm()), mm2px(cell.getAdjustHeightMm())));
-                chart.draw(svgGenerator, new Rectangle2D.Double(0, 0, mm2px(cell.getAdjustWidthMm()), mm2px(cell.getAdjustHeightMm())));
+                double w = Math.max(cell.getWidthMm(), cell.getMinPlotWidthMm());
+                double h = Math.max(cell.getHeightMm(), cell.getMinPlotHeightMm());
+                double ratio = h / w;
+                svgGenerator.setSVGCanvasSize(new Dimension(mm2px(w), mm2px(h)));
+                chart.draw(svgGenerator, new Rectangle2D.Double(0, 0, mm2px(w), mm2px(h)), info);
+                cell.setAdjustHeightMm(cell.getWidthMm() * ratio);
+                cell.setAdjustWidthMm(cell.getWidthMm());
+            } else {
+                double w = cell.getWidthMm();
+                double h = cell.getHeightMm();
+                svgGenerator.setSVGCanvasSize(new Dimension(mm2px(w), mm2px(h)));
+                chart.draw(svgGenerator, new Rectangle2D.Double(0, 0, mm2px(w), mm2px(h)), info);
+                cell.setAdjustHeightMm(h);
+                cell.setAdjustWidthMm(w);
+
             }
 
             boolean useCSS = true;
@@ -165,12 +159,11 @@ public abstract class ChartBuilder {
                     out.close();
                 }
             } catch (IOException ex) {
-                throw new RadixError("Unable to create svg file for report.", ex);
-            } finally {
                 if (file != null) {
                     FileUtils.deleteFile(file);
                     file = null;
                 }
+                throw new RadixError("Unable to create svg file for report.", ex);
             }
         }
     }

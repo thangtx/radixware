@@ -49,7 +49,7 @@ public class PropertiesArrangmentTransferHandler extends TransferHandler {
 
     @Override
     protected Transferable createTransferable(JComponent c) {
-
+        
         final JTable table = (JTable) c;
         selectedRow = table.getSelectedRow();
         selectedColumn = table.getSelectedColumn();
@@ -63,6 +63,14 @@ public class PropertiesArrangmentTransferHandler extends TransferHandler {
 
     @Override
     public boolean canImport(TransferSupport support) {
+        
+        final JTable target = (JTable) support.getComponent();
+        EditorPagePropTableModel targetModel = (EditorPagePropTableModel) target.getModel();
+        
+        if (targetModel.isReadOnly()) {
+            return false;
+        }
+        
         if (!support.isDrop()) {
             return false;
         }
@@ -70,9 +78,6 @@ public class PropertiesArrangmentTransferHandler extends TransferHandler {
         if (!support.isDataFlavorSupported(objectsFlavor)) {
             return false;
         }
-
-        final JTable target = (JTable) support.getComponent();
-        EditorPagePropTableModel targetModel = (EditorPagePropTableModel) target.getModel();
 
         DropLocation location = support.getDropLocation();
         targetRowIndex = target.rowAtPoint(location.getDropPoint());

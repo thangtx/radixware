@@ -82,6 +82,9 @@ public class PropLabel extends QLabel implements IModelWidget, IPropLabel, IWidg
             controller.bind();
             wasBinded = true;
         }
+        if (property!=null){
+            setObjectName("propLabel #"+property.getId().toString());
+        }
     }
 
     @Override

@@ -37,6 +37,9 @@ import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.CodeWriter;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.defs.ads.src.clazz.sql.AdsSqlClassWriter;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTable;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTables;
 import org.radixware.kernel.common.enums.EParamDirection;
 import org.radixware.kernel.common.enums.EPropNature;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
@@ -50,7 +53,7 @@ import org.radixware.kernel.common.utils.Utils;
  * SQL Class Definition.
  *
  */
-public abstract class AdsSqlClassDef extends AdsClassDef {
+public abstract class AdsSqlClassDef extends AdsClassDef implements ISqlDef{
 
     public static final String PLATFORM_CLASS_NAME = "org.radixware.kernel.server.types.SqlClass";
     public static final int FORMAT_VERSION = 7;
@@ -80,7 +83,7 @@ public abstract class AdsSqlClassDef extends AdsClassDef {
 
         final org.radixware.schemas.adsdef.SqlStatement xStatement = xDef.getSql();
         if (xStatement != null) {
-            getSource().loadFrom(xStatement.getSource());
+            getSqml().loadFrom(xStatement.getSource());
             getUsedTables().loadFrom(xStatement.getUsedTables());
             if (xStatement.isSetCacheSize()) {
                 this.cacheSize = xStatement.getCacheSize();
@@ -128,7 +131,7 @@ public abstract class AdsSqlClassDef extends AdsClassDef {
         super.appendTo(xClassDef, saveMode);
         if (saveMode == ESaveMode.NORMAL) {
             final org.radixware.schemas.adsdef.SqlStatement xStatement = xClassDef.addNewSql();
-            getSource().appendTo(xStatement.addNewSource());
+            getSqml().appendTo(xStatement.addNewSource());
             getUsedTables().appendTo(xStatement);
             if (cacheSize != DEFAULT_CACHE_SIZE) {
                 xStatement.setCacheSize(cacheSize);
@@ -215,16 +218,16 @@ public abstract class AdsSqlClassDef extends AdsClassDef {
      * Information about table that used in Sql Class. Allows to specify alias
      * for each table, or use one table with several aliases.
      */
-    public class UsedTable extends RadixObject {
+        public class UsedTable extends IUsedTable{
 
-        private Id tableId;
         private String alias;
 
-        protected UsedTable() {
+        protected UsedTable(Id tableId) {
+            super(tableId);
         }
 
         protected UsedTable(final org.radixware.schemas.adsdef.SqlStatement.UsedTables.UsedTable xUsedTable) {
-            this.tableId = xUsedTable.getTableId();
+            super(xUsedTable.getTableId());
             this.alias = xUsedTable.getAlias();
         }
 
@@ -235,24 +238,16 @@ public abstract class AdsSqlClassDef extends AdsClassDef {
             }
         }
 
-        public Id getTableId() {
-            return tableId;
-        }
-
         /**
          * @return defined alias or null or empty string if not defined.
          */
+        @Override
         public String getAlias() {
             return alias;
         }
 
-        public void setTableId(Id tableId) {
-            if (!Utils.equals(this.tableId, tableId)) {
-                this.tableId = tableId;
-                setEditState(EEditState.MODIFIED);
-            }
-        }
 
+        @Override
         public void setAlias(String alias) {
             if (!Utils.equals(this.alias, alias)) {
                 this.alias = alias;
@@ -265,6 +260,7 @@ public abstract class AdsSqlClassDef extends AdsClassDef {
          *
          * @return used table or null if null found.
          */
+        @Override
         public DdsTableDef findTable() {
             final DefinitionSearcher<DdsTableDef> tableSearcher = AdsSearcher.Factory.newDdsTableSearcher(AdsSqlClassDef.this);
             return tableSearcher.findById(tableId).get();
@@ -286,6 +282,11 @@ public abstract class AdsSqlClassDef extends AdsClassDef {
         }
 
         @Override
+        public boolean useAlias() {
+            return true;
+        }
+
+        @Override
         public void collectDependences(final List<Definition> list) {
             super.collectDependences(list);
             final DdsTableDef table = findTable();
@@ -295,7 +296,7 @@ public abstract class AdsSqlClassDef extends AdsClassDef {
         }
     }
 
-    public class UsedTables extends RadixObjects<UsedTable> {
+    public class UsedTables extends IUsedTables<UsedTable>{
 
         public UsedTables() {
             super(AdsSqlClassDef.this);
@@ -326,24 +327,17 @@ public abstract class AdsSqlClassDef extends AdsClassDef {
         }
 
         @Override
-        protected void appendAdditionalToolTip(StringBuilder sb) {
-            super.appendAdditionalToolTip(sb);
-        }
-
         public UsedTable add(final Id tableId, final String alias) {
-            final UsedTable usedTable = new UsedTable();
-            usedTable.setTableId(tableId);
+            final UsedTable usedTable = new UsedTable(tableId);
             usedTable.setAlias(alias);
             add(usedTable);
             return usedTable;
         }
 
-        public UsedTable add(final DdsTableDef table, final String alias) {
-            return add(table.getId(), alias);
-        }
     }
     private final UsedTables usedTables = new UsedTables();
 
+    @Override
     public UsedTables getUsedTables() {
         return usedTables;
     }
@@ -361,7 +355,8 @@ public abstract class AdsSqlClassDef extends AdsClassDef {
     /**
      * @return source SQML statement.
      */
-    public Sqml getSource() {
+    @Override
+    public Sqml getSqml() {
         return source;
     }
 
@@ -369,7 +364,7 @@ public abstract class AdsSqlClassDef extends AdsClassDef {
     public void visitChildren(IVisitor visitor, VisitorProvider provider) {
         super.visitChildren(visitor, provider);
         getUsedTables().visit(visitor, provider);
-        getSource().visit(visitor, provider);
+        getSqml().visit(visitor, provider);
     }
 
     @Override

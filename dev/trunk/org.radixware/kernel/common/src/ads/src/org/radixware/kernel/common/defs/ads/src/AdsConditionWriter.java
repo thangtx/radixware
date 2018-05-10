@@ -18,6 +18,8 @@ import org.radixware.kernel.common.defs.ads.common.Prop2ValueMap;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.Scml;
+import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.CharOperations;
 
@@ -40,7 +42,7 @@ public class AdsConditionWriter extends RadixObjectWriter<AdsCondition> {
                 printer.print("new ");
                 printer.print(CONDITION_META_SERVER_CLASS_NAME);
                 printer.print('(');
-                WriterUtils.writeSqmlAsXmlStr(printer, def.getWhere());
+                WriterUtils.writeSqmlAsXmlStr(printer, checkItem(def.getWhere()));
                 printer.printComma();
                 WriterUtils.writeSqmlAsXmlStr(printer, def.getFrom());
                 if (def.getProp2ValueMap() != null && !def.getProp2ValueMap().getItems().isEmpty()) {
@@ -73,5 +75,26 @@ public class AdsConditionWriter extends RadixObjectWriter<AdsCondition> {
     @Override
     public void writeUsage(CodePrinter printer) {
         //dont use in code directly
+    }
+    
+    private Sqml checkItem(Sqml sqml){
+        if (sqml == null || sqml.getItems() == null){
+            return null;
+        }
+        boolean isScmlEmpty = true;
+        for (Scml.Item item : sqml.getItems()) {
+            if (item instanceof Scml.Text) {
+                final String text = ((Scml.Text) item).getText().trim();
+                if (!text.isEmpty()){
+                    isScmlEmpty = false;
+                    break;
+                }
+            } else {
+                isScmlEmpty = false;
+                break;
+            }
+        }
+        
+        return isScmlEmpty ? null: sqml;
     }
 }

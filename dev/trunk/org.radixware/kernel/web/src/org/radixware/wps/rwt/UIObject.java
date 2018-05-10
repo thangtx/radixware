@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.wps.rwt;
 
 import java.awt.Color;
@@ -18,22 +17,31 @@ import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientApplication;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EHtmlColor;
 import org.radixware.kernel.common.client.env.progress.ProgressHandleManager;
 import org.radixware.kernel.common.client.utils.IContextEnvironment;
 import org.radixware.kernel.common.client.widgets.IPeriodicalTask;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.client.widgets.TimerEventHandler;
+import org.radixware.kernel.common.enums.EKeyEvent;
 import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.common.html.ICssStyledItem;
 import org.radixware.kernel.common.html.IHtmlUser;
+import org.radixware.kernel.common.html.ToolTip;
 import org.radixware.wps.HttpQuery;
+import org.radixware.wps.HttpSessionTerminatedError;
+import org.radixware.wps.WebServerRunParams;
 import org.radixware.wps.WpsEnvironment;
+import org.radixware.wps.rwt.events.AbstractEventFilter;
+import org.radixware.wps.rwt.events.ContextMenuEventFilter;
+import org.radixware.wps.rwt.events.ContextMenuHtmlEvent;
+import org.radixware.wps.rwt.events.EHtmlEventType;
+import org.radixware.wps.rwt.events.HtmlEvent;
 import org.radixware.wps.rwt.uploading.FileUploader;
 import org.radixware.wps.text.ECssPropertyName;
 import org.radixware.wps.text.ECssTextOptionsStyle;
 import org.radixware.wps.text.WpsFont;
 import org.radixware.wps.text.WpsTextOptions;
-
 
 public class UIObject implements IWidget, IHtmlUser {
 
@@ -216,10 +224,38 @@ public class UIObject implements IWidget, IHtmlUser {
         html.setAttr("title", toolTipText);
     }
 
+    private ToolTip toolTip;
+    
+    public void setHtmlToolTip(ToolTip toolTip) {
+        if (this.toolTip != null) {
+            getHtml().remove(this.toolTip);
+            this.toolTip = null;
+        }
+        if (toolTip != null) {
+            toolTip.setCss("visibility", "hidden");
+            toolTip.setCss("position", "absolute");
+            this.toolTip = toolTip;
+            getHtml().add(toolTip);
+        } 
+    }
+    
     public String getToolTip() {
         return html.getAttr("title");
     }
+    
+    public void setContextMenu(RwtMenu menu) {
+        this.menu = menu;
+        this.menu.setMenuClosedListener(menuClosedListener);
+        subscribeToEvent(new ContextMenuEventFilter(EKeyEvent.VK_CANCEL)); 
+    }
 
+    private final RwtMenu.ClosedListener menuClosedListener = new RwtMenu.ClosedListener() {
+        @Override
+        public void close() {
+            UIObject.this.closeDropDown();
+        }
+    };
+    
     public enum SizePolicy {
 
         PREFERRED,
@@ -243,7 +279,10 @@ public class UIObject implements IWidget, IHtmlUser {
     private List<PeriodicalTask> timers = null;
     private volatile FileUploader fileUploader;
     private String defaultClassName;
-
+    private List<AbstractEventFilter> eventList = null;
+    private AbstractMenuContainer menuContainer;
+    private RwtMenu menu;
+    
     private List<PeriodicalTask> getTimers() {
         return timers;
     }
@@ -315,6 +354,9 @@ public class UIObject implements IWidget, IHtmlUser {
     protected UIObject(Html html) {
         this.html = html;
         setDefaultClassName("rwt-ui-element");
+        if (WebServerRunParams.getIsDevelopmentMode()){
+            html.setAttr("jClassName", getClass().getName());
+        }
     }
 
     public Anchors getAnchors() {
@@ -343,8 +385,13 @@ public class UIObject implements IWidget, IHtmlUser {
     }
 
     @Override
-    public void setObjectName(String name) {
+    public void setObjectName(final String name) {
         this.objectName = name;
+        final IClientEnvironment environment = IClientEnvironment.Locator.getEnvironment();
+        if (environment instanceof WpsEnvironment
+            && ((WpsEnvironment)environment).getRunParams().writeObjectNamesToHtml()){
+            html.setAttr("objName", objectName);
+        }
     }
 
     @Override
@@ -473,8 +520,103 @@ public class UIObject implements IWidget, IHtmlUser {
         if (html.getId().equals(id)) {
             return this;
         } else {
+            if (menuContainer != null) {
+                return menuContainer.findObjectByHtmlId(id);
+            }
             return null;
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void subscribeToEvent(AbstractEventFilter newEventFilter) {
+        boolean isExists = false;
+        if (eventList == null) {
+            eventList = new LinkedList<>();
+        }
+        if (eventList.isEmpty()) {
+            eventList.add(newEventFilter);
+            addEventFilterToHmtl(newEventFilter);
+        } else {
+            for (AbstractEventFilter eventFilter : eventList) {
+                if (eventFilter.getType().equals(newEventFilter.getType())) {
+                    if (eventFilter.merge(newEventFilter)) {
+                        addEventFilterToHmtl(eventFilter);
+                    }
+                    isExists = true;
+                    break;
+                }
+            }
+            if (!isExists) {
+                eventList.add(newEventFilter);
+                addEventFilterToHmtl(newEventFilter);
+            }
+        }
+    }
+    
+    private void addEventFilterToHmtl(AbstractEventFilter eventFilter) {
+        if (eventFilter instanceof ContextMenuEventFilter) {
+            this.getHtml().setAttr("contextMenu", "true");
+        }
+        this.getHtml().setAttr(eventFilter.getType().getValue() + "Params", eventFilter.toJSONString());
+        this.getHtml().setAttr(eventFilter.getType().getValue(), "$RWT.onFilteredEvent");
+    }
+    
+    public void unsubscribeFromEvent(EHtmlEventType eventType) {
+        if (eventList!=null && !eventList.isEmpty()){
+            if (eventType.equals(EHtmlEventType.CONTEXTMENU)) {
+                this.getHtml().setAttr("contextMenu", null);
+            }
+            final List<AbstractEventFilter> copyList = new LinkedList<>(eventList);
+            for (AbstractEventFilter eventFilter : copyList) {
+                if (eventFilter.getType()==eventType) {
+                    eventList.remove(eventFilter);
+                    this.getHtml().setAttr(eventType.getValue() + "Params", null);
+                    this.getHtml().setAttr(eventType.getValue(), null);
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void unmerge(AbstractEventFilter newEventFilter) {
+        if (eventList != null || !eventList.isEmpty()) {
+            for (AbstractEventFilter eventFilter : eventList) {
+                if (eventFilter.getType().equals(newEventFilter.getType())) {
+                    if (eventFilter.unmerge(newEventFilter)) {
+                        this.getHtml().setAttr(eventFilter.getType().getValue() + "Params", eventFilter.toJSONString());
+                        this.getHtml().setAttr(eventFilter.getType().getValue(), "$RWT.onFilteredEvent");
+                    }
+                }
+            }
+        }
+    }
+
+    protected void processHtmlEvent(HtmlEvent event) {
+        if (event instanceof ContextMenuHtmlEvent) {
+            if (menuContainer != null) {
+                UIObject.this.closeDropDown();
+            } else if (beforeShowContextMenu()) {
+                    exposeMenu(((ContextMenuHtmlEvent)event).getParams());
+                }
+            }
+    }
+    
+    private void exposeMenu(String coordinates) {
+        this.getHtml().setAttr("menuId", menu.getHtmlId());
+        menu.getHtml().setAttr("coordinates", coordinates);
+        menu.getHtml().setAttr("handler_id", this.getHtmlId()); //to getNextZIndex in js dropdown layout
+        menuContainer = new AbstractMenuContainer(menu, this.findRoot());
+    }
+    
+    private void closeDropDown() {
+        if (menuContainer != null) {
+            menuContainer.destroy();
+            menuContainer = null;
+        }
+    }
+    
+    protected boolean beforeShowContextMenu() {
+        return true;
     }
 
     public void processEvent(String eventString, String paramString) {
@@ -493,6 +635,14 @@ public class UIObject implements IWidget, IHtmlUser {
                 fileUploader.processUploadStartedAjaxAction();
             } else if ("upload-rejected".equals(actionName)) {
                 fileUploader.processUploadRejectedAjaxAction();
+            } 
+        }
+        if ("close-drop-down".equals(actionName)) {
+            closeDropDown();
+        } else if ("filteredevent".equals(actionName)) {
+            final HtmlEvent event = HtmlEvent.Factory.parseHtmlEventFromJsonString(actionParam);
+            if (event!=null){
+                processHtmlEvent(event);
             }
         }
     }
@@ -508,7 +658,6 @@ public class UIObject implements IWidget, IHtmlUser {
 
     public void accept(HttpQuery query) {
         try {
-
             RootPanel root = findRoot();
             if (root != null) {
                 root.resetFocused();
@@ -545,6 +694,7 @@ public class UIObject implements IWidget, IHtmlUser {
                             root = findRoot();
                         }
                         if (root != null) {
+                            root.startTimerTracking();
                             root.activeTimerCount(((UIObject) root).processTimerEvent(false));
                         }
                     } else {
@@ -585,6 +735,8 @@ public class UIObject implements IWidget, IHtmlUser {
                     }
                 }
             }
+        } catch (HttpSessionTerminatedError ex) {
+            ex.trace();
         } catch (Throwable e) {
             try {
                 getEnvironment().processException(e);
@@ -843,7 +995,17 @@ public class UIObject implements IWidget, IHtmlUser {
     }
 
     protected static Color colorFromStr(String str) {
-        return Color.decode(str);
+        try {
+            return Color.decode(str);
+        } catch (NumberFormatException ex) {
+            EHtmlColor color;
+            try{
+                color = EHtmlColor.forValue(str);
+            } catch (IllegalArgumentException exeption) {
+                return null;
+            }
+            return Color.decode(color.getHexCode());
+        }
     }
 
     protected static String color2Str(Color c) {
@@ -861,7 +1023,7 @@ public class UIObject implements IWidget, IHtmlUser {
         }
 
         return "#" + r + g + b;
-    }        
+    }
 
     protected boolean fontSizePersistent() {
         return true;
@@ -954,14 +1116,14 @@ public class UIObject implements IWidget, IHtmlUser {
             }
         }
     }
-    
-    public void setBorderBoxSizingEnabled(final boolean isEnabled){
-        if (isEnabled){
+
+    public void setBorderBoxSizingEnabled(final boolean isEnabled) {
+        if (isEnabled) {
             html.addClass("rwt-ui-element-with-border");
-        }else{
+        } else {
             html.removeClass("rwt-ui-element-with-border");
         }
-    }    
+    }
 
     private static void removeStyles(final String[] styleNames, final ICssStyledItem html) {
         if (styleNames != null && html != null) {
@@ -1135,5 +1297,5 @@ public class UIObject implements IWidget, IHtmlUser {
 
     public FileUploader getFileUploader() {
         return fileUploader;
-    }
+    }     
 }

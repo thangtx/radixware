@@ -107,24 +107,25 @@ public class APICompatibilityVerifier {
             System.out.println("No exceptional packages detected. Will report all errors");
         } else {
             System.out.println("Following exceptional package name prefixes detected (grouped by layer): ");
-            for (String uri : layer2PackageMap.keySet()) {
-                List<String> list = layer2PackageMap.get(uri);
-                System.out.println(uri);
-                for (String s : list) {
+            for (Map.Entry<String, List<String>> e : layer2PackageMap.entrySet()) {
+                System.out.println(e.getKey());
+                for (String s : e.getValue()) {
                     System.out.println("   " + s);
                 }
             }
             System.out.println("Errors on binding with classes, whose package name starts from on of names listed above, will be treated as warnings and may only appears in output");
         }
 
-        PatchClassFileLinkageVerifier verifier = new PatchClassFileLinkageVerifier(repository, layerPathList, null, null, true, null, false) {
+        final BranchHolderParams branchParams = new BranchHolderParams(repository, layerPathList, null, null, true, null);
+        PatchClassFileLinkageVerifier verifier = new PatchClassFileLinkageVerifier(branchParams, false) {
             @Override
             public void error(Exception e) {
                 e.printStackTrace(System.err);
                 ByteArrayOutputStream bout = new ByteArrayOutputStream();
-                PrintStream ps = new PrintStream(bout);
-                e.printStackTrace(ps);
+                PrintStream ps;
                 try {
+                    ps = new PrintStream(bout, false, "UTF-8");
+                    e.printStackTrace(ps);
                     errorsSummary.add(new String(bout.toByteArray(), "UTF-8"));
                 } catch (UnsupportedEncodingException ex) {
                 }

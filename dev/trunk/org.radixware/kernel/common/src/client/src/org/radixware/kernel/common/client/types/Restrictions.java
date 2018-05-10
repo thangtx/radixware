@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
+import org.radixware.kernel.common.client.meta.RadCommandDef;
 import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.types.Id;
 
@@ -53,14 +54,21 @@ public class Restrictions {
     public final static Restrictions READ_ONLY = 
         Factory.newInstance(EnumSet.of(ERestriction.CREATE, ERestriction.DELETE, ERestriction.UPDATE, ERestriction.NOT_READ_ONLY_COMMANDS), null);
     
-    public final static Restrictions CONTEXTLESS_SELECT = 
-        Factory.newInstance(EnumSet.of(ERestriction.COPY, ERestriction.CREATE, ERestriction.DELETE_ALL,
-                ERestriction.MOVE, ERestriction.MULTIPLE_COPY), null);
+    public final static Restrictions CONTEXTLESS_SELECT= new Restrictions(ERestriction.COPY, ERestriction.CREATE, ERestriction.DELETE_ALL,
+        ERestriction.MOVE, ERestriction.MULTIPLE_COPY, ERestriction.NOT_READ_ONLY_COMMANDS);
+    
+    private final EnumSet<ERestriction> PROGRAMMATICALLY_RESTRICTIONS = 
+        EnumSet.of(ERestriction.CHANGE_POSITION, ERestriction.NOT_READ_ONLY_COMMANDS, ERestriction.MULTIPLE_SELECTION,
+                   ERestriction.MULTIPLE_DELETE, ERestriction.SELECT_ALL, ERestriction.MULTIPLE_CREATE, ERestriction.CALC_STATISTIC);
 
+    private Restrictions(final ERestriction... restrictions){
+        this.restrictions.addAll(Arrays.<ERestriction>asList(restrictions));
+    }
+    
     Restrictions(
             final EnumSet<ERestriction> restrictions) {
         this.restrictions.addAll(restrictions);
-        this.restrictions.remove(ERestriction.CHANGE_POSITION);
+        this.restrictions.removeAll(PROGRAMMATICALLY_RESTRICTIONS);
     }
 
     Restrictions(
@@ -68,7 +76,7 @@ public class Restrictions {
             final List<Id> enabledCommandIds // not null if ANY_COMMAND set
             ) {
         this.restrictions.addAll(restrictions);
-        this.restrictions.remove(ERestriction.CHANGE_POSITION);
+        this.restrictions.removeAll(PROGRAMMATICALLY_RESTRICTIONS);
         if (enabledCommandIds != null) {
             this.enabledCommandIds = new ArrayList<>(enabledCommandIds);
         } else {
@@ -81,7 +89,7 @@ public class Restrictions {
             final Id[] enabledCommandIds // not null if ANY_COMMAND set
             ) {
         this.restrictions.addAll(restrictions);
-        this.restrictions.remove(ERestriction.CHANGE_POSITION);
+        this.restrictions.removeAll(PROGRAMMATICALLY_RESTRICTIONS);
         if (enabledCommandIds != null) {
             this.enabledCommandIds = Arrays.asList(enabledCommandIds);
         } else {
@@ -109,12 +117,24 @@ public class Restrictions {
      * @param cmdId идентификатор команды
      * @return <code>true</code> если выполнение команды запрещено
      */
+    @Deprecated
     public boolean getIsCommandRestricted(final Id cmdId) {
+        return getIsCommandRestricted(cmdId, false);
+    }
+    
+    public boolean getIsCommandRestricted(final Id cmdId, final boolean isReadOnly) {
+        if ( restrictions.contains(ERestriction.NOT_READ_ONLY_COMMANDS) && !isReadOnly ){
+            return true;
+        }
         if (restrictions.contains(ERestriction.ANY_COMMAND)) {
             return (enabledCommandIds == null) || !enabledCommandIds.contains(cmdId);
         } else {
             return false;
         }
+    }
+    
+    public boolean getIsCommandRestricted(final RadCommandDef commandDef) {
+        return getIsCommandRestricted(commandDef.getId(), commandDef.isReadOnly());
     }
     
     public boolean getIsNotReadOnlyCommandsRestricted(){
@@ -288,6 +308,24 @@ public class Restrictions {
      */    
     public boolean getIsMultipleDeleteRestricted(){
         return isRestricted(ERestriction.MULTIPLE_DELETE);
+    }
+    
+    /**
+     * Проверка наличия ограничения на пакетное создание объектов.
+     * Метод возвращает <code>true</code>, если запрещено создавать несколько объектов за один раз и <code>false</code>, если нет.
+     * @return <code>true</code> если запрещено пакетное создание объектов
+     */    
+    public boolean getIsMultipleCreateRestricted(){
+        return isRestricted(ERestriction.MULTIPLE_CREATE);
+    }    
+
+    /**
+     * Проверка наличия ограничения на выполнение операции расчета статистики по выборке селектора.
+     * Метод возвращает <code>true</code>, если операция расчета статистики запрещена <code>false</code>, если нет.
+     * @return <code>true</code> если запрещена операция расчета статистики
+     */    
+    public boolean getIsCalcStatisticRestricted(){
+        return isRestricted(ERestriction.CALC_STATISTIC);
     }
 
     /**

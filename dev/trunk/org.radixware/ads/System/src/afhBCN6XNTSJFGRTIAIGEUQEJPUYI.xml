@@ -1,0 +1,2999 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="afhBCN6XNTSJFGRTIAIGEUQEJPUYI" Name="ManageInstancesForm" TitleId="mlsTUNI257UEJBALAC3FAI6IXTPO4" Type="19" ClientEnvironment="explorer">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderafhBCN6XNTSJFGRTIAIGEUQEJPUYI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyafhBCN6XNTSJFGRTIAIGEUQEJPUYI"/>
+    </Bodies>
+    <MethodGroup Id="cmgYVPFA566QJADBHOQPVFQUSXVJ4" Name="Root"/>
+    <PropertyGroup Id="cpgMX5AOB5GBNCCPFNEDRT252PYNQ" Name="Root"/>
+    <Properties>
+      <Property Id="prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Name="instancesInfo" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstancesInfoDocument"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prdB24NUN4P3JD37HBIBL56CJFFXA" Name="task" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTaskDocument"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Name="action" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21" Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthTYWXJRLODNAT7LXOISEO5SFPZU" Name="onSubmit" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="context" Id="mpr3ZL27TQHTVFCRIR4GVTRXY27UY">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.Context"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA">
+                <xsc:Presentation>Types::FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> result = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVXUX5KTNEBGYNALK4JPIC22X7I">
+                <xsc:Presentation>SysManagementUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVXUX5KTNEBGYNALK4JPIC22X7I mthAYBWXY4GJFG3XA2JVPTMZHOAV4" Invoke="true">
+                <xsc:Presentation>execTask</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdB24NUN4P3JD37HBIBL56CJFFXA" Invoke="true">
+                <xsc:Presentation>task</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ManageInstancesTask);
+if (result != null &amp;&amp; result.messageBox != null &amp;&amp; result.messageBox.type == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsA6YQGK7TJXNRDCHCABIFNQAABA aci4GAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogType:Error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+    return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(result.messageBox, this);
+} else {
+    return result;
+}
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthcmdVWVHM56IX5HZPPSEYYTY2YL3NM" Name="onCommand_reread" Nature="1" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="202">
+                <xsc:Presentation>ArrInt</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ids = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="202">
+                <xsc:Presentation>ArrInt</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                <xsc:Presentation>instancesInfo</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    for (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstanceInfo">
+                <xsc:Presentation>SysManagementXsd:SystemInstanceInfo</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> info : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                <xsc:Presentation>instancesInfo</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSystemInstancesInfo().getSystemInstances().getSystemInstanceInfoList()) {
+        ids.add(info.Id);
+    }
+}
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                <xsc:Presentation>instancesInfo</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVXUX5KTNEBGYNALK4JPIC22X7I">
+                <xsc:Presentation>SysManagementUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVXUX5KTNEBGYNALK4JPIC22X7I mthTDEBS537GBG4BP37BVRQNFYONA" Invoke="true">
+                <xsc:Presentation>getInstancesInfo</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ids);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthcmdLH6OS7LWVNE57GPXIAGG5O24MY" Name="onCommand_restartSelected" Nature="1" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcVXUX5KTNEBGYNALK4JPIC22X7I">
+                <xsc:Presentation>SysManagementUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcVXUX5KTNEBGYNALK4JPIC22X7I mthAYBWXY4GJFG3XA2JVPTMZHOAV4" Invoke="true">
+                <xsc:Presentation>execTask</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdB24NUN4P3JD37HBIBL56CJFFXA" Invoke="true">
+                <xsc:Presentation>task</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.ManageInstancesTask);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Presentations>
+      <Form InheritanceMask="0">
+        <Model Id="afmBCN6XNTSJFGRTIAIGEUQEJPUYI" Name="ManageInstancesForm:Model" Type="18">
+          <AccessRules IsPublished="false"/>
+          <Headers>
+            <Src Name="HeaderafmBCN6XNTSJFGRTIAIGEUQEJPUYI"/>
+          </Headers>
+          <Bodies>
+            <Src Name="BodyafmBCN6XNTSJFGRTIAIGEUQEJPUYI">
+              <xsc:Item>
+                <xsc:Java>private boolean skip[];
+private int delaySec[];
+private int size = -1;
+private int indexes[];
+private static final int SKIP_COL = 0;
+private static final int STATUS_COL = 1;
+private static final int NAME_COL = 2;
+private static final int DELAY_COL = 3;
+private static final int REVISION_COL = 4;
+private static final int KERNEL_COL = 5;
+private static final int APP_COL = 6;
+private static final int ARTE_COL = 7;
+
+private class InstancesTableModel extends </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcEOGNS4A7JBB57CRTDJZEKFYC4A">
+                  <xsc:Presentation>Explorer.Qt.Types::QAbstractTableModel</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> {
+
+    private final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstancesInfo">
+                  <xsc:Presentation>SysManagementXsd:SystemInstancesInfo</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> info;
+
+    private final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU">
+                  <xsc:Presentation>Client.Env::ClientEnvironment</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> env;
+
+    public InstancesTableModel(final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstancesInfo">
+                  <xsc:Presentation>SysManagementXsd:SystemInstancesInfo</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> info, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU">
+                  <xsc:Presentation>Client.Env::ClientEnvironment</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> env) {
+        this.env = env;
+        this.info = info;
+    }
+
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTaskDocument">
+                  <xsc:Presentation>SysManagementXsd:ManageInstancesTaskDocument</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> prepareTask() {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTaskDocument">
+                  <xsc:Presentation>SysManagementXsd:ManageInstancesTaskDocument</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> xDoc = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTaskDocument">
+                  <xsc:Presentation>SysManagementXsd:ManageInstancesTaskDocument</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Factory.newInstance();
+        xDoc.addNewManageInstancesTask().setAction(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value);
+        for (int i = 0; i &lt; size; i++) {
+            if (!isDoSkip(indexes[i])) {
+                </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTask.TaskItem">
+                  <xsc:Presentation>SysManagementXsd:ManageInstancesTask.TaskItem</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> item = xDoc.getManageInstancesTask().addNewTaskItem();
+                item.Id = getInfoAtRow(i).Id;
+                if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> || </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgK5H3UASPPVFWLCWFG24WGBQ2PU" Invoke="true">
+                  <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTop:frame:rbRollingSwitch</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.isChecked()) {
+                    item.DelaySec = Math.max(0, </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prd22QOYWAUK5B5TNQ5YF4KOCLE7M" Invoke="true">
+                  <xsc:Presentation>delaySec</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value.longValue());
+                }
+            }
+        }
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgK5H3UASPPVFWLCWFG24WGBQ2PU" Invoke="true">
+                  <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTop:frame:rbRollingSwitch</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.isChecked()) {
+            xDoc.getManageInstancesTask().setSwitchRolling(true);
+        }
+        if ((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci3Q45KFXQD5DCRNSE77BYHOU4KA" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:STOP</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>
+                || </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>
+                || (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgJCM47VKX4ZA6LLAPMSUE2BIVDE" Invoke="true">
+                  <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTop:frame:rbSyncSwitch</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.isChecked())) &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdYJTQX3V3LVB2ZOSKATRXCIWRXM" Invoke="true">
+                  <xsc:Presentation>timeoutBeforeHardStop</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value != null) {
+            xDoc.getManageInstancesTask().setHardStopDelaySec(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdYJTQX3V3LVB2ZOSKATRXCIWRXM" Invoke="true">
+                  <xsc:Presentation>timeoutBeforeHardStop</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value);
+        }
+        if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci3Q45KFXQD5DCRNSE77BYHOU4KA" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:STOP</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> &amp;&amp; </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdNWLJMYIISVB33E3H6N42EJWSIQ" Invoke="true">
+                  <xsc:Presentation>markInactiveAsStopped</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value != null) {
+            xDoc.getManageInstancesTask().setMarkInactiveAsStopped(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdNWLJMYIISVB33E3H6N42EJWSIQ" Invoke="true">
+                  <xsc:Presentation>markInactiveAsStopped</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value);
+        }
+        return xDoc;
+    }
+
+    public </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstanceInfo">
+                  <xsc:Presentation>SysManagementXsd:SystemInstanceInfo</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> getInfoAtRow(final int row) {
+        return info.getSystemInstances().getSystemInstanceInfoArray(indexes[row]);
+    }
+
+    public boolean moveUp(final int row) {
+        if (row > 0) {
+            int tmp = indexes[row];
+            indexes[row] = indexes[row - 1];
+            indexes[row - 1] = tmp;
+            this.dataChanged.emit(this.createIndex(row - 1, 0), this.createIndex(row, 6));
+            return true;
+        }
+        return false;
+    }
+
+    public boolean moveDown(final int row) {
+        if (row &lt; size - 1) {
+            int tmp = indexes[row];
+            indexes[row] = indexes[row + 1];
+            indexes[row + 1] = tmp;
+            this.dataChanged.emit(this.createIndex(row, 0), this.createIndex(row + 1, 6));
+            return true;
+        }
+        return false;
+    }
+
+    public int columnCount(final com.trolltech.qt.core.QModelIndex index) {
+        return 8;
+    }
+
+    public int rowCount(final com.trolltech.qt.core.QModelIndex index) {
+        return size;
+    }
+
+    public com.trolltech.qt.core.Qt.ItemFlags flags(final com.trolltech.qt.core.QModelIndex index) {
+        com.trolltech.qt.core.Qt.ItemFlags f = super.flags(index);
+        final com.trolltech.qt.core.Qt.ItemFlag[] editableFlags = new com.trolltech.qt.core.Qt.ItemFlag[]{com.trolltech.qt.core.Qt.ItemFlag.ItemIsEnabled, com.trolltech.qt.core.Qt.ItemFlag.ItemIsEditable};
+        if (index.column() == SKIP_COL) {
+            f.set(new com.trolltech.qt.core.Qt.ItemFlag[]{com.trolltech.qt.core.Qt.ItemFlag.ItemIsEnabled, com.trolltech.qt.core.Qt.ItemFlag.ItemIsUserCheckable});
+        }
+        if (index.column() == DELAY_COL) {
+            if (!skip[indexes[index.row()]]) {
+                f.set(editableFlags);
+            }
+        }
+        if (isDoSkip(indexes[index.row()])) {
+            f.clear(editableFlags);
+            if (!isSkipAbsolutely(indexes[index.row()]) &amp;&amp; index.column() == SKIP_COL) {
+                f.set(editableFlags);
+            }
+        }
+        return f;
+    }
+
+    public boolean setData(final com.trolltech.qt.core.QModelIndex index, Object data, int role) {
+        if (index.column() == SKIP_COL) {
+            skip[indexes[index.row()]] = ((Number) data).intValue() > 0;
+            this.dataChanged.emit(this.createIndex(index.row(), 0), this.createIndex(index.row(), 6));
+        }
+        if (index.column() == DELAY_COL) {
+            try {
+                delaySec[indexes[index.row()]] = Integer.parseInt(String.valueOf(data));
+                this.dataChanged.emit(index, index);
+            } catch (Exception ex) {
+                //ignore
+            }
+        }
+        return true;
+    }
+
+    public Object headerData(int index, com.trolltech.qt.core.Qt.Orientation orientation, int role) {
+        if (orientation == com.trolltech.qt.core.Qt.Orientation.Horizontal) {
+            if (role == com.trolltech.qt.core.Qt.ItemDataRole.DisplayRole) {
+                switch (index) {
+                    case SKIP_COL:
+                        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls2XFJFBFPQRCGDMLLZRMAN2NC6Q"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+                    case STATUS_COL:
+                        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsKSAYCBA2QZBHDPXQKKXRX65KWU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+                    case NAME_COL:
+                        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsK2PQK32PMFE73PRT5V6ZL4QURM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+                    case DELAY_COL:
+                        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsBZM5XEQGFRCTJB22ACV4PBF2NA"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+                    case REVISION_COL:
+                        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsRFFW6BLPK5G7LKEEVSOREPXEGU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+                    case KERNEL_COL:
+                        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls5UPN725PJRHOVATILIUJXPJCXY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+                    case APP_COL:
+                        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls27KITL3DXJCNLKXPTJGC5COTPM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+                    case ARTE_COL:
+                        return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls7WIP7ZVW5ZG35ICCQXC7BABWHM"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+                    default:
+                        return "";
+                }
+            }
+        }
+        return super.headerData(index, orientation, role);
+    }
+
+    public Object data(final com.trolltech.qt.core.QModelIndex index, int role) {
+        int idx = indexes[index.row()];
+        final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstanceInfo">
+                  <xsc:Presentation>SysManagementXsd:SystemInstanceInfo</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> curInfo = info.getSystemInstances().getSystemInstanceInfoList().get(idx);
+        if (role == com.trolltech.qt.core.Qt.ItemDataRole.DisplayRole) {
+            switch (index.column()) {
+                case STATUS_COL:
+                    return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI">
+                  <xsc:Presentation>ActivityStatus</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getForValue(curInfo.getActivityStatus()).Title
+                            + (curInfo.StartTimeMillis != null ? " (" + </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcQ46YBRNDL7ORDI2YABIFNQAABA">
+                  <xsc:Presentation>Utils::Timing</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcQ46YBRNDL7ORDI2YABIFNQAABA mthZTDZERY2EFG4BKALU6UDNWC22Y" Invoke="true">
+                  <xsc:Presentation>millisToDurationString</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(System.currentTimeMillis() - curInfo.StartTimeMillis.longValue()) + ", PID: " + curInfo.getOsPid() + ")" : "");
+                case NAME_COL:
+                    return curInfo.getId() + ") " + curInfo.getTitle();
+                case REVISION_COL:
+                    return curInfo.getRevision()
+                            + getRevisionComment(isStickedToVersionByAadc(curInfo), </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value);
+                case KERNEL_COL:
+                    return curInfo.getKernelVersion()
+                            + getKernelVersionComment(curInfo.getKernelCompatibleToRepo().booleanValue(), </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value);
+                case APP_COL:
+                    return curInfo.getAppVersion();
+                case ARTE_COL:
+                    return curInfo.getArteCount()
+                            + " (~ " + String.format("%.2f", curInfo.getAvgActiveArteCount()) + " " + </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls4WZXXM74CVAZXKX6DS6NQMUUXU"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> + ")";
+                case DELAY_COL:
+                    return delaySec[idx];
+                case SKIP_COL:
+                    return "";
+            }
+        }
+        if (role == com.trolltech.qt.core.Qt.ItemDataRole.CheckStateRole &amp;&amp; index.column() == SKIP_COL) {
+            return isDoSkip(idx) ? com.trolltech.qt.core.Qt.CheckState.Checked : com.trolltech.qt.core.Qt.CheckState.Unchecked;
+        }
+        if (role == com.trolltech.qt.core.Qt.ItemDataRole.DecorationRole &amp;&amp; index.column() == STATUS_COL) {
+            final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI">
+                  <xsc:Presentation>ActivityStatus</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> status = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI">
+                  <xsc:Presentation>ActivityStatus</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getForValue(info.getSystemInstances().getSystemInstanceInfoList().get(idx).getActivityStatus());
+            return </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="411" Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA">
+                  <xsc:Presentation>Explorer.Icons::ExplorerIcon</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCUZTMTWLPFABNGEX6P6X2PHQVA mthGOXABA2FJRCXVKOZSRO4RWHIVU" Invoke="true">
+                  <xsc:Presentation>getQIcon</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(env.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true">
+                  <xsc:Presentation>getDefManager</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>().</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc53GYAPZQEBEQLNPUG64TNAO5F4 mthZIKIJPZTQFHYXCEWHV6RNLN4CQ" Invoke="true">
+                  <xsc:Presentation>getImage</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI">
+                  <xsc:Presentation>ActivityStatus</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.RadMeta.getItemByVal(status.getValue()).IconId));
+        }
+
+        boolean markDiff = false;
+        boolean markError = false;
+
+        if (index.column() == REVISION_COL &amp;&amp; curInfo.Revision != </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                  <xsc:Presentation>instancesInfo</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value.getSystemInstancesInfo().getRepoRevision()) {
+            markDiff = true;
+        }
+        if (index.column() == KERNEL_COL &amp;&amp; curInfo.KernelVersion != </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                  <xsc:Presentation>instancesInfo</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value.getSystemInstancesInfo().getRepoKernelVersion()) {
+            if (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> &amp;&amp; !curInfo.getKernelCompatibleToRepo().booleanValue()) {
+                markError = true;
+            }
+            markDiff = true;
+        }
+        if (index.column() == APP_COL &amp;&amp; curInfo.AppVersion != </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                  <xsc:Presentation>instancesInfo</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java><![CDATA[.Value.getSystemInstancesInfo().getRepoAppVersion()) {
+            markDiff = true;
+        }
+
+        if (role == com.trolltech.qt.core.Qt.ItemDataRole.ForegroundRole) {
+            if (isDoSkip(idx) && !(index.column() == SKIP_COL && !isSkipAbsolutely(idx))) {
+                return com.trolltech.qt.gui.QColor.gray;
+            }
+            if (markDiff) {
+                return markError ? com.trolltech.qt.gui.QColor.red : com.trolltech.qt.gui.QColor.fromRgb(255, 140, 0);
+            }
+        }
+
+        if (role == com.trolltech.qt.core.Qt.ItemDataRole.FontRole && markDiff) {
+            com.trolltech.qt.gui.QFont font = ]]></xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                  <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthEBGE5HKLUZANTC43RBKSBPXBLY" Invoke="true">
+                  <xsc:Presentation>font</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>();
+            font.setBold(true);
+            font.setUnderline(true);
+            return font;
+        }
+
+        return null;
+    }
+
+    private String getKernelVersionComment(final boolean compatible, final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ">
+                  <xsc:Presentation>InstanceManagementAction</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> action) {
+        if (compatible) {
+            return " " + </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsXHSBKO7WSFG6TM5YRH4YWJ2C5Y"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+        }
+        return " " + </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mlsLDHL4TYFYNG6PIGUB7QD2I3GOY"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+    }
+
+    private String getRevisionComment(final boolean aadcSticked, final </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ">
+                  <xsc:Presentation>InstanceManagementAction</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> action) {
+        if (action == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+            if (aadcSticked) {
+                return " " + </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:LocalizedString StringId="mls2VZ46QIPTJHDJKNLC3FZVAPZJI"/>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>;
+            }
+        }
+        return "";
+    }
+
+    private boolean isDoSkip(int idx) {
+        return skip[idx] || isSkipAbsolutely(idx);
+    }
+
+    private boolean isSkipAbsolutely(final int idx) {
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstanceInfo">
+                  <xsc:Presentation>SysManagementXsd:SystemInstanceInfo</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> instInfo = info.getSystemInstances().getSystemInstanceInfoList().get(idx);
+        </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI">
+                  <xsc:Presentation>ActivityStatus</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> status = </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="21" Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI">
+                  <xsc:Presentation>ActivityStatus</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.getForValue(instInfo.ActivityStatus);
+        return ((</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> || </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) &amp;&amp; status != </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI aciBTRZ4SFW6JGJLFVHCXNSLARBUM" Invoke="true">
+                  <xsc:Presentation>ActivityStatus:RUNNING</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)
+                || (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci3Q45KFXQD5DCRNSE77BYHOU4KA" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:STOP</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java> &amp;&amp; status == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsR6P4CGKI2RF77BXRMWNZWXWDLI aciMPWAGZE5PVG4VGQ4A2YDJ3J77I" Invoke="true">
+                  <xsc:Presentation>ActivityStatus:STOPPED</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>)
+                || (</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                  <xsc:Presentation>action</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                  <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>
+                &amp;&amp; ((instInfo.Revision == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                  <xsc:Presentation>instancesInfo</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>.Value.getSystemInstancesInfo().RepoRevision)
+                || (!instInfo.getKernelCompatibleToRepo().booleanValue())
+                || isStickedToVersionByAadc(instInfo)));
+    }
+
+    private boolean isStickedToVersionByAadc(</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="SystemInstanceInfo">
+                  <xsc:Presentation>SysManagementXsd:SystemInstanceInfo</xsc:Presentation>
+                </xsc:TypeDeclaration>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java><![CDATA[ instInfo) {
+        if (instInfo.AadcMemberId == null) {
+            return false;
+        }
+        return instInfo.AadcMemberId == 1 && info.AadcMember1StickedVersion != null && info.AadcMember1StickedVersion.longValue() != -1l && info.RepoRevision != info.AadcMember1StickedVersion
+                || instInfo.AadcMemberId == 2 && info.AadcMember2StickedVersion != null && info.AadcMember2StickedVersion.longValue() != -1l && info.RepoRevision != info.AadcMember2StickedVersion;
+
+    }
+
+}]]></xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Bodies>
+          <MethodGroup Id="cmgD3WT4PIEVFCLHI7NHLGEDWL47Q" Name="Root"/>
+          <PropertyGroup Id="cpgAWPGZNQLQRA27MKRJYBQ7PVLA4" Name="Root"/>
+          <Properties>
+            <Property Id="prdYJTQX3V3LVB2ZOSKATRXCIWRXM" Name="timeoutBeforeHardStop" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Type TypeId="2"/>
+              <InitialValue>
+                <ValAsStr>60</ValAsStr>
+              </InitialValue>
+              <DependentItems/>
+              <EmbeddedProperty Id="prdYJTQX3V3LVB2ZOSKATRXCIWRXM" Name="timeoutBeforeHardStop" Nature="2" IsConst="false">
+                <AccessRules IsPublished="false"/>
+                <Type TypeId="2"/>
+                <Presentation TitleId="mlsV2ITBTHKJZFMPE65CMJJJ7SRVU" InheritanceMask="4">
+                  <Editing NotNull="true" IsDuplicatesEnabled="true">
+                    <EditMask>
+                      <edit:Int MaxValue="9999" MinValue="1" NumberBase="10" StepSize="1"/>
+                    </EditMask>
+                  </Editing>
+                </Presentation>
+              </EmbeddedProperty>
+            </Property>
+            <Property Id="prdNWLJMYIISVB33E3H6N42EJWSIQ" Name="markInactiveAsStopped" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Type TypeId="1"/>
+              <InitialValue>
+                <ValAsStr>0</ValAsStr>
+              </InitialValue>
+              <DependentItems/>
+              <EmbeddedProperty Id="prdNWLJMYIISVB33E3H6N42EJWSIQ" Name="markInactiveAsStopped" Nature="2" IsConst="false">
+                <AccessRules IsPublished="false"/>
+                <Type TypeId="1"/>
+                <Presentation TitleId="mlsWP6Y7IVQZFAI5JWV47EBU2CK7M" InheritanceMask="4">
+                  <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+                </Presentation>
+              </EmbeddedProperty>
+            </Property>
+            <Property Id="prdKATZPTJGDVFBZMWJYMSU2RR54M" Name="dbVersion" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Type TypeId="21"/>
+              <DependentItems/>
+              <EmbeddedProperty Id="prdKATZPTJGDVFBZMWJYMSU2RR54M" Name="dbVersion" Nature="2" IsConst="false">
+                <AccessRules IsPublished="false"/>
+                <Type TypeId="21"/>
+                <Presentation TitleId="mlsS6BOT3JNHRBE3I5XJ3RFXFDE34" InheritanceMask="4">
+                  <Editing EditPossibility="5" IsDuplicatesEnabled="true"/>
+                </Presentation>
+              </EmbeddedProperty>
+            </Property>
+            <Property Id="prdBGHGJOYKEFGMLJ2GFXEQELYQBA" Name="repoVersion" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Type TypeId="21"/>
+              <DependentItems/>
+              <EmbeddedProperty Id="prdBGHGJOYKEFGMLJ2GFXEQELYQBA" Name="repoVersion" Nature="2" IsConst="false">
+                <AccessRules IsPublished="false"/>
+                <Type TypeId="21"/>
+                <Presentation TitleId="mlsUO4FGPY6X5BP3HZZOPM2YDDS3Q" InheritanceMask="4">
+                  <Editing EditPossibility="5" IsDuplicatesEnabled="true"/>
+                </Presentation>
+              </EmbeddedProperty>
+            </Property>
+            <Property Id="prd22QOYWAUK5B5TNQ5YF4KOCLE7M" Name="delaySec" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Type TypeId="2"/>
+              <InitialValue>
+                <ValAsStr>100</ValAsStr>
+              </InitialValue>
+              <DependentItems/>
+              <EmbeddedProperty Id="prd22QOYWAUK5B5TNQ5YF4KOCLE7M" Name="delaySec" Nature="2" IsConst="false">
+                <AccessRules IsPublished="false"/>
+                <Type TypeId="2"/>
+                <Presentation TitleId="mlsCEC3NRFBFVC3FLKVQQAR3FO7V4" InheritanceMask="4">
+                  <Editing NotNull="true" IsDuplicatesEnabled="true">
+                    <EditMask>
+                      <edit:Int MaxValue="9999" MinValue="0" NumberBase="10" StepSize="1"/>
+                    </EditMask>
+                  </Editing>
+                </Presentation>
+              </EmbeddedProperty>
+            </Property>
+          </Properties>
+          <Methods>
+            <Method Id="mthFJEWWPDR25HYZEOFCQRVDEK2BA" Name="EditorPageView_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="widget" Id="mprPNNR5I3HEBGGBABYW3W2GZO6JU">
+                  <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthVKAQOVBGPFEABDZJHSDH7GZS7A" Invoke="true">
+                      <xsc:Presentation>setSelectionBehavior</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y">
+                      <xsc:Presentation>Explorer.Qt.Types::QAbstractItemView</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.SelectionBehavior.SelectRows);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthMMEVOSVFYZC7LKJBRPRM3UDBK4" Invoke="true">
+                      <xsc:Presentation>setSelectionMode</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y">
+                      <xsc:Presentation>Explorer.Qt.Types::QAbstractItemView</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.SelectionMode.SingleSelection);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.clicked.connect(this, </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI mthEASSV577MJGXNKRGXV35TF4CKA">
+                      <xsc:Presentation>ManageInstancesForm:ManageInstancesForm:Model:updateButtonsState</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcELH54EKVCJAATNTLFHHCSVHPZU mthCX6FRHR4VNG37LJWH7N6THCMMA" Invoke="true">
+                      <xsc:Presentation>toString</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() + "()");
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI mthDPLRBHRIKNF45OOAIY7LC2H424" Invoke="true">
+                      <xsc:Presentation>updateTableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+
+com.trolltech.qt.gui.QButtonGroup bgSwitchMode = new com.trolltech.qt.gui.QButtonGroup(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdg6MMMYOELLJHZ5D3YJAZN7QO3Z4" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTop</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+bgSwitchMode.addButton(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgK5H3UASPPVFWLCWFG24WGBQ2PU" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTop:frame:rbRollingSwitch</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+bgSwitchMode.addButton(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgJCM47VKX4ZA6LLAPMSUE2BIVDE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTop:frame:rbSyncSwitch</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgK5H3UASPPVFWLCWFG24WGBQ2PU" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTop:frame:rbRollingSwitch</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgJCM47VKX4ZA6LLAPMSUE2BIVDE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTop:frame:rbSyncSwitch</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgJCM47VKX4ZA6LLAPMSUE2BIVDE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTop:frame:rbSyncSwitch</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setChecked(true);
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdYJTQX3V3LVB2ZOSKATRXCIWRXM" Invoke="true">
+                      <xsc:Presentation>timeoutBeforeHardStop</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci3Q45KFXQD5DCRNSE77BYHOU4KA" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:STOP</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> || </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+
+if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdYJTQX3V3LVB2ZOSKATRXCIWRXM" Invoke="true">
+                      <xsc:Presentation>timeoutBeforeHardStop</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthDGGAZAISHBF6LD64QKB7VKQUR4" Invoke="true">
+                      <xsc:Presentation>setTitle</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:LocalizedString StringId="mlsTF6UHHHMWNGLDNCB3MSEKOKOSY"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdYJTQX3V3LVB2ZOSKATRXCIWRXM" Invoke="true">
+                      <xsc:Presentation>timeoutBeforeHardStop</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(true);
+}
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdNWLJMYIISVB33E3H6N42EJWSIQ" Invoke="true">
+                      <xsc:Presentation>markInactiveAsStopped</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci3Q45KFXQD5DCRNSE77BYHOU4KA" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:STOP</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prd22QOYWAUK5B5TNQ5YF4KOCLE7M" Invoke="true">
+                      <xsc:Presentation>delaySec</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgLGS52LSHTZHNHFOKAZ66RXAEVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:frButtons:btDown</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgJW37GC3LNZAGBE4D62DXY3RMKQ" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:frButtons:btUp</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdg4GPNG77A6NB55JDOB7LBOIY3C4" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:frButtons:btRestartSelected</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthDZAAN73V6ZB6PK65BYUFXICFLM" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+
+setTitle(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthTY5EMSI2EBDPLL7SNAHV7FO6D4" Invoke="true">
+                      <xsc:Presentation>getTitle</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() + " (" + </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.getTitle() + ")");
+</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthIJZ4STEMMZG45PXUZVTU7FPVNU" Name="btUp_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="checked" Id="mprRIHNDMVWFJEXXIFGZLYUPWERJU">
+                  <Type TypeId="1"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthGSAQSORGPRBLLLD5TVNWOJ2SNA" Invoke="true">
+                      <xsc:Presentation>selectionModel</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().hasSelection()) {
+    int curRow = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthGSAQSORGPRBLLLD5TVNWOJ2SNA" Invoke="true">
+                      <xsc:Presentation>selectionModel</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().selectedRows().get(0).row();
+    if (((InstancesTableModel) </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthDOIOS6D5TRAXZHE55KCD6Z7B4M" Invoke="true">
+                      <xsc:Presentation>model</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>()).moveUp(curRow)) {
+        </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.selectRow(curRow - 1);
+    }
+}</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mth5B3HDAUKQZG3BMEOFEEQVTVRLU" Name="btDown_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="checked" Id="mpr2FTCS6PIPNH7HJZSR577PZSFIM">
+                  <Type TypeId="1"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthGSAQSORGPRBLLLD5TVNWOJ2SNA" Invoke="true">
+                      <xsc:Presentation>selectionModel</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().hasSelection()) {
+    int curRow = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthGSAQSORGPRBLLLD5TVNWOJ2SNA" Invoke="true">
+                      <xsc:Presentation>selectionModel</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().selectedRows().get(0).row();
+    if (((InstancesTableModel) </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthDOIOS6D5TRAXZHE55KCD6Z7B4M" Invoke="true">
+                      <xsc:Presentation>model</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>()).moveDown(curRow)) {
+        </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.selectRow(curRow + 1);
+    }
+}</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthV6JRKQ7ISZFOBPLIWLF4GZLLGU" Name="btRestartSelected_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="checked" Id="mprCQKPZH32KVHQTA6UKBY5CVFCBI">
+                  <Type TypeId="1"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTaskDocument">
+                      <xsc:Presentation>SysManagementXsd:ManageInstancesTaskDocument</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> xDoc = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTaskDocument">
+                      <xsc:Presentation>SysManagementXsd:ManageInstancesTaskDocument</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Factory.newInstance();
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" extStr="ManageInstancesTask.TaskItem">
+                      <xsc:Presentation>SysManagementXsd:ManageInstancesTask.TaskItem</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> item = xDoc.addNewManageInstancesTask().addNewTaskItem();
+item.setDelaySec(0);
+int curRow = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthGSAQSORGPRBLLLD5TVNWOJ2SNA" Invoke="true">
+                      <xsc:Presentation>selectionModel</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().selectedRows().get(0).row();
+item.setId(((InstancesTableModel) </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthDOIOS6D5TRAXZHE55KCD6Z7B4M" Invoke="true">
+                      <xsc:Presentation>model</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>()).getInfoAtRow(curRow).Id);
+xDoc.getManageInstancesTask().setAction(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdB24NUN4P3JD37HBIBL56CJFFXA" Invoke="true">
+                      <xsc:Presentation>task</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = xDoc;
+try {
+    ((</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI cmdLH6OS7LWVNE57GPXIAGG5O24MY">
+                      <xsc:Presentation>ManageInstancesForm:restartSelected</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>) </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true">
+                      <xsc:Presentation>getCommand</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI cmdLH6OS7LWVNE57GPXIAGG5O24MY">
+                      <xsc:Presentation>ManageInstancesForm:restartSelected</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>)).send();
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI mthJ7CSZ4HITNH7DCMRR5KSXWZ4UE" Invoke="true">
+                      <xsc:Presentation>btReread_clicked</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(true);
+} catch (Exception ex) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthDJZSTHREHVDTFB323J3RXPJYNY" Invoke="true">
+                      <xsc:Presentation>showException</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(ex);
+}</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthJ7CSZ4HITNH7DCMRR5KSXWZ4UE" Name="btReread_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="checked" Id="mprJPH3RNH2GBHUTLE2QJZD3NMEZE">
+                  <Type TypeId="1"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>try {
+    ((</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI cmdVWVHM56IX5HZPPSEYYTY2YL3NM">
+                      <xsc:Presentation>ManageInstancesForm:reread</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>) </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthBN46PMVUBFADVFFMPLGSSR7ZRM" Invoke="true">
+                      <xsc:Presentation>getCommand</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI cmdVWVHM56IX5HZPPSEYYTY2YL3NM">
+                      <xsc:Presentation>ManageInstancesForm:reread</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>)).send();
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI mthDPLRBHRIKNF45OOAIY7LC2H424" Invoke="true">
+                      <xsc:Presentation>updateTableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+} catch (Exception ex) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthHUS5XHSNB5E3RB6FMGZBODKOSM" Invoke="true">
+                      <xsc:Presentation>showException</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(ex);
+}
+</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthDPLRBHRIKNF45OOAIY7LC2H424" Name="updateTableView" Nature="0" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>if (size == -1) {
+    this.size = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                      <xsc:Presentation>instancesInfo</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.getSystemInstancesInfo().getSystemInstances() != null &amp;&amp; </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                      <xsc:Presentation>instancesInfo</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.getSystemInstancesInfo().getSystemInstances().getSystemInstanceInfoList() != null ? </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                      <xsc:Presentation>instancesInfo</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.getSystemInstancesInfo().getSystemInstances().getSystemInstanceInfoList().size() : 0;
+    delaySec = new int[size];
+    java.util.Arrays.fill(delaySec, 100);
+    if (size > 0) {
+        delaySec[0] = 0;
+    }
+    indexes = new int[size];
+    for (int i = 0; i &lt; size; i++) {
+        indexes[i] = i;
+    }
+    skip = new boolean[size];
+    if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aciNTE3H4E5ZZGPXCMMVJAJAWXP6A" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:RESTART</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>) {
+        for (int i = 0; i &lt; size; i++) {
+            skip[i] = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                      <xsc:Presentation>instancesInfo</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.getSystemInstancesInfo().getSystemInstances().getSystemInstanceInfoList().get(i).getKernelCompatibleToRepo().booleanValue();
+        }
+    }
+}
+int curRow = -1;
+if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthDOIOS6D5TRAXZHE55KCD6Z7B4M" Invoke="true">
+                      <xsc:Presentation>model</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() != null
+        &amp;&amp; </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthGSAQSORGPRBLLLD5TVNWOJ2SNA" Invoke="true">
+                      <xsc:Presentation>selectionModel</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() != null
+        &amp;&amp; </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthGSAQSORGPRBLLLD5TVNWOJ2SNA" Invoke="true">
+                      <xsc:Presentation>selectionModel</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().hasSelection()) {
+    curRow = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthGSAQSORGPRBLLLD5TVNWOJ2SNA" Invoke="true">
+                      <xsc:Presentation>selectionModel</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().selectedRows().get(0).row();
+}
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setModel(new InstancesTableModel(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                      <xsc:Presentation>instancesInfo</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.SystemInstancesInfo, </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcWNJFLWOECRBO7CUXYEJ2KTUCWM mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                      <xsc:Presentation>getEnvironment</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>()));
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.resizeColumnsToContents();
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.horizontalHeader().setStretchLastSection(true);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdKATZPTJGDVFBZMWJYMSU2RR54M" Invoke="true">
+                      <xsc:Presentation>dbVersion</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                      <xsc:Presentation>instancesInfo</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.SystemInstancesInfo.DbVersion;
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdBGHGJOYKEFGMLJ2GFXEQELYQBA" Invoke="true">
+                      <xsc:Presentation>repoVersion</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = String.format(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:LocalizedString StringId="mls4K4AHVQAMBEQXDZFRM7V2SQJE4"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>, </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                      <xsc:Presentation>instancesInfo</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.SystemInstancesInfo.RepoKernelVersion, </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                      <xsc:Presentation>instancesInfo</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.SystemInstancesInfo.RepoAppVersion, </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdTLCIBFWIH5DTBE4JIBKRC7CASQ" Invoke="true">
+                      <xsc:Presentation>instancesInfo</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.SystemInstancesInfo.RepoRevision);
+if (curRow >= 0) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.selectRow(curRow);
+}
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI mthEASSV577MJGXNKRGXV35TF4CKA" Invoke="true">
+                      <xsc:Presentation>updateButtonsState</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdQ4QAE7ARRJCGHGKWBUXS6AWDKE" Invoke="true">
+                      <xsc:Presentation>action</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value == </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="acsBTUYDDEMGFECJEQOMKLX3WZQDQ aci7YGFKOSY4NAN3DHR6ZZFH5NJS4" Invoke="true">
+                      <xsc:Presentation>InstanceManagementAction:SWITCH_VERSION</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setColumnHidden(DELAY_COL, true);
+}
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setColumnHidden(DELAY_COL, true);//use single prop - restart delay
+
+</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthEASSV577MJGXNKRGXV35TF4CKA" Name="updateButtonsState" Nature="0" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>boolean hasSelection = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthGSAQSORGPRBLLLD5TVNWOJ2SNA" Invoke="true">
+                      <xsc:Presentation>selectionModel</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().hasSelection();
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgLGS52LSHTZHNHFOKAZ66RXAEVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:frButtons:btDown</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(hasSelection);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgJW37GC3LNZAGBE4D62DXY3RMKQ" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:frButtons:btUp</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(hasSelection);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdg4GPNG77A6NB55JDOB7LBOIY3C4" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:frButtons:btRestartSelected</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthKMCJWBHQAVHLBJFVFE6KREGTQU" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(hasSelection);</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthWJPXB2Y6UJGNDEMAGIH622AE4E" Name="beforeSubmit" Nature="0" IsOverride="true" isDescriptionInherited="true">
+              <AccessRules/>
+              <ReturnType TypeId="401" extStr="boolean"/>
+              <ThrownExceptions>
+                <Exception TypeId="400" extStr="org.radixware.kernel.common.client.exceptions.ModelException"/>
+                <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+                <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+              </ThrownExceptions>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI prdB24NUN4P3JD37HBIBL56CJFFXA" Invoke="true">
+                      <xsc:Presentation>task</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = ((InstancesTableModel) </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgVSJJAJDBJRHQBIEREWISJB3MVE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView:frTable:tableView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthDOIOS6D5TRAXZHE55KCD6Z7B4M" Invoke="true">
+                      <xsc:Presentation>model</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>()).prepareTask();
+return super.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCICJHDC22RGH5ACUPHLRTZQL6Y mthWJPXB2Y6UJGNDEMAGIH622AE4E" Invoke="true">
+                      <xsc:Presentation>beforeSubmit</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthMEENPUZ6PNDDROCIJFZBBPAO7Q" Name="rbRollingSwitch_toggled" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="checked" Id="mprAA7ADCHDBNFJPAPFYDL737JYGU">
+                  <Type TypeId="1"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgNRFDIBUFZVES5GPBTYSOEAPVBE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthCSA2B6DHZVEMJNXKX6Q35XCPZM" Invoke="true">
+                      <xsc:Presentation>window</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mth56G3XOIY4JDXPDU4NKN7SZLTBY" Invoke="true">
+                      <xsc:Presentation>setUpdatesEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(false);
+try {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prd22QOYWAUK5B5TNQ5YF4KOCLE7M" Invoke="true">
+                      <xsc:Presentation>delaySec</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(checked != null &amp;&amp; checked);
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prdYJTQX3V3LVB2ZOSKATRXCIWRXM" Invoke="true">
+                      <xsc:Presentation>timeoutBeforeHardStop</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                      <xsc:Presentation>setVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(!</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI afmBCN6XNTSJFGRTIAIGEUQEJPUYI prd22QOYWAUK5B5TNQ5YF4KOCLE7M" Invoke="true">
+                      <xsc:Presentation>delaySec</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthQNIP5JWJYBFZHLPIGNB2E5KLFM" Invoke="true">
+                      <xsc:Presentation>isVisible</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>());
+} finally {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhBCN6XNTSJFGRTIAIGEUQEJPUYI epgDJNAVMC4DRHHXDKBHERWBX3HLM cep4TYKAT3OVZCBNOOKNPG2SRP6JI wdgNRFDIBUFZVES5GPBTYSOEAPVBE" Invoke="true">
+                      <xsc:Presentation>ManageInstancesForm:Main:View:EditorPageView</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthCSA2B6DHZVEMJNXKX6Q35XCPZM" Invoke="true">
+                      <xsc:Presentation>window</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mth56G3XOIY4JDXPDU4NKN7SZLTBY" Invoke="true">
+                      <xsc:Presentation>setUpdatesEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(true);
+}</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+          </Methods>
+        </Model>
+        <EditorPages>
+          <Page Id="epgDJNAVMC4DRHHXDKBHERWBX3HLM" Name="Main" Type="2">
+            <AccessRules IsPublished="false"/>
+            <View Id="cep4TYKAT3OVZCBNOOKNPG2SRP6JI" Name="View">
+              <AccessRules IsPublished="false"/>
+              <ui:ui>
+                <ui:widget name="EditorPageView" id="wdgNRFDIBUFZVES5GPBTYSOEAPVBE" class="cep4TYKAT3OVZCBNOOKNPG2SRP6JI" weight="0.0">
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>0</ui:x>
+                      <ui:y>0</ui:y>
+                      <ui:width>761</ui:width>
+                      <ui:height>380</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                  <ui:layout class="QVBoxLayout" name="verticalLayout">
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:widget name="frTop" id="wdg6MMMYOELLJHZ5D3YJAZN7QO3Z4" class="QFrame" weight="0.0">
+                        <ui:property name="frameShape">
+                          <ui:enum>com.trolltech.qt.gui.QFrame.Shape.NoFrame</ui:enum>
+                        </ui:property>
+                        <ui:property name="frameShadow">
+                          <ui:enum>com.trolltech.qt.gui.QFrame.Shadow.Raised</ui:enum>
+                        </ui:property>
+                        <ui:property name="geometry">
+                          <ui:rect>
+                            <ui:x>404</ui:x>
+                            <ui:y>-41</ui:y>
+                            <ui:width>120</ui:width>
+                            <ui:height>120</ui:height>
+                          </ui:rect>
+                        </ui:property>
+                        <ui:property name="objectName">
+                          <ui:string>frTop</ui:string>
+                        </ui:property>
+                        <ui:layout class="QVBoxLayout" name="verticalLayout">
+                          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                            <ui:widget name="frame" id="wdg537RHEW2PVA4XLIO6VLUA7A2RE" class="QFrame" weight="0.0">
+                              <ui:property name="frameShape">
+                                <ui:enum>com.trolltech.qt.gui.QFrame.Shape.StyledPanel</ui:enum>
+                              </ui:property>
+                              <ui:property name="frameShadow">
+                                <ui:enum>com.trolltech.qt.gui.QFrame.Shadow.Raised</ui:enum>
+                              </ui:property>
+                              <ui:layout class="QGridLayout" name="gridLayout">
+                                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                                  <ui:widget name="dbVersionPropTitle" id="wdg3GX3SJU4UFCBNMUPKYJ3UFEQME" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+                                    <ui:property name="property">
+                                      <ui:propertyRef>prdKATZPTJGDVFBZMWJYMSU2RR54M</ui:propertyRef>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>dbVersionPropTitle</ui:string>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="1" row="0" colSpan="1" rowSpan="1">
+                                  <ui:widget name="dbVersionPropEditor" id="wdgJYCNFRFTCFC6VCD3LOEK7DB5TM" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                                    <ui:property name="geometry">
+                                      <ui:rect>
+                                        <ui:x>287</ui:x>
+                                        <ui:y>46</ui:y>
+                                        <ui:width>268</ui:width>
+                                        <ui:height>8</ui:height>
+                                      </ui:rect>
+                                    </ui:property>
+                                    <ui:property name="property">
+                                      <ui:propertyRef>prdKATZPTJGDVFBZMWJYMSU2RR54M</ui:propertyRef>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>dbVersionPropEditor</ui:string>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="0" row="1" colSpan="1" rowSpan="1">
+                                  <ui:widget name="repoVersionPropTitle" id="wdgHL4WPQREXJFIHGFWR22OZM4GTI" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+                                    <ui:property name="property">
+                                      <ui:propertyRef>prdBGHGJOYKEFGMLJ2GFXEQELYQBA</ui:propertyRef>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>repoVersionPropTitle</ui:string>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="1" row="1" colSpan="1" rowSpan="1">
+                                  <ui:widget name="repoVersionPropEditor" id="wdg7WUL42XHVJFUHNMRTTRIQYP6FA" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                                    <ui:property name="geometry">
+                                      <ui:rect>
+                                        <ui:x>283</ui:x>
+                                        <ui:y>57</ui:y>
+                                        <ui:width>268</ui:width>
+                                        <ui:height>7</ui:height>
+                                      </ui:rect>
+                                    </ui:property>
+                                    <ui:property name="property">
+                                      <ui:propertyRef>prdBGHGJOYKEFGMLJ2GFXEQELYQBA</ui:propertyRef>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>repoVersionPropEditor</ui:string>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="0" row="2" colSpan="2" rowSpan="1">
+                                  <ui:widget name="rbSyncSwitch" id="wdgJCM47VKX4ZA6LLAPMSUE2BIVDE" class="QRadioButton" weight="0.0">
+                                    <ui:property name="text">
+                                      <ui:mlstringid>mlsSWIZF5MKTVGCHAWDZHDHHFLP7A</ui:mlstringid>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>rbSyncSwitch</ui:string>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="0" row="3" colSpan="2" rowSpan="1">
+                                  <ui:widget name="rbRollingSwitch" id="wdgK5H3UASPPVFWLCWFG24WGBQ2PU" class="QRadioButton" weight="0.0">
+                                    <ui:property name="text">
+                                      <ui:mlstringid>mlsKKUJTPNHWZFFFM5PEWTLSROQVQ</ui:mlstringid>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>rbRollingSwitch</ui:string>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="0" row="4" colSpan="2" rowSpan="1">
+                                  <ui:widget name="frame" id="wdgDISOZJWHIBAHJOKTNTPXYEWLVQ" class="QFrame" weight="0.0">
+                                    <ui:property name="frameShape">
+                                      <ui:enum>com.trolltech.qt.gui.QFrame.Shape.StyledPanel</ui:enum>
+                                    </ui:property>
+                                    <ui:property name="frameShadow">
+                                      <ui:enum>com.trolltech.qt.gui.QFrame.Shadow.Raised</ui:enum>
+                                    </ui:property>
+                                    <ui:property name="sizePolicy">
+                                      <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Fixed"/>
+                                    </ui:property>
+                                    <ui:layout class="QGridLayout" name="gridLayout">
+                                      <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                                        <ui:widget name="restartDelaySecPropTitle" id="wdg574OICJRI5AUJDTG4ZT73ML6GI" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+                                          <ui:property name="property">
+                                            <ui:propertyRef>prd22QOYWAUK5B5TNQ5YF4KOCLE7M</ui:propertyRef>
+                                          </ui:property>
+                                          <ui:property name="objectName">
+                                            <ui:string>restartDelaySecPropTitle</ui:string>
+                                          </ui:property>
+                                          <ui:property name="geometry">
+                                            <ui:rect>
+                                              <ui:x>-10</ui:x>
+                                              <ui:y>-2</ui:y>
+                                              <ui:width>268</ui:width>
+                                              <ui:height>8</ui:height>
+                                            </ui:rect>
+                                          </ui:property>
+                                        </ui:widget>
+                                      </ui:item>
+                                      <ui:item column="1" row="0" colSpan="1" rowSpan="1">
+                                        <ui:widget name="restartDelaySecPropEditor" id="wdgY56YCXLKKJFRJC4DTBM3FG3A5E" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                                          <ui:property name="property">
+                                            <ui:propertyRef>prd22QOYWAUK5B5TNQ5YF4KOCLE7M</ui:propertyRef>
+                                          </ui:property>
+                                          <ui:property name="objectName">
+                                            <ui:string>restartDelaySecPropEditor</ui:string>
+                                          </ui:property>
+                                        </ui:widget>
+                                      </ui:item>
+                                      <ui:item column="0" row="1" colSpan="1" rowSpan="1">
+                                        <ui:widget name="timeoutBeforeHardStopPropTitle" id="wdg2HSY7C4FLZA43AHMN35FQL6H5E" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+                                          <ui:property name="property">
+                                            <ui:propertyRef>prdYJTQX3V3LVB2ZOSKATRXCIWRXM</ui:propertyRef>
+                                          </ui:property>
+                                          <ui:property name="objectName">
+                                            <ui:string>timeoutBeforeHardStopPropTitle</ui:string>
+                                          </ui:property>
+                                        </ui:widget>
+                                      </ui:item>
+                                      <ui:item column="1" row="1" colSpan="1" rowSpan="1">
+                                        <ui:widget name="timeoutBeforeHardStopPropEditor" id="wdgSLKJV3BWHRCOLFTQVU42PGBLLE" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                                          <ui:property name="property">
+                                            <ui:propertyRef>prdYJTQX3V3LVB2ZOSKATRXCIWRXM</ui:propertyRef>
+                                          </ui:property>
+                                          <ui:property name="objectName">
+                                            <ui:string>timeoutBeforeHardStopPropEditor</ui:string>
+                                          </ui:property>
+                                        </ui:widget>
+                                      </ui:item>
+                                    </ui:layout>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="0" row="5" colSpan="1" rowSpan="1">
+                                  <ui:widget name="markInactiveAsStoppedPropTitle" id="wdgLYVPG5I3IFANRPWKSGU65NDS7U" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+                                    <ui:property name="property">
+                                      <ui:propertyRef>prdNWLJMYIISVB33E3H6N42EJWSIQ</ui:propertyRef>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>markInactiveAsStoppedPropTitle</ui:string>
+                                    </ui:property>
+                                    <ui:property name="geometry">
+                                      <ui:rect>
+                                        <ui:x>4</ui:x>
+                                        <ui:y>216</ui:y>
+                                        <ui:width>363</ui:width>
+                                        <ui:height>23</ui:height>
+                                      </ui:rect>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="1" row="5" colSpan="1" rowSpan="1">
+                                  <ui:widget name="markInactiveAsStoppedPropEditor" id="wdgXDSLWBCEANFWDIOAFHWJLBUYYU" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                                    <ui:property name="property">
+                                      <ui:propertyRef>prdNWLJMYIISVB33E3H6N42EJWSIQ</ui:propertyRef>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>markInactiveAsStoppedPropEditor</ui:string>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                              </ui:layout>
+                            </ui:widget>
+                          </ui:item>
+                        </ui:layout>
+                      </ui:widget>
+                    </ui:item>
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:widget name="frTable" id="wdgFRWATIWFL5DCJJTANQ5MJSIBEU" class="QFrame" weight="0.0">
+                        <ui:property name="frameShape">
+                          <ui:enum>com.trolltech.qt.gui.QFrame.Shape.NoFrame</ui:enum>
+                        </ui:property>
+                        <ui:property name="frameShadow">
+                          <ui:enum>com.trolltech.qt.gui.QFrame.Shadow.Raised</ui:enum>
+                        </ui:property>
+                        <ui:property name="sizePolicy">
+                          <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding"/>
+                        </ui:property>
+                        <ui:property name="objectName">
+                          <ui:string>frTable</ui:string>
+                        </ui:property>
+                        <ui:layout class="QHBoxLayout" name="horizontalLayout">
+                          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                            <ui:widget name="tableView" id="wdgVSJJAJDBJRHQBIEREWISJB3MVE" class="QTableView" weight="0.0">
+                              <ui:property name="sizePolicy">
+                                <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Preferred"/>
+                              </ui:property>
+                            </ui:widget>
+                          </ui:item>
+                          <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                            <ui:widget name="frButtons" id="wdgAT6AN7LBPRFYLIKPDYDJTSDJQM" class="QFrame" weight="0.0">
+                              <ui:property name="frameShape">
+                                <ui:enum>com.trolltech.qt.gui.QFrame.Shape.NoFrame</ui:enum>
+                              </ui:property>
+                              <ui:property name="frameShadow">
+                                <ui:enum>com.trolltech.qt.gui.QFrame.Shadow.Raised</ui:enum>
+                              </ui:property>
+                              <ui:property name="sizePolicy">
+                                <ui:sizePolicy hSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Minimum" vSizeType="com.trolltech.qt.gui.QSizePolicy.Policy.Expanding"/>
+                              </ui:property>
+                              <ui:property name="objectName">
+                                <ui:string>frButtons</ui:string>
+                              </ui:property>
+                              <ui:layout class="QVBoxLayout" name="verticalLayout">
+                                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                                  <ui:widget name="btUp" id="wdgJW37GC3LNZAGBE4D62DXY3RMKQ" class="QPushButton" weight="0.0">
+                                    <ui:property name="text">
+                                      <ui:mlstringid>mlsI2UOXHBISFGZ7OLMRVHIRWIVAM</ui:mlstringid>
+                                    </ui:property>
+                                    <ui:property name="icon">
+                                      <ui:imageRef>imgU72DZZSNEZAWHGSLWNRIFA4MW4</ui:imageRef>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>btUp</ui:string>
+                                    </ui:property>
+                                    <ui:property name="iconSize">
+                                      <ui:size>
+                                        <ui:width>16</ui:width>
+                                        <ui:height>16</ui:height>
+                                      </ui:size>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                                  <ui:widget name="btDown" id="wdgLGS52LSHTZHNHFOKAZ66RXAEVE" class="QPushButton" weight="0.0">
+                                    <ui:property name="text">
+                                      <ui:mlstringid>mlsD2XUYGFKHRAV7NUP4JIHOIA3Z4</ui:mlstringid>
+                                    </ui:property>
+                                    <ui:property name="iconSize">
+                                      <ui:size>
+                                        <ui:width>16</ui:width>
+                                        <ui:height>16</ui:height>
+                                      </ui:size>
+                                    </ui:property>
+                                    <ui:property name="icon">
+                                      <ui:imageRef>imgXXQ4APUH2FGA7B63EQSIKA46V4</ui:imageRef>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>btDown</ui:string>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                                  <ui:widget name="btRestartSelected" id="wdg4GPNG77A6NB55JDOB7LBOIY3C4" class="QPushButton" weight="0.0">
+                                    <ui:property name="text">
+                                      <ui:mlstringid>mlsDEAVEJN5VVDSZCWQRHWPVBRKOE</ui:mlstringid>
+                                    </ui:property>
+                                    <ui:property name="icon">
+                                      <ui:imageRef>imgNRNHYK7EL5IILUTWP47R4JW6M5LWTGGH</ui:imageRef>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>btRestartSelected</ui:string>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                                  <ui:widget name="btReread" id="wdgXPTRY7YTEZCUFHNOHANNCSSZ7U" class="QPushButton" weight="0.0">
+                                    <ui:property name="text">
+                                      <ui:mlstringid>mlsPRKOWAXRMVAFJMH74HHZF5KU3M</ui:mlstringid>
+                                    </ui:property>
+                                    <ui:property name="icon">
+                                      <ui:imageRef>img5QLZFSQAJFBV3PYZEL2FFONEL4</ui:imageRef>
+                                    </ui:property>
+                                    <ui:property name="objectName">
+                                      <ui:string>btReread</ui:string>
+                                    </ui:property>
+                                  </ui:widget>
+                                </ui:item>
+                                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                                  <ui:spacer name="btBpxSpacer">
+                                    <ui:property name="orientation">
+                                      <ui:enum>com.trolltech.qt.core.Qt.Orientation.Vertical</ui:enum>
+                                    </ui:property>
+                                    <ui:property name="sizeHint">
+                                      <ui:size>
+                                        <ui:width>20</ui:width>
+                                        <ui:height>40</ui:height>
+                                      </ui:size>
+                                    </ui:property>
+                                    <ui:property name="spacerName">
+                                      <ui:string>btBpxSpacer</ui:string>
+                                    </ui:property>
+                                  </ui:spacer>
+                                </ui:item>
+                              </ui:layout>
+                            </ui:widget>
+                          </ui:item>
+                        </ui:layout>
+                      </ui:widget>
+                    </ui:item>
+                  </ui:layout>
+                </ui:widget>
+                <ui:connections>
+                  <ui:connection>
+                    <ui:sender>wdgNRFDIBUFZVES5GPBTYSOEAPVBE</ui:sender>
+                    <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+                    <ui:slot>mthFJEWWPDR25HYZEOFCQRVDEK2BA</ui:slot>
+                  </ui:connection>
+                  <ui:connection>
+                    <ui:sender>wdgJW37GC3LNZAGBE4D62DXY3RMKQ</ui:sender>
+                    <ui:signal>clicked(Bool checked)</ui:signal>
+                    <ui:slot>mthIJZ4STEMMZG45PXUZVTU7FPVNU</ui:slot>
+                  </ui:connection>
+                  <ui:connection>
+                    <ui:sender>wdgLGS52LSHTZHNHFOKAZ66RXAEVE</ui:sender>
+                    <ui:signal>clicked(Bool checked)</ui:signal>
+                    <ui:slot>mth5B3HDAUKQZG3BMEOFEEQVTVRLU</ui:slot>
+                  </ui:connection>
+                  <ui:connection>
+                    <ui:sender>wdg4GPNG77A6NB55JDOB7LBOIY3C4</ui:sender>
+                    <ui:signal>clicked(Bool checked)</ui:signal>
+                    <ui:slot>mthV6JRKQ7ISZFOBPLIWLF4GZLLGU</ui:slot>
+                  </ui:connection>
+                  <ui:connection>
+                    <ui:sender>wdgXPTRY7YTEZCUFHNOHANNCSSZ7U</ui:sender>
+                    <ui:signal>clicked(Bool checked)</ui:signal>
+                    <ui:slot>mthJ7CSZ4HITNH7DCMRR5KSXWZ4UE</ui:slot>
+                  </ui:connection>
+                  <ui:connection>
+                    <ui:sender>wdgK5H3UASPPVFWLCWFG24WGBQ2PU</ui:sender>
+                    <ui:signal>toggled(Bool checked)</ui:signal>
+                    <ui:slot>mthMEENPUZ6PNDDROCIJFZBBPAO7Q</ui:slot>
+                  </ui:connection>
+                </ui:connections>
+              </ui:ui>
+            </View>
+            <WebView Id="cepPMHNDKZBURE37KMZ5PQZ2CNLWU" Name="WebView">
+              <ui:ui>
+                <ui:widget name="widget" id="wdgKE77U2MSV5FM7IH2QF6THS764U" class="cepPMHNDKZBURE37KMZ5PQZ2CNLWU" weight="0.0">
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>0</ui:x>
+                      <ui:y>0</ui:y>
+                      <ui:width>600</ui:width>
+                      <ui:height>400</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                  <ui:widget name="widget" id="wdgVSLQEREVPJFPDDFBN645NHQQS4" class="org.radixware.wps.views.editor.PropertiesGrid" weight="0.0">
+                    <ui:property name="objectName">
+                      <ui:string>widget</ui:string>
+                    </ui:property>
+                    <ui:property name="anchor">
+                      <ui:anchor>
+                        <ui:Top Part="0.0" Offset="0"/>
+                        <ui:Left Part="0.0" Offset="0"/>
+                        <ui:Bottom Part="1.0" Offset="0"/>
+                        <ui:Right Part="1.0" Offset="0"/>
+                      </ui:anchor>
+                    </ui:property>
+                  </ui:widget>
+                </ui:widget>
+              </ui:ui>
+            </WebView>
+          </Page>
+          <PageOrder>
+            <Item PageId="epgDJNAVMC4DRHHXDKBHERWBX3HLM" Level="1"/>
+          </PageOrder>
+        </EditorPages>
+      </Form>
+      <Commands>
+        <Command Id="cmdVWVHM56IX5HZPPSEYYTY2YL3NM" Name="reread" Nature="2" IsVisible="false" IsConfirmationRequired="false" Accessibility="0" Scope="3">
+          <AccessRules IsPublished="false"/>
+        </Command>
+        <Command Id="cmdLH6OS7LWVNE57GPXIAGG5O24MY" Name="restartSelected" Nature="3" IsVisible="false" IsConfirmationRequired="false" Accessibility="0" Scope="3">
+          <AccessRules IsPublished="false"/>
+          <OutType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        </Command>
+      </Commands>
+    </Presentations>
+  </AdsClassDefinition>
+</AdsDefinition>

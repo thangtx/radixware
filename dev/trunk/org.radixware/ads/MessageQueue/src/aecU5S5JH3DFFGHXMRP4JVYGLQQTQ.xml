@@ -137,7 +137,7 @@ and not exists(select 1 from </xsc:Sql>
         <AccessRules/>
         <Type TypeId="31" Path="aclVVLMXYALLZFKTLZR3AG4UK5W4I"/>
         <Presentation TitleId="mlsMSWKEXF5LVEFBJFQGAJ74V3MEA" InheritanceMask="4">
-          <Editing NotNull="true" IsDuplicatesEnabled="true" ObjectEditorPresentationIdList="eprWEEVKI2IT5DQJAS5RJFI4FFDS4"/>
+          <Editing NotNull="true" EditEnvironment="explorer" IsDuplicatesEnabled="true" ObjectEditorPresentationIdList="eprWEEVKI2IT5DQJAS5RJFI4FFDS4"/>
           <ParentSelect ParentSelectorPresentationId="sprBU6D3OXQLFGJPK5ZZ64L3N3DNA" ParentEditorRestrictions="33030123" ParentSelectorRestrictions="33029099"/>
         </Presentation>
       </Property>
@@ -145,7 +145,7 @@ and not exists(select 1 from </xsc:Sql>
         <AccessRules/>
         <Type TypeId="21"/>
         <Presentation TitleId="mlsD3KVXC7HPBEBZOMNQNOX2JI2D4" InheritanceMask="4">
-          <Editing IsDuplicatesEnabled="true"/>
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
         </Presentation>
         <GetterSources>
           <Src>
@@ -199,25 +199,33 @@ and not exists(select 1 from </xsc:Sql>
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mth3MY3U3VYSTNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mth3MY3U3VYSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>enterContext</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciT6OEHSBFMFHX7O4KFOQZRUK2P4" Invoke="true"/>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciT6OEHSBFMFHX7O4KFOQZRUK2P4" Invoke="true">
+                <xsc:Presentation>Arte::EventContextType:MqProcessor</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecU5S5JH3DFFGHXMRP4JVYGLQQTQ colBXVGQMN5J5BKTDUZH7P6HXGI4E" Invoke="true"/>
+              <xsc:IdReference Path="aecU5S5JH3DFFGHXMRP4JVYGLQQTQ colBXVGQMN5J5BKTDUZH7P6HXGI4E" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -226,29 +234,37 @@ and not exists(select 1 from </xsc:Sql>
         if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecU5S5JH3DFFGHXMRP4JVYGLQQTQ colEZZEI4AN6ZFLVEDWNQ6VJK2PSU" Invoke="true"/>
+              <xsc:IdReference Path="aecU5S5JH3DFFGHXMRP4JVYGLQQTQ colEZZEI4AN6ZFLVEDWNQ6VJK2PSU" Invoke="true">
+                <xsc:Presentation>dbTraceProfile</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null) {
             traceHandle = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthRLY3WC2M6LNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthVXFEI2AAYFECNLRFANIAKR4DOM" Invoke="true">
+                <xsc:Presentation>addContextProfile</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecU5S5JH3DFFGHXMRP4JVYGLQQTQ colEZZEI4AN6ZFLVEDWNQ6VJK2PSU" Invoke="true"/>
+              <xsc:IdReference Path="aecU5S5JH3DFFGHXMRP4JVYGLQQTQ colEZZEI4AN6ZFLVEDWNQ6VJK2PSU" Invoke="true">
+                <xsc:Presentation>dbTraceProfile</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>);
+              <xsc:Java>, this);
         } else {
             traceHandle = null;
         }
@@ -256,7 +272,9 @@ and not exists(select 1 from </xsc:Sql>
             </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecU5S5JH3DFFGHXMRP4JVYGLQQTQ mthXZIMLTKPH5EMXB5OLJYBPGCJOI" Invoke="true"/>
+              <xsc:IdReference Path="aecU5S5JH3DFFGHXMRP4JVYGLQQTQ mthXZIMLTKPH5EMXB5OLJYBPGCJOI" Invoke="true">
+                <xsc:Presentation>process</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xProcessRq.Message);
@@ -265,13 +283,17 @@ and not exists(select 1 from </xsc:Sql>
                 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthHEJCEHKN6LNRDA2JAAMPGXSZKU" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthHEJCEHKN6LNRDA2JAAMPGXSZKU" Invoke="true">
+                <xsc:Presentation>delContextProfile</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(traceHandle);
@@ -281,25 +303,33 @@ and not exists(select 1 from </xsc:Sql>
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthA2VYUFF2STNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthA2VYUFF2STNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>leaveContext</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciT6OEHSBFMFHX7O4KFOQZRUK2P4" Invoke="true"/>
+              <xsc:IdReference Path="acsPVLIUELSKTNRDAQSABIFNQAAAE aciT6OEHSBFMFHX7O4KFOQZRUK2P4" Invoke="true">
+                <xsc:Presentation>Arte::EventContextType:MqProcessor</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecU5S5JH3DFFGHXMRP4JVYGLQQTQ colBXVGQMN5J5BKTDUZH7P6HXGI4E" Invoke="true"/>
+              <xsc:IdReference Path="aecU5S5JH3DFFGHXMRP4JVYGLQQTQ colBXVGQMN5J5BKTDUZH7P6HXGI4E" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -308,13 +338,17 @@ and not exists(select 1 from </xsc:Sql>
 final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqProcessRsDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqProcessRsDocument">
+                <xsc:Presentation>MessageQueueXsd:MqProcessRsDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> rsDoc = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqProcessRsDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqProcessRsDocument">
+                <xsc:Presentation>MessageQueueXsd:MqProcessRsDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Factory.newInstance();
@@ -423,16 +457,17 @@ return rsDoc;
             </Item>
           </ChildExplorerItems>
           <EditorPages>
-            <Page Id="epgVSILKMELHFHEXDFTNJ3L6AGGCY" Name="General" TitleId="mlsH6LP2FAHC5DVZBEASTRUBIP6OE" Type="1">
+            <Page Id="epgVSILKMELHFHEXDFTNJ3L6AGGCY" Name="General" TitleId="mlsH6LP2FAHC5DVZBEASTRUBIP6OE" Type="1" ClientEnvironment="explorer">
               <AccessRules IsPublished="false"/>
               <Properties>
                 <Property Id="colBXVGQMN5J5BKTDUZH7P6HXGI4E" Row="0" Column="0"/>
                 <Property Id="col2N5HTUV4BVAARJ5AUDECTOG22A" Row="1" Column="0"/>
-                <Property Id="col7IMQMPGEX5COVHOB23CGVPAQ6M" Row="4" Column="0"/>
-                <Property Id="colY5DTM6IDIBDCLC5EUPSUAWW63M" Row="2" Column="0"/>
-                <Property Id="colO3QNYLD7ZNDINGW4I7DZBV4MOQ" Row="3" Column="0"/>
-                <Property Id="colEZZEI4AN6ZFLVEDWNQ6VJK2PSU" Row="6" Column="0"/>
-                <Property Id="colWPQQH54DTFA4HO7U7EFFHMJRMI" Row="5" Column="0"/>
+                <Property Id="col7IMQMPGEX5COVHOB23CGVPAQ6M" Row="5" Column="0"/>
+                <Property Id="colY5DTM6IDIBDCLC5EUPSUAWW63M" Row="3" Column="0"/>
+                <Property Id="colO3QNYLD7ZNDINGW4I7DZBV4MOQ" Row="4" Column="0"/>
+                <Property Id="colEZZEI4AN6ZFLVEDWNQ6VJK2PSU" Row="7" Column="0"/>
+                <Property Id="colWPQQH54DTFA4HO7U7EFFHMJRMI" Row="6" Column="0"/>
+                <Property Id="prdNQMJB2KUOJEQBJCYNFAGNO7COM" Row="2" Column="0"/>
               </Properties>
             </Page>
             <Page Id="epgI7FRFY2ORJCA3L4YLS3XRFKHTY" Name="EventLog" Type="3" EmbeddedExplorerItemId="xpiJAOTMKI6SNCTRJT2YNFLSH3LTU">

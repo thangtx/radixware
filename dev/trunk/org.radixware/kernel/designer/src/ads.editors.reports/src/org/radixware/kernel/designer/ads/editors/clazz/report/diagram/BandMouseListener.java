@@ -25,9 +25,9 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContai
 import org.radixware.kernel.common.defs.ads.common.AdsVisitorProviders;
 import org.radixware.kernel.common.enums.EReportCellType;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.palette.AdsReportAddNewItemAction;
+import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.selection.SelectionEvent;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinition;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
-import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.general.editors.EditorsManager;
 
 class BandMouseListener extends WidgetMouseListener {
@@ -41,7 +41,10 @@ class BandMouseListener extends WidgetMouseListener {
 
     @Override
     protected void select(final boolean expand) {
-        AdsReportWidgetUtils.selectBand(bandWidget);
+        final AdsReportFormDiagram formDiagram = bandWidget.getOwnerFormDiagram();
+        if (formDiagram != null){
+            formDiagram.fireSelectionChanged(new SelectionEvent(bandWidget, expand, bandWidget.isSelected()));
+        }
     }
 
     @Override
@@ -140,20 +143,10 @@ class BandMouseListener extends WidgetMouseListener {
 
     @Override
     protected void popup(final Component component, final int x, final int y) {
-        AdsReportWidgetUtils.selectBand(bandWidget);
-        AdsReportWidgetUtils.unselectCellsAndSubReports(bandWidget);
-        final JPopupMenu popupMenu = DialogUtils.createPopupMenu(bandWidget);
-
-        final AdsReportBand band = (AdsReportBand) bandWidget.getReportWidgetContainer();
-
-        popupMenu.addSeparator();
-        for (EReportCellType cellType : EReportCellType.values()) {
-            popupMenu.add(new AddCellAction(bandWidget, band, cellType, x, y));
+        if (!bandWidget.isSelected()) {
+            bandWidget.getDiagram().fireSelectionChanged(new SelectionEvent(bandWidget, true));
         }
-        popupMenu.addSeparator();
-        popupMenu.add(new AddSubReportAction(band.getPreReports(), "Pre"));
-        popupMenu.add(new AddSubReportAction(band.getPostReports(), "Post"));
-
+        final JPopupMenu popupMenu = AdsReportWidgetUtils.getPopupMenu(bandWidget, x, y);
         popupMenu.show(component, x, y);
     }
 }

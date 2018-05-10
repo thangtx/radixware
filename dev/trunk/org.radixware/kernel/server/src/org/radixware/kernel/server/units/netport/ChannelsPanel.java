@@ -96,6 +96,14 @@ class ChannelsPanel extends JPanel {
                                     listener.tableChanged(new TableModelEvent(ListenersTableModel.this));
                                 }
                             }
+                            if (channelsSnapshot != null) {
+                                for (NetChannel channel : channelsSnapshot) {
+                                    final ServerItemView view = channel.getViewIfCreated();
+                                    if (view != null) {
+                                        view.updateStatus();
+                                    }
+                                }
+                            }
                         }
                     });
         }
@@ -151,7 +159,7 @@ class ChannelsPanel extends JPanel {
                 case 2:
                     return list.getTitle();
                 case 3:
-                    return String.valueOf(list.getActiveSeanceCount());
+                    return String.valueOf(list.getActiveSeancesCount());
                 default:
                     return null;
             }
@@ -386,7 +394,7 @@ class ChannelsPanel extends JPanel {
                         }
                     }
                 }
-            }, "Arte Instances Thread of " + unit.getFullTitle());
+            }, "Updater thread for channels GUI in " + unit.getFullTitle());
             thread.setPriority(Thread.NORM_PRIORITY - 1);
             thread.start();
         }

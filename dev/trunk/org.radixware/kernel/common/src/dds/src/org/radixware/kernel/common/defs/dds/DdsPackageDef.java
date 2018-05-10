@@ -8,9 +8,9 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.dds;
 
+import org.radixware.kernel.common.defs.dds.radixdoc.DdsPackageRadixdocSupport;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,6 +18,7 @@ import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.defs.ClipboardSupport;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.radixdoc.DocumentOptions;
 import org.radixware.kernel.common.radixdoc.IRadixdocPage;
 import org.radixware.kernel.common.radixdoc.IRadixdocProvider;
@@ -47,6 +48,11 @@ public class DdsPackageDef extends DdsPlSqlObjectDef implements IRadixdocProvide
                 return new DdsPackageRadixdocSupport((DdsPackageDef) getSource(), page, options);
             }
         };
+    }
+
+    @Override
+    public boolean needsDocumentation() {
+        return true;
     }
 
     @Override
@@ -118,5 +124,10 @@ public class DdsPackageDef extends DdsPlSqlObjectDef implements IRadixdocProvide
     @Override
     public String getTypesTitle() {
         return PACKAGE_TYPES_TITLE;
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.PACKAGE;
     }
 }

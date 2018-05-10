@@ -37,7 +37,7 @@ _$RWT_DLG_OBJ = {
                 rr_rs[object.id] = 'ping';
         }
         var w = $(object).innerWidth();
-        var header, outerBody, innerBody, buttons, handleBar;
+        var header, menuBar, outerBody, innerBody, buttons, handleBar;
         var updateWidths = function(w) {
             if (buttons) {
                 $(buttons).width(w - 7).css('left', '2px');
@@ -58,10 +58,19 @@ _$RWT_DLG_OBJ = {
                 header = div;
             } else if (role === 'handle-bar') {
                 handleBar = div;
+            } else if (role === 'menuBar') {
+                menuBar = div;
             }
         });
         if (header) {
             $(header).height(23);
+            header.calcAdjustSize = function() {
+                var adjustWidth;
+                if ($(header).width() < $(WpsUtils.findFirstChild(header)).width()) {
+                    adjustWidth = $(WpsUtils.findFirstChild(header)).width() - $(header).width();
+                }
+                return {"width" : adjustWidth, "height": null};
+            };
         }
         if (buttons) {
             var tbs = 0;
@@ -156,6 +165,9 @@ _$RWT_DLG_OBJ = {
             dec = 4;//$(seHandle).outerHeight();
 
         var headerHeight = 24;
+        if ($(menuBar).css("display") != "none") {
+            headerHeight += $(menuBar).height();
+        }
         if (isAh && !object.wasSized) {
             var cw = 0;
             var max = 0;
@@ -214,14 +226,14 @@ _$RWT_DLG_OBJ = {
             var addintionalWidthAttr = $(object).attr('addintional-width');
             var addintionalWidth = addintionalWidthAttr==null ? 0 : parseInt(addintionalWidthAttr);
             if (cw > 0 && (object.prevCw==null || (object.prevCw+addintionalWidth)!=cw)) {
-                var diff = $(object).innerWidth() - $(innerBody).innerWidth();                
+                var diff = $(object).innerWidth() - $(innerBody).innerWidth();
                 object.prevCw = cw;
-                var preferredWidth = cw + diff + addintionalWidth;                
+                var preferredWidth = cw + diff + addintionalWidth;
                 $(object).width(preferredWidth);
                 updateWidths($(object).innerWidth());
-            }            
+            }
         }
-        
+
         object.rwt_rnd_refine = _$RWT_DLG_OBJ._afterLayout;
 
         header.window = object;
@@ -261,32 +273,125 @@ _$RWT_DLG_OBJ = {
                 outerBody = div;
                 innerBody = WpsUtils.findFirstChild(outerBody);
             }
-        });        
-        
-        var childWidths =0;
-        var childHeights  =0;
-                WpsUtils.iterateAll(innerBody, function(c) {
-                childHeights +=$(c).outerHeight(true);
-                childWidths += $(c).outerWidth(true);
-
         });
 
-        if (childWidths > 0){
-            if (childWidths - $(innerBody).outerWidth(true) > 4){
-                $(innerBody).css("overflow-x", "auto");
+        if (dialog.needToResize !== false && $(dialog).attr('isAdjustSizeEnabled') !== 'false') {
+            var maxCalcWidth = 0;
+            var maxCalcHeight = 0;
+
+            WpsUtils.iterateAll(dialog, function(c) {
+                if ($(c).css('display') != 'none') {
+                    var adjustSize = $RWT.getAdjustSize(c);
+                    if (adjustSize.width != null && adjustSize.width > maxCalcWidth) {
+                        maxCalcWidth = adjustSize.width;
+                    }
+                    if (adjustSize.height != null) {
+                        maxCalcHeight += adjustSize.height;
+                    }
+                }
+            });
+            var windowSize = WpsUtils.getBrowserWindowSize();
+            var maxWidth = windowSize.width * 0.66;
+            var maxHeight = windowSize.height * 0.66;
+            var dialogWidth = $(dialog).width();
+            var dialogHeight = $(dialog).height();
+            var calcWidth = dialogWidth + maxCalcWidth;
+            var calcHeight = dialogHeight + maxCalcHeight;
+            if (calcWidth>dialogWidth) {
+                if (calcWidth <= maxWidth) {
+                    $(dialog).width(calcWidth);
+                } else {
+                    $(dialog).width(maxWidth);
+                }
             }
-            else {
+            if (calcHeight>dialogHeight) {
+                if (calcHeight <= maxHeight) {
+                    $(dialog).height(calcHeight);
+                } else {
+                     $(dialog).height(maxHeight);
+                }
+            }
+            $RWT._layout_set[dialog.id] = null;
+            dialog.needToResize = false;
+            $RWT._layoutNode(dialog, null, null);
+            dialog.needToResize = null;
+        }
+
+        var childWidths =0;
+        var childHeights  =0;
+        var childBottomBorder = 0;
+        var childRightBorder = 0;
+                WpsUtils.iterateAll(innerBody, function(c) {
+                childHeights +=$(c).outerHeight(true);
+                if ($(c).css("position") == "absolute") {
+                    var b = $(c).position().top + $(c).outerHeight(true);
+                    var r = $(c).position().left + $(c).outerWidth(true);
+                    if (b > childBottomBorder) {
+                        childBottomBorder = b;
+                    }
+                    if (r > childRightBorder) {
+                        childRightBorder = r;
+                    }
+                }
+            childWidths += $(c).outerWidth(true);
+        });
+        
+        if (childHeights < childBottomBorder) {
+            childHeights = childBottomBorder;
+        }
+        if (childWidths < childRightBorder) {
+            childWidths = childRightBorder;
+        }
+
+        if (childWidths > 0){
+            if (childWidths - $(innerBody).outerWidth() > 4 && $(innerBody).css("overflow-x") != "auto"){
+                if ($(innerBody).css("overflow-y") != "auto") { //w3.org says that if one overflow is set to scroll and other is visible than others value will be auto
+                    innerBody.refresh = true;
+                }
+                $(innerBody).css("overflow-x", "auto");
+                innerBody.scrolledX = true;
+                innerBody.scrollUpdated = true;
+            }
+            else if (childWidths - $(innerBody).outerWidth() <= 4 && $(innerBody).css("overflow-x") != "hidden") {
                 $(innerBody).css("overflow-x", "hidden");
+                innerBody.scrolledX = false;
+                innerBody.scrollUpdated = true;
+            }
+        if (childHeights > 0) {
+            innerBody.maxChildBottomBorder = 0;
+            if (childHeights - $(innerBody).outerHeight() > 4 && ($(innerBody).css("overflow-y") != "auto" || innerBody.refresh == true)) {
+                innerBody.refresh = null;
+                $(innerBody).css("overflow-y", "auto");
+                innerBody.scrolledY = true;
+                innerBody.scrollUpdated = true;
+            }
+            else if (childHeights - $(innerBody).outerHeight() <= 4 && $(innerBody).css("overflow-y") != "hidden") {
+                $(innerBody).css("overflow-y", "hidden");
+                innerBody.scrolledY = false;
+                innerBody.scrollUpdated = true;
             }
         }
-        if (childHeights > 0){
-            if (childHeights - $(innerBody).outerHeight(true) > 4){
-                $(innerBody).css("overflow-y", "auto");
+        if (innerBody.scrollUpdated == true) {
+            innerBody.scrollUpdated = null;
+            if ($RWT._layout_set != null) {
+                $RWT._layout_set[innerBody.id] = null;
+                $RWT._layout_set[outerBody.id] = null;
+                WpsUtils.iterateAll(innerBody, function (c) {
+                    $RWT._layout_set[c.id] = null;
+                    _$RWT_DLG_OBJ._removeFromLayoutSetAllDescendants(c);
+                })
             }
-            else {
-                $(innerBody).css("overflow-y", "hidden");
-            }
-        }        
+            $RWT.container.updateAnchors(dialog);
+        }
+    }
+    },
+    
+    _removeFromLayoutSetAllDescendants : function (node) {
+        for (var i = 0; i < node.childNodes.length; i++) {
+          var child = node.childNodes[i];
+          _$RWT_DLG_OBJ._removeFromLayoutSetAllDescendants(child);
+          $RWT._layout_set[child.id] = null;
+        }
     },
     _calcSuspectedBottomBorder: function(item) {
         var anchorOptions = _$RWT_DLG_OBJ._getAnchorOptions(item);
@@ -457,10 +562,11 @@ _$RWT_DLG_OBJ = {
         };
     },
     top: function() {
-        if (_$RWT_DLG_OBJ.overlay && _$RWT_DLG_OBJ.overlay._dialogs && _$RWT_DLG_OBJ.overlay._dialogs.length > 0)
+        if (_$RWT_DLG_OBJ.overlay && _$RWT_DLG_OBJ.overlay._dialogs && _$RWT_DLG_OBJ.overlay._dialogs.length > 0) {
             return _$RWT_DLG_OBJ.overlay._dialogs[_$RWT_DLG_OBJ.overlay._dialogs.length - 1];
-        else
+        } else {
             return null;
+        }
     },
     inited: function(dialog) {
         if (!_$RWT_DLG_OBJ.overlay) {
@@ -472,9 +578,11 @@ _$RWT_DLG_OBJ = {
         if (_$RWT_DLG_OBJ.overlay._dialogs.length == 0) {
             return false;
         }
-        for (var i = 0; i < _$RWT_DLG_OBJ.overlay._dialogs.length; i++)
-            if (_$RWT_DLG_OBJ.overlay._dialogs[i] == dialog)
-                return true;
+        for (var i = 0; i < _$RWT_DLG_OBJ.overlay._dialogs.length; i++) {
+            if (_$RWT_DLG_OBJ.overlay._dialogs[i] == dialog) {
+                return true;  
+            }
+        }
         return false;
     },
     listDialogs: function(body) {
@@ -520,7 +628,7 @@ _$RWT_DLG_OBJ = {
         return object._rwt_free;
     },
     _async_registry: []
-            ,
+    ,
     _layout: function(object, rr_rs, rqId) {
         try {
             if (object.ui_dialog) {
@@ -619,7 +727,7 @@ _$RWT_DLG_OBJ = {
                             this.object.wasMoved = true;
                             $(this.object).width(newWidth);
                             $(this.object).height(newHeight);
-
+                            this.object.needToResize = false;
                             _$RWT_DLG_OBJ._layoutImpl(this.object);
                         },
                         stop: function(e, ui) {
@@ -627,6 +735,7 @@ _$RWT_DLG_OBJ = {
                             var w = parseInt($(this.object).outerWidth());
                             var h = parseInt($(this.object).outerHeight());
                             var dlg_size = 'w:' + w + 'h:' + h;
+                            this.object.needToResize = false;
                             $RWT.actions.event(this.object, "dlg_size", dlg_size);
                         }
                     });
@@ -636,6 +745,9 @@ _$RWT_DLG_OBJ = {
                 }, {
                     duration: 200,
                     complete: function() {
+                        if (!$(this).hasClass("rwt-ui-dialog-no-overlay")) {
+                            this._focusedElement = document.activeElement;
+                        }
                         $(this).focus();
                     }
                 });
@@ -690,7 +802,7 @@ _$RWT_DLG_OBJ = {
                 _$RWT_DLG_OBJ.overlay._object = $('<div id="' + $RWT.dialog._ov_id + '" class="ui-widget-overlay">');
                 $('body').append(_$RWT_DLG_OBJ.overlay._object);
                 //$('outerBody').append(_$RWT_DLG_OBJ.overlay._object);
-                _$RWT_DLG_OBJ.overlay._dialogZIndex = zIndex + 1;                
+                _$RWT_DLG_OBJ.overlay._dialogZIndex = zIndex + 1;
             }
             _$RWT_DLG_OBJ.overlay._object.css('zIndex', zIndex + 1);
             $(dialog).css('zIndex', zIndex + 2);
@@ -728,6 +840,9 @@ _$RWT_DLG_OBJ = {
                 rr_rs[dialog.id] = 'closed';
                 $RWT.closeFocusLayer();
                 $RWT.notifyRendered(rr_rs);
+                if (dialog._focusedElement != null) {
+                    dialog._focusedElement.focus();
+                }
                 //var rr_rs =$RWT.layoutDocument();            
                 //                if(!rr_rs[dialog.id])
                 //                    rr_rs[dialog.id] = 'closed';            

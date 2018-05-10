@@ -19,9 +19,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Map;
-import org.radixware.kernel.common.defs.Definition;
-import org.radixware.kernel.common.defs.IVisitor;
-import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.AdsExceptionClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.algo.AdsAlgoClassDef;
@@ -54,6 +51,7 @@ public class AdsAlgoWriter extends AdsClassWriter<AdsAlgoClassDef> {
 
         REGISTER_IN_EXECUTOR, // public abstract void registerInExecutor(AlgorithmExecutor exec, String path);
         BLOCK_TYPE, // public abstract int getBlockType(int block);
+        BLOCK_SUBMIT_VARS,// public abstract String getSubmitVariants(Id blockId);
         NEXT_BLOCK, // public abstract Id getNextBlock(Id block, int output);
         NEXT_BLOCK_INPUT, // public abstract int getNextBlockInput(Id block, int output);
         BLOCK_SCOPE, // public abstract Id getBlockScope(Id block);
@@ -75,7 +73,8 @@ public class AdsAlgoWriter extends AdsClassWriter<AdsAlgoClassDef> {
         FIND_CATCH, // public abstract Id findCatch(Id scope, Throwable e) throws Throwable;
         RETURN, // public abstract int getReturn(Id block) throws Throwable;
         VAR_GET_SET, // extendeds variable code
-        TYPE_BY_ID // public abstract String getTitleById(Id id);
+        TYPE_BY_ID, // public abstract String getTitleById(Id id);
+        CHECK_BACK_COMPATIBILITY_MTH //public boolean isMethodBackCompatible(EAlgoMethodAdded method);
     };
 
     /*
@@ -169,7 +168,7 @@ public class AdsAlgoWriter extends AdsClassWriter<AdsAlgoClassDef> {
                 printer.leaveBlock();
             }
         }
-
+        
         for (AdsBaseObject node : page.getNodes()) {
             if (node instanceof AdsVarObject) {
                 AdsVarObject var = (AdsVarObject) node;
@@ -206,7 +205,7 @@ public class AdsAlgoWriter extends AdsClassWriter<AdsAlgoClassDef> {
             if (!AppUtils.isExecutable(node)) {
                 continue;
             }
-
+            
             final Id id = node.getId();
             if (node instanceof AdsProgramObject
                     || node instanceof AdsScopeObject
@@ -215,6 +214,17 @@ public class AdsAlgoWriter extends AdsClassWriter<AdsAlgoClassDef> {
                     || node instanceof AdsAppObject
                     || node instanceof AdsMergeObject) {
 
+                if (printerType == PrinterType.BLOCK_SUBMIT_VARS && node instanceof AdsAppObject) {
+                    final AdsAppObject.Prop prop = ((AdsAppObject) node).getPropByName("submitVariants");
+                    if (prop != null) {
+                        printer.println("if (block == " + id + ") {");
+                        printer.enterBlock();
+                        printer.println("return \"" + prop.getValue().toString() + "\";");
+                        printer.leaveBlock();
+                        printer.println("}");
+                    }
+                }
+                
                 if (printerType == PrinterType.NEXT_BLOCK) {
                     printer.println("if (block == " + id + ") {");
                     printer.enterBlock();
@@ -248,7 +258,7 @@ public class AdsAlgoWriter extends AdsClassWriter<AdsAlgoClassDef> {
                         printer.leaveBlock();
                     }
                 }
-
+                
                 if (printerType == PrinterType.NEXT_BLOCK) {
                     printer.println("default:");
                     printer.enterBlock();
@@ -606,7 +616,7 @@ public class AdsAlgoWriter extends AdsClassWriter<AdsAlgoClassDef> {
             printer.println("}");
         }
     }
-
+    
     @Override
     protected void writeCustomBody(CodePrinter printer) {
         List<Id> ids = collectIds(def.getPage());
@@ -646,6 +656,19 @@ public class AdsAlgoWriter extends AdsClassWriter<AdsAlgoClassDef> {
         printer.leaveBlock();
         printer.println("}");
 
+        printer.println("public boolean isMethodBackCompatible(EAlgoMethodAdded method) {");
+        printer.enterBlock();
+        printer.println("return method == EAlgoMethodAdded.SUBMIT_VARIANTS;");
+        printer.leaveBlock();
+        printer.println("}");
+        
+        printer.println("public String getSubmitVariants(Id block) {");
+        printer.enterBlock();
+        writePageBody(printer, PrinterType.BLOCK_SUBMIT_VARS, def.getPage(), null);
+        printer.println("return null;");
+        printer.leaveBlock();
+        printer.println("}");
+        
         printer.println("public Id getNextBlock(Id block, int output) {");
         printer.enterBlock();
         writePageBody(printer, PrinterType.NEXT_BLOCK, def.getPage(), null);
@@ -1053,7 +1076,7 @@ public class AdsAlgoWriter extends AdsClassWriter<AdsAlgoClassDef> {
                 printer.print("return (");
                 writeType(printer, type);
                 printer.println(")dummy;");
-            } else if ((typeId == EValType.INT || typeId == EValType.STR) && (type.getPath() != null || type.getExtStr() != null)) {
+            } else if ((typeId == EValType.INT || typeId == EValType.STR || typeId == EValType.CHAR) && (type.getPath() != null || type.getExtStr() != null)) {
                 printer.print("Object dummy = getData(");
                 WriterUtils.writeIdUsage(printer, id);
                 printer.println(");");
@@ -1130,7 +1153,7 @@ public class AdsAlgoWriter extends AdsClassWriter<AdsAlgoClassDef> {
             } else {
                 printer.print("return (");
                 writeType(printer, type);
-                printer.print(")getData(");
+                printer.print(") getData(");
                 WriterUtils.writeIdUsage(printer, id);
                 printer.println(");");
             }

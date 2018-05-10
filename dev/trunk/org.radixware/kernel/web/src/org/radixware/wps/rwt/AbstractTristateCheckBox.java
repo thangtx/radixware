@@ -19,14 +19,20 @@ import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EFontStyle;
 import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
+import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.text.ITextOptionsProvider;
+import org.radixware.kernel.common.client.types.PriorityArray;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
 import org.radixware.kernel.common.client.widgets.IButton;
+import org.radixware.kernel.common.enums.EKeyEvent;
 import org.radixware.kernel.common.html.Div;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.wps.rwt.InputBox.InvalidStringValueException;
 import org.radixware.wps.rwt.ValueEditor.ValueChangeListener;
+import org.radixware.wps.rwt.events.HtmlEvent;
+import org.radixware.wps.rwt.events.KeyDownEventFilter;
+import org.radixware.wps.rwt.events.KeyDownHtmlEvent;
 import org.radixware.wps.text.WpsTextOptions;
 
 import org.radixware.wps.views.editors.valeditors.IValEditor;
@@ -170,6 +176,7 @@ abstract class AbstractTristateCheckBox<T, V extends EditMask> extends UIObject 
     private final InternalValueChangeListener<T> valueChangeListener = new InternalValueChangeListener<>();
     private final TableLayout table = new TableLayout();
     private final TableLayout.Row row;
+    private PriorityArray<ButtonBase> buttons;
     private final Label valueLabel;
     private final TableLayout.Row.Cell editorCell, nullLabelCell;
     private boolean canBeNull = true;
@@ -191,6 +198,7 @@ abstract class AbstractTristateCheckBox<T, V extends EditMask> extends UIObject 
         super(new Div());        
         this.environment = environment;
         this.html.add(table.getHtml());
+        table.html.addClass("rwt-tristate-checkbox-table");
         table.setParent(AbstractTristateCheckBox.this);
         row = table.addRow();
         editorCell = row.addCell();
@@ -215,9 +223,12 @@ abstract class AbstractTristateCheckBox<T, V extends EditMask> extends UIObject 
         valueLabel.getHtml().setCss("margin-left", "8px");
         inputBox.updateNullLabel();
 
-        row.addCell().setHSizePolicy(UIObject.SizePolicy.EXPAND);//для выравнивания влево
+        final TableLayout.Row.Cell spacerCell = row.addCell();
+        spacerCell.setHSizePolicy(UIObject.SizePolicy.EXPAND);//для выравнивания влево
+        spacerCell.getHtml().addClass("rwt-tristate-checkbox-spacer-cell");
         nullValueStr = environment.getMessageProvider().translate("Value", "<not defined>");
         editorController = controller==null ? new ValEditorControllerImpl(environment) : controller;
+        subscribeToEvent(new KeyDownEventFilter(EKeyEvent.VK_SPACE));
     }
 
     public void setLabelVisible(boolean visible) {
@@ -296,11 +307,9 @@ abstract class AbstractTristateCheckBox<T, V extends EditMask> extends UIObject 
         inputBox.removeUnacceptableInputListener(listener);
     }
         
-
     @Override
     public void setValue(final T value) {
         inputBox.setValue(mapFromValueToBoolean(value));
-
     }
 
     @Override
@@ -317,16 +326,81 @@ abstract class AbstractTristateCheckBox<T, V extends EditMask> extends UIObject 
     public void setReadOnly(final boolean readOnly) {
         inputBox.setReadOnly(readOnly);
     }
-
+    
     @Override
     public void addButton(final IButton button) {
+        addButton(button, IValEditor.DEFAULT_BUTTON_PRIORITY);
+    }    
+
+    @Override
+    public void addButton(final IButton button, final int priority) {
         if (button instanceof ButtonBase) {
             final ButtonBase btn = (ButtonBase) button;
-            final TableLayout.Row.Cell cellForButton = row.addCell(row.getCellsCount() - 1);
-            cellForButton.add(btn);
-            setupButton(btn);
-            cellForButton.setWidth(14);
+            final int index = registerButton(btn, priority);
+            if (index>0){
+                final TableLayout.Row.Cell cellForButton = row.addCell(index);
+                cellForButton.getHtml().setAttr("buttonCell", "true");
+                cellForButton.add(btn);
+                setupButton(btn);
+                cellForButton.setWidth(14);
+            }
         }
+    }
+
+    @Override
+    public void removeButton(final IButton button) {
+        if (button instanceof ButtonBase && unregisterButton((ButtonBase)button)) {
+            final List<TableLayout.Row.Cell> cells = row.getCells();
+            TableLayout.Row.Cell cell;
+            for (int i=0,count=cells.size(); i<count; i++){
+                cell = cells.get(i);
+                if (!cell.getChildren().isEmpty() && cell.getChildren().get(0)==button){
+                    row.remove(cell);
+                    break;
+                }
+            }
+        }
+    }
+    
+    private int registerButton(final ButtonBase button, final Integer priority){
+        if (buttons==null){
+            buttons = new PriorityArray<>(false, false);
+        }
+        final int buttonIndex;
+        if (priority==null){
+            buttonIndex = buttons.addWithLowestPriority(button);            
+        }else{
+            buttonIndex = buttons.addWithPriority(button, priority);            
+        }
+        return buttonIndex<0 ? -1 : buttonIndex+getFirstButtonCellIndex();
+    }
+    
+    private boolean unregisterButton(final ButtonBase button){
+        if (buttons!=null && buttons.remove(button)){
+            if (buttons.isEmpty()){
+                buttons = null;
+            }
+            return true;
+        }
+        return false;
+    }    
+    
+    private int getFirstButtonCellIndex(){
+        return labelCell==null ? 3 : 4;
+    }
+
+    @Override
+    public void setButtonsVisible(final boolean isVisible) {
+        if (isVisible){
+            table.getHtml().removeClass("rwt-hidden-buttons");
+        }else{
+            table.getHtml().addClass("rwt-hidden-buttons");
+        }
+    }
+
+    @Override
+    public boolean isButtonsVisible() {
+        return !table.getHtml().containsClass("rwt-hidden-buttons");
     }
 
     @Override
@@ -334,7 +408,8 @@ abstract class AbstractTristateCheckBox<T, V extends EditMask> extends UIObject 
         if (ValidationResult.ACCEPTABLE == validationResult) {
             inputBox.setValidationMessage(null);
         } else {
-            final String comment = validationResult.getInvalidValueReason().toString();
+            final String comment = 
+                validationResult.getInvalidValueReason().getMessage(getEnvironment().getMessageProvider(), InvalidValueReason.EMessageType.Value);
             if (comment == null || comment.isEmpty()) {
                 inputBox.setValidationMessage(environment.getMessageProvider().translate("Value", "Current value is invalid"));
             } else {
@@ -525,9 +600,36 @@ abstract class AbstractTristateCheckBox<T, V extends EditMask> extends UIObject 
 
     public String getFalseTitle() {
         return falseTitle;
-    }
+    }    
     
     protected abstract T mapFromBooleanToValue(final Boolean b);
     
     protected abstract Boolean mapFromValueToBoolean(final T value);
+
+    @Override
+    protected void processHtmlEvent(final HtmlEvent event) {
+        if (event instanceof KeyDownHtmlEvent){
+            final KeyDownHtmlEvent keyEvent = (KeyDownHtmlEvent)event;
+            if (keyEvent.getButton()==EKeyEvent.VK_SPACE.getValue() || keyEvent.getKeyboardModifiers().isEmpty()){
+                changeValue();
+                return;
+            }
+        }        
+        super.processHtmlEvent(event);
+    }
+    
+    private void changeValue(){
+        if (!isReadOnly() && isEnabled()){
+            final Boolean currentValue = mapFromValueToBoolean(getValue());
+            final Boolean newValue;
+            if (currentValue==null){
+                newValue = Boolean.TRUE;
+            }else if (currentValue.equals(Boolean.FALSE)){
+                newValue = getController().isMandatory() ? Boolean.TRUE : null;
+            }else{
+                newValue = Boolean.FALSE;
+            }
+            setValue(mapFromBooleanToValue(newValue));
+        }
+    }
 }

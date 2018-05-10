@@ -32,7 +32,7 @@ final class NotNullAttributeEditor extends AbstractAttributeEditor<Boolean> {
 
     protected NotNullAttributeEditor(IClientEnvironment environment, final boolean isReadonly, final QWidget parent) {
         super(environment);
-        lbNotNull = new QLabel(getAttribute().getTitle(), parent);
+        lbNotNull = new QLabel(getAttribute().getTitle(environment), parent);
         lbNotNull.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed);
         lbNotNull.setObjectName("lbNotNull");
         valNotNull = new ValBoolEditor(environment, parent, new EditMaskNone(), true, isReadonly);

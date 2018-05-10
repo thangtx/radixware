@@ -18,19 +18,19 @@ import com.trolltech.qt.gui.QApplication;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Enumeration;
 import org.radixware.kernel.common.client.IClientApplication;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.RunParams;
+import org.radixware.kernel.common.client.tree.IExplorerTreeManager;
 import org.radixware.kernel.common.client.utils.IContextEnvironment;
 import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.environment.IEnvironmentAccessor;
 import org.radixware.kernel.common.environment.IRadixEnvironment;
-import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.Explorer;
 import org.radixware.kernel.starter.radixloader.IRadixLoaderAccessor;
@@ -205,13 +205,18 @@ public final class AdsVersion extends org.radixware.kernel.common.client.env.Ads
     @Override
     protected boolean confirmToRestart() {
         final String title = env.getMessageProvider().translate("ExplorerMessage", "Confirm to Restart");
-        final String message = env.getMessageProvider().translate("ExplorerMessage", "It is necessary to restart explorer to install new version.\nDo you want to restart now ?");
+        final String message;
+        if (getTargetVersionNumber()<getNumber()){
+            message = env.getMessageProvider().translate("ExplorerMessage", "Current version is no longer supported. It is impossible to continue work until explorer will be restarted.\nDo you want to restart now (all your unsaved data will be lost) ?");
+        }else{
+            message = env.getMessageProvider().translate("ExplorerMessage", "It is necessary to restart explorer to install new version.\nDo you want to restart now ?");
+        }
         return Application.getInstance().getEnvironment().messageConfirmation(title, message);
     }
 
     @Override
     protected void restartApplication() {
-        Explorer.restart();
+        Explorer.restart(true, getTargetVersionNumber());
     }
 
     @Override
@@ -219,12 +224,12 @@ public final class AdsVersion extends org.radixware.kernel.common.client.env.Ads
     }
 
     @Override
-    protected void afterUpdateToNewVersion(final Integer oldClassLoaderId) {
+    protected void afterSwitchVersion(final Integer oldClassLoaderId) {
         trayManager.setOldVersionButtonVisible(false);
         if (oldClassLoaderId!=null){
             clearQtJambiCachedMetaData(oldClassLoaderId);
         }
-        super.afterUpdateToNewVersion(oldClassLoaderId);
+        super.afterSwitchVersion(oldClassLoaderId);
     }
     
     @Override
@@ -267,32 +272,35 @@ public final class AdsVersion extends org.radixware.kernel.common.client.env.Ads
     }
        
     @Override
-    public void setNewVersion(long version) {
-        super.setNewVersion(version);
-        trayManager.setOldVersionButtonVisible(true);
+    public void setTargetVersion(long version) {        
+        super.setTargetVersion(version);
+        final IExplorerTreeManager treeManager = ((Application)env).getEnvironment().getTreeManager();
+        if (treeManager!=null && treeManager.getCurrentTree()!=null){
+            trayManager.setOldVersionButtonVisible(true);
+        }
     }
 
     @Override
-    protected IProgressHandle startChangeAnalyse(IClientEnvironment contextEnvironment) {
+    protected IProgressHandle startChangeAnalyse(final IClientEnvironment contextEnvironment) {
         final IProgressHandle progress = contextEnvironment.getProgressHandleManager().newProgressHandle();
         progress.startProgress(contextEnvironment.getMessageProvider().translate("ExplorerMessage", "Analysing changes"), false);
         return progress;
     }
 
     @Override
-    protected void finishChangeAnalyse(IProgressHandle progress) {
+    protected void finishChangeAnalyse(final IProgressHandle progress) {
         progress.finishProgress();
     }
 
     @SuppressWarnings("unused")
     private void tryToUpdateDefinitions() {
-        if (isKernelWasChanged()) {
+        if (!RunParams.isDevelopmentMode() || isKernelWasChanged()) {
             if (confirmToRestart()) {
                 restartApplication();
             }
             return;
         }
-        final Collection<Id> changedDefs = checkForUpdates(Application.getInstance().getEnvironment());
+        final Collection<Id> changedDefs = prepareSwitchVersion(Application.getInstance().getEnvironment(), -1, true);
         if (changedDefs != null) {
             ((Application) env).getEnvironment().getTreeManager().updateVersion(changedDefs);
         } else {

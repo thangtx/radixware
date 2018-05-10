@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.tree.ads.nodes;
 
 import java.util.*;
@@ -17,6 +16,8 @@ import org.openide.util.actions.SystemAction;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.build.BuildOptions;
+import org.radixware.kernel.common.defs.ads.doc.AdsDocDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EDefType;
@@ -29,6 +30,8 @@ import org.radixware.kernel.designer.ads.build.actions.CleanAction;
 import org.radixware.kernel.designer.ads.build.actions.CleanAndBuildAction;
 import org.radixware.kernel.designer.ads.editors.creation.AdsClassCreature;
 import org.radixware.kernel.designer.ads.editors.creation.AdsModuleDefinitionCreature;
+import org.radixware.kernel.designer.ads.editors.creation.AdsReportFromUserReport;
+
 import org.radixware.kernel.designer.ads.editors.creation.AdsTransparentClassCreature;
 import org.radixware.kernel.designer.ads.editors.creation.AdsXmlSchemePublishingCreature;
 import org.radixware.kernel.designer.ads.editors.enumeration.creation.AdsEnumCreature;
@@ -41,6 +44,7 @@ import org.radixware.kernel.designer.common.tree.RadixObjectNode;
 import org.radixware.kernel.designer.common.tree.RadixObjectsNodeSortedChildren;
 import org.radixware.kernel.designer.common.tree.actions.RadixdocAction;
 import org.radixware.kernel.designer.tree.ads.nodes.actions.AdsModuleImageSetEditAction;
+import org.radixware.kernel.designer.tree.ads.nodes.actions.CreateLocalReplacementAction;
 import org.radixware.kernel.designer.tree.ads.nodes.actions.OverrideModuleDefinitionAction;
 
 /**
@@ -56,6 +60,18 @@ public class AdsModuleNode extends RadixObjectNode {
         public AdsModuleNodeChildren(AdsModule module) {
             super();
             this.module = module;
+        }
+
+        @Override
+        protected List<AdsDefinition> getFilterList() {
+            final List<AdsDefinition> orderList = getOrderedList();
+            final List<AdsDefinition> filterList = new ArrayList<>();
+            for (AdsDefinition item : orderList) {
+                if (!(item instanceof AdsDocDef)) {
+                    filterList.add(item);
+                }
+            }
+            return filterList;
         }
 
         @Override
@@ -87,6 +103,7 @@ public class AdsModuleNode extends RadixObjectNode {
         addCookie(new BuildCookie(module));
         addCookie(new OverrideModuleDefinitionAction.OverrideCookie(module));
         addCookie(new RadixdocAction.RadixdocCookie(module));
+        addCookie(new CreateLocalReplacementAction.CreateLocalReplacementCookie(module));
         this.module = module;
         module.addIsTestListener(isTestListener);
     }
@@ -139,7 +156,13 @@ public class AdsModuleNode extends RadixObjectNode {
                 groups.add(new ICreatureGroup() {
                     @Override
                     public List<ICreature> getCreatures() {
-                        return AdsClassCreature.Factory.instanceList(module, EnumSet.of(EClassType.SQL_CURSOR, EClassType.SQL_PROCEDURE, EClassType.SQL_STATEMENT, EClassType.REPORT));
+                        ArrayList<ICreature> result = new ArrayList<>();
+                        result.add(AdsClassCreature.Factory.newInstance(module, EClassType.REPORT));
+                        if (BuildOptions.UserModeHandlerLookup.getUserModeHandler() == null) {
+                            result.add(new AdsReportFromUserReport(module));
+                        }
+                        result.addAll(AdsClassCreature.Factory.instanceList(module, EnumSet.of(EClassType.SQL_CURSOR, EClassType.SQL_PROCEDURE, EClassType.SQL_STATEMENT)));
+                        return result;
                     }
 
                     @Override
@@ -158,7 +181,7 @@ public class AdsModuleNode extends RadixObjectNode {
                         result.add(new MsdlCreature(module));
 //                        result.add(new XsltCreature(module));
                         result.add(new AdsModuleDefinitionCreature(module, EDefType.PARAGRAPH));
-                        result.add(new AdsModuleDefinitionCreature(module, EDefType.ROLE));                        
+                        result.add(new AdsModuleDefinitionCreature(module, EDefType.ROLE));
                         result.add(new AdsModuleDefinitionCreature(module, EDefType.DOMAIN));
                         result.add(new AdsModuleDefinitionCreature(module, EDefType.PHRASE_BOOK));
                         return result;
@@ -176,7 +199,6 @@ public class AdsModuleNode extends RadixObjectNode {
                         result.add(new AdsModuleDefinitionCreature(module, EDefType.CUSTOM_DIALOG));
                         result.add(new AdsModuleDefinitionCreature(module, EDefType.CUSTOM_PROP_EDITOR));
                         result.add(new AdsModuleDefinitionCreature(module, EDefType.CUSTOM_WIDGET_DEF));
-
 
                         return result;
                     }
@@ -235,6 +257,7 @@ public class AdsModuleNode extends RadixObjectNode {
         if (action.isAvailable()) {
             actions.add(action);
         }
+        actions.add(SystemAction.get(CreateLocalReplacementAction.class));
     }
 
     @NodeFactoryRegistration

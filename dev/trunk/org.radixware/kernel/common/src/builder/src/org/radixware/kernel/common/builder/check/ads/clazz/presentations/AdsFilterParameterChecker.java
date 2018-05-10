@@ -43,7 +43,7 @@ public class AdsFilterParameterChecker extends AdsDefinitionChecker<AdsFilterDef
         super.check(definition, problemHandler);
         CheckUtils.checkMLStringId(definition, definition.getTitleId(), problemHandler, "title");
         if (definition.getType() != null) {
-            definition.getType().check(definition, problemHandler);
+            definition.getType().check(definition, problemHandler, getHistory().getMap());
             if (!definition.isTypeAllowed(definition.getType().getTypeId())) {
                 final EValType type = definition.getType().getTypeId();
                 if (type != null) {
@@ -82,7 +82,7 @@ public class AdsFilterParameterChecker extends AdsDefinitionChecker<AdsFilterDef
                     referencedEnum = ((AdsEnumType) type).getSource();
                 }
             }
-            EditOptionsChecker.Factory.newInstance(definition, definition.getType(), referencedEnum).check(options, problemHandler);
+            EditOptionsChecker.Factory.newInstance(definition, definition.getType(), referencedEnum, getHistory()).check(options, problemHandler);
 
         }
     }

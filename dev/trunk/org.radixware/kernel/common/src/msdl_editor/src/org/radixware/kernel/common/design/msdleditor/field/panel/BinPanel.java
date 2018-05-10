@@ -58,16 +58,14 @@ public class BinPanel extends AbstractEditItem implements ActionListener {
         model.addElement(EEncoding.HEXEBCDIC);
         model.addElement(EEncoding.DECIMAL);
         simpleFieldPanel1.setEncodingComboBoxModel(model);
-        simpleFieldPanel1.open(fieldModel, EEncoding.getInstance(fieldModel.getEncoding()));
-        hexPanel1.addActionListener(this);
+        simpleFieldPanel1.open(fieldModel, EEncoding.getInstance(fieldModel.calcEncoding(false)));
         update();
     }
 
     @Override
     public void update() {
         simpleFieldPanel1.update();
-        hexPanel1.setValue(field.getDefaultVal(), 
-                EEncoding.getInstanceForHexViewType(field.getDefaultValViewType()));
+        hexPanel1.setValue(field.getDefaultVal());
         super.update();
     }
 
@@ -87,6 +85,8 @@ public class BinPanel extends AbstractEditItem implements ActionListener {
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/radixware/kernel/common/design/msdleditor/Bundle"); // NOI18N
         jLabel1.setText(bundle.getString("DEFAULT_VALUE")); // NOI18N
+
+        hexPanel1.addActionListener(this);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -113,7 +113,7 @@ public class BinPanel extends AbstractEditItem implements ActionListener {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(simpleFieldPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
+            .addComponent(simpleFieldPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 243, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -136,7 +136,6 @@ public class BinPanel extends AbstractEditItem implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         field.setDefaultVal(hexPanel1.getValue());
-        field.setDefaultValViewType(hexPanel1.getViewEncoding().getValue());
         fieldModel.setModified();
     }
 

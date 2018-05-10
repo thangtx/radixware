@@ -25,12 +25,14 @@ import org.radixware.kernel.common.types.Id;
 public class ObjectPropertyPresentation extends PropertyPresentation implements CreatePresentationsList.ICreatePresentationListOwner {
 
     private volatile Id objectClassCatalogId;
+    private volatile boolean isAutoSortClasses;
     private final CreatePresentationsList createPresentationsList;
 
     public ObjectPropertyPresentation(final AdsPropertyDef property, final PropertyPresentation source, final boolean forOverride) {
         super(property, source, forOverride);
         if (source instanceof ObjectPropertyPresentation) {
             this.objectClassCatalogId = ((ObjectPropertyPresentation) source).objectClassCatalogId;
+            this.isAutoSortClasses = ((ObjectPropertyPresentation) source).isAutoSortClasses;
             createPresentationsList = CreatePresentationsList.Factory.newCopy(this, ((ObjectPropertyPresentation) source).createPresentationsList);
         } else {
             createPresentationsList = CreatePresentationsList.Factory.newInstance(this);
@@ -42,6 +44,7 @@ public class ObjectPropertyPresentation extends PropertyPresentation implements 
         if (xPres != null && xPres.getObject() != null) {
             this.objectClassCatalogId = Id.Factory.loadFrom(xPres.getObject().getObjectClassCatalogId());
             createPresentationsList = CreatePresentationsList.Factory.loadFrom(this, xPres.getObject());
+            isAutoSortClasses = xPres.getObject().getAutoSortClasses();
         } else {
             createPresentationsList = CreatePresentationsList.Factory.newInstance(this);
         }
@@ -71,12 +74,24 @@ public class ObjectPropertyPresentation extends PropertyPresentation implements 
         }
     }
 
+    public boolean isAutoSortClasses() {
+        return isAutoSortClasses;
+    }
+
+    public void setAutoSortClasses(boolean isAutoSortClasses) {
+        this.isAutoSortClasses = isAutoSortClasses;
+    }
+
     public void appendTo(final org.radixware.schemas.adsdef.PropertyPresentation.Object xDef) {
         if (objectClassCatalogId != null) {
             xDef.setObjectClassCatalogId(this.objectClassCatalogId.toString());
         }
         if (!createPresentationsList.isEmpty()) {
             createPresentationsList.appendTo(xDef);
+        }
+        
+        if (isAutoSortClasses) {
+            xDef.setAutoSortClasses(true);
         }
     }
 

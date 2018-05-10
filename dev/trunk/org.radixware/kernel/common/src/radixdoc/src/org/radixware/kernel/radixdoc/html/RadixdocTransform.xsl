@@ -40,7 +40,7 @@
                     <xsl:value-of select="/doc:Page/@Title"/>
                 </title>
                 <link rel="stylesheet" type="text/css" href="../../../styles.css" title="Style"/>
-                <script type="text/javascript" src="../../../jquery-2.0.0.js"></script>
+                <script type="text/javascript" src="../../../jquery.js"></script>
                 <script type="text/javascript" src="../../../radixdoc.js"></script>
                 <script type="text/javascript">
                     radixdoc.initCollapsible();
@@ -384,7 +384,7 @@
                     <xsl:text>IndexPage</xsl:text>
                 </title>
                 <link rel="stylesheet" type="text/css" href="styles.css" title="Style"/>
-                <script type="text/javascript" src="jquery-2.0.0.js"></script>
+                <script type="text/javascript" src="jquery.js"></script>
                 <script type="text/javascript" src="radixdoc.js"></script>
                 <script type="text/javascript">
                     <xsl:text>var units = [ </xsl:text>
@@ -423,9 +423,9 @@
         </xsl:call-template>
 
         <xsl:call-template name="copyFile">
-            <xsl:with-param name="outFile" select="'jquery-2.0.0.js'"/>
+            <xsl:with-param name="outFile" select="'jquery.js'"/>
             <xsl:with-param name="sourceFile"
-                            select="'jquery-2.0.0.js'"/>
+                            select="'jquery.js'"/>
             <xsl:with-param name="source" select="'internal'"/>
         </xsl:call-template>
 
@@ -437,11 +437,25 @@
         </xsl:call-template>
         
         <xsl:call-template name="copyFile">
+            <xsl:with-param name="outFile" select="'lodash.js'"/>
+            <xsl:with-param name="sourceFile"
+                            select="'lodash.js'"/>
+            <xsl:with-param name="source" select="'internal'"/>
+        </xsl:call-template>       
+        
+        <xsl:call-template name="copyFile">
+            <xsl:with-param name="outFile" select="'backbone.js'"/>
+            <xsl:with-param name="sourceFile"
+                            select="'backbone.js'"/>
+            <xsl:with-param name="source" select="'internal'"/>
+        </xsl:call-template>  
+        
+        <xsl:call-template name="copyFile">
             <xsl:with-param name="outFile" select="'joint.js'"/>
             <xsl:with-param name="sourceFile"
                             select="'joint.js'"/>
             <xsl:with-param name="source" select="'internal'"/>
-        </xsl:call-template>
+        </xsl:call-template>                     
         
         <xsl:call-template name="copyFile">
             <xsl:with-param name="outFile" select="'joint-db-diagrams.js'"/>

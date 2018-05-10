@@ -7,7 +7,7 @@
     <Headers>
       <Src Name="HeaderadcVDASCGCZ4VFFNOFEB3J3ZVJYWY">
         <xsc:Item>
-          <xsc:Java>import java.util.HashMap;   
+          <xsc:Java>import java.util.HashMap;    
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Vector;</xsc:Java>
@@ -41,34 +41,43 @@ import java.util.Vector;</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>String s = "{ ";
+              <xsc:Java>final StringBuilder stringBuilder = new StringBuilder();
+stringBuilder.append("{ ");
+
 Vector&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcQE46D62SGTOBDGANABIFNQAABA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQE46D62SGTOBDGANABIFNQAABA">
+                <xsc:Presentation>AccessCoordinate</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> coords = this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcO3RN2IYLGXOBDGAOABIFNQAABA mthGJRCL7YMGXOBDGAOABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="adcO3RN2IYLGXOBDGAOABIFNQAABA mthGJRCL7YMGXOBDGAOABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getCoordinatesVector</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
 for(int j=0; j&lt;coords.size(); j++)
 {
-   if(j>0)
-      s += ", "; 
-   s += coords.elementAt(j).</xsc:Java>
+   if(j>0){
+      stringBuilder.append(", ");
+   }
+   stringBuilder.append(coords.elementAt(j).</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcQE46D62SGTOBDGANABIFNQAABA mth4F2B7P4FH3OBDGAWABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="adcQE46D62SGTOBDGANABIFNQAABA mth4F2B7P4FH3OBDGAWABIFNQAABA" Invoke="true">
+                <xsc:Presentation>toString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>();
+              <xsc:Java>());
 }
-s += " }";
-return s;
+stringBuilder.append(" }");
+return stringBuilder.toString();
 </xsc:Java>
             </xsc:Item>
           </Src>
@@ -176,21 +185,27 @@ return s;
               <xsc:Java>Vector&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcQE46D62SGTOBDGANABIFNQAABA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQE46D62SGTOBDGANABIFNQAABA">
+                <xsc:Presentation>AccessCoordinate</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>> cv =
    new Vector&lt;</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcQE46D62SGTOBDGANABIFNQAABA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQE46D62SGTOBDGANABIFNQAABA">
+                <xsc:Presentation>AccessCoordinate</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>>();
 Set&lt;String> set = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcO3RN2IYLGXOBDGAOABIFNQAABA prdALFRTFYLGXOBDGAOABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="adcO3RN2IYLGXOBDGAOABIFNQAABA prdALFRTFYLGXOBDGAOABIFNQAABA" Invoke="true">
+                <xsc:Presentation>coordinates</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.keySet();
@@ -201,21 +216,27 @@ while(it.hasNext())
    String keyVal = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcO3RN2IYLGXOBDGAOABIFNQAABA prdALFRTFYLGXOBDGAOABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="adcO3RN2IYLGXOBDGAOABIFNQAABA prdALFRTFYLGXOBDGAOABIFNQAABA" Invoke="true">
+                <xsc:Presentation>coordinates</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.get(familyId);
    </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcQE46D62SGTOBDGANABIFNQAABA"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcQE46D62SGTOBDGANABIFNQAABA">
+                <xsc:Presentation>AccessCoordinate</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> c = 
       new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcQE46D62SGTOBDGANABIFNQAABA mthYVXTGZSVGTOBDGANABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="adcQE46D62SGTOBDGANABIFNQAABA mthYVXTGZSVGTOBDGANABIFNQAABA" Invoke="true">
+                <xsc:Presentation>AccessCoordinate</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(familyId, keyVal);
@@ -379,7 +400,9 @@ return cv;   </xsc:Java>
               <xsc:Java>return new HashMap&lt;String, String>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcO3RN2IYLGXOBDGAOABIFNQAABA prdALFRTFYLGXOBDGAOABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="adcO3RN2IYLGXOBDGAOABIFNQAABA prdALFRTFYLGXOBDGAOABIFNQAABA" Invoke="true">
+                <xsc:Presentation>coordinates</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);</xsc:Java>

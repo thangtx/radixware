@@ -15,13 +15,24 @@ import org.radixware.kernel.common.sqlscript.parser.SQLConstants.StatementType;
 
 
 public class SQLParseIncludeStatement extends SQLParseStatement {
-    public String includeFile;
+    public String includeFile;  // ??? na hera?
 
-    public SQLParseIncludeStatement(SQLPosition position, String includeFile) {
+    public SQLParseIncludeStatement(final SQLPosition position, final String includeFile) {
         super(position, StatementType.ST_INCLUDE);
-        this.includeFile = includeFile;
+        if (includeFile == null || includeFile.isEmpty()) {
+            throw new IllegalArgumentException("Include file name can't be null or empty");
+        }
+        else {
+            this.includeFile = includeFile;
+        }
     }
 
-    public String getIncludeFile()
-        { return includeFile; }
+    public String getIncludeFile() { 
+        return includeFile;
+    }
+
+    @Override
+    public String toString() {
+        return "SQLParseIncludeStatement{" + "includeFile=" + includeFile + '}';
+    }
 }

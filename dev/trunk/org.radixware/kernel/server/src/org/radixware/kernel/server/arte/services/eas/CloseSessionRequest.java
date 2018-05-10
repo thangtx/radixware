@@ -11,8 +11,10 @@
 
 package org.radixware.kernel.server.arte.services.eas;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.enums.ETimingSection;
 import org.radixware.kernel.common.exceptions.ServiceProcessClientFault;
@@ -20,29 +22,42 @@ import org.radixware.kernel.common.exceptions.ServiceProcessFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessServerFault;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.exceptions.DatabaseError;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.schemas.eas.CloseSessionMess;
 import org.radixware.schemas.eas.CloseSessionRq;
 import org.radixware.schemas.eas.ExceptionEnum;
 import org.radixware.schemas.easWsdl.CloseSessionDocument;
 
 
-public class CloseSessionRequest extends SessionRequest{
+public class CloseSessionRequest extends SessionRequest {
+
+    private static final String delSessionQryStmtSQL = "delete from RDX_EasSession where id = ?";
+    private static final Stmt delSessionQryStmt = new Stmt(delSessionQryStmtSQL,Types.BIGINT);
     
-    private final PreparedStatement delSessionQry;
+    private PreparedStatement delSessionQry = null;
+    
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
+            
+    private CloseSessionRequest(){}    
     
     public CloseSessionRequest(final ExplorerAccessService presenter) {
         super(presenter);
-        getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
-        try{
-            delSessionQry = getArte().getDbConnection().get().prepareStatement("delete from RDX_EasSession where id = ?");
-        }catch(SQLException e){
-            throw new DatabaseError("Can't init EAS service DB query: " + ExceptionTextFormatter.getExceptionMess(e), e);
-        }finally{
-            getArte().getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
-        }
     }
     
     final CloseSessionDocument process(final CloseSessionRq request) throws ServiceProcessFault, InterruptedException {        
+        if (delSessionQry == null) {
+            getArte().getProfiler().enterTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
+            try{
+                delSessionQry = ((RadixConnection)getArte().getDbConnection().get()).prepareStatement(delSessionQryStmt);
+            }catch(SQLException e){
+                throw new DatabaseError("Can't init EAS service DB query: " + ExceptionTextFormatter.getExceptionMess(e), e);
+            }finally{
+                getArte().getProfiler().leaveTimingSection(ETimingSection.RDX_ARTE_DB_QRY_PREPARE);
+            }
+        }
         try{
             delSessionQry.setLong(1, Long.valueOf(request.getSessionId()));
             delSessionQry.execute();
@@ -57,6 +72,7 @@ public class CloseSessionRequest extends SessionRequest{
 
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         final CloseSessionRq request = ((CloseSessionMess) rqXml).getCloseSessionRq();                
         if (request.getAuthType() == null) {
             throw EasFaults.newParamRequiedFault("AuthType", rqXml.getDomNode().getNodeName());

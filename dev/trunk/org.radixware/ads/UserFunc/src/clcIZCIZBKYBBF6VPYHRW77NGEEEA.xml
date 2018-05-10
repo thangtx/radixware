@@ -1,57 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
-  <AdsContextlessCommandDefinition Id="clcIZCIZBKYBBF6VPYHRW77NGEEEA" Name="_Fast_ListUserFunctions" TitleId="mlsQ5CLEKKUJRFBXBUIRQKOB3ZSFM" Nature="2" IsVisible="true" IsConfirmationRequired="true">
+  <AdsContextlessCommandDefinition Id="clcIZCIZBKYBBF6VPYHRW77NGEEEA" Name="_Fast_ListUserFunctions" CompilerWarnings="67108967" TitleId="mlsQ5CLEKKUJRFBXBUIRQKOB3ZSFM" Nature="2" IsVisible="true" IsConfirmationRequired="true">
     <AccessRules IsPublished="false"/>
     <InType TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRqDocument"/>
     <OutType TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument"/>
     <Source>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="accB7XREKV6TRHB7O6DV23S6REJGU"/>
+        <xsc:TypeDeclaration TypeId="411" Path="accB7XREKV6TRHB7O6DV23S6REJGU">
+          <xsc:Presentation>_Fast_ListUserFuncCursor</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> cursor = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="accB7XREKV6TRHB7O6DV23S6REJGU"/>
+        <xsc:TypeDeclaration TypeId="411" Path="accB7XREKV6TRHB7O6DV23S6REJGU">
+          <xsc:Presentation>_Fast_ListUserFuncCursor</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU mth_stmt_execute_____________" Invoke="true"/>
+        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU mth_stmt_execute_____________" Invoke="true">
+          <xsc:Presentation>open</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument">
+          <xsc:Presentation>_Fast_UserFuncCommands:ListRsDocument</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> xDoc = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.Factory"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.Factory">
+          <xsc:Presentation>_Fast_UserFuncCommands:ListRsDocument.Factory</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.newInstance();
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs">
+          <xsc:Presentation>_Fast_UserFuncCommands:ListRsDocument.ListRs</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> xRs = xDoc.addNewListRs();
 java.util.List&lt;</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs.UserFunc"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs.UserFunc">
+          <xsc:Presentation>_Fast_UserFuncCommands:ListRsDocument.ListRs.UserFunc</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>> resultList = new java.util.ArrayList&lt;</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs.UserFunc"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs.UserFunc">
+          <xsc:Presentation>_Fast_UserFuncCommands:ListRsDocument.ListRs.UserFunc</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>>();
@@ -59,20 +75,26 @@ java.util.List&lt;</xsc:Java>
 while (cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+          <xsc:Presentation>next</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>()) {
     </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs.UserFunc"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs.UserFunc">
+          <xsc:Presentation>_Fast_UserFuncCommands:ListRsDocument.ListRs.UserFunc</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> uf = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs.UserFunc.Factory"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs.UserFunc.Factory">
+          <xsc:Presentation>_Fast_UserFuncCommands:ListRsDocument.ListRs.UserFunc.Factory</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.newInstance();
@@ -80,39 +102,51 @@ while (cursor.</xsc:Java>
     </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+          <xsc:Presentation>Types::Id</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> ownerEntityId = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+          <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthZCNI2JK4DFGNLEBCLZZCIM34TA" Invoke="true"/>
+        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthZCNI2JK4DFGNLEBCLZZCIM34TA" Invoke="true">
+          <xsc:Presentation>loadFrom</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>(cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfMGKM2Z7QOZBBBCS6D5UBZIM5GY" Invoke="true"/>
+        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfMGKM2Z7QOZBBBCS6D5UBZIM5GY" Invoke="true">
+          <xsc:Presentation>upOwnerEntityId</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>);
     uf.UpDefId = cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfCIUIRYHW2NA7DDGKHLSDE4KQ3E" Invoke="true"/>
+        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfCIUIRYHW2NA7DDGKHLSDE4KQ3E" Invoke="true">
+          <xsc:Presentation>upDefId</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>;
     uf.UpOwnerPid = cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfRDYI7SBGZJCETK5S22PZBALGOM" Invoke="true"/>
+        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfRDYI7SBGZJCETK5S22PZBALGOM" Invoke="true">
+          <xsc:Presentation>upOwnerPid</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>;
@@ -120,14 +154,18 @@ while (cursor.</xsc:Java>
     uf.ClassGUID = cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfCRSHX3SOINDBNPKSV6PFZBXFO4" Invoke="true"/>
+        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfCRSHX3SOINDBNPKSV6PFZBXFO4" Invoke="true">
+          <xsc:Presentation>classGuid</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>;
     String ownerPid = cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfRDYI7SBGZJCETK5S22PZBALGOM" Invoke="true"/>
+        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfRDYI7SBGZJCETK5S22PZBALGOM" Invoke="true">
+          <xsc:Presentation>upOwnerPid</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>;
@@ -136,44 +174,58 @@ while (cursor.</xsc:Java>
         </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+        <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM">
+          <xsc:Presentation>UserFunc</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> funcItself = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM"/>
+        <xsc:TypeDeclaration TypeId="411" Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM">
+          <xsc:Presentation>UserFunc</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mth_loadByPK_________________" Invoke="true"/>
+        <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mth_loadByPK_________________" Invoke="true">
+          <xsc:Presentation>loadByPK</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>(cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfCIUIRYHW2NA7DDGKHLSDE4KQ3E" Invoke="true"/>
+        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfCIUIRYHW2NA7DDGKHLSDE4KQ3E" Invoke="true">
+          <xsc:Presentation>upDefId</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>, cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfMGKM2Z7QOZBBBCS6D5UBZIM5GY" Invoke="true"/>
+        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfMGKM2Z7QOZBBBCS6D5UBZIM5GY" Invoke="true">
+          <xsc:Presentation>upOwnerEntityId</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>, cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfRDYI7SBGZJCETK5S22PZBALGOM" Invoke="true"/>
+        <xsc:IdReference Path="accB7XREKV6TRHB7O6DV23S6REJGU prfRDYI7SBGZJCETK5S22PZBALGOM" Invoke="true">
+          <xsc:Presentation>upOwnerPid</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>,false);
         org.radixware.kernel.server.meta.clazzes.RadMethodDef method =  funcItself.RadMeta.getMethodById(funcItself.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthFOOX7DTCW5GA5CUK2VYOOVAC3Q" Invoke="true"/>
+        <xsc:IdReference Path="aecJ6SOXKD3ZHOBDCMTAALOMT5GDM mthFOOX7DTCW5GA5CUK2VYOOVAC3Q" Invoke="true">
+          <xsc:Presentation>getMethodId</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>());
@@ -181,7 +233,9 @@ while (cursor.</xsc:Java>
     } catch (</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="axc6Y6UT7DZNRET3ECFL7DJVPMK6U"/>
+        <xsc:TypeDeclaration TypeId="411" Path="axc6Y6UT7DZNRET3ECFL7DJVPMK6U">
+          <xsc:Presentation>Exceptions::EntityObjectNotExistsError</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> e) {
@@ -189,7 +243,9 @@ while (cursor.</xsc:Java>
     } catch (</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="axcUKJZUDCC3NGXJMLCNT7H2KELIY"/>
+        <xsc:TypeDeclaration TypeId="411" Path="axcUKJZUDCC3NGXJMLCNT7H2KELIY">
+          <xsc:Presentation>Exceptions::DefinitionNotFoundError</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> e) {
@@ -201,19 +257,25 @@ while (cursor.</xsc:Java>
         </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________">
+          <xsc:Presentation>Types::Entity</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> ownerEntity = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________"/>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcEntity____________________">
+          <xsc:Presentation>Types::Entity</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcEntity____________________ mth5RIUNTEIFDORDM2AABIFNQAABA" Invoke="true"/>
+        <xsc:IdReference Path="pdcEntity____________________ mth5RIUNTEIFDORDM2AABIFNQAABA" Invoke="true">
+          <xsc:Presentation>load</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>(ownerEntityId, ownerPid);
@@ -221,21 +283,27 @@ while (cursor.</xsc:Java>
             uf.OwnerClassName = ownerEntity.RadMeta.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y mthA7MSYHCKMBEFNBGCRW4F57LAZI" Invoke="true"/>
+        <xsc:IdReference Path="adcB72UJA5VUBF67BJLQSMCSA6L7Y mthA7MSYHCKMBEFNBGCRW4F57LAZI" Invoke="true">
+          <xsc:Presentation>getTitle</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
             uf.OwnerClassId = ownerEntity.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true"/>
+        <xsc:IdReference Path="pdcEntity____________________ mth3VQXRGQW6PNRDA2JAAMPGXSZKU" Invoke="true">
+          <xsc:Presentation>getClassDefinitionId</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
             uf.OwnerTitle = ownerEntity.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true"/>
+        <xsc:IdReference Path="pdcEntity____________________ mthQCGEEZOUAHOBDA26AAMPGXSZKU" Invoke="true">
+          <xsc:Presentation>calcTitle</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
@@ -244,7 +312,9 @@ while (cursor.</xsc:Java>
     } catch (</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="axcUKJZUDCC3NGXJMLCNT7H2KELIY"/>
+        <xsc:TypeDeclaration TypeId="411" Path="axcUKJZUDCC3NGXJMLCNT7H2KELIY">
+          <xsc:Presentation>Exceptions::DefinitionNotFoundError</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> e) {
@@ -253,7 +323,9 @@ while (cursor.</xsc:Java>
     } catch (</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="axc6Y6UT7DZNRET3ECFL7DJVPMK6U"/>
+        <xsc:TypeDeclaration TypeId="411" Path="axc6Y6UT7DZNRET3ECFL7DJVPMK6U">
+          <xsc:Presentation>Exceptions::EntityObjectNotExistsError</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> e) {
@@ -264,7 +336,9 @@ while (cursor.</xsc:Java>
 xRs.UserFuncArray = resultList.toArray(new </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs.UserFunc"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdBWH75FUWXFEIXHDF6YGQTA4VJU" extStr="ListRsDocument.ListRs.UserFunc">
+          <xsc:Presentation>_Fast_UserFuncCommands:ListRsDocument.ListRs.UserFunc</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>[resultList.size()]);

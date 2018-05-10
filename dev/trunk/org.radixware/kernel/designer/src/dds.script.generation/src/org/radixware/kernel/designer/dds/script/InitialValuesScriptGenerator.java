@@ -22,6 +22,7 @@ import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsIndexDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
 import org.radixware.kernel.common.defs.value.ValAsStr;
+import org.radixware.kernel.common.enums.EDatabaseType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.scml.CodePrinter;
@@ -48,14 +49,18 @@ class InitialValuesScriptGenerator {
         return 0;
     }
 
-    private static void check(DdsTableDef table) {
+    private static void check(DdsTableDef table, final boolean isOld) {
         final int requiredSize = calcSize(table);
+        
         if (requiredSize > 0) {
             for (DdsColumnDef column : table.getColumns().get(EScope.LOCAL_AND_OVERWRITE)) { // по всем, т.к. всё должно совпадать
                 if (column.isGeneratedInDb()) {
                     final int size = column.getInitialValues().size();
+                    
                     if (size > 0) {
-                        if (size != requiredSize) {
+                        if (size != requiredSize 
+                                && !isOld // RADIX-14803
+                                ) {
                             throw new DefinitionError("Erronerous initial values sizes.", table);
                         }
                         if (column.isPrimaryKey() && column.getInitialValues().contains(null)) {
@@ -72,24 +77,23 @@ class InitialValuesScriptGenerator {
         }
     }
 
-    private static boolean isPkStructureEquals(DdsIndexDef oldPk, DdsIndexDef newPk) {
+    private static boolean isPkStructureEquals(final DdsIndexDef oldPk, final DdsIndexDef newPk) {
         final int size = oldPk.getColumnsInfo().size();
+        
         if (newPk.getColumnsInfo().size() != size) {
             return false;
         }
-        for (int i = 0; i < size; i++) {
-            final Id oldColumnId = oldPk.getColumnsInfo().get(i).getColumnId();
-            final Id newColumnId = newPk.getColumnsInfo().get(i).getColumnId();
-            if (!oldColumnId.equals(newColumnId)) {
-                return false;
+        else {
+            for (int i = 0; i < size; i++) {
+                if (!oldPk.getColumnsInfo().get(i).getColumnId().equals(newPk.getColumnsInfo().get(i).getColumnId())) {
+                    return false;
+                }
             }
+            return true;
         }
-
-        return true;
     }
 
     private static class Key extends ArrayList<ValAsStr> {
-
         boolean used = false;
         final int idx;
 
@@ -105,11 +109,12 @@ class InitialValuesScriptGenerator {
 
     private static List<Key> getKeys(DdsTableDef table) {
         final int size = calcSize(table);
+        
         if (size > 0) {
-            final List<Key> keys = new ArrayList<Key>(size);
+            final List<Key> keys = new ArrayList<>(size);
+            
             for (int idx = 0; idx < size; idx++) {
-                final Key key = new Key(table, idx);
-                keys.add(key);
+                keys.add(new Key(table,idx));
             }
             return keys;
         } else {
@@ -119,7 +124,7 @@ class InitialValuesScriptGenerator {
 
     private static HashMap<Key, Key> getKeysMap(DdsTableDef table, List<Key> keys) {
         if (keys != null) {
-            final HashMap<Key, Key> keysMap = new HashMap<Key, Key>(keys.size());
+            final HashMap<Key, Key> keysMap = new HashMap<>(keys.size());
             for (Key key : keys) {
                 if (keysMap.containsKey(key)) {
                     throw new DefinitionError("Duplicated initial value: " + key.toString() + ".", table);
@@ -132,48 +137,41 @@ class InitialValuesScriptGenerator {
         }
     }
 
-    private static void printValue(CodePrinter cp, DdsColumnDef column, int idx) {
+    private static String extractValue(final DdsColumnDef column, final int idx) {
         final ValAsStr valAsStr = column.getInitialValues().get(idx);
         final EValType valType = column.getValType();
-        final String valueSql = ValueToSqlConverter.toSql(valAsStr, valType);
-        cp.print(valueSql);
+        return ValueToSqlConverter.toSql(valAsStr, valType);
     }
 
     /**
      * @param newPk - it is needed to get new column names in db.
      */
-    private static void printKeyCondition(CodePrinter cp, DdsTableDef table, int idx, DdsIndexDef newPk) {
-        cp.print("where ");
+    private static String buildKeyCondition(DdsTableDef table, int idx, DdsIndexDef newPk) {
+        final StringBuilder sb = new StringBuilder();
+        String prefix = "where ";
         int pkColumnIdx = 0;
+        
         for (DdsIndexDef.ColumnInfo pkPolumnInfo : table.getPrimaryKey().getColumnsInfo()) {
-            if (pkColumnIdx > 0) {
-                cp.print(" and ");
-            }
-            DdsColumnDef column = pkPolumnInfo.getColumn();
-            String columnNewDbName = newPk.getColumnsInfo().get(pkColumnIdx).getColumn().getDbName();
-            cp.print(columnNewDbName);
-            cp.print('=');
-            printValue(cp, column, idx);
+            final DdsColumnDef column = pkPolumnInfo.getColumn();
+            final String columnNewDbName = newPk.getColumnsInfo().get(pkColumnIdx).getColumn().getDbName();
+            
+            sb.append(prefix).append(columnNewDbName).append('=').append(extractValue(column, idx));
+            prefix = " and ";
             pkColumnIdx++;
         }
+        return sb.toString();                
     }
 
     private static void getDeleteScript(CodePrinter cp, DdsTableDef table, int idx, DdsIndexDef newPk) {
-        cp.print("delete from ");
-        cp.print(table.getDbName());
-        cp.print(' ');
-        printKeyCondition(cp, table, idx, newPk);
-        cp.printCommandSeparator();
+        cp.print("delete from ").print(table.getDbName()).print(' ');
+        cp.print(buildKeyCondition(table, idx, newPk)).printCommandSeparator();
     }
 
     private static void getInsertScript(CodePrinter cp, DdsTableDef table, int idx) {
-        cp.print("insert into ");
-        cp.print(table.getDbName());
-        cp.print(" (");
-
         final CodePrinter values = CodePrinter.Factory.newSqlPrinter();
-
         boolean columnPrintedFlag = false;
+        
+        cp.print("insert into ").print(table.getDbName()).print(" (");
         for (DdsColumnDef column : table.getColumns().getLocal()) { // первичный ключ может быть только в самой базовой таблице, поэтому insert для не базовой не вызовется
             if (column.isGeneratedInDb() && column.getInitialValues().size() > 0) {
                 if (columnPrintedFlag) {
@@ -183,19 +181,19 @@ class InitialValuesScriptGenerator {
                     columnPrintedFlag = true;
                     values.print("\n\t");
                 }
-                cp.print(column.getDbName());
+                if (cp.getProperty(CodePrinter.DATABASE_TYPE) == EDatabaseType.ENTERPRISEDB) {
+                    cp.print(DdsScriptInternalUtils.escapeDbName(column.getDbName()));
+                }
+                else {
+                    cp.print(column.getDbName());
+                }
                 final ValAsStr valAsStr = column.getInitialValues().get(idx);
                 final EValType valType = column.getValType();
-                final String valueSql = ValueToSqlConverter.toSql(valAsStr, valType);
-                values.print(valueSql);
+                values.print(ValueToSqlConverter.toSql(valAsStr, valType));
             }
         }
 
-        cp.print(") values (");
-        String valuesSql = values.toString();
-        cp.print(valuesSql);
-        cp.print(")");
-        cp.printCommandSeparator();
+        cp.print(") values (").print(values.toString()).print(")").printCommandSeparator();
     }
 
     private static void getUpdateScript(CodePrinter cp, DdsTableDef oldTable, int oldIdx, DdsTableDef newTable, int newIdx) {
@@ -204,35 +202,31 @@ class InitialValuesScriptGenerator {
             if (newColumn.isGeneratedInDb() && newColumn.getInitialValues().size() > 0 && !newColumn.isPrimaryKey()) {
                 final ValAsStr newValue = newColumn.getInitialValues().get(newIdx);
                 final DdsColumnDef oldColumn = oldTable.getColumns().findById(newColumn.getId(), EScope.LOCAL_AND_OVERWRITE).get();
-                final ValAsStr oldValue = (oldColumn != null && oldColumn.getInitialValues().size() > 0 ? oldColumn.getInitialValues().get(oldIdx) : null);
+                final ValAsStr oldValue = (oldColumn != null && oldColumn.getInitialValues().size() > 0 
+                        && oldColumn.getInitialValues().size()>oldIdx//RADIX-14803
+                        ? oldColumn.getInitialValues().get(oldIdx) : null);
                 final boolean changed = !Utils.equals(oldValue, newValue);
                 if (changed) {
                     if (!printedFlag) {
-                        cp.print("update ");
-                        cp.print(newTable.getDbName());
-                        cp.println(" set");
+                        cp.print("update ").print(newTable.getDbName()).println(" set");
                         printedFlag = true;
                     } else {
                         cp.print(",\n");
                     }
-                    cp.print('\t');
-                    cp.print(newColumn.getDbName());
-                    cp.print('=');
-                    printValue(cp, newColumn, newIdx);
+                    cp.print('\t').print(newColumn.getDbName()).print('=').print(extractValue(newColumn, newIdx));
                 }
             }
         }
         if (printedFlag) {
-            cp.println();
             DdsIndexDef newPk = newTable.getPrimaryKey();
-            printKeyCondition(cp, newTable, newIdx, newPk);
-            cp.printCommandSeparator();
+            cp.println().print(buildKeyCondition(newTable, newIdx, newPk)).printCommandSeparator();
         }
     }
 
     public static void getAlterScript(final CodePrinter cp, final DdsTableDef oldTable, final DdsTableDef newTable) {
-        check(oldTable);
-        check(newTable);
+        //RADIX-14803 - add flag 'isOld' for check function
+        check(oldTable, true);
+        check(newTable, false);
 
         if (oldTable != null && newTable != null && calcSize(oldTable) > 0 && !isPkStructureEquals(oldTable.getPrimaryKey(), newTable.getPrimaryKey())) {
             return; // impossible to generate.
@@ -256,7 +250,7 @@ class InitialValuesScriptGenerator {
             }
         }
 
-        if (oldKeys != null) {
+        if (oldKeys != null && newTable != null) {  // NPE!
             final DdsIndexDef newPk = newTable.getPrimaryKey();
             for (Key oldKey : oldKeys) {
                 if (!oldKey.used) {

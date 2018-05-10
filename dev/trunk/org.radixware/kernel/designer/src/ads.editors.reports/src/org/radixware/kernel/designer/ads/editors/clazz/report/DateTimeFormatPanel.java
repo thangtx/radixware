@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.clazz.report;
 
 import javax.swing.JComboBox;
@@ -19,71 +18,69 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportFormat;
 import org.radixware.kernel.common.enums.EDateTimeStyle;
 import org.radixware.kernel.designer.common.dialogs.components.KernelEnumComboBoxModel;
 
+public final class DateTimeFormatPanel extends AbstractFormatPanel {
 
-public class DateTimeFormatPanel extends javax.swing.JPanel{
-    private boolean readOnly = false;
-    private final int defaultTooltipDelay = ToolTipManager.sharedInstance().getDismissDelay();
-    private final AdsReportFormat cell;
-    
-    
+    private boolean readOnly;
+    private final int defaultTooltipDelay = ToolTipManager.sharedInstance().getDismissDelay();    
+
     /**
      * Creates new form DateTimeFormatPanel
      */
-    public DateTimeFormatPanel(final AdsReportFormat cell) {
+    public DateTimeFormatPanel(final AdsReportFormat cell, boolean readOnly) {
+        super(cell, readOnly);
+        
         initComponents();
-        this.cell=cell;
-        
         qtMaskTextField.setToolTipText(
-            "<html>"
-            + "<table align=\"center\" border=\"1\" cellpadding=\"2\" cellspacing=\"0\">"
-            + "<thead><tr align=\"center\" bgcolor=\"#CCCCCC\"><th>Expression</th><th>Output</th></tr></thead>"
-            + "<tbody>"
-            + "<tr align=\"left\"><td>d</td><td>the day as number without a leading zero (1 to 31)</td></tr>"
-            + "<tr align=\"left\"><td>dd</td><td>the day as number with a leading zero (01 to 31)</td></tr>"
-            + "<tr align=\"left\"><td>ddd</td><td>the abbreviated localized day name (e.g. 'Mon' to 'Sun')</td></tr>"
-            + "<tr align=\"left\"><td>dddd</td><td>the long localized day name (e.g. 'Qt::Monday' to 'Qt::Sunday')</td></tr>"
-            + "<tr align=\"left\"><td>M</td><td>the month as number without a leading zero (1-12)</td></tr>"
-            + "<tr align=\"left\"><td>MM</td><td>the month as number with a leading zero (01-12)</td></tr>"
-            + "<tr align=\"left\"><td>MMM</td><td>the abbreviated localized month name (e.g. 'Jan' to 'Dec')</td></tr>"
-            + "<tr align=\"left\"><td>MMMM</td><td>the long localized month name (e.g. 'January' to 'December')</td></tr>"
-            + "<tr align=\"left\"><td>yy</td><td>the year as two digit number (00-99)</td></tr>"
-            + "<tr align=\"left\"><td>yyyy</td><td>the year as four digit number</td></tr>"
-            + "<tr align=\"left\"><td>h</td><td>the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)</td></tr>"
-            + "<tr align=\"left\"><td>hh</td><td>the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)</td></tr>"
-            + "<tr align=\"left\"><td>H</td><td>the hour without a leading zero (0 to 23, even with AM/PM display)</td></tr>"
-            + "<tr align=\"left\"><td>HH</td><td>the hour with a leading zero (00 to 23, even with AM/PM display)</td></tr>"
-            + "<tr align=\"left\"><td>m</td><td>the minute without a leading zero (0 to 59)</td></tr>"
-            + "<tr align=\"left\"><td>mm</td><td>the minute with a leading zero (00 to 59)</td></tr>"
-            + "<tr align=\"left\"><td>s</td><td>the second without a leading zero (0 to 59)</td></tr>"
-            + "<tr align=\"left\"><td>ss</td><td>the second with a leading zero (00 to 59)</td></tr>"
-            + "<tr align=\"left\"><td>z</td><td>the milliseconds without leading zeroes (0 to 999)</td></tr>"
-            + "<tr align=\"left\"><td>zzz</td><td>the milliseconds with leading zeroes (000 to 999)</td></tr>"
-            + "<tr align=\"left\"><td>AP or A</td><td>interpret as an AM/PM time. <i>AP</i> must be either \"AM\" or \"PM\"</td></tr>"
-            + "<tr align=\"left\"><td>ap or a</td><td>Interpret as an AM/PM time. <i>ap</i> must be either \"am\" or \"pm\"</td></tr>"
-            + "</tbody></table>"
-            + "</html>");
-        
-            qtMaskTextField.getDocument().addDocumentListener(new DocumentListener(){
+                "<html>"
+                + "<table align=\"center\" border=\"1\" cellpadding=\"2\" cellspacing=\"0\">"
+                + "<thead><tr align=\"center\" bgcolor=\"#CCCCCC\"><th>Expression</th><th>Output</th></tr></thead>"
+                + "<tbody>"
+                + "<tr align=\"left\"><td>d</td><td>the day as number without a leading zero (1 to 31)</td></tr>"
+                + "<tr align=\"left\"><td>dd</td><td>the day as number with a leading zero (01 to 31)</td></tr>"
+                + "<tr align=\"left\"><td>ddd</td><td>the abbreviated localized day name (e.g. 'Mon' to 'Sun')</td></tr>"
+                + "<tr align=\"left\"><td>dddd</td><td>the long localized day name (e.g. 'Qt::Monday' to 'Qt::Sunday')</td></tr>"
+                + "<tr align=\"left\"><td>M</td><td>the month as number without a leading zero (1-12)</td></tr>"
+                + "<tr align=\"left\"><td>MM</td><td>the month as number with a leading zero (01-12)</td></tr>"
+                + "<tr align=\"left\"><td>MMM</td><td>the abbreviated localized month name (e.g. 'Jan' to 'Dec')</td></tr>"
+                + "<tr align=\"left\"><td>MMMM</td><td>the long localized month name (e.g. 'January' to 'December')</td></tr>"
+                + "<tr align=\"left\"><td>yy</td><td>the year as two digit number (00-99)</td></tr>"
+                + "<tr align=\"left\"><td>yyyy</td><td>the year as four digit number</td></tr>"
+                + "<tr align=\"left\"><td>h</td><td>the hour without a leading zero (0 to 23 or 1 to 12 if AM/PM display)</td></tr>"
+                + "<tr align=\"left\"><td>hh</td><td>the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)</td></tr>"
+                + "<tr align=\"left\"><td>H</td><td>the hour without a leading zero (0 to 23, even with AM/PM display)</td></tr>"
+                + "<tr align=\"left\"><td>HH</td><td>the hour with a leading zero (00 to 23, even with AM/PM display)</td></tr>"
+                + "<tr align=\"left\"><td>m</td><td>the minute without a leading zero (0 to 59)</td></tr>"
+                + "<tr align=\"left\"><td>mm</td><td>the minute with a leading zero (00 to 59)</td></tr>"
+                + "<tr align=\"left\"><td>s</td><td>the second without a leading zero (0 to 59)</td></tr>"
+                + "<tr align=\"left\"><td>ss</td><td>the second with a leading zero (00 to 59)</td></tr>"
+                + "<tr align=\"left\"><td>z</td><td>the milliseconds without leading zeroes (0 to 999)</td></tr>"
+                + "<tr align=\"left\"><td>zzz</td><td>the milliseconds with leading zeroes (000 to 999)</td></tr>"
+                + "<tr align=\"left\"><td>AP or A</td><td>interpret as an AM/PM time. <i>AP</i> must be either \"AM\" or \"PM\"</td></tr>"
+                + "<tr align=\"left\"><td>ap or a</td><td>Interpret as an AM/PM time. <i>ap</i> must be either \"am\" or \"pm\"</td></tr>"
+                + "</tbody></table>"
+                + "</html>");
+
+        qtMaskTextField.getDocument().addDocumentListener(new DocumentListener() {
 
             @Override
             public void insertUpdate(DocumentEvent de) {
-                 changedUpdate(de); 
+                changedUpdate(de);
             }
 
             @Override
             public void removeUpdate(DocumentEvent de) {
-                 changedUpdate( de);
+                changedUpdate(de);
             }
 
             @Override
-            public void changedUpdate(DocumentEvent de) {                 
-                 if(cell!=null){
-                     EDateTimeStyle dateStyle=getDateTimeModel(cmbDateStyle).getSelectedItemSource();
-                     EDateTimeStyle timeStyle=getDateTimeModel(cmbTimeStyle).getSelectedItemSource();
-                     if(dateStyle == EDateTimeStyle.CUSTOM && timeStyle == EDateTimeStyle.CUSTOM){
-                         cell.setPattern(qtMaskTextField.getText());
-                     }            
-                 }
+            public void changedUpdate(DocumentEvent de) {
+                if (cell != null) {
+                    EDateTimeStyle dateStyle = getDateTimeModel(cmbDateStyle).getSelectedItemSource();
+                    EDateTimeStyle timeStyle = getDateTimeModel(cmbTimeStyle).getSelectedItemSource();
+                    if (dateStyle == EDateTimeStyle.CUSTOM && timeStyle == EDateTimeStyle.CUSTOM) {
+                        cell.setPattern(qtMaskTextField.getText());
+                    }
+                }
             }
         });
         if (cell != null) {
@@ -91,19 +88,17 @@ public class DateTimeFormatPanel extends javax.swing.JPanel{
         }
         updateEnableState();
     }
-    
-   
-    
-     private void setupInitialValues() {
-        if(cell.getPattern()!=null) {
-            qtMaskTextField.setText(cell.getPattern());       
-        }        
-        EDateTimeStyle dateStyle=cell.getDateStyle()==null ? EDateTimeStyle.DEFAULT : cell.getDateStyle();
-        EDateTimeStyle timeStyle=cell.getTimeStyle()==null ? EDateTimeStyle.DEFAULT : cell.getTimeStyle();
+
+    @Override
+    public void setupInitialValues() {
+        if (cell.getPattern() != null) {
+            qtMaskTextField.setText(cell.getPattern());
+        }
+        EDateTimeStyle dateStyle = cell.getDateStyle() == null ? EDateTimeStyle.DEFAULT : cell.getDateStyle();
+        EDateTimeStyle timeStyle = cell.getTimeStyle() == null ? EDateTimeStyle.DEFAULT : cell.getTimeStyle();
         getDateTimeModel(cmbDateStyle).setSelectedItemSource(dateStyle);
         getDateTimeModel(cmbTimeStyle).setSelectedItemSource(timeStyle);
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -190,8 +185,9 @@ public class DateTimeFormatPanel extends javax.swing.JPanel{
 
     private void cmbDateStyleItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbDateStyleItemStateChanged
         updateStyles(cmbDateStyle, cmbTimeStyle);
-        if(cell!=null)
+        if (cell != null) {
             cell.setDateStyle(getDateTimeModel(cmbDateStyle).getSelectedItemSource());
+        }
         updateEnableState();
     }//GEN-LAST:event_cmbDateStyleItemStateChanged
 
@@ -217,24 +213,24 @@ public class DateTimeFormatPanel extends javax.swing.JPanel{
     private javax.swing.JLabel lblTimeType;
     private javax.swing.JTextField qtMaskTextField;
     // End of variables declaration//GEN-END:variables
-  
+
     private void updateEnableState() {
         cmbDateStyle.setEnabled(!readOnly);
         cmbTimeStyle.setEnabled(!readOnly);
 
         qtMaskTextField.setEnabled(!readOnly && getDateTimeModel(cmbDateStyle).getSelectedItemSource() == EDateTimeStyle.CUSTOM
-            && getDateTimeModel(cmbTimeStyle).getSelectedItemSource() == EDateTimeStyle.CUSTOM);
+                && getDateTimeModel(cmbTimeStyle).getSelectedItemSource() == EDateTimeStyle.CUSTOM);
     }
-    
+
     private KernelEnumComboBoxModel<EDateTimeStyle> getDateTimeModel(JComboBox<KernelEnumComboBoxModel.Item<EDateTimeStyle>> comboBox) {
         return ((KernelEnumComboBoxModel<EDateTimeStyle>) comboBox.getModel());
     }
-    
+
    // if (dateStyle == EDateTimeStyle.CUSTOM && timeStyle == EDateTimeStyle.CUSTOM) {
-   //         editMaskDateTime.setMask(qtMaskTextField.getText());
-   //     }
-    
+    //         editMaskDateTime.setMask(qtMaskTextField.getText());
+    //     }
     private boolean updateStylesProcess = false;
+
     private void updateStyles(JComboBox<KernelEnumComboBoxModel.Item<EDateTimeStyle>> changed, JComboBox<KernelEnumComboBoxModel.Item<EDateTimeStyle>> dependent) {
         if (updateStylesProcess) {
             return;
@@ -246,5 +242,5 @@ public class DateTimeFormatPanel extends javax.swing.JPanel{
             getDateTimeModel(dependent).setSelectedItemSource(EDateTimeStyle.DEFAULT);
         }
         updateStylesProcess = false;
-    }   
+    }
 }

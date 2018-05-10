@@ -8,13 +8,11 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.monitoring;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.radixware.kernel.common.exceptions.RadixError;
-
 
 public abstract class AbstractStat<T> {
 
@@ -22,6 +20,7 @@ public abstract class AbstractStat<T> {
     private final List<IStatValue> values = new ArrayList<>();
     private MetricParameters parameters;
     private EMetricState state = EMetricState.ACTIVE;
+    private boolean started = false;
 
     public AbstractStat(final MetricParameters parameters, final long curPeriodStartMillis) {
         this.curPeriodStartMillis = curPeriodStartMillis;
@@ -41,7 +40,6 @@ public abstract class AbstractStat<T> {
         processToTime(item.regTimeMillis);
         appendInternal(item);
     }
-
 
     public List<MetricRecord> popRecords() {
         final ArrayList<MetricRecord> records = new ArrayList<>();
@@ -101,4 +99,15 @@ public abstract class AbstractStat<T> {
     public long getCurPeriodStartMillis() {
         return curPeriodStartMillis;
     }
+
+    public void start(final RegisteredItem<T> item) {
+        reset(item.regTimeMillis);
+        appendInternal(item);
+        started = true;
+    }
+
+    public boolean isStarted() {
+        return started;
+    }
+
 }

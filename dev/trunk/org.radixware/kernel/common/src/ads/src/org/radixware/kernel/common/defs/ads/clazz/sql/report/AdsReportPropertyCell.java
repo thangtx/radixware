@@ -84,12 +84,9 @@ public class AdsReportPropertyCell extends AdsReportFormattedCell implements ILo
     }
 
     @Override
-    public String getName() {
-        if (getOwnerReport() == null) {
-            return super.getName();
-        }
+    public String getDefaultName() {
         final AdsPropertyDef property = findProperty();
-        return (property != null ? property.getName() : String.valueOf(propertyId));
+        return (property != null ? property.getName() : null);
     }
    
     public Id getPropertyId() {

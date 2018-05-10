@@ -109,7 +109,12 @@ public class TraceView extends ExplorerWidget {
 
     public void refreshControls() {
         spinBox.setValue(getEnvironment().getTracer().getBuffer().getMaxSize());
-        traceFilter.getFilterToolBar().updateEventSeverityItems(-1);
+        final EEventSeverity severityFilter = traceFilter.getFilterToolBar().getSeverity();
+        if (severityFilter==null || severityFilter.getValue()==null){
+            traceFilter.getFilterToolBar().updateEventSeverityItems(-1);
+        }else{
+            traceFilter.getFilterToolBar().updateEventSeverityItems(severityFilter.getValue().intValue());
+        }
     }
 
     public boolean getContinueTracing() {

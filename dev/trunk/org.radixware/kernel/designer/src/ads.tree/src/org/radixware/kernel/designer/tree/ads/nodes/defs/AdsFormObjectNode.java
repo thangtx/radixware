@@ -62,7 +62,7 @@ public abstract class AdsFormObjectNode<T extends RadixObject> extends AdsMixedN
     }
 
     protected void update() {
-        //setSheet(createSheet());
+        setSheet(createSheet());
     }
 
     private AdsLayout getLayout(RadixObject radixObject) {

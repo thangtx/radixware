@@ -21,6 +21,7 @@ import org.radixware.kernel.common.client.eas.CommandRequestHandle;
 import org.radixware.kernel.common.client.eas.RequestHandle;
 import org.radixware.kernel.common.client.IClientApplication;
 import org.radixware.kernel.common.client.exceptions.ClientException;
+import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
 
@@ -97,12 +98,14 @@ public class ResponseListener implements org.radixware.kernel.common.client.eas.
 
     @Override
     public void onRequestCancelled(final XmlObject request, final  RequestHandle handler) {
-        getEnvironment().getTracer().warning("Async request was cancelled");
+        final String message = getEnvironment().getMessageProvider().translate("TraceMessage", "Async request was cancelled");
+        getEnvironment().getTracer().event(message);
     }
 
-    private void printError(final String message, final Exception exception) {
+    private void printError(final String message, final Exception exception) {        
         final String messageError = ClientException.getExceptionReason(getEnvironment().getMessageProvider(), exception) + "\n" + ClientException.exceptionStackToString(exception);
-        getEnvironment().getTracer().error(message + ":\n" + messageError);
+        final EEventSeverity severity = ClientException.getFaultSeverity(exception);                
+        getEnvironment().getTracer().put(severity, message + ":\n" + messageError);
     }
 
     protected final Collection<RequestHandle> getRequestHandles(final Class<? extends XmlObject> expectedMessageClass) {

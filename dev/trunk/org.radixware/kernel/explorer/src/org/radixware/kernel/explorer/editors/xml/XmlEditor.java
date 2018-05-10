@@ -644,25 +644,20 @@ public final class XmlEditor extends MainWindow {
 
     //************SETTINGS PROCESSING************
     private void writeSettings() {
-        ClientSettings settings = environment.getConfigStore();//QSettings settings = new QSettings("Compas Plus","Xml Editor");
+        ClientSettings settings = environment.getConfigStore();
         settings.beginGroup("XmlEditor");
-        settings.setValue("mainsize", size());
-        settings.setValue("mainpos", pos());
         settings.setValue("state", this.saveState());
         settings.endGroup();
     }
 
     private void readSettings() {
-        ClientSettings settings = environment.getConfigStore();//QSettings settings = new QSettings("Compas Plus","Xml Editor");
+        ClientSettings settings = environment.getConfigStore();
         settings.beginGroup("XmlEditor");
-        QSize size = (QSize) settings.value("mainsize", this.minimumSize());
-        this.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding);
-        resize(size);
-        QPoint pos = (QPoint) settings.value("mainpos", new QPoint(200, 200));
-        move(pos);
-        QByteArray state = (QByteArray) settings.value("state", null);
-        this.restoreState(state);
+        final QByteArray state = (QByteArray) settings.value("state", null);
         settings.endGroup();
+        if (state!=null){
+            restoreState(state);
+        }        
     }
 
     @Override

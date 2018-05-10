@@ -260,8 +260,8 @@ public class BoundsPanel extends AbstractEditItem {
         alignPane.setAlign(value, parentValue);
     }
     
-    public void setPad(byte [] value, byte[] parentValue, EEncoding viewType, EEncoding parentViewType) {
-        padPanel.setValue(value, parentValue, viewType, parentViewType);
+    public void setPad(byte [] value, byte[] parentValue) {
+        padPanel.setValue(value, parentValue);
     }
     
     public void addActionListener (ActionListener l) {

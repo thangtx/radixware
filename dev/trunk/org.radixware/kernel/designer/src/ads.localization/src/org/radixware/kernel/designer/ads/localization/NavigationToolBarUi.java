@@ -25,16 +25,16 @@ import javax.swing.KeyStroke;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.designer.ads.localization.source.MlsTablePanel;
 import org.radixware.kernel.common.resources.RadixWareIcons;
+import org.radixware.kernel.designer.ads.localization.actions.EditorAction;
 
 
 public class NavigationToolBarUi {
     private final javax.swing.JToolBar toolBar;
-    private  JButton btnGoToPrev;//(Ctrl+K)
-    private  JButton btnGoToNext;//(Ctrl+L)
-    private  JButton btnGoToPrevUnchecked;//(Ctrl+<)
-    private  JButton btnGoToNextUnchecked;//(Ctrl+>)
+    private  JButton btnGoToPrev;
+    private  JButton btnGoToNext;
+    private  JButton btnGoToPrevUnchecked;
+    private  JButton btnGoToNextUnchecked;
     private final MlsTablePanel panel;   
-    private static final String STR_RELEASE="RELEASE";
 
     public  NavigationToolBarUi(final javax.swing.JToolBar toolBar,final MlsTablePanel panel) {
         this.toolBar=toolBar;
@@ -44,72 +44,26 @@ public class NavigationToolBarUi {
     }
 
     private void createToolBarUi() {
-        Icon icon = RadixWareIcons.MLSTRING_EDITOR.LEFT.getIcon(20);
-        final Action actGoToPrev = new AbstractAction("GoToPrev", icon) {
-            @Override
-            public void actionPerformed(final ActionEvent evt) {
-                panel.goToPreviousTranslation();
-            }
-        };
-        icon = RadixWareIcons.MLSTRING_EDITOR.RIGHT.getIcon(20);
-        final Action actGoToNext = new AbstractAction("GoToNext", icon) {
-            @Override
-            public void actionPerformed(final ActionEvent evt) {
-                panel.goToNextTranslation();
-            }
-        };
-
-        //icon = RadixWareDesignerIcon.WIDGETS.PREV_CHECKED_STRING.getIcon(20);
-        icon = RadixWareIcons.MLSTRING_EDITOR.PREV_CHECKED_STRING.getIcon(20);
-        final Action actGoToPrevUnch = new AbstractAction("GoToPrevUnchecked", icon) {
-            @Override
-            public void actionPerformed(final ActionEvent evt) {
-                panel.goToPreviousUncheckedTranslation();
-            }
-        };
-
-        //icon = RadixWareDesignerIcon.WIDGETS.NEXT_CHECKED_STRING.getIcon(20);
-        icon =  RadixWareIcons.MLSTRING_EDITOR.NEXT_CHECKED_STRING.getIcon(20);
-        final Action  actGoToNextUnch= new AbstractAction("GoToNextUnchecked", icon) {
-            @Override
-            public void actionPerformed(final ActionEvent evt) {
-                panel.goToNextUncheckedTranslation();
-            }
-        };        
         
-        btnGoToPrev = new JButton(actGoToPrev);
-        KeyStroke release = KeyStroke.getKeyStroke(KeyEvent.VK_K,KeyEvent.CTRL_MASK,true);
-        InputMap map = btnGoToPrev.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        map.put(release,STR_RELEASE);
-        btnGoToPrev.getActionMap().put(STR_RELEASE, actGoToPrev);
-        setButton(btnGoToPrev,NbBundle.getMessage(NavigationToolBarUi.class, "GO_TO_PREV_TRANSLATION")+ "(Ctrl+K)");
+        btnGoToPrev = new JButton(panel.getActionByKey(MultilingualEditorUtils.GO_TO_PREV));
+        setButton(btnGoToPrev, NbBundle.getMessage(NavigationToolBarUi.class, "GO_TO_PREV_TRANSLATION"));
 
-        btnGoToNext = new JButton(actGoToNext);
-        release = KeyStroke.getKeyStroke(KeyEvent.VK_L,KeyEvent.CTRL_MASK,true );
-        map = btnGoToNext.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        map.put(release,STR_RELEASE);
-        btnGoToNext.getActionMap().put(STR_RELEASE, actGoToNext);
-        setButton(btnGoToNext,NbBundle.getMessage(NavigationToolBarUi.class, "GO_TO_NEXT_TRANSLATION")+ "(Ctrl+L)");
+        btnGoToNext = new JButton(panel.getActionByKey(MultilingualEditorUtils.GO_TO_NEXT));
+        setButton(btnGoToNext,NbBundle.getMessage(NavigationToolBarUi.class, "GO_TO_NEXT_TRANSLATION"));
 
-        btnGoToPrevUnchecked = new JButton(actGoToPrevUnch);
-        release = KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, KeyEvent.CTRL_DOWN_MASK,true);
-        map = btnGoToPrevUnchecked.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        map.put(release,STR_RELEASE);
-        btnGoToPrevUnchecked.getActionMap().put(STR_RELEASE, actGoToPrevUnch);
-        setButton(btnGoToPrevUnchecked,NbBundle.getMessage(NavigationToolBarUi.class, "GO_TO_PREV_UNCHECKED_TRANSLATION")+"(Ctrl+<)");
+        
+        btnGoToPrevUnchecked = new JButton(panel.getActionByKey(MultilingualEditorUtils.GO_TO_PREV_UNCHECKED));
+        setButton(btnGoToPrevUnchecked,NbBundle.getMessage(NavigationToolBarUi.class, "GO_TO_PREV_UNCHECKED_TRANSLATION"));
 
-        btnGoToNextUnchecked = new JButton(actGoToNextUnch);
-        release = KeyStroke.getKeyStroke(KeyEvent.VK_PERIOD,KeyEvent.CTRL_DOWN_MASK,true);
-        map = btnGoToNextUnchecked.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        map.put(release,STR_RELEASE);
-        btnGoToNextUnchecked.getActionMap().put(STR_RELEASE, actGoToNextUnch);
-        setButton(btnGoToNextUnchecked,NbBundle.getMessage(NavigationToolBarUi.class, "GO_TO_NEXT_UNCHECKED_TRANSLATION")+"(Ctrl+>)");
+        btnGoToNextUnchecked = new JButton(panel.getActionByKey(MultilingualEditorUtils.GO_TO_NEXT_UNCHECKED));
+        setButton(btnGoToNextUnchecked,NbBundle.getMessage(NavigationToolBarUi.class, "GO_TO_NEXT_UNCHECKED_TRANSLATION"));
         
         
         toolBar.addSeparator();
     }
 
-    private void setButton(final AbstractButton btn,final String toolTip) {
+    private void setButton(final AbstractButton btn, final String toolTip) {
+        btn.setFocusable(false);
         btn.setText(null);
         btn.setToolTipText(toolTip);
         btn.setMargin(new Insets(0, 0, 0, 0));

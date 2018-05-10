@@ -12,44 +12,23 @@
 package org.radixware.kernel.explorer.editors.filterparameditor;
 
 import com.trolltech.qt.core.QSize;
-import com.trolltech.qt.gui.QAbstractButton;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QWidget;
-import java.io.IOException;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.mask.EditMaskNone;
-import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
-import org.radixware.kernel.common.defs.RadixObject;
-import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef;
-import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsSelectorPresentationDef;
-import org.radixware.kernel.common.defs.ads.common.AdsVisitorProvider;
-import org.radixware.kernel.common.repository.Branch;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinitions;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlSelectorPresentationDef;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.editors.valeditors.ValEditor;
-import org.radixware.kernel.explorer.env.Application;
 
 
 
-class ValSelPresEditor extends ValEditor<AdsSelectorPresentationDef> {
+class ValSelPresEditor extends ValEditor<ISqmlSelectorPresentationDef> {
 
-    private static class AdsClassSearcher extends AdsVisitorProvider.AdsTopLevelDefVisitorProvider {
-
-        private Id classId;
-
-        public AdsClassSearcher(final Id classId) {
-            super();
-            this.classId = classId;
-        }
-
-        @Override
-        public boolean isTarget(final RadixObject radixObject) {
-            return (radixObject instanceof AdsEntityObjectClassDef)
-                    && ((AdsEntityObjectClassDef) radixObject).getId().equals(classId);
-        }
-    }
     private final QToolButton selectBtn;
 
     public ValSelPresEditor(final IClientEnvironment environment, final QWidget parent, final boolean isReadonly) {
@@ -57,8 +36,9 @@ class ValSelPresEditor extends ValEditor<AdsSelectorPresentationDef> {
         {
             final QAction action = new QAction(this);
             action.triggered.connect(this, "selectDefinition()");
-            action.setToolTip(Application.translate("SqmlEditor", "Select Definition"));
+            action.setToolTip(environment.getMessageProvider().translate("SqmlEditor", "Select Definition"));
             action.setText("...");
+            action.setObjectName("select");
             selectBtn = addButton(null, action);
             selectBtn.setText("...");
             selectBtn.setVisible(!isReadonly);
@@ -68,64 +48,56 @@ class ValSelPresEditor extends ValEditor<AdsSelectorPresentationDef> {
         getLineEdit().setReadOnly(true);
     }
 
-    public boolean setPresentation(final Id classId, final Id presentationId) {
-        final Branch branch;
-        try {
-            branch = getEnvironment().getApplication().getDefManager().getRepository().getBranch();
-        } catch (IOException ex) {
-            getEnvironment().processException(ex);
+    public boolean setPresentation(final Id classId, final Id presentationId) {        
+        final ISqmlDefinitions sqmlDefs = getEnvironment().getSqmlDefinitions();
+        final ISqmlTableDef classDef = sqmlDefs.findTableById(classId);
+        if (classDef==null){
+            final String message = getEnvironment().getMessageProvider().translate("TraceMessage", "Class presentation #%1$s was not found");
+            getEnvironment().getTracer().warning(String.format(message, classId));
             return false;
         }
-        final AdsEntityObjectClassDef classDef = (AdsEntityObjectClassDef) branch.find(new AdsClassSearcher(classId));
-        if (classDef != null) {
-            final AdsSelectorPresentationDef presentation =
-                    classDef.getPresentations().getSelectorPresentations().findById(presentationId, EScope.LOCAL_AND_OVERWRITE).get();
-            if (presentation != null) {
-                setValue(presentation);
-                return true;
-            }
+        final ISqmlSelectorPresentationDef presentationDef = 
+            classDef.getSelectorPresentations().getPresentationById(presentationId);
+        if (presentationDef==null){
+            final String message = getEnvironment().getMessageProvider().translate("TraceMessage", "Selector presentation #%1$s was not found");
+            getEnvironment().getTracer().warning(String.format(message, presentationId));
+            return false;            
         }
-        return false;
+        setValue(presentationDef);
+        return true;
     }
 
     @Override
-    public void setReadOnly(boolean readOnly) {
+    public void setReadOnly(final boolean readOnly) {
         super.setReadOnly(readOnly);
         selectBtn.setVisible(!readOnly);
         updateReadOnlyMarker();
     }
-
+    
     @Override
     public void refresh() {
         if (value == null) {
             getLineEdit().setText(getEditMask().getNoValueStr(getEnvironment().getMessageProvider()));
         } else {
-            getLineEdit().setText(value.getQualifiedName());
+            getLineEdit().setText(value.getFullName());
         }
         getLineEdit().setCursorPosition(0);
         getLineEdit().clearFocus();
         clearBtn.setVisible(!isMandatory() && !isReadOnly() && getValue() != null);
     }
 
-    public AdsSelectorPresentationDef selectDefinition() {
-        final Branch branch;
-        try {
-            branch = getEnvironment().getApplication().getDefManager().getRepository().getBranch();
-        } catch (IOException ex) {
-            getEnvironment().processException(ex);
-            return null;
-        }
+    public ISqmlSelectorPresentationDef  selectDefinition() {
         final Id classId, presentationId;
         if (value != null) {
-            classId = value.getOwnerClass().getId();
+            classId = value.getOwnerClassId();
             presentationId = value.getId();
         } else {
             classId = null;
             presentationId = null;
         }
-        final ChooseSelectorPresentationDialog dialog = new ChooseSelectorPresentationDialog(getEnvironment(), branch, classId, presentationId, this);
+        final ChooseSelectorPresentationDialog dialog = new ChooseSelectorPresentationDialog(getEnvironment(), classId, presentationId, this);
         if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
-            final AdsSelectorPresentationDef val = dialog.getCurrentItem();
+            final ISqmlSelectorPresentationDef val = dialog.getCurrentItem();
             setValue(val);
             editingFinished.emit(getValue());
             return val;
@@ -146,12 +118,12 @@ class ValSelPresEditor extends ValEditor<AdsSelectorPresentationDef> {
     }
 
     @Override
-    public void setPredefinedValues(final List<AdsSelectorPresentationDef> predefValues) {
+    public void setPredefinedValues(final List<ISqmlSelectorPresentationDef > predefValues) {
         throw new UnsupportedOperationException("Unsupported operation.");
     }
 
     @Override
-    public List<AdsSelectorPresentationDef> getPredefinedValues() {
+    public List<ISqmlSelectorPresentationDef > getPredefinedValues() {
         throw new UnsupportedOperationException("Unsupported operation.");
     }
 }

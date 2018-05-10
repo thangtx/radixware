@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.jml;
 
 import java.text.MessageFormat;
@@ -18,6 +17,7 @@ import org.radixware.kernel.common.compiler.core.ast.RadixObjectLocator;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
+import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.defs.ads.type.AdsClassType;
 import org.radixware.kernel.common.defs.ads.type.AdsDefinitionType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
@@ -28,16 +28,17 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.xscml.JmlType.Item;
 import org.radixware.schemas.xscml.TypeDeclaration;
 
-
 public class JmlTagTypeDeclaration extends Jml.Tag {
 
     private AdsTypeDeclaration type;
 
     JmlTagTypeDeclaration(TypeDeclaration xDecl) {
+        super(xDecl);
         this.type = AdsTypeDeclaration.Factory.loadFrom(xDecl);
     }
 
     public JmlTagTypeDeclaration(AdsTypeDeclaration decl) {
+        super(null);
         this.type = decl;
     }
 
@@ -57,6 +58,7 @@ public class JmlTagTypeDeclaration extends Jml.Tag {
     @Override
     public void appendTo(Item item) {
         final TypeDeclaration xDecl = item.addNewTypeDeclaration();
+        appendTo(xDecl);
         type.appendTo(xDecl);
     }
 
@@ -129,11 +131,17 @@ public class JmlTagTypeDeclaration extends Jml.Tag {
             // (jmlEnv != null) {
             final Definition context = jml.getOwnerDefinition();
             if (context != null) {
-                return type.getQualifiedName(context);
+                final boolean[] unresolved = new boolean[]{false};
+                String typeName = type.getQualifiedName(context, unresolved);
+                if (unresolved[0]) {
+                    return "unknowndef: " + restoreDisplayName(typeName);
+                } else {
+                    return rememberDisplayName(typeName);
+                }
             }
             //}
         }
-        return "<undefined>";
+        return restoreDisplayName("<undefined>");
 //        AdsType resolvedType = type.resolve(context);
 //        if (resolvedType != null) {
 //            return resolvedType.getQualifiedName(context);
@@ -145,8 +153,8 @@ public class JmlTagTypeDeclaration extends Jml.Tag {
 
     @Override
     public void check(IProblemHandler problemHandler, Jml.IHistory h) {
-        final AdsType t = getType().check(this, problemHandler);
-        
+        final AdsType t = getType().check(this, problemHandler, h.getHistory());
+
         if (t instanceof AdsClassType) {
             final AdsClassDef clazz = ((AdsClassType) t).getSource();
             boolean hasConstructors = false;
@@ -212,9 +220,11 @@ public class JmlTagTypeDeclaration extends Jml.Tag {
         return new JavaSourceSupport(this) {
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(this, purpose) {
+                return new JmlTagWriter(this, purpose, JmlTagTypeDeclaration.this) {
                     @Override
                     public boolean writeCode(CodePrinter printer) {
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
                         final RadixObjectLocator locator = (RadixObjectLocator) printer.getProperty(RadixObjectLocator.PRINTER_PROPERTY_NAME);
                         RadixObjectLocator.RadixObjectData marker = null;
                         if (locator != null) {
@@ -226,6 +236,7 @@ public class JmlTagTypeDeclaration extends Jml.Tag {
                             if (marker != null) {
                                 marker.commit();
                             }
+                            WriterUtils.leaveHumanUnreadableBlock(printer);
                         }
                     }
 

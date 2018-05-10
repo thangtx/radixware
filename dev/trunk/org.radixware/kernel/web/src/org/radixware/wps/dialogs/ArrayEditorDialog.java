@@ -16,9 +16,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.EnumSet;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.common.client.dialogs.IFileDialogSettings;
+import org.radixware.kernel.common.enums.EFileDialogOpenMode;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.models.items.properties.Property;
@@ -28,6 +29,8 @@ import org.radixware.kernel.common.client.models.items.properties.SimpleProperty
 import org.radixware.kernel.common.client.views.ArrayEditorEventListener;
 import org.radixware.kernel.common.client.views.IArrayEditorDialog;
 import org.radixware.kernel.common.client.views.IPropertyStorePossibility;
+import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EMimeType;
 import org.radixware.kernel.common.enums.EPropertyValueStorePossibility;
@@ -36,7 +39,9 @@ import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.rwt.Dialog;
+import org.radixware.wps.rwt.UIObject;
 import org.radixware.wps.views.editor.array.ArrayEditor;
+import org.radixware.wps.views.editors.valeditors.ValEditorController;
 
 
 public class ArrayEditorDialog extends Dialog implements IArrayEditorDialog {
@@ -63,6 +68,11 @@ public class ArrayEditorDialog extends Dialog implements IArrayEditorDialog {
 
         @Override
         public void onRowsInserted(int starRow, int count) {
+            refreshAcceptButton();
+        }
+
+        @Override
+        public void onDefineValue() {
             refreshAcceptButton();
         }
 
@@ -120,9 +130,23 @@ public class ArrayEditorDialog extends Dialog implements IArrayEditorDialog {
                     output = new FileOutputStream(f);
                     property.saveItemToStream(output, value, getCurrentItemIndex());
                     if (f.exists() && f.isFile()) {
-                        final EMimeType type = property.getFileDialogSettings(IFileDialogSettings.EFileDialogOpenMode.LOAD).getMimeType();
-                        final String mimeType = type != null ? "." + type.getExt() : null;
-                        ((WpsEnvironment) getEnvironment()).sendFileToTerminal(f.getName(), f, mimeType, false, false);//send file to terminal
+                        final EnumSet<EMimeType> types = property.getFileDialogSettings(EFileDialogOpenMode.LOAD).getMimeTypes();
+                        final String mimeTypes;
+                        if (types==null || types.isEmpty()){
+                            mimeTypes = null;
+                        }else{
+                            final StringBuilder typesBuilder = new StringBuilder();
+                            for (EMimeType type: types){
+                                if (type!=EMimeType.ALL_FILES && type!=EMimeType.ALL_SUPPORTED){
+                                    if (typesBuilder.length()>0){
+                                        typesBuilder.append(',');                                    
+                                    }
+                                    typesBuilder.append(type.getValue());
+                                }
+                            }
+                            mimeTypes = typesBuilder.toString();
+                        }
+                        ((WpsEnvironment) getEnvironment()).sendFileToTerminal(f.getName(), f, mimeTypes, false, false);//send file to terminal
                     } else {
                         throw new FileNotFoundException("Could not create file for property value storing.");
                     }
@@ -201,7 +225,11 @@ public class ArrayEditorDialog extends Dialog implements IArrayEditorDialog {
             editor.setDuplicatesEnabled(property.getDefinition().isDuplicatesEnabled());
             editor.setMandatory(property.isMandatory() || !property.isOwnValueAcceptable(null));
             if (property instanceof PropertyArr) {
-                editor.setItemMandatory(((PropertyArr) property).isArrayItemMandatory());
+                final PropertyArr arrayProperty = (PropertyArr) property;
+                editor.setItemMandatory(arrayProperty.isArrayItemMandatory());
+                editor.setFirstArrayItemIndex(arrayProperty.getFirstArrayItemIndex());
+                editor.setMaxArrayItemsCount(arrayProperty.getMaxArrayItemsCount());
+                editor.setMinArrayItemsCount(arrayProperty.getMinArrayItemsCount());
             }
             isReadOnly = property.isReadonly();
         }
@@ -214,7 +242,7 @@ public class ArrayEditorDialog extends Dialog implements IArrayEditorDialog {
     private void setupUi(final boolean readonly) {
         setWindowTitle(getEnvironment().getMessageProvider().translate("ArrayEditor", "Array Editor"));
         add(editor);
-        editor.getAnchors().setLeft(new Anchors.Anchor(0, 0));
+        editor.getAnchors().setLeft(new Anchors.Anchor(0, 5));
         editor.getAnchors().setRight(new Anchors.Anchor(1, -5));
         editor.getAnchors().setTop(new Anchors.Anchor(0, 5));
         editor.getAnchors().setBottom(new Anchors.Anchor(1, -5));
@@ -227,6 +255,7 @@ public class ArrayEditorDialog extends Dialog implements IArrayEditorDialog {
         setMinimumHeight(275);
         editor.getHtml().setCss("min-width", null);
         editor.getHtml().setCss("min-height", null);
+        refreshAcceptButton();
     }
 
     private void updateDialogButtons(final boolean readonly) {
@@ -248,7 +277,7 @@ public class ArrayEditorDialog extends Dialog implements IArrayEditorDialog {
     @Override
     public Arr getCurrentValue() {
         return editor.getCurrentValue();
-    }
+    }        
 
     @Override
     public boolean isReadonly() {
@@ -315,6 +344,36 @@ public class ArrayEditorDialog extends Dialog implements IArrayEditorDialog {
     }
 
     @Override
+    public void setFirstArrayItemIndex(int index) {
+        editor.setFirstArrayItemIndex(index);
+    }
+
+    @Override
+    public int getFirstArrayItemIndex() {
+        return editor.getFirstArrayItemIndex();
+    }
+
+    @Override
+    public void setMinArrayItemsCount(int count) {
+        editor.setMinArrayItemsCount(count);
+    }
+
+    @Override
+    public int getMinArrayItemsCount() {
+        return editor.getMinArrayItemsCount();
+    }
+
+    @Override
+    public void setMaxArrayItemsCount(int count) {
+        editor.setMaxArrayItemsCount(count);
+    }
+
+    @Override
+    public int getMaxArrayItemsCount() {
+        return editor.getMaxArrayItemsCount();
+    }        
+
+    @Override
     public void setOperationsVisible(final boolean isVisible) {
         editor.setOperationsVisible(isVisible);
     }
@@ -334,9 +393,19 @@ public class ArrayEditorDialog extends Dialog implements IArrayEditorDialog {
     }
 
     @Override
-    public void setPredefinedValues(List<Object> values) {
-        //throw new UnsupportedOperationException("Not supported yet.");
+    public void setPredefinedValues(final List<Object> values) {
+        editor.setPredefinedValues(values);
     }
+
+    @Override
+    public void addCustomAction(final Action action) {
+        editor.addCustomAction(action);
+    }
+
+    @Override
+    public void removeCustomAction(final Action action) {
+        editor.removeCustomAction(action);
+    }        
 
     @Override
     public void addEventListener(final ArrayEditorEventListener listener) {
@@ -356,7 +425,21 @@ public class ArrayEditorDialog extends Dialog implements IArrayEditorDialog {
         editor.removeStartCellModificationListener(listener);
     }
 
+    @Override
     public int getCurrentItemIndex() {
         return editor.getCurrentIndex();
     }
+
+    @Override
+    public void setCurrentItemIndex(final int index) {
+        editor.setCurrentIndex(index);
+    }        
+    
+    public AbstractArrayEditorDelegate<ValEditorController,UIObject> getEditorDelegate(){
+        return editor.getEditorDelegate();
+    }
+    
+    public void setEditorDelegate(final AbstractArrayEditorDelegate<ValEditorController,UIObject> delegate){
+        editor.setEditorDelegate(delegate);
+    }    
 }

@@ -69,6 +69,7 @@ public abstract class AdsCommandDef extends AdsTitledDefinition implements IAdsT
         private Id iconId;
         private boolean isConfirmationRequired;
         private boolean isVisible;
+        private boolean traceGuiActivity = true;
         private ERuntimeEnvironmentType clientEnvironment;
 
         public Id getIconId() {
@@ -106,6 +107,9 @@ public abstract class AdsCommandDef extends AdsTitledDefinition implements IAdsT
                 if (xCommand.isSetClientEnvironment()) {
                     this.clientEnvironment = xCommand.getClientEnvironment();
                 }
+                if (xCommand.isSetTraceGuiActivity()) {
+                    this.traceGuiActivity = xCommand.getTraceGuiActivity();
+                }
             } else {
                 this.isVisible = true;
                 this.isConfirmationRequired = true;
@@ -122,6 +126,9 @@ public abstract class AdsCommandDef extends AdsTitledDefinition implements IAdsT
             xDef.setIsConfirmationRequired(isConfirmationRequired);
             if (clientEnvironment != null && clientEnvironment != ERuntimeEnvironmentType.COMMON_CLIENT) {
                 xDef.setClientEnvironment(clientEnvironment);
+            }
+            if (!traceGuiActivity) {
+                xDef.setTraceGuiActivity(traceGuiActivity);
             }
         }
 
@@ -178,6 +185,18 @@ public abstract class AdsCommandDef extends AdsTitledDefinition implements IAdsT
                 this.clientEnvironment = clientEnvironment;
                 setEditState(EEditState.MODIFIED);
             }
+        }
+
+        public boolean isTraceGuiActivity() {
+            return traceGuiActivity;
+        }
+
+        public void setTraceGuiActivity(boolean traceGuiActivity) {
+            if (this.traceGuiActivity != traceGuiActivity) {
+                this.traceGuiActivity = traceGuiActivity;
+                setEditState(EEditState.MODIFIED);
+            }
+
         }
     }
 

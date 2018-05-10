@@ -8,12 +8,12 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.types;
 
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.server.arte.Cache;
 import org.radixware.kernel.server.exceptions.EntityObjectNotExistsError;
-
 
 public final class EntityState {
 
@@ -30,6 +30,7 @@ public final class EntityState {
     private long keepInCacheActivationTimeMillis = 0;
     private long keepInCacheMaxAgeMillis = 0;
     private boolean isAutoUpdateEnabled = true;
+    private String discardStack;
 
     EntityState(final Entity ent) {
         this.ent = ent;
@@ -42,7 +43,7 @@ public final class EntityState {
     boolean wasRead() {
         return wasRead;
     }
-
+    
     void assertAccessAllowed() {
         assertNotDiscarded();
     }
@@ -84,8 +85,12 @@ public final class EntityState {
     boolean isInited() {
         return state == Enum.INITED;
     }
+    
+    boolean isNew() {
+        return state == Enum.NEW;
+    }
 
-    boolean isNewObject() {
+    boolean isNewOrInited() {
         return (state == Enum.NEW) || (state == Enum.INITED);
     }
 
@@ -96,6 +101,9 @@ public final class EntityState {
     }
 
     void set(final Enum val) {
+        if (Cache.STORE_CACHE_OPERATION_STACKS && state != val && val == Enum.DISCARDED) {
+            discardStack = ExceptionTextFormatter.getCurrentStackAsStr();
+        }
         state = val;
         if ((state == Enum.DELETED) || (state == Enum.DISCARDED)) {
             keepInCache = false;
@@ -110,7 +118,7 @@ public final class EntityState {
 
     private final void assertNotDiscarded() {
         if (isDiscarded()) {
-            throw new IllegalUsageError("Try to use discarded object " + getEntPidStrPres());
+            throw new IllegalUsageError("Try to use discarded object " + getEntPidStrPres() + (discardStack == null ? "" : ", discard stack:\n\n" + discardStack));
         }
     }
 
@@ -134,12 +142,12 @@ public final class EntityState {
     final boolean getReadRights() {
         return readRights;
     }
-    
+
     final void setReadAcsCoords(final boolean read) {
         assertReadAllowed();
         readAcsCoords = read;
     }
-    
+
     final boolean getReadAcsCoords() {
         return readAcsCoords;
     }
@@ -158,9 +166,13 @@ public final class EntityState {
     }
 
     public final boolean getCanBeRemovedFromCache() {
+        return getCanBeRemovedFromCache(System.currentTimeMillis());
+    }
+
+    public final boolean getCanBeRemovedFromCache(final long curTimeMillis) {
         return !keepInCache
                 || keepInCacheMaxAgeMillis != 0
-                && (System.currentTimeMillis() - keepInCacheActivationTimeMillis) > keepInCacheMaxAgeMillis;
+                && (curTimeMillis - keepInCacheActivationTimeMillis) > keepInCacheMaxAgeMillis;
     }
 
     final void setIsAutoUpdateEnabled(final boolean isEnabled) {

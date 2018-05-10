@@ -15,17 +15,17 @@ import com.trolltech.qt.core.Qt.Alignment;
 import com.trolltech.qt.core.Qt.AlignmentFlag;
 import com.trolltech.qt.gui.*;
 import org.radixware.kernel.common.client.IClientEnvironment;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.starter.utils.SystemTools;
 
-public class FontSettingsWidget extends SettingsWidget {
+final class FontSettingsWidget extends SettingsWidget {
 
     private final QLabel labelTitle;
     private final QToolButton toolButtonChooseFont;
-    private QFont font;
-    private QFont defaultfont;
-    public final Signal1<QFont> updateFontSignal = new Signal1<QFont>();
+    private final QFont defaultfont;
+    private QFont font;    
+    public final Signal1<QFont> updateFontSignal = new Signal1<>();
 
     public FontSettingsWidget(final IClientEnvironment environment, final QWidget parent, final String gr, final String sub, final String n, final String descr) {
         super(environment, parent, gr, sub, n);
@@ -56,22 +56,25 @@ public class FontSettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(IExplorerSettings src) {
         font = src.readQFont(getSettingCfgName());
+        if (font==null){
+            font = new QFont(defaultfont);
+        }
         updateButtonsLabel();
-        updateFontSignal.emit(font);
+        updateFontSignal.emit(new QFont(font));
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
         dst.writeQFont(getSettingCfgName(), font);
     }
 
     @Override
     public void restoreDefaults() {
-        font = defaultfont;
+        font = new QFont(defaultfont);
         updateButtonsLabel();
-        updateFontSignal.emit(font);
+        updateFontSignal.emit(new QFont(font));
     }
 
     @SuppressWarnings("unused")
@@ -86,7 +89,7 @@ public class FontSettingsWidget extends SettingsWidget {
         if (fontResult.ok) {
             //�������� ����� �����
             font = fontResult.font;
-            updateFontSignal.emit(font);
+            updateFontSignal.emit(new QFont(font));
             updateButtonsLabel();
         }
     }
@@ -97,12 +100,12 @@ public class FontSettingsWidget extends SettingsWidget {
     }
 
     public QFont getFont() {
-        return font;
+        return new QFont(font);
     }
     
     public void setSettingsFont(QFont font) {
-        this.font=font;
+        this.font=new QFont(font);
         updateButtonsLabel();
-        updateFontSignal.emit(font);
+        updateFontSignal.emit(new QFont(font));
     }
 }

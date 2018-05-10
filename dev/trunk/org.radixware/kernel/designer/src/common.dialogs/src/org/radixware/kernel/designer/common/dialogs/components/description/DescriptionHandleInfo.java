@@ -14,6 +14,7 @@ package org.radixware.kernel.designer.common.dialogs.components.description;
 import org.radixware.kernel.common.defs.IDescribable;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.build.BuildOptions;
 import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
 import org.radixware.kernel.common.enums.EIsoLanguage;
@@ -107,5 +108,11 @@ abstract class DescriptionHandleInfo implements IDescriptionHandleInfo {
     @Override
     public IDescribable getDescribable() {
         return null;
+    }
+    
+    @Override
+    public boolean isReadOnly() {
+        Definition definition = getAdsDefinition();
+        return definition == null ? true : definition.isReadOnly();
     }
 }

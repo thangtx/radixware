@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.types.Id;
@@ -72,11 +73,62 @@ public final class PropertyValuesWriteOptions {
         
     }
     
+    public static enum TimeZoneFormat {
+        SERVER_TIMEZONE("server"),
+        CLIENT_TIMEZONE("client"),
+        UTC("UTC"),
+        ANOTHER("another");
+        
+        private final String shortName;
+        
+        private TimeZoneFormat(final String name){
+            this.shortName = name;
+        }
+        
+        public String asString(){
+            return shortName;
+        }
+        
+        public static TimeZoneFormat getFromString(final String name){
+            for (TimeZoneFormat format: EnumSet.allOf(TimeZoneFormat.class)){
+                if (format.asString().equals(name)){
+                    return format;
+                }
+            }
+            return null;
+        }
+        
+        public static String getDisplayName(final TimeZoneFormat format, final MessageProvider mp){
+            switch(format){
+                case SERVER_TIMEZONE: 
+                    return mp.translate("ExplorerMessage", "Server timezone");
+                case CLIENT_TIMEZONE:
+                    return mp.translate("ExplorerMessage", "Client timezone");
+                case UTC:
+                    return "UTC";
+                case ANOTHER:
+                    return mp.translate("ExplorerMessage", "Other timezone");
+                default:
+                    throw new IllegalArgumentException("Format "+format.name()+" is not supported");
+            }
+        }
+    }
+    
     private final List<Id> propertyIds = new LinkedList<>();
     private final Map<Id,ExportFormat> exportFormatByPropertyId = new HashMap<>();
+    private final TimeZoneFormat timeZoneFormat;
+    private boolean openFile;
+    private TimeZone timeZone;
+    private String groupModelTitle;
+    private String groupModelWindowTitle;
     
     public PropertyValuesWriteOptions(final List<Id> columnIds){
+        this(columnIds, null);
+    }
+    
+    public PropertyValuesWriteOptions (final List<Id> columnIds, TimeZoneFormat timeZoneFormat) {
         propertyIds.addAll(columnIds);
+        this.timeZoneFormat = timeZoneFormat;
     }
 
     public List<Id> getColumnsToExport(){
@@ -102,5 +154,41 @@ public final class PropertyValuesWriteOptions {
     
     public static PropertyValuesWriteOptions loadFromConfig(final ClientSettings settings){
         return null;
+    }
+    
+    public TimeZoneFormat getTimeZoneFormat() {
+        return timeZoneFormat;
+    }
+    
+    public void setTimeZone(TimeZone timezone) {
+        this.timeZone = timezone;
+    }
+    
+    public TimeZone getTimeZone() {
+        return timeZone;
+    }
+    
+    public void setOpenFile(boolean openFile) {
+        this.openFile = openFile;
+    }
+    
+    public boolean getNeedToOpen() {
+        return openFile;
+    }
+    
+    public void setGroupModelTitle(String groupModelTitle) {
+        this.groupModelTitle = groupModelTitle;
+    }
+    
+    public String getGroupModelTitle() {
+        return groupModelTitle;
+    }
+    
+    public void setGroupModelWindowTitle(String groupModelWindowTitle) {
+        this.groupModelTitle = groupModelTitle;
+    }
+    
+    public String getGroupModelWindowtitle() {
+        return groupModelWindowTitle;
     }
 }

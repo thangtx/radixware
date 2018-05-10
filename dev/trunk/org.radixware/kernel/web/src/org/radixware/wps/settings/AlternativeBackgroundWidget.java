@@ -21,21 +21,20 @@ import org.radixware.wps.rwt.Slider;
 import org.radixware.wps.rwt.UIObject;
 
 
-public class AlternativeBackgroundWidget extends SettingsWidget {
+final class AlternativeBackgroundWidget extends SettingsWidget {
 
     private final Slider slider;
     private final String title;
     private final Container color1;
-    private Container color2;
+    private final Container color2;
 
     public AlternativeBackgroundWidget(final WpsEnvironment env,
             final UIObject parent,
             final String gr,
             final String sub,
             final String n,
-            String title, int defVal) {
-        super(env, parent, gr, sub, n, defVal);
-        defaultValue = defVal;//getDefaultSettings().readInteger(getSettingCfgName());
+            final String title) {
+        super(env, parent, gr, sub, n);
         slider = new Slider();
         color1 = new Container();
         color2 = new Container();
@@ -44,10 +43,10 @@ public class AlternativeBackgroundWidget extends SettingsWidget {
     }
 
     private void createUI() {
-        GroupBox b = new GroupBox();
+        final GroupBox b = new GroupBox();
         add(b);
 
-        Container sliderContainer = new Container();
+        final Container sliderContainer = new Container();
         b.add(0, sliderContainer);
 
         b.setHSizePolicy(SizePolicy.MINIMUM_EXPAND);
@@ -69,7 +68,7 @@ public class AlternativeBackgroundWidget extends SettingsWidget {
         colorContainer.getHtml().setCss("position", "relative");
         colorContainer.getHtml().setCss("left", "10px");
 
-        Container colorContainer2 = new Container();
+        final Container colorContainer2 = new Container();
         colorContainer2.getHtml().setCss("border", "2px solid black");
         colorContainer2.setWidth(25);
         colorContainer2.getHtml().setCss("position", "relative");
@@ -90,12 +89,25 @@ public class AlternativeBackgroundWidget extends SettingsWidget {
         this.setWidth(200);
         this.setHeight(150);
     }
+    
+    private int getDefaultValue(){
+        final String valueAsStr = readDefaultValue();
+        if (valueAsStr==null || valueAsStr.isEmpty()){
+            return 4;
+        }else{
+            try{
+                return Integer.parseInt(valueAsStr);
+            }catch(NumberFormatException ex){
+                return 4;
+            }
+        }
+    }
 
     @Override
     public void readSettings(WpsSettings src) {
-        int val = src.readInteger(getSettingCfgName(), (int) defaultValue);
+        int val = src.readInteger(getSettingCfgName(), getDefaultValue());
         if (src.getValue(getSettingCfgName()) == null || "".equals(src.getValue(getSettingCfgName()))) {
-            val = (int) defaultValue;
+            val = getDefaultValue();
         }
         slider.setValue(val);
     }
@@ -107,6 +119,6 @@ public class AlternativeBackgroundWidget extends SettingsWidget {
 
     @Override
     public void restoreDefaults() {
-        slider.setValue((int) defaultValue);
+        slider.setValue(getDefaultValue());
     }
 }

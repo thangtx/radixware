@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -35,6 +35,7 @@ public class HttpFormatter {
     public static final String SOAP_CONTENT_TYPE = "text/xml; charset=\"UTF-8\"";
     public static final String PRAGMA_RADIX_PRIORITY = "org-radixware-priority";
     public static final String PRAGMA_RADIX_VERSION = "org-radixware-version";
+    public static final String PRAGMA_RADIX_LOAD_PERCENT = "org-radixware-load-percent";
     private final static String rqHeaderMask
             = "{0} {1} HTTP/1.1\r\n"
             + "cache-control: no-cache\r\n"
@@ -166,6 +167,25 @@ public class HttpFormatter {
         }
         return -1;
     }
+    
+     public static Map<String, String> appendRadixLoadHeaderAttr(final Map<String, String> headerAttrs, final int loadPercent) {
+        return appendPragma(headerAttrs, PRAGMA_RADIX_LOAD_PERCENT + "=" + loadPercent);
+    }
+
+    /**
+     * @return value of {@code org-radixware-load-percent} pragma or 0
+     */
+    public static int getRadixLoadFromHeaders(final Map<String, String> httpHeaders) {
+        final String priorityStr = getPragma(httpHeaders, PRAGMA_RADIX_LOAD_PERCENT);
+        if (priorityStr != null && !priorityStr.isEmpty()) {
+            try {
+                return Integer.parseInt(priorityStr);
+            } catch (RuntimeException ex) {
+                return 0;
+            }
+        }
+        return 0;
+    }
 
     static public String prepareSoapRequestHeader(String host, boolean keepConnect, String soapAction, Map<String, String> headerAttrs, int contentLen) {
         return prepareSoapRequestHeader(host, null, keepConnect, soapAction, headerAttrs, contentLen);
@@ -235,7 +255,7 @@ public class HttpFormatter {
     }
 
     static public String prepareSoapFaultHeader(Map<String, String> headerAttrs, final int contentLen, final boolean keepAlive) {
-        return MessageFormat.format(soapFaultHeaderMask, keepAlive ? KEEP_ALIVE : CLOSE, Integer.toString(contentLen));
+        return addHeaderAttrs(MessageFormat.format(soapFaultHeaderMask, keepAlive ? KEEP_ALIVE : CLOSE, Integer.toString(contentLen)), headerAttrs);
     }
 
     static public boolean getKeepConnectionAlive(final Map<String, String> headerAttrs) {
@@ -368,34 +388,42 @@ public class HttpFormatter {
     /**
      * read header and body
      *
-     * @param stream - stream to be readed from
-     * @param headerAttrs - if not null header's attributes will be returened in
+     * @param stream - stream to be read from
+     * @param headerAttrs - if not null header attributes will be returned in
      * the map. Attribute name in lowercase will be a key. Attribute value in
-     * lowercase wil be a value.
+     * lowercase will be a value.
      * @return body
      * @throws IOException
      */
     static public byte[] readMessage(final InputStream stream, final Map<String, String> headerAttrs) throws IOException {
-        return readMessage(stream, headerAttrs, null, null);
+        return readMessage(stream, headerAttrs, null, null, Integer.MAX_VALUE - 1);
+    }
+    
+    static public byte[] readMessage(final InputStream stream, final Map<String, String> headerAttrs, int maxLength) throws IOException {
+        return readMessage(stream, headerAttrs, null, null, maxLength);
     }
 
     static public byte[] readMessage(final InputStream stream, final Map<String, String> headerAttrs, final LocalTracer tracer) throws IOException {
-        return readMessage(stream, headerAttrs, null, tracer);
+        return readMessage(stream, headerAttrs, null, tracer, Integer.MAX_VALUE - 1);
     }
 
     /**
      * read header and body
      *
-     * @param stream - stream to be readed from
-     * @param headerAttrs - if not null header's attributes will be returened in
+     * @param socketStream - stream to be read from
+     * @param headerAttrs - if not null header attributes will be returned in
      * the map. Attribute name in lowercase will be a key. Attribute value in
-     * lowercase wil be a value.
-     * @param headerStatusLineItems - if not null header's status line items (in
-     * original case) will be returened in the list
+     * lowercase will be a value.
+     * @param headerStatusLineItems - if not null header status line items (in
+     * original case) will be returned in the list
      * @return body
      * @throws IOException
      */
     static public byte[] readMessage(final InputStream socketStream, Map<String, String> headerAttrs, final List<String> headerStatusLineItems, final LocalTracer tracer) throws IOException {
+        return readMessage(socketStream, headerAttrs, headerStatusLineItems, tracer, Integer.MAX_VALUE - 1);
+    }
+        
+    static public byte[] readMessage(final InputStream socketStream, Map<String, String> headerAttrs, final List<String> headerStatusLineItems, final LocalTracer tracer, int maxLength) throws IOException {
         
         if (headerAttrs == null) {
             headerAttrs = new HashMap<>();
@@ -404,13 +432,16 @@ public class HttpFormatter {
         final UnreadableInputStream stream = new UnreadableInputStream(socketStream);
         int len = readHeader(stream, headerAttrs, headerStatusLineItems, tracer);
 
-        if (len == 0 && headerAttrs != null && headerAttrs.containsKey(TRANSFER_ENCODING_HEADER_ATTR) && CHUNKED.equals(headerAttrs.get(TRANSFER_ENCODING_HEADER_ATTR))) {
+        if (len == 0 && headerAttrs.containsKey(TRANSFER_ENCODING_HEADER_ATTR) && CHUNKED.equals(headerAttrs.get(TRANSFER_ENCODING_HEADER_ATTR))) {
             final ByteArrayOutputStream bos = new ByteArrayOutputStream(1024);
             int chunkSize;
             int cur, prev;
-            int n;
+            int totalLen = 0;
             while (true) {
                 chunkSize = readChunkSize(stream);
+                totalLen += chunkSize;
+                totalLen = totalLen >= 0 ? totalLen : Integer.MAX_VALUE;
+                Framer.assertFrameLength(totalLen, maxLength);
 
                 prev = -1;
                 //skip chunk extensions
@@ -424,15 +455,13 @@ public class HttpFormatter {
                     }
                     prev = cur;
                 }
-
-                n = 0;
-                while (n < chunkSize) {
+                
+                for (int i = 0; i < chunkSize; ++i) {
                     cur = stream.read();
                     if (cur < 0) {
                         throwEOF();
                     }
                     bos.write(cur);
-                    n++;
                 }
 
                 if (chunkSize == 0) {//last chunk
@@ -467,6 +496,7 @@ public class HttpFormatter {
             }
             return bos.toByteArray();
         } else {
+            Framer.assertFrameLength(len, maxLength);
             final byte[] mess = new byte[len];
             int n = 0;
             while (n < mess.length) {

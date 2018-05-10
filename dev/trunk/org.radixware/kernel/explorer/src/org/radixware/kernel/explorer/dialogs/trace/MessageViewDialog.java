@@ -16,7 +16,6 @@ import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.Alignment;
 import com.trolltech.qt.core.Qt.AlignmentFlag;
 import com.trolltech.qt.gui.QCloseEvent;
-import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QGridLayout;
 import com.trolltech.qt.gui.QHBoxLayout;
@@ -25,10 +24,8 @@ import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QPlainTextEdit;
 import com.trolltech.qt.gui.QPushButton;
-import com.trolltech.qt.gui.QTextBrowser;
 import com.trolltech.qt.gui.QTextCursor.MoveOperation;
 import com.trolltech.qt.gui.QTextDocument.FindFlag;
-import com.trolltech.qt.gui.QTextEdit;
 import com.trolltech.qt.gui.QTextOption;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
@@ -42,7 +39,6 @@ import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.trace.ClientTraceParser;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.trace.TraceParser;
-import org.radixware.kernel.explorer.dialogs.ExplorerMessageBox;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
 import org.radixware.kernel.explorer.env.trace.ExplorerTraceItem;
@@ -51,7 +47,50 @@ import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.views.Splitter;
 
 
-class MessageViewDialog extends QDialog {
+final class MessageViewDialog extends QDialog {
+    
+    private static class TextEditFinder extends AbstractFinder{        
+        
+        private final QPlainTextEdit textBrowser;
+        
+        public TextEditFinder(final IClientEnvironment environment, final QPlainTextEdit textEdit){
+            super(environment,textEdit);
+            this.textBrowser = textEdit;
+        }
+
+        @Override
+        protected boolean findNext(final IClientEnvironment environment, 
+                                            final String searchString, final boolean forward, final boolean caseSensitive) {
+            if (contains(searchString, forward, caseSensitive)) {
+                return true;
+            }else{
+                textBrowser.moveCursor(forward ? MoveOperation.Start : MoveOperation.End);
+                if (contains(searchString, forward, caseSensitive)){
+                    return true;
+                }else{
+                    showStringNotFoundMessage();
+                    return false;
+                }
+            }
+        }
+        
+        private boolean contains(final String searchString, final boolean forward, final boolean caseSensitive) {
+            if (caseSensitive) {
+                if (forward) {
+                    return textBrowser.find(searchString, FindFlag.FindCaseSensitively);
+                } else {
+                    return textBrowser.find(searchString, FindFlag.FindBackward, FindFlag.FindCaseSensitively);
+                }
+            } else {
+                if (forward) {
+                    return textBrowser.find(searchString);
+                } else {
+                    return textBrowser.find(searchString, FindFlag.FindBackward);
+                }
+            }
+        }        
+        
+    }
     
     private static final String CONFIG_PREFIX = SettingNames.SYSTEM + "/TraceDialog/MessageViewDialog";
     
@@ -60,21 +99,19 @@ class MessageViewDialog extends QDialog {
     private final QPushButton showXmlButton = new QPushButton(this);    
     private QPlainTextEdit stackTraceTextEdit;
     private QPlainTextEdit textBrowser;
+    private TextEditFinder finder;
     private Splitter splitter;
     private String message;
-    private final SearchDialog searchDialog;
-    private final ExplorerSettings settings;
+    private final IClientEnvironment environment;
     private final ClientTraceParser clientTraceParser;
     private final TraceParser traceParser;
-    private final MessageProvider messageProvider;
-    private final ExplorerTraceItem traceItem;
+    private final ExplorerTraceItem traceItem;    
     
     @SuppressWarnings("LeakingThisInConstructor")
     public MessageViewDialog(final IClientEnvironment environment, final ExplorerTraceItem item, final QWidget parent) {
         super(parent);
+        this.environment = environment;
         this.traceItem = item;
-        this.settings = (ExplorerSettings)environment.getConfigStore();
-        messageProvider = environment.getMessageProvider();        
         if (environment.getApplication().isReleaseRepositoryAccessible()){
             clientTraceParser = new ClientTraceParser(environment);            
             traceParser = new TraceParser(environment.getDefManager().getClassLoader());//NOPMD
@@ -86,17 +123,21 @@ class MessageViewDialog extends QDialog {
         setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose, true);
         setWindowIcon(item.getIcon(environment));
         setMinimumSize(520, 360);
-        searchDialog = new SearchDialog(this);
-        searchDialog.find.connect(this, "find()");
         setupUi();
+        restoreSettings();
+        setMessage();
+    }
+    
+    private void restoreSettings(){
+        final ExplorerSettings settings = (ExplorerSettings)environment.getConfigStore();
         if (settings.contains(CONFIG_PREFIX)) {
             this.restoreGeometry(settings.readQByteArray(CONFIG_PREFIX));
-        }
-        setMessage();
+        }        
     }
 
     @Override
     public void closeEvent(final QCloseEvent event) {
+        final ExplorerSettings settings = (ExplorerSettings)environment.getConfigStore();
         settings.writeQByteArray(CONFIG_PREFIX, this.saveGeometry());
         if (splitter!=null){
             splitter.saveRatioToConfig();
@@ -105,6 +146,7 @@ class MessageViewDialog extends QDialog {
     }
 
     private void setMessage() {
+        final MessageProvider messageProvider = environment.getMessageProvider();
         if (traceItem.getSeverity()== EEventSeverity.DEBUG) {
             this.setWindowTitle(messageProvider.translate("TraceDialog", "Debug Message"));
         } else if (traceItem.getSeverity() == EEventSeverity.EVENT) {
@@ -134,13 +176,13 @@ class MessageViewDialog extends QDialog {
     private void assignMessage(final String str, final boolean translate) {
         message = String.valueOf(str);
         showXmlButton.setEnabled(isXml(str));
-        int p = 0;
         textBrowser.clear();
         textBrowser.insertPlainText(translate ? clientTraceParser.parse(message) : message);
         textBrowser.moveCursor(MoveOperation.Start);
     }
 
     private void setupUi() {
+        final MessageProvider messageProvider = environment.getMessageProvider();
         final QVBoxLayout vBoxLayout = new QVBoxLayout();
         setLayout(vBoxLayout);
 
@@ -167,8 +209,7 @@ class MessageViewDialog extends QDialog {
         findButton.setMinimumSize(110, 20);
         findButton.setText(messageProvider.translate("TraceDialog", "&Find"));
         findButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.FIND));
-        findButton.setShortcut(QKeySequence.StandardKey.Find);
-        findButton.clicked.connect(searchDialog, "show()");
+        findButton.setShortcut(QKeySequence.StandardKey.Find);        
 
         final QPushButton findNextButton = new QPushButton(this);
         hBoxLayout.addWidget(findNextButton);
@@ -176,8 +217,8 @@ class MessageViewDialog extends QDialog {
         findNextButton.setText(messageProvider.translate("TraceDialog", "Find &Next"));
         findNextButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.FIND_NEXT));
         findNextButton.setShortcut(QKeySequence.StandardKey.FindNext);
-        findNextButton.clicked.connect(this, "find()");
-
+        
+        
         final QPushButton translateButton = new QPushButton(this);
         hBoxLayout.addWidget(translateButton);
         translateButton.setCheckable(true);
@@ -186,7 +227,7 @@ class MessageViewDialog extends QDialog {
         translateButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.TRANSLATE));
         translateButton.toggled.connect(this, "translate()");
         final boolean canTranslateMessage = 
-            clientTraceParser!=null && (traceItem.getSeverity() == EEventSeverity.ERROR || traceItem.getSeverity() == EEventSeverity.ALARM);
+            clientTraceParser!=null && traceItem.getSeverity().getValue()>EEventSeverity.EVENT.getValue() &&  traceItem.getSeverity().getValue()<=EEventSeverity.ALARM.getValue();
         final boolean canTranslateStackTrace = traceItem.getStackTrace()!=null && traceParser!=null;
         final boolean isTranslateButtonVisible = canTranslateMessage || canTranslateStackTrace;
         translateButton.setVisible(isTranslateButtonVisible);
@@ -196,7 +237,7 @@ class MessageViewDialog extends QDialog {
 
         final boolean isStackTraceVisible = traceItem.getStackTrace()!=null;
         if (isStackTraceVisible){
-            splitter = new Splitter(this, settings, CONFIG_PREFIX, 2./3);
+            splitter = new Splitter(this, environment.getConfigStore(), CONFIG_PREFIX, 2./3);
             splitter.setObjectName("messageSplitter");
             splitter.setOrientation(Qt.Orientation.Vertical);
             textBrowser = new QPlainTextEdit();
@@ -221,59 +262,19 @@ class MessageViewDialog extends QDialog {
         textBrowser.setReadOnly(true);
         textBrowser.setUndoRedoEnabled(false);
         textBrowser.setWordWrapMode(QTextOption.WrapMode.NoWrap);        
-                
+        finder = new TextEditFinder(environment, textBrowser);
+        findButton.clicked.connect(finder, "find()");
+        findNextButton.clicked.connect(finder, "findNext()");
+        
         showXmlButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.ValueTypes.XML));
         showXmlButton.setMinimumSize(140, 20);
         showXmlButton.setText(messageProvider.translate("TraceDialog", "Show &Xml Tree"));
         showXmlButton.clicked.connect(this, "showXml()");
     }
 
-    private boolean contains(final String str) {
-        if (searchDialog.isCaseSensetive()) {
-            if (searchDialog.isForward()) {
-                return textBrowser.find(str, FindFlag.FindCaseSensitively);
-            } else {
-                return textBrowser.find(str, FindFlag.createQFlags(FindFlag.FindBackward, FindFlag.FindCaseSensitively));
-            }
-        } else {
-            if (searchDialog.isForward()) {
-                return textBrowser.find(str);
-            } else {
-                return textBrowser.find(str, FindFlag.FindBackward);
-            }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    private void find() {
-        final String str = searchDialog.getSearchString();
-        if (str == null || str.equals("")) {
-            return;
-        }
-        boolean ok = contains(str);
-        if (!ok) {
-            if (searchDialog.isForward()) {
-                textBrowser.moveCursor(MoveOperation.Start);
-            } else {
-                textBrowser.moveCursor(MoveOperation.End);
-            }
-            ok = contains(str);
-        }
-        if (!ok) {
-            QWidget parent;
-            if (searchDialog.isVisible()) {
-                parent = (QWidget) searchDialog;
-            } else {
-                parent = (QWidget) this;
-            }
-            final String msgTemplate = messageProvider.translate("TraceDialog", "Could not find string \"%s\"");
-            ExplorerMessageBox.information(parent, messageProvider.translate("TraceDialog", "Information"), String.format(msgTemplate, str));
-        }
-    }
-
     @SuppressWarnings("unused")
     private void showXml() {
-        final XmlTreeDialog dialog = new XmlTreeDialog(settings,this);
+        final XmlTreeDialog dialog = new XmlTreeDialog(environment, this);
         dialog.setXml(message);
         dialog.exec();
     }

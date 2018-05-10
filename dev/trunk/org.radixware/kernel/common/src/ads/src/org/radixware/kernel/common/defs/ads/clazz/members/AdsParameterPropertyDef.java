@@ -19,6 +19,7 @@ import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsProcedureClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumItemDef;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumUtils;
@@ -110,7 +111,7 @@ public class AdsParameterPropertyDef extends AdsDynamicPropertyDef {
 
         EParamDirection direction = null;
 
-        for (Sqml.Item item : sqlClass.getSource().getItems()) {
+        for (Sqml.Item item : sqlClass.getSqml().getItems()) {
             if (item instanceof ParameterTag) {
                 final ParameterTag paramTag = (ParameterTag) item;
                 if (Utils.equals(this.getId(), paramTag.getParameterId())) {
@@ -125,156 +126,9 @@ public class AdsParameterPropertyDef extends AdsDynamicPropertyDef {
 
         return (direction != null ? direction : EParamDirection.IN);
     }
-    private static final ValAsStr FALSE_AS_VAL_AS_STR = ValAsStr.Factory.newInstance(Boolean.FALSE, EValType.BOOL);
 
     public static void printTagCondition(final CodePrinter cp, final IfParamTag ifParamTag) {
-        // supported only simple parameters
-        final IParameterDef iParam = ifParamTag.findParameter();
-        final AdsParameterPropertyDef parameterProperty = (iParam != null ? (AdsParameterPropertyDef) iParam.getDefinition() : null);
-        if (parameterProperty == null) {
-            cp.printError();
-            return;
-        }
-
-        final String paramName = parameterProperty.getName();
-
-        if (ifParamTag.getOperator() == EIfParamTagOperator.NULL) {
-            cp.print(paramName + "==null");
-            return;
-        }
-
-        if (ifParamTag.getOperator() == EIfParamTagOperator.NOT_NULL) {
-            cp.print(paramName + "!=null");
-            return;
-        }
-
-        if (ifParamTag.getOperator() == EIfParamTagOperator.EMPTY) {
-            cp.print(paramName + "!=null && " + paramName + ".isEmpty()");
-            return;
-        }
-
-        if (ifParamTag.getOperator() == EIfParamTagOperator.NOT_EMPTY) {
-            cp.print(paramName + "!=null && !" + paramName + ".isEmpty()");
-            return;
-        }
-
-        final AdsTypeDeclaration type = parameterProperty.getValue().getType();
-
-        final ValAsStr value = ifParamTag.getValue();
-        final boolean multy = type.getTypeId().isArrayType();
-        final boolean equal = ifParamTag.getOperator() == EIfParamTagOperator.EQUAL;
-
-        if (value == null) {
-            if (ifParamTag.getOperator() == EIfParamTagOperator.EQUAL) {
-                if (multy) {
-                    cp.print(paramName + "!=null && " + paramName + ".contains(null)");
-                } else {
-                    cp.print(paramName + "==null");
-                }
-            } else {
-                if (multy) {
-                    cp.print(paramName + "==null || !" + paramName + ".contains(null)");
-                } else {
-                    cp.print(paramName + "!=null");
-                }
-            }
-            return;
-        }
-
-        if (equal) {
-            if (multy) {
-                cp.print(paramName + "!=null && " + paramName + ".contains(");
-            }
-        } else {
-            if (multy) {
-                cp.print(paramName + "==null || !" + paramName + ".contains(");
-            }
-        }
-
-        final AdsEnumDef enumDef = AdsEnumUtils.findPropertyEnum(parameterProperty);
-        boolean isEnum = false;
-        if (enumDef != null) {
-            for (AdsEnumItemDef item : enumDef.getItems().list(EScope.ALL)) {
-                if (Utils.equals(item.getValue(), value)) {
-                    if (!multy) {
-                        if (equal) {
-                            cp.print(paramName + "==");
-                        } else {
-                            cp.print(paramName + "!=");
-                        }
-                    }
-                    item.getJavaSourceSupport().getCodeWriter(UsagePurpose.SERVER_EXECUTABLE).writeUsage(cp);
-                    isEnum = true;
-                    break;
-                }
-            }
-        }
-
-
-        if (!isEnum) {
-            final String javaValue = value.toString();
-            switch (type.getTypeId()) {
-                case INT:
-                case ARR_INT:
-                case NUM:
-                case ARR_NUM:
-                case DATE_TIME:
-                case ARR_DATE_TIME:
-                    if (!multy) {
-                        if (equal) {
-                            cp.print(paramName + "==");
-                        } else {
-                            cp.print(paramName + "!=");
-                        }
-                    }
-                    cp.print(javaValue);
-                    break;
-                case STR:
-                case ARR_STR:
-                case CHAR:
-                case ARR_CHAR:
-                case CLOB:
-                case ARR_CLOB:
-                case BLOB:
-                case ARR_BLOB:
-                case BIN:
-                case ARR_BIN:
-                    if (!multy) {
-                        if (equal) {
-                            cp.print(paramName + "!=null && " + paramName + ".equals(");
-                        } else {
-                            cp.print(paramName + "!=null && !" + paramName + ".equals(");
-                        }
-                    }
-
-                    cp.printStringLiteral(javaValue);
-
-                    if (!multy) {
-                        cp.print(")");
-                    }
-                    break;
-                case BOOL:
-                case ARR_BOOL:
-                    if (!multy) {
-                        if (equal) {
-                            cp.print(paramName + "!=null && " + paramName + ".equals(");
-                        } else {
-                            cp.print(paramName + "!=null && !" + paramName + ".equals(");
-                        }
-                    }
-
-                    cp.print(FALSE_AS_VAL_AS_STR.equals(value) ? "false" : "true");
-
-                    if (!multy) {
-                        cp.print(")");
-                    }
-                    break;
-            }
-        }
-
-        if (multy) {
-            cp.print(")");
-        }
+        AdsUtils.printTagCondition(cp, ifParamTag);
     }
 
     @Override

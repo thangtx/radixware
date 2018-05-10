@@ -37,6 +37,8 @@ public class TimeAuthorTableModel extends AbstractTableModel {
             columns.add(NbBundle.getMessage(TimeAuthorTableModel.class, "LAST_UPDATE_TIME"));
             columns.add(NbBundle.getMessage(TimeAuthorTableModel.class, "LAST_CHANGE_STATUS_AUTHOR"));
             columns.add(NbBundle.getMessage(TimeAuthorTableModel.class, "LAST_CHANGE_STATUS_TIME"));
+            columns.add(NbBundle.getMessage(TimeAuthorTableModel.class, "LAST_CHANGE_AGREED_STRING_AUTHOR"));
+            columns.add(NbBundle.getMessage(TimeAuthorTableModel.class, "LAST_CHANGE_AGREED_STRING_TIME"));
     }
 
     @Override
@@ -71,6 +73,11 @@ public class TimeAuthorTableModel extends AbstractTableModel {
                     return rowString.getChangeStatusAuthor(lang);
                 case 4:
                     time = rowString.getChangeStatusTime(lang);
+                    return time == null ? "" : dateTimeFormat.format(time);
+                case 5:
+                    return rowString.getAuthorChangeAgreedString(lang);
+                case 6:
+                    time = rowString.getDateChangeAgreedString(lang);
                     return time == null ? "" : dateTimeFormat.format(time);
             }
         }

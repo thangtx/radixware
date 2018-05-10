@@ -29,7 +29,6 @@ import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsValAsStr;
 import static org.radixware.kernel.common.defs.ads.AdsValAsStr.EValueType.VAL_AS_STR;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
-import org.radixware.kernel.common.defs.ads.clazz.AdsEnumClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
 import org.radixware.kernel.common.defs.ads.command.AdsContextlessCommandDef;
@@ -70,11 +69,11 @@ import org.radixware.kernel.common.environment.IRadixEnvironment;
 import org.radixware.kernel.common.exceptions.AppException;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
-import org.radixware.kernel.common.jml.JmlTagId;
 import org.radixware.kernel.common.lang.MetaInfo;
 import org.radixware.kernel.common.lang.RadMetaClass;
 import org.radixware.kernel.common.lang.RadixObjectRef;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.scml.LiteralWriter;
 import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.common.trace.IRadixTrace;
@@ -88,6 +87,7 @@ import org.radixware.kernel.common.utils.Maps;
 import org.radixware.kernel.common.utils.XmlObjectProcessor;
 
 public class WriterUtils {
+    private static final String IS_LIGHT_GENERATION = "rdx.is.light.generation";
 
     public static final char[] ILLEGAL_USAGE_ERROR_CLASS_NAME = IllegalUsageError.class.getName().toCharArray();
     public static final char[] RADIX_ADS_TYPE_PACKAGE_PREFIX = "org.radixware.ads".toCharArray();
@@ -127,7 +127,30 @@ public class WriterUtils {
     public static final char[] EXPLORER_MODEL_CLASS_NAME = "org.radixware.kernel.common.client.models.Model".toCharArray();
     public static final char[] USER_SESSION_CLASS_NAME = "org.radixware.kernel.common.client.IClientEnvironment".toCharArray();
     public static final char[] META_INFO_CLASS_NAME = MetaInfo.class.getName().toCharArray();
-
+    
+    public static void setIsLightGeneration(final CodePrinter cp, boolean isInstallation) {
+        cp.putProperty(IS_LIGHT_GENERATION, isInstallation);
+    }    
+    
+    public static boolean isLightGeneration(final CodePrinter cp) {
+        if (cp.getProperty(IS_LIGHT_GENERATION) != null) {
+            return (Boolean) cp.getProperty(IS_LIGHT_GENERATION);
+        }
+        return false;
+    }
+    
+    public static void enterHumanUnreadableBlock(final CodePrinter cp) {
+        if (cp instanceof IHumanReadablePrinter) {
+            ((IHumanReadablePrinter) cp).enterHumanUnreadableBlock();
+        }
+    }
+    
+    public static void leaveHumanUnreadableBlock(final CodePrinter cp) {
+        if (cp instanceof IHumanReadablePrinter) {
+            ((IHumanReadablePrinter) cp).leaveHumanUnreadableBlock();
+        }
+    }
+    
     public static void writeEnumFieldInvocation(CodePrinter printer, Enum enumValue) {
         if (enumValue == null) {
             writeNull(printer);
@@ -139,7 +162,9 @@ public class WriterUtils {
     }
 
     public static void writeAutoVariable(CodePrinter printer, char[] name) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         printer.print(UTIL_VAR_NAME_PREFIX);
+        WriterUtils.leaveHumanUnreadableBlock(printer);
         printer.print(name);
     }
 
@@ -206,7 +231,7 @@ public class WriterUtils {
     }
 
     public static void writePackage(CodePrinter printer, Definition def, JavaSourceSupport.UsagePurpose up, char separator) {
-        char[][] packageNames = JavaSourceSupport.getPackageNameComponents(def, up);
+        char[][] packageNames = JavaSourceSupport.getPackageNameComponents(def, printer instanceof IHumanReadablePrinter, up);
         for (int i = 0; i < packageNames.length; i++) {
             printer.print(packageNames[i]);
             if (i + 1 < packageNames.length) {
@@ -606,9 +631,9 @@ public class WriterUtils {
          */
         char[] className;
         if (contextDef instanceof AdsClassDef) {
-            className = ((AdsClassDef) contextDef).getRuntimeLocalClassName().toCharArray();
+            className = ((AdsClassDef) contextDef).getRuntimeLocalClassName(printer instanceof IHumanReadablePrinter).toCharArray();
         } else {
-            className = contextDef.getId().toCharArray();
+            className = JavaSourceSupport.getName(contextDef, printer instanceof IHumanReadablePrinter, true);
         }
         printer.print(className);//by BAO
         //  }
@@ -1194,8 +1219,8 @@ public class WriterUtils {
         printer.print(META_INFO_CLASS_NAME);
         printer.print("(name=");
         printer.printStringLiteral(def.getQualifiedName());
-        if (writeLine) {
-            printer.print(",line=" + (printer.getLineNumber(printer.getContents().length) + 2));
+        if (writeLine && !(printer instanceof IHumanReadablePrinter)) {
+            printer.print(",line=" + (printer.getLineNumber(printer.length()) + 2));
         }
         printer.println(")");
     }

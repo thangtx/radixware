@@ -171,16 +171,21 @@ public class GroupModelReader implements Iterable<EntityModel> {
     }
 
     public EntityModel getFirstEntityModel() throws ServiceClientException, InterruptedException {
+        EntityModel entityModel;
         for (int i = 0;; i++) {
             try {
-                if (group.getEntity(i) == null) {
-                    return null;
-                } else {
-                    return group.getEntity(i);
-                }
-            } catch (BrokenEntityObjectException ex) {
+                entityModel = group.getEntity(i);
+            }catch (BrokenEntityObjectException ex) {
                 //just ignoring
                 Logger.getLogger(getClass().getName()).log(Level.FINE, ex.getMessage(), ex);
+                continue;
+            }
+            if (entityModel==null){
+                return null;
+            }
+            if (!readingFlags.contains(EReadingFlags.RESPECT_SELECTION)
+                || group.getSelection().isObjectSelected(entityModel)){
+                return entityModel;
             }
         }
     }

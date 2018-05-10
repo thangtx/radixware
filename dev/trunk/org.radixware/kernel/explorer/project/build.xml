@@ -105,8 +105,21 @@
     </target>
     <target name="-post-test-run">
         <antcall target="-cobertura-report"/>
+        <junitreport todir="${build.test.results.dir}">
+            <fileset dir="${build.test.results.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${build.test.results.dir}/html"/>
+        </junitreport>
     </target>
-
+    <target name="-post-test-run-single">
+        <junitreport todir="${build.test.results.dir}">
+            <fileset dir="${build.test.results.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report todir="${build.test.results.dir}/html"/>
+        </junitreport>
+    </target>
 <!-- *****************  compiling translations   ***************** -->
     <target name="-pre-compile" depends="build-xbeans">
         <antcall target="compile-ts" />
@@ -198,8 +211,9 @@
         <!--xbeans-build schema-file="connections.xsd"  schema-name="connections"/-->
         <xbeans-build schema-file="testreport.xsd" schema-name="testreport"/>        
         <xbeans-build schema-file="junittestreport.xsd"  schema-name="junittestreport"/>
-	<xbeans-build schema-file="monitoringSettings.xsd"  schema-name="monitoringSettings"/>
+	    <xbeans-build schema-file="monitoringSettings.xsd"  schema-name="monitoringSettings"/>
         <xbeans-build schema-file="inspector.wsdl"  schema-name="inspector"/>
+        <xbeans-build schema-file="jmleditorsettings.xsd"  schema-name="jmleditorsettings"/>
     </target>
     
     

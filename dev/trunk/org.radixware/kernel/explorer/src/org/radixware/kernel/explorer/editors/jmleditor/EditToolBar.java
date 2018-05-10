@@ -14,11 +14,14 @@ package org.radixware.kernel.explorer.editors.jmleditor;
 import com.trolltech.qt.core.Qt.Orientation;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QFileDialog;
+import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QKeySequence.StandardKey;
+import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QTextCursor;
 import com.trolltech.qt.gui.QToolBar;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
 import org.radixware.kernel.common.client.env.ClientSettings;
@@ -31,12 +34,19 @@ import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef.UICallback;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.dialogs.EntityEditorDialog;
+import org.radixware.kernel.explorer.dialogs.PresentationInfoDialog;
+import org.radixware.kernel.explorer.dialogs.settings.SettingsDialog;
 import org.radixware.kernel.explorer.editors.jmleditor.JmlEditor.EditorActionsProvider;
+import org.radixware.kernel.explorer.editors.jmleditor.dialogs.AutosaveSettingsDialog;
+import org.radixware.kernel.explorer.editors.jmleditor.dialogs.AutosaveVersionsDialog;
+import org.radixware.kernel.explorer.editors.jmleditor.dialogs.ImportUserFuncDialog;
+import org.radixware.kernel.explorer.editors.jmleditor.dialogs.PreviewExecutableSourceDialog;
 import org.radixware.kernel.explorer.editors.jmleditor.dialogs.StackTraceDialog;
 import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.schemas.udsdef.UserFunctionDefinition;
+import org.radixware.schemas.xscml.JmlType;
 
 
 public class EditToolBar {
@@ -51,7 +61,13 @@ public class EditToolBar {
     private final QAction btnShowModuleName = new QAction(null);
     private final QAction btnDevelopmentMode = new QAction(null);
     private final QAction btnShowOwnerEditorDlg = new QAction(null);
-    //private final QToolButton btnImportBody = new QToolButton();
+    private final QAction btnShowExecutableSrc = new QAction(null);
+    private final QAction btnShowPresentationInfo = new QAction(null);
+    private final QAction btnAutosave = new QAction(null);
+    private final QAction btnShowAutosaveVersions = new QAction(null);
+    private final QAction btnShowAutosaveSettings = new QAction(null);
+    private final QAction btnToggleComment = new QAction(null);
+    private final QAction btnFormatCode = new QAction(null);
     private XscmlEditor editText;
     private final JmlEditor parent;
     private QToolBar toolBar;
@@ -74,6 +90,9 @@ public class EditToolBar {
             btnDevelopmentMode.setChecked(false);
             btnDevelopmentModeClicked();
         }
+        if (parent.getUserFunc().getOwnerPid()==null){
+            btnShowOwnerEditorDlg.setVisible(false);
+        }
     }
     
     public void updateUndoRedoBtns(){
@@ -88,6 +107,9 @@ public class EditToolBar {
             btnPast.setEnabled(!isReadOnlyMode);
         }
         btnReplace.setEnabled(!isReadOnlyMode);
+        btnFormatCode.setEnabled(!isReadOnlyMode);
+        btnToggleComment.setEnabled(!isReadOnlyMode);
+        enableAutosave(!isReadOnlyMode);
     }
 
     private void createToolBar() {
@@ -132,7 +154,7 @@ public class EditToolBar {
         btnFind.setShortcut(StandardKey.Find);//.setShortcut("Ctrl+F");
         btnFind.setCheckable(true);
         btnFind.setChecked(false);
-
+        
         btnReplace.setObjectName("btnReplace");
         btnReplace.setToolTip(Application.translate("JmlEditor", "Replace") + " (Ctrl+H)");
         btnReplace.setIcon(ExplorerIcon.getQIcon(JmlEditor.JmlEditorIcons.IMG_REPLACE));
@@ -169,7 +191,53 @@ public class EditToolBar {
         btnShowOwnerEditorDlg.setToolTip(Application.translate("JmlEditor", "Show Owner Editor Presentation Dialog"));
         btnShowOwnerEditorDlg.setIcon(ExplorerIcon.getQIcon(ExplorerIcon.Editor.VIEW));
         btnShowOwnerEditorDlg.triggered.connect(this, "showOwnerEditorDialog()");
+        
+        btnShowExecutableSrc.setObjectName("btnShowExecutableSrc");
+        btnShowExecutableSrc.setToolTip(Application.translate("JmlEditor", "Show Executable Source"));
+        btnShowExecutableSrc.setIcon(ExplorerIcon.getQIcon(JmlEditor.JmlEditorIcons.IMG_SRC_VIEW));
+        btnShowExecutableSrc.triggered.connect(this, "btnShowExecutableSrc_Clicked()");
+        btnShowExecutableSrc.setVisible(btnDevelopmentMode.isChecked());
+        
+        btnShowPresentationInfo.setObjectName("btnShowPresentationInfo");
+        btnShowPresentationInfo.setToolTip(Application.translate("JmlEditor", "About"));
+        btnShowPresentationInfo.setIcon(ExplorerIcon.getQIcon(SettingsDialog.DialogIcons.ABOUT));
+        btnShowPresentationInfo.triggered.connect(this, "btnShowPresentationInfo_Clicked()");
+        btnShowPresentationInfo.setVisible(btnDevelopmentMode.isChecked());
+        
+        btnShowAutosaveVersions.setObjectName("btnShowAutosaveVersions");
+        btnShowAutosaveVersions.setText(Application.translate("JmlEditor", "Local History"));
+        btnShowAutosaveVersions.setIcon(ExplorerIcon.getQIcon(JmlEditor.JmlEditorIcons.IMG_SRC_VIEW));
+        btnShowAutosaveVersions.triggered.connect(this, "btnShowAutoSaveVersions_Clicked()");
+        
+        btnShowAutosaveSettings.setObjectName("btnShowAutosaveSettings");
+        btnShowAutosaveSettings.setText(Application.translate("JmlEditor", "Autosave Settings"));
+        btnShowAutosaveSettings.setIcon(ExplorerIcon.getQIcon(SettingsDialog.DialogIcons.APPEARANCE_SETTINGS));
+        btnShowAutosaveSettings.triggered.connect(this, "btnShowAutoSaveSettings_Clicked()");
+        
+        btnAutosave.setObjectName("btnDoAutoSave");
+        btnAutosave.setToolTip(Application.translate("JmlEditor", "Save Locally") + " (Ctrl+Shift+S)");
+        btnAutosave.setIcon(ExplorerIcon.getQIcon(JmlEditor.JmlEditorIcons.IMG_AUTOSAVE));
+        btnAutosave.setShortcut(QKeySequence.fromString("Ctrl+Shift+S"));
+        final QMenu autosaveMenu = new QMenu(toolBar);
+        autosaveMenu.addAction(btnShowAutosaveVersions);
+        autosaveMenu.addAction(btnShowAutosaveSettings);
+        btnAutosave.setMenu(autosaveMenu);
+        btnAutosave.setVisible(false);
+        
+        btnToggleComment.setObjectName("btnToggleComment");
+        btnToggleComment.setToolTip(Application.translate("JmlEditor", "Comment") + " (Ctrl+/)");
+        btnToggleComment.setIcon(ExplorerIcon.getQIcon(JmlEditor.JmlEditorIcons.IMG_TOGGLE_COMMENT));
+        btnToggleComment.triggered.connect(this, "btnToggleCommentClicked()");
+        btnToggleComment.setShortcuts(Arrays.asList(QKeySequence.fromString("Ctrl+/"), QKeySequence.fromString("Ctrl+Shift+C")));
+        
+        btnFormatCode.setObjectName("btnFormatCode");
+        btnFormatCode.setToolTip(Application.translate("JmlEditor", "Format Code") + " (Alt+Shift+F)");
+        btnFormatCode.setIcon(ExplorerIcon.getQIcon(JmlEditor.JmlEditorIcons.IMG_FORMAT_TEXT));
+        btnFormatCode.triggered.connect(this, "btnFormatCodeClicked()");
+        btnFormatCode.setShortcut(QKeySequence.fromString("Alt+Shift+F"));
 
+        toolBar.addAction(btnAutosave);
+        toolBar.addAction(btnFormatCode);
         toolBar.addAction(btnCut);
         toolBar.addAction(btnCopy);
         toolBar.addAction(btnPast);
@@ -177,11 +245,14 @@ public class EditToolBar {
         toolBar.addAction(btnRedo);
         toolBar.addAction(btnFind);
         toolBar.addAction(btnReplace);
+        toolBar.addAction(btnToggleComment);
         toolBar.addAction(btnStackTrace);
         toolBar.addAction(btnShowOwnerEditorDlg);
         toolBar.addAction(btnShowModuleName);
         toolBar.addSeparator();
         toolBar.addAction(btnDevelopmentMode);
+        toolBar.addAction(btnShowExecutableSrc);
+        toolBar.addAction(btnShowPresentationInfo);
         toolBar.addSeparator();
         
         for (QAction a : toolBar.actions()) {
@@ -189,7 +260,7 @@ public class EditToolBar {
         }
 
     }
-
+    
     @SuppressWarnings("unused")
     private void editorTextChange() {
         if (editText.isUndoRedoEnabled()) {
@@ -204,7 +275,7 @@ public class EditToolBar {
     public void redoEnable(final boolean available) {
         btnRedo.setEnabled(available);
     }
-
+    
     @SuppressWarnings("unused")
     private void selectionChanged() {
         final QTextCursor tc = editText.textCursor();
@@ -249,6 +320,7 @@ public class EditToolBar {
             editText.undo();
         }
         editText.setFocusInText();
+        editText.updateUndoRedoBtns.emit();
     }
 
     @SuppressWarnings("unused")
@@ -484,20 +556,80 @@ public class EditToolBar {
         }
         return flags;
     }
-
+    
     private void exposeMessageInformation(String text) {
         String title = Application.translate("ExplorerDialog", "Information");
         String message = Application.translate("ExplorerDialog", "String \'%s\' not found");
         Application.messageInformation(title, String.format(message, text));
     }*/
+        
+    @SuppressWarnings("unused")
+    private void btnFormatCodeClicked() {
+        parent.formatCode();
+    }
     
     @SuppressWarnings("unused")
     private void btnDevelopmentModeClicked(){
         parent.setDevelopmentMode(btnDevelopmentMode.isChecked());
+        btnShowExecutableSrc.setVisible(btnDevelopmentMode.isChecked());
+        btnShowPresentationInfo.setVisible(btnDevelopmentMode.isChecked());
         //final ClientSettings settings = parent.getEnvironment().getConfigStore();
 
         //String settingsKey = SettingNames.SYSTEM + "/" + "user_func_editor_is_development_mode";
         //settings.writeBoolean(settingsKey, btnDevelopmentMode.isChecked());
+    }
+    
+    @SuppressWarnings("unused")
+    private void btnShowPresentationInfo_Clicked() {
+        String[] presArgs = parent.getActionProvider().getPresentationInfo();
+        PresentationInfoDialog dlg = new PresentationInfoDialog(parent.getEnvironment(), Application.translate("JmlEditor", "About"), presArgs[0],presArgs[1],presArgs[2],presArgs[3], null, presArgs[4]);
+        dlg.addNewRow(Application.translate("JmlEditor", "ID") + ":", presArgs[5], presArgs.length);
+        dlg.exec();
+    }
+    
+    @SuppressWarnings("unused")
+    private void btnShowExecutableSrc_Clicked() {
+        new PreviewExecutableSourceDialog(parent.getEnvironment(), parent, parent.getUserFunc().getJavaSourceSupport()).exec();
+    }
+    
+    void enableAutosave(boolean isEnabled) {
+        if (isEnabled && parent.getActionProvider() != null && parent.getActionProvider().getPid() != null) {
+            btnAutosave.triggered.connect(this, "btnDoAutoSave_Clicked()");
+            btnAutosave.setVisible(true);
+        } else {
+            btnAutosave.triggered.disconnect();
+            btnAutosave.setVisible(false);
+        }
+    }
+    
+    @SuppressWarnings("unused")
+    private void btnDoAutoSave_Clicked() {
+        parent.doAutosave();
+    }
+    
+    @SuppressWarnings("unused")
+    private void btnShowAutoSaveVersions_Clicked() {
+        AutosaveVersionsDialog dialog = new AutosaveVersionsDialog(parent);
+        parent.pauseAutosave();
+        try {
+            if (dialog.execDialog() == DialogResult.ACCEPTED) {
+                final JmlType jmlType = dialog.getSelectedJml();
+                parent.openSourceVersion(null);
+                parent.loadXmlToEditor(jmlType, ImportUserFuncDialog.ImportAction.REPLACE);
+            }
+        } finally {
+            parent.resumeAutosave();
+        }
+    }
+    
+    @SuppressWarnings("unused")
+    private void btnShowAutoSaveSettings_Clicked() {
+        new AutosaveSettingsDialog(parent.getEnvironment(), parent).execDialog();
+    }
+    
+    @SuppressWarnings("unused")
+    private void btnToggleCommentClicked() {
+        editText.toggleComment();
     }
 
     @SuppressWarnings("unused")

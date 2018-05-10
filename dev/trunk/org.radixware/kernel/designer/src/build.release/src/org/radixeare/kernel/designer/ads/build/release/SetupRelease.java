@@ -20,6 +20,7 @@ import javax.swing.event.DocumentListener;
 import org.openide.util.ChangeSupport;
 import org.openide.util.RequestProcessor;
 import org.radixware.kernel.common.builder.release.ReleaseSettings;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.designer.common.dialogs.components.state.StateManager;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 
@@ -145,7 +146,7 @@ public class SetupRelease extends javax.swing.JPanel {
     private final StateManager stateManager = new StateManager(this);
 
     public boolean isReady() {
-        if (ReleaseSettings.isValidReleaseName(edReleaseVersion.getText(), settings.isPatchRelease())) {
+        if (ReleaseUtils.isValidReleaseName(edReleaseVersion.getText(), settings.isPatchRelease())) {
             stateManager.ok();
             return true;
         } else {

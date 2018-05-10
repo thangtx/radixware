@@ -28,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
 import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
 import org.radixware.kernel.common.design.msdleditor.enums.EPieceType;
 import org.radixware.kernel.common.msdl.fields.IntFieldModel;
@@ -67,11 +68,18 @@ public class PiecePanel extends AbstractEditItem {
         update();
         opened = true;
     }
-
+    
     @Override
     public void update() {
+        update(false);
+    }
+    
+    public void update(boolean updateContent) {
         opened = false;
         typeCombo.setSelectedItem(EPieceType.getType(piece));
+        if (updateContent && panel instanceof AbstractMsdlPanel) {
+            ((AbstractMsdlPanel) panel).update();
+        } 
         opened = true;
         super.update();
     }
@@ -139,8 +147,6 @@ public class PiecePanel extends AbstractEditItem {
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/radixware/kernel/common/design/msdleditor/field/panel/Bundle"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PIECE"))); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
-
-        upperPanel.setPreferredSize(new java.awt.Dimension(800, 30));
 
         jLabelType.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabelType.setText("Type:");

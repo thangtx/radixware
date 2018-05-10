@@ -12,8 +12,11 @@
 package org.radixware.kernel.server.arte.services.eas;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import org.radixware.kernel.server.arte.Arte;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
@@ -22,12 +25,18 @@ import org.radixware.kernel.common.exceptions.ServiceProcessClientFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessServerFault;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.meta.presentations.*;
+import org.radixware.kernel.server.types.EntityGroup;
 
 abstract class EasRequest {
 
     protected ExplorerAccessService presenter;
+    private final Map<String,List<Id>> userRoleIdsCache = new HashMap<>(4);
+    private List<Id> cachedCurUserAllRolesInAllAreas;
 
+    protected EasRequest() {}
+    
     EasRequest(final ExplorerAccessService presenter) {
         this.presenter = presenter;
     }
@@ -39,7 +48,7 @@ abstract class EasRequest {
     protected final List<Id> getAccessibleExplorerItems(final RadExplorerRootDef root) {
         final List<Id> result = new LinkedList<>();
         final List<RadParagraphExplorerItemDef> processedParags = new ArrayList<>();
-        collectAccessibleExplorerItems(root, root, result, processedParags, getArte().getRights().getCurUserAllRolesInAllAreas());
+        collectAccessibleExplorerItems(root, root, result, processedParags, getCurUserAllRolesInAllAreas());
         return result;
     }
     
@@ -66,9 +75,18 @@ abstract class EasRequest {
             if (root.getCurUserCanAccessItemById(child.getId())) {
                 if (child instanceof RadSelectorExplorerItemDef) {
                     try {
-                        final List<Id> applicableRoles = calcExplorerItemApplicableRoles((RadSelectorExplorerItemDef) child, allUserRoles);
-                        final RadSelectorPresentationDef selPres = ((RadSelectorExplorerItemDef) child).getSelectorPresentation();
+                        final RadSelectorExplorerItemDef childSelExplItem = (RadSelectorExplorerItemDef) child;
+                        final List<Id> applicableRoles = calcExplorerItemApplicableRoles(childSelExplItem, allUserRoles);
+                        final RadSelectorPresentationDef selPres = childSelExplItem.getSelectorPresentation();
                         if (selPres.getTotalRestrictions(applicableRoles).getIsAccessRestricted()){
+                            continue;
+                        }
+                        final Id entityId = selPres.getClassPresentation().getClassDef().getEntityId();
+                        final EntityGroup entGrp = getArte().getGroupHander(entityId);
+                        final EntityGroup.Context entGrpContext = 
+                            new EntityGroup.TreeContext(childSelExplItem.getSelectionClassDef(), childSelExplItem, null);
+                        entGrp.set(entGrpContext, selPres, null, null, null, null, null);
+                        if (entGrp.getAdditionalRestrictions(selPres, applicableRoles).getIsAccessRestricted()){
                             continue;
                         }
                     } catch (DefinitionNotFoundError e) {
@@ -79,7 +97,7 @@ abstract class EasRequest {
                 accessibleExpItems.add(child.getId());
             }
         }
-        if (someChildAccessible) {
+        if (someChildAccessible || root==parag) {
             accessibleExpItems.add(parag.getId());
             return true;
         }
@@ -89,17 +107,49 @@ abstract class EasRequest {
     private List<Id> calcExplorerItemApplicableRoles(final RadSelectorExplorerItemDef explorerItem, final List<Id> allUserRoles){
         final RadConditionDef.Prop2ValueCondition contextProperties = RadConditionDef.Prop2ValueCondition.fromExplorerItem(explorerItem);
         if (contextProperties.hasAccessAreas(getArte(), explorerItem.getSelectionClassDef())){
-            return contextProperties.getCurUserRoleIds(getArte(), explorerItem.getSelectionClassDef());
+            return getCurUserRoleIds(contextProperties, explorerItem.getSelectionClassDef());
         }else{
             return allUserRoles;
         }
     }
+    
+    protected final List<Id> getCurUserRoleIds(final RadConditionDef.Prop2ValueCondition contextProperties, final RadClassDef classDef){
+        if (!contextProperties.hasAccessAreas(getArte(), classDef)){
+            return getCurUserAllRolesInAllAreas();
+        }
+        final String cacheKey=classDef.getId()+"-"+contextProperties.getCacheKey();
+        List<Id> roleIds = userRoleIdsCache.get(cacheKey);
+        if (roleIds==null){
+            roleIds = contextProperties.getCurUserRoleIds(getArte(), classDef);
+            if (roleIds==null){
+                userRoleIdsCache.put(cacheKey, Collections.<Id>emptyList());
+            }else{
+                userRoleIdsCache.put(cacheKey, roleIds);
+            }
+        }
+        return roleIds;
+    }    
 
+    protected final List<Id> getCurUserAllRolesInAllAreas() {
+        if (cachedCurUserAllRolesInAllAreas == null) {
+            cachedCurUserAllRolesInAllAreas = getArte().getRights().getCurUserAllRolesInAllAreas();
+        }
+        return cachedCurUserAllRolesInAllAreas;
+    }
+    
     abstract protected String getUsrDbTraceProfile();
 
-    abstract void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault;
+    void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault{
+        cachedCurUserAllRolesInAllAreas = null;
+        userRoleIdsCache.clear();
+    }
 
     abstract XmlObject process(XmlObject rq) throws ServiceProcessFault, InterruptedException;
+    
+    protected void postProcess(final XmlObject request, final XmlObject response){
+        cachedCurUserAllRolesInAllAreas = null;
+        userRoleIdsCache.clear();
+    }
 //Constants
     protected static final String XSD = "http://schemas.radixware.org/eas.xsd";
 }

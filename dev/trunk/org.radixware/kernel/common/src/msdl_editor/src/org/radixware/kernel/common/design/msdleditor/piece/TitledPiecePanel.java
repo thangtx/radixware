@@ -40,7 +40,11 @@ public class TitledPiecePanel extends AbstractEditItem {
 
     @Override
     public void update() {
-        piecePanel1.update();
+        update(false);
+    }
+    
+    public void update(boolean updateContent) {
+        piecePanel1.update(updateContent);
         super.update();
     }
 

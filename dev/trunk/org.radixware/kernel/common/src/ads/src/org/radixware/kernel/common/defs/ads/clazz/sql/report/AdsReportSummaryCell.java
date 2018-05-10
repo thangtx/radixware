@@ -82,10 +82,7 @@ public class AdsReportSummaryCell extends AdsReportFormattedCell {
     }
 
     @Override
-    public String getName() {
-        if (getOwnerReport() == null) {
-            return super.getName();
-        }
+    public String getDefaultName() {
         final AdsPropertyDef prop = findProperty();
         return (prop != null ? prop.getName() : String.valueOf(propertyId)) + getSummaryType().getValue();
     }

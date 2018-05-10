@@ -28,15 +28,28 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import org.radixware.kernel.server.dialogs.AsyncComboBoxModel.Item;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.utils.RecoveryInstanceFactory;
 import org.radixware.kernel.server.utils.RecoveryInstanceFactory.InstanceCreationError;
 
 
 public class RecoveryInstanceParamsDialog extends JPanel {
-
     private final Login dlg;
     private final Connection connection;
+    
+    private static final String stmtSQL = "select name from rdx_scp where systemid = 1 order by name";
+    private static final Stmt stmt = new Stmt(stmtSQL);
+    
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
 
+    private RecoveryInstanceParamsDialog(){
+        this.dlg = null;
+        this.connection = null;
+    }
+    
     /** Creates new form RecoveryInstanceParamsDialog */
     public RecoveryInstanceParamsDialog(final Login dlg, final Connection connection) {
         this.dlg = dlg;
@@ -161,17 +174,15 @@ public class RecoveryInstanceParamsDialog extends JPanel {
         @Override
         public List<Item> getData() throws SQLException {
             final List<AsyncComboBoxModel.Item> data = new ArrayList<Item>();
-            final PreparedStatement st = connection.prepareStatement("select name from rdx_scp where systemid = 1 order by name");
-            try {
+            
+            try (final PreparedStatement st = ((RadixConnection)connection).prepareStatement(stmt)){
                 data.add(new Item(-1, null) {
-
                     @Override
                     public String toString() {
                         return "<" + Messages.NO_SCP + ">";//TODO: localization
                     }
                 });
-                final ResultSet rs = st.executeQuery();
-                try {
+                try(final ResultSet rs = st.executeQuery()) {
                     while (rs.next()) {
                         data.add(new Item(1, rs.getString(1)) {
 
@@ -182,12 +193,7 @@ public class RecoveryInstanceParamsDialog extends JPanel {
                         });
                     }
                     return data;
-                } finally {
-                    rs.close();
                 }
-
-            } finally {
-                st.close();
             }
         }
     }

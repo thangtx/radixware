@@ -13,13 +13,17 @@ package org.radixware.kernel.common.builder;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.radixware.kernel.common.builder.api.IBuildEnvironment;
 import org.radixware.kernel.common.builder.check.java.LinkageAnalyzer;
+import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.build.BuildOptions;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
+import org.radixware.kernel.common.defs.dds.DdsModule;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.repository.Branch;
@@ -197,7 +201,7 @@ public class BuildActionExecutor {
 //                                    }
                                     JarFileDataProvider.reset();
                                     final ContextChecker checker = new ContextChecker(options[0].isSkipCheck());
-                                    final ContextChecker.ContextInfo checkedContexts = checker.determineTargets(actionType, context, buildEnv);
+                                    final ContextChecker.ContextInfo checkedContexts = checker.determineTargets(actionType, context, buildEnv, options[0].isSuppressProblemsClear());
 
                                     if (actionType == EBuildActionType.CHECK_API_DOC) {
                                         return;
@@ -261,12 +265,35 @@ public class BuildActionExecutor {
                                             wasErrors = true;
                                             return;
                                         }
+                                        
+                                        final SqmlDistributor sqmlDistributor = new SqmlDistributor(buildEnv, actionType);
+                                        final Collection<Module> sqmlModules = sqmlDistributor.collectSqmlModules(context);
+                                        final Collection<DdsModule> ddsModules = new LinkedList<>();
+                                        
+                                        if (sqmlModules!=null && !isCancelled()) {
+                                            for (Module module: sqmlModules){
+                                                if (module instanceof DdsModule && !module.isReadOnly()){
+                                                    ddsModules.add((DdsModule)module);
+                                                }
+                                            }
+                                            if (userModeHandler == null) {
+                                                sqmlDistributor.execute(sqmlModules);
+                                            }
+                                            JarFileDataProvider.reset();
+                                        } else {
+                                            cancelled();
+                                            wasErrors = true;
+                                            return;
+                                        } 
                                         if (!isCancelled()) {
                                             if (userModeHandler == null) {
-                                                new DirectoryFileBuilder(buildEnv, actionType).execute(adsModules);
+                                                final DirectoryFileBuilder directoryFileBuilder = 
+                                                    new DirectoryFileBuilder(buildEnv, actionType);
+                                                directoryFileBuilder.execute(adsModules);
                                                 if (checker.processedLayers != null) {
-                                                    new DirectoryFileBuilder(buildEnv, actionType).updateLayers(checker.processedLayers);
+                                                    directoryFileBuilder.updateLayers(checker.processedLayers);
                                                 }
+                                                directoryFileBuilder.indexDdsModules(ddsModules);
                                             }
                                         } else {
                                             cancelled();
@@ -292,6 +319,16 @@ public class BuildActionExecutor {
                                     buildEnv.getBuildDisplayer().getDialogUtils().messageError(ex);
                                 }
                             }
+                        } catch (Throwable e) {
+                            StringBuilder message = new StringBuilder("Build failed");
+                            String mes = e.getMessage();
+                            if (mes != null) {
+                                message.append(": ");
+                                message.append(mes);
+                            }
+                            buildEnv.getFlowLogger().error(message.toString());
+                            buildEnv.getLogger().log(Level.SEVERE, null, e);
+                            wasErrors = true;
                         } finally {
                             RadixObject.enableChangeTracking();
                             if (reportOverallStatus) {

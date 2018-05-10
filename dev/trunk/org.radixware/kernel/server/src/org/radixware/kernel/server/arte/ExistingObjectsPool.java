@@ -8,16 +8,14 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.arte;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.utils.BufferedPool;
 import org.radixware.kernel.common.utils.Utils;
+import org.radixware.kernel.server.arte.Cache.EntityCacheItem;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.Pid;
 
@@ -27,11 +25,13 @@ final class ExistingObjectsPool {
 
         private final long arteTranSeq;
         private final Entity object;
+        final String creationStack;
 
-        public Item(final Entity object) {
+        public Item(final Entity object, final long arteTranSeq, final String creationStack) {
             super();
             this.object = object;
-            this.arteTranSeq = object.getArte().getTransactionSeqNumber();
+            this.arteTranSeq = arteTranSeq;
+            this.creationStack = creationStack;
         }
 
         long getArteTranSeq() {
@@ -42,22 +42,23 @@ final class ExistingObjectsPool {
             return object;
         }
     }
-    private final Map<Pid, Item> objsByPid;
-    private final BufferedPool<Cache.Item<Entity>> bufferedPool;
+    private final EntityBufferedPool bufferedPool;
 
     ExistingObjectsPool(final BufferedPool.ERegistrationMode registrationMode) {
         super();
-        bufferedPool = new BufferedPool<Cache.Item<Entity>>(registrationMode);
-        objsByPid = new HashMap<Pid, Item>();
+        bufferedPool = new EntityBufferedPool(registrationMode);
     }
 
     Item getByPid(final Pid pid) {
-        return objsByPid.get(pid);
+        final Cache.EntityCacheItem item = bufferedPool.findRegistration(searchKeyForPid(pid));
+        if (item != null) {
+            return new Item(item.object, item.arteTranSeq, item.creationStack);
+        }
+        return null;
     }
 
-    void register(final Cache.Item<Entity> it) {
-        bufferedPool.register(it);
-        final Item oldReg = objsByPid.put(it.object.getPid(), new Item(it.object));
+    void register(final Cache.EntityCacheItem it) {
+        final Cache.EntityCacheItem oldReg = bufferedPool.findRegistration(it);
         if (oldReg != null && it.object != oldReg.object) {
             it.object.getArte().getTrace().put(
                     EEventSeverity.WARNING,
@@ -68,31 +69,26 @@ final class ExistingObjectsPool {
                     EEventSource.ARTE);
             oldReg.object.discard();
         }
+        bufferedPool.register(it);
     }
 
     boolean isRegistered(final Entity obj) {
-        return bufferedPool.isRegistered(new Cache.Item<Entity>(obj, null));
+        return bufferedPool.isRegistered(searchKeyForPid(obj.getPid()));
     }
 
     void unregister(final Entity obj) {
-        bufferedPool.unregister(new Cache.Item<Entity>(obj, null));
-        objsByPid.remove(obj.getPid());
+        bufferedPool.unregister(searchKeyForPid(obj.getPid()));
     }
 
     void clear() {
         bufferedPool.clear();
-        objsByPid.clear();
     }
 
-    int size() {
-        return objsByPid.size();
-    }
-
-    Collection<Cache.Item<Entity>> flush() {
+    Collection<Cache.EntityCacheItem> flush() {
         return bufferedPool.flush();
     }
 
-    Collection<Cache.Item<Entity>> getRegistered() {
+    Collection<Cache.EntityCacheItem> getRegistered() {
         return bufferedPool.getRegistered();
     }
 
@@ -103,4 +99,13 @@ final class ExistingObjectsPool {
     BufferedPool.ERegistrationMode getRegistrationMode() {
         return bufferedPool.getRegistrationMode();
     }
+
+    private EntityCacheItem searchKeyForPid(final Pid pid) {
+        return new EntityCacheItem(pid);
+    }
+    
+    public int getSize() {
+        return bufferedPool.getSize();
+    }
+
 }

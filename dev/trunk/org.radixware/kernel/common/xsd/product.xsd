@@ -9,6 +9,70 @@
         <xs:documentation>----- Common Types -----</xs:documentation>
     </xs:annotation>
 
+
+ 
+ 
+    <xs:complexType name="DatabaseVersion">        
+        <xs:attribute name="DatabaseUrl" type="types:Str" use="required"/>
+        <xs:attribute name="SchemeName" type="types:Str" use="required"/>
+        <xs:attribute name="ReleaseNumber" type="types:Str" use="required"/>
+        <xs:attribute name="Revision" type="xs:long" use="optional"/>
+    </xs:complexType>    
+ 
+ 
+    <xs:complexType name="AboutLayer">
+        <xs:all>
+            <xs:element name="DbSegment" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+                        <xs:element name="DatabaseVersion" type="this:DatabaseVersion"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>            
+            
+            <xs:element name="KernelSegment" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                    <xs:attribute name="ReleaseNumber" type="types:Str" use="required"/>
+                    <xs:attribute name="Revision" type="xs:long" use="optional"/>
+                    <xs:attribute name="PrevCompatibleRevisions">
+                        <xs:simpleType>
+                            <xs:list itemType="types:Str"/>
+                        </xs:simpleType>
+                    </xs:attribute>                       
+                </xs:complexType>
+            </xs:element>
+            
+            <xs:element name="AppSegment" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                    <xs:attribute name="ReleaseNumber" type="types:Str" use="required"/>
+                    <xs:attribute name="Revision" type="xs:long" use="optional"/>
+                </xs:complexType>
+            </xs:element>
+                        
+        </xs:all>
+        <xs:attribute name="Uri" type="types:Str" use="required"/> 
+    </xs:complexType>
+    
+    <xs:complexType name="AadcMember">
+        <xs:attribute name="StickToRevision" type="xs:long" use="optional"/>
+    </xs:complexType>
+  
+     <xs:complexType name="AboutBranch">
+         <xs:sequence minOccurs="0">
+            <xs:element name="AadcMember1" type="this:AadcMember" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="AadcMember2" type="this:AadcMember" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="Layers">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element minOccurs="0"  maxOccurs="unbounded" name="Layer" type="this:AboutLayer"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+
+
     <xs:complexType name="DistributiveId">
         <xs:attribute name="ReleaseNumber" type="types:Str" use="required"/>
         <xs:attribute name="DistribVariant" type="types:Int"/>
@@ -27,7 +91,7 @@
             <xs:element maxOccurs="unbounded" name="Parameter" type="types:Str"/>
         </xs:sequence>
     </xs:complexType>
-
+    
     <xs:complexType name="NotifySubscribers">
         <xs:sequence>
             <xs:element maxOccurs="unbounded" minOccurs="0" name="Subscriber">
@@ -61,6 +125,16 @@
 
     <xs:complexType name="DatabaseOptionDependency">
         <xs:attribute name="Option" type="types:Str" use="required"/>
+        <xs:attribute name="Mode" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EOptionMode</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
         <xs:attribute name="DefaultMode" use="optional">
             <xs:simpleType>
                 <xs:annotation>
@@ -145,6 +219,18 @@
     <xs:complexType name="License">
         <xs:sequence>
             <xs:element maxOccurs="unbounded" minOccurs="0" name="License" type="this:License"/>
+            <xs:element name="RequiredModules" minOccurs="0">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="RequiredModule" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:attribute name="Id" type="types:Id"/>
+                                <xs:attribute name="LayerUri" type="xs:string"/>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
         </xs:sequence>
         <xs:attribute name="Name" type="types:Str" use="required"/>
         <xs:attribute name="Dependencies" type="types:Str" use="optional"/>
@@ -388,6 +474,7 @@
                     <xs:attribute name="Schema" type="types:Str" use="required"/>
                     <xs:attribute name="Test" type="types:Bool" use="required"/>
                     <xs:attribute name="Name" type="xs:string"/>
+                    <xs:attribute name="AadcName" type="types:Str" use="optional"/>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
@@ -457,6 +544,45 @@
         <xs:attribute name="Name" type="xs:string"/>
     </xs:complexType>
 
+
+
+
+  
+    <xs:complexType name="AadcTransformColumn">
+        <xs:attribute name="TargetId" type="types:Id" use="required"/>
+        <xs:attribute name="TargetName" type="types:Str" use="required"/>
+        <xs:attribute name="Source" type="types:Str" use="optional"/>
+        <xs:attribute name="SourceType" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EAadcTransformColumnSourceType</types:class>
+                    </xs:appinfo>
+                </xs:annotation>                
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+      
+    <xs:complexType name="AadcTransformTable">
+        <xs:sequence>
+            <xs:element  maxOccurs="unbounded" minOccurs="0" type="this:AadcTransformColumn" name="Columns"/>
+        </xs:sequence>
+        <xs:attribute name="TargetId" type="types:Id" use="required"/>
+        <xs:attribute name="TargetName" type="types:Str" use="required"/> 
+        <xs:attribute name="SourceName" type="types:Str" use="optional"/>
+    </xs:complexType> 
+    
+   <xs:complexType name="AadcTransform">
+        <xs:sequence>
+             <xs:element type="this:AadcTransformTable" name="Table"  minOccurs="0" maxOccurs="unbounded" />
+             <xs:element name="Warning" type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="Required" type="xs:boolean" use="required"/>
+        <xs:attribute name="Forbidden" type="xs:boolean" use="required"/> 
+    </xs:complexType>
+
+
     <xs:complexType name="Scripts">
         <xs:sequence>
             <xs:element maxOccurs="unbounded" minOccurs="0" name="Script">
@@ -476,7 +602,8 @@
                                 </xs:sequence>
                             </xs:complexType>
                         </xs:element>
-                    </xs:sequence>
+                        <xs:element minOccurs="0" maxOccurs="1" name="AadcTransform" type="this:AadcTransform" />
+                    </xs:sequence>                    
                     <xs:attribute name="FileName" type="types:Str" use="required"/>
                     <xs:attribute default="false" name="IsBackwardCompatible" type="xs:boolean"/>
                     <xs:attribute default="false" name="IsReverse" type="xs:boolean"/>
@@ -485,8 +612,8 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
-
-
+    
+    
 
     <xs:complexType name="AccessibleDefinitions">
         <xs:sequence>
@@ -600,6 +727,17 @@
         <xs:attribute name="IsEmpty" type="xs:boolean" default="false"/>
         <xs:attribute name="ForRelease" type="xs:boolean" use="optional" default="true" />
         <xs:attribute name="RadixdocFormatVersion" type="xs:int" use="optional" default="0" />
+        <xs:attribute name="RootDocMapDefId" type="types:Id" use="optional"/>
+        <xs:attribute name="MainDocLanguage" use="optional">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <types:class>org.radixware.kernel.common.enums.EIsoLanguage</types:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="types:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType mixed="false" name="Module">
@@ -662,6 +800,7 @@
         <xs:attribute name="IsUnderConstruction" type="xs:boolean" use="optional"/>
         <xs:attribute name="SuppressedWarnings" type="utils:SuppressedWarnings" use="optional"/>
         <xs:attribute name="IsDeprecated" type="xs:boolean" use="optional"/>
+        <xs:attribute name="DescriptionId" type="types:Id" use="optional"/>
     </xs:complexType>
 
     <xs:complexType mixed="false" name="Directory">
@@ -1208,7 +1347,8 @@
         </xs:attribute>
         <xs:attribute default="false" name="ShowIssuesInDescription" type="types:Bool"/>
         <xs:attribute name="IssueTrackProject" type="types:Str" use="optional"/>
-        <xs:attribute default="false" name="NotifyInternalChanges" type="types:Bool"/>
+        <xs:attribute default="false" name="NotifyInternalChanges" type="types:Bool"/>        
+        <xs:attribute name="NotAddLicenses" type="types:Bool" use="optional" default="false"/>
         
     </xs:complexType>
 
@@ -1354,6 +1494,21 @@
                     <xs:attribute name="File" type="xs:string" use="required"/>
                 </xs:complexType>
             </xs:element>
+            
+
+            <xs:element minOccurs="0" name="Common">
+                <xs:complexType>
+                    <xs:attribute name="DetailsLogDir" type="types:Str" use="optional"/> 
+                </xs:complexType>
+            </xs:element>            
+            
+            <xs:element minOccurs="0" name="Licenses">
+                <xs:complexType>                    
+                    <xs:attribute name="CardTerminalName" type="xs:string" use="optional"/>
+                </xs:complexType>
+            </xs:element>            
+            
+            
         </xs:sequence>
         <xs:attribute name="Title" type="types:Str" use="required"/>
         <xs:attribute name="SvnHomeUrl" type="types:Str" use="required"/>
@@ -1405,6 +1560,8 @@
     <xs:element name="RepositoryConfig" type="this:RepositoryConfig"/>
 
     <xs:element name="Databases" type="this:Databases"/>
+    
+    <xs:element name="About" type="this:AboutBranch"/>
 
     <xs:element name="Branch" type="this:Branch"/>
 

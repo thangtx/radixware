@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc74WTUF75CBETHHQIKEKK7QFGRM" Name="AbstractArrayEditorDelegate" Type="3" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate"/>
+    </AccessRules>
+    <TypeArguments>
+      <xsc:Argument DerivationRule="extends" Alias="T">
+        <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+      </xsc:Argument>
+      <xsc:Argument DerivationRule="extends" Alias="W">
+        <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+      </xsc:Argument>
+    </TypeArguments>
+    <Headers>
+      <Src Name="Headeradc74WTUF75CBETHHQIKEKK7QFGRM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc74WTUF75CBETHHQIKEKK7QFGRM"/>
+    </Bodies>
+    <MethodGroup Id="cmgFCH3CWRPJ5HB7G2F3EJCBM43EY" Name="Root"/>
+    <PropertyGroup Id="cpg55DJOEZPGBHLZP4QDPL4XXNDJQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthXQ6GKR7TMBFHXNM6YI2H6ZEC5I" Name="createEditor" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="createEditor(TW;Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.arreditor.ArrayItemEditingOptions;ILjava.util.List&lt;Ljava.lang.Object;>;)TT;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="parentWidget" Id="mprF7YJZAPGJRGFXNXUVP2UUOPEKY">
+            <Type TypeId="400" extStr="W" IsArgumentType="true"/>
+          </Parameter>
+          <Parameter Name="environment" Id="mprISW2PUUJ2ZDOBMIO6A53XB4X4Y">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="editingOptions" Id="mprCSX47BJ76BDJPG2BXXB2YPT76U">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.arreditor.ArrayItemEditingOptions"/>
+          </Parameter>
+          <Parameter Name="row" Id="mpr3UHHE4LRYJAWDCLMHPUQKTPMYU">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="currentValues" Id="mprHXANYDI6SRE4PHRTL473S7T3LA">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="T" IsArgumentType="true"/>
+      </Method>
+      <Method Id="mthWREMJHCN5VER5BTC2G2LTR543Y" Name="createNewValues" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="createNewValues(Lorg.radixware.kernel.common.client.widgets.IWidget;Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.arreditor.ArrayItemEditingOptions;Ljava.util.List&lt;Ljava.lang.Object;>;)Ljava.util.List&lt;Ljava.lang.Object;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arrayEditor" Id="mpr5M3346S4NFFGRA6O6UVTOM4EKA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IWidget"/>
+          </Parameter>
+          <Parameter Name="environment" Id="mpr4N3UZXVG7BAI7FL6F6W2RI7TZQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="editingOptions" Id="mprZK4BV6FAJVGDVDG4TSGXL567HA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.arreditor.ArrayItemEditingOptions"/>
+          </Parameter>
+          <Parameter Name="currentValues" Id="mprOOP5ZRZHEJGGVGPWAHWEFSUO3I">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthU575MPQVAFA5ZBEZIMY6E2MJOA" Name="getInitialItemValue" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="1">
+          <Transparence Extendable="false" PublishedName="getInitialItemValue(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.arreditor.ArrayItemEditingOptions;Ljava.util.List&lt;Ljava.lang.Object;>;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprVKQ7HD3VZRHENGOUMYWJBQYIWE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="editingOptions" Id="mprQMUBMQGDXFDJBBQ3FWNO6UT73A">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.arreditor.ArrayItemEditingOptions"/>
+          </Parameter>
+          <Parameter Name="currentValues" Id="mprW3TJM4MW2NDVLHFHXQ2ARY7W7Q">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Object"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthDU5D5OMBXVBCFBRYY22XOXY62I" Name="getValueFromEditor" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getValueFromEditor(TT;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="editor" Id="mprSAMW7QEHDNBYRGEIXXHUN5BM64">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
+      </Method>
+      <Method Id="mthVMLPCUP2VBHG3B4X7LXF7DL5ZY" Name="setValueToEditor" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setValueToEditor(TT;Ljava.lang.Object;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="editor" Id="mpr54S2ER5Q5VDWBDLAHMRV67LAFI">
+            <Type TypeId="400" extStr="T" IsArgumentType="true"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprXQDP5JUUBBFLNJLVMLDFEK3NSI">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQ7JWB7ISGNDEBPRKS76FDOORUI" Name="getDisplayTextForValue" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getDisplayTextForValue(Lorg.radixware.kernel.common.client.IClientEnvironment;Lorg.radixware.kernel.common.client.widgets.arreditor.ArrayItemEditingOptions;Ljava.lang.Object;)Ljava.lang.String;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprAUNDXHKSDZEGHLKNGIDGQ6PEXQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="editingOptions" Id="mprYXETN6NPWZHMPITNE2ECHJCVQQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.arreditor.ArrayItemEditingOptions"/>
+          </Parameter>
+          <Parameter Name="value" Id="mprQQCFSBVYLNBPLM5MPAPIICEPZY">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

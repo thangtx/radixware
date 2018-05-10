@@ -86,4 +86,12 @@ public class ChainStat {
                 buffer.isEmpty() ? 0 : sum / buffer.size());
     }
 
+    public int getMaxChainSize() {
+        return maxChainSize;
+    }
+
+    public int getMaxStoreMillis() {
+        return maxStoreMillis;
+    }
+
 }

@@ -22,6 +22,8 @@ import org.radixware.kernel.common.defs.ads.type.AdsDefinitionType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
+import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
+import org.radixware.kernel.common.defs.localization.LocalizedDescribableRef;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ELocalizedStringKind;
 import org.radixware.kernel.common.types.Id;
@@ -55,7 +57,7 @@ public class AdsMethodThrowsList extends RadixObjects<AdsMethodThrowsList.Throws
         }
     }
 
-    public static class ThrowsListItem extends RadixObject implements ILocalizedDescribable, IDescribable {
+    public static class ThrowsListItem extends RadixObject implements ILocalizedDescribable, IDescribable, ILocalizedDescribable.Inheritable {
 
         public static final class Factory {
 
@@ -66,9 +68,13 @@ public class AdsMethodThrowsList extends RadixObjects<AdsMethodThrowsList.Throws
             public static final ThrowsListItem newInstance(AdsTypeDeclaration exception, String description, Id descriptionId) {
                 return new ThrowsListItem(exception, description, descriptionId);
             }
+            
+            public static final ThrowsListItem newInstance(AdsTypeDeclaration exception, String description, Id descriptionId, boolean isDescriptionInherited) {
+                return new ThrowsListItem(exception, description, descriptionId, isDescriptionInherited);
+            }
 
             public static final ThrowsListItem loadFrom(MethodDefinition.ThrownExceptions.Exception decl) {
-                return new ThrowsListItem(AdsTypeDeclaration.Factory.loadFrom(decl), decl.getDescription(), decl.getDescriptionId());
+                return new ThrowsListItem(AdsTypeDeclaration.Factory.loadFrom(decl), decl.getDescription(), decl.getDescriptionId(), decl.isSetIsDescriptionInherited() ? decl.getIsDescriptionInherited() : true);
             }
 
             public static final ThrowsListItem newTemporaryInstance(RadixObject container, AdsTypeDeclaration exception, Id descriptionId) {
@@ -81,11 +87,18 @@ public class AdsMethodThrowsList extends RadixObjects<AdsMethodThrowsList.Throws
         private final AdsTypeDeclaration exception;
         private String description;
         private Id descriptionId;
+        private boolean isDescriptionInherited = true;
+        LocalizedDescribableRef describableRef;
 
         private ThrowsListItem(AdsTypeDeclaration exception, String description, Id descriptionId) {
+            this(exception, description, descriptionId, true);
+        }
+        
+        private ThrowsListItem(AdsTypeDeclaration exception, String description, Id descriptionId, boolean isDescriptionInherited) {
             this.exception = exception;
             this.description = description;
             this.descriptionId = descriptionId;
+            this.isDescriptionInherited = isDescriptionInherited;
         }
 
         @Override
@@ -131,7 +144,7 @@ public class AdsMethodThrowsList extends RadixObjects<AdsMethodThrowsList.Throws
 
         @Override
         public Id getDescriptionId() {
-            return descriptionId;
+            return getDescriptionId(isDescriptionInherited());
         }
 
         @Override
@@ -151,7 +164,7 @@ public class AdsMethodThrowsList extends RadixObjects<AdsMethodThrowsList.Throws
 
         @Override
         public AdsDefinition getDescriptionLocation() {
-            return RadixObjectsUtils.findContainer(this, AdsDefinition.class);
+            return getDescriptionLocation(isDescriptionInherited());
         }
 
         public final void removeDescriptionString() {
@@ -176,9 +189,77 @@ public class AdsMethodThrowsList extends RadixObjects<AdsMethodThrowsList.Throws
                 xDef.setDescription(description);
             }
 
-            if (descriptionId != null) {
-                xDef.setDescriptionId(descriptionId);
+            if (!isDescriptionInherited()) {
+                if (descriptionId != null) {
+                    xDef.setDescriptionId(descriptionId);
+                }
+                if (isDescriptionInheritable()){
+                    xDef.setIsDescriptionInherited(false);
+                }
             }
+        }
+        
+        @Override
+        public boolean isDescriptionInheritable() {
+            if (descriptionId == null && description != null && !description.isEmpty()) {
+                return false;
+            }
+
+            return getOwnerMethod() != null && getOwnerMethod().getDescriptionInheritable();
+        }
+
+        @Override
+        public boolean isDescriptionInherited() {
+            if (!isDescriptionInheritable()) {
+                return false;
+            }
+            return isDescriptionInherited;
+        }
+
+        @Override
+        public void setDescriptionInherited(boolean inherit) {
+            boolean isInherit = isDescriptionInherited();
+            if (inherit != isInherit) {
+                isDescriptionInherited = inherit;
+                setEditState(EEditState.MODIFIED);
+            }
+        }
+
+        @Override
+        public AdsDefinition getDescriptionLocation(boolean inherited) {
+            RadixObject value = getDescriptionOwner(inherited);
+            if (value == null) {
+                return null;
+            }
+            return RadixObjectsUtils.findContainer(value, AdsDefinition.class);
+        }
+
+        @Override
+        public Id getDescriptionId(boolean inherited) {
+            if (inherited) {
+                ThrowsListItem owner = (ThrowsListItem) getDescriptionOwner(inherited);
+                if (owner == this) {
+                    return null;
+                } else {
+                    return owner.getDescriptionId();
+                }
+            }
+            return descriptionId;
+        }
+
+        private RadixObject getDescriptionOwner(boolean inherited) {
+            if (inherited && describableRef != null && describableRef.getVersion() == ILocalizingBundleDef.version.get()) {
+                ILocalizedDescribable def = describableRef.get();
+                if (def instanceof RadixObject) {
+                    return (RadixObject) def;
+                }
+            }
+            RadixObject value = ProfileUtilities.getDescriptionInheritanceOwner(inherited, getOwnerMethod(), this);
+            if (value == null) {
+                return null;
+            }
+            describableRef = new LocalizedDescribableRef((ILocalizedDescribable) value);
+            return value;
         }
     }
 

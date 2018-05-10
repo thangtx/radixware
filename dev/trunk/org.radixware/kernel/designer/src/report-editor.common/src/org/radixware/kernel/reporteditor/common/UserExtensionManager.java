@@ -30,6 +30,7 @@ import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.radixware.kernel.common.builder.BuildActionExecutor;
+import org.radixware.kernel.common.builder.api.IBuildEnvironment;
 import org.radixware.kernel.common.builder.api.IBuildProblemHandler;
 import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.check.RadixProblemRegistry;
@@ -42,6 +43,8 @@ import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.VisitorProviderFactory;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.ads.build.BuildOptions;
+import org.radixware.kernel.common.defs.ads.build.IFlowLogger;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportModelClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsUserReportClassDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
@@ -67,6 +70,7 @@ import org.radixware.kernel.common.userreport.repository.role.AppRole;
 import org.radixware.kernel.common.userreport.repository.role.RolesModule;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.designer.common.dialogs.build.DesignerBuildEnvironment;
+import org.radixware.kernel.designer.common.dialogs.build.FlowLoggerFactory;
 import org.radixware.kernel.designer.common.dialogs.check.CheckResultsTopComponent;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.eas.client.DesignerClientApplication;
@@ -164,6 +168,22 @@ public class UserExtensionManager extends UserExtensionManagerCommon {
 
     public void removeCopiedReportInfo() {
         copiedReportInfo = null;
+    }
+    
+    boolean needLoadReportModules() {
+        final String mode = (String) Config.getValue("features");
+        if (mode != null) {
+            switch (mode) {
+                case "role-editor":
+                case "msdl-editor":
+                    return false;
+
+                case "report-editor":
+                default:
+                    return true;
+            }
+        }
+        return true;
     }
 
     public void updateTitle() {
@@ -520,7 +540,7 @@ public class UserExtensionManager extends UserExtensionManagerCommon {
     }
 
     @Override
-    public void setReportModified(UserReport report, boolean modified) {
+    public void setReportModified(UserReport report) {
         modifiedSupport.fireChange(report);
     }
     // private ExecutorService compileOnSaveExecutor = Executors.newFixedThreadPool(1);
@@ -528,10 +548,10 @@ public class UserExtensionManager extends UserExtensionManagerCommon {
     //private final Lock answerCanCloseLock = new ReentrantLock();
     private boolean errorsOnLastBuild = false;
 
-    private final class CompileOnSaveTask implements Runnable {
+    private class CompileOnSaveTask implements Runnable {
 
-        private final RadixObject[] whatToCompile;
-
+        protected final RadixObject[] whatToCompile;
+        
         public CompileOnSaveTask(AdsDefinition whatToCompile) {
             this.whatToCompile = new RadixObject[]{whatToCompile};
         }
@@ -539,12 +559,9 @@ public class UserExtensionManager extends UserExtensionManagerCommon {
         public CompileOnSaveTask(RadixObject[] whatToCompile) {
             this.whatToCompile = whatToCompile;
         }
-
-        @Override
-        public void run() {
-            DesignerBuildEnvironment env = new DesignerBuildEnvironment(false, BuildActionExecutor.EBuildActionType.COMPILE_SINGLE);
-            IBuildProblemHandler handler = env.getBuildProblemHandler();
-            try {
+        
+        protected void doCompile(IBuildEnvironment env) {
+             try {
                 compileOnSaveLock.lock();
                 if (whatToCompile != null) {
                     List<RadixObject> filtered = new LinkedList<>();
@@ -561,6 +578,13 @@ public class UserExtensionManager extends UserExtensionManagerCommon {
             } finally {
                 compileOnSaveLock.unlock();
             }
+        }
+        
+        @Override
+        public void run() {
+            DesignerBuildEnvironment env = new DesignerBuildEnvironment(false, BuildActionExecutor.EBuildActionType.COMPILE_SINGLE);
+            IBuildProblemHandler handler = env.getBuildProblemHandler();
+            doCompile(env);
             errorsOnLastBuild = handler.wasErrors();
 
             final CheckResultsTopComponent checkResults = CheckResultsTopComponent.findInstance();
@@ -578,30 +602,97 @@ public class UserExtensionManager extends UserExtensionManagerCommon {
             }
         }
     }
+    
+    private final class CompileAllSubTask extends CompileOnSaveTask {
+        
+        private final IFlowLogger compileAllLogger;
+        private final ECompileAllOrder order;
+
+        public CompileAllSubTask(RadixObject[] whatToCompile, IFlowLogger compileAllLogger, ECompileAllOrder order) {
+            super(whatToCompile);
+            this.order = order;
+            this.compileAllLogger = compileAllLogger;
+        }
+
+        public CompileAllSubTask(AdsDefinition whatToCompile, IFlowLogger compileAllLogger, ECompileAllOrder order) {
+            super(whatToCompile);
+            this.order = order;
+            this.compileAllLogger = compileAllLogger;
+        }
+        
+        @Override
+        public void run() {
+            final DesignerBuildEnvironment env = new DesignerBuildEnvironment(false, BuildActionExecutor.EBuildActionType.COMPILE_SINGLE, compileAllLogger);
+            final BuildOptions buildOptions = env.getBuildOptions();
+            buildOptions.setSuppressProblemsClear(order != ECompileAllOrder.FIRST);
+            IBuildProblemHandler handler = env.getBuildProblemHandler();
+            doCompile(env);
+            errorsOnLastBuild = order != ECompileAllOrder.FIRST ? handler.wasErrors() || errorsOnLastBuild : handler.wasErrors();
+
+            final CheckResultsTopComponent checkResults = CheckResultsTopComponent.findInstance();
+            if (!checkResults.isEmpty()) {
+
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        checkResults.open();
+                        checkResults.requestVisible();
+                        checkResults.requestActive();
+                    }
+                });
+            }
+            
+            if (order == ECompileAllOrder.LAST) {
+                compilingAllReportsStarted = false;
+            }
+        }
+    }
+    
     private final Queue<CompileOnSaveTask> compileTasks = new LinkedList<>();
     private Thread compileTaskProcessor;
     private final Object lock = new Object();
-
-    @Override
-    public void compileOnSave(final AdsDefinition whatToCompile, boolean sync) {
-        compileOnSave(new RadixObject[]{whatToCompile}, sync);
+    private volatile boolean compilingAllReportsStarted = false;
+    
+    private static enum ECompileAllOrder {
+        FIRST, LAST, MIDDLE
     }
-
-    public void compileOnSave(final RadixObject[] whatToCompile, boolean sync) {
-        if (buildMode) {
+    
+    public void compileAllReports(final List<RadixObject[]> reports) {
+        if (reports.isEmpty() || compilingAllReportsStarted) {
             return;
         }
-        if (sync) {
-            try {
-                buildMode = true;
-                new CompileOnSaveTask(whatToCompile).run();
-            } catch (Throwable e) {
-                Logger.getLogger(UserExtensionManager.class.getName()).log(Level.SEVERE, e.getMessage(), e);
-            } finally {
-                buildMode = false;
+        compilingAllReportsStarted = true;
+        
+        final IFlowLogger compileAllLogger = 
+                FlowLoggerFactory.newBuildLogger(BuildActionExecutor.EBuildActionType.COMPILE_SINGLE);
+        
+        startCompileTaskProcessor();
+        
+        int index = 0;
+        for (; index < reports.size(); index++) {
+            RadixObject[] whatToCompile = reports.get(index);
+            ECompileAllOrder order;
+            if (index == 0) {
+                order = ECompileAllOrder.FIRST;
+            } else if (index == reports.size() - 1) {
+                order = ECompileAllOrder.LAST;
+            } else {
+                order = ECompileAllOrder.MIDDLE;
             }
-            return;
+            
+            submitNextCompileAllTask(new CompileAllSubTask(whatToCompile, compileAllLogger, order));
         }
+    }
+    
+    private void submitNextCompileAllTask(final CompileAllSubTask task) {
+        synchronized (compileTasks) {
+            compileTasks.add(task);
+            compileTasks.notifyAll();
+        }
+    }
+    
+    private void startCompileTaskProcessor() {
         synchronized (lock) {
             if (compileTaskProcessor == null) {
                 compileTaskProcessor = new Thread(new Runnable() {
@@ -635,6 +726,35 @@ public class UserExtensionManager extends UserExtensionManagerCommon {
                 compileTaskProcessor.start();
             }
         }
+    }
+
+    public boolean isCompilingAllReportsStarted() {
+        return compilingAllReportsStarted;
+    }
+
+    @Override
+    public void compileOnSave(final AdsDefinition whatToCompile, boolean sync) {
+        compileOnSave(new RadixObject[]{whatToCompile}, sync);
+    }
+
+    public void compileOnSave(final RadixObject[] whatToCompile, boolean sync) {
+        if (buildMode) {
+            return;
+        }
+        if (sync) {
+            try {
+                buildMode = true;
+                new CompileOnSaveTask(whatToCompile).run();
+            } catch (Throwable e) {
+                Logger.getLogger(UserExtensionManager.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+            } finally {
+                buildMode = false;
+            }
+            return;
+        }
+        
+        startCompileTaskProcessor();
+        
         synchronized (compileTasks) {
             compileTasks.add(new CompileOnSaveTask(whatToCompile));
             compileTasks.notifyAll();
@@ -844,5 +964,10 @@ public class UserExtensionManager extends UserExtensionManagerCommon {
             UserExtensionManager.getInstance().compileOnSave(reportClass, true);
         }
         return true;
+    }
+
+    @Override
+    public String getLayerVersionsString() {
+        return getEnvironment().getLayerVersionsString();
     }
 }

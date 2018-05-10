@@ -165,6 +165,17 @@ public class DirectoryFileSigner {
         }
     }
 
+        
+    private static boolean canIgnoreCalcDigestForFile(final String zipEntryName) {
+        if (zipEntryName.startsWith("META-INF/")) {
+            final String zipEntryNameAsLower = zipEntryName.toLowerCase();
+            final boolean isSertificateWithPublicKey = zipEntryNameAsLower.endsWith(".rsa");
+            final boolean isSignature = zipEntryNameAsLower.endsWith(".sf");
+            return isSertificateWithPublicKey || isSignature;
+        }
+        return false;
+    }
+    
     public static byte[] calcFileDigest(final File file, final boolean isJar, final boolean ignoreCR) throws IOException, NoSuchAlgorithmException {
         final MessageDigest digest = MessageDigest.getInstance("SHA-1");
 
@@ -200,9 +211,11 @@ public class DirectoryFileSigner {
                         if (DigestWriter.DIGEST_ENTRY_PATH.equals(entry.getName())) {
                             continue;
                         }
-                        if (entry.getName().startsWith("META-INF/") && entry.getName().toLowerCase().endsWith(".rsa")) {
+
+                        if (canIgnoreCalcDigestForFile(entry.getName())) {
                             continue;
                         }
+                        
                         if ("META-INF/MANIFEST.MF".equals(entry.getName())) {
                             entry_in = getManifestInputStream(jar.getInputStream(entry));
                         } else {

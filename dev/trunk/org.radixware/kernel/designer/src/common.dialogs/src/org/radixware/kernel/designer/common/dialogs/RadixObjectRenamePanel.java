@@ -138,77 +138,77 @@ public class RadixObjectRenamePanel extends JPanel {
     }
 
     private static void renameModule(final Module module, final String newName) {
-        final String oldName = module.getName();
-        try {
-            if (module.isUserExtension()) {
-                module.setName(newName);
-                return;
-            }
-            final SVNRepositoryAdapter repository = RadixCoreSvnUtils.getRepository(module);
-            final ISvnFSClient fsClient = RadixCoreSvnUtils.getFsClient(module);
-            if (repository == null) {
-                DialogUtils.messageError("Failure to rename module");
-                return;
-            }
-
-            try {
-
-                final long letestRevision = repository.getLatestRevision();
-                final String segmentUrl = SVN.getFileUrl(fsClient,module.getDirectory().getParentFile());
-                final String currModulePath = SvnPath.getRelativePath(repository.getLocation(), SvnPath.append(segmentUrl, oldName));
-                final boolean exists = SVN.isExists(repository, currModulePath);
-
-                if (exists) {
-
-                    final File oldFile = module.getDirectory();
-                    final File newFile = new File(module.getDirectory().getParentFile(), newName);
-
-                    ProgressUtils.showProgressDialogAndRun(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            try {
-
-                                if (RadixCoreSvnUtils.hasLocalModifications(fsClient, oldFile, letestRevision)) {
-                                    DialogUtils.messageError("You should commit your local changes before rename");
-                                    return;
-                                }
-
-                                if (!RadixCoreSvnUtils.isUpToDate(fsClient, oldFile, letestRevision)) {
-                                    DialogUtils.messageError("You should update module before rename");
-                                    return;
-                                }
-
-                                SVN.update(fsClient, oldFile);
-
-                                module.setName(newName);
-
-                                final File[] files = new File[]{oldFile, newFile};
-
-                                RadixCoreSvnUtils.refreshStatus(files);
-                                SVN.commit(fsClient, files, newName);
-                                RadixCoreSvnUtils.refreshStatus(files);
-
-                            } catch (final ISvnFSClient.SvnFsClientException ex) {
-                                SwingUtilities.invokeLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        DialogUtils.messageError(ex);
-                                    }
-                                });
-                            }
-                        }
-                    }, "Rename module...");
-                } else {
+//        final String oldName = module.getName();
+//        try {
+//            if (module.isUserExtension()) {
+//                module.setName(newName);
+//                return;
+//            }
+//            final SVNRepositoryAdapter repository = RadixCoreSvnUtils.getRepository(module);
+//            final ISvnFSClient fsClient = RadixCoreSvnUtils.getFsClient(module);
+//            if (repository == null) {
+//                DialogUtils.messageError("Failure to rename module");
+//                return;
+//            }
+//
+//            try {
+//
+//                final long letestRevision = repository.getLatestRevision();
+//                final String segmentUrl = SVN.getFileUrl(fsClient,module.getDirectory().getParentFile());
+//                final String currModulePath = SvnPath.getRelativePath(repository.getLocation(), SvnPath.append(segmentUrl, oldName));
+//                final boolean exists = SVN.isExists(repository, currModulePath);
+//
+//                if (exists) {
+//
+//                    final File oldFile = module.getDirectory();
+//                    final File newFile = new File(module.getDirectory().getParentFile(), newName);
+//
+//                    ProgressUtils.showProgressDialogAndRun(new Runnable() {
+//                        @Override
+//                        public void run() {
+//
+//                            try {
+//
+//                                if (RadixCoreSvnUtils.hasLocalModifications(fsClient, oldFile, letestRevision)) {
+//                                    DialogUtils.messageError("You should commit your local changes before rename");
+//                                    return;
+//                                }
+//
+//                                if (!RadixCoreSvnUtils.isUpToDate(fsClient, oldFile, letestRevision)) {
+//                                    DialogUtils.messageError("You should update module before rename");
+//                                    return;
+//                                }
+//
+//                                SVN.update(fsClient, oldFile);
+//
+//                                module.setName(newName);
+//
+//                                final File[] files = new File[]{oldFile, newFile};
+//
+//                                RadixCoreSvnUtils.refreshStatus(files);
+//                                SVN.commit(fsClient, files, newName);
+//                                RadixCoreSvnUtils.refreshStatus(files);
+//
+//                            } catch (final ISvnFSClient.SvnFsClientException ex) {
+//                                SwingUtilities.invokeLater(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        DialogUtils.messageError(ex);
+//                                    }
+//                                });
+//                            }
+//                        }
+//                    }, "Rename module...");
+//                } else {
                     module.setName(newName);
-                }
-            } finally {
-                repository.close();
-            }
-
-        } catch (RadixSvnException e) {
-            DialogUtils.messageError(e);
-        }
+//                }
+//            } finally {
+//                repository.close();
+//            }
+//
+//        } catch (RadixSvnException e) {
+//            DialogUtils.messageError(e);
+//        }
     }
 
     private static boolean checkBeforeModuleRename(RadixObject radixObject_, String newName) { // RADIX-6080 

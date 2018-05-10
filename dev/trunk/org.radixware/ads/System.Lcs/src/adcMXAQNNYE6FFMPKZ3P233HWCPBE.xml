@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adcMXAQNNYE6FFMPKZ3P233HWCPBE" Name="EnumItemDelegate" Type="3" Environment="server">
+    <AccessRules>
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderadcMXAQNNYE6FFMPKZ3P233HWCPBE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyadcMXAQNNYE6FFMPKZ3P233HWCPBE"/>
+    </Bodies>
+    <MethodGroup Id="cmgPJOJZTROPJHRRDBCJNVYR576SI" Name="Root"/>
+    <PropertyGroup Id="cpgMVYFLVNE6RAULIO5XAOZ67U5UI" Name="Root"/>
+    <Properties>
+      <Property Id="prdBJCZ7MKUSNBAXIXS7JS772623Q" Name="enumId" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules Access="1" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthNUBN2T7BIVCWDOSANNLRZHPNUQ" Name="getCellText" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="row" Id="mprTOHKMBLDBJACRDOM3KOLXHGM4E">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="column" Id="mprVPA6IOZVOBGPDOSM47D2VHD7GI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="columnName" Id="mpr6CTJN6M2SJFCDAVOPDUN4IU2S4">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="value" Id="mpr5ZUKCZX2TBDXDFSUHUHANK2TUM">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>final String strValue = String.valueOf(value);
+try {
+    final org.radixware.kernel.common.meta.RadEnumDef enumDef = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true">
+                <xsc:Presentation>getDefManager</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getEnumDef(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMXAQNNYE6FFMPKZ3P233HWCPBE prdBJCZ7MKUSNBAXIXS7JS772623Q" Invoke="true">
+                <xsc:Presentation>enumId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    final String result = enumDef.getItemByVal((Comparable) </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRGCAH2OFZVFETKEAS4A2YGFWB4">
+                <xsc:Presentation>Types::ValAsStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcRGCAH2OFZVFETKEAS4A2YGFWB4 mthNCUFEE26OBB4HBUKTQEYKB4LRA" Invoke="true">
+                <xsc:Presentation>fromStr</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(strValue, enumDef.ItemType)).getTitle(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+    if (result != null) {
+        return result;
+    }
+} catch (Exception ex) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthP66N3O2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>warning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unable to calculate title of enum value '" + strValue + "' [enumId='" + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMXAQNNYE6FFMPKZ3P233HWCPBE prdBJCZ7MKUSNBAXIXS7JS772623Q" Invoke="true">
+                <xsc:Presentation>enumId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "'] during license report generation: " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U">
+                <xsc:Presentation>Utils::ExceptionTextFormatter</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciCPKKO6PCCFBO3KYIZPGYQ4M6CM" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:License</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+return "&lt;unresolved: '" + strValue + "'>";
+</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthCKXTHSXGKRAZLEXV5HHYOOHMM4" Name="EnumItemDelegate" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="colIndex" Id="mpr2CQFICRHBNCAPBCRH2TM6QO4NM">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="enumId" Id="mprUJQTNBT4G5BYJIQUEBWA4AVFG4">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(colIndex);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMXAQNNYE6FFMPKZ3P233HWCPBE prdBJCZ7MKUSNBAXIXS7JS772623Q" Invoke="true">
+                <xsc:Presentation>enumId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = enumId;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKWUJEYCZXFGYFMT7Y4OQJC6AFE" Name="EnumItemDelegate" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="colName" Id="mprVMHLNYQU7ZBRTHQJFNZFQZZBCU">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="enumId" Id="mprEFXPYIGZFREBRFLJXRZTAVW4TA">
+            <Type TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(colName);
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMXAQNNYE6FFMPKZ3P233HWCPBE prdBJCZ7MKUSNBAXIXS7JS772623Q" Invoke="true">
+                <xsc:Presentation>enumId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = enumId;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Extends TypeId="411" Path="adcTU24X65B45BANKTT7ZHOE44ZWU"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -14,6 +14,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipFile;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.RadixError;
@@ -27,7 +32,8 @@ public class BranchHolder {
     protected List<String> removedFiles = new LinkedList<>();
     protected List<String> kernelJars = new LinkedList<>();
     protected List<String> developmentLayers = new LinkedList<>();
-    protected Map<String, LayerInfo> layers = new HashMap<>();
+    private List<LayerInfo> topLayers;
+    final Map<String, LayerInfo> layers = new HashMap<>();
     protected final boolean verbose;
     protected final NoizyVerifier verifier;
 
@@ -37,47 +43,31 @@ public class BranchHolder {
     }
 
     public boolean initializeEx(SVNRepositoryAdapter repository, final List<String> layersPathList, ZipFile zipFile, String zipFilePath, String predefinedBaseDevLayerURI, boolean skipDevelopmentLayers) {
-
-        try {
-
-            this.revision = repository.getLatestRevision();
-            List<LayerInfo> infos = new LinkedList<>();
-            List<String> addedAndModifiedLayerDescriptions = new LinkedList<>();
-
-            List<org.radixware.kernel.common.svn.utils.Utils.ZipModule> zipModules = new LinkedList<>();
-            if (!org.radixware.kernel.common.svn.utils.Utils.uploadModulesFromZipFile(verbose, verifier, zipFile, zipFilePath, zipModules, removedFiles, kernelJars, addedAndModifiedLayerDescriptions)) {
-                return false;
-            }
-            if (!Utils.listLayersEx(verbose, repository, this.revision, layersPathList, predefinedBaseDevLayerURI, skipDevelopmentLayers, verifier, infos, removedFiles, zipFile, zipFilePath, kernelJars, developmentLayers, addedAndModifiedLayerDescriptions, zipFile, zipFilePath)) {
-                return false;
-            }
-            for (LayerInfo info : infos) {
-                if (!Utils.uploadModules(verbose, info, verifier, zipModules, removedFiles)) {
-                    return false;
-                }
-                layers.put(info.uri, info);
-            }
-            return true;
-        } catch (RadixSvnException ex) {
-            verifier.error(new RadixError("Unable to obtain layer list", ex));
-            return false;
-        }
+        return initialize(new BranchHolderParams(repository, layersPathList, zipFile, zipFilePath, skipDevelopmentLayers, predefinedBaseDevLayerURI));
     }
 
     public boolean initialize(SVNRepositoryAdapter repository, String branchPath, ZipFile zipFile, String zipFilePath, String predefinedBaseDevLayerURI, boolean skipDevelopmentLayers) {
-
+        return initialize(new BranchHolderParams(repository, branchPath, null, zipFile, zipFilePath, skipDevelopmentLayers, predefinedBaseDevLayerURI));
+    }
+    
+    public boolean initialize(BranchHolderParams bParams) {
         try {
-
-            this.revision = repository.getLatestRevision();
-            List<LayerInfo> infos = new LinkedList<LayerInfo>();
-            List<String> addedAndModifiedLayerDescriptions = new LinkedList<String>();
-
-            List<org.radixware.kernel.common.svn.utils.Utils.ZipModule> zipModules = new LinkedList<org.radixware.kernel.common.svn.utils.Utils.ZipModule>();
-            if (!org.radixware.kernel.common.svn.utils.Utils.uploadModulesFromZipFile(verbose, verifier, zipFile, zipFilePath, zipModules, removedFiles, kernelJars, addedAndModifiedLayerDescriptions)) {
+            this.revision = bParams.getRepository().getLatestRevision();
+            List<LayerInfo> infos = new LinkedList<>();
+            List<String> addedAndModifiedLayerDescriptions = new LinkedList<>();
+            List<org.radixware.kernel.common.svn.utils.Utils.ZipModule> zipModules = new LinkedList<>();
+            
+            if (!org.radixware.kernel.common.svn.utils.Utils.uploadModulesFromZipFile(verbose, verifier,  bParams.getUpgradeFile(), bParams.getUpgradeFilePath(), zipModules, removedFiles, kernelJars, addedAndModifiedLayerDescriptions)) {
                 return false;
             }
-            if (!Utils.listLayers(verbose, repository, this.revision, branchPath, predefinedBaseDevLayerURI, skipDevelopmentLayers, verifier, infos, removedFiles, zipFile, zipFilePath, kernelJars, developmentLayers, addedAndModifiedLayerDescriptions, zipFile, zipFilePath)) {
-                return false;
+            if (bParams.getBranchPath() != null) {
+                if (!Utils.listLayers(verbose, bParams.getRepository(), this.revision, bParams.getBranchPath(), bParams.getPredefinedBaseDevLayerURI(), bParams.isSkipDevelopmentLayers(), verifier, infos, removedFiles, bParams.getUpgradeFile(), bParams.getUpgradeFilePath(), kernelJars, developmentLayers, addedAndModifiedLayerDescriptions, bParams.getUpgradeFile(), bParams.getUpgradeFilePath())) {
+                    return false;
+                }
+            } else {
+                if (!Utils.listLayersEx(verbose, bParams.getRepository(), this.revision, bParams.getLayersPathList(), bParams.getPredefinedBaseDevLayerURI(), bParams.isSkipDevelopmentLayers(), verifier, infos, removedFiles, bParams.getUpgradeFile(), bParams.getUpgradeFilePath(), kernelJars, developmentLayers, addedAndModifiedLayerDescriptions, bParams.getUpgradeFile(), bParams.getUpgradeFilePath())) {
+                    return false;
+                }
             }
             for (LayerInfo info : infos) {
                 if (!Utils.uploadModules(verbose, info, verifier, zipModules, removedFiles)) {
@@ -85,6 +75,9 @@ public class BranchHolder {
                 }
                 layers.put(info.uri, info);
             }
+            
+            topLayers = Utils.topLayers(layers.values());
+            
             return true;
         } catch (RadixSvnException ex) {
             verifier.error(new RadixError("Unable to obtain layer list", ex));
@@ -119,6 +112,41 @@ public class BranchHolder {
                 module.close();
             }
         }
+    }
+    
+    void preloadLayersBinares(final ERuntimeEnvironmentType env, int nThreads) {
+        final ExecutorService exec = Executors.newFixedThreadPool(nThreads);
+        for (LayerInfo layer : layers.values()) {
+            layer.getLib(env).upload(exec);
+            if (env != ERuntimeEnvironmentType.COMMON) {
+                layer.getLib(ERuntimeEnvironmentType.COMMON).upload(exec);
+            }
+            for (final Utils.ModuleInfo adsModule : layer.modules.values()) {
+                exec.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        adsModule.findBinaryFile(env);
+                        if (env != ERuntimeEnvironmentType.COMMON) {
+                            adsModule.findBinaryFile(ERuntimeEnvironmentType.COMMON);
+                        }
+                    }
+                });
+            }
+        }
+        try {
+            exec.shutdown();
+            exec.awaitTermination(5, TimeUnit.MINUTES);
+        } catch (InterruptedException ex) {
+            final String mes = "Branch binaries preload was interrupted";
+            if (verifier != null) {
+                verifier.error(mes);
+            }
+            Logger.getLogger(BranchHolder.class.getName()).log(Level.SEVERE, mes, ex);
+        }
+    }
+    
+    List<LayerInfo> getTopLayers() {
+        return topLayers;
     }
 
 }

@@ -477,7 +477,7 @@ public class ProfileDialog extends ExplorerDialog {
     private QTableWidget createExceptionsTable() {
         final List<String> columnName = new ArrayList<>();
         columnName.add(messageProvider.translate("JmlEditor", "Thrown Exception"));
-        columnName.add(messageProvider.translate("JmlEditor", "Desctiption"));
+        columnName.add(messageProvider.translate("JmlEditor", "Description"));
         tableExceptionWidget.setColumnCount(2);
         tableExceptionWidget.setHorizontalHeaderLabels(columnName);
         tableExceptionWidget.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows);
@@ -590,7 +590,7 @@ public class ProfileDialog extends ExplorerDialog {
     public void reject() {
         super.reject();
     }
-
+    
     @Override
     public void accept() {
         tableParamWidget.setCurrentIndex(null);
@@ -604,35 +604,23 @@ public class ProfileDialog extends ExplorerDialog {
         }
         
         super.accept();
-
-        if (!ufProfile.getReturnValue().getType().equals(returnType)) {
-            if (returnType == null) {
-                returnType = AdsTypeDeclaration.VOID;
-            }
-            ufProfile.getReturnValue().setType(returnType);
-        }
-        if (!ufProfile.getParametersList().list().equals(parametersList)) {
-            ufProfile.getParametersList().clear();
+        
+        if (getUserFunc().findMethod() != null) {
+            final List<MethodParameter> resParams = new ArrayList<>(parametersList.size());
             for (MethodParameter param : parametersList) {
                 if (parametersMap.containsKey(param.getId())) {
                     MethodParameter oldParam = parametersMap.get(param.getId());
                     oldParam.setName(param.getName());
                     oldParam.setType(param.getType());
-                    ufProfile.getParametersList().add(oldParam);
+                    resParams.add(oldParam);
                 } else {
-                    ufProfile.getParametersList().add(param);
+                    resParams.add(param);
                 }
             }
-        }
-        if (!ufProfile.getThrowsList().list().equals(throwsList)) {
-            ufProfile.getThrowsList().clear();
-            for (AdsMethodThrowsList.ThrowsListItem throwItem : throwsList) {
-                ufProfile.getThrowsList().add(throwItem);
-            }
-        }
-        if (!getUserFunc().findMethod().getName().equals(edName.text())) {
-            getUserFunc().findMethod().setName(edName.text());
 
+            getUserFunc().findMethod().updateSignature(edName.text(),
+                    returnType != null ? returnType : AdsTypeDeclaration.VOID,
+                    resParams, throwsList);
         }
     }
 

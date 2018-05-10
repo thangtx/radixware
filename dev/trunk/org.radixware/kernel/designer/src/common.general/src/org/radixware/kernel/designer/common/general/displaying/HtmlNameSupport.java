@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.general.displaying;
 
 import java.awt.Color;
@@ -26,6 +25,7 @@ import org.radixware.kernel.common.defs.RadixObject.RenameEvent;
 import org.radixware.kernel.common.defs.RadixObject.RenameListener;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
+import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.type.AdsAccessFlags;
 import org.radixware.kernel.common.enums.ENamingPolicy;
 import org.radixware.kernel.common.utils.Utils;
@@ -225,16 +225,26 @@ public class HtmlNameSupport extends RadixEventSource<IRadixEventListener<RadixE
 
     public Color getColor() {
         if (radixObject.isSaveable() && !(radixObject instanceof IDirectoryRadixObject)) {
-            final List<FileObject> fileObjects = RadixFileUtil.getVersioningFileObjects(radixObject);
-            if (fileObjects != null && !fileObjects.isEmpty()) {
-                final FileSystem.Status fileSystemStatus = RadixFileUtil.getFileSystem().getStatus();
-                if (fileSystemStatus instanceof FileSystem.HtmlStatus) {
-                    final FileSystem.HtmlStatus fileSystemHtmlStatus = (FileSystem.HtmlStatus) fileSystemStatus;
-                    for (FileObject fo : fileObjects) {
-                        final String fileHtmlName = fileSystemHtmlStatus.annotateNameHtml("stub", Collections.singleton(fo)); // netbeans unable to annotabe several files at once
-                        final Color fileColor = extractColorFromHtmlName(fileHtmlName);
-                        if (fileColor != null) {
-                            return fileColor;
+            boolean ignoreFileStatus = false;
+            Module module = radixObject.getModule();
+            if (module instanceof AdsModule) {
+                AdsModule ads = (AdsModule) module;
+                if (ads.isUserModule()) {
+                    ignoreFileStatus = true;
+                }
+            }
+            if (!ignoreFileStatus) {
+                final List<FileObject> fileObjects = RadixFileUtil.getVersioningFileObjects(radixObject);
+                if (fileObjects != null && !fileObjects.isEmpty()) {
+                    final FileSystem.Status fileSystemStatus = RadixFileUtil.getFileSystem().getStatus();
+                    if (fileSystemStatus instanceof FileSystem.HtmlStatus) {
+                        final FileSystem.HtmlStatus fileSystemHtmlStatus = (FileSystem.HtmlStatus) fileSystemStatus;
+                        for (FileObject fo : fileObjects) {
+                            final String fileHtmlName = fileSystemHtmlStatus.annotateNameHtml("stub", Collections.singleton(fo)); // netbeans unable to annotabe several files at once
+                            final Color fileColor = extractColorFromHtmlName(fileHtmlName);
+                            if (fileColor != null) {
+                                return fileColor;
+                            }
                         }
                     }
                 }

@@ -22,6 +22,7 @@ import java.util.Stack;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.RadSortingDef;
 import org.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef;
+import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskConstSet;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameter;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameterFactory;
@@ -53,17 +54,23 @@ import org.radixware.kernel.common.client.views.IParameterCreationWizard;
 import org.radixware.kernel.common.client.views.IParameterEditorDialog;
 import org.radixware.kernel.common.client.views.IPropEditor;
 import org.radixware.kernel.common.client.views.IPropLabel;
+import org.radixware.kernel.common.client.views.IProxyPropEditor;
+import org.radixware.kernel.common.client.views.ISelectEntitiesDialog;
 import org.radixware.kernel.common.client.views.ISelectEntityDialog;
 import org.radixware.kernel.common.client.views.ISortingEditorDialog;
 import org.radixware.kernel.common.client.views.IView;
+import org.radixware.kernel.common.client.widgets.IListWidget;
 import org.radixware.kernel.common.client.widgets.IWidget;
+import org.radixware.kernel.common.client.widgets.area.IWidgetArea;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.explorer.dialogs.ArrayEditorDialog;
 import org.radixware.kernel.explorer.dialogs.EntityEditorDialog;
 import org.radixware.kernel.explorer.dialogs.EnumItemsEditorDialog;
 import org.radixware.kernel.explorer.dialogs.FilterEditorDialog;
+import org.radixware.kernel.explorer.dialogs.SelectEntitiesDialog;
 import org.radixware.kernel.explorer.dialogs.SelectEntityDialog;
 import org.radixware.kernel.explorer.dialogs.SortingEditorDialog;
 import org.radixware.kernel.explorer.editors.filterparameditor.ParameterCreationWizard;
@@ -77,11 +84,20 @@ import org.radixware.kernel.explorer.views.StandardParagraphEditor;
 import org.radixware.kernel.explorer.views.StandardReportParametersDialog;
 import org.radixware.kernel.explorer.views.selector.StandardSelector;
 import org.radixware.kernel.explorer.widgets.EditorPage;
+import org.radixware.kernel.explorer.widgets.ExplorerListWidget;
 import org.radixware.kernel.explorer.widgets.PropLabelsPool;
+import org.radixware.kernel.explorer.widgets.area.ExplorerWidgetsArea;
 import org.radixware.kernel.explorer.widgets.propeditors.PropEditorsPool;
+import org.radixware.kernel.explorer.widgets.propeditors.PropTextEditor;
+import org.radixware.kernel.explorer.widgets.propeditors.ProxyPropEditor;
 
 
 public class ExplorerStandardViewsFactory extends QObject implements org.radixware.kernel.common.client.views.StandardViewFactory {                
+
+    @Override
+    public IWidgetArea newWidgetArea(IClientEnvironment environment, IWidget parent) {
+        return new ExplorerWidgetsArea(environment, parent); 
+    }
     
     private final static class UpdatePool extends QEvent{        
         public UpdatePool(){
@@ -100,7 +116,7 @@ public class ExplorerStandardViewsFactory extends QObject implements org.radixwa
     private int blockScheduled;
     private final IClientEnvironment environment;
     
-    public ExplorerStandardViewsFactory(final QObject parent, final IClientEnvironment environment){
+    ExplorerStandardViewsFactory(final QObject parent, final IClientEnvironment environment){
         super(parent);
         this.environment = environment;        
         scheduleUpdatePool();
@@ -238,18 +254,23 @@ public class ExplorerStandardViewsFactory extends QObject implements org.radixwa
     
     @Override
     public IPropEditor newPropTextStrEditor(PropertyStr prop) {
-        return PropEditorsPool.getInstance().getPropTextStrEditor(prop);
+        return new PropTextEditor(prop);
     }
 
     @Override
     public IPropEditor newPropTextClobEditor(PropertyClob prop) {
-        return PropEditorsPool.getInstance().getPropTextClobEditor(prop);
+        return new PropTextEditor(prop);
     }    
 
     @Override
     public <T extends Arr> IPropEditor newPropArrEditor(PropertyArr<T> prop) {
         return PropEditorsPool.getInstance().getPropArrEditor(prop);               
     }
+
+    @Override
+    public IProxyPropEditor newProxyPropEditor(final Property prop, final EValType valType, final EditMask editMask) {
+        return new ProxyPropEditor(prop, valType, editMask);
+    }        
 
     @Override
     public IPropLabel newPropLabel(Property prop) {
@@ -272,12 +293,23 @@ public class ExplorerStandardViewsFactory extends QObject implements org.radixwa
         final ERuntimeEnvironmentType environmentType = parentGroupModel.getSelectorPresentationDef().getRuntimeEnvironmentType();
         if (environmentType!=ERuntimeEnvironmentType.COMMON_CLIENT && environmentType!=ERuntimeEnvironmentType.EXPLORER){
             final String message = 
-                "Can't use selector for "+environmentType.getName()+" environment  in "+ERuntimeEnvironmentType.EXPLORER.getName()+" environment";
+                "Unable to use selector for "+environmentType.getName()+" environment  in "+ERuntimeEnvironmentType.EXPLORER.getName()+" environment";
             throw new IllegalUsageError(message);
         }
         return new SelectEntityDialog(parentGroupModel, canClear);
     }
 
+    @Override
+    public ISelectEntitiesDialog newSelectEntitiesDialog(final GroupModel groupModel, final boolean canClear) {
+        final ERuntimeEnvironmentType environmentType = groupModel.getSelectorPresentationDef().getRuntimeEnvironmentType();
+        if (environmentType!=ERuntimeEnvironmentType.COMMON_CLIENT && environmentType!=ERuntimeEnvironmentType.EXPLORER){
+            final String message = 
+                "Unable to use selector for "+environmentType.getName()+" environment  in "+ERuntimeEnvironmentType.EXPLORER.getName()+" environment";
+            throw new IllegalUsageError(message);
+        }
+        return new SelectEntitiesDialog(groupModel, canClear);
+    }
+        
     @Override
     public IFilterEditorDialog newFilterEditorDialog(FilterModel filter, Collection<String> restrictedNames, boolean showApplyButton, IWidget parent) {
         return new FilterEditorDialog(filter, restrictedNames, showApplyButton, (QWidget) parent);
@@ -313,6 +345,12 @@ public class ExplorerStandardViewsFactory extends QObject implements org.radixwa
         }
     }    
 
+    @Override
+    public IListWidget newListWidget(IClientEnvironment environment, IWidget parent) {
+        return new ExplorerListWidget(environment, (QWidget)parent);
+    }
+        
+  
     @Override
     protected void customEvent(final QEvent event) {
         if (event instanceof UpdatePool){

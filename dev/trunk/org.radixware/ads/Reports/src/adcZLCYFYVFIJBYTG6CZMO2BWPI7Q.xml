@@ -11,14 +11,75 @@
       <Src Name="BodyadcZLCYFYVFIJBYTG6CZMO2BWPI7Q">
         <xsc:Item>
           <xsc:Java>private final String directory;
+private final String defaultFileName;
+
 private java.io.File tempDir = org.radixware.kernel.server.reports.DefaultReportFileController.createTmpDir();
 private final </xsc:Java>
         </xsc:Item>
         <xsc:Item>
-          <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+          <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+            <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+          </xsc:TypeDeclaration>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Java> format;</xsc:Java>
+          <xsc:Java> format;
+
+private final java.util.Map&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+            <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21">
+            <xsc:Presentation>Str</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> format2ExportPath;
+private final java.util.Map&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+            <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="2">
+            <xsc:Presentation>Int</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>> format2FileCount = new java.util.HashMap&lt;</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+            <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>, </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="2">
+            <xsc:Presentation>Int</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>>();
+
+private boolean isNeedCountFiles = true;
+private int totalFileCount = 0;
+
+private boolean yesAll = false;
+private boolean noAll = false;</xsc:Java>
         </xsc:Item>
       </Src>
     </Bodies>
@@ -40,7 +101,9 @@ private final </xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>return fileName;</xsc:Java>
+              <xsc:Java>totalFileCount = isNeedCountFiles ? totalFileCount + 1 : totalFileCount;
+
+return fileName;</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -58,59 +121,246 @@ private final </xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>try {
-    java.io.OutputStream out = </xsc:Java>
+              <xsc:Java>totalFileCount = isNeedCountFiles ? totalFileCount - 1 : totalFileCount;
+isNeedCountFiles = false;
+
+try {
+    </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q"/>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> fileName = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcZLCYFYVFIJBYTG6CZMO2BWPI7Q mthRBPNIR63SFHV3EW37CJ7C4GPD4" Invoke="true">
+                <xsc:Presentation>calcFileName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(report, file.getName());
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> outFileName;
+    if (format2ExportPath == null || format2ExportPath.isEmpty() || format2ExportPath.get(report.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcReport____________________ mthWICC7CINLJDCZKFOJJNNIWK2RM" Invoke="true">
+                <xsc:Presentation>getCurrentExportFormat</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) == null) {
+        outFileName = new java.io.File(directory, fileName).getPath();
+    } else {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> formatPath = format2ExportPath.get(report.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcReport____________________ mthWICC7CINLJDCZKFOJJNNIWK2RM" Invoke="true">
+                <xsc:Presentation>getCurrentExportFormat</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());                
+        outFileName = new java.io.File(formatPath, fileName).getPath();
+    }
+
+    if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthUE47P4422JHNJBMWVV6AOE6AME" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mth2QT4RSOMLNCW3JOQ2SA57EEYJE" Invoke="true">
+                <xsc:Presentation>getClientEnvironment</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(new java.io.File(directory, file.getName()).getPath());
+              <xsc:Java>() != </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsMZRCOG2E6FFA7AWAMSHCXA5JBU aciFAQOMSZRHFHWLGV6WKMNQ3N27A" Invoke="true">
+                <xsc:Presentation>Common::RuntimeEnvironmentType:WEB</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q">
+                <xsc:Presentation>ReportsServerUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mth4TB5R4XGVBF5PIYTIACSU5YQJI" Invoke="true">
+                <xsc:Presentation>isFileExists</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(outFileName)) {
+        if (noAll) {
+            return;
+        }
+
+        if (!yesAll) {
+            switch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q">
+                <xsc:Presentation>ReportsServerUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthFBJSRXGSYBHWTC4DBLY2RPYC2U" Invoke="true">
+                <xsc:Presentation>showReplaceFileDialog</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(outFileName)) {
+                case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aci3GAUJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogButtonType:No</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                    return;
+                case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aciYM5EDIA7Z5CKDLNLDZODN72PPE" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogButtonType:NoToAll</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                    noAll = true;
+                    return;
+                case </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsS7F4BA7TJXNRDCHCABIFNQAABA aciSCCMFHTXKJBSFA4OYMXBUVR4NI" Invoke="true">
+                <xsc:Presentation>Client.Resources::DialogButtonType:YesToAll</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>:
+                    yesAll = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcFileOutResource___________">
+                <xsc:Presentation>Client.Resources::FileOutResource</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> out = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q">
+                <xsc:Presentation>ReportsServerUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcD6JQG2D5NBDCZN3T6Q3OY5G56Q mthUE47P4422JHNJBMWVV6AOE6AME" Invoke="true">
+                <xsc:Presentation>openFileOutResource</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(outFileName);
+
     final java.io.FileInputStream in = new java.io.FileInputStream(file);
-    org.radixware.kernel.common.utils.FileUtils.copyStream(in, out);        
+    org.radixware.kernel.common.utils.FileUtils.copyStream(in, out);
     out.flush();
     out.close();
 } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> ex) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>error</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U">
+                <xsc:Presentation>Utils::ExceptionTextFormatter</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true"/>
+              <xsc:IdReference Path="adcYNRZI7YTNVBRBF5VJBIO6NWV4U mthBXQY2BN2DVEUNP7D645ZOVXZM4" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(ex),</xsc:Java>
+              <xsc:Java>(ex), </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciA5UFXOQYZVGD3HR3MME5ZDOC5U" Invoke="true"/>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciA5UFXOQYZVGD3HR3MME5ZDOC5U" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:ArteReports</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -167,7 +417,10 @@ private final </xsc:Java>
           <Src>
             <xsc:Item>
               <xsc:Java>this.directory = directory;
-this.format = format;</xsc:Java>
+this.format = format;
+
+this.format2ExportPath = null;
+this.defaultFileName = null;</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -179,6 +432,147 @@ this.format = format;</xsc:Java>
           <Src>
             <xsc:Item>
               <xsc:Java>return tempDir;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthDDBBDTLSVVBXFE5MM42BYR6GKE" Name="InteractiveReportFileController" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="directory" Id="mprZRZABYWSLVGM3JTI7INZ2GKCFQ">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="format2ExportPath" Id="mprVIDNASQYM5BRLNWRX7WD4XUORI">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+          <Parameter Name="defaultFileName" Id="mprHAWJCHL24NH6NCNPFCRN5WRYOU">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>this.directory = directory;
+this.defaultFileName = defaultFileName;
+this.format2ExportPath = format2ExportPath != null ? new java.util.HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+                <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>(format2ExportPath) : null;
+
+this.format = null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRBPNIR63SFHV3EW37CJ7C4GPD4" Name="calcFileName" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="report" Id="mprJSD2UHK76NEYFH5T7L5YG2QARM">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Report"/>
+          </Parameter>
+          <Parameter Name="fileName" Id="mprKZN4UGMN7VG6JAPH47QWKAQSCQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="21"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (defaultFileName == null || defaultFileName.isEmpty()) {
+    return fileName;
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21" Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE">
+                <xsc:Presentation>ReportExportFormat</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exportFormat = report.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcReport____________________ mthWICC7CINLJDCZKFOJJNNIWK2RM" Invoke="true">
+                <xsc:Presentation>getCurrentExportFormat</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+java.lang.StringBuilder suffix = new java.lang.StringBuilder("");
+if (report.isMultyFile()) {        
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> fileCount = format2FileCount.get(exportFormat);
+    format2FileCount.put(exportFormat, fileCount == null ? 1 : fileCount.intValue() + 1);
+    suffix.append(" ").append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.valueOf(fileCount == null ? 1 : fileCount.intValue() + 1));
+
+    if (totalFileCount > 0) {       
+        suffix.append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsUEBCZSWGLNFY7PXK4BABRKZYKM"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>).append(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.valueOf(totalFileCount));
+    }
+}
+suffix.append(exportFormat == </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acs4NSZFZYJC5AHVA3VWFI5QA3ECE aciIL3YBS33E5GHDLWOROHNBPAC5M" Invoke="true">
+                <xsc:Presentation>ReportExportFormat:XLS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ? ".xls" : "." + exportFormat.getExt());
+
+return defaultFileName + suffix.toString();</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

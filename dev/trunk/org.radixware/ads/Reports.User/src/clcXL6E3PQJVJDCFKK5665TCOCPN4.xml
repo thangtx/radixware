@@ -10,41 +10,65 @@
     </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsUserFuncDefinitionDocument"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsUserFuncDefinitionDocument">
+          <xsc:Presentation>Meta::AdsDefXsd:AdsUserFuncDefinitionDocument</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
-        <xsc:Java> xDoc=</xsc:Java>
+        <xsc:Java> xDoc = null;
+    </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsUserFuncDefinitionDocument.Factory"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsUserFuncDefinitionDocument.AdsUserFuncDefinition">
+          <xsc:Presentation>Meta::AdsDefXsd:AdsUserFuncDefinitionDocument.AdsUserFuncDefinition</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
-        <xsc:Java>.newInstance();
-    xDoc.setAdsUserFuncDefinition(</xsc:Java>
+        <xsc:Java> xDef = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM"/>
+        <xsc:TypeDeclaration TypeId="411" Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM">
+          <xsc:Presentation>UserFunc::LibUserFunc</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM mthZ5SKDTYDVZDCPEXA3W3A7QLMHM" Invoke="true"/>
+        <xsc:IdReference Path="aecW7BRVVQLHBE2FCNK7ZBRMAUJGM mthZ5SKDTYDVZDCPEXA3W3A7QLMHM" Invoke="true">
+          <xsc:Presentation>getXml</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>(</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+          <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+        <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true">
+          <xsc:Presentation>loadFrom</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
-        <xsc:Java>(input.LibUserFuncXmlRq.LibFuncId)));
+        <xsc:Java>(input.LibUserFuncXmlRq.LibFuncId));
+    if (xDef != null) {
+        xDoc = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="451" Path="xsd5NCENQ5IQ3OBDCKEAALOMT5GDM" extStr="AdsUserFuncDefinitionDocument.Factory">
+          <xsc:Presentation>Meta::AdsDefXsd:AdsUserFuncDefinitionDocument.Factory</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.newInstance();
+        xDoc.setAdsUserFuncDefinition(xDef);
+    }
     return xDoc;
 }
 return null;</xsc:Java>

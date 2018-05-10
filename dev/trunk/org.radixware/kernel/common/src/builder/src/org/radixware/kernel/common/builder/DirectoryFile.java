@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.builder;
 
 import java.io.*;
@@ -37,7 +36,6 @@ import org.radixware.kernel.common.utils.XmlUtils;
 import org.radixware.schemas.product.Directory;
 import org.radixware.schemas.product.Directory.FileGroups.FileGroup.GroupType.Enum;
 import org.radixware.schemas.product.DirectoryDocument;
-
 
 public class DirectoryFile {
 
@@ -362,6 +360,15 @@ public class DirectoryFile {
             }
         };
     }
+    
+    private static FilenameFilter qtLinguistFilter() {
+        return new FilenameFilter() {
+            @Override
+            public boolean accept(final File parent, String name) {
+                return (name.endsWith(".qm") || name.endsWith(".ts")) && !name.equals("directory.xml") && !name.equals(RadixdocConventions.RADIXDOC_XML_FILE);
+            }
+        };
+    }
 
     private static final Directory.FileGroups.FileGroup.GroupType.Enum getXmlGroupType(final ERuntimeEnvironmentType sc) {
         switch (sc) {
@@ -429,8 +436,6 @@ public class DirectoryFile {
 //                addXmls(adsModuleDir, locale, group);
 //            }
 //        }
-
-
         for (ERuntimeEnvironmentType sc : ERuntimeEnvironmentType.values()) {
             group = getGroup(getXmlGroupType(sc));
             final File envJar = JavaFileSupport.getCompiledBinaryFile(module, sc);
@@ -505,13 +510,30 @@ public class DirectoryFile {
             }
             includes.add(new DirInclude(getRelativePath(layerDir, dirLayerXmlFile)));
 
+            if (layer.isLocalizing()) {
+                File kernelDir = new File(layerDir, "kernel");
+                if (kernelDir.exists() && kernelDir.isDirectory()) {
+                    File explorerDir = new File(kernelDir, AdsModule.GEN_EXPLORER_DIR_NAME);
+                    addQTFiles(Directory.FileGroups.FileGroup.GroupType.KERNEL_EXPLORER, layerDir, explorerDir);
+                    
+                    File webDir = new File(kernelDir, AdsModule.GEN_WEB_DIR_NAME);
+                    addQTFiles(Directory.FileGroups.FileGroup.GroupType.KERNEL_WEB, layerDir, webDir);
+                }
+            }
+
         } else {
             final File layerXmlFile = new File(layerDir, Layer.LAYER_XML_FILE_NAME);
             if (layerXmlFile.exists()) {
                 String[] xmls = layerXmlFile.getParentFile().list(xmlFilter());
                 if (xmls != null) {
                     for (String xml : xmls) {
-                        if (!FileUtils.DIRECTORY_XML_FILE_NAME.equals(xml) && !"directory-layer.xml".equals(xml)) {
+                        final boolean isDevLicenseFile;
+                        if (FileUtils.LICENSES_XML_FILE_NAME.equals(xml)) {
+                            isDevLicenseFile = !layer.isReadOnly();
+                        } else {
+                            isDevLicenseFile = false;
+                        }
+                        if (!FileUtils.DIRECTORY_XML_FILE_NAME.equals(xml) && !"directory-layer.xml".equals(xml) && !isDevLicenseFile) {
                             DirFile file = new DirFile(layerDir, new File(layerDir, xml));
                             getGroup(Directory.FileGroups.FileGroup.GroupType.KERNEL_COMMON).addFile(file);
                             if (newLayerXmlContent != null && Layer.LAYER_XML_FILE_NAME.equals(xml)) {
@@ -581,7 +603,7 @@ public class DirectoryFile {
 
         @Override
         public String toString() {
-            return name + (isUnderConstruction ? "->" + String.valueOf(prevReleaseName) : "") + " [" + id + "]";
+            return name + /* + (isUnderConstruction ? "->" + String.valueOf(prevReleaseName) : "")+*/ " [" + id + "]";
         }
     }
 
@@ -781,6 +803,16 @@ public class DirectoryFile {
                 stream.close();
             } catch (IOException ex) {
                 Logger.getLogger(getClass().getName()).log(Level.FINE, ex.getMessage(), ex);
+            }
+        }
+    }
+    
+    private void addQTFiles(Directory.FileGroups.FileGroup.GroupType.Enum type, File layerDir, File dir) {
+        if (dir.exists()) {
+            String[] qtPaths = dir.list(qtLinguistFilter());
+            for (String qtFile : qtPaths) {
+                DirFile file = new DirFile(layerDir, new File(dir, qtFile));
+                getGroup(type).addFile(file);
             }
         }
     }

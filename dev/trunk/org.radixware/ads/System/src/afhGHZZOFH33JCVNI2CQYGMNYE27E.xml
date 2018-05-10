@@ -1,0 +1,2036 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" xmlns:ui="http://schemas.radixware.org/ui.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="afhGHZZOFH33JCVNI2CQYGMNYE27E" Name="AADCLocksByObjectsForm" TitleId="mlsTD7U5PV4YZB7NNPQIGOBEBBEB4" Type="19">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderafhGHZZOFH33JCVNI2CQYGMNYE27E">
+        <xsc:Item>
+          <xsc:Java>import org.radixware.kernel.server.instance.aadc.*;</xsc:Java>
+        </xsc:Item>
+      </Src>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyafhGHZZOFH33JCVNI2CQYGMNYE27E"/>
+    </Bodies>
+    <MethodGroup Id="cmgU5DPRD7IKBADRATX4RPLIJWPQE" Name="Root"/>
+    <PropertyGroup Id="cpg2W7SMM77BJCN3OHZLLYZSVO2FQ" Name="Root"/>
+    <Properties>
+      <Property Id="prdWBYULWEU6NAFZBMFMFIT2XUKFA" Name="objectLocksCountMap" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prdDVMCNJWDHJG37E7YPRVHR6GUMY" Name="locksFilter" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="451" Path="xsdZSI43OXUWJGKXFRIHW5YNC4YCQ" extStr="AADCLocksFilterDocument"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prd5MGPNHPIEJBDDA4ALJAHJC3CJU" Name="isReread" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth4FAMUUAPCZDV5KYK7RSIGMVCR4" Name="AADCLocksByObjectsForm" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super(null);
+
+org.radixware.kernel.server.instance.aadc.AadcManager manager = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getInstance().getAadcManager();
+java.util.Map&lt;LockCacheKey, LockCacheVal> allLocksMap = manager.getAllLocks();
+
+//java.util.Map&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> objType2LocksCount = new java.util.HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+//if (allLocksMap != null) {
+//    for (java.util.Map.Entry&lt;LockCacheKey, LockCacheVal> entry : allLocksMap.entrySet()) {       
+//        org.radixware.kernel.common.types.Pid objPid = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.fromStr(entry.getKey().getObjPid());
+//        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDLXOOC7QVCEHNZTTHWDJH62BU">
+                <xsc:Presentation>Meta::TableDef</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> objTable = objPid == null ? null : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true">
+                <xsc:Presentation>getDefManager</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getTableDef(objPid.getTableId());
+//        
+//        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> objType = objTable != null ? objTable.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDLXOOC7QVCEHNZTTHWDJH62BU mthXCIPTMRU7VBAZMIYH3BG3BIY4E" Invoke="true">
+                <xsc:Presentation>getName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() : entry.getKey().getObjPid();
+//        if (objType2LocksCount.containsKey(objType)) {
+//            objType2LocksCount.put(objType, objType2LocksCount.get(objType).longValue() + 1);
+//        } else {
+//            objType2LocksCount.put(objType, 1);
+//        }
+//    }    
+//}
+
+java.util.Map&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> objType2LocksCount = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E mthRE7GD2BQPFHBTJTH33LIARC77M" Invoke="true">
+                <xsc:Presentation>getTestMap</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+
+java.util.List&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> objectLocksEntries = new java.util.ArrayList&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+for (java.util.Map.Entry&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> entry : objType2LocksCount.entrySet()) {
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xEntry = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry.Factory">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+    xEntry.Key = entry.getKey();
+    xEntry.Value = entry.getValue().toString();
+    
+    objectLocksEntries.add(xEntry);
+}
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prdWBYULWEU6NAFZBMFMFIT2XUKFA" Invoke="true">
+                <xsc:Presentation>objectLocksCountMap</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument.Factory">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStrDocument.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> xMap = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prdWBYULWEU6NAFZBMFMFIT2XUKFA" Invoke="true">
+                <xsc:Presentation>objectLocksCountMap</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.addNewMapStrStr();
+xMap.setEntryArray(objectLocksEntries.toArray(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>[objectLocksEntries.size()]));</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthTYWXJRLODNAT7LXOISEO5SFPZU" Name="onSubmit" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="context" Id="mprMULFUGUCKVDONN3JEHX5XCPJZA">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.Context"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.server.types.FormHandler.NextDialogsRequest"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prd5MGPNHPIEJBDDA4ALJAHJC3CJU" Invoke="true">
+                <xsc:Presentation>isReread</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue()) {
+    return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E mth4FAMUUAPCZDV5KYK7RSIGMVCR4" Invoke="true">
+                <xsc:Presentation>AADCLocksByObjectsForm</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+} else {
+    return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(null, new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afh5OTLSYVDZ5B4DA2CK6M5VCJR4I mthNN6W3ISKGFD5TFFGXZAZQJFCFA" Invoke="true">
+                <xsc:Presentation>AADCLocksListForm</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(this, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prdDVMCNJWDHJG37E7YPRVHR6GUMY" Invoke="true">
+                <xsc:Presentation>locksFilter</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthRE7GD2BQPFHBTJTH33LIARC77M" Name="getTestMap" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+        <ReturnType TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="2"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>java.util.Map&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>> objType2LocksCount = new java.util.HashMap&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="2">
+                <xsc:Presentation>Int</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>();
+
+for (LockCacheKey key : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcPQCFGYDX7BFMXKLSYPB2IKPXEU">
+                <xsc:Presentation>AADCLocksDialogUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcPQCFGYDX7BFMXKLSYPB2IKPXEU mth6RGGADCF6NFNPMP5N673B4EKBY" Invoke="true">
+                <xsc:Presentation>getTestAADCLockCacheKeyList</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>()) {
+    org.radixware.kernel.common.types.Pid objPid = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcPid_______________________">
+                <xsc:Presentation>Types::Pid</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.fromStr(key.getObjPid());
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDLXOOC7QVCEHNZTTHWDJH62BU">
+                <xsc:Presentation>Meta::TableDef</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> objTable = objPid == null ? null : </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcArte______________________ mthJ22YS76JKFBLHMS32FAYSH3QNI" Invoke="true">
+                <xsc:Presentation>getDefManager</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().getTableDef(objPid.getTableId());
+
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> objType = objTable != null ? objTable.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDLXOOC7QVCEHNZTTHWDJH62BU mthXCIPTMRU7VBAZMIYH3BG3BIY4E" Invoke="true">
+                <xsc:Presentation>getName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() : key.getObjPid();
+    if (objType2LocksCount.containsKey(objType)) {
+        objType2LocksCount.put(objType, objType2LocksCount.get(objType).longValue() + 1);
+    } else {
+        objType2LocksCount.put(objType, 1);
+    }
+}
+
+return objType2LocksCount;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Presentations>
+      <Form InheritanceMask="0">
+        <Model Id="afmGHZZOFH33JCVNI2CQYGMNYE27E" Name="AADCLocksByObjectsForm:Model" Type="18">
+          <AccessRules IsPublished="false"/>
+          <Headers>
+            <Src Name="HeaderafmGHZZOFH33JCVNI2CQYGMNYE27E"/>
+          </Headers>
+          <Bodies>
+            <Src Name="BodyafmGHZZOFH33JCVNI2CQYGMNYE27E"/>
+          </Bodies>
+          <MethodGroup Id="cmgK5OQVJYBQNELLGHSHF36Z5VF3E" Name="Root">
+            <Group Id="cmgLWZPBOMZTFFENOYGILXGJ5EB5A" Name="Explorer" Members="mth2ASMNGIYKFDFBF675JV5QP2QOQ mth52POV2MRZZGUFBT2Z4BDXSVRWA mth2SPBNE5W7ZGGTA5AZKFJW2ZAUY mthCAHJZ7EACFDNVJNKYJLD2ZDTU4 mthDIVCRAJVEBDWZCQSGGL2ORQ4GQ"/>
+            <Group Id="cmgMUAFLIFY7JGY3JPGGCMW4JGRPY" Name="ClientCommon" Members="mth2MAH4KBL7BBDBB6ZZBPPSE4V2Y mthTDEHJAOBVFA23CKZPX7BDYAXBM"/>
+            <Group Id="cmgWC3RTKMXWJGKLKLOVD6FL36JZE" Name="Web" Members="mth5CD3VJXSCFHNVMCQ5SZOPVD27E mthFMUQDHFQHBCYVB6XDRV2GOSMWU mthCMZ5SJNBF5FY5JEC4WTEJALZIU mthTYWLG2ZBQBCUJPNGSS7EEXVAUI"/>
+          </MethodGroup>
+          <PropertyGroup Id="cpgC7CKQCGLCBG6HLOM2FSGBJJOPA" Name="Root"/>
+          <Properties/>
+          <Methods>
+            <Method Id="mth2ASMNGIYKFDFBF675JV5QP2QOQ" Name="explorerView_opened" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="widget" Id="mprVRQU6X35EFECNBC3LGV27EH7EM">
+                  <Type TypeId="400" extStr="com.trolltech.qt.gui.QWidget"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>java.util.List&lt;</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                      <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>> xEntries = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E afmGHZZOFH33JCVNI2CQYGMNYE27E mth2MAH4KBL7BBDBB6ZZBPPSE4V2Y" Invoke="true">
+                      <xsc:Presentation>getSortedEntriesList</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+
+int currentRowCount = 0;
+for (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                      <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> xEntry : xEntries) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.insertRow(currentRowCount);
+
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setItem(currentRowCount, 0, new com.trolltech.qt.gui.QTableWidgetItem(String.valueOf(xEntry.Key)));
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setItem(currentRowCount, 1, new com.trolltech.qt.gui.QTableWidgetItem(String.valueOf(xEntry.Value)));
+
+    currentRowCount++;
+}
+
+if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcOJ36ZMPODZDDLMZJIHEG65QPQY mthDKC3QE2WAVH73HHEWTQ4IKAKVI" Invoke="true">
+                      <xsc:Presentation>rowCount</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() == 0
+        || </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcOJ36ZMPODZDDLMZJIHEG65QPQY mthOWBWJ3YVQ5DNDPRE4J64RO64GE" Invoke="true">
+                      <xsc:Presentation>selectedItems</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() == null
+        || </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcOJ36ZMPODZDDLMZJIHEG65QPQY mthOWBWJ3YVQ5DNDPRE4J64RO64GE" Invoke="true">
+                      <xsc:Presentation>selectedItems</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().isEmpty()) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgCB3G4V3KUZGOTLX5U4FLNLU6TE" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:nextButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="aicGX7XFFFXMFCYZPB5272MO5VRCA mthTLXT5MDETFFKPGI6CWMWYMZNXA" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(false);  
+} else {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgCB3G4V3KUZGOTLX5U4FLNLU6TE" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:nextButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="aicGX7XFFFXMFCYZPB5272MO5VRCA mthTLXT5MDETFFKPGI6CWMWYMZNXA" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(true);    
+}
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E afmGHZZOFH33JCVNI2CQYGMNYE27E mthTDEHJAOBVFA23CKZPX7BDYAXBM" Invoke="true">
+                      <xsc:Presentation>prepareButtons</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mth2MAH4KBL7BBDBB6ZZBPPSE4V2Y" Name="getSortedEntriesList" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+              <ReturnType TypeId="400" extStr="java.util.List">
+                <xsc:GenericArguments>
+                  <xsc:Argument Alias="?">
+                    <xsc:Type TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry"/>
+                  </xsc:Argument>
+                </xsc:GenericArguments>
+              </ReturnType>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>java.util.List&lt;</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                      <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>> result = new java.util.ArrayList&lt;</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                      <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prdWBYULWEU6NAFZBMFMFIT2XUKFA" Invoke="true">
+                      <xsc:Presentation>objectLocksCountMap</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value.getMapStrStr().getEntryList());
+java.util.Collections.sort(result, new </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="aicUAXRHCKAFJAO5ITW6IOGQJ7YKM">
+                      <xsc:Presentation>Java.Lang::Comparator</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>&lt;</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                      <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>>() {    
+    public int compare(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                      <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> o1, </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                      <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> o2) {       
+        return o1.Key.compareTo(o2.Key);
+    }
+});
+
+return result;</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mth52POV2MRZZGUFBT2Z4BDXSVRWA" Name="tableWidget_itemSelectionChanged" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcOJ36ZMPODZDDLMZJIHEG65QPQY mthDKC3QE2WAVH73HHEWTQ4IKAKVI" Invoke="true">
+                      <xsc:Presentation>rowCount</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() == 0
+        || </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcOJ36ZMPODZDDLMZJIHEG65QPQY mthOWBWJ3YVQ5DNDPRE4J64RO64GE" Invoke="true">
+                      <xsc:Presentation>selectedItems</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() == null
+        || </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcOJ36ZMPODZDDLMZJIHEG65QPQY mthOWBWJ3YVQ5DNDPRE4J64RO64GE" Invoke="true">
+                      <xsc:Presentation>selectedItems</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().isEmpty()) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgCB3G4V3KUZGOTLX5U4FLNLU6TE" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:nextButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="aicGX7XFFFXMFCYZPB5272MO5VRCA mthTLXT5MDETFFKPGI6CWMWYMZNXA" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(false);  
+} else {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgCB3G4V3KUZGOTLX5U4FLNLU6TE" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:nextButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="aicGX7XFFFXMFCYZPB5272MO5VRCA mthTLXT5MDETFFKPGI6CWMWYMZNXA" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(true);    
+}</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mth2SPBNE5W7ZGGTA5AZKFJW2ZAUY" Name="buttonBox_accepted" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Sources>
+                <Src/>
+              </Sources>
+            </Method>
+            <Method Id="mth5CD3VJXSCFHNVMCQ5SZOPVD27E" Name="webView_opened" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="form" Id="mprMYUMNWUIT5G7JLLS57PXYJCIKE">
+                  <Type TypeId="400" extStr="org.radixware.kernel.common.client.views.IFormView"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcCNSHMCUWGVFURANFCJETUAKLAI">
+                      <xsc:Presentation>Web.Widgets::Grid.Column</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> column = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:objectLocksCountTable</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMA2NJ2Y5SVEU3FTLWRMQYWAHPE mthJAWRZR4VEFEBXDMRTQGZ2GOMYA" Invoke="true">
+                      <xsc:Presentation>addColumn</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:LocalizedString StringId="mlsVIGCNGWVFVFLFKAB7E6C7F5AIQ"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+column.setSizePolicy(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adc4FLB5QSLJJGXZAVBI5YMH3G2JA">
+                      <xsc:Presentation>Web.Widgets::IGrid.EColumnSizePolicy</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc4FLB5QSLJJGXZAVBI5YMH3G2JA prdMN5MOUUCCFDMLONPM3R5F3ULTM" Invoke="true">
+                      <xsc:Presentation>INTERACTIVE</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+column.setPersistenceKey("ObjectType");
+
+column = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:objectLocksCountTable</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMA2NJ2Y5SVEU3FTLWRMQYWAHPE mthJAWRZR4VEFEBXDMRTQGZ2GOMYA" Invoke="true">
+                      <xsc:Presentation>addColumn</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:LocalizedString StringId="mls3SUBMYMSWZHXVIKK7D42D37Y54"/>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+column.setSizePolicy(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adc4FLB5QSLJJGXZAVBI5YMH3G2JA">
+                      <xsc:Presentation>Web.Widgets::IGrid.EColumnSizePolicy</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adc4FLB5QSLJJGXZAVBI5YMH3G2JA prdQ3FUXFHIEJDWTESIEZYJRY43X4" Invoke="true">
+                      <xsc:Presentation>STRETCH</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+column.setPersistenceKey("LocksCount");
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:objectLocksCountTable</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMA2NJ2Y5SVEU3FTLWRMQYWAHPE mthAXXCEK6N3NG73GRFGM7MABI55U" Invoke="true">
+                      <xsc:Presentation>setSelectionMode</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcQ3UZMF5QVNDEXBLTC44FRDZOK4">
+                      <xsc:Presentation>Web.Widgets::Grid.SelectionMode</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcQ3UZMF5QVNDEXBLTC44FRDZOK4 prdCRT3R47VGVBD5CFYH5TC2EG5AA" Invoke="true">
+                      <xsc:Presentation>ROW</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>);
+
+java.util.List&lt;</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                      <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>> xEntries = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E afmGHZZOFH33JCVNI2CQYGMNYE27E mth2MAH4KBL7BBDBB6ZZBPPSE4V2Y" Invoke="true">
+                      <xsc:Presentation>getSortedEntriesList</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+
+int currentRowCount = 0;
+for (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                      <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> xEntry : xEntries) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:objectLocksCountTable</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMA2NJ2Y5SVEU3FTLWRMQYWAHPE mthEAEWZ2Y4JREK7EJNU6HJITGBQY" Invoke="true">
+                      <xsc:Presentation>addRow</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:objectLocksCountTable</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMA2NJ2Y5SVEU3FTLWRMQYWAHPE mthWGYM56EFT5ELPFBK75NYYXOZ7U" Invoke="true">
+                      <xsc:Presentation>getCell</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(currentRowCount, 0).</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcBGMED3BOBBDCXOMM3R4WWKVGQA mthCREXCXOMKNAX5M6EJ5IMD5K5IM" Invoke="true">
+                      <xsc:Presentation>setValue</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(xEntry.Key);
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:objectLocksCountTable</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMA2NJ2Y5SVEU3FTLWRMQYWAHPE mthWGYM56EFT5ELPFBK75NYYXOZ7U" Invoke="true">
+                      <xsc:Presentation>getCell</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(currentRowCount, 1).</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcBGMED3BOBBDCXOMM3R4WWKVGQA mthCREXCXOMKNAX5M6EJ5IMD5K5IM" Invoke="true">
+                      <xsc:Presentation>setValue</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(xEntry.Value);
+
+    currentRowCount++;
+}
+
+if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:objectLocksCountTable</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMA2NJ2Y5SVEU3FTLWRMQYWAHPE mthYBTUOA2KLJBNRIDETIJ725RSSA" Invoke="true">
+                      <xsc:Presentation>getRowCount</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() == 0
+        || </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:objectLocksCountTable</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMA2NJ2Y5SVEU3FTLWRMQYWAHPE mthOZUBGEQCC5AHFCXKQXZVP4EU7A" Invoke="true">
+                      <xsc:Presentation>getCurrentRow</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() == null) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdgEIZ47LXQXJH7RLVX2QCU62L3WY" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:buttonsContainer:nextButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZVIDRVKUF5HLXPO6INZANHRUVI" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(false);
+} else {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdgEIZ47LXQXJH7RLVX2QCU62L3WY" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:buttonsContainer:nextButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZVIDRVKUF5HLXPO6INZANHRUVI" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(true);
+}
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E afmGHZZOFH33JCVNI2CQYGMNYE27E mthTDEHJAOBVFA23CKZPX7BDYAXBM" Invoke="true">
+                      <xsc:Presentation>prepareButtons</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthFMUQDHFQHBCYVB6XDRV2GOSMWU" Name="objectLocksCountTable_currentRowChanged" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="oldSelectedRow" Id="mpr6YMLEYBDT5EFPB6W2YBXB36ETI">
+                  <Type TypeId="400" extStr="org.radixware.wps.rwt.Grid.Row"/>
+                </Parameter>
+                <Parameter Name="newSelectedRow" Id="mprH6HE2CFSBFC3TJ3PSC7362IKUQ">
+                  <Type TypeId="400" extStr="org.radixware.wps.rwt.Grid.Row"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>if (newSelectedRow == null) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdgEIZ47LXQXJH7RLVX2QCU62L3WY" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:buttonsContainer:nextButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZVIDRVKUF5HLXPO6INZANHRUVI" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(false);
+} else {    
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdgEIZ47LXQXJH7RLVX2QCU62L3WY" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:buttonsContainer:nextButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthZVIDRVKUF5HLXPO6INZANHRUVI" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(true);
+}</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthCAHJZ7EACFDNVJNKYJLD2ZDTU4" Name="nextButton_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="checked" Id="mprE4FZ4FYJ6JB6RLZFNJMZRQZIGE">
+                  <Type TypeId="1"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcOJ36ZMPODZDDLMZJIHEG65QPQY mthDKC3QE2WAVH73HHEWTQ4IKAKVI" Invoke="true">
+                      <xsc:Presentation>rowCount</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() == 0) {
+    return;
+}
+
+java.util.List&lt;com.trolltech.qt.core.QModelIndex> selectedIndexes = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcNY2MQ4FWANEKZM5OL5RGWURZ3Y mthGSAQSORGPRBLLLD5TVNWOJ2SNA" Invoke="true">
+                      <xsc:Presentation>selectionModel</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().selectedRows();
+if (selectedIndexes.isEmpty()) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prdDVMCNJWDHJG37E7YPRVHR6GUMY" Invoke="true">
+                      <xsc:Presentation>locksFilter</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = null;
+    return;
+}
+
+com.trolltech.qt.gui.QTableWidgetItem item = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:tableWidget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.item(selectedIndexes.get(0).row(), 0);
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdZSI43OXUWJGKXFRIHW5YNC4YCQ" extStr="AADCLocksFilterDocument">
+                      <xsc:Presentation>AADCLocksListXsd:AADCLocksFilterDocument</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> xFilterDocument = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdZSI43OXUWJGKXFRIHW5YNC4YCQ" extStr="AADCLocksFilterDocument.Factory">
+                      <xsc:Presentation>AADCLocksListXsd:AADCLocksFilterDocument.Factory</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.newInstance();
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdZSI43OXUWJGKXFRIHW5YNC4YCQ" extStr="AADCLocksFilter">
+                      <xsc:Presentation>AADCLocksListXsd:AADCLocksFilter</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> xFilter = xFilterDocument.addNewAADCLocksFilter();
+xFilter.ObjectType = item.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcV3URZ46SRFHCFGXYPTWSVJNKWU mth637LWZV6GRCIRF7MIL3GGMMRIU" Invoke="true">
+                      <xsc:Presentation>text</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prdDVMCNJWDHJG37E7YPRVHR6GUMY" Invoke="true">
+                      <xsc:Presentation>locksFilter</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setValue(xFilterDocument);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prd5MGPNHPIEJBDDA4ALJAHJC3CJU" Invoke="true">
+                      <xsc:Presentation>isReread</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = false;
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgSTMKKXQZJJFQ3K2VPVTJHTR2BA" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcKMTCEQYVVRA5DIWL36WNCJE2XI mthOGYHBRHQL5FP7H6CGS2VVYHPJU" Invoke="true">
+                      <xsc:Presentation>submit</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthDIVCRAJVEBDWZCQSGGL2ORQ4GQ" Name="rereadButton_clicked" Nature="2" IsReflectiveCallable="true" Environment="explorer" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="checked" Id="mprEGMIVG6PPFC5HJ6I2OUVOBS56Y">
+                  <Type TypeId="1"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prd5MGPNHPIEJBDDA4ALJAHJC3CJU" Invoke="true">
+                      <xsc:Presentation>isReread</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = true;
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgSTMKKXQZJJFQ3K2VPVTJHTR2BA" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcKMTCEQYVVRA5DIWL36WNCJE2XI mthOGYHBRHQL5FP7H6CGS2VVYHPJU" Invoke="true">
+                      <xsc:Presentation>submit</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthTDEHJAOBVFA23CKZPX7BDYAXBM" Name="prepareButtons" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
+              <Sources>
+                <Src Environment="explorer">
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgCB3G4V3KUZGOTLX5U4FLNLU6TE" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:nextButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mth3GIWEGZXDRHRLG3CFHONOQPPTA" Invoke="true">
+                      <xsc:Presentation>setStyleSheet</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>("text-align:left");
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdSKTRWIRSUNHG7C3WK7EP3PPRY4 wdgO7C4HK67E5FDLPCE4YV4N54RDI" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:View:Form:rereadButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mth3GIWEGZXDRHRLG3CFHONOQPPTA" Invoke="true">
+                      <xsc:Presentation>setStyleSheet</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>("text-align:left");</xsc:Java>
+                  </xsc:Item>
+                </Src>
+                <Src Environment="web">
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdgEIZ47LXQXJH7RLVX2QCU62L3WY" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:buttonsContainer:nextButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthOIVPR7RX7NCH3ATTT6KO5JRJUM" Invoke="true">
+                      <xsc:Presentation>setTextOptions</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcUDE2NGQRWZGVVKMKFFMSNS2KPA">
+                      <xsc:Presentation>Web.Text::WpsTextOptions.Factory</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcUDE2NGQRWZGVVKMKFFMSNS2KPA mthW4K7QLOXPRCZRHGTBHFOHJTGNE" Invoke="true">
+                      <xsc:Presentation>getOptions</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcRTNBDA6TWVBNHAS7PQSPIUCBRU">
+                      <xsc:Presentation>Client.Text::TextAlignment</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcRTNBDA6TWVBNHAS7PQSPIUCBRU prdP2I5PUIBRBED3AC7MXQHBK7GQE" Invoke="true">
+                      <xsc:Presentation>LEFT</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>));
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdgXYQUKT7NENGBXGXCJYHB5RFCMA" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:buttonsContainer:rereadButton</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcP2R7IHUBPFDGFNCMJF7KXYRMLM mthOIVPR7RX7NCH3ATTT6KO5JRJUM" Invoke="true">
+                      <xsc:Presentation>setTextOptions</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcUDE2NGQRWZGVVKMKFFMSNS2KPA">
+                      <xsc:Presentation>Web.Text::WpsTextOptions.Factory</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcUDE2NGQRWZGVVKMKFFMSNS2KPA mthW4K7QLOXPRCZRHGTBHFOHJTGNE" Invoke="true">
+                      <xsc:Presentation>getOptions</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcRTNBDA6TWVBNHAS7PQSPIUCBRU">
+                      <xsc:Presentation>Client.Text::TextAlignment</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcRTNBDA6TWVBNHAS7PQSPIUCBRU prdP2I5PUIBRBED3AC7MXQHBK7GQE" Invoke="true">
+                      <xsc:Presentation>LEFT</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>));</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthCMZ5SJNBF5FY5JEC4WTEJALZIU" Name="nextButton_onClick" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="button" Id="mprYJMLANDLLBDMVEHWMLC7ZPHUAM">
+                  <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IButton"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>if (</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:objectLocksCountTable</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMA2NJ2Y5SVEU3FTLWRMQYWAHPE mthYBTUOA2KLJBNRIDETIJ725RSSA" Invoke="true">
+                      <xsc:Presentation>getRowCount</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>() == 0) {
+    return;
+}
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="411" Path="adcWTAW56DOZBATVK5UR3S775YSJ4">
+                      <xsc:Presentation>Web.Widgets::Grid.Row</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> row = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget:mainContainer:objectLocksCountTable</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcMA2NJ2Y5SVEU3FTLWRMQYWAHPE mthOZUBGEQCC5AHFCXKQXZVP4EU7A" Invoke="true">
+                      <xsc:Presentation>getCurrentRow</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>();
+if (row == null) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prdDVMCNJWDHJG37E7YPRVHR6GUMY" Invoke="true">
+                      <xsc:Presentation>locksFilter</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = null;
+    return;
+}
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdZSI43OXUWJGKXFRIHW5YNC4YCQ" extStr="AADCLocksFilterDocument">
+                      <xsc:Presentation>AADCLocksListXsd:AADCLocksFilterDocument</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> xFilterDocument = </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdZSI43OXUWJGKXFRIHW5YNC4YCQ" extStr="AADCLocksFilterDocument.Factory">
+                      <xsc:Presentation>AADCLocksListXsd:AADCLocksFilterDocument.Factory</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.newInstance();
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:TypeDeclaration TypeId="451" Path="xsdZSI43OXUWJGKXFRIHW5YNC4YCQ" extStr="AADCLocksFilter">
+                      <xsc:Presentation>AADCLocksListXsd:AADCLocksFilter</xsc:Presentation>
+                    </xsc:TypeDeclaration>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> xFilter = xFilterDocument.addNewAADCLocksFilter();
+
+xFilter.ObjectType = row.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcWTAW56DOZBATVK5UR3S775YSJ4 mthH66CLVIQGVCPZHW2E3U2SMGA3U" Invoke="true">
+                      <xsc:Presentation>getCell</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(0).</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcBGMED3BOBBDCXOMM3R4WWKVGQA mthNR4P4PZKUZG67LW552YIBKDGW4" Invoke="true">
+                      <xsc:Presentation>getValue</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>().toString();
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prdDVMCNJWDHJG37E7YPRVHR6GUMY" Invoke="true">
+                      <xsc:Presentation>locksFilter</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setValue(xFilterDocument);
+
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdgMI5W6Y2VJBDOHI2M6EKOCYWS6U" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.submit();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+            <Method Id="mthTYWLG2ZBQBCUJPNGSS7EEXVAUI" Name="rereadButton_onClick" Nature="2" IsReflectiveCallable="true" Environment="web" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules IsPublished="false"/>
+              <Parameters>
+                <Parameter Name="button" Id="mprGNI5HW373VGF7NQKJF5PG2ND5I">
+                  <Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.IButton"/>
+                </Parameter>
+              </Parameters>
+              <Sources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E prd5MGPNHPIEJBDDA4ALJAHJC3CJU" Invoke="true">
+                      <xsc:Presentation>isReread</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.Value = true;
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhGHZZOFH33JCVNI2CQYGMNYE27E cfdHLBUL7P5CJFF7IP2BM7URNFY4M wdgMI5W6Y2VJBDOHI2M6EKOCYWS6U" Invoke="true">
+                      <xsc:Presentation>AADCLocksByObjectsForm:WebView:widget</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.submit();</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </Sources>
+            </Method>
+          </Methods>
+        </Model>
+        <EditorPages>
+          <PageOrder/>
+        </EditorPages>
+        <View Id="cfdSKTRWIRSUNHG7C3WK7EP3PPRY4" Name="View">
+          <AccessRules IsPublished="false"/>
+          <ui:ui>
+            <ui:widget name="Form" id="wdgSTMKKXQZJJFQ3K2VPVTJHTR2BA" class="cfdSKTRWIRSUNHG7C3WK7EP3PPRY4" weight="0.0">
+              <ui:property name="objectName">
+                <ui:string>Form</ui:string>
+              </ui:property>
+              <ui:layout class="QGridLayout" name="gridLayout">
+                <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                  <ui:widget name="tableWidget" id="wdgHMT7WWWTIVA4FNTYHJXNYMC5FU" class="QTableWidget" weight="0.0">
+                    <ui:property name="columnCount">
+                      <ui:int>2</ui:int>
+                    </ui:property>
+                    <ui:property name="rowCount">
+                      <ui:int>0</ui:int>
+                    </ui:property>
+                    <ui:property name="selectionBehavior">
+                      <ui:enum>com.trolltech.qt.gui.QAbstractItemView.SelectionBehavior.SelectRows</ui:enum>
+                    </ui:property>
+                    <ui:property name="selectionMode">
+                      <ui:enum>com.trolltech.qt.gui.QAbstractItemView.SelectionMode.SingleSelection</ui:enum>
+                    </ui:property>
+                    <ui:column>
+                      <ui:property name="text">
+                        <ui:mlstringid>mls5OIASQA4T5HITOIZCQPCI77FPM</ui:mlstringid>
+                      </ui:property>
+                    </ui:column>
+                    <ui:column>
+                      <ui:property name="text">
+                        <ui:mlstringid>mlsVBEVFIDFPBGVHMLAMRGE24GIA4</ui:mlstringid>
+                      </ui:property>
+                      <ui:property name="resizeMode">
+                        <ui:enum>com.trolltech.qt.gui.QHeaderView.ResizeMode.Stretch</ui:enum>
+                      </ui:property>
+                    </ui:column>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="1" row="0" colSpan="1" rowSpan="1">
+                  <ui:layout class="QVBoxLayout" name="verticalLayout">
+                    <ui:property name="layoutLeftMargin">
+                      <ui:int>0</ui:int>
+                    </ui:property>
+                    <ui:property name="layoutTopMargin">
+                      <ui:int>0</ui:int>
+                    </ui:property>
+                    <ui:property name="layoutRightMargin">
+                      <ui:int>0</ui:int>
+                    </ui:property>
+                    <ui:property name="layoutBottomMargin">
+                      <ui:int>0</ui:int>
+                    </ui:property>
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:widget name="nextButton" id="wdgCB3G4V3KUZGOTLX5U4FLNLU6TE" class="QPushButton" weight="0.0">
+                        <ui:property name="text">
+                          <ui:mlstringid>mlsPYSZ72CGSJAYZAYTQWYG3BTN3U</ui:mlstringid>
+                        </ui:property>
+                        <ui:property name="geometry">
+                          <ui:rect>
+                            <ui:x>0</ui:x>
+                            <ui:y>0</ui:y>
+                            <ui:width>75</ui:width>
+                            <ui:height>23</ui:height>
+                          </ui:rect>
+                        </ui:property>
+                        <ui:property name="icon">
+                          <ui:imageRef>imgU5DSJ2F67BFYNGAVOFXYKLBNTI</ui:imageRef>
+                        </ui:property>
+                        <ui:property name="objectName">
+                          <ui:string>nextButton</ui:string>
+                        </ui:property>
+                      </ui:widget>
+                    </ui:item>
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:widget name="rereadButton" id="wdgO7C4HK67E5FDLPCE4YV4N54RDI" class="QPushButton" weight="0.0">
+                        <ui:property name="text">
+                          <ui:mlstringid>mlsVPSYDYO72NEIJC7GEAYRWQGZ4Q</ui:mlstringid>
+                        </ui:property>
+                        <ui:property name="icon">
+                          <ui:imageRef>imgNRNHYK7EL5IILUTWP47R4JW6M5LWTGGH</ui:imageRef>
+                        </ui:property>
+                        <ui:property name="objectName">
+                          <ui:string>rereadButton</ui:string>
+                        </ui:property>
+                      </ui:widget>
+                    </ui:item>
+                    <ui:item column="0" row="0" colSpan="1" rowSpan="1">
+                      <ui:spacer name="spacer">
+                        <ui:property name="orientation">
+                          <ui:enum>com.trolltech.qt.core.Qt.Orientation.Vertical</ui:enum>
+                        </ui:property>
+                        <ui:property name="sizeHint">
+                          <ui:size>
+                            <ui:width>20</ui:width>
+                            <ui:height>40</ui:height>
+                          </ui:size>
+                        </ui:property>
+                      </ui:spacer>
+                    </ui:item>
+                  </ui:layout>
+                </ui:item>
+              </ui:layout>
+            </ui:widget>
+            <ui:connections>
+              <ui:connection>
+                <ui:sender>wdgSTMKKXQZJJFQ3K2VPVTJHTR2BA</ui:sender>
+                <ui:signal>opened(com.trolltech.qt.gui.QWidget widget)</ui:signal>
+                <ui:slot>mth2ASMNGIYKFDFBF675JV5QP2QOQ</ui:slot>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdgHMT7WWWTIVA4FNTYHJXNYMC5FU</ui:sender>
+                <ui:signal>itemSelectionChanged()</ui:signal>
+                <ui:slot>mth52POV2MRZZGUFBT2Z4BDXSVRWA</ui:slot>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdgCB3G4V3KUZGOTLX5U4FLNLU6TE</ui:sender>
+                <ui:signal>clicked(Bool checked)</ui:signal>
+                <ui:slot>mthCAHJZ7EACFDNVJNKYJLD2ZDTU4</ui:slot>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdgO7C4HK67E5FDLPCE4YV4N54RDI</ui:sender>
+                <ui:signal>clicked(Bool checked)</ui:signal>
+                <ui:slot>mthDIVCRAJVEBDWZCQSGGL2ORQ4GQ</ui:slot>
+              </ui:connection>
+            </ui:connections>
+          </ui:ui>
+        </View>
+        <WebView Id="cfdHLBUL7P5CJFF7IP2BM7URNFY4M" Name="WebView">
+          <ui:ui>
+            <ui:widget name="widget" id="wdgMI5W6Y2VJBDOHI2M6EKOCYWS6U" class="cfdHLBUL7P5CJFF7IP2BM7URNFY4M" weight="0.0">
+              <ui:property name="standardButtons">
+                <ui:set>Ok|Cancel</ui:set>
+              </ui:property>
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>0</ui:x>
+                  <ui:y>0</ui:y>
+                  <ui:width>477</ui:width>
+                  <ui:height>356</ui:height>
+                </ui:rect>
+              </ui:property>
+              <ui:property name="buttonBoxVisible">
+                <ui:bool>false</ui:bool>
+              </ui:property>
+              <ui:widget name="mainContainer" id="wdgSX6KKI6JSFFMLDI2AWNQUJM4Z4" class="org.radixware.wps.rwt.HorizontalBoxContainer" weight="0.0">
+                <ui:property name="geometry">
+                  <ui:rect>
+                    <ui:x>2</ui:x>
+                    <ui:y>2</ui:y>
+                    <ui:width>473</ui:width>
+                    <ui:height>352</ui:height>
+                  </ui:rect>
+                </ui:property>
+                <ui:property name="objectName">
+                  <ui:string>mainContainer</ui:string>
+                </ui:property>
+                <ui:property name="anchor">
+                  <ui:anchor>
+                    <ui:Top Part="0.0" Offset="2"/>
+                    <ui:Left Part="0.0" Offset="2"/>
+                    <ui:Bottom Part="1.0" Offset="-2"/>
+                    <ui:Right Part="1.0" Offset="-2"/>
+                  </ui:anchor>
+                </ui:property>
+                <ui:widget name="objectLocksCountTable" id="wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y" class="org.radixware.wps.rwt.Grid" weight="1.0">
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>241</ui:x>
+                      <ui:y>27</ui:y>
+                      <ui:width>96</ui:width>
+                      <ui:height>289</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>objectLocksCountTable</ui:string>
+                  </ui:property>
+                  <ui:property name="anchor">
+                    <ui:anchor>
+                      <ui:Top Part="0.0" Offset="2"/>
+                      <ui:Left Part="0.0" Offset="2"/>
+                    </ui:anchor>
+                  </ui:property>
+                  <ui:property name="expand">
+                    <ui:bool>true</ui:bool>
+                  </ui:property>
+                </ui:widget>
+                <ui:widget name="splitter0" id="wdgTJYAINFFB5HEZFRPHSOAARDNBI" class="org.radixware.wps.rwt.Splitter" weight="0.0">
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>204</ui:x>
+                      <ui:y>132</ui:y>
+                      <ui:width>4</ui:width>
+                      <ui:height>100</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>splitter0</ui:string>
+                  </ui:property>
+                </ui:widget>
+                <ui:widget name="buttonsContainer" id="wdgNUASV5KPQVBXTJFBDMXC4EN3II" class="org.radixware.wps.rwt.VerticalBoxContainer" weight="0.0">
+                  <ui:property name="geometry">
+                    <ui:rect>
+                      <ui:x>233</ui:x>
+                      <ui:y>17</ui:y>
+                      <ui:width>100</ui:width>
+                      <ui:height>293</ui:height>
+                    </ui:rect>
+                  </ui:property>
+                  <ui:property name="objectName">
+                    <ui:string>buttonsContainer</ui:string>
+                  </ui:property>
+                  <ui:widget name="nextButton" id="wdgEIZ47LXQXJH7RLVX2QCU62L3WY" class="org.radixware.wps.rwt.PushButton" weight="0.0">
+                    <ui:property name="text">
+                      <ui:mlstringid>mlsDYQMWK73E5EZVPYUTL3WWRGXQE</ui:mlstringid>
+                    </ui:property>
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>-37</ui:x>
+                        <ui:y>16</ui:y>
+                        <ui:width>75</ui:width>
+                        <ui:height>20</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>nextButton</ui:string>
+                    </ui:property>
+                    <ui:property name="icon">
+                      <ui:imageRef>imgU5DSJ2F67BFYNGAVOFXYKLBNTI</ui:imageRef>
+                    </ui:property>
+                  </ui:widget>
+                  <ui:widget name="splitter1" id="wdgKKDSMVWAJZGVVM26SRHEHA6Z3Q" class="org.radixware.wps.rwt.Splitter" weight="0.0">
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>3</ui:x>
+                        <ui:y>23</ui:y>
+                        <ui:width>94</ui:width>
+                        <ui:height>9</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>splitter1</ui:string>
+                    </ui:property>
+                  </ui:widget>
+                  <ui:widget name="rereadButton" id="wdgXYQUKT7NENGBXGXCJYHB5RFCMA" class="org.radixware.wps.rwt.PushButton" weight="0.0">
+                    <ui:property name="text">
+                      <ui:mlstringid>mls26FK4WKB7FAI7F3Z47Y3ABOFO4</ui:mlstringid>
+                    </ui:property>
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>-27</ui:x>
+                        <ui:y>33</ui:y>
+                        <ui:width>100</ui:width>
+                        <ui:height>20</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>rereadButton</ui:string>
+                    </ui:property>
+                    <ui:property name="iconSize">
+                      <ui:size>
+                        <ui:width>13</ui:width>
+                        <ui:height>13</ui:height>
+                      </ui:size>
+                    </ui:property>
+                    <ui:property name="icon">
+                      <ui:imageRef>imgNRNHYK7EL5IILUTWP47R4JW6M5LWTGGH</ui:imageRef>
+                    </ui:property>
+                  </ui:widget>
+                </ui:widget>
+              </ui:widget>
+            </ui:widget>
+            <ui:connections>
+              <ui:connection>
+                <ui:sender>wdgMI5W6Y2VJBDOHI2M6EKOCYWS6U</ui:sender>
+                <ui:signal>opened(org.radixware.kernel.common.client.views.IFormView form)</ui:signal>
+                <ui:slot>mth5CD3VJXSCFHNVMCQ5SZOPVD27E</ui:slot>
+                <ui:interface>org.radixware.wps.views.dialog.RwtForm.RwtFormListener</ui:interface>
+                <ui:registrator>addFormListener</ui:registrator>
+                <ui:returnType>void</ui:returnType>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdgEIZ47LXQXJH7RLVX2QCU62L3WY</ui:sender>
+                <ui:signal>onClick(org.radixware.kernel.common.client.widgets.IButton button)</ui:signal>
+                <ui:slot>mthCMZ5SJNBF5FY5JEC4WTEJALZIU</ui:slot>
+                <ui:interface>org.radixware.kernel.common.client.widgets.IButton.ClickHandler</ui:interface>
+                <ui:registrator>addClickHandler</ui:registrator>
+                <ui:returnType>void</ui:returnType>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdgXYQUKT7NENGBXGXCJYHB5RFCMA</ui:sender>
+                <ui:signal>onClick(org.radixware.kernel.common.client.widgets.IButton button)</ui:signal>
+                <ui:slot>mthTYWLG2ZBQBCUJPNGSS7EEXVAUI</ui:slot>
+                <ui:interface>org.radixware.kernel.common.client.widgets.IButton.ClickHandler</ui:interface>
+                <ui:registrator>addClickHandler</ui:registrator>
+                <ui:returnType>void</ui:returnType>
+              </ui:connection>
+              <ui:connection>
+                <ui:sender>wdg2CSDMG5VP5HZXMY4EUIPQRLB5Y</ui:sender>
+                <ui:signal>currentRowChanged(org.radixware.wps.rwt.Grid.Row oldSelectedRow ,org.radixware.wps.rwt.Grid.Row newSelectedRow)</ui:signal>
+                <ui:slot>mthFMUQDHFQHBCYVB6XDRV2GOSMWU</ui:slot>
+                <ui:interface>org.radixware.wps.rwt.Grid.UnconditionalRowSelectionListener</ui:interface>
+                <ui:registrator>addCurrentRowListener</ui:registrator>
+                <ui:returnType>void</ui:returnType>
+              </ui:connection>
+            </ui:connections>
+          </ui:ui>
+        </WebView>
+      </Form>
+    </Presentations>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -8,13 +8,13 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.dds;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.localization.ILocalizedDef;
@@ -23,9 +23,14 @@ import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
 import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.EMultilingualStringKind;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.defs.dds.DdsLabelDef;
+import org.radixware.kernel.common.defs.dds.DdsExtTableDef;
+import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 
 /**
  * Базовый класс для всех DDS дефиниций. Реализует идентификатор дефиниции.
@@ -61,6 +66,16 @@ public abstract class DdsDefinition extends Definition implements ILocalizedDesc
     protected DdsDefinition(org.radixware.schemas.commondef.DescribedDefinition xDescribedDefinition) {
         super(xDescribedDefinition.getId(), xDescribedDefinition.getName(), xDescribedDefinition.getDescription());
         this.descriptionId = xDescribedDefinition.getDescriptionId();
+    }
+
+    @Override
+    public String toString() {
+        return "DdsDefinition{" + "initStatus=" + initStatus + ", descriptionId=" + descriptionId + "}: " + super.toString();
+    }
+
+    @Override
+    public boolean needsDocumentation() {
+        return false;
     }
 
     /**
@@ -127,11 +142,27 @@ public abstract class DdsDefinition extends Definition implements ILocalizedDesc
     @Override
     public String getDescription(EIsoLanguage language) {
         if (descriptionId != null) {
-            final IMultilingualStringDef string = findLocalizedString(descriptionId);
+            final IMultilingualStringDef string = findLocalizedString(getDescriptionId());
             return string == null ? null : string.getValue(language);
         } else {
             return null;
         }
+    }
+
+    @Override
+    public String getLocalizedStringValue(EIsoLanguage language, Id stringId) {
+        if (stringId == null) {
+            return null;
+        }
+        ILocalizingBundleDef bundle = findExistingLocalizingBundle();
+        if (bundle != null) {
+            IMultilingualStringDef string = (IMultilingualStringDef) bundle.getStrings().findById(stringId, ExtendableDefinitions.EScope.LOCAL_AND_OVERWRITE).get();
+            if (string != null) {
+                return string.getValue(language);
+            }
+        }
+
+        return null;
     }
 
     @Override
@@ -183,11 +214,47 @@ public abstract class DdsDefinition extends Definition implements ILocalizedDesc
 
     @Override
     public ILocalizingBundleDef findLocalizingBundle() {
-        return getOwnerModel().getStringBundle();
+        DdsModelDef model = getOwnerModel();
+        if (model != null) {
+            return model.getStringBundle();
+        }
+        return null;
     }
 
     @Override
     public ILocalizingBundleDef findExistingLocalizingBundle() {
         return findLocalizingBundle();
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return ERuntimeEnvironmentType.SERVER;
+    }
+
+    /**
+     * Является дефиниция ребенком модуля
+     */
+    @Override
+    public boolean isTopLevelDefinition() {
+        final Definition ownerDefinition = getOwnerDefinition();
+        if (ownerDefinition == null) {
+            //throw new RadixObjectError("The level of definition can not be determined: " + this.getClass().getName());
+            return false;
+        }
+        return ownerDefinition instanceof DdsModelDef;
+    }
+
+    @Override
+    public boolean showApiBrowser() {
+        return !(this instanceof DdsLabelDef
+                || this instanceof DdsSequenceDef
+                || this instanceof DdsReferenceDef
+                || this instanceof DdsAccessPartitionFamilyDef
+                || this instanceof DdsExtTableDef);
     }
 }

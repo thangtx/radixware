@@ -1122,7 +1122,7 @@ public class TesterWindow extends ExplorerDialog {
             org.radixware.schemas.junittestreport.TestSuites.Testsuite suite = rootTag.addNewTestsuite();
 
             String nameIndex = String.format("%1$05d", tsIndex);
-            String nameStr = topItem.text(0).replaceAll("\\.", "_");
+            String nameStr = topItem.text(0).replace(".", "_");
             String name = nameIndex + " " + nameStr;
             final String userName = connectionOptions.getUserName();
 
@@ -1162,7 +1162,7 @@ public class TesterWindow extends ExplorerDialog {
     private void addChildSuite(final String username, final String parentName, org.radixware.schemas.junittestreport.TestSuites rootTag, QTreeWidgetItem item, String packageName, int i) {
         org.radixware.schemas.junittestreport.TestSuites.Testsuite suite = rootTag.addNewTestsuite();
 
-        String name = String.format("%1$05d", i) + " " + item.text(0).replaceAll("\\.", "_");
+        String name = String.format("%1$05d", i) + " " + item.text(0).replace(".", "_");
         suite.setName(parentName + "/" + name);
         suite.setTests(new BigInteger(String.valueOf(item.childCount())));
 

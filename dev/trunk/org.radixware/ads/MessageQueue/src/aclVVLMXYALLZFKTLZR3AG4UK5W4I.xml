@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
-  <AdsClassDefinition Id="aclVVLMXYALLZFKTLZR3AG4UK5W4I" Name="MessageQueue.Consumer" Type="2">
+  <AdsClassDefinition Id="aclVVLMXYALLZFKTLZR3AG4UK5W4I" Name="MessageQueue.Consumer" Type="2" ClientEnvironment="explorer">
     <AccessRules/>
     <Headers>
       <Src Name="HeaderaclVVLMXYALLZFKTLZR3AG4UK5W4I"/>
@@ -17,6 +17,84 @@
       <ClassCatalogs>
         <ClassCatalog Id="eccGY3MK4FELVCZPLCHRHN5UEDYDM" Name="Consumers"/>
       </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprC6JSQZ7HYVHCFJ7X6XASH6OUJ4" Name="ConsumerEdit" BasePresentationId="eprWEEVKI2IT5DQJAS5RJFI4FFDS4" InheritanceMask="36016" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprWEEVKI2IT5DQJAS5RJFI4FFDS4">
+          <AccessRules IsPublished="false"/>
+          <Model Id="aemC6JSQZ7HYVHCFJ7X6XASH6OUJ4" Name="ConsumerEdit:Model" Type="15">
+            <AccessRules IsPublished="false"/>
+            <Headers>
+              <Src Name="HeaderaemC6JSQZ7HYVHCFJ7X6XASH6OUJ4"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaemC6JSQZ7HYVHCFJ7X6XASH6OUJ4"/>
+            </Bodies>
+            <MethodGroup Id="cmgSXIRJDIQAFGD5OL7OERLVA2EOU" Name="Root"/>
+            <PropertyGroup Id="cpgRM7YFEVES5HABLVA5I5UB4YRRM" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Name="setVisibility" Nature="0" Environment="common-client" IsOverride="true" isDescriptionInherited="true">
+                <AccessRules/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Invoke="true">
+                        <xsc:Presentation>setVisibility</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true">
+                        <xsc:Presentation>partitionName</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(false);</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgSSMUGGSOLNEENDZTYAGQ7AIZ5I" Name="General" TitleId="mlsOKFTY4HEDFHOLJKUMOINHVCLOA" Type="1">
+              <Properties>
+                <Property Id="colZDZ4CALBLBGEJCZMA5VSTVPUGQ" Row="0" Column="0"/>
+                <Property Id="colID5J43B3FRHA7OBLDQQQ5DYWSM" Row="1" Column="0"/>
+                <Property Id="colOPGPZBRRSZFCFP6DSBBECKFM74" Row="3" Column="0"/>
+                <Property Id="colTRIHVJKCKNDNVESJUPLUFKPVQA" Row="4" Column="0"/>
+                <Property Id="colMMPJ3MOF5NEEFB4MEBKFURZTMQ" Row="6" Column="0"/>
+                <Property Id="colPRWBAX2DZJDFLL5RB6UKQPNJCM" Row="7" Column="0"/>
+                <Property Id="colB56SD6AHQ5AJFMZJHTWW2XRHQE" Row="5" Column="0"/>
+                <Property Id="col7PCH7MSGLZFSNNDIFYF6WQLWDI" Row="2" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgSSMUGGSOLNEENDZTYAGQ7AIZ5I" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfKKCENIX6S5AD3HAYVU3GZGHYWY"/>
+        </EditorPresentation>
+        <EditorPresentation Id="epr2S7IV5NCFFHDZLDDTORZE4LSSA" Name="ConsumerCreate" BasePresentationId="eprC6JSQZ7HYVHCFJ7X6XASH6OUJ4" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprKFF4CT7VDRE53FMW76LHR7EL4M">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfR72WYD5VGJD2HG3OGNJQCXKH6Y"/>
+        </EditorPresentation>
+      </EditorPresentations>
       <SelectorPresentations>
         <SelectorPresentation Id="sprBU6D3OXQLFGJPK5ZZ64L3N3DNA" Name="ConsumersDefault" TitleId="mlsQSR2GB2FZBCVFBTPSXWOOOO2SY" BasePresentationId="sprLUQDA4NYBVG3JJNRMRPBRXLBBU" IconId="imgBSA4BB2JNJFD7I6HISJWJH7BYI" InheritanceMask="104" Restrictions="32" EnabledCommandIds="" CreationEditorPresentationIds="eprKFF4CT7VDRE53FMW76LHR7EL4M" CreationClassCatalogId="eccGY3MK4FELVCZPLCHRHN5UEDYDM" EditorPresentationIds="eprWEEVKI2IT5DQJAS5RJFI4FFDS4">
           <Condition>

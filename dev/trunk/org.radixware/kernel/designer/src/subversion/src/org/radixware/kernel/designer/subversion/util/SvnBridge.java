@@ -133,7 +133,11 @@ public class SvnBridge {
         public boolean isNone() {
             return kind == SVNStatusKind.NONE;
         }
-
+        
+        @Override
+        public boolean isUnversioned() {
+            return kind == SVNStatusKind.UNVERSIONED;
+        }        
     }
 
     private static class Revision extends AbstractRevision implements ISvnFSClient.SvnRevision.Number {

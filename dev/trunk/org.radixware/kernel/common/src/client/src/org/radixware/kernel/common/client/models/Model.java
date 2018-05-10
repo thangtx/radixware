@@ -63,6 +63,7 @@ import org.radixware.kernel.common.client.meta.explorerItems.RadSelectorUserExpl
 import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.models.items.Command;
+import org.radixware.kernel.common.client.models.items.EditorPageModelItem;
 import org.radixware.kernel.common.client.models.items.properties.PropertyRef;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.models.items.properties.PropertyArrBin;
@@ -114,6 +115,27 @@ import org.radixware.kernel.common.types.Id;
  */
 public abstract class Model extends ResponseListener{
     
+    protected static interface IPropertiesFilter{
+        boolean isFiltered(final Property property);
+    }    
+    
+    private static class DummyPropertiesFilter implements IPropertiesFilter{
+        
+        private final static DummyPropertiesFilter INSTANCE = new DummyPropertiesFilter();
+        
+        private DummyPropertiesFilter(){
+        }
+        
+        @Override
+        public boolean isFiltered(final Property property){
+            return false;
+        }
+        
+        public static IPropertiesFilter getInstance(){
+            return INSTANCE;
+        }
+    }    
+    
     protected final static String CHECK_MANDATORY_CONFIG_SETTING = 
         SettingNames.SYSTEM+"/"+SettingNames.EDITOR_GROUP+"/"+SettingNames.Editor.COMMON_GROUP
         +"/"+SettingNames.Editor.Common.CHECK_MANDATORY_ON_CLOSE;
@@ -164,6 +186,8 @@ public abstract class Model extends ResponseListener{
     private IExplorerItemView explorerItemView = null;
     private String title = null;
     private Icon icon = null;
+    private Collection<Id> propIdsToIgnoreUndefinedValCheck;
+    private boolean strongCheckMandatoryProperties = true;
 
     public RadClassPresentationDef getRadMeta() {
         return null;
@@ -222,7 +246,7 @@ public abstract class Model extends ResponseListener{
         }
         if (commands != null) {
             for (Command command : commands.values()) {
-                command.unsubscribeAll();
+                    command.unsubscribeAll();
             }
             commands.clear();
         }                
@@ -547,7 +571,11 @@ public abstract class Model extends ResponseListener{
             case OBJECT:
                 return new PropertyObject(this, (RadParentRefPropertyDef) def);
             case ARR_REF:
-                return new PropertyArrRef(this, (RadParentRefPropertyDef) def);
+                if (def instanceof RadFilterParamDef){
+                    return new PropertyArrRef(this, (RadFilterParamDef) def);
+                }else{
+                    return new PropertyArrRef(this, (RadParentRefPropertyDef) def);
+                }
             default:
                 throw new IllegalArgumentException("Can't create property for type " + def.getType());
         }
@@ -602,19 +630,29 @@ public abstract class Model extends ResponseListener{
 
         return def.getPropertyDefById(id);
     }
-
+    
     /**
      * Returns collection of all properties activated in this model
      *
      * @return activated properties.
      * @see #getProperty(org.radixware.kernel.common.types.Id)
      * @see #activateProperty(org.radixware.kernel.common.types.Id)
-     */
+     */    
     public Collection<Property> getActiveProperties() {
+        return getActiveProperties(DummyPropertiesFilter.getInstance());
+    }
+
+    protected Collection<Property> getActiveProperties(final IPropertiesFilter filter) {
         if (properties == null) {
             return Collections.emptyList();
         }
-        return Collections.unmodifiableCollection(properties.values());
+        final Collection<Property> result = new LinkedList<>();
+        for (Property property: properties.values()){
+            if (!filter.isFiltered(property)){
+                result.add(property);
+            }
+        }
+        return Collections.unmodifiableCollection(result);
     }
     
     public final Collection<Property> getLocalProperties(){
@@ -629,8 +667,12 @@ public abstract class Model extends ResponseListener{
         }
         return Collections.unmodifiableList(result);
     }
-
+    
     protected List<Property> getActivePropertiesByOrder() {
+        return getActivePropertiesByOrder(DummyPropertiesFilter.getInstance());
+    }
+
+    protected List<Property> getActivePropertiesByOrder(final IPropertiesFilter filter) {
         final List<Property> result = new LinkedList<>();
         if (def instanceof IEditorPagesHolder) {
             final Stack<RadEditorPageDef> pagesStack = new Stack<>();
@@ -658,12 +700,12 @@ public abstract class Model extends ResponseListener{
                 Property property;
                 for (Id propertyId : propertyIds) {
                     property = getProperty(propertyId);
-                    if (property.isActivated()) {
+                    if (!result.contains(property) && !filter.isFiltered(property) && property.isActivated()) {
                         result.add(property);
                     }
                 }
             }
-            final Collection<Property> allActiveProperties = getActiveProperties();
+            final Collection<Property> allActiveProperties = getActiveProperties(filter);
             for (Property property : allActiveProperties) {
                 if (!result.contains(property) && property.hasSubscriber() && property.getDefinition().getType() == EValType.PARENT_REF) {
                     result.add(property);
@@ -675,7 +717,7 @@ public abstract class Model extends ResponseListener{
                 }
             }
         } else {
-            final Collection<Property> allActiveProps = getActiveProperties();
+            final Collection<Property> allActiveProps = getActiveProperties(filter);
             for (Property property : allActiveProps) {
                 if (!result.contains(property) && property.hasSubscriber()) {
                     result.add(property);
@@ -690,24 +732,29 @@ public abstract class Model extends ResponseListener{
         Id itemId;
         for (RadStandardEditorPageDef.PageItem item : items) {
             itemId = item.getItemId();
-            if (itemId.getPrefix() == EDefinitionIdPrefix.ADS_PROPERTY_GROUP) {
+            if (itemId.getPrefix() == EDefinitionIdPrefix.EDITOR_PAGE_PROP_GROUP) {
                 collectPropertiesInGroup(pageDef, pageDef.getPropertiesGroup(itemId), propertyIds);
             } else if (getDefinition().isPropertyDefExistsById(itemId)) {
                 propertyIds.add(itemId);
             }
         }
-    }
+    }        
 
     private static class ChildViewPropertiesChecker implements IView.Visitor {
 
         private InvalidPropertyValueException invalidValue = null;
         private PropertyIsMandatoryException propertyIsMandatory = null;
+        private final boolean strongCheckIfMandatoryPropertiesDefined;
+        
+        public ChildViewPropertiesChecker(final boolean strongCheckIfMandatoryPropertiesDefined){
+            this.strongCheckIfMandatoryPropertiesDefined = strongCheckIfMandatoryPropertiesDefined;
+        }
 
         @Override
         public void visit(final IEmbeddedView embeddedView) {
             if (embeddedView.isSynchronizedWithParentView()) {
                 try {
-                    embeddedView.getModel().checkPropertyValues();
+                    embeddedView.getModel().checkPropertyValues(strongCheckIfMandatoryPropertiesDefined);
                 } catch (PropertyIsMandatoryException exception) {
                     propertyIsMandatory = exception;
                 } catch (InvalidPropertyValueException exception) {
@@ -729,6 +776,24 @@ public abstract class Model extends ResponseListener{
                 throw propertyIsMandatory;
             }
         }
+    }
+    
+    protected final void setPropsToIgnoreUndefinedValCheck(final Collection<Property> props){
+        if (props==null){
+            propIdsToIgnoreUndefinedValCheck = null;
+        }else{
+            propIdsToIgnoreUndefinedValCheck = new LinkedList<>();
+            for (Property property: props){
+                propIdsToIgnoreUndefinedValCheck.add(property.getId());
+            }
+        }
+    }
+    
+    protected final boolean isUndefinedValCheckIgnored(final Property property){
+        if (property.isValEdited()){
+            return false;
+        }
+        return propIdsToIgnoreUndefinedValCheck==null || propIdsToIgnoreUndefinedValCheck.contains(property.getId());
     }
 
     /**
@@ -756,26 +821,75 @@ public abstract class Model extends ResponseListener{
      * @see RadPropertyDef#isInheritable()
      * @see RadPropertyDef#getValInheritanceMark()
      */
-    protected void checkPropertyValues() throws PropertyIsMandatoryException, InvalidPropertyValueException {
-        checkPropertyValues(true);
+    protected final void checkPropertyValues(final boolean strongCheckIfMandatoryPropertiesDefined) throws PropertyIsMandatoryException, InvalidPropertyValueException {
+        if (strongCheckIfMandatoryPropertiesDefined){
+            checkPropertyValues();
+        }else{
+            strongCheckMandatoryProperties = false;
+            try{
+                checkPropertyValues();
+            }finally{
+                strongCheckMandatoryProperties = true;
+            }            
+        }
     }
     
-    protected void checkPropertyValues(final boolean strongCheckIfMandatoryPropertiesDefined)  throws PropertyIsMandatoryException, InvalidPropertyValueException {
+    protected void checkPropertyValues()  throws PropertyIsMandatoryException, InvalidPropertyValueException {
         if (properties == null || properties.isEmpty()) {
             return;
         }
         Object value;
         final List<Property> props = getActivePropertiesByOrder();
-        boolean registeredInEditorPage;
+        boolean propertyIsAccessibleFromEditorPage;
         final IEditorPagesHolder editorPagesHolder =
                 def instanceof IEditorPagesHolder ? (IEditorPagesHolder) def : null;
         final Map<RadPropertyDef, InvalidValueReason> invalidValues = new LinkedHashMap<>();
+        Collection<Id> pageIds;
         for (Property property : props) {
             //Проверяем только те свойства, на которые есть подписчики
             //и те, которые зарегистрированы на странице редактора
-            registeredInEditorPage =
-                    editorPagesHolder == null ? false : editorPagesHolder.getEditorPages().isPropertyDefined(property.getId());
-            if (property.hasSubscriber() || (editorPagesHolder != null && registeredInEditorPage)) {
+            if (editorPagesHolder==null){
+                pageIds = Collections.emptyList();
+            }else{
+                pageIds = editorPagesHolder.getEditorPages().findPagesWithProperty(property.getId());                
+            }
+            propertyIsAccessibleFromEditorPage = false;
+            if (!pageIds.isEmpty()){
+                if (this instanceof ModelWithPages){
+                    final ModelWithPages self = (ModelWithPages)this;
+                    boolean pageIsAccessible;
+                    for (Id pageId: pageIds){
+                        if (self.isEditorPageExists(pageId)){
+                            pageIsAccessible = true;
+                            for (EditorPageModelItem page=self.getEditorPage(pageId); page!=null; page=page.getParentPage()){
+                                if (!page.isVisible() || !page.isEnabled()){
+                                    pageIsAccessible = false;
+                                    break;
+                                }
+                            }
+                            if (pageIsAccessible){
+                                propertyIsAccessibleFromEditorPage = true;
+                                break;
+                            }
+                        }
+                    }
+                }else{
+                    propertyIsAccessibleFromEditorPage = true;
+                }
+            }
+            
+            if (propertyIsAccessibleFromEditorPage || property.hasSubscriber()) {                
+                //поиск мандаторных свойств
+                if (!property.hasValidMandatoryValue()
+                    && property.isVisible() 
+                    && !property.isReadonly()
+                    && property.isEnabled()
+                    && (strongCheckMandatoryProperties || !isUndefinedValCheckIgnored(property))
+                    ) {
+                    onInvalidValue(property.getId(), InvalidValueReason.NOT_DEFINED);
+                    invalidValues.put(property.getDefinition(), InvalidValueReason.NOT_DEFINED);
+                    continue;
+                }
                 value = property.getValueObject();
                 //проверка наследуемых значений:
                 if (property.hasOwnValue() && !property.isOwnValueAcceptable(value)) {
@@ -790,30 +904,19 @@ public abstract class Model extends ResponseListener{
                 if (property.isActivated()
                         && property.isVisible()
                         && !property.isReadonly()
+                        && property.isEnabled()
                         && property.hasOwnValue()
                         //??? && property.isValEdited() ???
                         ) {
                     if (property.isUnacceptableInputRegistered()){
                         invalidValues.put(property.getDefinition(), property.getUnacceptableInput().getReason());
-                        continue;
-                    }
-                    if (property.getValueObject() != null){
+                    } else if (value != null){
                         final ValidationResult state = getPropertyValueState(property.getId());
                         if (state != ValidationResult.ACCEPTABLE) {
                             onInvalidValue(property.getId(), state.getInvalidValueReason());
                             invalidValues.put(property.getDefinition(), state.getInvalidValueReason());
-                            continue;
                         }
                     }
-                }
-                //поиск мандаторных свойств
-                if (!property.hasValidMandatoryValue()
-                    && property.isVisible() 
-                    && !property.isReadonly()
-                    && (strongCheckIfMandatoryPropertiesDefined || property.isValEdited())
-                    ) {
-                    onInvalidValue(property.getId(), InvalidValueReason.NOT_DEFINED);
-                    invalidValues.put(property.getDefinition(), InvalidValueReason.NOT_DEFINED);
                 }
             }
         }
@@ -821,7 +924,8 @@ public abstract class Model extends ResponseListener{
             throw InvalidPropertyValueException.createForProperties(this, invalidValues);
         }
         if (getView() != null) {
-            final ChildViewPropertiesChecker checker = new ChildViewPropertiesChecker();
+            final ChildViewPropertiesChecker checker = 
+                    new ChildViewPropertiesChecker(strongCheckMandatoryProperties);
             getView().visitChildren(checker, false);
             checker.checkResults();
         }        
@@ -1024,6 +1128,12 @@ public abstract class Model extends ResponseListener{
                 cmdDef = def.getCommandDefById(id);
             }
             c = createCommand(cmdDef);
+        }
+        if (c==null){
+            final String messageTemplate = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Command instance #%1$s was not found");
+            getEnvironment().getTracer().warning(String.format(messageTemplate, id.toString()));
+            return null;
         }
         commands.put(id, c);
         return c;
@@ -1457,7 +1567,7 @@ public abstract class Model extends ResponseListener{
                                     } else {
                                         valTableId = null;
                                     }
-                                    property.setValueObject(ValueConverter.easPropXmlVal2ObjVal(item, property.getDefinition().getType(), valTableId));
+                                    property.setValueObject(ValueConverter.easPropXmlVal2ObjVal(item, property.getDefinition().getType(), valTableId, getEnvironment().getDefManager()));
                                 }
                             }
                         }

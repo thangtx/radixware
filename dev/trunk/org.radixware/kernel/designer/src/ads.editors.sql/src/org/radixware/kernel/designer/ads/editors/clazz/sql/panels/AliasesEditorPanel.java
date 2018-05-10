@@ -22,6 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef.UsedTable;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTable;
 import org.radixware.kernel.designer.common.dialogs.components.TunedTable;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalObjectEditor;
 
@@ -90,9 +91,9 @@ public class AliasesEditorPanel extends ModalObjectEditor<List<AliasesEditorPane
         }
     }
 
-    public void open(List<UsedTable> tables) {
+    public void open(List<IUsedTable> tables) {
         List<TableInfo> infos = new LinkedList<TableInfo>();
-        for (UsedTable usedTable : tables) {
+        for (IUsedTable usedTable : tables) {
             infos.add(new UsedTableInfo(usedTable));
         }
         open(infos, null);
@@ -140,9 +141,9 @@ public class AliasesEditorPanel extends ModalObjectEditor<List<AliasesEditorPane
 
     public static class UsedTableInfo extends TableInfo {
 
-        UsedTable usedTable;
+        IUsedTable usedTable;
 
-        public UsedTableInfo(UsedTable usedTable) {
+        public UsedTableInfo(IUsedTable usedTable) {
             super(usedTable.findTable(), usedTable.getAlias());
             this.usedTable = usedTable;
         }

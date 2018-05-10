@@ -12,6 +12,7 @@
 package org.radixware.kernel.server.sc;
 
 import java.util.Map;
+import org.radixware.kernel.server.aio.AadcAffinity;
 import org.radixware.schemas.aasWsdl.InvokeDocument;
 
 /**
@@ -26,17 +27,19 @@ public class AasInvokeItem {
     private final int timeoutMillis;
     private final String scpName;
     private final long createTimeMillis = System.currentTimeMillis();
+    private final AadcAffinity aadcAffinity;
 
     /**
      * This constructor does NOT copy passed parameters, don't modify them
      * afterwards
      */
-    public AasInvokeItem(InvokeDocument invokeDoc, Map<String, String> headers, int timeoutMillis, String scp, boolean keepConnect) {
+    public AasInvokeItem(InvokeDocument invokeDoc, Map<String, String> headers, int timeoutMillis, String scp, boolean keepConnect, AadcAffinity aadcAffinity) {
         this.invokeDoc = invokeDoc;
         this.headers = headers;
         this.keepConnect = keepConnect;
         this.timeoutMillis = timeoutMillis;
         this.scpName = scp;
+        this.aadcAffinity = aadcAffinity;
     }
 
     public long getCreateTimeMillis() {
@@ -47,6 +50,10 @@ public class AasInvokeItem {
         return scpName;
     }
 
+    public AadcAffinity getAadcAffinity() {
+        return aadcAffinity;
+    }
+    
     public InvokeDocument getInvokeDoc() {
         return invokeDoc;
     }

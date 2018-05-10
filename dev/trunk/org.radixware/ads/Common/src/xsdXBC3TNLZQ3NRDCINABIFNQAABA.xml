@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdXBC3TNLZQ3NRDCINABIFNQAABA" Name="CommonXsd" TargetNamespace="http://schemas.radixware.org/common.xsd" Environment="common"><xs:schema targetNamespace="http://schemas.radixware.org/common.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:defs="http://schemas.radixware.org/adsdef.xsd" xmlns:reports="http://schemas.radixware.org/reports.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/common.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd">
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdXBC3TNLZQ3NRDCINABIFNQAABA" Name="CommonXsd" TargetNamespace="http://schemas.radixware.org/common.xsd" NeedsDoc="false" Environment="common"><ads:AccessRules IsFinal="true"/><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdLUGR222Q4FBRVMRXAV6SW6HK54" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" LinkMode="Import"/>
+  <ads:LinkedSchema Id="xsdY5AELJNM7FG77FZD4ATT7SFMXA" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema targetNamespace="http://schemas.radixware.org/common.xsd" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:comdefs="http://schemas.radixware.org/commondef.xsd" xmlns:defs="http://schemas.radixware.org/adsdef.xsd" xmlns:reports="http://schemas.radixware.org/reports.xsd" xmlns:t="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/common.xsd" xmlns:xscml="http://schemas.radixware.org/xscml.xsd">
 	<xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
 	<xs:import namespace="http://schemas.radixware.org/xscml.xsd" schemaLocation="xscml.xsd"/>
 	<xs:import namespace="http://schemas.radixware.org/reports.xsd" schemaLocation="reports.xsd"/>
 	<xs:import namespace="http://schemas.radixware.org/adsdef.xsd" schemaLocation="radix:/adsdef-min.xsd"/>
+        <xs:import namespace="http://schemas.radixware.org/commondef.xsd" schemaLocation="commondef.xsd"/>
 	<!--**************************** CONSTANTS ****************************-->
 	<xs:simpleType name="ValType">
 		<xs:annotation>
@@ -206,10 +212,12 @@
 	</xs:complexType>
 	<xs:complexType name="EditableProperty">
 		<xs:sequence>
-			<xs:element name="Value" type="t:Str" minOccurs="0"/>
+                        <xs:element name="Rid" type="t:Str" minOccurs="0"/>
+                        <xs:element name="Value" type="t:Str" minOccurs="0"/>
 			<xs:element name="Condition" type="xscml:Sqml" minOccurs="0"/>
 		</xs:sequence>
 		<xs:attribute name="Id" type="t:Id" use="required"/>
+                <xs:attribute name="EntityId" type="t:Id"/>
 	</xs:complexType>
 	<xs:complexType name="EditableProperties">
 		<xs:sequence>
@@ -265,6 +273,7 @@
 			<xs:element name="MethodProfile" type="xscml:JmlFuncProfile" minOccurs="0"/>
 			<xs:element name="ExtSrc" type="t:Str" minOccurs="0"/>
 			<xs:element name="Strings" type="defs:LocalizingBundleDefinition" minOccurs="0"/>
+                        <xs:element name="ChangeLog" type="comdefs:ChangeLog" minOccurs="0"/>
 			<xs:element name="Binding" minOccurs="0">
 				<xs:complexType>
 					<xs:sequence>
@@ -279,10 +288,22 @@
 		<xs:attribute name="Title" type="t:Str" use="optional"/>
 		<xs:attribute name="OwnerPid" type="t:Str" use="optional"/>
 		<xs:attribute name="OwnerEntityId" type="t:Str" use="optional"/>
+                <xs:attribute name="OwnerClassId" type="t:Str" use="optional"/>
+                <xs:attribute name="OwnerExtGuid" type="t:Str" use="optional"/>
+                <xs:attribute name="OwnerPropId" type="t:Str" use="optional"/>
+                <xs:attribute name="Profile" type="t:Str" use="optional"/>
+                <xs:attribute name="ProfileVersion" type="t:Int" use="optional"/>
 	</xs:complexType>
 	<xs:complexType name="UserProp">
 		<xs:choice>
-			<xs:element name="Value" type="t:Str" minOccurs="0"/>
+			<xs:element name="SafeValue" type="t:SafeStr" minOccurs="0"/>
+                        <xs:element name="Value" type="t:Str" minOccurs="0">
+                            <xs:annotation>
+                                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                        <t:deprecated/>
+                                    </xs:appinfo>
+                            </xs:annotation>
+                        </xs:element>
 			<xs:element name="Func" type="this:UserFunc" minOccurs="0"/>
 			<xs:element name="Obj" minOccurs="0">
 				<xs:complexType>
@@ -307,6 +328,7 @@
 			<xs:element name="UserProps" type="this:UserProps" minOccurs="0"/>
 			<xs:element name="Ext" type="xs:anyType" minOccurs="0"/>
 		</xs:sequence>
-		<xs:attribute name="ClassId" type="t:Id" use="required"/>
+		<xs:attribute name="ClassId" type="t:Id"/>
 	</xs:complexType>
+        <xs:element name="UserFunc" type="this:UserFunc"/>
 </xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

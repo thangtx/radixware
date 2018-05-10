@@ -16,11 +16,57 @@ public class AdsReportCellFactory {
 
     private AdsReportCellFactory() {
     }
+    
+    public static AdsReportTextCell newTextCell(boolean isNewStyle) {
+        AdsReportTextCell cell = new AdsReportTextCell();
+        cell.setNewStyle(isNewStyle);
+        return cell;
+    }
+
+    public static AdsReportPropertyCell newPropertyCell(boolean isNewStyle) {
+        AdsReportPropertyCell cell = new AdsReportPropertyCell();
+        cell.setNewStyle(isNewStyle);
+        return cell;
+    }
+
+    public static AdsReportImageCell newImageCell(boolean isNewStyle) {
+        AdsReportImageCell cell = new AdsReportImageCell();
+        cell.setNewStyle(isNewStyle);
+        return cell;
+    }
+
+    public static AdsReportDbImageCell newDbImageCell(boolean isNewStyle) {
+        AdsReportDbImageCell cell = new AdsReportDbImageCell();
+        cell.setNewStyle(isNewStyle);
+        return cell;
+    }
+
+    public static AdsReportSummaryCell newSummaryCell(boolean isNewStyle) {
+        AdsReportSummaryCell cell = new AdsReportSummaryCell();
+        cell.setNewStyle(isNewStyle);
+        return cell;
+    }
+
+    public static AdsReportSpecialCell newSpecialCell(boolean isNewStyle) {
+        AdsReportSpecialCell cell = new AdsReportSpecialCell();
+        cell.setNewStyle(isNewStyle);
+        return cell;
+    }
+
+    public static AdsReportExpressionCell newExpressionCell(boolean isNewStyle) {
+        AdsReportExpressionCell cell = new AdsReportExpressionCell();
+        cell.setNewStyle(isNewStyle);
+        return cell;
+    }
+    
+    public static AdsReportChartCell newChartCell(boolean isNewStyle) {
+        return new AdsReportChartCell();
+    }
 
     public static AdsReportTextCell newTextCell() {
         return new AdsReportTextCell();
     }
-
+        
     public static AdsReportPropertyCell newPropertyCell() {
         return new AdsReportPropertyCell();
     }

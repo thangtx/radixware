@@ -30,13 +30,31 @@
         <AccessRules IsPublished="false"/>
         <Type TypeId="2" Path="acsTUGILCRUVXOBDCLUAALOMT5GDM"/>
       </Property>
-      <Property Id="prmGEXCDWUBPFHDDFLI4XVPEPIHZQ" Name="pExcludeUnitId" Nature="11" IsConst="false" IsOverride="false">
+      <Property Id="prmGEXCDWUBPFHDDFLI4XVPEPIHZQ" Name="pPrevUnitId" Nature="11" IsConst="false" IsOverride="false">
         <AccessRules IsPublished="false"/>
         <Type TypeId="2"/>
       </Property>
-      <Property Id="prmO4VQYDVHSNCFVJJMYMGTQBN77Y" Name="pExcludePriority" Nature="11" IsConst="false" IsOverride="false">
+      <Property Id="prmO4VQYDVHSNCFVJJMYMGTQBN77Y" Name="pPrevPriority" Nature="11" IsConst="false" IsOverride="false">
         <AccessRules IsPublished="false"/>
         <Type TypeId="2"/>
+      </Property>
+      <Property Id="prfCKJOGLJT45BSHB76OCYI7RPOBM" Name="title" Nature="3" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prfOIGQ47IUKZGRFFRUC2Q2Z4DESE" Name="routingPriority" Nature="3" IsConst="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prmI6TAHYUJX5DTHNJMQRGOFO2QC4" Name="pRoutingKey" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
       </Property>
     </Properties>
     <Methods>
@@ -52,11 +70,14 @@
           <Parameter Name="pImportance" Id="mprVTAWY627YZHM5KC5ZTW7DBXY4Y">
             <Type TypeId="2" Path="acsTUGILCRUVXOBDCLUAALOMT5GDM"/>
           </Parameter>
-          <Parameter Name="pExcludeUnitId" Id="mprGEXCDWUBPFHDDFLI4XVPEPIHZQ">
+          <Parameter Name="pPrevUnitId" Id="mprGEXCDWUBPFHDDFLI4XVPEPIHZQ">
             <Type TypeId="2"/>
           </Parameter>
-          <Parameter Name="pExcludePriority" Id="mprO4VQYDVHSNCFVJJMYMGTQBN77Y">
+          <Parameter Name="pPrevPriority" Id="mprO4VQYDVHSNCFVJJMYMGTQBN77Y">
             <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="pRoutingKey" Id="mprI6TAHYUJX5DTHNJMQRGOFO2QC4">
+            <Type TypeId="21"/>
           </Parameter>
         </Parameters>
         <ReturnType TypeId="411" Path="accMKUXIVT5WVDBNODA4CPGQHGRB4"/>
@@ -65,10 +86,103 @@
     <Sql IsReadOnly="true">
       <Source>
         <xsc:Item>
-          <xsc:Sql>select </xsc:Sql>
+          <xsc:Sql>select 
+    </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
-          <xsc:DbFuncCall FuncId="dfn3HEZASVYUNBFTJK5LO3ORZQWA4"/>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="colUZY3V5REVLOBDCLSAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accMKUXIVT5WVDBNODA4CPGQHGRB4" PropId="prf2SPA4MX5RNBVBKUEV3WFXLYU2M" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colI6NERFZYS5VDBFCXAAUMFADAIA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accMKUXIVT5WVDBNODA4CPGQHGRB4" PropId="prfCKJOGLJT45BSHB76OCYI7RPOBM" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="colVV73PCZLVLOBDCLSAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> as </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accMKUXIVT5WVDBNODA4CPGQHGRB4" PropId="prfOIGQ47IUKZGRFFRUC2Q2Z4DESE" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Join Type="INNER" ReferenceId="refLJSTGVRFVLOBDCLSAALOMT5GDM"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+where 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colEVX5YH2SS5VDBN2IAAUMFADAIA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> != 0 
+    and (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmGEXCDWUBPFHDDFLI4XVPEPIHZQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null or </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="colUZY3V5REVLOBDCLSAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> != </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmGEXCDWUBPFHDDFLI4XVPEPIHZQ"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) 
+    and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="colB2VQZVZFVLOBDCLSAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmA7JS3EQ27NASRJFHHAGBZ6KFJU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+    and regexp_like(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:DbFuncCall FuncId="dfnKIMG2PDERRDS7I57MFT2WVIRMA"/>
         </xsc:Item>
         <xsc:Item>
           <xsc:Sql>(</xsc:Sql>
@@ -83,33 +197,87 @@
           <xsc:Parameter ParamId="prmQRJUM7SXRZEGBNQSF3DSDFDKA4"/>
         </xsc:Item>
         <xsc:Item>
+          <xsc:Sql>), </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="colPSI5Q6JLVLOBDCLSAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>) 
+    and 
+    (
+        (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmI6TAHYUJX5DTHNJMQRGOFO2QC4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="colESMLS2WYC5G6FGDNC5MAUIXPDI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null)
+        or
+        (regexp_like(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmI6TAHYUJX5DTHNJMQRGOFO2QC4"/>
+        </xsc:Item>
+        <xsc:Item>
           <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="colESMLS2WYC5G6FGDNC5MAUIXPDI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>))
+    )
+    and </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
           <xsc:Parameter ParamId="prmVTAWY627YZHM5KC5ZTW7DBXY4Y"/>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql>, </xsc:Sql>
+          <xsc:Sql> >= </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Parameter ParamId="prmGEXCDWUBPFHDDFLI4XVPEPIHZQ"/>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="colDS7R3IHBBFBJVGXEA5XTB36HHI" Owner="TABLE"/>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql>, </xsc:Sql>
+          <xsc:Sql> and </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Parameter ParamId="prmO4VQYDVHSNCFVJJMYMGTQBN77Y"/>
+          <xsc:Parameter ParamId="prmVTAWY627YZHM5KC5ZTW7DBXY4Y"/>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql>) as </xsc:Sql>
+          <xsc:Sql> &lt;= </xsc:Sql>
         </xsc:Item>
         <xsc:Item>
-          <xsc:PropSqlName TableId="accMKUXIVT5WVDBNODA4CPGQHGRB4" PropId="prf2SPA4MX5RNBVBKUEV3WFXLYU2M" Owner="THIS"/>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="col2TCIGGC4EFA6BGRDSLQGCOLQQ4" Owner="TABLE"/>
         </xsc:Item>
         <xsc:Item>
-          <xsc:Sql> from dual
-
- </xsc:Sql>
+          <xsc:Sql> 
+order by 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colIREKNEWHBDWDRD25AAYQQMVFBB" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> desc, 
+    (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="colVV73PCZLVLOBDCLSAALOMT5GDM" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> * 10 + dbms_random.value) desc, 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl5WO5N3BEVLOBDCLSAALOMT5GDM" PropId="colUZY3V5REVLOBDCLSAALOMT5GDM" Owner="TABLE"/>
         </xsc:Item>
       </Source>
       <UsedTables>

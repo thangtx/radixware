@@ -25,7 +25,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
 import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
 import org.radixware.kernel.common.design.msdleditor.enums.EAlign;
 import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
@@ -33,7 +33,7 @@ import org.radixware.kernel.common.msdl.fields.BCHFieldModel;
 import org.radixware.schemas.msdl.BCHField;
 
 
-public class BCHPanel extends AbstractEditItem implements ActionListener {
+public class BCHPanel extends AbstractMsdlPanel implements ActionListener {
 
     private BCHField field;
     private AbstractFieldModel fieldModel;
@@ -55,7 +55,7 @@ public class BCHPanel extends AbstractEditItem implements ActionListener {
     }
 
     public void open(BCHFieldModel fieldModel) {
-        super.open(fieldModel.getMsdlField());
+        super.open(fieldModel, fieldModel.getMsdlField());
         this.field = fieldModel.getField();
         this.fieldModel = fieldModel;
         alignPanel1.addActionListener(this);
@@ -93,10 +93,10 @@ public class BCHPanel extends AbstractEditItem implements ActionListener {
         super.update();
     }
 
-    private void save() {
+    @Override
+    protected void doSave() {
         field.setAlign(alignPanel1.getAlign().getValue());
         field.setPadChar(extCharPanel1.getString());
-        fieldModel.setModified();
     }
 
     /** This method is called from within the constructor to

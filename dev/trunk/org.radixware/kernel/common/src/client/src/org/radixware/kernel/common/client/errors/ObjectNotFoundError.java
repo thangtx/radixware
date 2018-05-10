@@ -101,7 +101,7 @@ public final class ObjectNotFoundError extends ServiceCallFault implements IClie
             return;
         }
         String classTitle;
-        if (!classDef.getObjectTitle().isEmpty()) {
+        if (classDef.hasObjectTitle()) {
             classTitle = classDef.getObjectTitle();
         } else if (classDef.hasGroupTitle()) {
             classTitle = classDef.getGroupTitle();

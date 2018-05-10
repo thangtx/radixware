@@ -11,12 +11,11 @@
     <MethodGroup Id="cmg4KH4VQTIXZDGXP5HD5PFTH44MQ" Name="Root"/>
     <PropertyGroup Id="cpgY6FALQOKEZB35CHEIYPGUMCBGY" Name="Root"/>
     <Properties>
-      <Property Id="colFUGVE3BA25HP5K5LIZT5WFG4HA" Name="mainUnit" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="false" ParentRefId="ref5MQ6BW57SJDTLBLEYPM3R5ZM2E" DetailRefId="refGP76EHYZONGK3AZVHH7DPU4JEE">
+      <Property Id="colT3XHLBWPY5GGRBETJTUPM3WC54" Name="primaryUnit" Nature="0" IsConst="false" IsOverride="true" isDescriptionInherited="true" ParentRefId="refI3HCWMKRANDRDA42ZXKFHOFLGY">
         <AccessRules/>
         <Type TypeId="31" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
-        <Presentation TitleId="mlsIJZBXALVNNAQNIUKOXZVHXIDSI" InheritanceMask="20">
-          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
-          <ParentSelect>
+        <Presentation InheritanceMask="55">
+          <ParentSelect ParentEditorRestrictions="66584555" ParentSelectorRestrictions="66583529">
             <ParentSelectCondition>
               <ConditionWhere>
                 <xsc:Item>
@@ -36,25 +35,25 @@
                 </xsc:Item>
                 <xsc:Item>
                   <xsc:Sql>) > 0
-and </xsc:Sql>
+and (</xsc:Sql>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:DbFuncCall FuncId="dfn3OXAHT4FYLORDBBJABIFNQAABA"/>
+                  <xsc:PropSqlName TableId="aec5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colUWMRBA2NRJFYJHNM6Z4QWWRN3Q" Owner="CHILD"/>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:Sql>(</xsc:Sql>
+                  <xsc:Sql> is null or </xsc:Sql>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:PropSqlName TableId="aec5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colF2TCBU6YX7NRDB6TAALOMT5GDM" Owner="THIS"/>
+                  <xsc:PropSqlName TableId="aec5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colEVLUYADHR5VDBNSIAAUMFADAIA" Owner="THIS"/>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:Sql>, </xsc:Sql>
+                  <xsc:Sql> &lt;> </xsc:Sql>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:Id Path="aclVL4JVALRV5BGLHMTFRIGF3YRWI"/>
+                  <xsc:PropSqlName TableId="aec5HP4XTP3EGWDBRCRAAIT4AGD7E" PropId="colUWMRBA2NRJFYJHNM6Z4QWWRN3Q" Owner="CHILD"/>
                 </xsc:Item>
                 <xsc:Item>
-                  <xsc:Sql>) = 0 </xsc:Sql>
+                  <xsc:Sql>)</xsc:Sql>
                 </xsc:Item>
               </ConditionWhere>
               <ConditionFrom/>
@@ -63,8 +62,26 @@ and </xsc:Sql>
         </Presentation>
       </Property>
     </Properties>
-    <Methods/>
-    <Entity EntityId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" AllowedDetailReferences="refGP76EHYZONGK3AZVHH7DPU4JEE"/>
+    <Methods>
+      <Method Id="mthQIF7CPRFE5GUTIY26PT5SYUD6E" Name="getUsedAddresses" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="411" Path="adcIMSU6VRIARDUZEOQVJUYGLFSY4"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return null;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
     <Presentations ObjectTitleId="mlsPY4HWEKYJ5FZZDMXUJO3SKI46A">
       <ClassCatalogs>
         <ClassCatalog Id="eccKOGFFVPJAHOBDA26AAMPGXSZKU" Name="Default">
@@ -72,7 +89,7 @@ and </xsc:Sql>
         </ClassCatalog>
       </ClassCatalogs>
       <EditorPresentations>
-        <EditorPresentation Id="eprYQ4EIJMG2RF6VDETAIH347V5UM" Name="Edit" BasePresentationId="eprOES76IFRNVARDD5EREQXKGZN5I" InheritanceMask="36016" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprOES76IFRNVARDD5EREQXKGZN5I" ClientEnvironment="explorer">
+        <EditorPresentation Id="eprYQ4EIJMG2RF6VDETAIH347V5UM" Name="Edit" BasePresentationId="eprXCFCDDGTRHNRDB5MAALOMT5GDM" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprXCFCDDGTRHNRDB5MAALOMT5GDM" ClientEnvironment="explorer">
           <Model Id="aemYQ4EIJMG2RF6VDETAIH347V5UM" Name="Edit:Model" Type="15" ClientEnvironment="common-client">
             <AccessRules/>
             <Headers>
@@ -84,11 +101,64 @@ and </xsc:Sql>
             <MethodGroup Id="cmgDYYL72YORZEWPDC5NIWPRM3H3U" Name="Root"/>
             <PropertyGroup Id="cpgROYRHAJTQVADDFFAGISPGB5L6Y" Name="Root"/>
             <Properties/>
-            <Methods/>
+            <Methods>
+              <Method Id="mthJRXRKMKZCBFQ3PSQWHUYLWPAJM" Name="updateVisibility" Nature="0" Environment="common-client" IsOverride="true" isDescriptionInherited="true">
+                <AccessRules Access="1"/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E eprXCFCDDGTRHNRDB5MAALOMT5GDM aemXCFCDDGTRHNRDB5MAALOMT5GDM mthJRXRKMKZCBFQ3PSQWHUYLWPAJM" Invoke="true">
+                        <xsc:Presentation>updateVisibility</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colT3XHLBWPY5GGRBETJTUPM3WC54" Invoke="true">
+                        <xsc:Presentation>primaryUnit</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(true);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colT3XHLBWPY5GGRBETJTUPM3WC54" Invoke="true">
+                        <xsc:Presentation>primaryUnit</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthT4TIHPBGA5CJ3B3H6S7BUVZNUA" Invoke="true">
+                        <xsc:Presentation>setMandatory</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(true);</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
           </Model>
           <ChildExplorerItems/>
           <EditorPages>
-            <Page Id="epgNY5ZMWWXZJFIBOEQ4YRZAU7A6U" Name="FallbackSettings" TitleId="mlsPKJFSZWU7VGDZER6QSSEARYP5Q" Type="1">
+            <Page Id="epgNY5ZMWWXZJFIBOEQ4YRZAU7A6U" Name="Additional" TitleId="mlsPKJFSZWU7VGDZER6QSSEARYP5Q" Type="1">
               <Properties>
                 <Property Id="colFUGVE3BA25HP5K5LIZT5WFG4HA" Row="0" Column="0"/>
               </Properties>
@@ -102,12 +172,78 @@ and </xsc:Sql>
           </EditorPages>
           <ObjectTitleFormat Id="etfGEPZZM4TBRCA3L6RIB4OFRFO7E"/>
         </EditorPresentation>
-        <EditorPresentation Id="eprBHJ6MN2EXNDYVCCRMTMOKMCQTY" Name="Create" BasePresentationId="eprYQ4EIJMG2RF6VDETAIH347V5UM" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprDITXNBQTIVBDRFUZ7UWX4XNMEQ" ClientEnvironment="explorer">
+        <EditorPresentation Id="eprBHJ6MN2EXNDYVCCRMTMOKMCQTY" Name="Create" BasePresentationId="eprS6PW3X2EKJFUNPGCXYDBACXY7A" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprS6PW3X2EKJFUNPGCXYDBACXY7A" ClientEnvironment="explorer">
+          <Model Id="aemBHJ6MN2EXNDYVCCRMTMOKMCQTY" Name="Create:Model" Type="15" ClientEnvironment="common-client">
+            <AccessRules/>
+            <Headers>
+              <Src Name="HeaderaemBHJ6MN2EXNDYVCCRMTMOKMCQTY"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaemBHJ6MN2EXNDYVCCRMTMOKMCQTY"/>
+            </Bodies>
+            <MethodGroup Id="cmgLM55ATXX5ZHE7DKA7DYQGOVIMI" Name="Root"/>
+            <PropertyGroup Id="cpg7H3PMGONXVCILAUI33VUHACNKM" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mthJRXRKMKZCBFQ3PSQWHUYLWPAJM" Name="updateVisibility" Nature="0" Environment="common-client" IsOverride="true" isDescriptionInherited="true">
+                <AccessRules Access="1"/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E eprXCFCDDGTRHNRDB5MAALOMT5GDM aemXCFCDDGTRHNRDB5MAALOMT5GDM mthJRXRKMKZCBFQ3PSQWHUYLWPAJM" Invoke="true">
+                        <xsc:Presentation>updateVisibility</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colT3XHLBWPY5GGRBETJTUPM3WC54" Invoke="true">
+                        <xsc:Presentation>primaryUnit</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(true);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colT3XHLBWPY5GGRBETJTUPM3WC54" Invoke="true">
+                        <xsc:Presentation>primaryUnit</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthT4TIHPBGA5CJ3B3H6S7BUVZNUA" Invoke="true">
+                        <xsc:Presentation>setMandatory</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(true);</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
           <ChildExplorerItems/>
           <ObjectTitleFormat Id="etfUIHFQDAU2FBSXIE4FZNEK6ZX5Y"/>
         </EditorPresentation>
       </EditorPresentations>
     </Presentations>
-    <Extends TypeId="411" Path="aclPC7EWUX4OJHNLM3A47ZR2TDUDY"/>
+    <Extends TypeId="411" Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
   </AdsClassDefinition>
 </AdsDefinition>

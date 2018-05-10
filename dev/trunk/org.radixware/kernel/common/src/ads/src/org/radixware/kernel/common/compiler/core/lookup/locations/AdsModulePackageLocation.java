@@ -39,7 +39,7 @@ public abstract class AdsModulePackageLocation extends PackageLocation {
         }
         basePackageName = new char[modules.size()][][];
         for (int i = 0; i < basePackageName.length; i++) {
-            basePackageName[i] = JavaSourceSupport.getPackageNameComponents(modules.get(i), JavaSourceSupport.UsagePurpose.getPurpose(env, JavaSourceSupport.CodeType.EXCUTABLE), true);
+            basePackageName[i] = JavaSourceSupport.getPackageNameComponents(modules.get(i), false, JavaSourceSupport.UsagePurpose.getPurpose(env, JavaSourceSupport.CodeType.EXCUTABLE), true);
         }
     }
 

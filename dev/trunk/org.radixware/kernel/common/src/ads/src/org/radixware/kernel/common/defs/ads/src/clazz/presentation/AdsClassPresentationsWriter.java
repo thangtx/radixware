@@ -107,7 +107,11 @@ public class AdsClassPresentationsWriter<T extends ClassPresentations> extends R
                 printer.printComma();
                 printer.println();
                 printer.println("/*Title Id*/");
-                WriterUtils.writeIdUsage(printer, ownerClass.getTitleId());
+                if (!ownerClass.isTitleInherited()) {
+                    WriterUtils.writeIdUsage(printer, ownerClass.getTitleId());
+                } else {
+                    WriterUtils.writeNull(printer);
+                }
                 printer.printComma();
                 printer.println();
                 printer.println("/*Property presentations*/");
@@ -164,6 +168,9 @@ public class AdsClassPresentationsWriter<T extends ClassPresentations> extends R
                     final AdsReportClassDef report = (AdsReportClassDef) def.getOwnerClass();
                     if (report.getCsvInfo() != null && report.getCsvInfo().isExportToCsvEnabled()) {
                         set.add(EReportExportFormat.CSV);
+                    }
+                    if (report.getXlsxReportInfo() != null && report.getXlsxReportInfo().isExportToXlsxEnabled()) {
+                        set.add(EReportExportFormat.XLSX);
                     }
                     if (report.getForm() != null && !report.getForm().getBands().isEmpty()) {
                         set.add(EReportExportFormat.PDF);

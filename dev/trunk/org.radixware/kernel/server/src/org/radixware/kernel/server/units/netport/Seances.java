@@ -8,24 +8,24 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.units.netport;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.enums.ELinkLevelProtocolKind;
-import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.units.Messages;
-
 
 final class Seances {
 
@@ -39,11 +39,15 @@ final class Seances {
     }
 
     void closeAll() {
-        for (Seance s : seancesBySid.values()) {
-            s.close(Seance.ECloseMode.GENERATE_ON_DISCONNECT_EVENT);
+        for (Map.Entry<String, Seance> entry : new HashSet<>(seancesBySid.entrySet())) {
+            try {
+                entry.getValue().close(Seance.ECloseMode.GENERATE_ON_DISCONNECT_EVENT);
+            } catch (Throwable t) {
+                unit.getTrace().put(EEventSeverity.ERROR, "Error while closing seance '" + entry.getKey() + "': " + ExceptionTextFormatter.throwableToString(t), EEventSource.NET_PORT_HANDLER);
+            }
         }
         if (!seancesBySid.isEmpty()) {
-            throw new RadixError("Seances are not closed");
+            unit.getTrace().put(EEventSeverity.ERROR, "Not all seances have been closed", EEventSource.NET_PORT_HANDLER);
         }
     }
 
@@ -54,10 +58,11 @@ final class Seances {
                 return null;
             }
         }
-        final Seance s = netChannel.linkLevelProtocolKind == ELinkLevelProtocolKind.POS2 ? new Pos2Seance(unit, netChannel, channel) : new FramerSeance(unit, netChannel, channel);
+        final Seance s = netChannel.options.linkLevelProtocolKind == ELinkLevelProtocolKind.POS2 ? new Pos2Seance(unit, netChannel, channel) : new FramerSeance(unit, netChannel, channel);
         if (netChannel instanceof NetClient) {
             s.connecting();
         } else {
+            s.generateSid(((InetSocketAddress) channel.getRemoteAddress()).getHostString(), ((InetSocketAddress) channel.getRemoteAddress()).getPort());
             s.open();
         }
         return s;
@@ -65,20 +70,33 @@ final class Seances {
 
     void registerSeance(final Seance seance) {
         seancesBySid.put(seance.sid, seance);
-        //setCurSeanceCountInDb(seance.listener); //RADIX-2756
     }
 
     void unregisterSeance(final Seance seance) {
         seancesBySid.remove(seance.sid);
-        //setCurSeanceCountInDb(seance.listener); //RADIX-2756
+        seance.channel.seanceUnregistered(seance);
     }
 
     Seance findSeance(final String sid) {
         return seancesBySid.get(sid);
     }
 
-    void setCurSeancesCountInDbForcibly() {
+    void setCurSeancesCountInDbForAll() {
         setCurSeancesCountInDb(true);
+    }
+    
+    void setCurSeancesCountInDbForChanged() {
+        setCurSeancesCountInDb(false);
+    }
+
+    public void maintenance() {
+        for (Seance s : new ArrayList<>(seancesBySid.values())) {
+            try {
+                s.maintenance();
+            } catch (Exception ex) {
+                unit.getTrace().put(EEventSeverity.ERROR, "Error on maintenance seance " + s.getConnectionDesc() + ": " + ExceptionTextFormatter.throwableToString(ex), EEventSource.NET_PORT_HANDLER);
+            }
+        }
     }
 
     private void setCurSeancesCountInDb(final boolean forced) {
@@ -86,19 +104,17 @@ final class Seances {
             return;
         }
         lastDbModTime = System.currentTimeMillis();
+        final List<NetPortDbQueries.ChannelStateInfo> infos = new ArrayList<>(unit.getChannels().size());
         for (NetChannel channel : unit.getChannels()) {
             if (forced || channel.isNeedUpdateDbStats()) {
-                try {
-                    final int count = channel.isStarted() ? getActiveSeanceCount(channel) : -1;
-                    unit.getNetPortHandlerDbQueries().setCurSeanceCount(channel, count);
-                    channel.setNeedUpdateDbStats(false);
-                } catch (SQLException ex) {
-                    final String exStack = ExceptionTextFormatter.exceptionStackToString(ex);
-                    channel.getTrace().put(EEventSeverity.ERROR, Messages.ERR_IN_DB_QRY + ": " + exStack, Messages.MLS_ID_ERR_IN_DB_QRY, new ArrStr(exStack), EEventSource.UNIT_PORT.getValue(), false);
-                }
+                final int sessionCount = channel.isStarted() ? getActiveSeanceCount(channel) : -1;
+                final int busyCount = (channel.getOptions() != null && channel.getOptions().isBusySessionCountOn) ? channel.getBusySeancesCount() : -1;
+                infos.add(new NetPortDbQueries.ChannelStateInfo(channel.id, sessionCount, busyCount));
+                channel.setNeedUpdateDbStats(false);
             }
         }
         try {
+            unit.getNetPortHandlerDbQueries().updateChannelsState(infos);
             unit.getDbConnection().commit();
         } catch (SQLException ex) {
             final String exStack = ExceptionTextFormatter.exceptionStackToString(ex);
@@ -130,7 +146,7 @@ final class Seances {
         }
         return null;
     }
-    
+
     public List<Seance> getActiveSeances(final NetChannel channel) {
         final List<Seance> result = new ArrayList<>();
         for (Seance s : seancesBySid.values()) {

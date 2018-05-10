@@ -18,6 +18,11 @@
     <xs:annotation>
         <xs:documentation>------ Types -------</xs:documentation>
     </xs:annotation>
+    <xs:complexType name="JmlTagItem">
+        <xs:sequence>
+            <xs:element name="Presentation" type = "xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
     <xs:complexType name="JmlType">
         <xs:sequence>
             <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
@@ -25,73 +30,111 @@
                     <xs:sequence>
                         <xs:choice>
                             <xs:element name="Java" type="xs:string"/>
+                            
                             <xs:element name="Literal">
                                 <xs:complexType>
-                                    <xs:attribute name="Literal" type="xs:string"/>
-                                    <xs:attribute name="Title" type="xs:string"/>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:JmlTagItem">
+                                            <xs:attribute name="Literal" type="xs:string"/>
+                                            <xs:attribute name="Title" type="xs:string"/>
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="IdReference">
                                 <xs:complexType>
-                                    <xs:attribute name="Path" use="required">
-                                        <xs:simpleType>
-                                            <xs:list itemType="types:Id"/>
-                                        </xs:simpleType>
-                                    </xs:attribute>
-                                    <xs:attribute name="Invoke" type="xs:boolean"/>
-                                    <xs:attribute name="Soft" type="xs:boolean" use="optional" default="false"/>
-                                    <xs:attribute name="Mode" type="xs:int" use="optional" default="0"/>
-                                    <xs:attribute name="dbName" type="xs:boolean"/>
-                                    <xs:attribute name="extStr" type="xs:string"/>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:JmlTagItem">
+                                            <xs:attribute name="Path" use="required">
+                                                <xs:simpleType>
+                                                    <xs:list itemType="types:Id"/>
+                                                </xs:simpleType>
+                                            </xs:attribute>
+                                            <xs:attribute name="Invoke" type="xs:boolean"/>
+                                            <xs:attribute name="Soft" type="xs:boolean" use="optional" default="false"/>
+                                            <xs:attribute name="Mode" type="xs:int" use="optional" default="0"/>
+                                            <xs:attribute name="dbName" type="xs:boolean"/>
+                                            <xs:attribute name="extStr" type="xs:string"/>
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="LocalizedString">
                                 <xs:complexType>
-                                    <xs:attribute name="OwnerId" type="xs:string"/>
-                                    <xs:attribute name="StringId" type="xs:string"/>
-                                    <xs:attribute name="Type" type="xs:int" use="optional" default="0"/>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:JmlTagItem">
+                                            <xs:attribute name="OwnerId" type="xs:string"/>
+                                            <xs:attribute name="StringId" type="xs:string"/>
+                                            <xs:attribute name="Type" type="xs:int" use="optional" default="0"/>
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="EventCode">
                                 <xs:complexType>
-                                    <xs:attribute name="OwnerId" type="xs:string"/>
-                                    <xs:attribute name="StringId" type="xs:string"/>
-                                    <xs:attribute name="Type" type="xs:int" use="optional" default="0"/>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:JmlTagItem">
+                                            <xs:attribute name="OwnerId" type="xs:string"/>
+                                            <xs:attribute name="StringId" type="xs:string"/>
+                                            <xs:attribute name="Type" type="xs:int" use="optional" default="0"/>
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="DbEntity">
                                 <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="PidAsStr" type="xs:string"/>
-                                    </xs:sequence>
-                                    <xs:attribute name="EntityId" type="types:Id"/>
-                                    <xs:attribute name="CheckExistance" type="xs:boolean"/>
-                                    <xs:attribute name="IsUFOwner" type="xs:boolean"/>
-                                    <xs:attribute name="Title" type="xs:string"/>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:JmlTagItem">
+                                            <xs:sequence>
+                                                <xs:element name="PidAsStr" type="xs:string"/>
+                                            </xs:sequence>
+                                            <xs:attribute name="EntityId" type="types:Id"/>
+                                            <xs:attribute name="CheckExistance" type="xs:boolean"/>
+                                            <xs:attribute name="IsUFOwner" type="xs:boolean"/>
+                                            <xs:attribute name="Title" type="xs:string"/>
+                                            <xs:attribute name="ExtGuid" type="xs:string" use="optional"/>
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="TypeDeclaration" type="TypeDeclaration"/>
+                            <xs:element name="TypeDeclaration" type="this:TypeDeclaration"/>
                             <xs:element name="Task" type="TaskTagType"/>
                             <xs:element name="Pin">
                                 <xs:complexType>
-                                    <xs:attribute name="Id" type="xs:string" use="required"/>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:JmlTagItem">
+                                            <xs:attribute name="Id" type="xs:string" use="required"/>
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="Data">
                                 <xs:complexType>
-                                    <xs:attribute name="Id" type="types:Id" use="required"/>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:JmlTagItem">
+                                            <xs:attribute name="Id" type="types:Id" use="required"/>
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="ReadLicense">
                                 <xs:complexType>
-                                    <xs:attribute name="Id" type="xs:integer" use="required"/>
-                                    <xs:attribute name="License" type="xs:string" use="required"/>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:JmlTagItem">
+                                            <xs:attribute name="Id" type="xs:integer" use="required"/>
+                                            <xs:attribute name="License" type="xs:string" use="required"/>
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="CheckLicense">
                                 <xs:complexType>
-                                    <xs:attribute name="Id" type="xs:integer" use="required"/>
-                                    <xs:attribute name="License" type="xs:string" use="required"/>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:JmlTagItem">
+                                            <xs:attribute name="Id" type="xs:integer" use="required"/>
+                                            <xs:attribute name="License" type="xs:string" use="required"/>
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
                                 </xs:complexType>
                             </xs:element>
                         </xs:choice>
@@ -101,6 +144,94 @@
         </xs:sequence>
         <xs:attribute name="Description" type="xs:string" use="optional" default=""/>
     </xs:complexType>
+    
+    <xs:complexType name="MmlTagItem">
+        <xs:sequence>
+            <xs:element name="Presentation" type = "xs:string" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="DocResource">
+        <xs:complexContent>
+            <xs:extension base="this:MmlTagItem">
+                <xs:attribute name="Title" type="xs:string"/>
+                <xs:attribute name="FileName" type="xs:string"/>
+                <xs:attribute name="ModuleName" type="xs:string"/>
+                <xs:attribute name="LayerUri" type="xs:string"/>
+                <xs:attribute name="Language">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EIsoLanguage</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:StrEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+            </xs:extension>
+        </xs:complexContent>                                        
+    </xs:complexType>
+    
+    <xs:complexType name="MmlType">
+        <xs:sequence>
+            <xs:element name="Item" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:choice>
+                            <xs:element name="Markdown" type="xs:string"/>
+                            
+                            <xs:element name="IdReference">
+                                <xs:complexType>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:MmlTagItem">
+                                            <xs:attribute name="Path" use="required">
+                                                <xs:simpleType>
+                                                    <xs:list itemType="types:Id"/>
+                                                </xs:simpleType>
+                                            </xs:attribute>
+                                            <xs:attribute name="ModuleName" type="xs:string"/>
+                                            <xs:attribute name="LayerUri" type="xs:string"/>
+                                            <xs:attribute name="Segment">
+                                                <xs:simpleType>
+                                                    <xs:annotation>
+                                                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                                            <types:class>org.radixware.kernel.common.enums.ERepositorySegmentType</types:class>
+                                                        </xs:appinfo>
+                                                    </xs:annotation>
+                                                    <xs:restriction base="types:StrEnum"/>
+                                                </xs:simpleType>
+                                            </xs:attribute>
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
+                                </xs:complexType>
+                            </xs:element>
+                            
+                            <xs:element name="MarkdownImage">
+                                <xs:complexType>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:DocResource">
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
+                                </xs:complexType>
+                            </xs:element>
+                            
+                            <xs:element name="MarkdownRef">
+                                <xs:complexType>
+                                    <xs:complexContent>
+                                        <xs:extension base="this:DocResource">
+                                        </xs:extension>
+                                    </xs:complexContent>                                        
+                                </xs:complexType>
+                            </xs:element>
+                            
+                        </xs:choice>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Description" type="xs:string" use="optional" default=""/>
+    </xs:complexType>
+    
     <xs:complexType name="TypeArguments">
         <xs:sequence>
             <xs:element name="Argument" maxOccurs="unbounded">
@@ -122,27 +253,31 @@
         </xs:sequence>
     </xs:complexType>
     <xs:complexType name="TypeDeclaration">
-        <xs:sequence>
-            <xs:element name="GenericArguments" type="TypeArguments" minOccurs="0"/>
-        </xs:sequence>
-        <xs:attribute name="TypeId" use="required">
-            <xs:simpleType>
-                <xs:annotation>
-                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
-                        <types:class>org.radixware.kernel.common.enums.EValType</types:class>
-                    </xs:appinfo>
-                </xs:annotation>
-                <xs:restriction base="types:IntEnum"/>
-            </xs:simpleType>
-        </xs:attribute>
-        <xs:attribute name="Path">
-            <xs:simpleType>
-                <xs:list itemType="types:Id"/>
-            </xs:simpleType>
-        </xs:attribute>
-        <xs:attribute name="extStr" type="xs:string"/>
-        <xs:attribute name="Dimension" type="xs:int" use="optional" default="0"/>
-        <xs:attribute name="IsArgumentType" type="xs:boolean" use="optional" default="false"/>
+        <xs:complexContent>
+            <xs:extension base="this:JmlTagItem">
+                <xs:sequence>
+                    <xs:element name="GenericArguments" type="TypeArguments" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="TypeId" use="required">
+                    <xs:simpleType>
+                        <xs:annotation>
+                            <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                                <types:class>org.radixware.kernel.common.enums.EValType</types:class>
+                            </xs:appinfo>
+                        </xs:annotation>
+                        <xs:restriction base="types:IntEnum"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="Path">
+                    <xs:simpleType>
+                        <xs:list itemType="types:Id"/>
+                    </xs:simpleType>
+                </xs:attribute>
+                <xs:attribute name="extStr" type="xs:string"/>
+                <xs:attribute name="Dimension" type="xs:int" use="optional" default="0"/>
+                <xs:attribute name="IsArgumentType" type="xs:boolean" use="optional" default="false"/>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="Sqml">
         <xs:annotation>
@@ -391,6 +526,11 @@
                             <xs:complexType>
                                 <xs:attribute name="ParamId" type="types:Id" use="required"/>
                                 <xs:attribute name="Literal" type="xs:boolean" use="optional"/>
+                                <xs:attribute name="ExpressionList" type="xs:boolean" use="optional" default="false">
+                                    <xs:annotation>
+                                        <xs:documentation>Indicates that parameter value should be translated as expression list</xs:documentation>
+                                    </xs:annotation>
+                                </xs:attribute>                                    
                                 <xs:attribute name="Direction" use="optional">
                                     <xs:simpleType>
                                         <xs:annotation>
@@ -407,6 +547,17 @@
                                         <xs:documentation>for parameter by entity class</xs:documentation>
                                     </xs:annotation>
                                 </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:element name="ParamValCount">
+                            <xs:annotation>
+                                <xs:documentation>
+                                    The number of values in parameter. If parameter value is null then the result will be -1.
+                                    For array value the result will be number of items. In other cases the result will be 1.
+                                </xs:documentation>                                
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:attribute name="ParamId" type="types:Id" use="required"/>
                             </xs:complexType>
                         </xs:element>
                         <xs:element name="EntityRefParameter">
@@ -431,6 +582,12 @@
                                         <xs:documentation>Mandatory if PidTranslationMode = SecondaryKeyProps. Is not used in other modes.</xs:documentation>
                                     </xs:annotation>
                                 </xs:attribute>
+                                <xs:attribute name="ExpressionList" type="xs:boolean" use="optional" default="false">
+                                    <xs:annotation>
+                                        <xs:documentation>Indicates that parameter value should be translated as expression list</xs:documentation>
+                                    </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="Literal" type="xs:boolean" use="optional" default="false"/>
                             </xs:complexType>
                         </xs:element>
                         <xs:element name="EntityRefValue">
@@ -668,7 +825,7 @@
                                 <types:class>org.radixware.kernel.common.enums.ETaskTagPriority</types:class>
                             </xs:appinfo>
                         </xs:annotation>
-                         <xs:restriction base="types:StrEnum"/>
+                        <xs:restriction base="types:StrEnum"/>
                     </xs:simpleType>
                 </xs:attribute>
                 <xs:attribute name="Assignee" type="xs:string" use="optional"/>

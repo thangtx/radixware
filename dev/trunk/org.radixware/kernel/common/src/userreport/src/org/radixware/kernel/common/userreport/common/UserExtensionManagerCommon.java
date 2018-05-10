@@ -25,6 +25,7 @@ import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
 import org.radixware.kernel.common.defs.ads.rights.AdsRoleDef;
 import org.radixware.kernel.common.defs.ads.userfunc.UdsObserver;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.userreport.repository.ReportsModule;
 import org.radixware.kernel.common.userreport.repository.UserReport;
@@ -90,6 +91,10 @@ public class UserExtensionManagerCommon implements BuildOptions.UserModeHandler 
 
     public IMsdlSchemeManager getMsdlSchemesManager() {
         return null;
+    }
+    
+    public Branch getBranch() throws IOException{
+        return env.getDefManager().getRepository().getBranch();
     }
 
     //Report
@@ -326,7 +331,7 @@ public class UserExtensionManagerCommon implements BuildOptions.UserModeHandler 
         return modifiedSupport;
     }
 
-    public void setReportModified(UserReport report, boolean modified) {
+    public void setReportModified(UserReport report) {
         modifiedSupport.fireChange(report);
     }
 
@@ -498,6 +503,10 @@ public class UserExtensionManagerCommon implements BuildOptions.UserModeHandler 
 
     public UdsObserver getObserver() {
         return observer;
+    }
+    
+    public String getLayerVersionsString() {
+        return "<not defined>";
     }
     /*private boolean setCurrentVersionId(final UserReport.ReportVersion version, final Id id) {
      final CountDownLatch lock = new CountDownLatch(1);

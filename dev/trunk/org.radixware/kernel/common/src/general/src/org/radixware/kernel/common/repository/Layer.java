@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.defs.*;
 import org.radixware.kernel.common.defs.ClipboardSupport.Transfer;
+import org.radixware.kernel.common.enums.EDatabaseType;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ELayerTrunkKind;
 import org.radixware.kernel.common.enums.EOptionMode;
@@ -282,6 +283,7 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
     private boolean isCsm;
     private final List<EIsoLanguage> languages = new LinkedList<>();
     private EIsoLanguage defaultLanguage;
+    private EIsoLanguage mainDocLanguage;
     private final Segment ads;
     private final Segment dds;
     private final Segment uds;
@@ -293,6 +295,7 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
     private RootDefinitionList accessibleRoots;
     private RootDefinitionList accessibleRoles;
     private BinaryCompatibilityOptions binaryCompatibilityOptions;
+    private Id rootDocMapDefId;
 
     protected Layer() {
         super("new.layer");
@@ -307,7 +310,7 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         this.uds = createSegment(ERepositorySegmentType.UDS);
         this.kernel = createSegment(ERepositorySegmentType.KERNEL);
         this.languages.add(EIsoLanguage.ENGLISH);
-        this.licenses = new License(uri, null, null, null, this);
+        this.licenses = new License(uri, null, null, null, null, this);
         dbObjectNamesRestriction = "";
 
         accessibleRoots = new RootDefinitionList(this);
@@ -380,9 +383,9 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         }
 
         if (xLayer.isSetLicenses()) {
-            licenses = new License(uri, null, loadLicenses(xLayer.getLicenses().getLicenseList(), uri), null, this);
+            licenses = new License(uri, null, loadLicenses(xLayer.getLicenses().getLicenseList(), uri), null, null, this);
         } else {
-            licenses = new License(uri, null, null, null, this);
+            licenses = new License(uri, null, null, null, null, this);
         }
 
         targetDatabases.clear();
@@ -407,29 +410,52 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         if (xLayer.isSetRadixdocFormatVersion()) {
             radixdocFormatVersion = xLayer.getRadixdocFormatVersion();
         }
+
+        if (xLayer.isSetMainDocLanguage()) {
+            mainDocLanguage = xLayer.getMainDocLanguage();
+        } else {
+            mainDocLanguage = EIsoLanguage.ENGLISH;
+        }
+
+        if (xLayer.isSetRootDocMapDefId()) {
+            rootDocMapDefId = xLayer.getRootDocMapDefId();
+        }
     }
 
     private List<TargetDatabase> loadTargetDatabases(final org.radixware.schemas.product.Layer xLayer) {
         final List<TargetDatabase> loadedTargetDatabases = new ArrayList<>();
         for (org.radixware.schemas.product.TargetDatabase xTargetDb : xLayer.getTargetDatabases().getTargetDatabaseList()) {
             final List<DatabaseOption> options = new ArrayList();
+
             if (xTargetDb.getOptions() != null) {
                 for (org.radixware.schemas.product.TargetDatabase.Options.Option xOption : xTargetDb.getOptions().getOptionList()) {
                     final List<DatabaseOptionDependency> dependencies = new ArrayList<>();
                     if (xOption.getDependencyList() != null) {
                         for (org.radixware.schemas.product.DatabaseOptionDependency xDep : xOption.getDependencyList()) {
-                            dependencies.add(new DatabaseOptionDependency(xDep.getOption(), xDep.getDefaultMode(), xDep.getEditable(), xDep.getDefaultUpgradeMode(), xDep.getEditableOnUpgrade()));
+                            boolean isOnlyModeExists = xDep.getDefaultMode() == null && xDep.getDefaultUpgradeMode() == null && xDep.getEditable() == null && xDep.getEditableOnUpgrade() == null && xDep.getMode() != null;
+                            if (isOnlyModeExists) {
+                                dependencies.add(new DatabaseOptionDependency(xDep.getOption(), xDep.getMode(), false, xDep.getMode(), false));
+                            } else {
+                                dependencies.add(new DatabaseOptionDependency(xDep.getOption(), xDep.getDefaultMode(), xDep.getEditable(), xDep.getDefaultUpgradeMode(), xDep.getEditableOnUpgrade()));
+                            }
                         }
                     }
-                    options.add(new DatabaseOption(this, xOption.getName(), xOption.getDescription(), xOption.getDefaultMode(), xOption.getDefaultUpgradeMode(), xOption.getEditableOnUpgrade(), dependencies));
+                    options.add(new DatabaseOption(this, xOption.getName(), xOption.getDescription(), xOption.getDefaultMode(), xOption.getDefaultUpgradeMode() != null ? xOption.getDefaultUpgradeMode() : xOption.getDefaultMode(), xOption.getEditableOnUpgrade() != null ? xOption.getEditableOnUpgrade() : true, dependencies));
                 }
             }
+
             final List<DatabaseOptionDependency> commonDependencies = new ArrayList<>();
             if (xTargetDb.getDependencies() != null && xTargetDb.getDependencies().getDependencyList() != null) {
                 for (org.radixware.schemas.product.DatabaseOptionDependency xDep : xTargetDb.getDependencies().getDependencyList()) {
-                    commonDependencies.add(new DatabaseOptionDependency(xDep.getOption(), xDep.getDefaultMode(), xDep.getEditable(), xDep.getDefaultUpgradeMode(), xDep.getEditableOnUpgrade()));
+                    boolean isOnlyModeExists = xDep.getDefaultMode() == null && xDep.getDefaultUpgradeMode() == null && xDep.getEditable() == null && xDep.getEditableOnUpgrade() == null && xDep.getMode() != null;
+                    if (isOnlyModeExists) {
+                        commonDependencies.add(new DatabaseOptionDependency(xDep.getOption(), xDep.getMode(), false, xDep.getMode(), false));
+                    } else {
+                        commonDependencies.add(new DatabaseOptionDependency(xDep.getOption(), xDep.getDefaultMode(), xDep.getEditable(), xDep.getDefaultUpgradeMode(), xDep.getEditableOnUpgrade()));
+                    }
                 }
             }
+
             loadedTargetDatabases.add(new TargetDatabase(this, xTargetDb.getType(), xTargetDb.getSupportedVersions(), options, commonDependencies));
         }
         return loadedTargetDatabases;
@@ -447,7 +473,19 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
             } else {
                 dependencies = null;
             }
-            licenses.add(new License(xLicense.getName(), parentPath, loadLicenses(xLicense.getLicenseList(), parentPath == null ? xLicense.getName() : parentPath + License.SEPARATOR + xLicense.getName()), dependencies, this));
+
+            final List<License.RequiredModule> requiredModules;
+            if (xLicense.isSetRequiredModules()) {
+                requiredModules = new ArrayList<>();
+                for (org.radixware.schemas.product.License.RequiredModules.RequiredModule module : xLicense.getRequiredModules().getRequiredModuleList()) {
+                    requiredModules.add(new License.RequiredModule(module.getId(), module.getLayerUri()));
+                }
+            } else {
+                requiredModules = null;
+            }
+
+            List<License> children = loadLicenses(xLicense.getLicenseList(), parentPath == null ? xLicense.getName() : parentPath + License.SEPARATOR + xLicense.getName());
+            licenses.add(new License(xLicense.getName(), parentPath, children, dependencies, requiredModules, this));
         }
         return licenses;
     }
@@ -779,7 +817,7 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
             for (Layer layer : getBranch().getLayers()) {
                 if (getBaseLayerURIs().contains(layer.getURI())) {
                     for (TargetDatabase baseTargetDb : layer.getTargetDatabases()) {
-                        if (TargetDatabase.ORACLE_DB_TYPE.equals(baseTargetDb.getType())) {
+                        if (baseTargetDb.getDatabaseType() == EDatabaseType.ORACLE) {
                             if (minVersion.compareTo(baseTargetDb.getMinVersion()) < 0) {
                                 minVersion = baseTargetDb.getMinVersion();
                             }
@@ -788,7 +826,13 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
                 }
             }
         }
-        return Collections.singletonList(new TargetDatabase(this, TargetDatabase.ORACLE_DB_TYPE, Collections.singletonList(minVersion), null, Collections.singletonList(new DatabaseOptionDependency(TargetDatabase.PARTITIONING_OPTION, EOptionMode.ENABLED, true, EOptionMode.ENABLED, true))));
+//        return Collections.singletonList(new TargetDatabase(this, TargetDatabase.ORACLE_DB_TYPE, Collections.singletonList(minVersion), null, Collections.<DatabaseOptionDependency>emptyList()));
+        return Collections.unmodifiableList(Arrays.asList(
+                new TargetDatabase(this, EDatabaseType.ORACLE, Collections.singletonList(minVersion), null, Collections.<DatabaseOptionDependency>emptyList())
+        //                       ,new TargetDatabase(this, EDatabaseType.POSTGRESQL, Collections.singletonList(minVersion), null, Collections.<DatabaseOptionDependency>emptyList())
+        //                       ,new TargetDatabase(this, EDatabaseType.ENTERPRISEDB, Collections.singletonList(minVersion), null, Collections.<DatabaseOptionDependency>emptyList())
+        )
+        );
     }
 
     public void setTargetDatabases(final List<TargetDatabase> targetDatabases) {
@@ -1155,6 +1199,8 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         xLayer.setTitle(title);
         xLayer.setLanguages(new LinkedList<EIsoLanguage>(languages));
         xLayer.setIsLocalizing(isLocalizing);
+        xLayer.setMainDocLanguage(mainDocLanguage);
+        xLayer.setRootDocMapDefId(rootDocMapDefId);
         //xLayer.setAPIVersion(getAPIVersion());
 
         if (extensions != null && !extensions.isEmpty()) {
@@ -1194,14 +1240,26 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
                         if (option.getDescription() != null) {
                             xOption.setDescription(option.getDescription());
                         }
-                        xOption.setDefaultMode(option.getDefaultMode() == null ? EOptionMode.ENABLED : option.getDefaultMode());                        
+                        xOption.setDefaultMode(option.getDefaultMode() == null ? EOptionMode.ENABLED : option.getDefaultMode());
                         xOption.setDefaultUpgradeMode(option.getDefaultUpgradeMode() == null ? EOptionMode.ENABLED : option.getDefaultUpgradeMode());
                         xOption.setEditableOnUpgrade(option.getEditableOnUpgrade() == null ? true : option.getEditableOnUpgrade());
                         if (option.getDependencies() != null && !option.getDependencies().isEmpty()) {
                             for (DatabaseOptionDependency dep : option.getDependencies()) {
                                 org.radixware.schemas.product.DatabaseOptionDependency xDep = xOption.addNewDependency();
                                 xDep.setOption(dep.getOptionName());
-                                xDep.setDefaultMode(dep.getDefaultMode());
+                                if (dep.getDefaultMode() != null) {
+                                    xDep.setDefaultMode(dep.getDefaultMode());
+                                    xDep.setMode(dep.getDefaultMode());
+                                }
+                                if (dep.getEditable() != null) {
+                                    xDep.setEditable(dep.getEditable());
+                                }
+                                if (dep.getDefaultUpgradeMode() != null) {
+                                    xDep.setDefaultUpgradeMode(dep.getDefaultUpgradeMode());
+                                }
+                                if (dep.getEditableOnUpgrade() != null) {
+                                    xDep.setEditableOnUpgrade(dep.getEditableOnUpgrade());
+                                }
                             }
                         }
                     }
@@ -1211,10 +1269,19 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
                     for (DatabaseOptionDependency dep : targetDb.getDependencies()) {
                         org.radixware.schemas.product.DatabaseOptionDependency xDep = xDeps.addNewDependency();
                         xDep.setOption(dep.getOptionName());
-                        xDep.setDefaultMode(dep.getDefaultMode());
-                        xDep.setEditable(dep.getEditable());
-                        xDep.setDefaultUpgradeMode(dep.getDefaultUpgradeMode());
-                        xDep.setEditableOnUpgrade(dep.getEditableOnUpgrade());
+                        if (dep.getDefaultMode() != null) {
+                            xDep.setDefaultMode(dep.getDefaultMode());
+                            xDep.setMode(dep.getDefaultMode());
+                        }
+                        if (dep.getEditable() != null) {
+                            xDep.setEditable(dep.getEditable());
+                        }
+                        if (dep.getDefaultUpgradeMode() != null) {
+                            xDep.setDefaultUpgradeMode(dep.getDefaultUpgradeMode());
+                        }
+                        if (dep.getEditableOnUpgrade() != null) {
+                            xDep.setEditableOnUpgrade(dep.getEditableOnUpgrade());
+                        }
                     }
                 }
             }
@@ -1254,6 +1321,15 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         if (depStr != null && !depStr.isEmpty()) {
             xLicense.setDependencies(depStr);
         }
+        if (license.requiredModules != null) {
+            org.radixware.schemas.product.License.RequiredModules modules = xLicense.isSetRequiredModules() ? xLicense.getRequiredModules() : xLicense.addNewRequiredModules();
+            for (License.RequiredModule module : license.requiredModules) {
+                org.radixware.schemas.product.License.RequiredModules.RequiredModule xModule;
+                xModule = modules.addNewRequiredModule();
+                xModule.setId(module.id);
+                xModule.setLayerUri(module.layerUri);
+            }
+        }
         if (license.getChildren() != null) {
             for (License childLicense : license.getChildren()) {
                 saveLicense(childLicense, xLicense.addNewLicense());
@@ -1282,7 +1358,7 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         } else {
             return null;
         }
-    } 
+    }
 
     public String getReleaseNumber() {
         return release;
@@ -1304,7 +1380,7 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
             this.languages.clear();
             if (languages != null) {
                 this.languages.addAll(languages);
-               // Collections.sort(this.languages);
+                // Collections.sort(this.languages);
             }
             setEditState(EEditState.MODIFIED);
         }
@@ -1575,17 +1651,56 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
 
     public static class License {
 
+        public static class RequiredModule {
+
+            public final Id id;
+            public final String layerUri;
+
+            public RequiredModule(Id id, String layerUri) {
+                this.id = id;
+                this.layerUri = layerUri;
+            }
+
+            @Override
+            public int hashCode() {
+                int hash = 3;
+                hash = 97 * hash + Objects.hashCode(this.id);
+                hash = 97 * hash + Objects.hashCode(this.layerUri);
+                return hash;
+            }
+
+            @Override
+            public boolean equals(Object obj) {
+                if (obj == null) {
+                    return false;
+                }
+                if (getClass() != obj.getClass()) {
+                    return false;
+                }
+                final RequiredModule other = (RequiredModule) obj;
+                if (!Objects.equals(this.id, other.id)) {
+                    return false;
+                }
+                if (!Objects.equals(this.layerUri, other.layerUri)) {
+                    return false;
+                }
+                return true;
+            }
+        }
+
         public static final String SEPARATOR = "/";
         private final Layer layer;
         private final String ownName;
         private final List<License> children;
         private final List<String> dependencies;
+        private final List<RequiredModule> requiredModules;
         private final String parentFullName;
 
-        public License(final String ownName, final String parentFullName, final List<License> children, final List<String> dependencies, final Layer layer) {
+        public License(final String ownName, final String parentFullName, final List<License> children, final List<String> dependencies, final List<RequiredModule> requiredModules, final Layer layer) {
             this.ownName = ownName;
             this.children = children == null ? Collections.<License>emptyList() : Collections.unmodifiableList(new ArrayList<>(children));
             this.dependencies = dependencies == null ? Collections.<String>emptyList() : Collections.unmodifiableList(new ArrayList<>(dependencies));
+            this.requiredModules = requiredModules == null ? Collections.<RequiredModule>emptyList() : Collections.unmodifiableList(new ArrayList<>(requiredModules));
             this.layer = layer;
             this.parentFullName = parentFullName;
         }
@@ -1629,6 +1744,10 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
             return dependencies;
         }
 
+        public List<RequiredModule> getRequiredModules() {
+            return requiredModules;
+        }
+
         public Map<String, License> collectFullNameToLicenseMap() {
             final Map<String, License> fullName2License = new HashMap<>();
             collect(this, fullName2License);
@@ -1658,6 +1777,7 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
             hash = 47 * hash + Objects.hashCode(this.ownName);
             hash = 47 * hash + Objects.hashCode(this.children);
             hash = 47 * hash + Objects.hashCode(this.dependencies);
+            hash = 47 * hash + Objects.hashCode(this.requiredModules);
             hash = 47 * hash + Objects.hashCode(this.parentFullName);
             return hash;
         }
@@ -1681,6 +1801,9 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
                 return false;
             }
             if (!Objects.equals(this.dependencies, other.dependencies)) {
+                return false;
+            }
+            if (!Objects.equals(this.requiredModules, other.requiredModules)) {
                 return false;
             }
             if (!Objects.equals(this.parentFullName, other.parentFullName)) {
@@ -1717,20 +1840,20 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
 
     public static class DatabaseOptionDependency implements Serializable {
 
-        private final String optionName;        
+        private final String optionName;
         private final EOptionMode defaultMode;
-        private final Boolean editable;        
+        private final Boolean editable;
         private final EOptionMode defaultUpgradeMode;
         private final Boolean editableOnUpgrade;
 
         public DatabaseOptionDependency(String optionName, EOptionMode defaultMode) {
             this.optionName = optionName;
-            this.defaultMode = defaultMode;            
+            this.defaultMode = defaultMode;
             this.editable = null;
             this.defaultUpgradeMode = null;
             this.editableOnUpgrade = null;
         }
-        
+
         public DatabaseOptionDependency(String optionName, EOptionMode defaultMode, Boolean editable, EOptionMode defaultUpgradeMode, Boolean editableOnUpgrade) {
             this.optionName = optionName;
             this.defaultMode = defaultMode;
@@ -1746,7 +1869,7 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         public EOptionMode getDefaultMode() {
             return defaultMode;
         }
-        
+
         public Boolean getEditable() {
             return editable;
         }
@@ -1796,7 +1919,7 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
             }
             return true;
         }
-        
+
         @Override
         public String toString() {
             return "DatabaseOptionDependency{" + "optionName=" + optionName + ", mode=" + defaultMode + '}';
@@ -1851,11 +1974,11 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         public EOptionMode getDefaultMode() {
             return defaultMode;
         }
-        
+
         public EOptionMode getDefaultUpgradeMode() {
             return defaultUpgradeMode;
         }
-        
+
         public Boolean getEditableOnUpgrade() {
             return editableOnUpgrade;
         }
@@ -1931,6 +2054,8 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         public static final String ORACLE_DB_TYPE = "ORACLE";
         public static final BigDecimal MIN_ORACLE_VERSION = BigDecimal.valueOf(111, 1);
         public static final String PARTITIONING_OPTION = "org.radixware\\Partitioning";
+
+        private final EDatabaseType dbType;
         private final String type;
         private final List<BigDecimal> supportedVersions;
         private final List<DatabaseOption> options;
@@ -1938,41 +2063,34 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         private final Layer layer;
         private String supportedVersionsStr;
 
+        @Deprecated
         public TargetDatabase(Layer layer, String type, String supportedVersions, List<DatabaseOption> supportedOptions, List<DatabaseOptionDependency> dependencies) {
-            this.layer = layer;
-            this.type = type;
-            this.options = Collections.unmodifiableList(supportedOptions == null ? Collections.<DatabaseOption>emptyList() : new ArrayList<>(supportedOptions));
-            this.supportedVersionsStr = supportedVersions;
-            supportedVersions = supportedVersions.trim();
-            if (supportedVersions != null && !supportedVersions.isEmpty()) {
-                String[] versionStrings = supportedVersions.split(",");
-                List<BigDecimal> versions = new ArrayList<>();
-                for (String str : versionStrings) {
-                    BigDecimal verDecimal;
-                    try {
-                        verDecimal = new BigDecimal(str);
-                    } catch (NumberFormatException ex) {
-                        verDecimal = BigDecimal.valueOf(-1);
-                    }
-                    versions.add(verDecimal);
-                }
-                this.supportedVersions = Collections.unmodifiableList(versions);
-            } else {
-                this.supportedVersions = Collections.unmodifiableList(Collections.<BigDecimal>emptyList());
-            }
-            this.dependencies = new ArrayList<>();
-            if (dependencies != null) {
-                this.dependencies.addAll(dependencies);
-            }
+            this(layer, string2DatabaseType(type), supportedVersions, supportedOptions, dependencies);
         }
 
+        public TargetDatabase(Layer layer, EDatabaseType dbType, String supportedVersions, List<DatabaseOption> supportedOptions, List<DatabaseOptionDependency> dependencies) {
+            this(layer, dbType, split2BigDecimal(supportedVersions), supportedOptions, dependencies);
+        }
+
+        @Deprecated
         public TargetDatabase(Layer layer, String type, List<BigDecimal> supportedVersions, List<DatabaseOption> supportedOptions, List<DatabaseOptionDependency> dependencies) {
-            this.layer = layer;
-            this.type = type;
-            this.supportedVersions = Collections.unmodifiableList(new ArrayList<>(supportedVersions == null ? Collections.<BigDecimal>emptyList() : supportedVersions));
-            this.options = Collections.unmodifiableList(supportedOptions == null ? Collections.<DatabaseOption>emptyList() : new ArrayList<>(supportedOptions));
-            this.dependencies = Collections.unmodifiableList(dependencies == null ? Collections.<DatabaseOptionDependency>emptyList() : dependencies);
-            this.supportedVersionsStr = StringUtils.join(supportedVersions, ",");
+            this(layer, string2DatabaseType(type), supportedVersions, supportedOptions, dependencies);
+        }
+
+        public TargetDatabase(Layer layer, EDatabaseType dbType, List<BigDecimal> supportedVersions, List<DatabaseOption> supportedOptions, List<DatabaseOptionDependency> dependencies) {
+            if (layer == null) {
+                throw new IllegalArgumentException("Layer ref can't be null");
+            } else if (dbType == null) {
+                throw new IllegalArgumentException("Database type can't be null");
+            } else {
+                this.layer = layer;
+                this.dbType = dbType;
+                this.type = dbType.toString();
+                this.supportedVersions = Collections.unmodifiableList(new ArrayList<>(supportedVersions == null ? Collections.<BigDecimal>emptyList() : supportedVersions));
+                this.options = Collections.unmodifiableList(supportedOptions == null ? Collections.<DatabaseOption>emptyList() : new ArrayList<>(supportedOptions));
+                this.dependencies = Collections.unmodifiableList(dependencies == null ? Collections.<DatabaseOptionDependency>emptyList() : dependencies);
+                this.supportedVersionsStr = StringUtils.join(supportedVersions, ",");
+            }
         }
 
         public Layer getLayer() {
@@ -1982,12 +2100,24 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
         public BigDecimal getMinVersion() {
             if (supportedVersions.isEmpty()) {
                 return BigDecimal.ZERO;
+            } else {
+                BigDecimal minVersion = supportedVersions.get(0);
+
+                for (BigDecimal item : supportedVersions) {
+                    if (minVersion.compareTo(item) > 0) {
+                        minVersion = item;
+                    }
+                }
+                return minVersion;
             }
-            return supportedVersions.get(0);
         }
 
         public String getType() {
             return type;
+        }
+
+        public EDatabaseType getDatabaseType() {
+            return dbType;
         }
 
         public List<BigDecimal> getSupportedVersions() {
@@ -2039,5 +2169,56 @@ public class Layer extends RadixObject implements IDirectoryRadixObject {
             }
             return true;
         }
+
+        @Override
+        public String toString() {
+            return "TargetDatabase{" + "type=" + type + ", supportedVersions=" + supportedVersions + ", options=" + options + ", dependencies=" + dependencies + ", layer=" + layer + ", supportedVersionsStr=" + supportedVersionsStr + '}';
+        }
+
+        static List<BigDecimal> split2BigDecimal(final String source) {
+            final List<BigDecimal> versions = new ArrayList<>();
+
+            if (source != null && !source.isEmpty()) {
+                for (String str : source.split("\\,")) {
+                    try {
+                        versions.add(new BigDecimal(str));
+                    } catch (NumberFormatException ex) {
+                        versions.add(BigDecimal.valueOf(-1));
+                    }
+                }
+            }
+            return Collections.unmodifiableList(versions);
+        }
+
+        static EDatabaseType string2DatabaseType(final String source) {
+            if (source == null || source.isEmpty()) {
+                throw new IllegalArgumentException("Database type can't be null or empty!");
+            } else {
+                try {
+                    return EDatabaseType.valueOf(source.trim().toUpperCase());
+                } catch (IllegalArgumentException exc) {
+                    throw new IllegalArgumentException("Illegal value [" + source + "] for database type. Available types are " + Arrays.toString(EDatabaseType.class.getEnumConstants()));
+                }
+            }
+        }
+    }
+
+    // doc
+    public void setMainDocLanguage(EIsoLanguage mainDocLanguage) {
+        this.mainDocLanguage = mainDocLanguage;
+        setEditState(EEditState.MODIFIED);
+    }
+
+    public void setRootDocMapDefId(Id rootDocMapDefId) {
+        this.rootDocMapDefId = rootDocMapDefId;
+        setEditState(EEditState.MODIFIED);
+    }
+
+    public EIsoLanguage getMainDocLanguage() {
+        return (mainDocLanguage == null) ? EIsoLanguage.ENGLISH : mainDocLanguage;
+    }
+
+    public Id getRootDocMapDefId() {
+        return rootDocMapDefId;
     }
 }

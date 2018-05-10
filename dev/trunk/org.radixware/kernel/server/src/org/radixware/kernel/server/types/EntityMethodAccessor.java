@@ -27,4 +27,8 @@ public class EntityMethodAccessor {
         return Entity.propsAreEqual(valType, val1, val2);
     }
     
+    public static boolean isAfterCommitRequired(final Entity entity) {
+        return entity.isAfterCommitRequired();
+    }
+    
 }

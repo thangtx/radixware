@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 
 
 public class DefaultPauseObject implements IPauseObject {
-
     private boolean blocked = false;
     private boolean stepMode = false;
 
@@ -36,14 +35,16 @@ public class DefaultPauseObject implements IPauseObject {
         if (!stepMode) {
             return;
         }
-        while (blocked) {
-            try {
-                wait();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(IPauseObject.class.getName()).log(Level.SEVERE, null, ex);
+        else {
+            while (blocked) {
+                try {
+                    wait();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(IPauseObject.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
+            blocked = true;//restoring block
         }
-        blocked = true;//restoring block
     }
 
     @Override

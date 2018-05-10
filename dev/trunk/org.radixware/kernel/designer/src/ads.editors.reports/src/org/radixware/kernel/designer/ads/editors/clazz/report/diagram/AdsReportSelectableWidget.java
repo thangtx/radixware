@@ -12,19 +12,19 @@ package org.radixware.kernel.designer.ads.editors.clazz.report.diagram;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportWidget;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportWidgetContainer;
 
-public class AdsReportSelectableWidget extends AbstractAdsReportWidget {
+public class AdsReportSelectableWidget extends AdsReportAbstractSelectableWidget {
 
     public static final int EDGE_SIZE_PX = 5;
     private static final Color SNAP_COLOR = Color.RED.darker();
     protected final AdsReportWidget reportWidget;
-    private boolean selected = false;
-    private final CellMouseListener mouseListener;
+    private final CellListener cellListener;
     private boolean dragged = false;
     public static final int IDENT = 1;
     //  private final RadixEventSource stateSupport = new RadixEventSource(); // support to listen undo/redo possibility
@@ -42,44 +42,41 @@ public class AdsReportSelectableWidget extends AbstractAdsReportWidget {
         super(diagram, reportWidget);
         this.reportWidget = reportWidget;
         setOpaque(true);
-        mouseListener = new CellMouseListener(this);
-        addMouseListener(mouseListener);
-        addMouseMotionListener(mouseListener);
+        cellListener = new CellListener(this);
+        addMouseListener(cellListener);
+        addMouseMotionListener(cellListener);
+        addKeyListener(cellListener);
     }
 
     protected AdsReportSelectableWidget(final AdsReportFormDiagram diagram, final AdsReportBand band) {
         super(diagram, band);
         this.reportWidget = null;
-        mouseListener = null;
+        cellListener = null;
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(final boolean selected) {
-        //if(reportWidget==null)return;
-        if (this.selected != selected) {
-            this.selected = selected;
-            if (selected) {
-                requestFocus();
-            }
-            repaint();
-            fireSelectionChanged();
-        }
-        if (this instanceof AdsReportBaseContainer && !selected) {
-            for (AdsReportSelectableWidget widget : ((AdsReportBaseContainer) this).getCellWidgets()) {
-                widget.setSelected(selected);
-            }
-        }
-
-        if (reportWidget != null) {
-            final AdsReportBaseContainer bandSubWidget = (AdsReportBaseContainer) getParent();//getOwnerBandWidget().bandSubWidget;
-            if (bandSubWidget != null) {
-                bandSubWidget.setComponentZOrder(this, 0);
-            }
-        }
-    }
+//    public void setSelected(final boolean selected, boolean requestFocus) {
+//        //if(reportWidget==null)return;
+//        if (this.selected != selected) {
+//            this.selected = selected;
+//            if (requestFocus && selected) {
+//                requestFocus();
+//            }
+//            repaint();
+//            fireSelectionChanged(new SelectionEvent(this, selected));
+//        }
+//        if (this instanceof AdsReportBaseContainer && !selected) {
+//            for (AdsReportSelectableWidget widget : ((AdsReportBaseContainer) this).getCellWidgets()) {
+//                widget.setSelected(selected);
+//            }
+//        }
+//
+//        if (reportWidget != null) {
+//            final AdsReportBaseContainer bandSubWidget = (AdsReportBaseContainer) getParent();//getOwnerBandWidget().bandSubWidget;
+//            if (bandSubWidget != null) {
+//                bandSubWidget.setComponentZOrder(this, 0);
+//            }
+//        }
+//    }
 
     @Override
     public void update() {
@@ -132,7 +129,7 @@ public class AdsReportSelectableWidget extends AbstractAdsReportWidget {
         final int width = getWidth() - 1;
         final int height = getHeight() - 1;
 
-        if (selected) {
+        if (isSelected()) {
             g.setColor(Color.GRAY);
             g.drawRect(EDGE_SIZE_PX / 2, EDGE_SIZE_PX / 2, width - EDGE_SIZE_PX + 1, height - EDGE_SIZE_PX + 1);
             //g.drawRect(0, 0, width, height);
@@ -210,6 +207,17 @@ public class AdsReportSelectableWidget extends AbstractAdsReportWidget {
 
     public AdsReportWidget getCell() {
         return reportWidget;
+    }
+
+    @Override
+    protected void onSelected(boolean selected) {
+        repaint();
+    }
+
+    @Override
+    public RadixObject getRadixObject() {
+        AdsReportWidget widget = getCell();
+        return widget == null? super.getRadixObject() : widget;
     }
 
     public static final class Factory {

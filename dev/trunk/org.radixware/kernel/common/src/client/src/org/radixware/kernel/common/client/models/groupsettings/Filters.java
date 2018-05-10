@@ -63,7 +63,7 @@ public class Filters extends GroupSettings<FilterModel> {
     }
     
     private boolean addCommonFilter(final RadCommonFilter filterDef,final Id presentationId){
-        if (!environment.getApplication().isExtendedMetaInformationAccessible()){
+        if (!environment.getApplication().isSqmlAccessible()){
             final List<ISqmlParameter> params = filterDef.getParameters().getAll();
             for (ISqmlParameter parameter : params){
                 if (parameter instanceof RadFilterUserParamDef
@@ -123,6 +123,7 @@ public class Filters extends GroupSettings<FilterModel> {
                                                  commonFilter.getLastUpdateTime()
                                                 );
                         //reorder common filter
+                        existingFilter.invalidateContition();
                         removeSetting(commonFilterId);
                         putSetting(existingFilter);
                     }
@@ -190,12 +191,23 @@ public class Filters extends GroupSettings<FilterModel> {
     }
 
     public FilterModel getDefaultFilter() {
+        return getDefaultFilter(null, true);
+    }
+    
+    public FilterModel getDefaultFilter(final Id suggestedFilterId, final boolean respectPredefined) {
         if (customDefaultFilterDefined){
             return customDefaultFilterId==null ? null : findById(customDefaultFilterId);
+        }else if (suggestedFilterId!=null){
+            final FilterModel filter = group.getFilters().findById(suggestedFilterId);
+            if (filter != null && filter.isValid()) {
+                return filter;
+            }
         }
-        final RadFilterDef def = group.getSelectorPresentationDef().getDefaultFilterDef();
-        if (def != null) {
-            return findById(def.getId());
+        if (respectPredefined){
+            final RadFilterDef def = group.getSelectorPresentationDef().getDefaultFilterDef();
+            if (def != null) {
+                return findById(def.getId());
+            }
         }
         return null;
     }
@@ -265,7 +277,7 @@ public class Filters extends GroupSettings<FilterModel> {
     
     @Override
     public boolean canOpenSettingsManager() {
-        return environment.getApplication().isExtendedMetaInformationAccessible() && super.canOpenSettingsManager();
+        return environment.getApplication().isSqmlAccessible() && super.canOpenSettingsManager();
     }
     
     public static void clearCache(final IClientApplication application){

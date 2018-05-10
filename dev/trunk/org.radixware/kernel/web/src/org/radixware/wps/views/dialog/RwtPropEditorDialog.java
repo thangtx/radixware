@@ -24,6 +24,7 @@ public abstract class RwtPropEditorDialog extends RwtDialog implements IPropEdit
 
     protected RwtPropEditorDialog(IClientEnvironment env, Id id, Id titleId, Id iconId) {
         super(env, id, titleId, iconId);
+        setObjectName("rx_prop_dlg_view_#"+id.toString());
     }
 
     @Override

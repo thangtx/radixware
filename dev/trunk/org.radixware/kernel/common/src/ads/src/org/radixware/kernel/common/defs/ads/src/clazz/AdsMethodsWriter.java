@@ -175,6 +175,7 @@ public class AdsMethodsWriter extends RadixObjectWriter<Methods> {
     }
 
     private void writeCommandIdsCache(CodePrinter printer, List<AdsCommandDef> commands) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         printer.println("/**Executable command ids cache*/");
 
         for (AdsCommandDef info : commands) {
@@ -186,9 +187,11 @@ public class AdsMethodsWriter extends RadixObjectWriter<Methods> {
             WriterUtils.writeIdUsage(printer, info.getId());
             printer.printlnSemicolon();
         }
+        WriterUtils.leaveHumanUnreadableBlock(printer);
     }
 
     private void writeCommandIdsCacheByMCInfo(CodePrinter printer, List<MCInfo> commands) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         printer.println("/**Executable command ids cache*/");
 
         for (MCInfo info : commands) {
@@ -200,6 +203,7 @@ public class AdsMethodsWriter extends RadixObjectWriter<Methods> {
             WriterUtils.writeIdUsage(printer, info.command.getId());
             printer.printlnSemicolon();
         }
+        WriterUtils.leaveHumanUnreadableBlock(printer);
     }
 
     // by KAV
@@ -298,7 +302,7 @@ public class AdsMethodsWriter extends RadixObjectWriter<Methods> {
                 }
 
                 writeCommandIdsCache(printer, commands);
-
+                WriterUtils.enterHumanUnreadableBlock(printer);
                 printer.print("\n@Override\nprotected ");
                 printer.print(AdsCommandWriter.EXPLORER_COMMAND_CLASS_NAME);
                 printer.print(" createCommand(");
@@ -339,6 +343,7 @@ public class AdsMethodsWriter extends RadixObjectWriter<Methods> {
                 printer.leaveBlock();
                 printer.printlnSemicolon();
                 printer.println("}");
+                WriterUtils.leaveHumanUnreadableBlock(printer);
                 return true;
 
 
@@ -621,7 +626,7 @@ public class AdsMethodsWriter extends RadixObjectWriter<Methods> {
             if (typeState == -1) {
                 return false;
             } else if (typeState == 1) {
-                CodePrinter stubPrinter = CodePrinter.Factory.newJavaPrinter();
+                CodePrinter stubPrinter = CodePrinter.Factory.newJavaPrinter(printer);
                 WriterUtils.writeServerArteAccessMethodInvocation(info.method, stubPrinter);
                 stubPrinter.print(".getEntityObject(new ");
                 stubPrinter.print(WriterUtils.RADIX_PID_CLASS_NAME);
@@ -649,7 +654,10 @@ public class AdsMethodsWriter extends RadixObjectWriter<Methods> {
         if (isVoidMethod) {
             returnValStr = "null";
             ownerClass.getType(EValType.USER_CLASS, null).getJavaSourceSupport().getCodeWriter(usagePurpose).writeUsage(printer);
-            printer.print(".this.");
+            printer.print('.');
+            if (!info.method.getAccessFlags().isStatic()) {
+                printer.print("this.");
+            }
             printer.print(info.method.getId());
             printer.print('(');
             for (int i = 0; i < index; i++) {
@@ -664,7 +672,10 @@ public class AdsMethodsWriter extends RadixObjectWriter<Methods> {
             returnValStr = "$res$";
             printer.print("Object $res$ =");
             ownerClass.getType(EValType.USER_CLASS, null).getJavaSourceSupport().getCodeWriter(usagePurpose).writeUsage(printer);
-            printer.print(".this.");
+            printer.print('.');
+            if (!info.method.getAccessFlags().isStatic()) {
+                printer.print("this.");
+            }
             printer.print(info.method.getId());
             printer.print('(');
             for (int i = 0; i < index; i++) {

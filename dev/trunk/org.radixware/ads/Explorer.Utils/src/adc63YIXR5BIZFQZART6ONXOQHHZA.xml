@@ -7,8 +7,7 @@
     <Headers>
       <Src Name="Headeradc73TLMDKBWNEUPM6VFYPGRZKR44">
         <xsc:Item>
-          <xsc:Java>import com.trolltech.qt.gui.QDialog;
-import com.trolltech.qt.gui.QPalette;
+          <xsc:Java>import com.trolltech.qt.gui.QPalette;
 </xsc:Java>
         </xsc:Item>
       </Src>
@@ -65,65 +64,90 @@ widget.setPalette(p);
       <Method Id="mth6S7AXA5P4JDPRO2SGKHLYCI7WI" Name="showHtml" Nature="0" IsOverride="false">
         <AccessRules IsStatic="true"/>
         <Parameters>
+          <Parameter Name="environment" Id="mpr6KWQPRYFQRFRTJGQ5MJKGVOTZM">
+            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          </Parameter>
           <Parameter Name="title" Id="mpr4MXICDLYENBXHADDQIVNVE3UXQ">
             <Type TypeId="21"/>
           </Parameter>
           <Parameter Name="html" Id="mprNLGLS3KIYZBXZIVJHNK2G4A5LQ">
             <Type TypeId="21"/>
           </Parameter>
+          <Parameter Name="parentWidget" Id="mprMUVBN4X7PNEAVFYGOVPCFLVO4U">
+            <Type TypeId="411" Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4"/>
+          </Parameter>
         </Parameters>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>QDialog dialog = new </xsc:Java>
+              <xsc:TypeDeclaration TypeId="411" Path="adcO65QKYKF5JHFFD6Y4N5ENYULCQ">
+                <xsc:Presentation>Explorer.Dialogs::ExplorerDialog</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU mthEVAREUOWO5APHA2LTLJGXKMHQ4" Invoke="true"/>
+              <xsc:Java>  dialog = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(</xsc:Java>
+              <xsc:IdReference Path="adcO65QKYKF5JHFFD6Y4N5ENYULCQ mthBIIWWQZS45DCBDKVEFXIGGAFUI" Invoke="true">
+                <xsc:Presentation>ExplorerDialog</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthNQIWGHM3LNEANDMMAJFNCWDTFE" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>());
-com.trolltech.qt.gui.QTextEdit textEdit = new com.trolltech.qt.gui.QTextEdit();
-textEdit.setHtml(html);
-textEdit.setReadOnly(true);
-com.trolltech.qt.gui.QLayout layout = new com.trolltech.qt.gui.QVBoxLayout();
-layout.addWidget(textEdit);
+              <xsc:Java>(environment, parentWidget, "HtmlViewerDlg");
 dialog.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthX7CUNWVR5NBJBKV54S67M4QGJM" Invoke="true"/>
+              <xsc:IdReference Path="adcJVD6TDAQSZB5DI4KJO7PGG2A5A mthYCKX5RM2MVG5VMPMIQU4U2LDJI" Invoke="true">
+                <xsc:Presentation>setObjectName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("HtmlViewerDlg");
+dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcO65QKYKF5JHFFD6Y4N5ENYULCQ mthJZR3ABF6AVGIJIT5WOZ3BIU4GA" Invoke="true">
+                <xsc:Presentation>setDisposeAfterClose</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(true);
+com.trolltech.qt.gui.QTextEdit textEdit = new com.trolltech.qt.gui.QTextEdit();
+textEdit.setHtml(html);
+textEdit.setReadOnly(true);
+dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcO65QKYKF5JHFFD6Y4N5ENYULCQ mthS74X62YXIFBDZFNGVUZHO7JT4I" Invoke="true">
+                <xsc:Presentation>dialogLayout</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().addWidget(textEdit);
+dialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthX7CUNWVR5NBJBKV54S67M4QGJM" Invoke="true">
+                <xsc:Presentation>setMinimumSize</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(600, 400);
 dialog.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthWCWVI4PUSNCVLNGPYZFLMPWMXU" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(layout);
-dialog.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthQF2WXV3YDFGHNPOLGSKADYYKNM" Invoke="true"/>
+              <xsc:IdReference Path="adcCZYXFDFN2RFU3C7KEMRBKB76F4 mthQF2WXV3YDFGHNPOLGSKADYYKNM" Invoke="true">
+                <xsc:Presentation>setWindowTitle</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(title);
 dialog.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU mth2VIBKJCSUBANDEMJZ454NOG4FA" Invoke="true"/>
+              <xsc:IdReference Path="adcBQWVU3OGYFHPXEZH5ND56A3YBU mth2VIBKJCSUBANDEMJZ454NOG4FA" Invoke="true">
+                <xsc:Presentation>exec</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();

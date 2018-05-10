@@ -14,40 +14,51 @@ package org.radixware.kernel.designer.ads.editors.clazz.report;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.math.BigDecimal;
+import javax.swing.JFormattedTextField;
+import javax.swing.JPanel;
+import javax.swing.JSpinner.DefaultEditor;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.text.NumberFormatter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.NbBundle;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
+import org.radixware.kernel.common.utils.events.IRadixEventListener;
+import org.radixware.kernel.common.utils.events.RadixEvent;
+import org.radixware.kernel.common.utils.events.RadixEventSource;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.AdsReportFormDiagramOptions;
+import org.radixware.kernel.designer.common.dialogs.components.BigDecimalSpinnerModel;
+import org.radixware.kernel.designer.common.dialogs.components.CheckedBigDecimalSpinnerEditor;
+import org.radixware.kernel.designer.common.dialogs.components.state.StateAbstractDialog;
+import org.radixware.kernel.designer.common.dialogs.components.state.StateManager;
+import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 
 
-public class GridSettingsDialog extends javax.swing.JPanel {
-
-    private static Rectangle bounds = null;
-
-    /** Creates new form GridSettingsDialog */
-    protected GridSettingsDialog() {
+public class GridSettingsDialog extends JPanel {
+    private static final double MIN_GRID_SIZE = 0.1;
+    private final RadixEventSource<IRadixEventListener<RadixEvent>, RadixEvent> changeSupport = new RadixEventSource<>();
+    /**
+     * Creates new form GridSettingsDialog
+     */
+    public GridSettingsDialog() {
         initComponents();
-
-        showGridCheckBox.setSelected(AdsReportFormDiagramOptions.getDefault().isShowGrid());
-        snapToGridCheckBox.setSelected(AdsReportFormDiagramOptions.getDefault().isSnapToGrid());
     }
 
-    public static void showDialog() {
-        final GridSettingsDialog netParamsDialog = new GridSettingsDialog();
-        final DialogDescriptor dialogDescriptor = new DialogDescriptor(netParamsDialog,
-                NbBundle.getMessage(GridSettingsDialog.class, "GridSettings"));
-        dialogDescriptor.setOptions(new Object[] { DialogDescriptor.CLOSED_OPTION } );
-        dialogDescriptor.setHelpCtx(null);
-        dialogDescriptor.setValid(true);
-        final Dialog dialog = DialogDisplayer.getDefault().createDialog(dialogDescriptor);
-        dialog.setPreferredSize(new Dimension(320, 240));
-        dialog.setResizable(false);
-        if (bounds != null){
-            dialog.setBounds(bounds);
+    public void showDialog(final AdsReportForm form) {
+        showGridCheckBox.setSelected(form.isShowGrid());
+        snapToGridCheckBox.setSelected(form.isSnapToGrid());
+        gridSizeSpinner.setModel(new BigDecimalSpinnerModel(form.getGridSizeMm(), MIN_GRID_SIZE, Math.min(form.getPageHeightMm(), form.getPageWidthMm()), 0.1));
+        gridSizeSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(gridSizeSpinner));
+        final ModalDisplayer displayer = new ModalDisplayer(this,  NbBundle.getMessage(GridSettingsDialog.class, "GridSettings"));
+        if (displayer.showModal()){
+            form.setShowGrid(showGridCheckBox.isSelected());
+            form.setSnapToGrid(snapToGridCheckBox.isSelected());
+            form.setGridSizeMm(getCurrentGridSize());
+            changeSupport.fireEvent(new RadixEvent());
         }
-        dialog.setVisible(true);
-        bounds = dialog.getBounds();
-        dialog.dispose();
     }
 
     /** This method is called from within the constructor to
@@ -59,8 +70,13 @@ public class GridSettingsDialog extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jTextField1 = new javax.swing.JTextField();
         showGridCheckBox = new javax.swing.JCheckBox();
         snapToGridCheckBox = new javax.swing.JCheckBox();
+        jLabel1 = new javax.swing.JLabel();
+        gridSizeSpinner = new javax.swing.JSpinner();
+
+        jTextField1.setText(org.openide.util.NbBundle.getMessage(GridSettingsDialog.class, "GridSettingsDialog.jTextField1.text")); // NOI18N
 
         showGridCheckBox.setText(org.openide.util.NbBundle.getMessage(GridSettingsDialog.class, "GridSettingsDialog.showGridCheckBox.text")); // NOI18N
         showGridCheckBox.addActionListener(new java.awt.event.ActionListener() {
@@ -76,6 +92,13 @@ public class GridSettingsDialog extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(GridSettingsDialog.class, "GridSettingsDialog.jLabel1.text")); // NOI18N
+
+        gridSizeSpinner.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        gridSizeSpinner.setDoubleBuffered(true);
+        gridSizeSpinner.setMinimumSize(new java.awt.Dimension(100, 20));
+        gridSizeSpinner.setName(""); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -83,9 +106,16 @@ public class GridSettingsDialog extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(showGridCheckBox)
-                    .addComponent(snapToGridCheckBox))
-                .addContainerGap(124, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(5, 5, 5)
+                        .addComponent(gridSizeSpinner, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(showGridCheckBox)
+                            .addComponent(snapToGridCheckBox))
+                        .addGap(0, 110, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -94,19 +124,29 @@ public class GridSettingsDialog extends javax.swing.JPanel {
                 .addComponent(showGridCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(snapToGridCheckBox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(gridSizeSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(5, 5, 5))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void showGridCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showGridCheckBoxActionPerformed
-        AdsReportFormDiagramOptions.getDefault().setShowGrid(showGridCheckBox.isSelected());
+
     }//GEN-LAST:event_showGridCheckBoxActionPerformed
 
     private void snapToGridCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_snapToGridCheckBoxActionPerformed
-        AdsReportFormDiagramOptions.getDefault().setSnapToGrid(snapToGridCheckBox.isSelected());
+
     }//GEN-LAST:event_snapToGridCheckBoxActionPerformed
 
+    protected double getCurrentGridSize() {
+        return ((BigDecimal) gridSizeSpinner.getModel().getValue()).doubleValue();
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSpinner gridSizeSpinner;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JCheckBox showGridCheckBox;
     private javax.swing.JCheckBox snapToGridCheckBox;
     // End of variables declaration//GEN-END:variables

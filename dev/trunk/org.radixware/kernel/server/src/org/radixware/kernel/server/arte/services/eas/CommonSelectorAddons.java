@@ -23,6 +23,10 @@ import java.util.Map;
 import org.radixware.kernel.common.enums.ETimingSection;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.server.arte.Arte;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.meta.presentations.ICommonSelectorAddon;
 
@@ -31,16 +35,25 @@ abstract class CommonSelectorAddons<T extends ICommonSelectorAddon> {
     private static final String LAST_MODIFY_TIME_RECORD_GUID = "LAST_MODIFY_TIME";
     private static final long MODIFY_TIME_CHECK_PERIOD_MILLIS = 10000; //10 seconds
     
+    private static final String qryGetLastModifyTimeStmtSQL = "select addons.lastUpdateTime from rdx_easselectoraddons addons where addons.guid='" + LAST_MODIFY_TIME_RECORD_GUID + "'";
+    private static final Stmt qryGetLastModifyTimeStmt = new Stmt(qryGetLastModifyTimeStmtSQL);
+            
     private final PreparedStatement qryGetLastModifyTime;
+    
     private final Map<String, Map<Id,T>> cache = new HashMap<String, Map<Id,T>>(256);
     private final List<String> capturedAddons = new LinkedList<String>();
     
     private long lastModifyTimeCheckMillis = 0;
     private Timestamp lastModifyTime = null;
 
+    private final IDbQueries delegate = new DelegateDbQueries(this, CommonSelectorAddons.class, null);
+    
+    protected CommonSelectorAddons(){
+        qryGetLastModifyTime = null;
+    }
+    
     public CommonSelectorAddons(final Arte arte) throws SQLException {
-        qryGetLastModifyTime = arte.getDbConnection().get().prepareStatement("select addons.lastUpdateTime from rdx_easselectoraddons addons " + 
-                                                                            "where addons.guid='" + LAST_MODIFY_TIME_RECORD_GUID + "'");
+        qryGetLastModifyTime = ((RadixConnection)arte.getDbConnection().get()).prepareStatement(qryGetLastModifyTimeStmt);
     }
 
     public final Map<Id,T> get(final Arte arte, final RadClassDef classDef, final Id selPresentationId) throws SQLException {
@@ -68,8 +81,7 @@ abstract class CommonSelectorAddons<T extends ICommonSelectorAddon> {
         if (addons==null){
             addons = Collections.<Id,T>emptyMap();
         }
-        final String cacheKey = classDef.getEntityId().toString() + selPresentationId.toString() + 
-                                "#"+(arte.getVersion()==null ? "" : arte.getVersion().toString());
+        final String cacheKey = classDef.getEntityId().toString() + selPresentationId.toString() + "#"+(arte.getVersion()==null ? "" : arte.getVersion().toString());
         cache.put(cacheKey, addons);
         capturedAddons.add(cacheKey);
         return addons;
@@ -142,5 +154,17 @@ abstract class CommonSelectorAddons<T extends ICommonSelectorAddon> {
     public final void clearLocalCache() {
         capturedAddons.clear();
     }    
+}
+
+class PseudoCommonSelectorAddons extends CommonSelectorAddons<ICommonSelectorAddon> {
+    private PseudoCommonSelectorAddons(){}
     
+    public PseudoCommonSelectorAddons(Arte arte) throws SQLException {
+        super(arte);
+    }
+    
+   @Override
+    protected Map<Id, ICommonSelectorAddon> loadAddons(Arte arte, RadClassDef classDef, Id selPresentationId) throws SQLException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

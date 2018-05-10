@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.filters;
 
 import java.awt.event.ComponentEvent;
@@ -25,11 +24,10 @@ import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsFilterDef;
 import org.radixware.kernel.designer.common.editors.sqml.SqmlEditorPanel;
 import org.openide.util.NbBundle;
 
-
 public class AdsFilterTabbedPanel extends JTabbedPane {
 
     private AdsFilterDef adsFilterDef;
-    private SqmlEditorPanel hintEditorPanel, conditionEditorPanel;
+    private SqmlEditorPanel hintEditorPanel, conditionEditorPanel, conditionFromEditorPanel;
     private SortingsPanel sortingsPanel;
     private double dividerLocation = 0.75;
     private boolean isDividerAutoSet = false;
@@ -40,6 +38,7 @@ public class AdsFilterTabbedPanel extends JTabbedPane {
     public AdsFilterTabbedPanel() {
         super();
 
+        // splitPane (conditionEditorPanel + hintEditorPanel)
         conditionEditorPanel = new SqmlEditorPanel();
         conditionEditorPanel.setAlignmentX(0.0f);
         conditionEditorPanel.setBorder(new TitledBorder(NbBundle.getMessage(AdsFilterTabbedPanel.class, "Condition")));
@@ -108,20 +107,24 @@ public class AdsFilterTabbedPanel extends JTabbedPane {
             }
         });
 
-        //first tab
         final JPanel p = new JPanel();
         p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
         p.setBorder(new EmptyBorder(10, 10, 10, 10));
         p.add(splitPane);
         this.addTab(NbBundle.getMessage(AdsFilterTabbedPanel.class, "Condition"), p);
 
+        // conditionEditorPanel
+        conditionFromEditorPanel = new SqmlEditorPanel();
+        conditionFromEditorPanel.setAlignmentX(0.0f);
+        conditionFromEditorPanel.setBorder(new TitledBorder(NbBundle.getMessage(AdsFilterTabbedPanel.class, "ConditionFrom")));
+        this.addTab(NbBundle.getMessage(AdsFilterTabbedPanel.class, "ConditionFrom"), conditionFromEditorPanel);
+
+        // sortingsPanel
         sortingsPanel = new SortingsPanel();
         sortingsPanel.setAlignmentX(0.0f);
-
-        //second tab
         this.addTab(NbBundle.getMessage(AdsFilterTabbedPanel.class, "Sortings"), sortingsPanel);
 
-        //select first tab as default
+        // select first tab as default
         this.setSelectedIndex(this.indexOfComponent(p));
     }
 
@@ -129,6 +132,7 @@ public class AdsFilterTabbedPanel extends JTabbedPane {
         this.adsFilterDef = adsFilterDef;
         hintEditorPanel.open(adsFilterDef.getHint());
         conditionEditorPanel.open(adsFilterDef.getCondition());
+        conditionFromEditorPanel.open(adsFilterDef.getConditionFrom());
         sortingsPanel.open(adsFilterDef);
         setReadonly(adsFilterDef.isReadOnly());
     }
@@ -136,12 +140,14 @@ public class AdsFilterTabbedPanel extends JTabbedPane {
     public void update() {
         hintEditorPanel.update();
         conditionEditorPanel.update();
+        conditionFromEditorPanel.update();
         sortingsPanel.update();
     }
 
     public void setReadonly(boolean readonly) {
         hintEditorPanel.setEditable(!adsFilterDef.isReadOnly() && !readonly);
         conditionEditorPanel.setEditable(!adsFilterDef.isReadOnly() && !readonly);
+        conditionFromEditorPanel.setEditable(!adsFilterDef.isReadOnly() && !readonly);
         sortingsPanel.setEnabled(!readonly);
     }
 }

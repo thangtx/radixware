@@ -29,11 +29,13 @@ public abstract class KerberosCredentials {
     private Subject subject;
     private final CreateCredentialAction createAction;
     private final KerberosLoginConfiguration loginConfig;
+    private final boolean delegatedCredentials;
     private GSSCredential credential;
 
-    KerberosCredentials(final Subject subject, final GSSCredential credential) {
+    KerberosCredentials(final Subject subject, final GSSCredential credential, final boolean delegated) {
         this.subject = subject;
         this.credential = credential;
+        delegatedCredentials = delegated;
         createAction = null;
         loginConfig = null;
     }
@@ -41,6 +43,7 @@ public abstract class KerberosCredentials {
     KerberosCredentials(final KerberosLoginConfiguration config,
             final CreateCredentialAction createCredentialAction) throws KerberosException {
         this.loginConfig = config;
+        delegatedCredentials = false;
         this.createAction = createCredentialAction;
         renew();
     }
@@ -58,6 +61,10 @@ public abstract class KerberosCredentials {
 
     public final boolean isRenewable() {
         return createAction != null && loginConfig != null;
+    }
+    
+    public final boolean isCredentialsDelegated(){
+        return delegatedCredentials;
     }
 
     public final void renew() throws KerberosException {
@@ -198,8 +205,9 @@ public abstract class KerberosCredentials {
 
         public ClientCredentials(final Subject subject,
                 final GSSCredential credential,
+                final boolean delegated,
                 final String servicePrincipal) {
-            super(subject, credential);
+            super(subject, credential, delegated);
             this.servicePrincipal = servicePrincipal;
         }
 
@@ -298,7 +306,7 @@ public abstract class KerberosCredentials {
             } catch (LoginException exception) {
                 throw new KerberosException(exception);
             }
-            return new ClientCredentials(subject, delegCred, servicePrincipalName);
+            return new ClientCredentials(subject, delegCred, true, servicePrincipalName);
         }
     }
 }

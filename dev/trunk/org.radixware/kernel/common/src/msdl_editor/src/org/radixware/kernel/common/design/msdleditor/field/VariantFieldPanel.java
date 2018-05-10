@@ -17,6 +17,7 @@
 
 package org.radixware.kernel.common.design.msdleditor.field;
 
+import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
@@ -39,9 +40,9 @@ public class VariantFieldPanel extends AbstractEditItem {
         return (MsdlVariantField)super.getMsdlField();
     }
 
-    public void open(MsdlVariantField fieldModel, IEnumPanelRetriever retriever, IFieldTemplateTextFieldRetriever templateRetriever) {
+    public void open(MsdlVariantField fieldModel, IEnumPanelRetriever retriever, JPanel functionsPanel, IFieldTemplateTextFieldRetriever templateRetriever) {
         super.open(fieldModel);
-        fieldPanel1.open(fieldModel,retriever,null, templateRetriever);
+        fieldPanel1.open(fieldModel,retriever, functionsPanel, templateRetriever);
         update();
     }
 

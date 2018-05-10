@@ -21,18 +21,18 @@ import java.util.Arrays;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.explorer.env.Application;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 
-public class ComboBoxAlignmentSettingsWidget extends SettingsWidget {
+final class ComboBoxAlignmentSettingsWidget extends SettingsWidget {
 
     private final QComboBox comboBox = new QComboBox(this);
-    private AlignmentFlag curAlignmentFlag;
+    private final AlignmentFlag defaultAlignmentFlag;
 
     public ComboBoxAlignmentSettingsWidget(final IClientEnvironment environment, final QWidget parent, final String gr, final String sub, final String n) {
         super(environment, parent, gr, sub, n);
 
-        curAlignmentFlag = getDefaultSettings().readAlignmentFlag(getSettingCfgName());
+        defaultAlignmentFlag = getDefaultSettings().readAlignmentFlag(getSettingCfgName());
 
         setValues(Arrays.asList(AlignmentFlag.AlignCenter, AlignmentFlag.AlignLeft, AlignmentFlag.AlignRight), false);
 
@@ -72,22 +72,26 @@ public class ComboBoxAlignmentSettingsWidget extends SettingsWidget {
 
     @Override
     public void restoreDefaults() {
+        setCurrentAlignmentFlag(defaultAlignmentFlag);
+    }    
+
+    @Override
+    public void readSettings(final IExplorerSettings src) {
+        final Qt.AlignmentFlag alignment = src.readAlignmentFlag(getSettingCfgName());
+        setCurrentAlignmentFlag(alignment==null ? defaultAlignmentFlag : alignment);
+    }
+    
+    private void setCurrentAlignmentFlag(final AlignmentFlag alignmentFlag){
         for (int i = 0, size = comboBox.count(); i < size; ++i) {
-            if (comboBox.itemData(i, Qt.ItemDataRole.UserRole) == curAlignmentFlag) {
+            if (comboBox.itemData(i, Qt.ItemDataRole.UserRole) == alignmentFlag) {
                 comboBox.setCurrentIndex(i);
                 break;
             }
-        }
-    }
+        }        
+    }    
 
     @Override
-    public void readSettings(final ExplorerSettings src) {
-        curAlignmentFlag = src.readAlignmentFlag(getSettingCfgName());
-        restoreDefaults();
-    }
-
-    @Override
-    public void writeSettings(final ExplorerSettings dst) {
+    public void writeSettings(final IExplorerSettings dst) {
         final int index = comboBox.currentIndex();
         if (index > -1) {
             dst.writeQAlignmentFlag(getSettingCfgName(), (Qt.AlignmentFlag) comboBox.itemData(index, Qt.ItemDataRole.UserRole));

@@ -199,7 +199,6 @@ public class AdsEditorPresentationDef extends AdsPresentationDef implements IJav
         public List<PropertyAttributesSet> getAll(final EScope scope) {
             final List<PropertyAttributesSet> result = new ArrayList<>();
 
-
             if (scope == EScope.LOCAL) {
                 for (final AdsPropertyPresentationAttributes restriction : this) {
                     result.add(new PropertyAttributesSet(getOwnEditorPresentation(), scope, restriction));
@@ -620,7 +619,6 @@ public class AdsEditorPresentationDef extends AdsPresentationDef implements IJav
 
         //  this.explorerItemsOrder = new ExplorerItemsOrder();
         //   this.explorerItemsOrder.loadFrom(xDef);
-
         if (xDef.getView() != null) {
             this.customViewSuppoort.loadCustomView(ERuntimeEnvironmentType.EXPLORER, xDef.getView());
         }
@@ -753,7 +751,6 @@ public class AdsEditorPresentationDef extends AdsPresentationDef implements IJav
         } else {
             return env;
         }
-
 
     }
 
@@ -1187,10 +1184,8 @@ public class AdsEditorPresentationDef extends AdsPresentationDef implements IJav
 
     public void appendTo(EditorPresentationDefinition xDef, ESaveMode saveMode) {
         super.appendTo(xDef, saveMode);
-        if (saveMode == ESaveMode.NORMAL) {
-            if (replacedPresentationId != null) {
-                xDef.setReplacedPresentationId(replacedPresentationId);
-            }
+        if (replacedPresentationId != null) {
+            xDef.setReplacedPresentationId(replacedPresentationId);
         }
         if (rightsSrcId != null) {
             xDef.setRightsSourceId(rightsSrcId);
@@ -1458,7 +1453,25 @@ public class AdsEditorPresentationDef extends AdsPresentationDef implements IJav
     public SearchResult<AdsEditorPresentationDef> findBasePresentation() {
         return findBaseEditorPresentation();
     }
-
+    
+    public AdsEditorPresentationDef getInheritRightsFromPres() {
+        if (isRightsInheritanceModeInherited()) {
+            if (getBasePresentationId() == null) {
+                return null;
+            }
+            return findBasePresentation().get().getInheritRightsFromPres();
+        } else {
+            switch (rightsInheritanceMode) {
+                case FROM_REPLACED:
+                    return findReplacedEditorPresentation().get();
+                case FROM_DEFINED:
+                    return findRightSourceEditorPresentation();
+                default:
+                    return null;
+            }
+        }
+    }
+    
     public static class ModelClassInfo {
 
         public final AdsClassDef clazz;
@@ -1503,13 +1516,13 @@ public class AdsEditorPresentationDef extends AdsPresentationDef implements IJav
     protected void appendAdditionalToolTip(StringBuilder sb) {
         super.appendAdditionalToolTip(sb);
         if (!findBasePresentation().isEmpty()) {
-            String basePresentation =
-                    findBasePresentation().get().getEditorPages().getOrder().getQualifiedName();
+            String basePresentation
+                    = findBasePresentation().get().getEditorPages().getOrder().getQualifiedName();
             sb.append("<br>Base: <br>&nbsp;").append("<a href=\"").append("\">").append(basePresentation).append("</a>");
         }
         if (!findReplacedEditorPresentation().isEmpty()) {
-            String replacedPresentation =
-                    findReplacedEditorPresentation().get().getEditorPages().getOrder().getQualifiedName();
+            String replacedPresentation
+                    = findReplacedEditorPresentation().get().getEditorPages().getOrder().getQualifiedName();
             sb.append("<br>Replace: <br>&nbsp;").append("<a href=\"").append("\">").append(replacedPresentation).append("</a>");
         }
     }

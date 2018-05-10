@@ -16,6 +16,9 @@ import java.util.List;
 import javax.swing.Icon;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
+import org.radixware.kernel.common.defs.ads.clazz.sql.AdsProcedureClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.AdsStatementClassDef;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.scml.Scml.Tag;
 import org.radixware.kernel.common.sqml.Sqml;
@@ -67,7 +70,8 @@ public class AdsSqlClassCodeEditorActions {
 
         @Override
         public boolean isAvailable(final Scml scml) {
-            return true;
+            Definition def = scml.getDefinition();
+            return def != null && def instanceof AdsSqlClassDef && !(def instanceof AdsStatementClassDef || def instanceof AdsProcedureClassDef);
         }
 
         @Override

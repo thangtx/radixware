@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2017, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -16,21 +16,31 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.Inflater;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
+import org.radixware.kernel.common.exceptions.ShouldNeverHappenError;
 import org.radixware.kernel.common.types.IKernelEnum;
 import org.radixware.kernel.common.types.IKernelIntEnum;
 import org.radixware.kernel.common.types.IKernelStrEnum;
@@ -72,7 +82,15 @@ public class Utils {
     public static Object nvl(Object obj, Object def) {
         return obj == null ? def : obj;
     }
-
+    
+    public static <T> T nvlOf(T obj1, T obj2) {
+        return obj1 != null ? obj1 : obj2;
+    }
+    
+    public static <T> T nvlOf(T obj1, T obj2, T obj3) {
+        return nvlOf(obj1, nvlOf(obj2, obj3));
+    }
+    
     public static <E extends Object> boolean equalsCollection(Collection<E> c1, Collection<E> c2) {
         if (c1 == null && c2 == null) {
             return true;
@@ -195,15 +213,18 @@ public class Utils {
             }
         }
     }
-
-    public static String stackToString(final StackTraceElement[] stack) {
+    
+    public static String stackToString(final StackTraceElement[] stack, final String prefix) {
+        final String actualPrefix = prefix == null ? "" : prefix;
         final StringBuffer b = new StringBuffer(stack.length * 200);
-        for (int i = 0; i < stack.length; i++) {
-            b.append("\tat ");
-            b.append(stack[i]);
-            b.append('\n');
+        for (StackTraceElement stackElement : stack) {
+            b.append(actualPrefix).append(stackElement).append('\n');
         }
         return b.toString();
+    }
+
+    public static String stackToString(final StackTraceElement[] stack) {
+        return stackToString(stack, "\tat ");
     }
 
     public static boolean isNotNull(Object... objects) {
@@ -297,11 +318,11 @@ public class Utils {
 
         return lines;
     }
-
+    
     public static String mergeLines(List<String> lines) {
         return mergeLines(lines, "\n");
     }
-
+    
     public static String mergeLines(List<String> lines, String delim) {
         if (lines == null || lines.isEmpty()) {
             return "";
@@ -358,7 +379,7 @@ public class Utils {
         }
     }
     
-    public static byte[] compressString(final String input) throws IOException{
+    public static byte[] compressString(final String input) {
         if (input==null) {
             return null;
         }
@@ -368,6 +389,8 @@ public class Utils {
         final ByteArrayOutputStream obj=new ByteArrayOutputStream();
         try (GZIPOutputStream gzip = new GZIPOutputStream(obj)) {
             gzip.write(input.getBytes("UTF-8"));
+        } catch (IOException ex) {
+            throw new ShouldNeverHappenError(ex);
         }
         return obj.toByteArray();
     }
@@ -398,5 +421,83 @@ public class Utils {
     
     public static String readableTime(final long timeMillis) {
         return new SimpleDateFormat("YYYYMMddHHmmssSSS").format(new Date(timeMillis));
+    }
+    
+    public static Map<String, VersionNumber> parseVersionsByKey(final String versionsByKey) {
+        Map<String, VersionNumber> result = new LinkedHashMap<>();
+        String[] versionKeyTokens = versionsByKey.trim().split(",");
+        
+        for (String token : versionKeyTokens) {
+            String[] tokenParts = token.trim().split("=");
+            if (tokenParts.length == 2) {
+                result.put(tokenParts[0].trim(), VersionNumber.valueOf(tokenParts[1].trim()));
+            }
+        }
+        
+        return result;
+    }
+    
+    @SafeVarargs
+    public static <T> boolean in(T element, T... collection) {
+        for (T collectionElement : collection) {
+            if (element == null && collectionElement == null || element != null && element.equals(collectionElement)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static byte[] compressZlib(byte[] data) {
+        if (data == null) {
+            return null;
+        }
+        final byte[] buffer = new byte[data.length + 256];
+        final Deflater deflater = new Deflater();
+        deflater.setInput(data);
+        deflater.finish();
+        int resultLength = deflater.deflate(buffer);
+        final byte[] result = Arrays.copyOfRange(buffer, 0, resultLength);
+        return result;
+    }
+    
+    public static byte[] decompressZlib(byte[] data) throws DataFormatException {
+        if (data == null) {
+            return null;
+        }
+        final byte[] buffer = new byte[65536];
+        final ByteArrayOutputStream baOut = new ByteArrayOutputStream(65536);
+        final Inflater inflater = new Inflater();
+        inflater.setInput(data);
+        do {
+            final int resultLength = inflater.inflate(buffer);
+            baOut.write(buffer, 0, resultLength);
+        } while (inflater.getRemaining() > 0);
+        inflater.end();
+        return baOut.toByteArray();
+    }
+    
+    public static byte[] digestSha1(byte[] data) {
+        if (data == null) {
+            return null;
+        }
+        try {
+            return MessageDigest.getInstance("SHA").digest(data);
+        } catch (NoSuchAlgorithmException ex) {
+            throw new ShouldNeverHappenError(ex);
+        }
+    }
+    
+    public static byte[] digestSha1(String data) {
+        if (data == null) {
+            return null;
+        }
+        return digestSha1(data.getBytes(StandardCharsets.UTF_8));
+    }
+    
+    public static void silentSleep(long milllis) {
+        try {
+            Thread.sleep(milllis);
+        } catch (InterruptedException ex) {
+        }
     }
 }

@@ -30,19 +30,19 @@ import org.radixware.wps.rwt.*;
 
 
 public class ChangePasswordDialog extends Dialog implements IChangePasswordDialog {
-
+    
+    private final Label lblTitle = new Label();
+    private final Label lblMessage = new Label();    
+    private final TextField edOldPassword = new TextField("");
+    private final TextField edNewPassword = new TextField("");
+    private final TextField edConfirmation = new TextField("");
+    private final AbstractContainer panel = new AbstractContainer(new Div());
+    private final GridLayout layout = new GridLayout();
+    private final Label lblOldPwd = new Label();
+    private final Label lblNewPwd = new Label();
+    private final Label lblConf = new Label();
     private boolean checkPasswordRequirements = true;
-    private Label lblTitle = new Label();
-    private Label lblMessage = new Label();
     private PasswordRequirements requirements;
-    private TextField edOldPassword = new TextField("");
-    private TextField edNewPassword = new TextField("");
-    private TextField edConfirmation = new TextField("");
-    private AbstractContainer panel = new AbstractContainer(new Div());
-    private GridLayout layout = new GridLayout();
-    private Label lblOldPwd = new Label();
-    private Label lblNewPwd = new Label();
-    private Label lblConf = new Label();
 
     public ChangePasswordDialog(final WpsEnvironment environment) {
         super(environment.getDialogDisplayer(), null);
@@ -143,7 +143,7 @@ public class ChangePasswordDialog extends Dialog implements IChangePasswordDialo
         layout.add(row);
         edOldPassword.setFocused(true);
         setWidth(370);
-        setHeight(160);
+        setHeight(165);
     }
 
     @Override
@@ -157,11 +157,11 @@ public class ChangePasswordDialog extends Dialog implements IChangePasswordDialo
         if (message == null || message.isEmpty()) {
             lblMessage.setVisible(false);
             panel.getAnchors().setTop(new Anchors.Anchor(1, 5, lblTitle));
-            this.setHeight(160);
+            this.setHeight(165);
         } else {
             lblMessage.setVisible(true);
             panel.getAnchors().setTop(new Anchors.Anchor(1, 5, lblMessage));
-            this.setHeight(180);
+            this.setHeight(185);
         }
     }
 
@@ -186,11 +186,11 @@ public class ChangePasswordDialog extends Dialog implements IChangePasswordDialo
                 refresh();
                 return null;
             }
-            final String message;
-            final String title = getEnvironment().getMessageProvider().translate("ChangePasswordDialog", "Can`t Change Password");
+            final String message;            
             if (!edNewPassword.getText().equals(edConfirmation.getText())) {
                 message = getEnvironment().getMessageProvider().translate("ChangePasswordDialog", "The new password and confirmation password do not match");
             } else if (checkPasswordRequirements) {
+                final String title = getEnvironment().getMessageProvider().translate("ChangePasswordDialog", "Failed to Change Password");
                 final PasswordRequirements requirements = getPasswordRequirements(title);
                 if (requirements==null){
                     return null;
@@ -200,6 +200,7 @@ public class ChangePasswordDialog extends Dialog implements IChangePasswordDialo
                 message = null;
             }
             if (message != null) {
+                final String title = getEnvironment().getMessageProvider().translate("ChangePasswordDialog", "The Password is Too Simple");
                 getEnvironment().messageInformation(title, message);
                 edNewPassword.setText("");
                 edConfirmation.setText("");

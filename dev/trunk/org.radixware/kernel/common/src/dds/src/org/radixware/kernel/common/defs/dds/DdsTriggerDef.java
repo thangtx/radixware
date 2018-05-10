@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.dds;
 
 import java.lang.reflect.Method;
@@ -28,10 +27,12 @@ import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.dds.utils.DbNameUtils;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
+import org.radixware.kernel.common.radixdoc.RadixdocUtils;
 
 /**
  * Metainformation about trigger in database.
@@ -602,4 +603,45 @@ public class DdsTriggerDef extends DdsDefinition implements IDdsTableItemDef, IO
 //                || Utils.equals(dbName, "UPF_" + idPart)
 //                || Utils.equals(dbName, "UPO_" + idPart);
 //    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.TRIGGER;
+    }
+
+    @Override
+    public boolean needsDocumentation() {
+        return getType() != EType.FOR_AUDIT;
+    }
+
+    private static Definition descriptionLocationForAudit; // кэш getDescriptionLocationForAudit()
+    private static boolean wasFindDescriptionLocationForAudit; // для кэша getDescriptionLocationForAudit()
+    
+    /** возращаем класс в котором находится описание аудит триггеров (этого класса может и не быть) */
+    private Definition getDescriptionLocationForAudit() {
+        if (!wasFindDescriptionLocationForAudit) {
+            wasFindDescriptionLocationForAudit = true;
+            descriptionLocationForAudit = RadixdocUtils.getRadixdocOwnerDef(getLayer());
+        }
+        return descriptionLocationForAudit;                    
+    }
+    
+    @Override
+    public Id getDescriptionId() {
+        if (getType() == EType.FOR_AUDIT && getDescriptionLocationForAudit() != null) {
+            return Id.Factory.loadFrom("mlsNDNKDELXRRF5LKEEN4SC35L4GI");
+        } else {
+            return super.getDescriptionId();
+        }
+    }
+
+    @Override
+    public Definition getDescriptionLocation() {
+        Definition descriptionLocationForAudit = getDescriptionLocationForAudit();
+        if (getType() == EType.FOR_AUDIT && descriptionLocationForAudit != null) {
+            return descriptionLocationForAudit;
+        } else {
+            return super.getDescriptionLocation();
+        }
+    }
 }

@@ -17,6 +17,10 @@ import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
+import org.radixware.kernel.common.check.IProblemHandler;
+import org.radixware.kernel.common.check.RadixProblem;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.msdl.MsdlField;
 import org.radixware.kernel.common.msdl.fields.StructureFieldModel;
 import org.radixware.kernel.common.msdl.fields.parser.ParseUtil;
@@ -29,6 +33,7 @@ import org.radixware.schemas.msdl.Structure.Bitmap;
 
 public class BitmapBlocks {
 
+    private final EStructureBitmapFirstBitBehavior bitmapType;
     private final int bitmapBlockLength;
     private final boolean bitmapIsContinue;
     private final EncodingDef.Enum encoding;
@@ -37,15 +42,20 @@ public class BitmapBlocks {
     public int size;
     private int processedBlocksCount = 0;
     private boolean pendingBlocks = false;
-
+    
     public BitmapBlocks(StructureFieldModel model) {
         Bitmap b = model.getField().getStructure().getBitmap();
         bitmapBlockLength = b.getBlockLength().intValue();
-        bitmapIsContinue = b.getFirstBitBehavior().equals("Continue");
+        bitmapType = EStructureBitmapFirstBitBehavior.getInstance(b.getFirstBitBehavior());
+        bitmapIsContinue = bitmapType.isContinue();
+        
         encoding = EncodingDef.Enum.forString(b.getEncoding());
         if (encoding == EncodingDef.EBCDIC) {
             encoderEBCDIC = Charset.forName("IBM500").newEncoder();
             decoderEBCDIC = Charset.forName("IBM500").newDecoder();
+        } else if (encoding == EncodingDef.HEX_EBCDIC || encoding == EncodingDef.EBCDIC_CP_1047) {
+            encoderEBCDIC = Charset.forName("Cp1047").newEncoder();
+            decoderEBCDIC = Charset.forName("Cp1047").newDecoder();
         }
         size = 0;
         for (MsdlField cur : model.getFields()) {
@@ -86,9 +96,7 @@ public class BitmapBlocks {
         boolean firstTwoBlocks = processedBlocksCount < 2 ? true : false;
         int oldProcessedBLocks = processedBlocksCount;
 
-        while (idx <= lastOnBit && 
-                (((blockCount < 1) && !firstTwoBlocks) 
-                  || ((blockCount <2) && firstTwoBlocks ) )) {
+        while (shouldMergeNextBlock(lastOnBit, idx, blockCount, firstTwoBlocks)) {
             for (int byteCount = 0; byteCount < bitmapBlockLength; byteCount++) {
                 byte b = 0;
                 for (int i = 0; i < 8; i++) {
@@ -114,13 +122,19 @@ public class BitmapBlocks {
         }
         processedBlocksCount += blockCount;
     }
+    
+    private boolean shouldMergeNextBlock(final int size, final int index, final int blockCount, final boolean firstTwoBlocks) {
+        final int howMuchBlocksMerge = firstTwoBlocks ? 2 : 1;
+        return index <= size && 
+                (bitmapType == EStructureBitmapFirstBitBehavior.BITMAPS_FIRST || blockCount < howMuchBlocksMerge);
+    }
 
     public byte[] parse(IDataSource ids, boolean[] bitmap) throws IOException {
         int idx = getBitmapIndex();
         int byteCount = 0;
         boolean nextBlock = false;
         ExtByteBuffer bf = new ExtByteBuffer();
-        int l = getBitmapLengthInBytes() * bitmapBlockLength;
+        int l = getBitmapLengthInBytes() * 8;
         while (idx < l) {
             byte b = decode(ids);
             bf.extPut(b);
@@ -139,7 +153,7 @@ public class BitmapBlocks {
             byteCount++;
             if (byteCount == bitmapBlockLength) {
                 processedBlocksCount++;
-                if (nextBlock && processedBlocksCount == 1) {
+                if (shouldParseNextBlock(nextBlock)) {
                     nextBlock = false;
                     byteCount = 0;
                 } else {
@@ -152,14 +166,22 @@ public class BitmapBlocks {
         }
         return ParseUtil.extractByteBufferContent(bf.flip());
     }
+    
+    private boolean shouldParseNextBlock(final boolean hasNextBlock) {
+        return hasNextBlock && 
+                (bitmapType == EStructureBitmapFirstBitBehavior.BITMAPS_FIRST ||
+                (bitmapType == EStructureBitmapFirstBitBehavior.ISO_8583 && processedBlocksCount == 1));
+    }
 
     public byte decode(IDataSource ids) throws IOException {
         switch (encoding.intValue()) {
             case EncodingDef.INT_HEX:
-                return Hex.decode(new String(ids.get(2), "US-ASCII"))[0];
+                return Hex.decode(new String(ids.get(2), StandardCharsets.US_ASCII))[0];
             case EncodingDef.INT_EBCDIC:
-                decoderEBCDIC.decode(ByteBuffer.wrap(ids.get(1)));
-                break;
+                return decoderEBCDIC.decode(ByteBuffer.wrap(ids.get(1))).toString().getBytes(StandardCharsets.US_ASCII)[0];
+            case EncodingDef.INT_HEX_EBCDIC:
+                final String hexStr = decoderEBCDIC.decode(ByteBuffer.wrap(ids.get(2))).toString();
+                return Hex.decode(hexStr)[0];
             default:
                 break;
         }
@@ -169,10 +191,12 @@ public class BitmapBlocks {
     public byte[] encode(byte b) throws IOException {
         switch (encoding.intValue()) {
             case EncodingDef.INT_HEX:
-                return Hex.encode(new byte[]{b}).getBytes("US-ASCII");
+                return Hex.encode(new byte[]{b}).getBytes(StandardCharsets.US_ASCII);
             case EncodingDef.INT_EBCDIC:
-                encoderEBCDIC.encode(CharBuffer.wrap(new char[]{(char) b}));
-                break;
+                return encoderEBCDIC.encode(CharBuffer.wrap(new char[]{(char) b})).array();
+            case EncodingDef.INT_HEX_EBCDIC:
+                final char[] hex = Hex.encode(new byte[]{b}).toCharArray();
+                return encoderEBCDIC.encode(CharBuffer.wrap(hex)).array();
             default:
                 break;
         }
@@ -180,11 +204,21 @@ public class BitmapBlocks {
     }
 
     private int getBitmapLengthInBytes() {
-        return size / (bitmapBlockLength) + 1;
+        final int actualBytesCnt = size / 8 + (size % 8 == 0 ? 0 : 1);
+        final int modByBlockLen = actualBytesCnt % bitmapBlockLength;
+        if (modByBlockLen == 0) {
+            return actualBytesCnt;
+        } else {
+            return actualBytesCnt + (bitmapBlockLength - modByBlockLen);
+        }
+    }
+
+    public int getBitmapBlockLength() {
+        return bitmapBlockLength;
     }
 
     public int getBlocksCount() {
-        return getBitmapLengthInBytes() / 8;
+        return  getBitmapLengthInBytes() / bitmapBlockLength;
     }
 
     public int getProcessedBlocksCount() {
@@ -227,5 +261,12 @@ public class BitmapBlocks {
     
     public boolean hasBitmapIsContinue() {
         return bitmapIsContinue;
-    }    
+    }
+    
+    public void check(RadixObject source, IProblemHandler handler) {
+        if (bitmapType == EStructureBitmapFirstBitBehavior.FIELD && getBlocksCount() > 1) {
+            handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName()
+                    + "' error: Fields of Bitmap structure with type 'Field' must fit in one block"));
+        }
+    }
 }

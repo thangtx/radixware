@@ -18,6 +18,7 @@ import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.enums.EOrder;
+import org.radixware.kernel.common.enums.EPaginationMethod;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.utils.CharOperations;
 
@@ -112,6 +113,8 @@ public class AdsSortingWriter extends AbstractDefinitionWriter<AdsSortingDef> {
                 WriterUtils.writeSqmlAsXmlStr(printer, def.getHint());
                 printer.printComma();
                 printer.printStringLiteral(def.getLayer().getURI());
+                printer.printComma();
+                WriterUtils.writeEnumFieldInvocation(printer, def.getPaginationMethod());
                 return true;
             default:
                 return false;

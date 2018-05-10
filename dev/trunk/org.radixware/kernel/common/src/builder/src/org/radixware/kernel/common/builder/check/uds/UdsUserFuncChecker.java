@@ -58,10 +58,12 @@ public class UdsUserFuncChecker extends RadixObjectChecker<UdsUserFuncDef> {
         if (radixObject.getPropId() != null) {
             AdsUserPropertyDef prop = radixObject.findOwnerProperty();
             if (prop == null) {
-                if (radixObject.getOwnerClassId() != null) {
+                if (radixObject.getOwnerClassId() != null || radixObject.getOwnerEntityClassId() != null) {
                     AdsClassDef ownerClass = radixObject.findOwnerClass();
                     if (ownerClass == null) {
-                        problemHandler.accept(RadixProblem.Factory.newError(radixObject, "Owner class not found: #" + radixObject.getOwnerClassId().toString()));
+                        Id id = radixObject.getOwnerClassId() == null ?  radixObject.getOwnerEntityClassId() : radixObject.getOwnerClassId();
+                        
+                        problemHandler.accept(RadixProblem.Factory.newError(radixObject, "Owner class not found: #" + id.toString()));
                     } else {
                         problemHandler.accept(RadixProblem.Factory.newError(radixObject, "Owner property not found in class " + ownerClass.getQualifiedName()
                                 + ": #" + radixObject.getPropId().toString()));

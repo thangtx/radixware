@@ -31,8 +31,10 @@ import java.util.Set;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
+import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.enums.EAccessAreaType;
 import org.radixware.kernel.common.enums.ECommandScope;
+import org.radixware.kernel.common.enums.EDdsTableExtOption;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EDrcServerResource;
@@ -40,6 +42,7 @@ import org.radixware.kernel.common.enums.EEditPossibility;
 import org.radixware.kernel.common.enums.EEntityInitializationPhase;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
+import org.radixware.kernel.common.enums.EPaginationMethod;
 import org.radixware.kernel.common.enums.EReferencedObjectActions;
 import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
@@ -52,7 +55,12 @@ import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.exceptions.ServiceProcessClientFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessServerFault;
+import org.radixware.kernel.common.scml.Scml;
+import org.radixware.kernel.common.scml.SqmlExpression;
+import org.radixware.kernel.common.sqml.tags.DbFuncCallTag;
+import org.radixware.kernel.common.sqml.tags.ParameterAbstractTag;
 import org.radixware.kernel.common.sqml.tags.ParameterTag;
+import org.radixware.kernel.common.sqml.tags.PropSqlNameTag;
 import org.radixware.kernel.server.arte.DefManager;
 import org.radixware.kernel.server.arte.services.eas.ExplorerAccessService.SessionOptions;
 import org.radixware.kernel.server.meta.presentations.RadPropertyPresentationDef;
@@ -87,9 +95,11 @@ import org.radixware.kernel.common.utils.XmlUtils;
 import org.radixware.kernel.server.SrvRunParams;
 import org.radixware.kernel.server.arte.Arte;
 import org.radixware.kernel.server.arte.Cache;
-import org.radixware.kernel.server.dbq.sqml.QuerySqmlTranslator;
 import org.radixware.kernel.server.exceptions.PrimaryKeyModificationError;
 import org.radixware.kernel.server.exceptions.WrongPidFormatError;
+import org.radixware.kernel.server.meta.clazzes.RadInnatePropDef;
+import org.radixware.kernel.server.meta.clazzes.RadPropDef.ValInheritancePath;
+import org.radixware.kernel.server.meta.clazzes.RadSqmlPropDef;
 import org.radixware.kernel.server.meta.presentations.IRadFilter;
 import org.radixware.kernel.server.meta.presentations.RadConditionDef;
 import org.radixware.kernel.server.meta.presentations.RadParagraphExplorerItemDef;
@@ -106,8 +116,11 @@ import org.radixware.kernel.server.types.PropValHandler;
 import org.radixware.kernel.server.types.PropValHandlersByIdMap;
 import org.radixware.kernel.server.types.Report;
 import org.radixware.kernel.server.types.Restrictions;
+import org.radixware.kernel.server.types.presctx.EntityPropertyPresentationContext;
+import org.radixware.kernel.server.types.presctx.FormPropertyPresentationContext;
 import org.radixware.kernel.server.types.presctx.UnknownPresentationContext;
 import org.radixware.kernel.server.types.presctx.PresentationContext;
+import org.radixware.kernel.server.types.presctx.ReportPropertyPresentationContext;
 import org.radixware.schemas.eas.ActionTypeEnum;
 import org.radixware.schemas.eas.Actions;
 import org.radixware.schemas.eas.ClassRequest;
@@ -119,11 +132,12 @@ import org.radixware.schemas.eas.ExceptionEnum;
 import org.radixware.schemas.eas.ExplorerItemList;
 import org.radixware.schemas.eas.Filter;
 import org.radixware.schemas.eas.FilterParamTypeEnum;
-import org.radixware.schemas.eas.FilterParamValue.PID;
 import org.radixware.schemas.eas.Form;
+import org.radixware.schemas.eas.GroupRequest;
 import org.radixware.schemas.eas.NextDialogRequest;
 import org.radixware.schemas.eas.NextDialogRequest.MessageBox;
 import org.radixware.schemas.eas.ObjectOrGroupRequest;
+import org.radixware.schemas.eas.ObjectReference;
 import org.radixware.schemas.eas.Presentation;
 import org.radixware.schemas.eas.Property;
 import org.radixware.schemas.eas.Property.InheritableValue;
@@ -141,13 +155,16 @@ abstract class SessionRequest extends EasRequest {
     //private static final String CONTEXT_DEF_NAME    = "Context";
     private static final String PRES_DEF_NAME = "Presentation";
     //private static final String ROOT_DEF_NAME       = "Root";
-    private static final int MAX_TRACE_ITEMS_TO_WRITE = 5000;
-
+    private static final int MAX_TRACE_ITEMS_TO_WRITE = 5000;    
+    
+    protected SessionRequest() {}
+    
     SessionRequest(final ExplorerAccessService presenter) {
         super(presenter);
     }	// Service DB queries
     private ExplorerAccessService.SessionOptions sessionOptions = null;
 
+    
     public void setSessionOptions(final SessionOptions sessionOptions) {
         this.sessionOptions = sessionOptions;
     }
@@ -234,16 +251,19 @@ abstract class SessionRequest extends EasRequest {
         return null;
     }
 
-    protected void postProcess(final XmlObject request, final Response response) throws ServiceProcessFault, InterruptedException {
-        final byte[] challenge
-                = presenter.getChallenge(request, getArte().getEasSessionId().longValue(), true, sessionOptions.getCurrentChallenge());
-        response.setChallenge(challenge);
-        if (sessionOptions.getSecurityToken() != null) {
-            response.setSecurityToken(sessionOptions.getSecurityToken());
+    protected void postProcess(final XmlObject request, final Response response){
+        if (response!=null){
+            final byte[] challenge
+                    = presenter.getChallenge(request, getArte().getEasSessionId().longValue(), true, sessionOptions.getCurrentChallenge());
+            response.setChallenge(challenge);
+            if (sessionOptions.getSecurityToken() != null) {
+                response.setSecurityToken(sessionOptions.getSecurityToken());
+            }
+            if (getScp() != null) {
+                response.setScpName(getScp());
+            }
         }
-        if (getScp() != null) {
-            response.setScpName(getScp());
-        }
+        super.postProcess(request, response);
     }
 
     protected final static class PresentationOptions {
@@ -266,21 +286,32 @@ abstract class SessionRequest extends EasRequest {
             this.editorPresentation = editorPresentation;
         }
 
-        protected final void assertEdPresIsAccessibile(final Entity object)
+        protected final void assertEdPresIsAccessible(final Entity object)
                 throws ServiceProcessClientFault {
             if (editorPresentation != null && getEdPresTotalRestrictions(object).getIsAccessRestricted()) {
-                throw EasFaults.newDefinitionAccessViolationFault(rq.getArte(),
-                        Messages.MLS_ID_INSUF_PRIV_TO_ACCESS_ED_PRES,
-                        "\"" + editorPresentation.getName() + "\"(#" + editorPresentation.getId() + ")",
-                        EDefType.EDITOR_PRESENTATION,
-                        new Id[]{editorPresentation.getId()});
+                throwEdPresIsNotAccessible();
             }
         }
+        
+        protected final void assertEdPresIsAccessible(final PresentationEntityAdapter adapter){
+            if (editorPresentation!=null && adapter.getAdditionalRestrictions(editorPresentation).getIsAccessRestricted()){
+                throwEdPresIsNotAccessible();
+            }
+        }
+        
+        private void throwEdPresIsNotAccessible(){
+            throw EasFaults.newDefinitionAccessViolationFault(rq.getArte(),
+                    Messages.MLS_ID_INSUF_PRIV_TO_ACCESS_ED_PRES,
+                    "\"" + editorPresentation.getName() + "\"(#" + editorPresentation.getId() + ")",
+                    EDefType.EDITOR_PRESENTATION,
+                    new Id[]{editorPresentation.getId()});            
+        }
 
-        protected Restrictions getEdPresTotalRestrictions(final Entity object) {
+        private Restrictions getEdPresTotalRestrictions(final Entity object) {
             return editorPresentation.getTotalRestrictions(object.getCurUserApplicableRoleIds());
         }
-        static final private Restrictions CONTEXTLESS_SEL_RESTR = Restrictions.Factory.newInstance(ERestriction.UPDATE.getValue().longValue() | ERestriction.CREATE.getValue().longValue() | ERestriction.DELETE.getValue().longValue() | ERestriction.DELETE_ALL.getValue().longValue() | ERestriction.ANY_COMMAND.getValue().longValue(), null, null, null);
+        
+        static final private Restrictions CONTEXTLESS_SEL_RESTR = Restrictions.Factory.newInstance(ERestriction.UPDATE.getValue().longValue() | ERestriction.CREATE.getValue().longValue() | ERestriction.DELETE.getValue().longValue() | ERestriction.DELETE_ALL.getValue().longValue() | ERestriction.NOT_READ_ONLY_COMMANDS.getValue().longValue(), null, null, null);
 
         protected final Restrictions getSelRestrictions(final EntityGroup entGrp) throws ServiceProcessClientFault {
             final List<Id> roleIds = getContextCurUserApplicableRoleIds();
@@ -290,7 +321,14 @@ abstract class SessionRequest extends EasRequest {
             } else {
                 contextRestr = CONTEXTLESS_SEL_RESTR;
             }
-            return Restrictions.Factory.sum(contextRestr, selectorPresentation.getTotalRestrictions(roleIds));
+            final Restrictions predefinedRestrictions = 
+                Restrictions.Factory.sum(contextRestr, selectorPresentation.getTotalRestrictions(roleIds));
+            final Restrictions additionalRestrictions = entGrp.getAdditionalRestrictions(selectorPresentation, roleIds);
+            if (additionalRestrictions==Restrictions.ZERO){
+                return predefinedRestrictions;
+            }else{
+                return Restrictions.Factory.sum(predefinedRestrictions, additionalRestrictions);
+            }
         }
 
         protected List<Id> getContextCurUserApplicableRoleIds() {
@@ -318,28 +356,43 @@ abstract class SessionRequest extends EasRequest {
             return null;
         }
 
-        protected void initEntGrp(final EntityGroup<? extends Entity> entGrp, final Sqml addCond, final Map<Id, Object> fltParamValsById, final List<RadSortingDef.Item> orderBy, final Sqml hint) {
+        protected void initEntGrp(final EntityGroup<? extends Entity> entGrp, 
+                                               final Sqml addCond, 
+                                               final Sqml addFrom, 
+                                               final Map<Id, Object> fltParamValsById, 
+                                               final List<RadSortingDef.Item> orderBy, 
+                                               final Sqml hint) {
             if (context != null) {
                 context.writeGroupProperties(entGrp);
             }
-            entGrp.set(Context.asEntGroupContext(context), selectorPresentation, addCond, fltParamValsById, orderBy, hint);
+            entGrp.set(Context.asEntGroupContext(context), 
+                             selectorPresentation, 
+                             addCond, 
+                             addFrom,
+                             fltParamValsById, 
+                             orderBy, 
+                             hint);
         }
+        
+        protected void initEntGrp(final EntityGroup<? extends Entity> entGrp, final EntityGroup.Parameters params) {
+            if (context != null) {
+                context.writeGroupProperties(entGrp);
+            }
+            entGrp.set(params);
+        }        
     }
 
     // Subclasses
     protected static final class Group { // group scope and options structure
 
         final IRadFilter filter;
-        final ColorScheme colorScheme;
         final RadSortingDef sorting;
         final EntityGroup entityGroup;
 
-        protected Group(final EntityGroup entityGroup, final IRadFilter filter,
-                final RadSortingDef sorting, final ColorScheme colorScheme) {
+        protected Group(final EntityGroup entityGroup, final IRadFilter filter, final RadSortingDef sorting) {
             this.entityGroup = entityGroup;
             this.filter = filter;
-            this.sorting = sorting;
-            this.colorScheme = colorScheme;
+            this.sorting = sorting;            
         }
 
         public String getFilterInfo() {
@@ -371,10 +424,15 @@ abstract class SessionRequest extends EasRequest {
 
         private IRadFilter filter;
         private Sqml condition;
+        private Sqml from;
         private Map<Id, Object> paramValues;
 
-        public FilterCondition(final Sqml condition, final Map<Id, Object> paramValues, final IRadFilter filter) {
+        public FilterCondition(final Sqml condition,
+                                         final Sqml from,
+                                         final Map<Id, Object> paramValues, 
+                                         final IRadFilter filter) {
             this.condition = condition;
+            this.from = from;
             if (paramValues == null) {
                 this.paramValues = new HashMap<>(8);
             } else {
@@ -387,8 +445,12 @@ abstract class SessionRequest extends EasRequest {
             return filter;
         }
 
-        public Sqml getSqml() {
+        public Sqml getConditionSqml() {
             return condition;
+        }
+        
+        public Sqml getFromSqml(){
+            return from;
         }
 
         public Map<Id, Object> getParamValues() {
@@ -397,13 +459,13 @@ abstract class SessionRequest extends EasRequest {
 
         public void merge(final FilterCondition other) {
             filter = other.getFilter();
-            if (other.getSqml() != null && !other.getSqml().getItems().isEmpty()) {
+            if (other.getConditionSqml() != null && !other.getConditionSqml().getItems().isEmpty()) {
                 if (condition == null) {
-                    condition = other.getSqml();
+                    condition = other.getConditionSqml();
                 } else {
                     condition.getItems().add(Sqml.Text.Factory.newInstance(" and "));
-                    for (int i = 0, count = other.getSqml().getItems().size(); i < count; i++) {
-                        final Sqml.Item item = other.getSqml().getItems().remove(0);
+                    for (int i = 0, count = other.getConditionSqml().getItems().size(); i < count; i++) {
+                        final Sqml.Item item = other.getConditionSqml().getItems().remove(0);
                         condition.getItems().add(item);
                     }
                 }
@@ -412,6 +474,17 @@ abstract class SessionRequest extends EasRequest {
                         paramValues = other.paramValues;
                     } else {
                         paramValues.putAll(other.paramValues);
+                    }
+                }
+            }
+            if (other.getFromSqml()!=null && !other.getFromSqml().getItems().isEmpty()){
+                if (from==null || from.getItems().isEmpty()){
+                    from = other.getFromSqml();
+                }else{
+                    from.getItems().add(Sqml.Text.Factory.newInstance(","));
+                    for (int i = 0, count = other.getFromSqml().getItems().size(); i < count; i++) {
+                        final Sqml.Item item = other.getFromSqml().getItems().remove(0);
+                        from.getItems().add(item);
                     }
                 }
             }
@@ -481,15 +554,11 @@ abstract class SessionRequest extends EasRequest {
                 }
                 if (prop.getValType() == EValType.PARENT_REF && !(prop instanceof RadParentPropDef)) {
                     if (!xmlProp.getRef().isSetBrokenRef()) {//RADIX-4636
-                        setParentRefProp(entity, prop, xmlProp.getRef().getPID(), edPres, readonlyPropModificationPolicy);
+                        setParentRefProp(entity, prop, xmlProp.getRef().getPID(), xmlProp.getRef().getClassId(), edPres, readonlyPropModificationPolicy);
                     }
                 } else {
-                    Object val = EasValueConverter.easPropXmlVal2ObjVal(
-                            getArte(), xmlProp,
-                            prop.getValType(), getValEntityId());
-                    if (val instanceof Pid) {
-                        val = getArte().getEntityObject((Pid) val);
-                    }
+                    final Object val = 
+                        EasValueConverter.easPropXmlVal2ObjVal(getArte(), xmlProp, prop.getValType(), getValEntityId(), true);                    
                     entity.setProp(prop.getId(), val);
                 }
             } else {
@@ -498,19 +567,16 @@ abstract class SessionRequest extends EasRequest {
         }
 
         protected final void writeTo(final PropValHandlersByIdMap newPropVals) {
-            Object val = EasValueConverter.easPropXmlVal2ObjVal(getArte(), xmlProp, prop.getValType(), getValEntityId());
-            if (val instanceof Pid) {
-                val = getArte().getEntityObject((Pid) val);
-            }
+            final Object val = 
+                EasValueConverter.easPropXmlVal2ObjVal(getArte(), xmlProp, prop.getValType(), getValEntityId(), true);
             newPropVals.put(prop.getId(), new PropValHandler(isOwnVal, val));
         }
     }
 
     // Methods
     protected final void prepare(final Request rqXml) throws ServiceProcessServerFault,
-            ServiceProcessClientFault {
-        sessionOptions = null;
-        cachedCurUserAllRolesInAllAreas = null;
+            ServiceProcessClientFault {        
+        sessionOptions = null;        
         if (rqXml.isSetSetSavepoint()) // TODO ? SavePoints in EAS
         {
             throw new RadixError("TODO ? SavePoints in EAS");		// final Element rqParams = DasRequest.getRequestParams(request);
@@ -611,6 +677,15 @@ abstract class SessionRequest extends EasRequest {
             final boolean bSelPresMandatory,
             final Definition presXml) throws ServiceProcessFault, InterruptedException {
         final Context context = getContext(rqParams.getContext());
+        return getPresentationOptions(context, classDef, isGroupRq, bSelPresMandatory, presXml, rqParams.getDomNode().getNodeName());
+    }
+    
+    protected final PresentationOptions getPresentationOptions(final Context context,            
+            final RadClassDef classDef,
+            final boolean isGroupRq,
+            final boolean bSelPresMandatory,
+            final Definition presXml,
+            final String domNode) throws ServiceProcessFault, InterruptedException {
         //RADIX-2990: uregister all temporary modified object to prevent from illegal save
         getArte().getCache().visitAllUsedExistingEntities(null, new Cache.EntityVisitor() {
             @Override
@@ -641,10 +716,10 @@ abstract class SessionRequest extends EasRequest {
                 edPres = getEdPres(presXml, classDef);
             }
         } else if (isGroupRq && bSelPresMandatory && selPres == null) {
-            throw EasFaults.newParamRequiedFault(PRES_DEF_NAME, rqParams.getDomNode().getNodeName());
+            throw EasFaults.newParamRequiedFault(PRES_DEF_NAME, domNode);
         }
         return new PresentationOptions(this, context, selPres, edPres);
-    }
+    }    
     
     protected static PresentationContext getPresentationContext(final Arte arte, final Context context, final EntityGroup group) {
         if (context == null) {
@@ -702,36 +777,63 @@ abstract class SessionRequest extends EasRequest {
         final RadSelectorPresentationDef selPres = context.selectorPresentation;
         final RadSelectorPresentationDef.Addons selAddons = selPres.getFiltersAndSortings(); // not null                
         Sqml groupCondition = null;
+        Sqml groupFrom = null;
         FilterCondition filterCondition = null;
         List<RadSortingDef.Item> orderBy = null;
         final Sqml hint;
-        org.radixware.schemas.eas.ColorScheme colorSchemeXml = null;
         if (!bIgnoreFilter) {
             final org.radixware.schemas.eas.Context contextXml;
+            final org.radixware.schemas.eas.ClassFilters classFiltersXml;
             final Filter fltXml;
 
-            if (rqParams instanceof SelectRq) {
-                contextXml = ((SelectRq) rqParams).getContext();
-                fltXml = ((SelectRq) rqParams).getFilter();
-                colorSchemeXml = ((SelectRq) rqParams).getColorScheme();
-            } else {
+            if (rqParams instanceof ObjectOrGroupRequest){
                 contextXml = ((ObjectOrGroupRequest) rqParams).getContext();
                 fltXml = ((ObjectOrGroupRequest) rqParams).getFilter();
-                colorSchemeXml = ((ObjectOrGroupRequest) rqParams).getColorScheme();//!!!!
+                classFiltersXml = ((ObjectOrGroupRequest) rqParams).getClassFilters();
+            }else if (rqParams instanceof GroupRequest){
+                contextXml = ((GroupRequest) rqParams).getContext();
+                fltXml = ((GroupRequest) rqParams).getFilter();
+                classFiltersXml = ((GroupRequest) rqParams).getClassFilters();
+            }else{
+                throw new IllegalArgumentException("Unsupported request "+rqParams.getClass().getName());
             }
 
             if (contextXml != null && contextXml.isSetTreePath()) {
-                final org.radixware.schemas.eas.Filter contextFltXml = contextXml.getTreePath().getFilter();
-                if (contextFltXml != null) {
-                    filterCondition = getFilterCondition(contextFltXml, classDef, selPres);
+                final org.radixware.schemas.eas.Context.TreePath.FilterList filterList = contextXml.getTreePath().getFilterList();
+                if (filterList!=null && filterList.getFilterList()!=null){
+                    for (org.radixware.schemas.eas.Context.TreePath.FilterList.Filter contextFltXml: filterList.getFilterList()){                                                
+                        if (filterCondition == null) {
+                            filterCondition = getFilterCondition(contextFltXml, classDef, selPres, true, contextFltXml.getExplorerItemId());
+                        } else {
+                            filterCondition.merge(getFilterCondition(contextFltXml, classDef, selPres,  true, contextFltXml.getExplorerItemId()));
+                        }                        
+                    }
                 }
             }
-
+            
+            if (classFiltersXml!=null){
+                if (classDef.getTableDef().findClassGuidColumn()==null){                    
+                    final String message = 
+                        "Table \'"+classDef.getTableDef().getName()+"\' does not contains classGuid column. Unable to use class condition";
+                    throw new ServiceProcessClientFault(
+                            ExceptionEnum.INVALID_REQUEST.toString(),
+                            message, null, null);
+                }
+                final FilterCondition classFilterCondition = getClassFilterCondition(classFiltersXml, classDef);
+                if (classFilterCondition!=null){
+                    if (filterCondition == null){
+                        filterCondition = classFilterCondition;
+                    }else{
+                        filterCondition.merge(classFilterCondition);
+                    }
+                }
+            }
+            
             if (fltXml != null) {
                 if (filterCondition == null) {
-                    filterCondition = getFilterCondition(fltXml, classDef, selPres);
+                    filterCondition = getFilterCondition(fltXml, classDef, selPres, false, null);
                 } else {
-                    filterCondition.merge(getFilterCondition(fltXml, classDef, selPres));
+                    filterCondition.merge(getFilterCondition(fltXml, classDef, selPres, false, null));
                 }
             }
             if (filterCondition == null && selAddons.isFilterObligatory() /*RADIX-2927: && selAddons.getDefaultFilterId() != null*/) {
@@ -749,12 +851,21 @@ abstract class SessionRequest extends EasRequest {
 //				}
                 //end of RADIX-2927 fix
             }
-            groupCondition = filterCondition == null ? null : filterCondition.getSqml();
+            
+            groupCondition = filterCondition == null ? null : filterCondition.getConditionSqml();
+            groupFrom = filterCondition == null ? null : filterCondition.getFromSqml();
         }
-        final IRadFilter filter = filterCondition == null ? null : filterCondition.getFilter();
-        RadSortingDef sorting = null;
-        final Sorting srtXml = rqParams instanceof SelectRq ? ((SelectRq) rqParams).getSorting()
-                : null;
+        final IRadFilter filter = filterCondition == null ? null : filterCondition.getFilter();        
+        final Sorting srtXml;
+        if (rqParams instanceof SelectRq){
+            srtXml = ((SelectRq) rqParams).getSorting();
+        }else if (rqParams instanceof ObjectOrGroupRequest){
+            srtXml = ((ObjectOrGroupRequest) rqParams).getSorting();
+        }else{
+            srtXml = null;
+        }
+        EPaginationMethod paginationMethod = EPaginationMethod.ABSOLUTE;
+        RadSortingDef sorting;
         if (srtXml != null && srtXml.getId() != null) {
             try {
                 sorting = classDef.getPresentation().getSortingById(srtXml.getId());
@@ -764,6 +875,7 @@ abstract class SessionRequest extends EasRequest {
                         ExceptionEnum.SORTING_NOT_FOUND.toString(), e.getMessage(), e, preprocessedExStack);
             }
             orderBy = sorting.getOrderBy();
+            paginationMethod = sorting.getPaginationMethod();
             if (filter == null && !selAddons.isBaseSortingEnabledById(sorting.getId()) || filter != null && !filter.isBaseSortingEnabledById(sorting.getId())) {
                 throw new ServiceProcessClientFault(
                         ExceptionEnum.INVALID_SORTING.toString(),
@@ -782,7 +894,10 @@ abstract class SessionRequest extends EasRequest {
             }
             if (sorting != null) {
                 orderBy = sorting.getOrderBy();
+                paginationMethod = sorting.getPaginationMethod();
             }
+        }else{
+            sorting = null;
         }
         if (rqParams instanceof SelectRq) {// add <SortingColumns> to orderBy
             //final SelectRq selRq = (SelectRq) rqParams;
@@ -820,11 +935,13 @@ abstract class SessionRequest extends EasRequest {
         } else {
             dirtyHint = selAddons.getDefaultHint();
         }
-        hint = dirtyHint == null ? null : Sqml.Factory.loadFrom("", QuerySqmlTranslator.preprocess(dirtyHint, getArte().getDbConfiguration()));
+        hint = dirtyHint == null ? null : Sqml.Factory.loadFrom("", dirtyHint);
 
         if (!bIgnoreFilter) {// Condition
-            if (rqParams instanceof SelectRq ? ((SelectRq) rqParams).isSetCondition() : ((ObjectOrGroupRequest) rqParams).isSetCondition()) {
-                final Sqml c = Sqml.Factory.loadFrom("SelectRq.Condition", rqParams instanceof SelectRq ? ((SelectRq) rqParams).getCondition()
+            final boolean isSetCondition;
+            
+            if (rqParams instanceof GroupRequest ? ((GroupRequest) rqParams).isSetCondition() : ((ObjectOrGroupRequest) rqParams).isSetCondition()) {
+                final Sqml c = Sqml.Factory.loadFrom("SelectRq.Condition", rqParams instanceof GroupRequest ? ((GroupRequest) rqParams).getCondition()
                         : ((ObjectOrGroupRequest) rqParams).getCondition());
                 if (!c.getItems().isEmpty()) {
                     if (filter == null && !selAddons.isCustomFilterEnabled()) {
@@ -846,7 +963,7 @@ abstract class SessionRequest extends EasRequest {
                         groupCondition.getItems().add(Sqml.Text.Factory.newInstance(" and ("));
                     }
                     try {
-                        groupCondition.appendFrom(QuerySqmlTranslator.preprocess(c, getArte().getDbConfiguration()));
+                        groupCondition.appendFrom(c);
                     } catch (XmlException e) {
                         throw new ServiceProcessServerFault(
                                 ExceptionEnum.FORMAT_ERROR.toString(),
@@ -859,8 +976,8 @@ abstract class SessionRequest extends EasRequest {
             }
         }
         final PropertyList groupPropsXml;
-        if (rqParams instanceof SelectRq) {
-            groupPropsXml = ((SelectRq) rqParams).getGroupProperties();
+        if (rqParams instanceof GroupRequest) {
+            groupPropsXml = ((GroupRequest) rqParams).getGroupProperties();
         } else {
             groupPropsXml = ((ObjectOrGroupRequest) rqParams).getGroupProperties();
         }
@@ -883,22 +1000,114 @@ abstract class SessionRequest extends EasRequest {
         }
         final Map<Id, Object> conditionParamValsById
                 = filterCondition == null ? null : filterCondition.getParamValues();
-        context.initEntGrp(entGrp, groupCondition, conditionParamValsById, orderBy, hint);
+        
+        Pid previousEntityPid = null;
+        Id previousEntityClassId = null;
+        if (paginationMethod == EPaginationMethod.RELATIVE) {
+            if (rqParams instanceof SelectRq) {
+                final ObjectReference prevRef = ((SelectRq) rqParams).getPreviousObjectReference();
+                final String pidStr = prevRef == null ? null : prevRef.getPID();
+                if (pidStr == null && ((SelectRq) rqParams).getStartIndex() > 1) {
+                    throw new IllegalStateException("PreviousObjectPid is not defined for relative pagination from index " + ((SelectRq) rqParams).getStartIndex());
+                }
+                if (pidStr != null && ((SelectRq) rqParams).getStartIndex() > 1) {
+                     previousEntityPid = new Pid(getArte(), context.selectorPresentation.getClassPresentation().getClassDef().getEntityId(), pidStr);
+                     previousEntityClassId = prevRef.getClassId();
+                }
+            }
+        }
+
+        
+        final EntityGroup.Parameters params = new EntityGroup.Parameters(Context.asEntGroupContext(context.context),
+                context.selectorPresentation,
+                groupCondition,
+                groupFrom,
+                conditionParamValsById,
+                orderBy,
+                hint,
+                paginationMethod,
+                previousEntityPid,
+                previousEntityClassId
+        );
+        context.initEntGrp(entGrp, params);
         context.assertSelPresIsAccessibile(entGrp);
         if (checkForContextlessUsage
                 && context.getSelRestrictions(entGrp).getIsContextlessUsageRestricted()
                 && !entGrp.isContextDefined()) {
             throw EasFaults.newAccessViolationFault(getArte(), Messages.MLS_ID_INSUF_PRIV_FOR_CONTEXTLESS_USAGE_OF_SEL_PRES, "\"" + selPres.getName() + "\"(#" + selPres.getId() + ")");
         }
-
-        ColorScheme colorScheme = colorSchemeXml == null ? null : new ColorScheme(colorSchemeXml);
-        return new Group(entGrp, filter, sorting, colorScheme);
+        
+        return new Group(entGrp, filter, sorting);
+    }
+    
+    private static FilterCondition getClassFilterCondition(final org.radixware.schemas.eas.ClassFilters xmlFilters,
+                                                                                  final RadClassDef classDef){
+        if (xmlFilters==null || xmlFilters.getItemList()==null || xmlFilters.getItemList().isEmpty()){
+            return null;
+        }else{            
+            final Sqml classFilterCondition = createTmpSqml();
+            final Map<Id,Object> paramValues = new HashMap<>(3);            
+            ParameterTag classGuidParam;            
+            classFilterCondition.getItems().add(Sqml.Text.Factory.newInstance("( "));
+            for (org.radixware.schemas.eas.ClassFilters.Item item: xmlFilters.getItemList()){
+                if (item.getClassId()!=null){
+                    if (paramValues.size()>0){
+                        classFilterCondition.getItems().add(Sqml.Text.Factory.newInstance(" OR "));
+                    }
+                    classGuidParam = createClassGuidParameterTag();
+                    paramValues.put(classGuidParam.getParameterId(), item.getClassId().toString());
+                    if (item.isSetIncludeDescendants() && item.getIncludeDescendants()){
+                        classFilterCondition.getItems().add(createIsClassExtendsCallTag());
+                        classFilterCondition.getItems().add(Sqml.Text.Factory.newInstance("("));
+                        classFilterCondition.getItems().add(createClassGuidColumnTag(classDef));
+                        classFilterCondition.getItems().add(Sqml.Text.Factory.newInstance(", "));
+                        classFilterCondition.getItems().add(classGuidParam);
+                        classFilterCondition.getItems().add(Sqml.Text.Factory.newInstance(")=1"));
+                    }else{
+                        classFilterCondition.getItems().add(createClassGuidColumnTag(classDef));
+                        classFilterCondition.getItems().add(Sqml.Text.Factory.newInstance("="));
+                        classFilterCondition.getItems().add(classGuidParam);
+                    }
+                }
+            }
+            classFilterCondition.getItems().add(Sqml.Text.Factory.newInstance(" )"));
+            if (paramValues.isEmpty()){
+                return null;
+            }else{
+                return new FilterCondition(classFilterCondition, null, paramValues, null);
+            }
+        }
+    }
+    
+    private static PropSqlNameTag createClassGuidColumnTag(final RadClassDef classDef){
+        final PropSqlNameTag classGuidProp = PropSqlNameTag.Factory.newInstance();
+        classGuidProp.setOwnerType(PropSqlNameTag.EOwnerType.THIS);
+        classGuidProp.setPropOwnerId(classDef.getTableDef().getId());
+        classGuidProp.setPropId(classDef.getTableDef().getClassGuidColumn().getId());        
+        return classGuidProp;
+    }
+    
+    private static DbFuncCallTag createIsClassExtendsCallTag(){
+        final DbFuncCallTag funcCall = DbFuncCallTag.Factory.newInstance();
+        funcCall.setFunctionId(Id.Factory.loadFrom("dfn3OXAHT4FYLORDBBJABIFNQAABA"));
+        return funcCall;
+    }
+    
+    private static ParameterTag createClassGuidParameterTag(){
+        final ParameterTag parameter = ParameterTag.Factory.newInstance();
+        parameter.setParameterId(Id.Factory.newInstance(EDefinitionIdPrefix.PARAMETER));
+        parameter.setLiteral(false);
+        return parameter;
     }
 
     private FilterCondition getFilterCondition(final Filter xmlFilter,
-            final RadClassDef classDef,
-            final RadSelectorPresentationDef selPres) {
+                                                                  final RadClassDef classDef,
+                                                                  final RadSelectorPresentationDef selPres,
+                                                                  final boolean isContextFilter,                                                                   
+                                                                  /*not null only if isContextFilter = true*/
+                                                                  final Id explorerItemId) {
         Sqml filterCondition = null;
+        Sqml filterFrom = null;
         IRadFilter filter = null;
         Map<Id, Object> fltParamValsById = null;
         Sqml fltAddCond = null;
@@ -907,9 +1116,21 @@ abstract class SessionRequest extends EasRequest {
                 try {
                     filter = classDef.getPresentation().getFilterById(xmlFilter.getId());
                 } catch (DefinitionNotFoundError e) {
-                    final String preprocessedExStack = getArte().getTrace().exceptionStackToString(e);
+                    final String preprocessedExStack = ExceptionTextFormatter.exceptionStackToString(e);
                     throw new ServiceProcessClientFault(
                             ExceptionEnum.FILTER_NOT_FOUND.toString(), e.getMessage(), e, preprocessedExStack);
+                }
+                if (filter.getAdditionalFrom()!=null){
+                    filterFrom = createTmpSqml();
+                    try {
+                        filterFrom.appendFrom(filter.getAdditionalFrom());
+                    }catch (XmlException e) {
+                        throw new ServiceProcessServerFault(
+                                            ExceptionEnum.FORMAT_ERROR.toString(),
+                                            "Error on filter from SQML processing: "
+                                            + ExceptionTextFormatter.getExceptionMess(e),
+                                            e, null);
+                    }                    
                 }
             } else {
                 final CommonSelectorFilter commonFilter = getCommonFilter(classDef, selPres.getId(), xmlFilter);
@@ -943,63 +1164,27 @@ abstract class SessionRequest extends EasRequest {
             //getArte().getTrace().put(EEventSeverity.WARNING, "Unauthorized custom filter usage", EEventSource.EAS);
             //throw EasFaults.newAccessViolationFault("create custom filter");
             //}
-            fltAddCond = Sqml.Factory.loadFrom("GrpRq.Flt.AddCond", xmlFilter.getAdditionalCondition());
-            assertSubquriesAllowed(fltAddCond);
+            if (!isContextFilter || (selAddons.isCustomFilterEnabled() && filterFrom==null)){
+                fltAddCond = Sqml.Factory.loadFrom("GrpRq.Flt.AddCond", xmlFilter.getAdditionalCondition());
+                assertSubquriesAllowed(fltAddCond);
+            }
         }
-        final Filter.Parameters paramsXml = xmlFilter.getParameters();
+        final PropertyList paramsXml = xmlFilter.getParameters();
         if (paramsXml != null) {
-            final List<Filter.Parameters.Item> paramXmls = paramsXml.getItemList();
-            for (Filter.Parameters.Item paramXml : paramXmls) {
-                Object paramVal;
-                if (paramXml.isSetPID()) {
-                    if (paramXml.isNilPID()) {
-                        paramVal = null;
-                    } else {
-                        final PID pidXml = paramXml.getPID();
-                        if (paramXml.isNilPID()) {
-                            paramVal = null;
-                        } else {
-                            final String pidAsStr = XmlUtils.parseSafeXmlString(pidXml.getStringValue());
-                            paramVal = new Pid(getArte(), pidXml.getEntityId(), pidAsStr);
-                        }
-                    }
-                } else if (paramXml.isSetStr()) {
-                    if (paramXml.isNilStr()) {
-                        paramVal = null;
-                    } else {
-                        paramVal = XmlUtils.parseSafeXmlString(paramXml.getStr());
-                    }
-                } else if (paramXml.isSetInt()) {
-                    if (paramXml.isNilInt()) {
-                        paramVal = null;
-                    } else {
-                        paramVal = Long.valueOf(paramXml.getInt());
-                    }
-                } else if (paramXml.isSetNum()) {
-                    if (paramXml.isNilNum()) {
-                        paramVal = null;
-                    } else {
-                        paramVal = paramXml.getNum();
-                    }
-                } else if (paramXml.isSetDateTime()) {
-                    paramVal = paramXml.getDateTime();//TWRBS-4011
-                } else if (paramXml.isSetBool()) {
-                    paramVal = Boolean.valueOf(paramXml.getBool());
-                } else {
-                    throw new RadixError(
-                            "Can't parse filter parameter #" + paramXml.getId() + " value.", null);
-                }
+            final List<PropertyList.Item> paramXmls = paramsXml.getItemList();
+            for (PropertyList.Item paramXml : paramXmls) {
+                final Object paramVal = EasValueConverter.easPropXmlVal2ObjVal(getArte(), paramXml, null);
                 if (fltParamValsById == null) {
                     fltParamValsById = new HashMap<>();
                 }
-                fltParamValsById.put(paramXml.getId(), paramVal);
+                fltParamValsById.put(paramXml.getId(), paramVal);                
             }
         }
-        if (filter != null && filter.getCondition() != null) {
+        if (filter != null && filter.getCondition() != null && (!isContextFilter || fltAddCond==null)) {
             filterCondition = createTmpSqml();
             filterCondition.getItems().add(Sqml.Text.Factory.newInstance("("));
             try {
-                filterCondition.appendFrom(QuerySqmlTranslator.preprocess(filter.getCondition(), getArte().getDbConfiguration()));
+                filterCondition.appendFrom(filter.getCondition());
             } catch (XmlException e) {
                 throw new ServiceProcessServerFault(
                         ExceptionEnum.FORMAT_ERROR.toString(),
@@ -1008,6 +1193,18 @@ abstract class SessionRequest extends EasRequest {
                         e, null);
             }
             filterCondition.getItems().add(Sqml.Text.Factory.newInstance("\n)"));
+            if (isContextFilter && fltParamValsById!=null){                
+                final String idPostfix;
+                if (explorerItemId==null){
+                    idPostfix = "-"+Id.Factory.newInstance(EDefinitionIdPrefix.EXPLORER_ITEM).toString();
+                }else{
+                    idPostfix = "-"+explorerItemId.toString();                    
+                }
+                changeFilterConditionParamIds(filterCondition, fltParamValsById, idPostfix);
+                if (filterFrom!=null){
+                    changeFilterConditionParamIds(filterFrom, fltParamValsById, idPostfix);
+                }
+            }
         }
         if (fltAddCond != null) {
             if (filterCondition == null) {
@@ -1017,7 +1214,7 @@ abstract class SessionRequest extends EasRequest {
                 filterCondition.getItems().add(Sqml.Text.Factory.newInstance(" and ("));
             }
             try {
-                filterCondition.appendFrom(QuerySqmlTranslator.preprocess(fltAddCond, getArte().getDbConfiguration()));
+                filterCondition.appendFrom(fltAddCond);
             } catch (XmlException e) {
                 throw new ServiceProcessServerFault(
                         ExceptionEnum.FORMAT_ERROR.toString(),
@@ -1043,9 +1240,33 @@ abstract class SessionRequest extends EasRequest {
                 }
             }
 
-            return new FilterCondition(filterCondition, fltParamValsById, filter);
+            return new FilterCondition(filterCondition, filterFrom, fltParamValsById, (isContextFilter ? null : filter));
         } else {
-            return new FilterCondition(null, null, filter);
+            return new FilterCondition(null, filterFrom, null, (isContextFilter ? null : filter));
+        }
+    }
+    
+    private void changeFilterConditionParamIds(final Sqml condition, 
+                                                                      final Map<Id, Object> fltParamValsById, 
+                                                                      final String idPostfix){
+        final RadixObjects<Scml.Item> items = condition.getItems(); 
+        for (Scml.Item item: items){
+            if (item instanceof ParameterAbstractTag){
+                final ParameterAbstractTag tag = (ParameterAbstractTag)item;
+                final Id initialId = tag.getParameterId();
+                final Id uniqueId = Id.Factory.append(initialId, idPostfix);
+                if (fltParamValsById.containsKey(initialId)){
+                    tag.setParameterId(uniqueId);
+                    final Object paramValue = fltParamValsById.remove(initialId);
+                    fltParamValsById.put(uniqueId, paramValue);
+                }else if (fltParamValsById.containsKey(uniqueId)){
+                    tag.setParameterId(uniqueId);
+                }else{
+                    throw new ServiceProcessClientFault(
+                            ExceptionEnum.MISSING_FILTER_PARAM.toString(),
+                            "Filter parameter #" + initialId + " is not defined", null, null);                    
+                }
+            }
         }
     }
 
@@ -1108,7 +1329,7 @@ abstract class SessionRequest extends EasRequest {
                             EDefType.CLASS_PROPERTY,
                             new Id[]{edPres.getClassPresentation().getId(), propVal.prop.getId()});
                 }
-                if (!entity.getRawEntity().isInDatabase(false) && propVal.prop.getValType() == EValType.OBJECT) {
+                if (!entity.getRawEntity().isInDatabase(false) && propVal.prop.getValType() == EValType.OBJECT && (!propVal.xmlProp.isNilRef() || !propVal.xmlProp.isSetRef())) {
                     continue; //object property should not be edited until create
                 }
                 if (loadFilter.skip(propVal)) {
@@ -1401,12 +1622,6 @@ abstract class SessionRequest extends EasRequest {
                         if ((propDef instanceof IRadRefPropertyDef) && contextRefs.contains(((IRadRefPropertyDef) propDef).getReference())) {
                             isReadonly = true; // It's a context property. It must be readonly.
                         }
-                        if (propDef.getValType() == EValType.OBJECT && (propDef instanceof IRadRefPropertyDef)) {
-                            if (USER_FUNC_TAB_ID.equals(((IRadRefPropertyDef) propDef).getDestinationEntityId())
-                                    && !getArte().getRights().getCurUserCanAccess(EDrcServerResource.USER_FUNC_DEV)) {
-                                isReadonly = true; //RADIX-1340: user func edit is forbidden
-                            }
-                        }
                         val = presEntAdapter.getProp(propDef.getId());
                         ptValInfo = getParentInfo(entity, propDef, (Entity) val, pres);
                     } catch (EntityObjectNotExistsError e) {
@@ -1442,25 +1657,29 @@ abstract class SessionRequest extends EasRequest {
         if (isReadonly) {
             propXml.setReadOnly(isReadonly);
         }
-        if (!entity.getPropHasOwnVal(propDef.getId())) {
-            propXml.setIsOwnVal(false);
-        }
+
         if (!entity.getIsPropValDefined(propDef.getId())) {
             propXml.setIsDefined(false);
         }
 
+        final boolean usingFirstPossibleInheritancePath;
         if (propDef.getIsValInheritable()) {
-            final RadPropDef.ValInheritancePath path = entity.getPropValInheritancePath(propDef.getId());
-
-            if (path != null) {
+            RadPropDef.ValInheritancePath inheritancePath = entity.getPropValInheritancePath(propDef.getId());
+            if (inheritancePath==null){
+                inheritancePath = getFirstPossiblePropValInheritancePath(entity, propDef.getId());
+                usingFirstPossibleInheritancePath = inheritancePath!=null;
+            }else{
+                usingFirstPossibleInheritancePath = false;
+            }
+            if (inheritancePath != null) {
                 final InheritableValue inhertValXml = propXml.addNewInheritableValue();
                 final Path pathXml = inhertValXml.addNewPath();
                 Path.Item itemXml;
                 Path.Item.ReferenceProperty refPropXml;
-                Path.Item.ReferenceValue refValXml;
+                ObjectReference refValXml;
                 RadPropDef destProp;
                 Entity item = entity;
-                for (final Id refPropId : path.getRefPropIds()) {
+                for (final Id refPropId : inheritancePath.getRefPropIds()) {
                     itemXml = pathXml.addNewItem();
                     destProp = item.getRadMeta().getPropById(refPropId);
                     refPropXml = itemXml.addNewReferenceProperty();
@@ -1473,7 +1692,7 @@ abstract class SessionRequest extends EasRequest {
                     refValXml.setPID(item.getPid().toString());
                     refValXml.setTitle(prevItem.onCalcParentTitle(refPropId, item, item.calcTitle()));
                 }
-                destProp = item.getRadMeta().getPropById(path.getDestPropId());
+                destProp = item.getRadMeta().getPropById(inheritancePath.getDestPropId());
                 final Property destPropXml = inhertValXml.addNewProperty();
                 destPropXml.setId(destProp.getId());
                 if (bWithLob || !pres.getPropIsReadSeparatelyByPropId(entity.getPresentationMeta(), propDef.getId())) {
@@ -1494,7 +1713,49 @@ abstract class SessionRequest extends EasRequest {
                     EasValueConverter.objVal2EasPropXmlVal(inhertVal, inhertPtValInfo, destProp.getValType(), destPropXml);
                 }
             }
+        }else{
+            usingFirstPossibleInheritancePath = false;
         }
+        
+        if (usingFirstPossibleInheritancePath){
+            if (isInheritedValue(entity, propDef)){
+                propXml.setIsOwnVal(false);
+            }
+        }else{
+            if (!entity.getPropHasOwnVal(propDef.getId())) {
+                propXml.setIsOwnVal(false);
+            }        
+        }
+    }
+    
+    private boolean isInheritedValue( final Entity entity, final RadPropDef prop) {
+        final Id propId = prop.getId();
+        if (propId.getPrefix() == EDefinitionIdPrefix.ADS_USER_PROP){
+            return !entity.getPropHasOwnVal(propId);
+        } else {
+            return prop.getIsValInheritable() 
+                      && (prop instanceof RadInnatePropDef
+                          || prop instanceof RadInnateRefPropDef
+                          || prop instanceof RadDetailPropDef 
+                          || prop instanceof RadSqmlPropDef)
+                      && prop.getValIsInheritMark(getArte(), entity.getNativePropOwnVal(propId));
+        }
+    }
+    
+    protected final ValInheritancePath getFirstPossiblePropValInheritancePath(final Entity entity, final Id id) {        
+        final RadPropDef prop = entity.getRadMeta().getPropById(id);
+        NEXT_PATH:
+        for (RadPropDef.ValInheritancePath path : prop.getValInheritPathes()) {
+            Entity parent = entity;
+            for (final Id refPropId : path.getRefPropIds()) {
+                parent = (Entity) parent.getProp(refPropId);
+                if (parent == null) {
+                    continue NEXT_PATH;
+                }
+            }
+            return path;
+        }
+        return null;
     }
 
     protected ParentInfo getParentInfo(final IRadClassInstance ptOwner, final RadPropDef ptProp, final Entity parent, final RadPresentationDef pres) {
@@ -1509,7 +1770,11 @@ abstract class SessionRequest extends EasRequest {
         while (ptProp instanceof RadParentPropDef) {
             final RadParentPropDef joinProp = (RadParentPropDef) ptProp;
             for (Id refId : joinProp.getRefPropIds()) {
-                ptOwner = (Entity) ptOwner.getProp(refId);
+                try{
+                    ptOwner = (Entity) ptOwner.getProp(refId);
+                }catch(EntityObjectNotExistsError error){
+                    return ParentInfo.Factory.createParentInfo(null, null, false);
+                }
                 if (ptOwner == null) {
                     break;
                 }
@@ -1546,17 +1811,22 @@ abstract class SessionRequest extends EasRequest {
             final RadConditionDef.Prop2ValueCondition contextProps
                     = RadConditionDef.Prop2ValueCondition.fromParentRefProperty(propertyRef, ownerClassDef, propPres, ptSelPres);
             final RadClassDef destClassDef = ownerClassDef.getRelease().getClassDef(propertyRef.getDestinationClassId());
-            final List<Id> roleIds = contextProps.getCurUserRoleIds(getArte(), destClassDef);
-            isSelectable = !ptSelPres.getTotalRestrictions(roleIds).getIsAccessRestricted();
+            final List<Id> roleIds = getCurUserRoleIds(contextProps, destClassDef);
+            final EntityGroup entitGroup = getArte().getGroupHander(destClassDef.getEntityId());
+            final EntityGroup.PropContext groupContext = 
+                new EntityGroup.PropContext(destClassDef, propertyRef, ownerClassPres, propPres, ptOwner, null);            
+            entitGroup.set(groupContext, ptSelPres, null, null, null, null, null);
+            isSelectable = !ptSelPres.getTotalRestrictions(roleIds).getIsAccessRestricted()
+                                   && !entitGroup.getAdditionalRestrictions(ptSelPres, roleIds).getIsAccessRestricted();
             if (brokenRefErr == null && parent != null && propPres != null) {//RADIX-5098 
-                allowedActions.addAll(calcAllowedActionsForReferencedObject(parent, propPres, ownerClassPres));
+                allowedActions.addAll(calcAllowedActionsForReferencedObject(ptOwner, parent, propPres, ownerClassPres));
             }
         } else {
             isSelectable = false;
             // editor presentation list is not presented in RadParentTitlePropertyPresentationDef
             // so let's assume that editor should be accessible for all editable objects
             if (brokenRefErr == null && parent != null) {
-                allowedActions.addAll(calcAllowedActionsForReferencedObject(parent, propPres, ownerClassPres));
+                allowedActions.addAll(calcAllowedActionsForReferencedObject(ptOwner, parent, propPres, ownerClassPres));
             }
         }
 
@@ -1567,17 +1837,35 @@ abstract class SessionRequest extends EasRequest {
         }
     }
 
-    private static EnumSet<EReferencedObjectActions> calcAllowedActionsForReferencedObject(final Entity object,
+    private static EnumSet<EReferencedObjectActions> calcAllowedActionsForReferencedObject(final IRadClassInstance ptOwner,
+            final Entity object,
             final RadParentTitlePropertyPresentationDef propPres,
             final RadClassPresentationDef ownerClassPres) {
         final EnumSet<EReferencedObjectActions> allowedActions = EnumSet.noneOf(EReferencedObjectActions.class);
-        final PresentationEntityAdapter presAdapter = new PresentationEntityAdapter(object);
+        final PresentationEntityAdapter presAdapter = object.getArte().getCache().getPresentationAdapter(object);
+        final PresentationContext context;
+        if (ptOwner instanceof Report){
+            context = new ReportPropertyPresentationContext((Report)ptOwner, propPres.getPropId(), null, null);
+        }else if (ptOwner instanceof FormHandler){
+            context = new FormPropertyPresentationContext((FormHandler)ptOwner, propPres.getPropId(), null, null);
+        }else if (ptOwner instanceof Entity){
+            context = new EntityPropertyPresentationContext((Entity)ptOwner, propPres.getPropId(), null, null);
+        }else{
+            context = UnknownPresentationContext.INSTANCE;
+        }
+        presAdapter.setPresentationContext(context);
         final Collection<RadEditorPresentationDef> presentations
                 = propPres.getParentEditorPresentations(ownerClassPres);
         final RadEditorPresentationDef p
                 = presentations.isEmpty() ? null : presAdapter.selectEditorPresentation(presentations);
         if (p != null) {
-            final Restrictions parentRestrictions = p.getTotalRestrictions(object);
+            final Restrictions additionalRestrictions = presAdapter.getAdditionalRestrictions(p);            
+            final Restrictions parentRestrictions;
+            if (additionalRestrictions==Restrictions.ZERO){
+                parentRestrictions = p.getTotalRestrictions(object);
+            }else{
+                parentRestrictions = Restrictions.Factory.sum(p.getTotalRestrictions(object), additionalRestrictions);
+            }
             if (!parentRestrictions.getIsAccessRestricted()) {
                 allowedActions.add(EReferencedObjectActions.ACCESS);
                 if (!parentRestrictions.getIsViewRestricted()) {
@@ -1597,12 +1885,21 @@ abstract class SessionRequest extends EasRequest {
         }
         return allowedActions;
     }
+    
+    protected final void initNewObject(final Entity obj,
+            final Context context,
+            final RadEditorPresentationDef presentation,
+            final PropValHandlersByIdMap initialPropValsById, final Entity src,
+            final EEntityInitializationPhase phase) throws ServiceProcessFault, InterruptedException{
+        initNewObject(obj, context, presentation, initialPropValsById, src, phase, Collections.<Id>emptyList());
+    }
 
     protected final void initNewObject(final Entity obj,
             final Context context,
             final RadEditorPresentationDef presentation,
             final PropValHandlersByIdMap initialPropValsById, final Entity src,
-            final EEntityInitializationPhase phase)
+            final EEntityInitializationPhase phase,
+            final Collection<Id> ignoreUserObjects)
             throws ServiceProcessFault, InterruptedException {
         try {
             if (context != null
@@ -1618,7 +1915,10 @@ abstract class SessionRequest extends EasRequest {
             entityAdapter.init(initialPropValsById, src, phase);
             final RadClassDef classDef = obj.getRadMeta();
             for (RadPropDef prop : classDef.getProps()) {
-                if (prop instanceof RadUserPropDef && presentation.getPropIsNotNullByPropId(obj.getPresentationMeta(), prop.getId()) && !obj.getIsPropValDefined(prop.getId())) {
+                if (prop instanceof RadUserPropDef
+                    && !ignoreUserObjects.contains(prop.getId())
+                    && (presentation.getPropIsNotNullByPropId(obj.getPresentationMeta(), prop.getId()) || (prop.getValType()==EValType.OBJECT && (initialPropValsById==null || !initialPropValsById.containsKey(prop.getId()))))
+                    && !obj.getIsPropValDefined(prop.getId())) {
                     if (src != null) {
                         if (src.getProp(prop.getId()) != null) {
                             obj.copyPropVal(prop, src);
@@ -1677,7 +1977,9 @@ abstract class SessionRequest extends EasRequest {
 
     protected final DdsReferenceDef setParentRefProp(
             final PresentationEntityAdapter entity,
-            final RadPropDef ptProp, final String parentPidStr,
+            final RadPropDef ptProp, 
+            final String parentPidStr,
+            final Id classId,
             final RadEditorPresentationDef edPres,
             final EReadonlyPropModificationPolicy readonlyPropModificationPolicy) throws InterruptedException {
         final DdsReferenceDef ptRef = getParentRef(ptProp);
@@ -1704,7 +2006,14 @@ abstract class SessionRequest extends EasRequest {
         try {
             final Entity newParent;
             if (parentPidStr != null && parentPidStr.length() > 0) {
-                newParent = getArte().getEntityObject(new Pid(getArte(), destEntId, parentPidStr));
+                final Pid pid = new Pid(getArte(), destEntId, parentPidStr);                
+                final DdsTableDef table = pid.getTable();
+                if (table.getExtOptions().contains(EDdsTableExtOption.ENABLE_APPLICATION_CLASSES)){
+                    final String classIdStr = classId==null ? null : classId.toString();
+                    newParent = getArte().getEntityObject(pid, classIdStr);
+                }else{
+                    newParent = getArte().getEntityObject(pid);
+                }
             } else {
                 newParent = null;
             }
@@ -1862,15 +2171,20 @@ abstract class SessionRequest extends EasRequest {
         final Restrictions restr;
         final Entity entity = presEntAdapter.getRawEntity();
         if (pres instanceof RadEditorPresentationDef) {
-            restr = ((RadEditorPresentationDef) pres).getTotalRestrictions(entity);
+            final Restrictions additionalRestrictions = presEntAdapter.getAdditionalRestrictions((RadEditorPresentationDef) pres);
+            if (additionalRestrictions==Restrictions.ZERO){
+                restr = ((RadEditorPresentationDef) pres).getTotalRestrictions(entity);
+            }else{
+                restr = Restrictions.Factory.sum( ((RadEditorPresentationDef) pres).getTotalRestrictions(entity), additionalRestrictions);
+            }
         } else {
             restr = presOptions.getSelRestrictions(entGrp);
         }
 
         for (RadCommandDef cmd : entity.getRadMeta().getPresentation().getCommands()) {
             if ((cmd.scope == ECommandScope.OBJECT || cmd.scope == ECommandScope.PROPERTY)
-                    && !presRestr.getIsCommandRestricted(cmd.getId()) && // enabled in presentation
-                    (restr.getIsCommandRestricted(cmd.getId()) || // but disabled by access control system
+                    && !presRestr.getIsCommandRestricted(cmd) && // enabled in presentation
+                    (restr.getIsCommandRestricted(cmd) || // but disabled by access control system
                     presEntAdapter.isCommandDisabled(cmd.getId())) // or by user handler
                     ) {
                 final Actions.Item it = disActions.addNewItem();
@@ -1890,8 +2204,8 @@ abstract class SessionRequest extends EasRequest {
         if (entGrp.getRadMeta().getPresentation() != null) {
             for (RadCommandDef cmd : entGrp.getRadMeta().getPresentation().getCommands()) {
                 if ((cmd.scope == ECommandScope.GROUP) && // is group command
-                        !presRestr.getIsCommandRestricted(cmd.getId()) && // enabled in presentation
-                        (restr.getIsCommandRestricted(cmd.getId()) || // but disabled by access control system
+                        !presRestr.getIsCommandRestricted(cmd) && // enabled in presentation
+                        (restr.getIsCommandRestricted(cmd) || // but disabled by access control system
                         entGrp.isCommandDisabled(cmd.getId())) // or disable by handler
                         ) {
                     final Actions.Item it = disActions.addNewItem();
@@ -2036,13 +2350,6 @@ abstract class SessionRequest extends EasRequest {
         }
     }
 
-    protected void assertNotUserFuncOrUserCanDevUserFunc(final RadClassDef classDef) throws ServiceProcessClientFault {
-        if (USER_FUNC_TAB_ID.equals(classDef.getEntityId()) && !getArte().getRights().getCurUserCanAccess(EDrcServerResource.USER_FUNC_DEV)) {
-            //RADIX-1340
-            throw EasFaults.newAccessViolationFault(getArte(), Messages.MLS_ID_INSUF_PRIV_TO_DEVELOP_USER_FUNC, null);
-        }
-    }
-
     /**
      *
      * @param arte
@@ -2056,8 +2363,7 @@ abstract class SessionRequest extends EasRequest {
         if (context == null || !context.getContextProperties().hasAccessAreas(getArte(), context.getClassDef())) {
             rolesByCondition = null;
         } else {
-            rolesByCondition
-                    = context.getContextProperties().getCurUserRoleIds(getArte(), context.getClassDef());
+            rolesByCondition = getCurUserRoleIds(context.getContextProperties(), context.getClassDef());
         }
         boolean bUseContextRestrictions = false;
         if (context instanceof EdPresExplrItemContext) {
@@ -2083,21 +2389,19 @@ abstract class SessionRequest extends EasRequest {
             return rolesByCondition == null ? getCurUserAllRolesInAllAreas() : rolesByCondition;
         }
     }
-    private List<Id> cachedCurUserAllRolesInAllAreas;
 
-    private List<Id> getCurUserAllRolesInAllAreas() {
-        if (cachedCurUserAllRolesInAllAreas == null) {
-            cachedCurUserAllRolesInAllAreas = getArte().getRights().getCurUserAllRolesInAllAreas();
-        }
-        return cachedCurUserAllRolesInAllAreas;
-    }
-
-    protected void writeAccessibleExplorerItems(final Entity entity, final RadEditorPresentationDef presentation, final ExplorerItemList xItems) throws ServiceProcessClientFault, InterruptedException {
+    protected void writeAccessibleExplorerItems(final Entity entity, final RadEditorPresentationDef presentation, final Restrictions additionalRestrictions, final ExplorerItemList xItems) throws ServiceProcessClientFault, InterruptedException {
         final Id presentationId = presentation.getId();
         final Restrictions presentationRestrictions = presentation.getTotalRestrictions(entity);
+        final Restrictions totalRestrictions;
+        if (additionalRestrictions==Restrictions.ZERO){
+            totalRestrictions = presentationRestrictions;
+        }else{
+            totalRestrictions = Restrictions.Factory.sum(presentationRestrictions,additionalRestrictions);
+        }
         final Map<RadExplorerItemDef, Boolean> processedParags = new HashMap<>();
         for (RadExplorerItemDef ei : presentation.getChildren()) {
-            processEi(entity, presentationId, presentationRestrictions, ei, processedParags, xItems);
+            processEi(entity, presentationId, totalRestrictions, ei, processedParags, xItems);
         }
     }
 
@@ -2157,11 +2461,16 @@ abstract class SessionRequest extends EasRequest {
                     return false;
                 }
             } else if (ei instanceof RadSelectorExplorerItemDef) {
-                final RadSelectorPresentationDef selPres = ((RadSelectorExplorerItemDef) ei).getSelectorPresentation();
+                final RadSelectorExplorerItemDef selExplItem = (RadSelectorExplorerItemDef) ei;
+                final RadSelectorPresentationDef selPres = selExplItem.getSelectorPresentation();
                 final EdPresExplrItemContext context = new EdPresExplrItemContext(
                         this, entity.getRadMeta().getId(), presId, ei.getId(), entity.getPid(), null);
                 final List<Id> applicableRoleIds = getContextCurUserApplicableRoleIds(context);
-                if (!selPres.getTotalRestrictions(applicableRoleIds).getIsAccessRestricted()) {
+                final RadClassDef selClassDef = selExplItem.getSelectionClassDef();
+                final EntityGroup group = getArte().getGroupHander(selClassDef.getEntityId());
+                group.set(context.buildEntGroupContext(), selPres, null, null, null, null, null);
+                if (!selPres.getTotalRestrictions(applicableRoleIds).getIsAccessRestricted()
+                    && !group.getAdditionalRestrictions(selPres, applicableRoleIds).getIsAccessRestricted()) {
                     xItems.addNewItem().setId(ei.getId());
                     return true;
                 }

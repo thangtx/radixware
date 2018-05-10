@@ -81,8 +81,10 @@ public class SaveAllImpl {
                 radixObject.getRemoveSupport().removeEventListener(removeListener);
             }
 
-            final DataObject dataObject = RadixDataObject.find(radixObject);
-            dataObject.setModified(modified);
+            final DataObject[] dataObjects = RadixDataObject.findAll(radixObject);
+            for (DataObject dataObject : dataObjects) {
+                dataObject.setModified(modified);
+            }
         }
     }
 }

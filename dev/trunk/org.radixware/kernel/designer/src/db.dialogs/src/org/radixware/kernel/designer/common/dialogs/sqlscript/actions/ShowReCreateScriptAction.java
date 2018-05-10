@@ -15,7 +15,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.radixware.kernel.common.defs.dds.DdsDefinition;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
-import org.radixware.kernel.designer.dds.script.defs.DdsScriptGeneratorUtils;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 
 
 public class ShowReCreateScriptAction extends AbstractAction {

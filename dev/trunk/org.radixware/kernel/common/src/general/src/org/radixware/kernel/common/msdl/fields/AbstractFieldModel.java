@@ -17,12 +17,15 @@ import java.util.List;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObjects;
+import org.radixware.kernel.common.exceptions.SmioException;
 import org.radixware.kernel.common.msdl.EFieldType;
 import org.radixware.kernel.common.msdl.MsdlField;
 import org.radixware.kernel.common.msdl.MsdlStructureField;
 import org.radixware.kernel.common.msdl.MsdlStructureFields;
 import org.radixware.kernel.common.msdl.MsdlUnitContext;
 import org.radixware.kernel.common.msdl.RootMsdlScheme;
+import org.radixware.kernel.common.enums.EMsdlTimeZoneType;
+import org.radixware.kernel.common.msdl.fields.parser.SmioCoder;
 import org.radixware.kernel.common.msdl.fields.parser.SmioField;
 import org.radixware.schemas.msdl.AnyField;
 import org.radixware.schemas.msdl.BCHField;
@@ -32,6 +35,7 @@ import org.radixware.schemas.msdl.ChoiceField;
 import org.radixware.schemas.msdl.DateTimeField;
 import org.radixware.schemas.msdl.Field;
 import org.radixware.schemas.msdl.IntField;
+import org.radixware.schemas.msdl.LenUnitDef;
 import org.radixware.schemas.msdl.NumField;
 import org.radixware.schemas.msdl.SequenceField;
 import org.radixware.schemas.msdl.StrField;
@@ -40,7 +44,7 @@ import org.radixware.schemas.msdl.StructureField;
 
 
 public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
-
+    
     public final static class Factory {
 
         public static AbstractFieldModel newInstance(MsdlField container, AnyField anyField) {
@@ -111,6 +115,15 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
 
     public Field getFullField() {        
         return field;
+    }
+    
+    public StructureFieldModel getOwnerStructureModel() {
+        for (RadixObject owner = getContainer(); owner != null; owner = owner.getContainer()) {
+            if (owner instanceof StructureFieldModel) {
+                return (StructureFieldModel) owner;
+            }
+        }
+        return null;
     }
 
     public RootMsdlScheme getRootMsdlScheme() {
@@ -185,7 +198,13 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         }
         while (true) {
             if (cur instanceof RootMsdlScheme) {
-                if (!acceptor.accept((RootMsdlScheme) cur, ((StructureFieldModel) ((MsdlField) cur).getFieldModel()).getStructure())) {
+                RootMsdlScheme root = (RootMsdlScheme) cur;
+                if (root.isForcedUseFictiveParentStructure() && root.getFictiveParentStructure() != null) {
+                    if (!acceptor.accept(root, root.getFictiveParentStructure())) {
+                        return;
+                    }
+                }
+                if (!acceptor.accept(root, ((StructureFieldModel) root.getFieldModel()).getStructure())) {
                     return;
                 }                
                 break;
@@ -218,15 +237,6 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         return null;
     }
     
-    public String getStartSeparatorViewType(boolean inclusive) {
-        for (Structure cur : getParentList(inclusive)) {
-            if (cur.isSetStartSeparatorViewType()) {
-                return cur.getStartSeparatorViewType();
-            }
-        }
-        return null;
-    }
-
     public byte[] getEndSeparator(boolean inclusive) {
         for (Structure cur : getParentList(inclusive)) {
             if (cur.isSetEndSeparator()) {
@@ -236,15 +246,6 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         return null;
     }
     
-    public String getEndSeparatorViewType(boolean inclusive) {
-        for (Structure cur : getParentList(inclusive)) {
-            if (cur.isSetEndSeparatorViewType()) {
-                return cur.getEndSeparatorViewType();
-            }
-        }
-        return null;
-    }
-
     public byte[] getShield(boolean inclusive) {
         List<Structure> arr = getParentList(inclusive);
         for (Structure cur : arr) {
@@ -255,16 +256,6 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         return null;
     }
     
-    public String getShieldViewType(boolean inclusive) {
-        List<Structure> arr = getParentList(inclusive);
-        for (Structure cur : arr) {
-            if (cur.isSetShieldViewType()) {
-                return cur.getShieldViewType();
-            }
-        }
-        return null;
-    }
-
     public String getShieldedFormat(boolean inclusive) {
         for (Structure cur : getParentList(inclusive)) {
             if (cur.isSetShieldedFormat()) {
@@ -292,15 +283,6 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         return null;
     }
     
-    public String getBinPadViewType(boolean inclusive) {
-        for (Structure cur : getParentList(inclusive)) {
-            if (cur.isSetDefaultBinPadViewType()) {
-                return cur.getDefaultBinPadViewType();
-            }
-        }
-        return null;
-    }
-
     public byte[] getItemSeparator(boolean inclusive) {
         for (Structure cur : getParentList(inclusive)) {
             if (cur.isSetDefaultItemSeparator()) {
@@ -310,15 +292,6 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         return null;
     }
     
-    public String getItemSeparatorViewType(boolean inclusive) {
-        for (Structure cur : getParentList(inclusive)) {
-            if (cur.isSetDefaultItemSeparatorViewType()) {
-                return cur.getDefaultItemSeparatorViewType();
-            }
-        }
-        return null;
-    }
-
     public Boolean getSelfInclusive(boolean inclusive) {
         for (Structure cur : getParentList(inclusive)) {
             if (cur.isSetIsSelfInclusive()) {
@@ -337,19 +310,27 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         return null;
     }
     
-    public String getNullIndicatorViewType(boolean inclusive) {
+    public String getNullIndicatorChar(boolean inclusive) {
         for (Structure cur : getParentList(inclusive)) {
-            if (cur.isSetDefaultNullIndicatorViewType()) {
-                return cur.getDefaultNullIndicatorViewType();
+            if (cur.isSetDefaultNullIndicatorChar()) {
+                return cur.getDefaultNullIndicatorChar();
             }
         }
         return null;
     }
-    
+      
     public String getUnit(boolean inclusive, MsdlUnitContext ctx) {
         for (Structure cur : getParentList(inclusive)) {
-            if (cur.isSetDefaultUnit()) {
-                return cur.getDefaultUnit();
+            switch (ctx.getContextType()) {
+                case NULL_INDICATOR:
+                    if (cur.isSetDefaultNullIndicatorUnit()) {
+                        return cur.getDefaultNullIndicatorUnit();
+                    }
+                    break;
+                default:
+                    if (cur.isSetDefaultUnit()) {
+                        return cur.getDefaultUnit();
+                    }
             }
         }
         return null;
@@ -370,6 +351,19 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
 
     public String getCharSetType() {
         return getCharSetType(true);
+    }
+    
+    public String getXmlBadCharAction(boolean inclusive) {
+        for (Structure cur : getParentList(inclusive)) {
+            if (cur.isSetDefaultXmlBadCharAction()) {
+                return cur.getDefaultXmlBadCharAction();
+            }
+        }
+        return null;
+    }
+
+    public String getXmlBadCharAction() {
+        return getXmlBadCharAction(true);
     }
 
     public String getCharSetExp(boolean inclusive) {
@@ -439,15 +433,6 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         return null;
     }
     
-    public String getPadViewType(boolean inclusive) {
-        for (Structure cur : getParentList(inclusive)) {
-            if (cur.isSetPadViewType()) {
-                return cur.getPadViewType();
-            }
-        }
-        return null;
-    }
-
     public String getBCHPad(boolean inclusive) {
         for (Structure cur : getParentList(inclusive)) {
             if (cur.isSetDefaultBCHPadChar()) {
@@ -488,6 +473,36 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         for (Structure cur : getParentList(inclusive)) {
             if (cur.isSetDefaultDateTimePattern()) {
                 return cur.getDefaultDateTimePattern();
+            }
+        }
+        return null;
+    }
+    
+    public EMsdlTimeZoneType getTimeZoneType(boolean inclusive) {
+        for (Structure cur : getParentList(inclusive)) {
+            if (cur.isSetDefaultTimeZoneType()) {
+                return cur.getDefaultTimeZoneType();
+            }
+        }
+        return null;
+    }
+    
+    public String getSpecifiedTimeZoneId(boolean inclusive) {
+        for (Structure cur : getParentList(inclusive)) {
+            if (cur.isSetSpecifiedTimeZoneId()) {
+                final String timeZoneId = cur.getSpecifiedTimeZoneId();
+                if (timeZoneId != null && !timeZoneId.isEmpty()) {
+                    return timeZoneId;
+                }
+            }
+        }
+        return null;
+    }
+    
+    public Boolean getDateTimeLenientParse(boolean inclusive) {
+        for (Structure cur : getParentList(inclusive)) {
+            if (cur.isSetDefaultDateLenientParse()) {
+                return cur.getDefaultDateLenientParse();
             }
         }
         return null;
@@ -537,9 +552,13 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         }
         return null;
     }
+    
+    public String calcEncoding() {
+        return calcEncoding(true);
+    }
 
-    public String getEncoding() {
-        for (Structure cur : getParentList(true)) {
+    public String calcEncoding(boolean inclusive) {
+        for (Structure cur : getParentList(inclusive)) {
             if (cur.isSetDefaultEncoding()) {
                 return cur.getDefaultEncoding();
             }
@@ -609,10 +628,30 @@ public abstract class AbstractFieldModel extends RadixObjects<RadixObject> {
         }
         return null;
     }
+        
+    public byte[] getValueConsiderUnit(SmioCoder coder, byte[] byteSep, String charSep, String unit) throws SmioException {
+        if (unit != null && LenUnitDef.CHAR.toString().equals(unit)) {
+            if (charSep != null && !charSep.isEmpty()) {
+                if (coder == null) {
+                    throw new SmioException(String.format("Error on encode char '%s', coder is null", charSep));
+                }    
+                return coder.encode(charSep);
+            } else {
+                return null;
+            }
+        } else {
+            return byteSep;
+        }
+    }
 
     public abstract EFieldType getType();
 
-    public abstract SmioField getParser();
+    public final SmioField getParser() {
+        if (parser == null) {
+            parser = getRootMsdlScheme().getParserFactory().createParser(this);
+        }
+        return parser;
+    }
 
     public void clearParser() {
         parser = null;

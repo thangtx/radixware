@@ -45,6 +45,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
+import org.apache.commons.logging.LogFactory;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.server.units.UnitState;
@@ -103,19 +104,22 @@ class ViewUnitsPanel extends JPanel {
             if (newSnapshot.size() == 1) {
                 newSnapshot.clear();
             }
-            SwingUtilities.invokeLater(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            unitsSnapshot.clear();
-                            unitsSnapshot.addAll(newSnapshot);
-                            for (TableModelListener listener : listeners) {
-                                if (listener instanceof TableChangedListener) {
-                                    listener.tableChanged(new TableModelEvent(UnitsModel.this));
+            InstanceView instanceView = instanceModel.getViewIfCreated();
+            if (instanceView != null && !instanceView.isDisposing()) {
+                SwingUtilities.invokeLater(
+                        new Runnable() {
+                            @Override
+                            public void run() {
+                                unitsSnapshot.clear();
+                                unitsSnapshot.addAll(newSnapshot);
+                                for (TableModelListener listener : listeners) {
+                                    if (listener instanceof TableChangedListener) {
+                                        listener.tableChanged(new TableModelEvent(UnitsModel.this));
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+            }
         }
 
         public Unit getUnitModelAt(int row) {
@@ -214,12 +218,12 @@ class ViewUnitsPanel extends JPanel {
         private static final String STOP_COMMAND = "stop";
         private static final String UNLOAD_COMMAND = "unload";
         private static final String RESTART_COMMAND = "restart";
-        private static final String INTERRUPT_COMMAND = "interrupt";
+        private static final String ABORT_COMMAND = "abort";
         private final JMenuItem showing;
         private final JMenuItem launching;
         private final JMenuItem stopping;
         private final JMenuItem unloading;
-        private final JMenuItem interrupt;
+        private final JMenuItem abort;
         private final JMenuItem restart;
 
         public UnitsPopupMenu() {
@@ -245,10 +249,10 @@ class ViewUnitsPanel extends JPanel {
             restart.addActionListener(this);
             add(restart);
 
-            interrupt = new JMenuItem(Messages.MENU_INTERRUPT);
-            interrupt.setActionCommand(INTERRUPT_COMMAND);
-            interrupt.addActionListener(this);
-            add(interrupt);
+            abort = new JMenuItem(Messages.MENU_ABORT);
+            abort.setActionCommand(ABORT_COMMAND);
+            abort.addActionListener(this);
+            add(abort);
 
             unloading = new JMenuItem(Messages.MENU_UNLOAD);
             unloading.setActionCommand(UNLOAD_COMMAND);
@@ -279,8 +283,8 @@ class ViewUnitsPanel extends JPanel {
                 }
             } else if (command.equals(STOP_COMMAND)) {
                 unit.getView().getController().stop();
-            } else if (command.equals(INTERRUPT_COMMAND)) {
-                unit.getView().getController().interrupt();
+            } else if (command.equals(ABORT_COMMAND)) {
+                unit.getView().getController().abort();
             }
         }
 
@@ -291,7 +295,7 @@ class ViewUnitsPanel extends JPanel {
                 showing.setEnabled(false);
                 launching.setEnabled(false);
                 restart.setEnabled(false);
-                interrupt.setEnabled(false);
+                abort.setEnabled(false);
                 stopping.setEnabled(false);
                 unloading.setEnabled(false);
                 return;
@@ -307,8 +311,7 @@ class ViewUnitsPanel extends JPanel {
             stopping.setEnabled(unit.getState() == UnitState.STARTED || unit.getState() == UnitState.STARTING || unit.getState() == UnitState.START_POSTPONED);
             launching.setEnabled(unit.getState() == UnitState.STOPPED || unit.getState() == UnitState.START_POSTPONED);
             restart.setEnabled(unit.getState() == UnitState.STARTED);
-            interrupt.setVisible(Unit.isInterruptionAllowed());
-            interrupt.setEnabled(unit.getState() != UnitState.STOPPED);
+            abort.setEnabled(unit.getState() != UnitState.STOPPED);
         }
 
         @Override
@@ -466,8 +469,14 @@ class ViewUnitsPanel extends JPanel {
     public void stop() {
         if (thread != null) {
             thread.interrupt();
+            try {
+                thread.join(5000);
+            } catch (InterruptedException ex) {
+                LogFactory.getLog(ViewUnitsPanel.class).warn("Interrupted while waiting for ViewUnitsPanel termination", ex);
+            }
+            thread = null;
         }
-        thread = null;
+
     }
 
     public void start() {
@@ -475,7 +484,8 @@ class ViewUnitsPanel extends JPanel {
             thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    while (true) {
+                    final InstanceView view = instanceModel.getViewIfCreated();
+                    while (view != null && !view.isDisposing()) {
                         unitsModel.update();
                         try {
                             Thread.sleep(SLEEP_INTERVAL);
@@ -486,33 +496,22 @@ class ViewUnitsPanel extends JPanel {
                     }
                 }
             }, "View Units Thread of " + instanceModel.getFullTitle());
+            thread.setDaemon(true);
             thread.start();
         }
     }
     private final UnitsScrollPane unitsScrollPane;
     private final UnitsModel unitsModel;
-    private Thread thread = null;
+    private volatile Thread thread = null;
     private final Instance instanceModel;
 
     static ViewUnitsPanel newViewUnitsPanel(final Instance instanceModel) {
         //use factory method to prevent unconstructed this escape
         final ViewUnitsPanel panel = new ViewUnitsPanel(instanceModel);
-        instanceModel.registerListener(new InstanceListener() {
-            @Override
-            public void stateChanged(Instance unit, InstanceState oldState, InstanceState newState) {
-                if (panel.isShowing() && (newState == InstanceState.STARTED || newState == InstanceState.STARTING)) {
-                    panel.start();
-                } else if (newState == InstanceState.STOPPED) {
-                    panel.stop();
-                }
-            }
-        });
         panel.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentShown(ComponentEvent e) {
-                if (instanceModel.getState() == InstanceState.STARTED || instanceModel.getState() == instanceModel.getState().STARTING) {
-                    panel.start();
-                }
+                panel.start();
             }
 
             @Override
@@ -591,7 +590,7 @@ class ViewUnitsPanel extends JPanel {
             MENU_STOP = bundle.getString("MENU_STOP");
             MENU_START = bundle.getString("MENU_START");
             MENU_RESTART = bundle.getString("MENU_RESTART");
-            MENU_INTERRUPT = bundle.getString("MENU_INTERRUPT");
+            MENU_ABORT = bundle.getString("MENU_ABORT");
             MENU_UNLOAD = bundle.getString("MENU_UNLOAD");
             TLP_ERROR = bundle.getString("TLP_ERROR");
             TLP_ALARM = bundle.getString("TLP_ALARM");
@@ -617,7 +616,7 @@ class ViewUnitsPanel extends JPanel {
         static final String MENU_START;
         static final String MENU_UNLOAD;
         static final String MENU_RESTART;
-        static final String MENU_INTERRUPT;
+        static final String MENU_ABORT;
         static final String TLP_ERROR;
         static final String TLP_ALARM;
         static final String TLP_WARNING;

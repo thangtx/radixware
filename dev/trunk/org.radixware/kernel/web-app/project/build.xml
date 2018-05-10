@@ -97,7 +97,7 @@
 	    <!-- lib/qtjambi-*.jar - libraries used only for explorer tests. Explorer uses libraries placed in lib/native/ directory when it runs throw starter. -->
             <arg value="(.*\.svn||src||xsd||doc||project||build||qt-modification)/.*"/>
             <arg value="KernelWeb"/>
-            <arg value="((bin||lib)/.*\.war||lib/native/.*/.*)"/>
+            <arg value="((bin||lib)/.*(\.war||\.jar)||lib/native/.*/.*)"/>
             <!--<arg value="(bin||lib)/.*\.jar" />-->
             <classpath>
                 <fileset dir="${dist.dir}">

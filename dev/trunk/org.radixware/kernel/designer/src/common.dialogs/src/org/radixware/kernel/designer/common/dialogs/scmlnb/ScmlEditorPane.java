@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.dialogs.scmlnb;
 
 import java.awt.Component;
@@ -49,9 +48,12 @@ import org.radixware.kernel.common.defs.RadixObject.EEditState;
 import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.ads.AdsClipboardSupport.AdsTransfer;
 import org.radixware.kernel.common.jml.Jml;
+import org.radixware.kernel.common.jml.JmlConvertor;
+import org.radixware.kernel.common.mml.Mml;
 import org.radixware.kernel.common.scml.IScmlPosition;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.sqml.Sqml;
+import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinition;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.library.*;
@@ -63,8 +65,9 @@ import org.radixware.kernel.designer.common.dialogs.utils.EditorOpenInfo;
  * JEdiorPane extension, supports displaying and editing Scml<br><br>
  *
  * Please Note, that if you will implement some CodeGenerator functionality for
- * ScmlEditorPane-based components, you should always check the client property {@code DISABLE_STANDART_GENERATORS}
- * to determine whether to enable or disable your CodeGenerator.
+ * ScmlEditorPane-based components, you should always check the client property
+ * {@code DISABLE_STANDART_GENERATORS} to determine whether to enable or disable
+ * your CodeGenerator.
  *
  */
 public class ScmlEditorPane extends JEditorPane {
@@ -648,6 +651,17 @@ public class ScmlEditorPane extends JEditorPane {
 
         private void importScmlFromTransfer(AdsTransfer scmlTransfer, ScmlEditorPane editor) throws UnsupportedFlavorException, IOException {
             Scml scml = (Scml) scmlTransfer.getObject();
+
+            // try convert
+            if (!scmlSupported(scml)) {
+                if (getContentType().contains("sqml") && scml instanceof Jml) {
+                    scml = JmlConvertor.convertToSqml((Jml) scml);
+                } else if (getContentType().contains("jml") && scml instanceof Sqml) {
+                    scml = JmlConvertor.convertToJml((Sqml) scml);
+                }
+            }
+
+            // paste
             if (scmlSupported(scml)) {
                 editor.replaceSelection("");
                 RadixObjects<Scml.Item> items = scml.getItems();
@@ -696,6 +710,8 @@ public class ScmlEditorPane extends JEditorPane {
                 return scml instanceof Sqml;
             } else if (getContentType().contains("jml")) {
                 return scml instanceof Jml;
+            } else if (getContentType().contains("mml")) {
+                return scml instanceof Mml;
             } else {
                 return false;
             }
@@ -707,7 +723,6 @@ public class ScmlEditorPane extends JEditorPane {
                 return false;
             }
             ScmlEditorPane editor = (ScmlEditorPane) support.getComponent();
-
 
             if (support.isDrop()) {
                 int offset = editor.viewToModel(support.getDropLocation().getDropPoint());
@@ -795,18 +810,17 @@ public class ScmlEditorPane extends JEditorPane {
             return attributes;
         }
 
-
-
         public boolean goToObject() {
-            List<Definition> dependencies = new ArrayList<Definition>();
-            tag.collectDependences(dependencies);
-            if (dependencies.isEmpty()) {
+            ArrayList<RadixObject> dependenciesObject = tag.getGoToDependencies();
+            if (dependenciesObject.isEmpty()) {
                 return false;
-            } else if (dependencies.size() == 1) {
-                DialogUtils.goToObject(dependencies.get(0));
+            } else if (dependenciesObject.size() == 1) {
+                DialogUtils.goToObject(dependenciesObject.get(0));
                 return true;
             } else {
-                Definition definition = ChooseDefinition.chooseDefinition(ChooseDefinitionCfg.Factory.newInstance(dependencies));
+                ArrayList<Definition> dependenciesDef = new ArrayList<>();
+                tag.collectDependences(dependenciesDef);
+                Definition definition = ChooseDefinition.chooseDefinition(ChooseDefinitionCfg.Factory.newInstance(dependenciesDef));
                 if (definition == null) {
                     return false;
                 } else {
@@ -817,18 +831,18 @@ public class ScmlEditorPane extends JEditorPane {
         }
 
         public boolean hasGoToTargets() {
-            List<Definition> dependencies = new ArrayList<Definition>();
-            tag.collectDependences(dependencies);
+            List<RadixObject> dependencies = tag.getGoToDependencies();
             return !dependencies.isEmpty();
         }
 
         public String getGoToTooltip() {
-            List<Definition> dependencies = new ArrayList<Definition>();
-            tag.collectDependences(dependencies);
+            List<RadixObject> dependencies = tag.getGoToDependencies();
             if (dependencies.isEmpty()) {
                 return null;
             } else if (dependencies.size() == 1) {
-                return "Go to " + dependencies.get(0).getOwnerDefinition().getName() + "." + dependencies.get(0).getName();
+                Definition parenDef = dependencies.get(0).getOwnerDefinition();
+                String parentStr = (parenDef == null) ? "" : dependencies.get(0).getOwnerDefinition().getName() + ".";
+                return "Go to " + parentStr + dependencies.get(0).getName();
             } else {
                 return NbBundle.getMessage(ScmlEditorPane.class, "go-to-definition");
             }

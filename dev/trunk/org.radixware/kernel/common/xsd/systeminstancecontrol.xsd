@@ -222,6 +222,16 @@
             <xs:extension base="mess:SimpleResponse"/>
         </xs:complexContent>
     </xs:complexType>
+    <xs:complexType name="AbortUnitRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:UnitRequest"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="AbortUnitRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
     <xs:complexType name="UnitCommandRq" abstract="false">
         <xs:complexContent>
             <xs:extension base="mess:UnitRequest">
@@ -238,6 +248,30 @@
                     <xs:element name="Response" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
             </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StopInstanceRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request">
+                <xs:attribute name="Timeout" type="types:Int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StopInstanceRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RestartInstanceRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request">
+                <xs:attribute name="TimeoutSeconds" type="types:Int" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="RestartInstanceRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="ApplyConfigFileOptionsMess">
@@ -286,6 +320,12 @@
         <xs:choice>
             <xs:element name="StopUnitRs" type="mess:StopUnitRs"/>
             <xs:element name="StopUnitRq" type="mess:StopUnitRq"/>
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="AbortUnitMess">
+        <xs:choice>
+            <xs:element name="AbortUnitRs" type="mess:AbortUnitRs"/>
+            <xs:element name="AbortUnitRq" type="mess:AbortUnitRq"/>
         </xs:choice>
     </xs:complexType>
     <xs:complexType name="ReloadArtePoolMess">
@@ -380,7 +420,10 @@
     
     <xs:complexType name="GetDiagnosticInfoRq" abstract="false">
         <xs:complexContent>
-            <xs:extension base="mess:Request"/> 
+            <xs:extension base="mess:Request">
+                <xs:attribute name="InstanceStateHistoryRequired" type="xs:boolean"/>
+                <xs:attribute name="InstanceStateHistoryStartTimeMillis" type="xs:long"/>
+            </xs:extension>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="GetDiagnosticInfoRs" abstract="false">
@@ -419,7 +462,7 @@
     
     <xs:complexType name="GetStatusRq" abstract="false">
         <xs:complexContent>
-            <xs:extension base="mess:Request"/> 
+            <xs:extension base="mess:Request"/>
         </xs:complexContent>
     </xs:complexType>
     <xs:complexType name="GetStatusRs" abstract="false">
@@ -427,6 +470,13 @@
             <xs:extension base="mess:SimpleResponse">
                 <xs:sequence>
                     <xs:element name="SensitiveDataTracingFinishTime" type="xs:dateTime" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="ArteCount" type="types:Int" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="AppVersion" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="KernelVersion" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="CurRevision" type="types:Int" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="PendingAppVersion" type="xs:string" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="ArteWithoutPendingVersionCount" type="types:Int" minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="ArteProcessingCurVerCount" type="types:Int" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
             </xs:extension>
         </xs:complexContent>
@@ -457,6 +507,83 @@
         <xs:choice>
             <xs:element name="GetArteClassLoadingProfileRq" type="mess:GetArteClassLoadingProfileRq"/>
             <xs:element name="GetArteClassLoadingProfileRs" type="mess:GetArteClassLoadingProfileRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="StopInstanceMess">
+        <xs:choice>
+            <xs:element name="StopInstanceRq" type="mess:StopInstanceRq"/>
+            <xs:element name="StopInstanceRs" type="mess:StopInstanceRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="RestartInstanceMess">
+        <xs:choice>
+            <xs:element name="RestartInstanceRq" type="mess:RestartInstanceRq"/>
+            <xs:element name="RestartInstanceRs" type="mess:RestartInstanceRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="PreloadNextVersionRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="PreloadNextVersionRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="PreloadNextVersionMess">
+        <xs:choice>
+            <xs:element name="PreloadNextVersionRq" type="mess:PreloadNextVersionRq"/>
+            <xs:element name="PreloadNextVersionRs" type="mess:PreloadNextVersionRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="StopUsingCurAppVersionRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request">
+                <xs:sequence>
+                    <xs:element name="MaxWaitSec" type="types:Int" minOccurs="0" maxOccurs="1"/>
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StopUsingCurAppVersionRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="StopUsingCurAppVersionMess">
+        <xs:choice>
+            <xs:element name="StopUsingCurAppVersionRq" type="mess:StopUsingCurAppVersionRq"/>
+            <xs:element name="StopUsingCurAppVersionRs" type="mess:StopUsingCurAppVersionRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="StartUsingNextAppVersionRq" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:Request"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="StartUsingNextAppVersionRs" abstract="false">
+        <xs:complexContent>
+            <xs:extension base="mess:SimpleResponse"/>
+        </xs:complexContent>
+    </xs:complexType> 
+    <xs:complexType name="StartUsingNextAppVersionMess">
+        <xs:choice>
+            <xs:element name="StartUsingNextAppVersionRq" type="mess:StartUsingNextAppVersionRq"/>
+            <xs:element name="StartUsingNextAppVersionRs" type="mess:StartUsingNextAppVersionRs"/>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="UpgradeInstanceMess">
+        <xs:choice>
+            <xs:element name="PreloadNextVersionMess" type="mess:PreloadNextVersionMess"/>    
+            <xs:element name="StopUsingCurAppVersionMess" type="mess:StopUsingCurAppVersionMess"/>
+            <xs:element name="StartUsingNextAppVersionMess" type="mess:StartUsingNextAppVersionMess"/>
         </xs:choice>
     </xs:complexType>
     

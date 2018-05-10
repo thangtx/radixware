@@ -11,6 +11,12 @@
 
 package org.radixware.kernel.common.svn;
 
+import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.radixware.kernel.common.repository.Branch;
+import org.radixware.kernel.common.svn.client.ISvnFSClient;
+
 
 public class SvnPathUtils {
 
@@ -52,5 +58,13 @@ public class SvnPathUtils {
         }
         return dir.substring(pos);
 
+    }
+    
+    public static String getFilePath(ISvnFSClient client, SVNRepositoryAdapter repository, File file) throws ISvnFSClient.SvnFsClientException, URISyntaxException, RadixSvnException{
+        URI url = new URI(SVN.getFileUrl(client, file));
+        String path = url.toString();
+        String preffix = repository.getRepositoryRoot();
+        
+        return path.substring(preffix.length());
     }
 }

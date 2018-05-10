@@ -12,25 +12,22 @@
 package org.radixware.kernel.server.units.netport;
 
 import java.util.Map;
+import org.radixware.kernel.server.aio.AadcAffinity;
+import org.radixware.kernel.server.sc.AasInvokeItem;
 import org.radixware.schemas.aasWsdl.InvokeDocument;
 
 
-public class NetPortInvokeQueueItem {
+public class NetPortInvokeQueueItem extends AasInvokeItem {
     
-    public final Seance seance;
-    public final InvokeDocument invokeXml;
-    public final Map<String, String> invokeHeaders;
-    public final boolean keepConnect;
+    public final INetPortInvokeSource source;
     public final long createTimeMillis = System.currentTimeMillis();
     public final long id;
     public String debugTitle;
 
-    public NetPortInvokeQueueItem(Seance seance, InvokeDocument invokeXml, Map<String, String> invokeHeaders, boolean keepConnect) {
-        this.seance = seance;
-        this.invokeXml = invokeXml;
-        this.invokeHeaders = invokeHeaders;
-        this.keepConnect = keepConnect;
-        id = seance.nphUnit.getNextItemId();
-        debugTitle = "#" + id + "(" + seance.getConnectionDesc() + ")";
+    public NetPortInvokeQueueItem(final INetPortInvokeSource invokeSource, final InvokeDocument invokeXml, final Map<String, String> invokeHeaders, final boolean keepConnect, final AadcAffinity aadcAffinity) {
+        super(invokeXml, invokeHeaders, NetPortAasClient.AAS_INVOKE_TIMEOUT_MILLIS, invokeSource.getUnit().getScpName(), keepConnect, aadcAffinity);
+        this.source = invokeSource;
+        id = invokeSource.getUnit().getNextItemId();
+        debugTitle = "#" + id + "(" + source.getInvokeSourceDesc() + ")" + (aadcAffinity != null ? " AADC.affinity.key = " + aadcAffinity.getAffinityKey() : "");
     }
 }

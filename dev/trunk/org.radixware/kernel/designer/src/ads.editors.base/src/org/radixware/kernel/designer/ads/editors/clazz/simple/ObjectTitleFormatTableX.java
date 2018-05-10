@@ -20,7 +20,7 @@ class ObjectTitleFormatTableX extends JTableX<AdsObjectTitleFormatDef.TitleItem>
 
     @Override
     protected TableCellEditor getColumnCellEditorByRow(int row, int col) {
-        if (col == ObjectTitleFormatTableModel.FORMAT_COLUMN) {
+        if (col == ObjectTitleFormatTableModel.FORMAT_COLUMN || col == ObjectTitleFormatTableModel.NULL_FORMAT) {
             if (columnEditors != null) {
                 final AdsObjectTitleFormatDef.TitleItem titleItem = ((ObjectTitleFormatTableModel) this.getModel()).getTitleItem(this.convertRowIndexToModel(row));
                 return columnEditors.getEditorForItem(titleItem);

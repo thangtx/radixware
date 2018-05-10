@@ -37,6 +37,7 @@ import org.radixware.kernel.common.defs.ads.xml.AdsXmlSchemeDef;
 import org.radixware.kernel.common.defs.ads.xml.IXmlDefinition;
 import org.radixware.kernel.common.enums.ECommandScope;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EMethodNature;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.RadixError;
@@ -396,6 +397,11 @@ public class AdsRPCMethodDef extends AdsMethodDef {
         if (serverSideMethod != null) {
             list.add(serverSideMethod);
         }
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
     }
 
     public AdsModule findRadixMetaModule() {

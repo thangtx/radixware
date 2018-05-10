@@ -29,6 +29,7 @@ import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.ui.AdsUIConnection;
 import org.radixware.kernel.common.defs.ads.ui.AdsUIItemDef;
 import org.radixware.kernel.common.defs.ads.ui.AdsUIProperty;
+import org.radixware.kernel.common.defs.ads.ui.AdsWidgetProperties;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AbstractRwtCustomFormDialogDef;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtCustomDialogDef;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtCustomReportDialogDef;
@@ -36,6 +37,7 @@ import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtUIDef;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 
 public class AdsRwtUICodeWriter extends AbstractDefinitionWriter<AdsRwtUIDef> {
@@ -60,7 +62,7 @@ public class AdsRwtUICodeWriter extends AbstractDefinitionWriter<AdsRwtUIDef> {
         printer.println("@SuppressWarnings({\"unchecked\",\"rawtypes\"})");
         WriterUtils.writeMetaAnnotation(printer, def, false);
         printer.print("public class ");
-        printer.print(def.getId());
+        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter));
         printer.print(" extends ");
         printer.print(def.getSuperClassName());
         printer.enterBlock();
@@ -69,6 +71,7 @@ public class AdsRwtUICodeWriter extends AbstractDefinitionWriter<AdsRwtUIDef> {
         writeConstructor(printer);
 
         if (def.getDefinitionType() == EDefType.CUSTOM_WIDGET_DEF) {
+            WriterUtils.enterHumanUnreadableBlock(printer);
             printer.print("private static final ");
             printer.print(WriterUtils.RADIX_ID_CLASS_NAME);
             printer.print(" _definition_id_storage_field_=");
@@ -77,6 +80,7 @@ public class AdsRwtUICodeWriter extends AbstractDefinitionWriter<AdsRwtUIDef> {
             printer.print("public final ");
             printer.print(WriterUtils.RADIX_ID_CLASS_NAME);
             printer.println(" getId(){return _definition_id_storage_field_;}");
+            WriterUtils.leaveHumanUnreadableBlock(printer);
         }
 
         final String jsCode = def.getJsCode();
@@ -151,8 +155,10 @@ public class AdsRwtUICodeWriter extends AbstractDefinitionWriter<AdsRwtUIDef> {
                     if (registrator == null || registrator.isEmpty()) {
                         return false;
                     }
+                    final char[] connectionName = JavaSourceSupport.getName(sender, printer instanceof IHumanReadablePrinter);
+                    final char[] slotName = JavaSourceSupport.getName(slot, printer instanceof IHumanReadablePrinter);
                     printer.print("this.");
-                    printer.print(sender.getId());
+                    printer.print(connectionName);
                     printer.print('.');
                     printer.print(registrator);
                     printer.print("(new ");
@@ -214,7 +220,7 @@ public class AdsRwtUICodeWriter extends AbstractDefinitionWriter<AdsRwtUIDef> {
                     printer.print("((");
                     slotOwnerClass.getType(EValType.USER_CLASS, null).getJavaSourceSupport().getCodeWriter(usagePurpose).writeUsage(printer);
                     printer.print(")getModel()).");
-                    printer.print(slot.getId());
+                    printer.print(slotName);
                     printer.print('(');
                     for (int i = 0; i < counter; i++) {
                         if (i > 0) {
@@ -242,7 +248,7 @@ public class AdsRwtUICodeWriter extends AbstractDefinitionWriter<AdsRwtUIDef> {
 
     private boolean writeConstructor(CodePrinter printer) {
         printer.print("public ");
-        printer.print(def.getId());
+        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter));
         printer.print("(org.radixware.kernel.common.client.IClientEnvironment env");
         switch (def.getDefinitionType()) {
             case CUSTOM_PROP_EDITOR:
@@ -274,7 +280,7 @@ public class AdsRwtUICodeWriter extends AbstractDefinitionWriter<AdsRwtUIDef> {
                 WriterUtils.writeIdUsage(printer, def.getId());
                 printer.printComma();
 
-                final AdsUIProperty prop = def.getWidget().getProperties().getByName("windowTitle");
+                final AdsUIProperty prop = def.getWidget().getProperties().getByName(AdsWidgetProperties.WINDOW_TITLE);
                 Id titleId = null;
                 if (prop instanceof AdsUIProperty.LocalizedStringRefProperty) {
                     titleId = ((AdsUIProperty.LocalizedStringRefProperty) prop).getStringId();

@@ -34,7 +34,7 @@ public class FontAction extends AbstractAction {
     private final AdsReportFormDiagram diagram;
 
     public FontAction(final AdsReportFormDiagram diagram) {
-        super("Adjust height", RadixWareIcons.REPORT.FONT.getIcon());
+        super("Font", RadixWareIcons.REPORT.FONT.getIcon());
         this.diagram = diagram;
     }
 
@@ -53,6 +53,7 @@ public class FontAction extends AbstractAction {
             if (isCellSelected) {
                 final AdsReportCell selectedCell = (AdsReportCell) selectedObj.get(i);
                 final Font newFont = selectedCell.getFont().copy();
+                newFont.setSilentModified(true);
 
                 final AdsReportFontPanel fontPanel = new AdsReportFontPanel(newFont, "Font");
                 fontPanel.setFont(newFont, true);
@@ -61,7 +62,7 @@ public class FontAction extends AbstractAction {
                 final javax.swing.JPanel panel = createFontPanel(fontPanel, cbInheritFont);
                 fontPanel.setPanelEnabled(!selectedCell.getFontInherited());
 
-                final ModalDisplayer modalDisplayer = new ModalDisplayer(panel, "Cells Font");
+                final ModalDisplayer modalDisplayer = new ModalDisplayer(panel, "Font");
                 if (modalDisplayer.showModal()) {
                     final boolean isInheritFont = cbInheritFont.isSelected();
                     for (RadixObject obj : diagram.getSelectedObjects()) {

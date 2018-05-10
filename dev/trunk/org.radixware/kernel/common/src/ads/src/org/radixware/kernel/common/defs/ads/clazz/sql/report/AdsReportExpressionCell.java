@@ -33,17 +33,11 @@ public class AdsReportExpressionCell extends AdsReportCell {
 
     protected AdsReportExpressionCell(org.radixware.schemas.adsdef.ReportCell xCell) {
         super(xCell);
-        if (!xCell.isSetName()) {
-            setName("Expression");
-        }
         expression = Jml.Factory.loadFrom(this, xCell.getExpression(),EXPRESSION_STR);
     }
     
     protected AdsReportExpressionCell(org.radixware.schemas.adsdef.ReportBand.Cells.Cell xCell) {
         super(xCell);
-        if (!xCell.isSetName()) {
-            setName("Expression");
-        }
         expression = Jml.Factory.loadFrom(this, xCell.getExpression(), EXPRESSION_STR);
     }
 

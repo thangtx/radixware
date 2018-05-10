@@ -12,6 +12,7 @@
 package org.radixware.kernel.designer.common.dialogs.components;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
@@ -209,4 +210,15 @@ public class ValAsStrEditPanel extends javax.swing.JPanel {
         }
         super.setMinimumSize(minimumSize);
     }
+
+    @Override
+    public void setForeground(Color fg) {
+        super.setForeground(fg);
+        ValAsStrEditor editor = getValAsStrEditor();
+        if (editor != null) {
+            editor.setForeground(fg);
+        }
+    }
+    
+    
 }

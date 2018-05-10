@@ -8,12 +8,10 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.trace;
 
 import java.io.File;
 import java.util.Objects;
-
 
 public final class FileLogOptions {
 
@@ -22,13 +20,15 @@ public final class FileLogOptions {
     private final int maxFileSizeBytes;
     private final int rotationCount;
     private final boolean rotateDaily;
+    private final boolean writeContextToFile;
 
-    public FileLogOptions(final File dir, final String name, final int maxFileSizeBytes, final int rotationCount, final boolean rotateDaily) {
+    public FileLogOptions(final File dir, final String name, final int maxFileSizeBytes, final int rotationCount, final boolean rotateDaily, final boolean writeContextToFile) {
         this.dir = dir;
         this.name = name;
         this.maxFileSizeBytes = maxFileSizeBytes;
         this.rotationCount = rotationCount;
         this.rotateDaily = rotateDaily;
+        this.writeContextToFile = writeContextToFile;
     }
 
     public File getDir() {
@@ -49,6 +49,10 @@ public final class FileLogOptions {
 
     public boolean isRotateDaily() {
         return rotateDaily;
+    }
+
+    public boolean isWriteContextToFile() {
+        return writeContextToFile;
     }
 
     @Override
@@ -75,6 +79,10 @@ public final class FileLogOptions {
         if (this.rotateDaily != other.rotateDaily) {
             return false;
         }
+        if (this.writeContextToFile != other.writeContextToFile) {
+            return false;
+        }
+
         return true;
     }
 
@@ -86,6 +94,7 @@ public final class FileLogOptions {
         hash = 97 * hash + this.maxFileSizeBytes;
         hash = 97 * hash + this.rotationCount;
         hash = 97 * hash + (this.rotateDaily ? 1 : 0);
+        hash = 97 * hash + (this.writeContextToFile ? 1 : 0);
         return hash;
     }
 
@@ -97,6 +106,7 @@ public final class FileLogOptions {
                 + "\tMax file size (Kb): " + String.valueOf(1.0 * getMaxFileSizeBytes() / 1024) + "\n"
                 + "\tMax files count: " + getRotationCount() + "\n"
                 + "\tRotate daily: " + isRotateDaily() + "\n"
+                + "\tWrite context to file: " + isRotateDaily() + "\n"
                 + "}";
     }
 }

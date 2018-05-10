@@ -12,9 +12,6 @@ $_GF = _rwt_grid_flow = {
     _getDataTable: function(b) {//get data table
         return WpsUtils.findChildByLocalName(b, 'table');
     },
-    _getHeaderTable: function(h) {//get data table
-        return WpsUtils.findChildByLocalName(h, 'table');
-    },
     _getDataCols: function(dt) {
         var cs = {};
         cs.c = 0;
@@ -181,11 +178,7 @@ $_GF = _rwt_grid_flow = {
         return null;
     },
     _syncScroll: function(e) {
-        var h = WpsUtils.findChildByLocalName(this.parentNode, 'div');
-        var table = $_GF._getHeaderTable(h);
-        $(table).css('left', -this.scrollLeft + 'px');
-        //h.scrollLeft = this.scrollLeft;   
-
+        $RWT.gridLayout._syncScroll(this);
         $_GF._dataScroll(this);
     },
     _layout: function(grid, rr_rs, rqId) {
@@ -199,15 +192,16 @@ $_GF = _rwt_grid_flow = {
         }
     },    
     _dataScroll: function(table) {
-        if ($_GF._shouldReadMore(table.parentNode) && 
-            (table.parentNode.blockScroll==null || !table.parentNode.blockScroll)) {
+        var grid = table.parentNode.parentNode;
+        if ($_GF._shouldReadMore(grid) && 
+            (grid.blockScroll==null || !grid.blockScroll)) {
             var dt = $_GF._getDataTable(table);
             if (dt) {
                 var myHeight = Math.round($(table).innerHeight() + table.scrollTop);
                 if (myHeight >= dt.offsetHeight) {
                     var rr_rs = {};
-                    rr_rs[table.parentNode.id] = 'm';
-                    table.parentNode.blockScroll = true
+                    rr_rs[grid.id] = 'm';
+                    grid.blockScroll = true
                     $RWT.notifyRendered(rr_rs);
                 }
             }
@@ -237,23 +231,21 @@ $_GF = _rwt_grid_flow = {
     mouseOut: function() {
         $(this).removeClass('rwt-grid-data-row-active');
     },
+    onCornerHeaderCellClick: function(event){
+        if (event.button == 0) {
+            $RWT.actions.event(this, 'click', $RWT.events.getButtonsMask(event).toString());
+        }
+    },    
+    onCornerHeaderCellDblClick: function(event){
+        if (event.button == 0) {
+            $RWT.actions.event(this, 'dblclick', $RWT.events.getButtonsMask(event).toString());
+        }
+    },  
     cell: {
         click: function(e) {
             var node = this;
-            $RWT.grid.cell.onClick(this, function() {
-                if (node.className && node.className.indexOf("editor-cell") >= 0) {
-                    var cc = WpsUtils.findChildByLocalName(node, 'div');//container
-                    if (cc) {
-                        cc = WpsUtils.findChildByLocalName(cc, 'div');//editor
-                        if (cc) {
-                            if (cc.rwt_f_requestFocus) {
-                                cc.rwt_f_requestFocus(cc);
-                            } else {
-                                $(cc).focus();
-                            }
-                        }
-                    }
-                }
+            $RWT.grid.cell.onClick(this, e, function() {
+                $RWT.grid.cell._focusCellEditor(node);
             });
         },
         dblclick: function(e) {
@@ -261,177 +253,83 @@ $_GF = _rwt_grid_flow = {
                 $RWT.actions.event(this, 'dblclick', null, null);
             }
         },
-        onClick: function(cell, callback) {
+        onClick: function(cell, e, callback) {
             if (!cell.className || cell.className.indexOf("editor-cell") < 0) {
                 $(cell).focus();
-                $RWT.actions.event(cell, 'click', null, callback);
             }
-            else {
-                $RWT.actions.event(cell, 'click', null, callback);
-            }
+            $RWT.events.cancelEvent(e);
+            $RWT.FilteredEvent.sendEvent(cell, e, callback);            
+        },
+        focused: function(e) {
+            $RWT.grid.cell._focusCellEditor(this);
         },
         keyDown: function(e) {
-            if (e) {
+            if (e) {                
                 switch (e.keyCode) {
                     case 27://esc
                         if (this.className.indexOf("editor-cell") >= 0 && this !== document.activeElement) {
                             //do not apply changes, close editor
-                            e.preventDefault();
-                            $(this).focus();
-                            $RWT.actions.event(this, "key", e.keyCode.toString(), function() {
-
+                            $RWT.events.cancelEvent(e);                            
+                            var node = this;
+                            $RWT.actions.event(this, "key", e.keyCode.toString(), function(){
+                                //this = window here
+                                $(node).focus();
                             });
                             break;
-                        }
-                        else {
+                        } else {
                             $(this).focus();
                             break;//close dialog
                         }
-
                     case 113://F2
                     case 13://enter
-
-                        e.preventDefault();
                         var node = this;
                         if (this === document.activeElement) {
-                            $RWT.grid.cell.onClick(node, function() {
-                                if (node.className && node.className.indexOf("editor-cell") >= 0) {
-                                    $RWT.actions.event(this, "key", e.keyCode.toString(), function() {
-                                        if (node.className && node.className.indexOf("editor-cell") >= 0) {
-                                            var cc = WpsUtils.findChildByLocalName(node, 'div');//container
-                                            if (cc) {
-                                                cc = WpsUtils.findChildByLocalName(cc, 'div');
-                                                if (cc) {
-                                                    if (document.activeElement === node)
-                                                    {
-                                                        if (cc.rwt_f_requestFocus) {
-                                                            cc.rwt_f_requestFocus(cc);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            $(node).focus();
-                                        }
-                                    });
+                            $RWT.events.cancelEvent(e);                            
+                            $RWT.actions.event(this, "key", e.keyCode.toString(), function() {
+                                //this = window here
+                                if (!$RWT.grid.cell._focusCellEditor(node)){
+                                    $(node).focus();
                                 }
-                            });
+                           });
                         }
                         else {
-                            $(this).focus();
                             $RWT.actions.event(this, "key", e.keyCode.toString(), function() {
+                                //this = window here
+                                $(node).focus();
                             });
                         }//second enter => close editor
                         break;
-
                     case 9://tab
-                        e.preventDefault();
-                        var node = this;
-                        var currRow = $RWT.grid._currentRow(node);
-                        var nextRow;
-                        var cell;
-
-                        if (!e.shiftKey) {//tabulation
-                            cell = $RWT.grid._nextCell(node);
-                            nextRow = $RWT.grid._nextRow(currRow);
-                            if (!cell) {
-                                var firstCell = $RWT.grid._cellByIndex(nextRow, 0);
-                            }
-                            else {
-                                firstCell = cell;
-                            }
-                        }
-                        else {//reverse tabulation (shift+tab)
-                            cell = $RWT.grid._prevCell(node);
-                            nextRow = $RWT.grid._prevRow(currRow);
-                            if (!cell) {
-                                firstCell = nextRow.lastElementChild;
-                            }
-                            else
-                                firstCell = cell;
-                        }
-
-                        $RWT.actions.event(firstCell, 'click', null, null);
-                        $RWT.grid.cell.onClick(firstCell, function() {
-                            $RWT.actions.event(firstCell, "key", e.keyCode.toString(), function() {
-                                $(firstCell).focus();
-                            });
-                        });
-                        break;
-
-                    case 37://left
-
-                        if (this.className.indexOf("editor-cell") >= 0 && this !== document.activeElement) {
-                            break;
-                        }
-                        else {
-                            e.preventDefault();
-                            var next = this.previousElementSibling;
-                            if (next)
-                                $RWT.grid.cell.onClick(next, function() {
-                                    $(next).focus();
-                                });
-                        }
-                        break;
-
-                    case 39://right
-
-                        if (this.className.indexOf("editor-cell") >= 0 && this !== document.activeElement) {
-                            break;
-                        }
-                        else {
-                            e.preventDefault();
-                            var next = this.nextElementSibling;
-                            if (next)
-                                $RWT.grid.cell.onClick(next, function() {
-                                    $(next).focus();
-                                });
-                        }
-                        break;
-
-                    case 40://down
-
-                        if (this.className.indexOf("editor-cell") >= 0 && this !== document.activeElement) {
-                            break;
-                        }
-                        else {
-                            e.preventDefault();
-                            var next = $RWT.grid._cellInNextRow(this);
-                            if (next)
-                            {
-                                $RWT.grid.cell.onClick(next, function() {
-                                    $(next).focus();
-                                });
-                            }
-                        }
-                        break;
-
-                    case 38://up
-
-                        if (this.className.indexOf("editor-cell") >= 0 && this !== document.activeElement) {
-                            break;
-                        }
-                        else {
-                            e.preventDefault();
-                            var next = $RWT.grid._cellInPrevRow(this);
-                            if (next)
-                            {
-                                $RWT.grid.cell.onClick(next, function() {
-                                    $(next).focus();
-                                });
-                            }
-                        }
-                        break;
-
-                    case 35://end
-                    case 36://home                        
-                        e.preventDefault();
-                        $RWT._ce(e);
-                        break;
+                        break;//propagate to grid
                     default:
-                        $RWT._ce(e);
+                        if (this.className.indexOf("editor-cell") >= 0 && this !== document.activeElement && e.stopPropagation) {
+                            e.stopPropagation();
+                        }
                 }
             }
+        },
+        _focusCellEditor: function(node){
+            if (node.className && node.className.indexOf("editor-cell") >= 0 && document.activeElement === node) {                            
+                var cc = WpsUtils.findChildByLocalName(node, 'div');//container
+                if (cc) {
+                    cc = WpsUtils.findChildByLocalName(cc, 'div');
+                    if (cc) {
+                        if (cc.rwt_f_requestFocus) {
+                            cc.rwt_f_requestFocus(cc);
+                        } else {
+                            $(cc).focus();
+                        }
+                        return true;
+                    }else{
+                        cc = WpsUtils.findFirstChild(node);
+                        if (cc){
+                            $(cc).focus();
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     }
 }

@@ -16,7 +16,6 @@ import java.awt.datatransfer.Transferable;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import javax.swing.Action;
 import org.netbeans.spi.navigator.NavigatorLookupHint;
@@ -34,7 +33,6 @@ import org.openide.nodes.Node.Cookie;
 import org.openide.util.Mutex;
 import org.openide.util.Mutex.ExceptionAction;
 import org.openide.util.MutexException;
-import org.openide.util.NbPreferences;
 import org.openide.util.actions.SystemAction;
 import org.openide.util.datatransfer.ClipboardEvent;
 import org.openide.util.datatransfer.ClipboardListener;
@@ -51,6 +49,9 @@ import org.radixware.kernel.common.defs.ads.clazz.IAccessible;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsUserReportClassDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.rights.*;
+import org.radixware.kernel.common.defs.dds.DdsModelDef;
+import org.radixware.kernel.common.defs.dds.DdsModule;
+import org.radixware.kernel.common.defs.dds.DdsDefinition;
 import org.radixware.kernel.common.defs.uds.module.UdsModule;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
@@ -85,9 +86,9 @@ import org.radixware.kernel.designer.common.tree.actions.NewObjectAction;
 import org.radixware.kernel.designer.common.tree.actions.NewObjectCookie;
 import org.radixware.kernel.designer.common.tree.actions.SpellcheckAction;
 
+
 /**
  * Base class for all Radix object nodes in branches tree.
- *
  */
 public class RadixObjectNode extends AbstractNode {
 
@@ -190,7 +191,6 @@ public class RadixObjectNode extends AbstractNode {
         }
     };
     private Image icon = null;
-    //
     private final EditStateChangeListener editStateListener = new EditStateChangeListener() {
         @Override
         public void onEvent(EditStateChangedEvent e) {
@@ -209,48 +209,36 @@ public class RadixObjectNode extends AbstractNode {
     protected InstanceContent getLookupContent() {
         return lookupContent;
     }
-    private static final String HIDDEN_NODES = "HiddenNodes";
     private Hidable hidable = new Hidable() {
         @Override
+        public void hide(boolean auto) {
+            HideSettings.hide(auto, radixObject);
+            if (HideSettings.isHidden(radixObject)) {
+                lookupContent.add(restorable);
+                lookupContent.remove(this);
+            }
+        }
+
+        @Override
         public void hide() {
-            lookupContent.add(restorable);
-            lookupContent.remove(this);
-            storeHidden(true);
+            hide(false);
         }
     };
     private Restorable restorable = new Restorable() {
         @Override
+        public void restore(boolean auto) {
+            HideSettings.restore(auto, radixObject);
+            if (!HideSettings.isHidden(radixObject)) {
+                lookupContent.remove(this);
+                lookupContent.add(hidable);
+            }
+        }
+
+        @Override
         public void restore() {
-            lookupContent.remove(this);
-            lookupContent.add(hidable);
-            storeHidden(false);
+            restore(false);
         }
     };
-
-    private String getNodeKey() {
-        StringBuilder sb = new StringBuilder(radixObject.getName());
-        RadixObject ownerObject = radixObject.getContainer();
-        while (ownerObject != null) {
-            if (ownerObject.getName().length() > 0) {
-                sb.insert(0, "/");
-                sb.insert(0, ownerObject.getName());
-            }
-            ownerObject = ownerObject.getContainer();
-        }
-        return sb.toString();
-    }
-
-    private void storeHidden(boolean hidden) {
-        if (hidden) {
-            NbPreferences.root().node(HIDDEN_NODES).putBoolean(getNodeKey(), true);
-        } else {
-            NbPreferences.root().node(HIDDEN_NODES).remove(getNodeKey());
-        }
-    }
-
-    private boolean readHidden() {
-        return NbPreferences.root().node(HIDDEN_NODES).getBoolean(getNodeKey(), false);
-    }
 
     public void expandLookup(Class clazz, Object object) {
         if (getLookup().lookup(clazz) != object) {
@@ -293,7 +281,7 @@ public class RadixObjectNode extends AbstractNode {
             addCookie(checkCookie);
         }
 
-        if (radixObject instanceof Module) {
+        if (radixObject instanceof Module && !(radixObject instanceof UdsModule)) {
             addCookie(new ModuleDependenciesAction.ModuleDependenciesCookie());
         }
 
@@ -335,8 +323,8 @@ public class RadixObjectNode extends AbstractNode {
 //                addCookie(c);
 //            }
 //        }
-        if (readHidden()) {
-            hidable.hide();
+        if (HideSettings.isHidden(radixObject)) {
+            hidable.hide(!HideSettings.readHidden(radixObject));
         }
 
         if (isAPIEnabled()) {
@@ -345,6 +333,8 @@ public class RadixObjectNode extends AbstractNode {
                 addCookie(apiBrowserCookie);
             }
         }
+        
+
     }
 
     private boolean isSpellcheckEnabled() {
@@ -356,6 +346,9 @@ public class RadixObjectNode extends AbstractNode {
 
     }
 
+    /**
+     * Подерживает дифиниция редактор ApiBrowser
+     */
     protected boolean isAPIEnabled() {
         if (radixObject instanceof IAccessible) {
             final IAccessible accessible = (IAccessible) radixObject;
@@ -369,7 +362,15 @@ public class RadixObjectNode extends AbstractNode {
                 return false;
             }
         }
-        return radixObject instanceof AdsModule || (radixObject instanceof AdsDefinition && ((AdsDefinition) radixObject).isTopLevelDefinition());
+
+        return radixObject instanceof AdsModule 
+                || radixObject instanceof DdsModule
+                || (radixObject instanceof AdsDefinition && ((AdsDefinition) radixObject).isTopLevelDefinition())
+                || (radixObject instanceof DdsDefinition
+                    && ((DdsDefinition) radixObject).showApiBrowser()
+                    && ((DdsDefinition) radixObject).isTopLevelDefinition()
+                    && !(radixObject instanceof DdsModelDef));
+
     }
 
     protected NavigatorLookupHint getNavigatorLookupHint() {
@@ -848,7 +849,7 @@ public class RadixObjectNode extends AbstractNode {
         if (tooltip != null && !tooltip.isEmpty()) {
             return tooltip;
         } else {
-            return null;
+            return "";
         }
     }
 

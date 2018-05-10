@@ -16,6 +16,7 @@ import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.server.meta.presentations.RadExplorerItemDef;
 import org.radixware.kernel.server.meta.presentations.RadExplorerRootDef;
+import org.radixware.kernel.server.meta.presentations.RadSelectorPresentationDef;
 import org.radixware.kernel.server.types.EntityGroup;
 import org.radixware.kernel.server.types.Pid;
 import org.radixware.kernel.server.types.presctx.RootExplorerItemPresentationContext;
@@ -74,7 +75,9 @@ class RootItemContext extends TreeContext{
 
     @Override
     RootExplorerItemPresentationContext getPresentationContext(EntityGroup entityGroup) {
-        return new RootExplorerItemPresentationContext(rootId,explorerItemId,entityGroup);
+        final RadSelectorPresentationDef selectorPresentation = getSelectorPresentation();
+        final Id selectorPresentationId = selectorPresentation==null ? null : selectorPresentation.getId();
+        return new RootExplorerItemPresentationContext(rootId,explorerItemId,entityGroup,selectorPresentationId);
     }        
 
     @Override

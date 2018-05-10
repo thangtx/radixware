@@ -29,6 +29,7 @@ import org.radixware.kernel.common.defs.RadixObjectInitializationPolicy;
 import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.utils.Utils;
@@ -512,5 +513,10 @@ public class DdsFunctionDef extends DdsPlSqlObjectItemDef implements IDdsDbDefin
     @Override
     public ENamingPolicy getNamingPolicy() {
         return ENamingPolicy.IDENTIFIER; // profile must be unique, not function name
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.PACKAGE_FUNC;
     }
 }

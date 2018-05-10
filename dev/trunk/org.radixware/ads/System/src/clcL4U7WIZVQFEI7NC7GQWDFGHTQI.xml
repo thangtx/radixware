@@ -11,32 +11,42 @@
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="12"/>
+        <xsc:TypeDeclaration TypeId="12">
+          <xsc:Presentation>DateTime</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> toTime = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+          <xsc:Presentation>Arte::Arte</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcArte______________________ mthH5UTIPGXTPNRDISQABIFNQAABA" Invoke="true"/>
+        <xsc:IdReference Path="pdcArte______________________ mthH5UTIPGXTPNRDISQABIFNQAABA" Invoke="true">
+          <xsc:Presentation>getCurrentLocalTime</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="12"/>
+        <xsc:TypeDeclaration TypeId="12">
+          <xsc:Presentation>DateTime</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> fromTime = new </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="12"/>
+        <xsc:TypeDeclaration TypeId="12">
+          <xsc:Presentation>DateTime</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>(toTime.getTime() - 60 * 60 * 1000);
@@ -44,19 +54,25 @@
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="21"/>
+        <xsc:TypeDeclaration TypeId="21">
+          <xsc:Presentation>Str</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> userName = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+          <xsc:Presentation>Arte::Arte</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+        <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true">
+          <xsc:Presentation>getUserName</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
@@ -64,19 +80,25 @@
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="accXWTC7TPARBHSNLYTMRW3Q2GBUY"/>
+        <xsc:TypeDeclaration TypeId="411" Path="accXWTC7TPARBHSNLYTMRW3Q2GBUY">
+          <xsc:Presentation>EventLogSearcher</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> searcher = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="accXWTC7TPARBHSNLYTMRW3Q2GBUY"/>
+        <xsc:TypeDeclaration TypeId="411" Path="accXWTC7TPARBHSNLYTMRW3Q2GBUY">
+          <xsc:Presentation>EventLogSearcher</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accXWTC7TPARBHSNLYTMRW3Q2GBUY mth_stmt_execute_____________" Invoke="true"/>
+        <xsc:IdReference Path="accXWTC7TPARBHSNLYTMRW3Q2GBUY mth_stmt_execute_____________" Invoke="true">
+          <xsc:Presentation>open</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>(fromTime,toTime,userName);
@@ -84,34 +106,44 @@
 while(searcher.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+          <xsc:Presentation>next</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>()){
-    </xsc:Java>
+//    </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="aecACQVZOMVVHWDBROXAAIT4AGD7E"/>
+        <xsc:TypeDeclaration TypeId="411" Path="aecACQVZOMVVHWDBROXAAIT4AGD7E">
+          <xsc:Presentation>EventLog</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> instance = searcher.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accXWTC7TPARBHSNLYTMRW3Q2GBUY prfRSMNXGV44JE4PIE43DWDSYZTME" Invoke="true"/>
+        <xsc:IdReference Path="accXWTC7TPARBHSNLYTMRW3Q2GBUY prfRSMNXGV44JE4PIE43DWDSYZTME" Invoke="true">
+          <xsc:Presentation>eventLogObj</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>;
     
-    </xsc:Java>
+//    </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="21"/>
+        <xsc:TypeDeclaration TypeId="21">
+          <xsc:Presentation>Str</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> eventMessage = instance.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="aecACQVZOMVVHWDBROXAAIT4AGD7E prdFWK7DRDHOXOBDFKUAAMPGXUWTQ" Invoke="true"/>
+        <xsc:IdReference Path="aecACQVZOMVVHWDBROXAAIT4AGD7E prdFWK7DRDHOXOBDFKUAAMPGXUWTQ" Invoke="true">
+          <xsc:Presentation>message</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>;

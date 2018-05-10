@@ -1,0 +1,20 @@
+
+import java.util.Iterator;
+
+class TestPublicProperty {
+
+    public Iterator getProp() {
+	return null;
+    }
+}
+
+class Test {
+
+    static public void main(String[] args) {
+	TestPublicProperty t = new TestPublicProperty();
+	Iterator i = null;
+	if (t.Prop == i) {
+	    System.out.println("eq");
+	}
+    }
+}

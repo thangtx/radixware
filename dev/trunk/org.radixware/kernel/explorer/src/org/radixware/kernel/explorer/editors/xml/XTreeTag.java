@@ -24,7 +24,9 @@ import org.w3c.dom.NodeList;
 import com.trolltech.qt.gui.QBrush;
 import com.trolltech.qt.gui.QColor;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.namespace.QName;
+import org.apache.xmlbeans.SchemaProperty;
 import org.radixware.kernel.common.client.meta.RadEnumPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.exceptions.DefinitionError;
@@ -122,18 +124,29 @@ class XTreeTag extends XTreeElement {
         super.applyChanges();
     }
 
-    private boolean hasChildOfAnyType() {
-        final SchemaType type = getSchemaType();
-        return (type.getElementProperties() != null && type.getElementProperties().length > 0
-                && type.getElementProperties()[0].getType().getBuiltinTypeCode() == SchemaType.BTC_ANY_TYPE);
-    }
-
     public boolean isAnyType() {
         final SchemaType type = getSchemaType();
         if (type.getBuiltinTypeCode() == SchemaType.BTC_ANY_TYPE) {
             return true;
-        } else if (parent() instanceof XTreeTag) {
-            return ((XTreeTag) parent()).hasChildOfAnyType();
+        } else if (parent() instanceof XTreeTag) {            
+            final String thisTypeName = type.getName()==null ? null : type.getName().toString();
+            final SchemaType parentType = ((XTreeTag) parent()).getSchemaType();                
+            final SchemaProperty[] elementProps = parentType==null ? null : parentType.getElementProperties();                
+            if (elementProps!=null){
+                for (SchemaProperty schemaProp: elementProps){
+                    if (schemaProp.getType()!=null && schemaProp.getType().getBuiltinTypeCode()==SchemaType.BTC_ANY_TYPE){
+                        final String childTypeName;
+                        if (schemaProp.getType().getName()==null){
+                            childTypeName = null;
+                        }else{
+                            childTypeName = schemaProp.getType().getName().toString();
+                        }
+                        if (Objects.equals(childTypeName, thisTypeName)){
+                            return true;
+                        }
+                    }                     
+                }
+            }
         }
         return false;
     }

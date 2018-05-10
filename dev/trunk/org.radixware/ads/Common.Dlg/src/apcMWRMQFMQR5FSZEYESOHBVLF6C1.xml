@@ -18,7 +18,7 @@ import com.trolltech.qt.gui.QFileDialog;</xsc:Java>
     </Bodies>
     <MethodGroup Id="cmgDCDKOSHSHZH7LO3F7CTSHO4Y2Q" Name="Root">
       <Group Id="cmgZJTDLV7LKBF7FP37PSWJOVOXIA" Name="Dialogs" Members="mthYNK6N3JXPDPBDBTJABIFNQAABA mthYWQ3TFUN65GHVEEZHTV55QYD6U mthKZJIFS52IBAMXOAL5VPI6TF2KA mthSR6AXL3AJVAFLCLFRLTX4BQHEE mthILUFOKPVONG4NDSHPW2TDZ4D74 mthWHMO6DTZGFHGZCRIH6RHH625CE"/>
-      <Group Id="cmgN3NTZP2D5BH4JPEF2ZRBC4JRIY" Name="File" Members="mthYRMGZRL23NDU7DDLA6JRMURYGM mthF2URRU4KWNDCNNWW6IB4SBLPLQ mthZU56ZUR5HNFGJKB5C2WH2A2I4A mthRYGFUHVSNVBVJKJ67VT6IA3ED4 mthMM34DTILVNEMPIKI6PNYO3Y7V4 mthTPMXHARZE5EUXO4HNAS2OU6JNQ mth3R5L2RGPEFHNVMOIPP7U5XAADM mthY25OHYEXINB57PE6IVAFJB32NA"/>
+      <Group Id="cmgN3NTZP2D5BH4JPEF2ZRBC4JRIY" Name="File" Members="mthYRMGZRL23NDU7DDLA6JRMURYGM mthF2URRU4KWNDCNNWW6IB4SBLPLQ mthZU56ZUR5HNFGJKB5C2WH2A2I4A mthRYGFUHVSNVBVJKJ67VT6IA3ED4 mthMM34DTILVNEMPIKI6PNYO3Y7V4 mthTPMXHARZE5EUXO4HNAS2OU6JNQ mth3R5L2RGPEFHNVMOIPP7U5XAADM mthY25OHYEXINB57PE6IVAFJB32NA mthLGUC3JR3EJDSLGDTYUKIDJEQYQ"/>
     </MethodGroup>
     <PropertyGroup Id="cpgL2QDQR4PIRC3JM2IDD33YH7VDU" Name="Root"/>
     <Properties/>
@@ -75,7 +75,9 @@ if (os == QSysInfo.OS_LINUX)
    catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e)
@@ -93,13 +95,17 @@ if (os == QSysInfo.OS_LINUX)
           </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Invoke="true"/>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
@@ -113,7 +119,9 @@ if (os == QSysInfo.OS_LINUX)
           //</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Instance.Environment.processException(ex); 
@@ -121,7 +129,9 @@ if (os == QSysInfo.OS_LINUX)
       catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> ex)
@@ -149,7 +159,9 @@ else if (os==QSysInfo.OS_WIN32 || os==QSysInfo.OS_WIN64)
    catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e)
@@ -158,7 +170,9 @@ else if (os==QSysInfo.OS_WIN32 || os==QSysInfo.OS_WIN64)
    { 	</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Instance.Environment.processException(ex); }               
@@ -177,7 +191,9 @@ else
    </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.messageError(</xsc:Java>
@@ -548,7 +564,7 @@ try{
           </Src>
         </Sources>
       </Method>
-      <Method Id="mthF2URRU4KWNDCNNWW6IB4SBLPLQ" Name="getSaveXmlFileName" Nature="0" Environment="common-client" IsOverride="false">
+      <Method Id="mthF2URRU4KWNDCNNWW6IB4SBLPLQ" Name="getSaveXmlFileName" Nature="0" Environment="explorer" IsOverride="false">
         <AccessRules IsStatic="true"/>
         <Parameters>
           <Parameter Name="title" Id="mprIZBFF33ORVHFTNEC42EHMBANPY">
@@ -630,7 +646,9 @@ throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="21"/>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> fileName = com.trolltech.qt.gui.QFileDialog.getOpenFileName(
@@ -654,13 +672,17 @@ throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Invoke="true"/>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
@@ -689,13 +711,17 @@ throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451"/>
+              <xsc:TypeDeclaration TypeId="451">
+                <xsc:Presentation>Xml</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> doc = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451"/>
+              <xsc:TypeDeclaration TypeId="451">
+                <xsc:Presentation>Xml</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Factory.parse(fileStream);
@@ -716,20 +742,26 @@ throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
 //        } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcMVPCZP35UJEI5HORDLPVD3R4IQ">
+                <xsc:Presentation>Exceptions::AppException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e) {
 //            </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthTJ2UWH3GAFA6BJYN3XTKXTKFOY" Invoke="true"/>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthTJ2UWH3GAFA6BJYN3XTKXTKFOY" Invoke="true">
+                <xsc:Presentation>messageException</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
@@ -748,7 +780,9 @@ throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
 //            //</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Invoke="true"/>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
@@ -764,13 +798,17 @@ throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
             </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Invoke="true"/>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthRBQCV7YXWNFAFDCE2AZNZCHAAI" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
@@ -790,7 +828,9 @@ throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
             } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e) {
@@ -801,13 +841,17 @@ throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true"/>
+              <xsc:IdReference Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ mthLEP5OWV3LFDULGYALX3KD3GT6A" Invoke="true">
+                <xsc:Presentation>processException</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(e);
@@ -817,11 +861,294 @@ throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
           </Src>
           <Src Environment="web">
             <xsc:Item>
-              <xsc:Task Assignee="ayanichkin" Behavior="DoNothing" CreateDate="2014-02-28" Priority="Low" Type="ToDo">Реализовать выбор XML-файла для импорта на WEB-стороне.</xsc:Task>
+              <xsc:Java>org.radixware.kernel.common.client.IClientEnvironment env;
+if (parentView != null) {
+    env = parentView.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>
-throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
+              <xsc:IdReference Path="aicFFQ5CBH335G3LJF4GQIWJITBCE mthWR62NIZKJRER5HPNBZN5MONOG4" Invoke="true">
+                <xsc:Presentation>getEnvironment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+} else {
+    env = org.radixware.kernel.common.client.IClientEnvironment.Locator.getEnvironment();
+    if (env == null) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcPOASMSJG3FBCNA5UDLNXL64VSU mthVTS54URV4VDAVONBV4MNTJK6WA" Invoke="true">
+                <xsc:Presentation>IllegalStateException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("No environment is set");
+    }
+}
+    
+try{
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcXIQK7YTYORAHZKCMX74UAHKWH4">
+                <xsc:Presentation>Web.Widgets::InputValueDialog</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> inputValDialog = new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcXIQK7YTYORAHZKCMX74UAHKWH4 mthKXEXSQSJB5CCNPE56HYBF3YHGI" Invoke="true">
+                <xsc:Presentation>InputValueDialog</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+            </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciT57UJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Meta::ValType:Str</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>,
+            new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcQQIPH33FVFCJHMXXIODLS4BEHY mthJ7PEWYRVFZHMDHOF6A4IBYZ5HU" Invoke="true">
+                <xsc:Presentation>EditMaskFilePath</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsCGFUSSWHMRGVXDACHWEMRZX7AI aciSF2Y5YU3GRCZ3BA7QFPT62XR3Q" Invoke="true">
+                <xsc:Presentation>Client.Types::EFileSelectionMode:SELECT_FILE</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, 
+            true, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, true, title, true), title, env);
+            
+            
+    class Uploader implements </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aic2MHE6ENWBRGJRACZTYLADGAXFE">
+                <xsc:Presentation>Web.Uploading::IUploadedDataReader</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> {
+        final org.radixware.kernel.common.client.IClientEnvironment env;
+        org.apache.xmlbeans.XmlObject doc = null;
+        public Uploader (org.radixware.kernel.common.client.IClientEnvironment env) {
+            this.env = env;
+        }
+        @Override
+        public void readData(java.io.InputStream stream, String fileName, long fileSize) {
+            try {
+                if (fileName != null &amp;&amp; !fileName.equals("")) {
+                    doc = org.apache.xmlbeans.XmlObject.Factory.parse(stream);
+                }
+            } catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> | </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU">
+                <xsc:Presentation>Exceptions::XmlException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+                env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true">
+                <xsc:Presentation>getTracer</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcACRZP2N7KJHLTPMFXSTA2VAWSA mthPJAN2KFX3RBSVEELIMDEP6Y57M" Invoke="true">
+                <xsc:Presentation>error</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex);
+                env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsWCIVJSZWDVBN3AF3523OJ5FOUQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> + "\'" + fileName + "\'");
+            } finally {
+                if (stream != null)
+                    try {
+                        stream.close();
+                    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> e) {
+                    }
+            }
+        }
+        org.apache.xmlbeans.XmlObject getXmlObj() {
+            return doc;
+        }
+    }
+            
+    if (inputValDialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcXIQK7YTYORAHZKCMX74UAHKWH4 mthO4WRTTFA4RCUHPVKFCKZDBPJHI" Invoke="true">
+                <xsc:Presentation>getValue</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>() != null) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc72R345IHKFGF5IS7RI5UVP5EWQ">
+                <xsc:Presentation>Web.Widgets::ValFilePathEditorController</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> filePathEditorController = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adc72R345IHKFGF5IS7RI5UVP5EWQ">
+                <xsc:Presentation>Web.Widgets::ValFilePathEditorController</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)inputValDialog.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcXIQK7YTYORAHZKCMX74UAHKWH4 mthLVHONDPJOJEP7MJ7UFVU2J3RRA" Invoke="true">
+                <xsc:Presentation>getValEditor</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aic27UUMTWDWFHTHJVYITWZNDT6YI mthSFHPU4SI3ZDWFO4XQRNQ5TSMRQ" Invoke="true">
+                <xsc:Presentation>getController</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+        Uploader uploader = new Uploader(env);
+        filePathEditorController.uploadAndReadSelectedFile(uploader);
+        org.apache.xmlbeans.XmlObject doc = uploader.getXmlObj();
+        if (doc == null) {
+            env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthVKWKKR25JFEZBLRTUWIKCRSFAM" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsJZD3W7R5ARE5XBSVJOP3TCTH5M"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            return null;
+        } 
+        try{
+            return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcJIXMCWVVIFFZNOBJ6SXRWWMQ5A">
+                <xsc:Presentation>Utils::XmlObjectProcessor</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcJIXMCWVVIFFZNOBJ6SXRWWMQ5A mthROWGNJJQS5GNHKCCJALZMSZYSU" Invoke="true">
+                <xsc:Presentation>castToXmlClass</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(env.getDefManager().getClassLoader(), doc, docClass);
+        }catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ">
+                <xsc:Presentation>Exceptions::AppError</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> error){
+            env.getTracer().debug(error);
+            env.messageError(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsHJVJUQCAFJBMLMXKUAZPI37LVA"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+            return null;
+        }
+    } else {
+        return null;
+    }
+} catch (Exception e) {
+    env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthLUUYWKLT5FCADGRMSBQMZYWYGE" Invoke="true">
+                <xsc:Presentation>getTracer</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>().error(e);
+    return null;
+}
+
+</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -842,14 +1169,18 @@ throw new UnsupportedOperationException("Not yet implemented");</xsc:Java>
               <xsc:Java>if (fileType == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLGBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLGBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Common::MimeType:Pdf</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1 mthYRMGZRL23NDU7DDLA6JRMURYGM" Invoke="true"/>
+              <xsc:IdReference Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1 mthYRMGZRL23NDU7DDLA6JRMURYGM" Invoke="true">
+                <xsc:Presentation>openFileByExtApplication</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(fileName);
@@ -857,19 +1188,25 @@ else {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI">
+                <xsc:Presentation>ViewFileDlg</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> dlg = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI">
+                <xsc:Presentation>ViewFileDlg</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Instance.Environment</xsc:Java>
@@ -879,27 +1216,35 @@ else {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI">
+                <xsc:Presentation>ViewFileDlg:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> model = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI">
+                <xsc:Presentation>ViewFileDlg:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) dlg.getModel();
     model.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true"/>
+              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpTJHQCMQWPRDGRAG5DTIYE7AAHE" Invoke="true">
+                <xsc:Presentation>parFilePath</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = fileName;
     model.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                <xsc:Presentation>parType</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = fileType;
@@ -924,19 +1269,25 @@ else {
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI">
+                <xsc:Presentation>ViewFileDlg</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> dlg = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI">
+                <xsc:Presentation>ViewFileDlg</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcGPNNISYF4NG5NC4NX5ITZORVYQ">
+                <xsc:Presentation>Explorer.Env::Application</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Instance.Environment</xsc:Java>
@@ -946,61 +1297,79 @@ else {
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI">
+                <xsc:Presentation>ViewFileDlg:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> model = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI">
+                <xsc:Presentation>ViewFileDlg:Model</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) dlg.getModel();
 model.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true"/>
+              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdXNQOAKTOP5DEHLNLZBAU3XHEZE" Invoke="true">
+                <xsc:Presentation>parText</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = text;
 model.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdYHI5PSMF3NBULGKLZGDP6SIKGE" Invoke="true"/>
+              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdYHI5PSMF3NBULGKLZGDP6SIKGE" Invoke="true">
+                <xsc:Presentation>parSaveHtml</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = true;
 model.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true"/>
+              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdSMRP4CS4HVBUTNLQQKAP2JXFQA" Invoke="true">
+                <xsc:Presentation>parCharsetName</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = "UTF-8";
 model.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdFOK7TXQ5GJFANJKWDNR3ACYCHQ" Invoke="true"/>
+              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdFOK7TXQ5GJFANJKWDNR3ACYCHQ" Invoke="true">
+                <xsc:Presentation>parPrintEnable</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = false;
 model.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true"/>
+              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prpRE4VQBCIZJF65K44ZKXCAVZ72I" Invoke="true">
+                <xsc:Presentation>parType</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciLKBEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Common::MimeType:HtmlText</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
 model.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdOMYHC733UNC3ZHVFAIRPMO3F7U" Invoke="true"/>
+              <xsc:IdReference Path="cdlYSFWUS3UHZB2RHT323DKNMIWLI admYSFWUS3UHZB2RHT323DKNMIWLI prdOMYHC733UNC3ZHVFAIRPMO3F7U" Invoke="true">
+                <xsc:Presentation>parCaption</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = caption;
@@ -1045,7 +1414,9 @@ dlg.exec();
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:IdReference Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1 mthTPMXHARZE5EUXO4HNAS2OU6JNQ" Invoke="true"/>
+              <xsc:IdReference Path="apcMWRMQFMQR5FSZEYESOHBVLF6C1 mthTPMXHARZE5EUXO4HNAS2OU6JNQ" Invoke="true">
+                <xsc:Presentation>viewText</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(text, </xsc:Java>
@@ -1154,6 +1525,189 @@ model.</xsc:Java>
               <xsc:Java> = caption;
 dlg.exec();
 </xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthLGUC3JR3EJDSLGDTYUKIDJEQYQ" Name="exportXmlToFile" Nature="0" Environment="common-client" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="xml" Id="mprOCCPTJECYNDDLICDO5WJ65FYF4">
+            <Type TypeId="451"/>
+          </Parameter>
+          <Parameter Name="options" Id="mpr4BI4UKL5XVENVIN2JVPAJ3FK34">
+            <Type TypeId="400" extStr="org.apache.xmlbeans.XmlOptions"/>
+          </Parameter>
+          <Parameter Name="parentView" Id="mprTYC6YANK6RDX3IDXXR4Q7RLWRY">
+            <Type TypeId="411" Path="aicFFQ5CBH335G3LJF4GQIWJITBCE"/>
+          </Parameter>
+          <Parameter Name="defaultTitle" Id="mprIOWP4A2R3FDFLNK3PGH2HZ3KBQ">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="1"/>
+        <Sources>
+          <Src Environment="explorer">
+            <xsc:Item>
+              <xsc:Java>final String allF = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsHYV66G7H4FDQRL7LPXSKSO5VFE"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+final String xmlF = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsAYJDYRWX3BEI5C7EKMFRUHS2UQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+final QFileDialog.Filter filter = new QFileDialog.Filter(xmlF + ";;"+ allF);
+org.radixware.kernel.common.client.IClientEnvironment env = parentView.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFFQ5CBH335G3LJF4GQIWJITBCE mthWR62NIZKJRER5HPNBZN5MONOG4" Invoke="true">
+                <xsc:Presentation>getEnvironment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+String fn = QFileDialog.getSaveFileName(
+        parentView ==null ? null : ((org.radixware.kernel.explorer.views.IExplorerView) parentView).asQWidget(),
+        defaultTitle,
+        null,
+        filter);
+
+if (fn == null || fn.isEmpty())
+    return null;
+
+if (filter.selectedFilter == xmlF &amp;&amp; !fn.toLowerCase().endsWith(".xml"))
+    fn = fn + ".xml";
+try {
+    final java.io.File file = new java.io.File(fn);
+    xml.save(file, options);
+    </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="apcMGIV674XJHORDAGMABIFNQAABA">
+                <xsc:Presentation>Explorer.Dialogs::SimpleDlg</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="apcMGIV674XJHORDAGMABIFNQAABA mth3IATAAVDL7ORDI2YABIFNQAABA" Invoke="true">
+                <xsc:Presentation>messageInformation</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(env, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:LocalizedString StringId="mlsE6DJW4WCRFFD3JJZLINSGZNAIQ"/>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    return true;
+} catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthA5MYDLGBIZFR7HVUDLFWB2FGJA" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("error", ex.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthDEDM6MLWERE63DT4NJIHBZHN2I" Invoke="true">
+                <xsc:Presentation>toString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+    return false;
+}</xsc:Java>
+            </xsc:Item>
+          </Src>
+          <Src Environment="web">
+            <xsc:Item>
+              <xsc:Java>org.radixware.wps.WpsEnvironment env = (org.radixware.wps.WpsEnvironment)parentView.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFFQ5CBH335G3LJF4GQIWJITBCE mthWR62NIZKJRER5HPNBZN5MONOG4" Invoke="true">
+                <xsc:Presentation>getEnvironment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>();
+if (env == null) {
+    env = (org.radixware.wps.WpsEnvironment)org.radixware.kernel.common.client.IClientEnvironment.Locator.getEnvironment();
+    if (env == null) {
+        throw new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axcPOASMSJG3FBCNA5UDLNXL64VSU mthVTS54URV4VDAVONBV4MNTJK6WA" Invoke="true">
+                <xsc:Presentation>IllegalStateException</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Environment should be set");
+    }
+}
+try {
+    final java.io.File tempFile = org.radixware.kernel.starter.radixloader.RadixLoader.getInstance().createTempFile("rdx_export_xml");
+    tempFile.deleteOnExit();
+     xml.save(tempFile, options);
+    ((org.radixware.wps.WpsEnvironment)env).sendFileToTerminal(defaultTitle, tempFile, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIJG2ZTUNVTOBDCLTAALOMT5GDM aciEY22JOUK3FD77C6TACCKYVNTHM" Invoke="true">
+                <xsc:Presentation>Common::MimeType:XML</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getValue(), false, true);
+    return true;
+} catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM">
+                <xsc:Presentation>Exceptions::IOException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+    env.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthA5MYDLGBIZFR7HVUDLFWB2FGJA" Invoke="true">
+                <xsc:Presentation>messageError</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("error",ex.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="axc6XYNZ22YSZEKDKWH2SWRGBTC6I mthDEDM6MLWERE63DT4NJIHBZHN2I" Invoke="true">
+                <xsc:Presentation>toString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+    return false;
+}</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

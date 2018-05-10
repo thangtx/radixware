@@ -23,7 +23,12 @@ public class ServiceProcessFault extends RadixError {
     public static final String FAULT_CODE_CLIENT = "Client";
     public static final String FAULT_CODE_SERVER = "Server";
     public static final String FAULT_CODE_SERVER_BUSY = FAULT_CODE_SERVER + ".Busy";
+    public static final String FAULT_CODE_SERVER_BUSY_SHUTDOWN = FAULT_CODE_SERVER_BUSY + ".Shutdown";
+    public static final String FAULT_CODE_SERVER_BUSY_INVALID_VERSION = FAULT_CODE_SERVER_BUSY + ".InvalidVersion";
+    public static final String AVAILABLE_VERSION = "AvailableVersion";
+    @Deprecated //all faults indicating that this sap can't process request at the moment should start with Server.Busy
     public static final String FAULT_CODE_SERVER_SHUTDOWN = FAULT_CODE_SERVER + ".Shutdown";
+    
 
     public ServiceProcessFault(final String code, final String reason, final String mess, final Throwable cause, final String preprocessedCauseStack) {
         this(code, reason, mess, cause, preprocessedCauseStack, new SoapFormatter.DefaultFaultDetailWriter(mess, cause, preprocessedCauseStack));

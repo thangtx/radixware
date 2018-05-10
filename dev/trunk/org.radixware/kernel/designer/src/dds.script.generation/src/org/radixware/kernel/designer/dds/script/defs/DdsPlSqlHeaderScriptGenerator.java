@@ -11,8 +11,11 @@
 
 package org.radixware.kernel.designer.dds.script.defs;
 
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import javax.swing.JOptionPane;
 import org.radixware.kernel.common.defs.dds.DdsCustomTextDef;
 import org.radixware.kernel.common.defs.dds.DdsFunctionDef;
 import org.radixware.kernel.common.defs.dds.DdsPlSqlHeaderDef;
@@ -29,7 +32,7 @@ import org.radixware.kernel.designer.dds.script.IScriptGenerationHandler;
 
 public class DdsPlSqlHeaderScriptGenerator extends DdsPlSqlPartScriptGenerator<DdsPlSqlHeaderDef> {
 
-    protected DdsPlSqlHeaderScriptGenerator() {
+    public DdsPlSqlHeaderScriptGenerator() {
     }
 
     private static class ItemSeparator {
@@ -76,7 +79,7 @@ public class DdsPlSqlHeaderScriptGenerator extends DdsPlSqlPartScriptGenerator<D
     }
 
     private void printPurityLevel(CodePrinter cp, DdsPurityLevel purityLevel, String methodName, ItemSeparator itemSeparator) {
-        final List<String> levels = new ArrayList<String>();
+        final List<String> levels = new ArrayList<>();
 
         if (purityLevel.isRNDS()) {
             levels.add("RNDS");
@@ -96,16 +99,13 @@ public class DdsPlSqlHeaderScriptGenerator extends DdsPlSqlPartScriptGenerator<D
 
         for (String level : levels) {
             itemSeparator.print(cp, ItemSeparator.EState.NORMAL);
-            cp.print("\tPRAGMA RESTRICT_REFERENCES (");
-            cp.print(methodName);
-            cp.print(", ");
-            cp.print(level);
-            cp.print(')');
+            cp.print("\tPRAGMA RESTRICT_REFERENCES (").print(methodName).print(", ").print(level).print(')');
         }
     }
 
     @Override
     public void getCreateScript(CodePrinter cp, DdsPlSqlHeaderDef header, IScriptGenerationHandler handler) {
+
         DdsPlSqlObjectDef plSqlObject = header.getPlSqlObjectDef();
 
         if (handler != null) {
@@ -115,24 +115,20 @@ public class DdsPlSqlHeaderScriptGenerator extends DdsPlSqlPartScriptGenerator<D
         String plSqlObjectDescriptionLines[] = DdsScriptGeneratorUtils.splitDescription(plSqlObject.getDescription());
         if (plSqlObjectDescriptionLines.length > 0) {
             for (String plSqlObjectDescriptionLine : plSqlObjectDescriptionLines) {
-                cp.print("-- ");
-                cp.println(plSqlObjectDescriptionLine);
+                cp.print("-- ").println(plSqlObjectDescriptionLine);
             }
         }
 
         cp.print("create or replace ");
         printSqlClassName(cp, header);
-        cp.print(' ');
-        cp.print(plSqlObject.getDbName());
-        cp.print(" as");
+        cp.print(' ').print(plSqlObject.getDbName()).print(" as");
 
         final ItemSeparator itemSeparator = new ItemSeparator(plSqlObject);
 
         // fields
         if (plSqlObject instanceof DdsTypeDef) {
             final DdsTypeDef type = (DdsTypeDef) plSqlObject;
-            cp.print(' ');
-            cp.print(type.getDbType());
+            cp.print(' ').print(type.getDbType());
 
             for (DdsTypeFieldDef field : type.getFields()) {
                 if (handler != null) {
@@ -144,19 +140,14 @@ public class DdsPlSqlHeaderScriptGenerator extends DdsPlSqlPartScriptGenerator<D
                 String fieldDescriptionLines[] = DdsScriptGeneratorUtils.splitDescription(field.getDescription());
                 if (fieldDescriptionLines.length > 1) {
                     for (String fieldDescriptionLine : fieldDescriptionLines) {
-                        cp.print("\t-- ");
-                        cp.print(fieldDescriptionLine);
+                        cp.print("\t-- ").print(fieldDescriptionLine);
                     }
                 }
 
-                cp.print('\t');
-                cp.print(field.getDbName());
-                cp.print(' ');
-                cp.print(field.getDbType());
+                cp.print('\t').print(field.getDbName()).print(' ').print(field.getDbType());
 
                 if (fieldDescriptionLines.length == 1) {
-                    cp.print(" -- ");
-                    cp.print(fieldDescriptionLines[0]);
+                    cp.print(" -- ").print(fieldDescriptionLines[0]);
                 }
             }
         }
@@ -195,20 +186,25 @@ public class DdsPlSqlHeaderScriptGenerator extends DdsPlSqlPartScriptGenerator<D
 
         if (plSqlObject instanceof DdsTypeDef) {
             if (itemSeparator.getState() != ItemSeparator.EState.BEGIN) {
-                cp.println();
-                cp.print(')');
+                cp.println().print(')');
             }
         } else {
             if (itemSeparator.getState() == ItemSeparator.EState.NORMAL) {
                 cp.print(';');
             }
-            cp.println();
-            cp.print("end");
+            cp.println().print("end");
         }
 
-        cp.print(';');
-        cp.printCommandSeparator();
+        cp.print(';').printCommandSeparator();
         getRunRoleScript(cp, header);
+    }
+
+    @Override
+    public void getReCreateScript(CodePrinter printer, DdsPlSqlHeaderDef definition, boolean storeData) {
+    }
+
+    @Override
+    public void getEnableDisableScript(CodePrinter cp, DdsPlSqlHeaderDef definition, boolean enable) {
     }
 
     public static final class Factory {

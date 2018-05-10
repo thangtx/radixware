@@ -48,10 +48,6 @@ public class IntegralCountStat extends AbstractStat<Integer> {
         }
     }
 
-    public void start(final RegisteredItem<Integer> item) {
-        reset(item.regTimeMillis);
-        appendInternal(item);
-    }
 
     @Override
     protected void reset(long newStartPeriodMillis) {
@@ -62,9 +58,7 @@ public class IntegralCountStat extends AbstractStat<Integer> {
         super.reset(newStartPeriodMillis);
     }
 
-    public boolean isStarted() {
-        return lastValueSetupTime > -1;
-    }
+
 
     public IStatValue flushAndGetLastValue() {
         flush(System.currentTimeMillis());

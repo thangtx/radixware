@@ -15,9 +15,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskRef;
 import org.radixware.kernel.common.client.types.Restrictions;
+import org.radixware.kernel.common.client.utils.ClientValueFormatter;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EEditPossibility;
 import org.radixware.kernel.common.enums.EPropNature;
@@ -37,12 +39,12 @@ public class RadParentRefPropertyDef extends RadPropertyDef {
     private final Id parentSelectorPresentationId;
     private final Restrictions parentSelectorRestrictions;
     private final Restrictions parentEditorRestrictions;
+    private final boolean useDropDownList;
     private RadParentRefPropertyDef finalProp;
     private EditMaskRef inheritedEditMask;
     private EditMaskRef ownEditMask;
     private final Id ownerClassId;
     private final boolean isAutoSortInstantiatableClasses;
-    private String title;
 //Id, String, null, Id, EValType, EPropNature, int, null, null, boolean, boolean, null, null, EEditPossibility, boolean, boolean, boolean, null, boolean, null, null, boolean, Id, Id, null, null, null, int, int
 
     public List<Id> getObjectCreationPresentationIds() {
@@ -125,6 +127,7 @@ public class RadParentRefPropertyDef extends RadPropertyDef {
                 parentSelectorRestrictionsMask,
                 parentEditorRestrictionsMask,
                 false,
+                false,
                 false);
     }
 
@@ -205,6 +208,7 @@ public class RadParentRefPropertyDef extends RadPropertyDef {
                 parentSelectorRestrictionsMask,
                 parentEditorRestrictionsMask,
                 isDeprecated,
+                false,
                 false);
     }
     
@@ -249,6 +253,89 @@ public class RadParentRefPropertyDef extends RadPropertyDef {
             final long parentEditorRestrictionsMask,
             final boolean isDeprecated,
             final boolean isAutoSortInstantiatableClasses) {
+        this(id,
+            name,
+            titleId,
+            hintId,
+            titleOwnerId,
+            type,
+            nature,
+            inheritanceMask,
+            ownerEntityId,
+            origPropId,
+            isInheritable,
+            valInheritableMark,
+            initVal,
+            editPossibility,
+            editingEnvironment,
+            mandatory,
+            arrayItemIsMandatory,
+            storeHistory,
+            customDialog,
+            customDialogId,
+            customEditOnly,
+            editMask,
+            nullStringId,
+            arrayItemNullStringId,
+            emptyArrayStringId,
+            isDuplicatesEnabled,
+            minArrayItemsCount,
+            maxArrayItemsCount,
+            firstArrayItemIndex,
+            referencedClassId,
+            referencedTableId,
+            objectEditorPresentationIds,
+            objectCreationPresentationIds,
+            parentSelectorPresentationId,
+            parentSelectorRestrictionsMask,
+            parentEditorRestrictionsMask,
+            isDeprecated,
+            isAutoSortInstantiatableClasses,
+            false);       
+    }    
+    
+    public RadParentRefPropertyDef(
+            final Id id,
+            final String name,
+            final Id titleId,
+            final Id hintId,
+            final Id titleOwnerId,
+            final EValType type,
+            final EPropNature nature,
+            final long inheritanceMask,
+            final Id ownerEntityId,//Для UserProp, ParentProp, DetailProp – сущность, которой принадлежит свойство
+            final Id origPropId,//Для ParentProp, DetailProp – ид. оригинального свойства
+
+            final boolean isInheritable,
+            final ValAsStr valInheritableMark,
+            final ValAsStr initVal,
+            final EEditPossibility editPossibility,
+            final ERuntimeEnvironmentType editingEnvironment,
+            final boolean mandatory,
+            final boolean arrayItemIsMandatory,//onlyForArrayProperties
+            final boolean storeHistory,
+            final boolean customDialog,
+            final Id customDialogId,
+            final boolean customEditOnly,
+            final EditMask editMask,
+            final Id nullStringId,
+            final Id arrayItemNullStringId,//onlyForArrayProperties
+            final Id emptyArrayStringId,//onlyForArrayProperties
+            final boolean isDuplicatesEnabled,//onlyForArrayProperties
+            final int minArrayItemsCount,//onlyForArrayProperties
+            final int maxArrayItemsCount,//onlyForArrayProperties
+            final int firstArrayItemIndex,//onlyForArrayProperties            
+            final Id referencedClassId,
+            final Id referencedTableId,
+            final Id[] objectEditorPresentationIds,
+            final Id[] objectCreationPresentationIds,
+            //								с учетом презентации селектора по умолчанию:
+            final Id parentSelectorPresentationId,
+            final long parentSelectorRestrictionsMask,
+            final long parentEditorRestrictionsMask,
+            final boolean isDeprecated,
+            final boolean isAutoSortInstantiatableClasses,
+            final boolean useDropDownList) {
         super(id,
                 name,
                 titleId,
@@ -273,7 +360,7 @@ public class RadParentRefPropertyDef extends RadPropertyDef {
                 customDialog,
                 customDialogId,
                 customEditOnly,
-                new EditMaskRef(parentSelectorPresentationId, objectEditorPresentationIds),//editmask
+                new EditMaskRef(parentSelectorPresentationId, objectEditorPresentationIds, useDropDownList),//editmask
                 nullStringId,
                 arrayItemNullStringId,
                 emptyArrayStringId,
@@ -293,12 +380,13 @@ public class RadParentRefPropertyDef extends RadPropertyDef {
         } else {
             this.parentSelectorPresentationId = parentSelectorPresentationId;
         }
+        this.useDropDownList = useDropDownList;
         parentSelectorRestrictions = Restrictions.Factory.newInstance(ERestriction.fromBitField(parentSelectorRestrictionsMask), null);
         parentEditorRestrictions = Restrictions.Factory.newInstance(ERestriction.fromBitField(parentEditorRestrictionsMask), null);
 
         this.objectEditorPresentationIds = objectEditorPresentationIds;
         this.objectCreationPresentationIds = objectCreationPresentationIds;
-        this.isAutoSortInstantiatableClasses = isAutoSortInstantiatableClasses;        
+        this.isAutoSortInstantiatableClasses = isAutoSortInstantiatableClasses;          
     }    
 
     private RadParentRefPropertyDef getFinalParentRefProperty() {
@@ -340,7 +428,9 @@ public class RadParentRefPropertyDef extends RadPropertyDef {
     @Override
     public boolean hasTitle() {
         if (inheritanceMask.isTitleInherited()) {
-            if (isFormProperty()) {
+            if (getNature()==EPropNature.PARENT_PROP){
+                return getOrigProp().hasTitle();
+            }else if (isFormProperty()) {
                 final RadFormDef owner = getApplication().getDefManager().getFormDef(ownerClassId);
                 if (owner.getBaseFormDef() == null
                         || !owner.getBaseFormDef().isPropertyDefExistsById(getId())) {//in this case inherit title from referenced class
@@ -396,60 +486,81 @@ public class RadParentRefPropertyDef extends RadPropertyDef {
                     inheritedEditMask.setNoValueStr(getNullString());
                     inheritedEditMask.setArrayItemNoValueStr(getArrayItemNullString());
                     inheritedEditMask.setEmptyArrayString(getEmptyArrayString());
+                    if (useDropDownList){
+                        inheritedEditMask.setUseDropDownList(true);
+                    }                    
                 }
                 return inheritedEditMask;
             } else {
                 if (ownEditMask == null) {
-                    ownEditMask = new EditMaskRef(parentSelectorPresentationId, objectCreationPresentationIds);
+                    ownEditMask = new EditMaskRef(parentSelectorPresentationId, objectCreationPresentationIds);                    
                     ownEditMask.setNoValueStr(getNullString());
                     ownEditMask.setArrayItemNoValueStr(getArrayItemNullString());
                     ownEditMask.setEmptyArrayString(getEmptyArrayString());
+                    if (useDropDownList){
+                        ownEditMask.setUseDropDownList(true);
+                    }
                 }
                 return ownEditMask;
             }
         } else {
             return finalProperty.getEditMask();
         }
-    }
+    }    
+    
+    @Override
+    public String getTitle(final IClientEnvironment environment){
+        if (inheritanceMask.isTitleInherited()) {
+            return getInheritedTitle(environment);
+        } else {
+            return super.getTitle();
+        }        
+    }    
 
     @Override
     public String getTitle() {
-        // if (title == null) {
         if (inheritanceMask.isTitleInherited()) {
-            if (isFormProperty()) {
-                final RadFormDef owner = getApplication().getDefManager().getFormDef(ownerClassId);
-                if (owner.getBaseFormDef() == null
-                        || !owner.getBaseFormDef().isPropertyDefExistsById(getId())) {//in this case inherit title from referenced class
-                    return getReferencedClassObjectTitle();
-                }
-            } else if (getNature() == EPropNature.SQL_CLASS_PARAMETER
-                       || getNature() == EPropNature.VIRTUAL
-                       || isReportProperty()
-                       ) {
-                return getReferencedClassObjectTitle();
-            } else {
-                final RadClassPresentationDef owner = getApplication().getDefManager().getClassPresentationDef(ownerClassId);
-                if (owner.getAncestorClassPresentationDef() == null
-                        || !owner.getAncestorClassPresentationDef().isPropertyDefExistsById(getId())) {//in this case inherit title from referenced class
-                    return getReferencedClassObjectTitle();
-                }
-            }
-            //if (title == null) {
-            return super.getTitle();
-            //}
+            return getInheritedTitle(IClientEnvironment.Locator.getEnvironment());
         } else {
             return super.getTitle();
         }
-        // }
-        // return title;
+    }
+    
+    private String getInheritedTitle(final IClientEnvironment environment){
+        if (getNature()==EPropNature.PARENT_PROP){
+            return getOrigProp().getTitle();
+        } else if (isFormProperty()) {        
+            final RadFormDef owner = getApplication().getDefManager().getFormDef(ownerClassId);
+            if (owner.getBaseFormDef() == null
+                    || !owner.getBaseFormDef().isPropertyDefExistsById(getId())) {//in this case inherit title from referenced class
+                return getReferencedClassObjectTitle(environment);
+            }
+        } else if (getNature() == EPropNature.SQL_CLASS_PARAMETER
+                   || getNature() == EPropNature.VIRTUAL
+                   || isReportProperty()
+                   ) {
+            return getReferencedClassObjectTitle(environment);
+        } else {
+            final RadClassPresentationDef owner = getApplication().getDefManager().getClassPresentationDef(ownerClassId);
+            if (owner.getAncestorClassPresentationDef() == null
+                    || !owner.getAncestorClassPresentationDef().isPropertyDefExistsById(getId())) {//in this case inherit title from referenced class
+                return getReferencedClassObjectTitle(environment);
+            }
+        }
+        return super.getTitle();
     }
 
-    private String getReferencedClassObjectTitle() {
+    private String getReferencedClassObjectTitle(final IClientEnvironment environment) {
         final RadClassPresentationDef classDef = getReferencedClassPresentation();
         if (classDef == null) {
             return null;
         } else {
-            return type.isArrayType() ? classDef.getGroupTitle() : classDef.getObjectTitle();
+            final String referencedClassObjectTitle = type.isArrayType() ? classDef.getGroupTitle() : classDef.getObjectTitle();
+            if (environment==null){
+                return referencedClassObjectTitle;
+            }else{
+                return ClientValueFormatter.decapitalizeIfNecessary(environment, referencedClassObjectTitle);
+            }
         }
     }
 

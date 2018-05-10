@@ -13,6 +13,8 @@ package org.radixware.kernel.common.defs.ads.src.command;
 
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.AdsModelClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.members.AdsCommandHandlerMethodDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsObjectCommandDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsPropertyCommandDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsScopeCommandDef;
 import org.radixware.kernel.common.defs.ads.command.AdsCommandDef;
@@ -26,6 +28,7 @@ import org.radixware.kernel.common.defs.ads.type.AdsClassType;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.enums.EClassType;
+import org.radixware.kernel.common.enums.ECommandAccessibility;
 import org.radixware.kernel.common.enums.ECommandNature;
 import static org.radixware.kernel.common.enums.ECommandNature.FORM_IN_OUT;
 import static org.radixware.kernel.common.enums.ECommandNature.LOCAL;
@@ -36,6 +39,7 @@ import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.utils.CharOperations;
 
 
@@ -71,7 +75,7 @@ public class AdsCommandWriter<T extends AdsCommandDef> extends AbstractDefinitio
             } else {
                 printer.print("public static class ");
             }
-            printer.print(def.getId());
+            printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
             printer.print(" extends ");
             if (!withDefaultBaseClass) {
                 def.getType(EValType.USER_CLASS, null).getJavaSourceSupport().getCodeWriter(UsagePurpose.getPurpose(usagePurpose.getEnvironment(), JavaSourceSupport.CodeType.EXCUTABLE)).writeCode(printer);
@@ -83,7 +87,7 @@ public class AdsCommandWriter<T extends AdsCommandDef> extends AbstractDefinitio
         }
         printer.print("protected ");
 
-        printer.print(def.getId());
+        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
         printer.print('(');
         printer.print(AdsClassWriter.EXPLORER_MODEL_CLASS_NAME);
         printer.print(" model,");
@@ -156,8 +160,12 @@ public class AdsCommandWriter<T extends AdsCommandDef> extends AbstractDefinitio
 //        }
         // printer.print('.');
         printer.enterBlock();
-        printer.print(EDefinitionIdPrefix.ADS_CLASS_METHOD.getValue());
-        printer.print(def.getId());
+        if (printer instanceof IHumanReadablePrinter) {
+            printer.print(AdsCommandHandlerMethodDef.getCommandHandlerName(def));
+        } else {
+            printer.print(EDefinitionIdPrefix.ADS_CLASS_METHOD.getValue());
+            printer.print(def.getId());
+        }
         printer.leaveBlock();
         printer.print("( this");
         if (def instanceof AdsPropertyCommandDef) {
@@ -274,7 +282,7 @@ public class AdsCommandWriter<T extends AdsCommandDef> extends AbstractDefinitio
                  * final Id startFormId, final ECommandNature nature, final
                  * boolean forExplorer, final boolean confirmation, final
                  * ECommandScope scope, final Id[] props, final int
-                 * accessibility )
+                 * accessibility , final boolean rereadAfterExecute)
                  *
                  * public RadCommandDef( final Id id, final String name, final
                  * Id ownerId, final Id titleId, final Id iconId, final Id
@@ -329,6 +337,12 @@ public class AdsCommandWriter<T extends AdsCommandDef> extends AbstractDefinitio
                     printer.printComma();
                     printer.println();
                     WriterUtils.writeEnumFieldInvocation(printer, scopeCommand.getPresentation().getAccessebility());
+                    AdsScopeCommandDef.CommandPresentation presentation = scopeCommand.getPresentation();
+                    if (presentation.canReread() && presentation.getAccessebility() == ECommandAccessibility.ONLY_FOR_FIXED){
+                        printer.printComma();
+                        printer.println();
+                        printer.print(presentation.isRereadAfterExecute());
+                    }
                 }
                 printer.leaveBlock();
                 return true;
@@ -380,6 +394,10 @@ public class AdsCommandWriter<T extends AdsCommandDef> extends AbstractDefinitio
                 } else {
                     WriterUtils.writeNull(printer);
                 }
+                printer.printComma();
+                printer.print(def.getData().isReadOnlyCommand());
+                printer.printComma();
+                printer.print(def.getPresentation().isTraceGuiActivity());
 //                printer.print(')');
                 return true;
             default:

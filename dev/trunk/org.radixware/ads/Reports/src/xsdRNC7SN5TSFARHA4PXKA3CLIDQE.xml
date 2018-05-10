@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdRNC7SN5TSFARHA4PXKA3CLIDQE" Name="CommandsXsd" TargetNamespace="http://schemas.radixware.org/rpt-commands.xsd" NeedsDoc="false" Environment="common"><ads:AccessRules IsFinal="true"/><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://schemas.radixware.org/rpt-commands.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:types="http://schemas.radixware.org/types.xsd" xmlns:this="http://schemas.radixware.org/rpt-commands.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:complexType name="ReportPubCheckProblem">
+        <xs:sequence>    		
+            <xs:element name="ProblemText" type="types:Str" minOccurs="1"/>
+            <xs:element name="ProblemSeverity" minOccurs="1">
+                <xs:simpleType>
+                    <xs:annotation>
+                        <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                            <types:class>org.radixware.kernel.common.enums.EEventSeverity</types:class>
+                        </xs:appinfo>
+                    </xs:annotation>
+                    <xs:restriction base="types:IntEnum"/>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ReportPubCheckProblemsEntry">
+        <xs:sequence>
+            <xs:element name="ReportPub" type="types:Str" minOccurs="1"/>
+            <xs:element name="ReportPubContext" type="types:Str" minOccurs="0"/>
+            <xs:element name="Problem" type="this:ReportPubCheckProblem" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ReportPubCheckProblems">
+        <xs:sequence>
+            <xs:element name="Entry" type="this:ReportPubCheckProblemsEntry" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>       
+
+    <xs:element name="ReportPubCheckProblems" type="this:ReportPubCheckProblems"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

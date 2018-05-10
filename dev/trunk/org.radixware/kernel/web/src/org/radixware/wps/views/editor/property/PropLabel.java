@@ -45,8 +45,11 @@ public class PropLabel extends Label implements IPropLabel {
             getWidget().updateTextOptions();
         }
     }
+    
     private final Controller controller;
     private final WpsEnvironment env;
+    private boolean wasBinded;
+    private boolean inRefresh;
     private final ISettingsChangeListener l = new ISettingsChangeListener() {
         @Override
         public void onSettingsChanged() {
@@ -61,11 +64,17 @@ public class PropLabel extends Label implements IPropLabel {
         this.env = (WpsEnvironment) getEnvironment();
         this.setVAlign(Alignment.MIDDLE);
         env.addSettingsChangeListener(l);
+        setObjectName("propLabel #"+property.getId().toString());
     }
 
     @Override
-    public void refresh(ModelItem aThis) {
-        controller.refresh(aThis);
+    public void refresh(final ModelItem aThis) {
+        inRefresh = true;
+        try{
+            controller.refresh(aThis);
+        }finally{
+            inRefresh = false;
+        }
     }
 
     @Override
@@ -75,18 +84,25 @@ public class PropLabel extends Label implements IPropLabel {
 
     @Override
     public void bind() {
+        wasBinded = true;
         controller.bind();
     }
+
+    @Override
+    public void setTextOptions(final WpsTextOptions options) {
+        if (inRefresh || !wasBinded){
+            super.setTextOptions(options);
+        }
+    }        
 
     private void updateTextOptions() {
         final Property property = controller.getProperty();
         if (property != null) {
             if (property.getTitleTextOptions() != null) {
-                final WpsTextOptions options = (WpsTextOptions) property.getTitleTextOptions().getOptions();
+                WpsTextOptions options = (WpsTextOptions) property.getTitleTextOptions().getOptions();
                 if (options != null) {
-                    options.changeBackgroundColor(null);
-                    setTextOptions(options);
-                    setBackground(null);//background must be transparent (as default), not white}
+                    options = options.changeBackgroundColor(null);
+                    setTextOptions(options);                    
                 }
             }
         }

@@ -11,39 +11,61 @@
 
 package org.radixware.kernel.explorer.widgets;
 
+import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QEventFilter;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.gui.QAction;
+import com.trolltech.qt.gui.QHelpEvent;
+import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QMenu;
+import com.trolltech.qt.gui.QToolTip;
 import com.trolltech.qt.gui.QWidget;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.kernel.common.client.widgets.actions.IMenu;
+import org.radixware.kernel.explorer.types.RdxIcon;
 import org.radixware.kernel.explorer.views.IExplorerView;
 
 
 public class ExplorerMenu extends QMenu implements IMenu {
     
     private final List<Action> actions = new LinkedList<>();
+    private final QEventFilter toolTipEventListener = new QEventFilter(this){
+        @Override
+        public boolean eventFilter(QObject target, QEvent event) {
+            if (event instanceof QHelpEvent){
+                onHelpEvent((QHelpEvent)event);
+            }
+            return false;
+        }                
+    };
 
-    public ExplorerMenu(QPrivateConstructor p) {
+    public ExplorerMenu(final QPrivateConstructor p) {
         super(p);
+        toolTipEventListener.setProcessableEventTypes(EnumSet.of(QEvent.Type.ToolTip));
     }
 
     public ExplorerMenu(String title, QWidget parent) {
         super(title, parent);
+        toolTipEventListener.setProcessableEventTypes(EnumSet.of(QEvent.Type.ToolTip));
     }
 
     public ExplorerMenu(String title) {
         super(title);
+        toolTipEventListener.setProcessableEventTypes(EnumSet.of(QEvent.Type.ToolTip));
     }
 
     public ExplorerMenu(QWidget parent) {
         super(parent);
+        toolTipEventListener.setProcessableEventTypes(EnumSet.of(QEvent.Type.ToolTip));
     }
 
     public ExplorerMenu() {
+        toolTipEventListener.setProcessableEventTypes(EnumSet.of(QEvent.Type.ToolTip));
     }
 
     @Override
@@ -67,9 +89,9 @@ public class ExplorerMenu extends QMenu implements IMenu {
     public void addAction(Action action) {
         if (action!=null){
             actions.add(action);
-        }        
+        }
         addAction((QAction) action);
-    }        
+    }
 
     @Override
     public void removeAction(Action action) {
@@ -78,7 +100,7 @@ public class ExplorerMenu extends QMenu implements IMenu {
         }
         removeAction((QAction) action);
     }
-    
+
     @Override
     public void removeAllActions() {
         for(int i=actions.size()-1;i>=0;i--){            
@@ -104,5 +126,70 @@ public class ExplorerMenu extends QMenu implements IMenu {
     @Override
     public Action[] getActions() {
         return actions.toArray(new Action[actions.size()]);
-    }        
+    }
+
+    @Override
+    public IMenu addSubMenu(String title) {
+        ExplorerMenu qMenu = new ExplorerMenu(title);
+        this.addMenu(qMenu);
+        return qMenu;
+    }
+
+    @Override
+    public IMenu addSubMenu(Icon icon, String title) {
+        ExplorerMenu qMenu = new ExplorerMenu(title, this);
+        qMenu.setIcon(icon);
+        this.addMenu(qMenu);
+        return qMenu;
+    }
+
+    @Override
+    public void addSubSeparator() {
+        this.addSeparator();
+    }
+
+    @Override
+    public void insertMenu(Action before, IMenu menu) {
+        insertMenu((ExplorerAction) before, (QMenu) menu);
+    }
+
+    @Override
+    public void insertMenu(IMenu before, IMenu menu) {
+        insertMenu(((ExplorerMenu) before).menuAction(), (ExplorerMenu) menu);
+    }
+
+    @Override
+    public void insertSeparator(IMenu before) {
+        insertSeparator(((ExplorerMenu) before).menuAction());
+    }
+
+    @Override
+    public String getTitle() {
+        return title();
+    }
+
+    @Override
+    public void setIcon(Icon icon) {
+        if (icon instanceof QIcon) {
+            setWindowIcon((QIcon) icon);
+        }
+    }
+
+    @Override
+    public Icon getIcon() {
+        QIcon icon = super.windowIcon();
+        if (icon instanceof Icon) {
+            return (Icon) icon;
+        } else {
+            return new RdxIcon(icon);
+        }
+    }
+    
+    private void onHelpEvent(final QHelpEvent event){
+        final QAction action = activeAction();
+        final String toolTip = action==null ? null : action.toolTip();
+        if (toolTip!=null && !toolTip.isEmpty()){
+            QToolTip.showText(event.globalPos(), toolTip);
+        }        
+    }    
 }

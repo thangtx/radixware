@@ -21,7 +21,9 @@ import org.radixware.kernel.common.client.models.FilterModel;
 import org.radixware.kernel.common.client.models.GroupModel;
 
 import org.radixware.kernel.common.client.models.items.properties.Property;
+import org.radixware.kernel.common.client.models.items.properties.PropertyReference;
 import org.radixware.kernel.common.client.models.items.properties.PropertyValue;
+import org.radixware.kernel.common.client.models.items.properties.SimpleProperty;
 import org.radixware.kernel.common.client.types.ArrRef;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.utils.ValueConverter;
@@ -50,20 +52,39 @@ public class FilterSettingsStorage {
             valuesByParamId.clear();
             final Collection<Property> properties = filter.getActiveProperties();
             Object value;
-            for (Property property : properties) {
+            for (Property property : properties) {                
                 value = property.getValueObject();
                 if (value instanceof IKernelEnum) {
                     value = ((IKernelEnum) value).getValue();
                 }
-                if (value instanceof Reference){
-                    refsByParamId.put(property.getId(), (Reference)value);
-                }
-                else if (value instanceof ArrRef){
-                    arrRefsByParamId.put(property.getId(), (ArrRef)value);
-                }
-                else{
-                    final EValType valType = ValueConverter.serverValType2ClientValType(property.getType());
-                    valuesByParamId.put(property.getId(), ValAsStr.Factory.newInstance(value, valType));
+                final EValType valType = ValueConverter.serverValType2ClientValType(property.getType());
+                switch(valType){
+                    case PARENT_REF:{
+                        if (value instanceof Reference || value==null){
+                            refsByParamId.put(property.getId(), (Reference)value);
+                        }else{
+                            final String messageTemplate = 
+                                filter.getEnvironment().getMessageProvider().translate("TraceMessage", "Value of filter parameter %1$s (#%2$s) has unexpected type %3$s");
+                            final String message = 
+                                String.format(messageTemplate, property.getDefinition().getName(), property.getId().toString(), value.getClass().getName());
+                            filter.getEnvironment().getTracer().error(message);
+                        }
+                        break;
+                    }
+                    case ARR_REF:{
+                        if (value instanceof ArrRef || value==null){
+                            arrRefsByParamId.put(property.getId(), (ArrRef)value);
+                        }else{
+                            final String messageTemplate = 
+                                filter.getEnvironment().getMessageProvider().translate("TraceMessage", "Value of filter parameter %1$s (#%2$s) has unexpected type %3$s");
+                            final String message = 
+                                String.format(messageTemplate, property.getDefinition().getName(), property.getId().toString(), value.getClass().getName());
+                            filter.getEnvironment().getTracer().error(message);                            
+                        }
+                        break;
+                    }
+                    default:
+                        valuesByParamId.put(property.getId(), ValAsStr.Factory.newInstance(value, valType));
                 }
             }
         }
@@ -93,7 +114,9 @@ public class FilterSettingsStorage {
         private Id lastFilterId;
         private Id lastSortingId;
         private boolean lastFilterApplyed;
-        private Map<Id, FilterParameters> parametersByFilterId = new HashMap<>(8);
+        private boolean filterParamsCollapsed;
+        private int filterToolBarHeight;
+        private final Map<Id, FilterParameters> parametersByFilterId = new HashMap<>(8);
         private final IClientEnvironment environment;
 
         protected FilterSettings(IClientEnvironment environment) {
@@ -104,11 +127,17 @@ public class FilterSettingsStorage {
             return environment.getConfigStore().readBoolean(SAVE_LAST_FILTER_OPTION_KEY, true);
         }
 
-        public void saveLastFilter(final Id filterId, final Id sortingId, final boolean wasApplyed) {
+        public void saveLastFilter(final Id filterId, 
+                                              final Id sortingId, 
+                                              final boolean wasApplyed,
+                                              final boolean wasCollapsed,
+                                              final int filterToolBarHeight) {
             if (keepLastFilter()){
                 lastFilterId = filterId;
                 lastSortingId = sortingId;
                 lastFilterApplyed = wasApplyed;
+                filterParamsCollapsed = lastFilterApplyed && wasCollapsed;
+                this.filterToolBarHeight = filterParamsCollapsed ? -1 : filterToolBarHeight;
             }
         }
 
@@ -121,13 +150,22 @@ public class FilterSettingsStorage {
             }
         }
 
+        @SuppressWarnings("unchecked")
         public boolean restoreFilterParameter(final Id filterId, final Property parameter) {
             final FilterParameters filterParameters = parametersByFilterId.get(filterId);
             if (filterParameters != null && filterParameters.hasValue(parameter.getId())) {
                 try {
                     final EValType valType = ValueConverter.serverValType2ClientValType(parameter.getType());
                     final Object value = filterParameters.getValue(parameter.getId(), valType);
-                    parameter.setServerValue(new PropertyValue(parameter.getDefinition(), value));
+                    if (parameter.isLocal()){
+                        if (parameter instanceof SimpleProperty){
+                            ((SimpleProperty)parameter).setInitialValue(value);
+                        }else if (parameter instanceof PropertyReference){
+                            ((PropertyReference)parameter).setInitialValue((Reference)value);
+                        }
+                    }else{
+                        parameter.setServerValue(new PropertyValue(parameter.getDefinition(), value));
+                    }                    
                 } catch (Exception ex) {
                     final String message = environment.getMessageProvider().translate("TraceMessage", "Can't restore value of filter parameter %s:\n%s");
                     environment.getTracer().warning(String.format(message, parameter.getDefinition().toString(), ClientException.exceptionStackToString(ex)));
@@ -148,6 +186,14 @@ public class FilterSettingsStorage {
 
         public final boolean lastFilterWasApplyed() {
             return lastFilterApplyed;
+        }
+        
+        public final boolean filterParamsWasCollapsed(){
+            return filterParamsCollapsed;
+        }
+        
+        public final int getFilterToolBarHeight(){
+            return filterToolBarHeight;
         }
 
         public final void clear() {

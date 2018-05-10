@@ -15,14 +15,24 @@ import org.radixware.kernel.common.sqlscript.parser.SQLConstants.StatementType;
 
 
 public class SQLParsePromptStatement extends SQLParseStatement {
-    private String prompt;
+    private final String prompt;
 
-    public SQLParsePromptStatement(SQLPosition position, String prompt) {
+    public SQLParsePromptStatement(final SQLPosition position, final String prompt) {
         super(position, StatementType.ST_PROMPT);
-        this.prompt = prompt;
+        if (prompt == null) {
+            throw new IllegalArgumentException("Prompt can't be null");
+        }
+        else {
+            this.prompt = prompt;
+        }
     }
 
     public String getPrompt() {
         return prompt;
+    }
+
+    @Override
+    public String toString() {
+        return "SQLParsePromptStatement{" + "prompt=" + prompt + '}';
     }
 }

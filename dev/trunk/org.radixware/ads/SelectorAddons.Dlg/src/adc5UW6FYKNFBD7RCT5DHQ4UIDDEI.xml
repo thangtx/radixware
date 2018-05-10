@@ -17,7 +17,7 @@
     <PropertyGroup Id="cpgYCGIWDH2RZHYXAG4ZTTU5SEA3E" Name="Root"/>
     <Properties>
       <Property Id="prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Name="commonFilterModel" Nature="2" IsConst="false" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <Type TypeId="411" Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI epr43LE34LJRVHNRPIZLU4ONQKJEA aem43LE34LJRVHNRPIZLU4ONQKJEA"/>
       </Property>
     </Properties>
@@ -94,25 +94,33 @@
               <xsc:Java>if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI colXT2U3TRV6VGAPEULXGUEZMPOAU"/>
+              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI colXT2U3TRV6VGAPEULXGUEZMPOAU">
+                <xsc:Presentation>SelectorAddons::EasSelectorAddons.Filters:baseFilterGuid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.equals(aThis.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcQ66N3HZOTVHJVM663W4GR6MSQ4 mthVHZD6FWIHFFOLKBW36OKY2I4EY" Invoke="true"/>
+              <xsc:IdReference Path="adcQ66N3HZOTVHJVM663W4GR6MSQ4 mthVHZD6FWIHFFOLKBW36OKY2I4EY" Invoke="true">
+                <xsc:Presentation>getId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>()) || </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHQSOHRWZH5ESLD2Y6IVF6XFBE4 colDCQEQLHEC5F6VO633LHAE6BDMQ"/>
+              <xsc:IdReference Path="aecHQSOHRWZH5ESLD2Y6IVF6XFBE4 colDCQEQLHEC5F6VO633LHAE6BDMQ">
+                <xsc:Presentation>SelectorAddons::EasSelectorAddons:tableGuid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.equals(aThis.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcQ66N3HZOTVHJVM663W4GR6MSQ4 mthVHZD6FWIHFFOLKBW36OKY2I4EY" Invoke="true"/>
+              <xsc:IdReference Path="adcQ66N3HZOTVHJVM663W4GR6MSQ4 mthVHZD6FWIHFFOLKBW36OKY2I4EY" Invoke="true">
+                <xsc:Presentation>getId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>())){
@@ -120,56 +128,74 @@
     if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecHQSOHRWZH5ESLD2Y6IVF6XFBE4 colDCQEQLHEC5F6VO633LHAE6BDMQ"/>
+              <xsc:IdReference Path="aecHQSOHRWZH5ESLD2Y6IVF6XFBE4 colDCQEQLHEC5F6VO633LHAE6BDMQ">
+                <xsc:Presentation>SelectorAddons::EasSelectorAddons:tableGuid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.equals(aThis.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcQ66N3HZOTVHJVM663W4GR6MSQ4 mthVHZD6FWIHFFOLKBW36OKY2I4EY" Invoke="true"/>
+              <xsc:IdReference Path="adcQ66N3HZOTVHJVM663W4GR6MSQ4 mthVHZD6FWIHFFOLKBW36OKY2I4EY" Invoke="true">
+                <xsc:Presentation>getId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>()) &amp;&amp; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true"/>
+              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true">
+                <xsc:Presentation>commonFilterModel</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI epr43LE34LJRVHNRPIZLU4ONQKJEA aem43LE34LJRVHNRPIZLU4ONQKJEA colDCQEQLHEC5F6VO633LHAE6BDMQ" Invoke="true"/>
+              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI epr43LE34LJRVHNRPIZLU4ONQKJEA aem43LE34LJRVHNRPIZLU4ONQKJEA colDCQEQLHEC5F6VO633LHAE6BDMQ" Invoke="true">
+                <xsc:Presentation>tableGuid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value!=null){
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcXWXKG2EULJCJTC4DNJV5PIIPAM mthCSHNGW2B6FAUPBFGTMY4QU7J3Q" Invoke="true"/>
+              <xsc:IdReference Path="adcXWXKG2EULJCJTC4DNJV5PIIPAM mthCSHNGW2B6FAUPBFGTMY4QU7J3Q" Invoke="true">
+                <xsc:Presentation>setContextClass</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true"/>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true">
+                <xsc:Presentation>loadFrom</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true"/>
+              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true">
+                <xsc:Presentation>commonFilterModel</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI epr43LE34LJRVHNRPIZLU4ONQKJEA aem43LE34LJRVHNRPIZLU4ONQKJEA colDCQEQLHEC5F6VO633LHAE6BDMQ" Invoke="true"/>
+              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI epr43LE34LJRVHNRPIZLU4ONQKJEA aem43LE34LJRVHNRPIZLU4ONQKJEA colDCQEQLHEC5F6VO633LHAE6BDMQ" Invoke="true">
+                <xsc:Presentation>tableGuid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value));
@@ -178,13 +204,17 @@
     if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true"/>
+              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true">
+                <xsc:Presentation>commonFilterModel</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI epr43LE34LJRVHNRPIZLU4ONQKJEA aem43LE34LJRVHNRPIZLU4ONQKJEA colXT2U3TRV6VGAPEULXGUEZMPOAU" Invoke="true"/>
+              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI epr43LE34LJRVHNRPIZLU4ONQKJEA aem43LE34LJRVHNRPIZLU4ONQKJEA colXT2U3TRV6VGAPEULXGUEZMPOAU" Invoke="true">
+                <xsc:Presentation>baseFilterGuid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>==null){
@@ -194,33 +224,171 @@
         final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcOE5QFU4OWNBSHBUPCUBRQGQKTI"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcOE5QFU4OWNBSHBUPCUBRQGQKTI">
+                <xsc:Presentation>Explorer.Meta::RadFilterDef</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> baseFilter = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true"/>
+              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true">
+                <xsc:Presentation>commonFilterModel</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI epr43LE34LJRVHNRPIZLU4ONQKJEA aem43LE34LJRVHNRPIZLU4ONQKJEA mthXM5DR5NGQNE2RJQKAOM7QPRIXY" Invoke="true"/>
+              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI epr43LE34LJRVHNRPIZLU4ONQKJEA aem43LE34LJRVHNRPIZLU4ONQKJEA mthXM5DR5NGQNE2RJQKAOM7QPRIXY" Invoke="true">
+                <xsc:Presentation>getCurrentBaseFilterDef</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
         if (baseFilter==null){
             setSqml(null,null);
         }
-        else{
-            setSqml(baseFilter.Condition, baseFilter.Parameters);
+        else{            
+            final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="21">
+                <xsc:Presentation>Str</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parametersAsStr = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true">
+                <xsc:Presentation>commonFilterModel</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI colUZMKYBFP4VAWBHFP5NM7MIEZRU" Invoke="true">
+                <xsc:Presentation>parameters</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value;
+            if (parametersAsStr==null){
+                setSqml(baseFilter.Condition, baseFilter.Parameters);
+            }else{
+                final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdDFT2OPNM7JFILGTVPWIQKFC24Q" extStr="FilterParameters">
+                <xsc:Presentation>SelectorAddons::GroupSettingsXsd:FilterParameters</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parametersXml;
+                try{
+                    final org.apache.xmlbeans.XmlOptions options = new org.apache.xmlbeans.XmlOptions();
+                    final java.util.Map&lt;String,String> namespaces = new java.util.HashMap&lt;String,String>();
+                    namespaces.put("xmlns:gro","http://schemas.radixware.org/groupsettings.xsd");
+                    options.setLoadAdditionalNamespaces(namespaces);
+                    parametersXml = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdDFT2OPNM7JFILGTVPWIQKFC24Q" extStr="FilterParameters.Factory">
+                <xsc:Presentation>SelectorAddons::GroupSettingsXsd:FilterParameters.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.parse(parametersAsStr,options);
+                }
+                catch(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU">
+                <xsc:Presentation>Exceptions::XmlException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> exception){
+                    setSqml(baseFilter.Condition, baseFilter.Parameters);
+                    return;
+                }
+                final </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+                <xsc:Presentation>Types::Id</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> tableId = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcKDF543XQWZEI5DORWHNFIYCZ2A">
+                <xsc:Presentation>Types::Id.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcKDF543XQWZEI5DORWHNFIYCZ2A mthGFAPI2TPWZEJHN436UQMWZIPZM" Invoke="true">
+                <xsc:Presentation>loadFrom</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true">
+                <xsc:Presentation>commonFilterModel</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclLQBIKZWZABEIXKZOG4W3L6I5XI epr43LE34LJRVHNRPIZLU4ONQKJEA aem43LE34LJRVHNRPIZLU4ONQKJEA colDCQEQLHEC5F6VO633LHAE6BDMQ" Invoke="true">
+                <xsc:Presentation>tableGuid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Value);
+                setSqml(baseFilter.Condition, </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="adcB3FRKI2IARFGTMYUDXYJ52O7Z4">
+                <xsc:Presentation>Explorer.Meta::RadFilterParameters</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.loadFrom(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc5UW6FYKNFBD7RCT5DHQ4UIDDEI prdQFG2DMVMORGRRM6DRYAWDAKSVQ" Invoke="true">
+                <xsc:Presentation>commonFilterModel</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthMSUGSQ6GQVCE7G4SXCEZPGABKQ" Invoke="true">
+                <xsc:Presentation>getEnvironment</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(), parametersXml, baseFilter, tableId));
+            }
         }
     }
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcXWXKG2EULJCJTC4DNJV5PIIPAM mthZXNLZ6NDB5HZ3IX6VWQTVZKHLE" Invoke="true"/>
+              <xsc:IdReference Path="adcXWXKG2EULJCJTC4DNJV5PIIPAM mthZXNLZ6NDB5HZ3IX6VWQTVZKHLE" Invoke="true">
+                <xsc:Presentation>setReadonly</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(true);

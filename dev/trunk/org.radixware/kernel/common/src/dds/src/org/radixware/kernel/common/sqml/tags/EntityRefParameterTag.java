@@ -19,12 +19,30 @@ import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
 
-/**
- * Under construction.
- */
 public class EntityRefParameterTag extends ParameterAbstractTag implements IEntityRefTag {
+    
+    public static final String ENTITY_REF_PARAMETER_TAG_TYPE_TITLE = "Entity Reference Parameter Tag";
+    public static final String ENTITY_REF_PARAMETER_TAG_TYPES_TITLE = "Entity Reference Parameter Tags";
+    
+    public static final class Factory {
 
+        private Factory() {
+        }
+
+        public static EntityRefParameterTag newInstance() {
+            return new EntityRefParameterTag();
+        }
+    }    
+    
     private EPidTranslationMode pidTranslationMode = EPidTranslationMode.PRIMARY_KEY_PROPS;
+    private Id pidTranslationSkId;
+    private Id referencedTableId;
+    private boolean literal = false;
+    private boolean expressionList = false;
+    
+    protected EntityRefParameterTag() {
+        super();
+    }    
 
     public EPidTranslationMode getPidTranslationMode() {
         return pidTranslationMode;
@@ -36,7 +54,6 @@ public class EntityRefParameterTag extends ParameterAbstractTag implements IEnti
             setEditState(EEditState.MODIFIED);
         }
     }
-    private Id pidTranslationSkId;
 
     public Id getPidTranslationSecondaryKeyId() {
         return pidTranslationSkId;
@@ -48,7 +65,6 @@ public class EntityRefParameterTag extends ParameterAbstractTag implements IEnti
             setEditState(EEditState.MODIFIED);
         }
     }
-    private Id referencedTableId;
 
     public Id getReferencedTableId() {
         return referencedTableId;
@@ -60,22 +76,6 @@ public class EntityRefParameterTag extends ParameterAbstractTag implements IEnti
             setEditState(EEditState.MODIFIED);
         }
     }
-
-    protected EntityRefParameterTag() {
-        super();
-    }
-
-    public static final class Factory {
-
-        private Factory() {
-        }
-
-        public static EntityRefParameterTag newInstance() {
-            return new EntityRefParameterTag();
-        }
-    }
-    public static final String ENTITY_REF_PARAMETER_TAG_TYPE_TITLE = "Entity Reference Parameter Tag";
-    public static final String ENTITY_REF_PARAMETER_TAG_TYPES_TITLE = "Entity Reference Parameter Tags";
 
     @Override
     public String getTypeTitle() {
@@ -101,12 +101,27 @@ public class EntityRefParameterTag extends ParameterAbstractTag implements IEnti
         if (referencedTable != null) {
             list.add(referencedTable);
         }
-//        final IParameterDef parameter = findParameter();
-//        if (parameter != null) {
-//            final Definition definition = parameter.getDefinition();
-//            if (definition != null) {
-//                list.add(definition);
-//            }
-//        }
     }
+
+    public boolean isLiteral() {
+        return literal;
+    }
+
+    public void setLiteral(boolean literal) {
+        if (this.literal != literal){
+            this.literal = literal;
+            setEditState(EEditState.MODIFIED);            
+        }
+    }
+
+    public boolean isExpressionList() {
+        return expressionList;
+    }
+
+    public void setExpressionList(boolean expressionList) {
+        if (this.expressionList != expressionList){
+            this.expressionList = expressionList;
+            setEditState(EEditState.MODIFIED);
+        }
+    }        
 }

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc55SNAIGNZFGCDA7OAOQIXPH74E" Name="CfgSettingsProviderPipeline" Type="3" Environment="server">
+    <AccessRules Access="4" IsPublished="false">
+      <Transparence Extendable="false"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc55SNAIGNZFGCDA7OAOQIXPH74E"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc55SNAIGNZFGCDA7OAOQIXPH74E"/>
+    </Bodies>
+    <MethodGroup Id="cmgGARWV6CYKJB5VDC6WWOZZL4I44" Name="Root"/>
+    <PropertyGroup Id="cpg5V7GDSEDM5BFRMQHSECYBXCUWM" Name="Root"/>
+    <Properties>
+      <Property Id="prdQNHRGHZ27JELNGKRCO3WFCVGVQ" Name="settings" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="SettingsDocument"/>
+      </Property>
+      <Property Id="prdQ7W6PXOEONBM3IINNAMZQAQ2FY" Name="expOverwritePipelineParameters" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+      <Property Id="prd2EBWAHQSDJGMRLL4EZG75WPY7U" Name="expOverwriteLocalSettings" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+      <Property Id="prdIQTFNHKVKNESFG6USMQEZANIKE" Name="expDeletePipelineParameters" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+      <Property Id="prdKACUUSHQZFDI3KFJU2H47SWC2A" Name="expDeleteExistentNodes" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthBPGFWOROUJBSJOAKGXR3E4I3WM" Name="CfgSettingsProviderPipeline" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="deleteNodes" Id="mprME3MYXU6ZVD7JOGLMPJB3E5RUM">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="overwriteLocalSettings" Id="mprCLOKHFGTPVA3PH4XLRL2S7CYVQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="deleteParameters" Id="mprMTBWWZQZNNEJJJ67DS6EA7EDSI">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="overwriteParameters" Id="mprU6DT7GLQK5F5JMFYBFNEECY7FU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdKACUUSHQZFDI3KFJU2H47SWC2A" Invoke="true">
+                <xsc:Presentation>expDeleteExistentNodes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = deleteNodes;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prd2EBWAHQSDJGMRLL4EZG75WPY7U" Invoke="true">
+                <xsc:Presentation>expOverwriteLocalSettings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = overwriteLocalSettings;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdIQTFNHKVKNESFG6USMQEZANIKE" Invoke="true">
+                <xsc:Presentation>expDeletePipelineParameters</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = deleteParameters;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdQ7W6PXOEONBM3IINNAMZQAQ2FY" Invoke="true">
+                <xsc:Presentation>expOverwritePipelineParameters</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = overwriteParameters;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthKJOZGPZTNJEZTMSBPUKWZWUGFM" Name="getSettings" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="item" Id="mprDZMXNV7DBNBJXF3CLPSYD5WVOU">
+            <Type TypeId="411" Path="aecJ4WZRLJ23BGMBKQ2JBSOBEGBP4"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="SettingsDocument"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdQNHRGHZ27JELNGKRCO3WFCVGVQ" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdQNHRGHZ27JELNGKRCO3WFCVGVQ" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdQNHRGHZ27JELNGKRCO3WFCVGVQ" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdTETHL6NQNFCPZFRZOZP4ET5KDI" extStr="SettingsDocument.Factory">
+                <xsc:Presentation>CfgManagement::ImpExpXsd:SettingsDocument.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> params = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdQNHRGHZ27JELNGKRCO3WFCVGVQ" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.addNewSettings().addNewStringParams();
+
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry">
+                <xsc:Presentation>Arte::TypesXsd:MapStrStr.Entry</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> param = params.addNewEntry();
+param.Key = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsHYS6OIQVYFC43JCTVW7CFSJYMI aciN6OX7QQVHVERPNQYVKTGC3OL2E" Invoke="true">
+                <xsc:Presentation>CfgPipelineOptions:DELETE_EXISTENT_NODES</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Name;
+param.Value = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdKACUUSHQZFDI3KFJU2H47SWC2A" Invoke="true">
+                <xsc:Presentation>expDeleteExistentNodes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString();
+
+param = params.addNewEntry();
+param.Key = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsHYS6OIQVYFC43JCTVW7CFSJYMI aciCO65X57CMBAP7AMNHPT74OR3SE" Invoke="true">
+                <xsc:Presentation>CfgPipelineOptions:OVERWRITE_LOCAL_SETTINGS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Name;
+param.Value = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prd2EBWAHQSDJGMRLL4EZG75WPY7U" Invoke="true">
+                <xsc:Presentation>expOverwriteLocalSettings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString();
+
+param = params.addNewEntry();
+param.Key = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsHYS6OIQVYFC43JCTVW7CFSJYMI aciZI7ZKLNRNBD2LOYSYPCDEDGP6Q" Invoke="true">
+                <xsc:Presentation>CfgPipelineOptions:DELETE_PARAMETERS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Name;
+param.Value = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdIQTFNHKVKNESFG6USMQEZANIKE" Invoke="true">
+                <xsc:Presentation>expDeletePipelineParameters</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString();
+
+param = params.addNewEntry();
+param.Key = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsHYS6OIQVYFC43JCTVW7CFSJYMI aciKSLEBRDWJRCN5GSP3N4MVJPWGQ" Invoke="true">
+                <xsc:Presentation>CfgPipelineOptions:OVERWRITE_PARAMETERS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Name;
+param.Value = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdQ7W6PXOEONBM3IINNAMZQAQ2FY" Invoke="true">
+                <xsc:Presentation>expOverwritePipelineParameters</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.toString();
+
+return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E prdQNHRGHZ27JELNGKRCO3WFCVGVQ" Invoke="true">
+                <xsc:Presentation>settings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Implements>
+      <Interface TypeId="411" Path="aicIHTJDUE3M5BWJGZTEPBOEFI2WI"/>
+    </Implements>
+  </AdsClassDefinition>
+</AdsDefinition>

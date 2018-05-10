@@ -1,0 +1,80 @@
+
+enum E {
+
+    e;
+
+    public static E valueOf(int i) {
+	return null;
+    }
+}
+
+class A {
+
+    public static A load() {
+	return null;
+    }
+
+    public String getPid() {
+	return null;
+    }
+
+    public void setPid(String s) {
+    }
+}
+
+class RS {
+
+    public boolean next() {
+	return true;
+    }
+
+    public int getInt() {
+	return 0;
+    }
+
+    public void close() {
+    }
+
+    public A addA() {
+	return null;
+    }
+}
+
+class QB {
+
+    public void exec() {
+    }
+
+    public RS rs() {
+	return null;
+    }
+}
+
+class Test {
+
+    private void f1(RS rs) {
+	java.util.Map<E, A> indicators = f(null);
+	for (A indicator : indicators.values()) {
+	    rs.addA().Pid = indicator.toString();
+	}
+    }
+
+    private java.util.Map<E, A> f(QB qb) {
+	java.util.Map<E, A> indicators = new java.util.HashMap<E, A>();
+	RS rs = null;
+	try {
+	    qb.exec();
+	    rs = qb.rs();
+	    while (rs.next()) {
+		E kind = E.valueOf(rs.getInt());
+		A indicator = A.load();
+		indicators.put(kind, indicator);
+	    }
+	} finally {
+	    if (rs != null) {
+		rs.close();
+	    }
+	}
+	return indicators;
+    }
+}

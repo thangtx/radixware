@@ -24,7 +24,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -37,9 +43,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
@@ -49,6 +58,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
@@ -62,15 +73,19 @@ import org.radixware.kernel.common.utils.CircularBuffer;
 import org.radixware.kernel.server.trace.TraceBuffer;
 import org.radixware.kernel.common.trace.TraceItem;
 import org.radixware.kernel.common.trace.TraceProfile;
+import org.radixware.kernel.common.utils.SystemPropUtils;
 
 public class TraceView extends JPanel implements TraceSettings.SettingsListener {
 
+    private static final boolean SAVE_ITEM_STACK_TRACE_IN_GUI = SystemPropUtils.getBooleanSystemProp("rdx.trace.item.gui.stacktrace", true);
+    private static final int MAX_ITEM_WORDS_LEN = SystemPropUtils.getIntSystemProp("rdx.trace.gui.item.words.max.len", -1);
     private static final long serialVersionUID = -1020935492401290652L;
     private static final int DEBUG_TRACE_BUF_SIZE = 1024;
     private static final int ABOVE_DEBUG_TRACE_BUF_SIZE = 200;
     private static final int MAX_WIDTH_HINT_MINIMIZE = 5000;
     private static final int MAX_WIDTH_HINT_RESIZE = MAX_WIDTH_HINT_MINIMIZE + 1;
     private final TraceToolBar toolBar;
+    private final List<TraceItem> selectedtraceItems = new ArrayList<>();
 
     private final class TableChangedListener implements TableModelListener {
 
@@ -118,7 +133,22 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
                 });
 
             }
+            restoreItemsSelection();
         }
+    }
+
+    private void restoreItemsSelection() {
+        ListSelectionModel model = traceScrollPane.getTraceTable().getSelectionModel();
+        model.clearSelection();
+        model.setValueIsAdjusting(true);
+        for (TraceItem traceIt : selectedtraceItems) {
+            for (int i = 0; i < traceScrollPane.getTraceTable().getRowCount(); i++) {
+                if (((TraceModel) traceScrollPane.getTraceTable().getModel()).getTraceItemAt(i).equals(traceIt)) {
+                    model.addSelectionInterval(i, i);
+                }
+            }
+        }
+        model.setValueIsAdjusting(false);
     }
 
     public final class TraceModel implements TableModel, TraceBuffer {
@@ -171,6 +201,16 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
 
         @Override
         public void put(final TraceItem item) {
+            if (SAVE_ITEM_STACK_TRACE_IN_GUI) {
+                item.fillInStackTrace();
+            }
+            if (MAX_ITEM_WORDS_LEN > 0 && item.words != null) {
+                for (int i = 0; i < item.words.size(); i++) {
+                    if (item.words.get(i).length() > MAX_ITEM_WORDS_LEN) {
+                        item.words.set(i, item.words.get(i).substring(0, MAX_ITEM_WORDS_LEN) + "...");
+                    }
+                }
+            }
             if (item.severity == EEventSeverity.DEBUG) {
                 fromDebug.add(item);
                 if (currentMaxSeverity == EEventSeverity.NONE) {
@@ -390,7 +430,7 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
                 } else {
                     label.setIcon(alarmIcon);
                 }
-                if (row != table.getSelectedRow()) {
+                if (!table.isRowSelected(row)) {
                     if (row % 2 == 0) {
                         label.setBackground(TraceSettings.currentSettings.bgColor1);
                     } else {
@@ -403,7 +443,7 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
                 label.setIcon(null);
                 label.setText(value != null ? value.toString() : "");
                 label.setFont(TraceSettings.currentSettings.traceFont);
-                if (row != table.getSelectedRow()) {
+                if (!table.isRowSelected(row)) {
                     if (row % 2 == 0) {
                         label.setBackground(TraceSettings.currentSettings.bgColor1);
                     } else {
@@ -443,8 +483,10 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
                 setDefaultRenderer(getColumnClass(0), new RowRenderer());
                 setShowHorizontalLines(false);
                 setShowVerticalLines(false);
-                setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                setCellSelectionEnabled(true);
+                //setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                //setCellSelectionEnabled(true);
+                setRowSelectionAllowed(true);
+                setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
                 setRowHeight(30);
                 setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
                 final Set<AWTKeyStroke> forwardKeys = getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
@@ -675,12 +717,91 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
         return toolBar;
     }
 
+    private class JFileChooserWithOverwriting extends JFileChooser {
+
+        @Override
+        public void approveSelection() {
+            File selectedFile = getSelectedFile();
+            if (selectedFile.exists()) {
+                int result = JOptionPane.showConfirmDialog(this, "The file exists, overwrite?", "Existing file", JOptionPane.YES_NO_CANCEL_OPTION);
+                switch (result) {
+                    case JOptionPane.YES_OPTION:
+                        super.approveSelection();
+                        return;
+                    case JOptionPane.NO_OPTION:
+                        return;
+                    case JOptionPane.CLOSED_OPTION:
+                        return;
+                    case JOptionPane.CANCEL_OPTION:
+                        cancelSelection();
+                        return;
+                }
+            }
+            super.approveSelection();
+        }
+
+    }
+
+    private void saveLogMessagesInFile(File file, int[] rowIndicesForSaving, JTable table) throws IOException {
+        try (FileWriter fwr = new FileWriter(file); BufferedWriter bwr = new BufferedWriter(fwr)) {
+            for (int i = 0; i < rowIndicesForSaving.length; i++) {
+                bwr.write(((TraceModel) table.getModel()).getTraceItemAt(rowIndicesForSaving[i]).toFormattedString(null, TraceItem.EFormat.WITH_CONTEXT) + System.lineSeparator() + System.lineSeparator());
+            }
+        }
+    }
+
+    public class SaveTraceItemsToFile extends JPopupMenu {
+
+        public SaveTraceItemsToFile() {
+            JMenuItem saveSelectedLogMessageInFile = new JMenuItem(Messages.SAVE_TO_FILE_MENU); 
+            saveSelectedLogMessageInFile.addActionListener(new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int[] selectedRows = traceScrollPane.getTraceTable().getSelectedRows();
+                    if (selectedRows.length != 0) {
+                        JFileChooser fc = new JFileChooserWithOverwriting();
+                        if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                            File selectedFile = fc.getSelectedFile();
+                            if (selectedFile.exists()) {
+                                selectedFile.delete();
+                            }
+                            try {
+                                selectedFile.createNewFile();
+                                saveLogMessagesInFile(selectedFile, selectedRows, traceScrollPane.getTraceTable());
+                            } catch (IOException ex) {
+                                JOptionPane.showMessageDialog(null, "Error on creating file: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
+                    }
+                }
+            });
+            add(saveSelectedLogMessageInFile);
+        }
+    }
+
     public TraceView(final ServerTrace traceImpl) {
         super(new BorderLayout());
         listeners = new CopyOnWriteArrayList<TraceViewListener>();
         traceModel = new TraceModel(traceImpl);
         traceScrollPane = new TraceScrollPane(traceModel);
+        traceScrollPane.getTraceTable().setComponentPopupMenu(new SaveTraceItemsToFile());
         traceModel.addTableModelListener(new TableChangedListener(traceScrollPane));
+        traceScrollPane.getTraceTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int[] selectedRowsIndex = traceScrollPane.getTraceTable().getSelectedRows();
+                    if (selectedRowsIndex.length != 0) {
+                        selectedtraceItems.clear();
+                        for (int i = 0; i < selectedRowsIndex.length; i++) {
+                            selectedtraceItems.add(((TraceModel) traceScrollPane.getTraceTable().getModel()).getTraceItemAt(selectedRowsIndex[i]));
+                        }
+                    }
+                }
+            }
+        });
+
         traceStatusBar = new TraceStatusBar();
         toolBar = new TraceToolBar();
         add(toolBar, BorderLayout.NORTH);
@@ -700,7 +821,7 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
             traceModel.onTraceProfileOverriden();
         }
     }
-    
+
     public void setStatus(final String status) {
         traceStatusBar.setStatus(status);
     }
@@ -771,6 +892,7 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
             BTN_TRACE_PROFILE = bundle.getString("BTN_TRACE_PROFILE");
             BTN_TRACE_PROFILE_OVR = bundle.getString("BTN_TRACE_PROFILE_OVR");
             TITLE_TRACE_PROFILE = bundle.getString("TITLE_TRACE_PROFILE");
+            SAVE_TO_FILE_MENU = bundle.getString("SAVE_TO_FILE_MENU");
         }
         static final String COL_SEVERITY;
         static final String COL_DATE;
@@ -807,6 +929,7 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
         public static final String BTN_TRACE_PROFILE;
         static final String BTN_TRACE_PROFILE_OVR;
         static final String TITLE_TRACE_PROFILE;
+        static final String SAVE_TO_FILE_MENU;
     }
 
     public void close() {
@@ -816,9 +939,31 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
     public static String editProfile(final String curProfile, final JComponent parentDialog) {
         String newProfile = curProfile;
         Object result;
-        while ((result = JOptionPane.showInputDialog(parentDialog, null, TraceView.Messages.TITLE_TRACE_PROFILE, JOptionPane.PLAIN_MESSAGE, null, null, newProfile)) != null) {
-            newProfile = (String) result;
-            if (!curProfile.equals(newProfile)) {
+        String[] vals = new String[EEventSeverity.values().length];
+        int initialIndex = -1;
+        for (int i = 0; i < EEventSeverity.values().length; i++) {
+            vals[i] = EEventSeverity.values()[i].getName();
+            if (vals[i].equals(curProfile) || (vals[i] + ";").equals(curProfile)) {
+                initialIndex = i;
+            }
+        }
+        if (initialIndex == -1) {
+            vals = Arrays.copyOf(vals, vals.length + 1);
+            vals[vals.length - 1] = curProfile;
+            initialIndex = vals.length - 1;
+        }
+        final JComboBox cbox = new JComboBox(vals);
+        cbox.setEditable(true);
+        if (initialIndex != -1) {
+            cbox.setSelectedIndex(initialIndex);
+        }
+        while (true) {
+            int opt = JOptionPane.showOptionDialog(parentDialog, cbox, TraceView.Messages.TITLE_TRACE_PROFILE, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, curProfile);
+            if (opt == JOptionPane.CANCEL_OPTION || opt == JOptionPane.CLOSED_OPTION) {
+                return null;
+            }
+            newProfile = cbox.getSelectedItem() == null ? null : cbox.getSelectedItem().toString();
+            if (!curProfile.equals(newProfile) && !curProfile.equals(newProfile + ";")) {
                 try {
                     //let's check and normalize
                     return new TraceProfile(newProfile).toString();
@@ -829,6 +974,5 @@ public class TraceView extends JPanel implements TraceSettings.SettingsListener 
                 return null;
             }
         }
-        return null;
     }
 }

@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.designer.ads.method.profile;
 
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.openide.util.ChangeSupport;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
@@ -47,6 +48,14 @@ final class NewMethodParameterPanel extends javax.swing.JPanel {
                 changeSupport.fireChange();
             }
         });
+        
+        descriptionEditor1.addChangeListener(new ChangeListener() {
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                changeSupport.fireChange();
+            }
+        });
     }
 
     private MethodParametersPanel.ParameterModel parameterModel;
@@ -78,11 +87,14 @@ final class NewMethodParameterPanel extends javax.swing.JPanel {
                 return name != null && !name.isEmpty();
             }
         }, "arg");
+        
+        descriptionEditor1.open(parameterModel.getDescriptionModel());
     }
 
     MethodParametersPanel.ParameterModel getParameter() {
         nameEditor.commit();
         typeEditor.commit();
+        descriptionEditor1.commit();
 
         return parameterModel;
     }
@@ -102,37 +114,21 @@ final class NewMethodParameterPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
 
         lblName = new javax.swing.JLabel();
         txtName = nameEditor.getEditorComponent();
         lblType = new javax.swing.JLabel();
         chbVar = new javax.swing.JCheckBox();
         typePanel = typeEditor.getEditorComponent();
+        descriptionEditor1 = new org.radixware.kernel.designer.common.dialogs.components.description.DescriptionEditor();
 
         setBorder(javax.swing.BorderFactory.createEmptyBorder(8, 8, 8, 8));
-        setLayout(new java.awt.GridBagLayout());
 
         lblName.setText(org.openide.util.NbBundle.getMessage(NewMethodParameterPanel.class, "NewMethodParameterPanel.lblName.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 8, 0);
-        add(lblName, gridBagConstraints);
 
         txtName.setText(org.openide.util.NbBundle.getMessage(NewMethodParameterPanel.class, "NewMethodParameterPanel.txtName.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 4, 8, 0);
-        add(txtName, gridBagConstraints);
 
         lblType.setText(org.openide.util.NbBundle.getMessage(NewMethodParameterPanel.class, "NewMethodParameterPanel.lblType.text")); // NOI18N
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_END;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 8, 0);
-        add(lblType, gridBagConstraints);
 
         chbVar.setText(org.openide.util.NbBundle.getMessage(NewMethodParameterPanel.class, "NewMethodParameterPanel.chbVar.text")); // NOI18N
         chbVar.addItemListener(new java.awt.event.ItemListener() {
@@ -140,24 +136,48 @@ final class NewMethodParameterPanel extends javax.swing.JPanel {
                 chbVarItemStateChanged(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 4, 8, 0);
-        add(chbVar, gridBagConstraints);
 
+        typePanel.setMinimumSize(new java.awt.Dimension(0, 20));
         typePanel.setLayout(null);
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(0, 4, 8, 0);
-        add(typePanel, gridBagConstraints);
+
+        descriptionEditor1.setMinimumSize(new java.awt.Dimension(61, 100));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lblName)
+                .addGap(4, 4, 4)
+                .addComponent(txtName))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(lblType)
+                .addGap(7, 7, 7)
+                .addComponent(typePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(chbVar, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(descriptionEditor1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addComponent(lblName))
+                    .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblType, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(typePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addComponent(chbVar)
+                .addGap(1, 1, 1)
+                .addComponent(descriptionEditor1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                .addGap(8, 8, 8))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void chbVarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chbVarItemStateChanged
@@ -166,6 +186,7 @@ final class NewMethodParameterPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox chbVar;
+    private org.radixware.kernel.designer.common.dialogs.components.description.DescriptionEditor descriptionEditor1;
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblType;
     private javax.swing.JTextField txtName;

@@ -46,6 +46,7 @@ import org.radixware.kernel.common.defs.ads.msdl.AdsMsdlSchemeDef;
 import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
 import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
 import org.radixware.kernel.common.design.msdleditor.field.panel.ChangeNamespaceDialog;
+import org.radixware.kernel.common.design.msdleditor.field.panel.StructurePanel;
 import org.radixware.kernel.common.design.msdleditor.field.panel.TestDialog;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.msdl.EFieldType;
@@ -62,6 +63,7 @@ public class RootPanel extends AbstractEditItem implements RenameListener {
     private static final String PREFERENCES_KEY = "MsdlEditor";
     private static final String FIELD_DIVIDER_POS = "FieldDividerPos";
 
+    private transient final MsdlField.MsdlFieldStructureChangedListener changeListener;
     private RootMsdlScheme rootMsdlScheme;
     private TestDialog testDialog = null;
     private JPanel preprocessorClassPanel = null;
@@ -74,6 +76,7 @@ public class RootPanel extends AbstractEditItem implements RenameListener {
      */
     public RootPanel() {
         initComponents();
+        changeListener = new MsdlStructChangedDefaultListener();
         buttonEdit = namespace.addButton("...");
         buttonEdit.addActionListener(new ActionListener() {
             @Override
@@ -138,8 +141,10 @@ public class RootPanel extends AbstractEditItem implements RenameListener {
         this.rootMsdlScheme = rootMsdlScheme;
 
         rootMsdlScheme.addRenameListener(this);
+        rootMsdlScheme.getStructureChangedSupport().addEventListener(changeListener);
+        structurePanel1.removeAllListeners();
         structurePanel1.open(rootMsdlScheme.getStructureFieldModel(), this);
-        titledPiecePanel1.open(rootMsdlScheme.getStructureFieldModel(), rootMsdlScheme.getStructureFieldModel().getField());
+         titledPiecePanel1.open(rootMsdlScheme.getStructureFieldModel(), rootMsdlScheme.getStructureFieldModel().getField());
         update();
     }
 
@@ -453,5 +458,12 @@ public class RootPanel extends AbstractEditItem implements RenameListener {
         definitionName.setText(e.radixObject.getName());
         opened = true;
     }
+    
+    private class MsdlStructChangedDefaultListener implements MsdlField.MsdlFieldStructureChangedListener {
 
+        @Override
+        public void onEvent(MsdlField.MsdlFieldStructureChangedEvent e) {
+            titledPiecePanel1.update(true);
+        }
+    }
 }

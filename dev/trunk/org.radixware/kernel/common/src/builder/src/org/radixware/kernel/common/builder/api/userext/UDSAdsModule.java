@@ -72,6 +72,7 @@ public class UDSAdsModule extends AdsModule {
 
     private void updateDependences(final Layer layer) {
 
+        final Module thisModule = this;
         if (layer != null && getDependences().getModuleIds().isEmpty()) {
 
             final Layer.HierarchyWalker walker = new Layer.HierarchyWalker();
@@ -79,14 +80,16 @@ public class UDSAdsModule extends AdsModule {
 
                 @Override
                 public void accept(final org.radixware.kernel.common.defs.HierarchyWalker.Controller<AdsModule> controller, final Layer radixObject) {
-                    if (radixObject != layer) {
+                    //if (radixObject != layer) { //Commented to include dependencies for subreports
                         for (Module m : radixObject.getAds().getModules()) {
-                            getDependences().add(m);
+                            if (m != thisModule) {
+                                getDependences().add(m);
+                            }
                         }
                         for (Module m : radixObject.getDds().getModules()) {
                             getDependences().add(m);
                         }
-                    }
+                    //}
                 }
             });
         }

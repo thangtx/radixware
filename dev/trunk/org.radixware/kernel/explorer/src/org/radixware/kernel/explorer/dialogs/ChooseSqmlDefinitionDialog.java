@@ -159,7 +159,8 @@ public final class ChooseSqmlDefinitionDialog extends ExplorerDialog implements 
         if (currentDefinition instanceof ISqmlTableDef) {
             return !itemTypes.contains(SqmlTreeModel.ItemType.PROPERTY)
                     && !itemTypes.contains(SqmlTreeModel.ItemType.ENUIM_ITEM)
-                    && !itemTypes.contains(SqmlTreeModel.ItemType.INDEX);
+                    && !itemTypes.contains(SqmlTreeModel.ItemType.INDEX) 
+                    && !itemTypes.contains(SqmlTreeModel.ItemType.SELECTOR);
         } else if (currentDefinition instanceof ISqmlEnumDef) {
             return !itemTypes.contains(SqmlTreeModel.ItemType.ENUIM_ITEM);
         } else if (currentDefinition instanceof ISqmlPackageDef){

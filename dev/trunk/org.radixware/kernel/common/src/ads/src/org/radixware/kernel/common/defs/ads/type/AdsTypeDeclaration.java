@@ -75,7 +75,7 @@ public class AdsTypeDeclaration extends RadixObject implements IJavaSource {
         if (base == AdsTypeDeclaration.UNDEFINED || type == AdsTypeDeclaration.UNDEFINED) {
             return false;
         }
-        
+
         if (AdsTypeDeclaration.isObject(base)) {
             return true;
         }
@@ -1030,7 +1030,7 @@ public class AdsTypeDeclaration extends RadixObject implements IJavaSource {
     }
 
     public boolean isUndefined() {
-        return this == UNDEFINED;
+        return this.isTypeArgument == false && this.typeId == null && this.path == null && this.extStr == null && this.dimension == 0 && this.genericArguments == null;
     }
 
     public boolean isGeneric() {
@@ -1072,6 +1072,10 @@ public class AdsTypeDeclaration extends RadixObject implements IJavaSource {
         return getName(referenceContext, true);
     }
 
+    public String getQualifiedName(RadixObject referenceContext, boolean[] unresolved) {
+        return getName(referenceContext, true, false, unresolved);
+    }
+
     @Override
     public String getQualifiedName() {
         return getName(null, true);
@@ -1083,18 +1087,21 @@ public class AdsTypeDeclaration extends RadixObject implements IJavaSource {
     }
 
     public String getRowName(RadixObject referenceContext) {
-        return getName(referenceContext, false, true);
+        return getName(referenceContext, false, true, null);
     }
 
     private String getName(RadixObject referenceContext, boolean qualified) {
-        return getName(referenceContext, qualified, false);
+        return getName(referenceContext, qualified, false, null);
     }
 
-    private String getName(RadixObject referenceContext, boolean qualified, boolean row) {
+    private String getName(RadixObject referenceContext, boolean qualified, boolean row, boolean[] unresolved) {
         if (this == VOID) {
             return "void";
         }
         if (this == UNDEFINED) {
+            if (unresolved != null) {
+                unresolved[0] = true;
+            }
             return "<undefined>";
         } else {
             Definition referenceContextDef = null;
@@ -1104,12 +1111,6 @@ public class AdsTypeDeclaration extends RadixObject implements IJavaSource {
                 if (referenceContext != null) {
                     referenceContextDef = referenceContext.getOwnerDefinition();
                 }
-                //if (referenceContext != null) {
-//                    Definition def = referenceContext.getOwnerDefinition();
-//                    if (def instanceof Definition) {
-//                        referenceContextDef = (Definition) def;
-//                    }
-                //}
             }
             final AdsType type = referenceContextDef == null ? null : resolve(referenceContextDef).get();
             if (type != null) {
@@ -1124,6 +1125,9 @@ public class AdsTypeDeclaration extends RadixObject implements IJavaSource {
                 return builder.toString();
             } else {
                 if (typeId == null) {
+                    if (unresolved != null) {
+                        unresolved[0] = true;
+                    }
                     return "<undefined>";
                 }
                 switch (typeId) {
@@ -1155,6 +1159,9 @@ public class AdsTypeDeclaration extends RadixObject implements IJavaSource {
                                 return names[names.length - 1];
                             }
                         } else {
+                            if (unresolved != null) {
+                                unresolved[0] = true;
+                            }
                             return "<undefined java type>";
                         }
                     default: {
@@ -1166,6 +1173,9 @@ public class AdsTypeDeclaration extends RadixObject implements IJavaSource {
                                 response.append(extStr);
                             }
                             response.append(">");
+                            if (unresolved != null) {
+                                unresolved[0] = true;
+                            }
                             return response.toString();
                         } else {
                             return typeId.getName();
@@ -1535,8 +1545,8 @@ public class AdsTypeDeclaration extends RadixObject implements IJavaSource {
     /**
      * Checks type declaration Returns ads type descriptor resolved during check
      * process
-     */
-    public AdsType check(final RadixObject initialContext, final IProblemHandler problemHandler) {
+     */     
+    public AdsType check(final RadixObject initialContext, final IProblemHandler problemHandler, final Map<Object, Object> checkHistory) {
         if (this == AdsTypeDeclaration.VOID) {
             return VoidType.getInstance();
         }
@@ -1603,7 +1613,7 @@ public class AdsTypeDeclaration extends RadixObject implements IJavaSource {
             builder.append(">");
             error(initialContext, problemHandler, "Type reference can not be resolved: " + builder.toString());
         } else {
-            resolvedType.check(initialContext, problemHandler);
+            resolvedType.check(initialContext, problemHandler, checkHistory);
         }
         return resolvedType;
     }

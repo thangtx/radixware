@@ -9,6 +9,7 @@
             <xs:element name="StartUnit" type="mess:StartUnitMess"/>
             <xs:element name="RestartUnit" type="mess:RestartUnitMess"/>
             <xs:element name="StopUnit" type="mess:StopUnitMess"/>
+            <xs:element name="AbortUnit" type="mess:AbortUnitMess"/>
             <xs:element name="ActualizeVer" type="mess:ActualizeVerMess"/>
             <xs:element name="ReloadArtePool" type="mess:ReloadArtePoolMess"/>
             <xs:element name="InstanceMaintenance" type="mess:InstanceMaintenanceMess"/>
@@ -19,6 +20,9 @@
             <xs:element name="FillArteTable" type="mess:FillArteTableMess"/>
             <xs:element name="GetStatus" type="mess:GetStatusMess"/>
             <xs:element name="GetArteClassLoadingProfile" type="mess:GetArteClassLoadingProfileMess"/>
+            <xs:element name="StopInstance" type="mess:StopInstanceMess"/>
+            <xs:element name="RestartInstance" type="mess:RestartInstanceMess"/>
+            <xs:element name="UpgradeInstance" type="mess:UpgradeInstanceMess"/>
         </xs:schema>
     </types>
     <message name="MakeThreadDumpRq">
@@ -87,6 +91,12 @@
     <message name="StopUnitRs">
         <part name="StopUnitRs" type="mess:StopUnitMess"/>
     </message>
+    <message name="AbortUnitRq">
+        <part name="StopUnitRq" type="mess:StopUnitMess"/>
+    </message>
+    <message name="AbortUnitRs">
+        <part name="StopUnitRs" type="mess:StopUnitMess"/>
+    </message>
     <message name="UnitCommandRq">
         <part name="UnitCommandRq" type="wsdl:UnitCommand"/>
     </message>
@@ -122,6 +132,24 @@
     </message>
     <message name="GetArteClassLoadingProfileRs">
         <part name="GetArteClassLoadingProfileRs" element="wsdl:GetArteClassLoadingProfile"/>
+    </message>
+    <message name="StopInstanceRq">
+        <part name="StopInstanceRq" element="wsdl:StopInstance"/>
+    </message>
+    <message name="StopInstanceRs">
+        <part name="StopInstanceRs" element="wsdl:StopInstance"/>
+    </message>
+    <message name="RestartInstanceRq">
+        <part name="RestartInstanceRq" element="wsdl:RestartInstance"/>
+    </message>
+    <message name="RestartInstanceRs">
+        <part name="RestartInstanceRs" element="wsdl:RestartInstance"/>
+    </message>
+    <message name="UpgradeInstanceRq">
+        <part name="UpgradeInstanceRq" element="wsdl:UpgradeInstance"/>
+    </message>
+    <message name="UpgradeInstanceRs">
+        <part name="UpgradeInstanceRs" element="wsdl:UpgradeInstance"/>
     </message>
     <portType name="systeminstancecontrol">
         <operation name="MakeThreadDump">
@@ -168,6 +196,10 @@
             <input message="wsdl:StopUnitRq"/>
             <output message="wsdl:StopUnitRs"/>
         </operation>
+        <operation name="AbortUnit">
+            <input message="wsdl:AbortUnitRq"/>
+            <output message="wsdl:AbortUnitRs"/>
+        </operation>
         <operation name="UnitCommand">
             <input message="wsdl:UnitCommandRq"/>
             <output message="wsdl:UnitCommandRs"/>
@@ -191,6 +223,18 @@
         <operation name="GetArteClassLoadingProfile">
             <input message="wsdl:GetArteClassLoadingProfile"/>
             <output message="wsdl:GetArteClassLoadingProfile"/>
+        </operation>
+        <operation name="StopInstance">
+            <input message="wsdl:StopInstance"/>
+            <output message="wsdl:StopInstance"/>
+        </operation>
+        <operation name="RestartInstance">
+            <input message="wsdl:RestartInstance"/>
+            <output message="wsdl:RestartInstance"/>
+        </operation>
+        <operation name="UpgradeInstance">
+            <input message="wsdl:UpgradeInstance"/>
+            <output message="wsdl:UpgradeInstance"/>
         </operation>
     </portType>
     <binding name="systeminstancecontrol" type="wsdl:systeminstancecontrol">
@@ -305,6 +349,17 @@
                 <soap:header message="Header" part="Header" use="literal"/>
             </output>
         </operation>
+        <operation name="AbortUnit">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#AbortUnit" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+                <soap:header message="Header" part="Header" use="literal"/>
+            </output>
+        </operation>
         <operation name="UnitCommand">
             <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#UnitCommand" style="document"/>
             <input>
@@ -360,6 +415,33 @@
         </operation>
         <operation name="GetArteClassLoadingProfile">
             <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#GetArteClassLoadingProfile" style="document"/>            
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="StopInstance">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#StopInstance" style="document"/>            
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="RestartInstance">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#RestartInstance" style="document"/>            
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="UpgradeInstance">
+            <soap:operation soapAction="http://schemas.radixware.org/systeminstancecontrol.wsdl#UpgradeInstance" style="document"/>            
             <input>
                 <soap:body use="literal"/>
             </input>

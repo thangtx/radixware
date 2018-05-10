@@ -29,7 +29,7 @@ import org.radixware.kernel.server.exceptions.PropNotLoadedException;
 public final class EntityPropVals implements IArrayListener, IXBeansChangeListener {
 
     private static final long serialVersionUID = -612899817970765117L;
-    final private Map<Id, Object> valsById = new HashMap<Id, Object>();
+    final private Map<Id, Object> valsById = new HashMap<>(64, 0.3f);
     //-----------------RADIX-5629------------------
     private final Entity owner;
 
@@ -66,6 +66,125 @@ public final class EntityPropVals implements IArrayListener, IXBeansChangeListen
         //-----------------RADIX-5629------------------
     }
 
+    /**
+     * A container object which may or may not contain a non-null value. If a value is present, {@code
+     * isPresent()} will return {@code true} and {@code get()} will return the value.
+     */
+    public final static class PropOptional {
+        private static final Object EMPTY_VALUE = new Object();
+        /**
+         * Returns an empty {@code PropOptional} instance. No value is present for this Optional.
+         *
+         * Though it may be tempting to do so, avoid testing if an object is empty by comparing with
+         * {@code ==} against instances returned by {@code Optional.empty()}. There is no guarantee that
+         * it is a singleton. Instead, use {@link #isPresent()}
+         *
+         * @return an empty {@code Optional}
+         */
+        public static PropOptional empty() {
+            return new PropOptional(EMPTY_VALUE);
+        }
+
+        private final Object value;
+
+        public boolean isPresent() {
+            // Direct compare to static final EMPTY_VALUE object instance reference
+            return value != EMPTY_VALUE;
+        }
+        private PropOptional(Object value) {
+            this.value = value;
+        }
+        /**
+         * Returns the value, even if it is EMPTY_VALUE. Check
+         * {@link PropOptional#isPresent()} to ensure value is assigned.
+         *
+         * @return the value held by this {@code Optional}
+         * @see PropOptional#isPresent()
+         */
+        public Object get() {
+            return value;
+        }
+        /**
+         * Indicates whether some other object is "equal to" this Optional. The other object is
+         * considered equal if: <ul> <li>it is also an {@code PropOptional} and; <li>both instances have no
+         * value present or; <li>the present values are "equal to" each other via {@code equals()}.
+         * </ul>
+         *
+         * @param o an object to be tested for equality
+         * @return {code true} if the other object is "equal to" this object otherwise {@code false}
+         */
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+
+            if (!(o instanceof PropOptional)) {
+                return false;
+            }
+
+            if (isPresent()) {
+                PropOptional other = (PropOptional) o;
+                return value.equals(other.value);
+            }
+
+            return false;
+        }
+
+        /**
+         * Returns the hash code value of the present value, if any, or 0 (zero) if no value is
+         * present.
+         *
+         * @return hash code value of the present value or 0 if no value is present
+         */
+        @Override
+        public int hashCode() {
+            if (isPresent()) {
+                return value.hashCode();
+            }
+
+            return 0;
+        }
+
+        /**
+        * Returns a non-empty string representation of this Optional suitable for debugging. The exact
+        * presentation format is unspecified and may vary between implementations and versions.
+        *
+        * <p> If a value is present the result must include its string representation in the result.
+        * Empty and present PropOptionals must be unambiguously differentiable. </p>
+        *
+        * @return the string representation of this instance
+        */
+       @Override
+       public String toString() {
+           if (isPresent()) {
+               return "PropOptional[" + value.toString() + "]";
+           }
+
+           return "PropOptional.empty";
+       }
+       
+       /**
+        * Convenience method to create an exception in case if property is not loaded
+        * @param id
+        */
+       public PropNotLoadedException cause(final Id id) {
+           return new PropNotLoadedException("Property #" + id + " is not loaded", id);
+       }
+    }
+    public final PropOptional getPropOptionalById(final Id propId) {
+        final Object val = valsById.get(propId);
+        if (val != null) {
+            return new PropOptional(val);
+        }
+        //if val == null, it can be not loaded
+        if (valsById.containsKey(propId)) // loaded but it is realy null
+        {
+            return new PropOptional(null);
+        }
+        return PropOptional.empty();//"Property #" + propId + " is not loaded");
+    }
+
     public final Object getPropValById(final Id propId) throws PropNotLoadedException {
         final Object val = valsById.get(propId);
         if (val != null) {
@@ -76,11 +195,19 @@ public final class EntityPropVals implements IArrayListener, IXBeansChangeListen
         {
             return null;
         }
-        throw new PropNotLoadedException("Property #" + propId + " is not loaded", propId);
+        throw new PropNotLoadedException(propId);
     }
 
     void clear() {
         valsById.clear();
+    }
+    
+    public boolean removePropValById(final Id propId) {
+        if (valsById.containsKey(propId)) {
+            valsById.remove(propId);
+            return true;
+        }
+        return false;
     }
 
     void removeModifiedLobs(final Collection<Id> modifiedProps) {

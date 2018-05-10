@@ -66,6 +66,7 @@ public class AdsDefinitionIcon extends RadixIcon {
     public static final AdsDefinitionIcon CLASS_REPORT = new AdsDefinitionIcon("ads/sql/report.svg");
     public static final AdsDefinitionIcon CLASS_USER_REPORT = new AdsDefinitionIcon("ads/report/user_report.svg");
     public static final AdsDefinitionIcon CLASS_USER_REPORT_CURRENT_VERSION = new AdsDefinitionIcon("ads/report/user_report_current.svg");
+    public static final AdsDefinitionIcon CLASS_USER_REPORT_UNACTIVE_VERSION = new AdsDefinitionIcon("ads/report/user_report_unactive.svg");
     public static final AdsDefinitionIcon CLASS_PROCEDURE = new AdsDefinitionIcon("ads/sql/procedure.svg");
     public static final AdsDefinitionIcon CLASS_TESTCASE = new AdsDefinitionIcon("ads/class/testcase.svg");
     public static final AdsDefinitionIcon CLASS_ENUM = new AdsDefinitionIcon("ads/class/enum.svg");

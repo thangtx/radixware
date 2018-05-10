@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.common.sqlscript.parser;
 
+import java.util.Objects;
+
 
 public class SQLPosition {
     private int    index;
@@ -20,28 +22,33 @@ public class SQLPosition {
     private String srcName;
 
     public SQLPosition() {
-        index = 0;
-        line = -1;
-        column = -1;
-        sourceLine = -1;
+        this.index = 0;
+        this.line = -1;
+        this.column = -1;
+        this.sourceLine = -1;
+        this.srcName = null;
     }
 
-    public SQLPosition(int pIndex, int pLine, int pColumn, int pSourceLine, String pSrcName) {
-        index= pIndex;
-        line = pLine;
-        column = pColumn;
-        sourceLine = pSourceLine;
-        srcName = pSrcName;
+    public SQLPosition(final int pIndex, final int pLine, final int pColumn, final int pSourceLine, final String pSrcName) {
+        this.index = pIndex;
+        this.line = pLine;
+        this.column = pColumn;
+        this.sourceLine = pSourceLine;
+        this.srcName = pSrcName;
     }
 
-    public SQLPosition(SQLPosition pos) {
-        index = pos.index;
-        line = pos.line;
-        column = pos.column;
-        sourceLine = pos.sourceLine;
-        srcName = pos.srcName;        
+    public SQLPosition(final SQLPosition pos) {
+        if (pos == null) {
+            throw new IllegalArgumentException("SQLositin reference can't be null");
+        }
+        else {
+            this.index = pos.index;
+            this.line = pos.line;
+            this.column = pos.column;
+            this.sourceLine = pos.sourceLine;
+            this.srcName = pos.srcName;
+        }
     }    
-    
     
     public void setColumn(int column) {
         this.column = column;
@@ -98,8 +105,7 @@ public class SQLPosition {
     }
 
     public String toStringLC() {
-        return  "line "  + Integer.toString(line) +
-                ", column " + Integer.toString(column);
+        return  "line "  + Integer.toString(line) + ", column " + Integer.toString(column);
     }
 
     public SQLPosition fork() {

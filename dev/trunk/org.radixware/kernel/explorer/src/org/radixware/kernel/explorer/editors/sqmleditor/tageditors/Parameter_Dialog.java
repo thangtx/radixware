@@ -143,7 +143,8 @@ public class Parameter_Dialog extends ExplorerDialog {
     }
 
     public void writeToTag(final org.radixware.schemas.xscml.Sqml.Item.Parameter parameter) {
-        parameter.setLiteral(cbIsLiteral.isChecked());
+        parameter.setLiteral(cbIsLiteral.isChecked());        
+        parameter.setExpressionList(this.parameter.getType().isArrayType());
     }
 
     public void writeToTag(final org.radixware.schemas.xscml.Sqml.Item.EntityRefParameter parameter) {
@@ -153,6 +154,7 @@ public class Parameter_Dialog extends ExplorerDialog {
         if (translationMode == EPidTranslationMode.SECONDARY_KEY_PROPS && cbIndeces != null && cbIndeces.getValue() != null) {
             parameter.setPidTranslationSecondaryKeyId(cbIndeces.getValue().getId());
         }
+        parameter.setExpressionList(this.parameter.getType().isArrayType());
     }
 
     @SuppressWarnings("unused")

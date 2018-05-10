@@ -19,27 +19,79 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>for(</xsc:Java>
+              <xsc:Java>//
+//</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="2" Path="acsLSG35D4GIHNRDJIEACQMTAIZT4"/>
+              <xsc:IdReference Path="adcAPE5HB2OWZDWPPYMCEL4SDD3YE mthFNKYEN6BY5E6XLD4MY4OH4RD5M" Invoke="true">
+                <xsc:Presentation>add</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java> ut :  </xsc:Java>
+              <xsc:Java>(
+//    "System/UnitsCountByType",
+//    "select type Type, classguid ClassTitle, count(*) Count from rdx_unit group by type, classguid order by type", 
+//    new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="2" Path="acsLSG35D4GIHNRDJIEACQMTAIZT4"/>
+              <xsc:IdReference Path="adc73CGVQGAVVCVLJ6LNRQ27CKK7Y mthUZFN2AXVKZBWFMGPHW7HNCOJEQ" Invoke="true">
+                <xsc:Presentation>ColumnsLicenseReportCellDelegate</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.values()){
-    </xsc:Java>
+              <xsc:Java>(new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcAPE5HB2OWZDWPPYMCEL4SDD3YE mthL4HQ67WNEZHZHLF74TNN6Y4OV4" Invoke="true"/>
+              <xsc:IdReference Path="adcIUURDHFIENGVFOWC23RAN5TIUU mthK34HNI6K5RAIFELH7O4274AWOE" Invoke="true">
+                <xsc:Presentation>ClassGuidDelegate</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>("Units/" + ut.getName(),"select count(*) Count from rdx_unit where type=" + String.valueOf(ut.Value));
-}</xsc:Java>
+              <xsc:Java>("ClassTitle"), new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcMXAQNNYE6FFMPKZ3P233HWCPBE mthKWUJEYCZXFGYFMT7Y4OQJC6AFE" Invoke="true">
+                <xsc:Presentation>EnumItemDelegate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("type", </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsLSG35D4GIHNRDJIEACQMTAIZT4">
+                <xsc:Presentation>System::UnitType</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>)));
+//</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAPE5HB2OWZDWPPYMCEL4SDD3YE mthL4HQ67WNEZHZHLF74TNN6Y4OV4" Invoke="true">
+                <xsc:Presentation>add</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("System/UsersCount","select count(*) Count from rdx_ac_user");
+//</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAPE5HB2OWZDWPPYMCEL4SDD3YE mthL4HQ67WNEZHZHLF74TNN6Y4OV4" Invoke="true">
+                <xsc:Presentation>add</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("System/UsersCount/Admins","select count(*) Count from rdx_ac_user where name like '%dmin%'");
+//</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adcAPE5HB2OWZDWPPYMCEL4SDD3YE mthL4HQ67WNEZHZHLF74TNN6Y4OV4" Invoke="true">
+                <xsc:Presentation>add</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("AnotherRoot/CurrentUser","select user Value from dual");
+</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

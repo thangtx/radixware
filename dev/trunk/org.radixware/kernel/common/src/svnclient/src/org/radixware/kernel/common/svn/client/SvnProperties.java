@@ -21,6 +21,10 @@ import java.util.Map;
  * @author akrylov
  */
 public class SvnProperties {
+    
+    
+    public static final String LOG = "svn:log";
+    public static final String AUTHOR = "svn:author";
 
     public static class Value {
 
@@ -36,15 +40,33 @@ public class SvnProperties {
             return value;
         }
 
+        public boolean isBinary() {
+            return value == null;
+
+        }
+        
         public byte[] getBytes() {
             if (value != null) {
                 try {
                     return value.getBytes("UTF-8");
                 } catch (UnsupportedEncodingException ex) {
                     //should never occurs
+                    throw new RuntimeException(ex);
                 }
             }
             return data;
+        } 
+        
+        public String getFinalString() {
+            final byte[] bytes = getBytes();
+            if (bytes!=null) {
+                return new String(bytes);
+            }
+            return value;
+        }
+    
+        public boolean isNull() {
+            return value==null && data==null;
         }
 
     }
@@ -61,4 +83,14 @@ public class SvnProperties {
     public Map<String, Value> map() {
         return Collections.unmodifiableMap(props);
     }
+    
+    protected Value remove(final String key){
+        return props.remove(key);
+    }
+    
+    protected boolean isEmpty(){
+        return props.isEmpty();
+    }
+    
+
 }

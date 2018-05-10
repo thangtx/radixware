@@ -10,34 +10,106 @@
  */
 package org.radixware.wps.tree;
 
-import java.awt.Color;
-import org.radixware.kernel.common.client.env.SettingNames;
+import java.util.Objects;
 import org.radixware.kernel.common.client.tree.nodes.ExplorerTreeNode;
 import org.radixware.kernel.common.client.tree.nodes.IExplorerTreeNode;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.views.IExplorerItemView;
-import org.radixware.wps.WpsEnvironment;
-import org.radixware.wps.WpsSettings;
 import org.radixware.wps.icons.WpsIcon;
 import org.radixware.wps.rwt.tree.Node;
-import org.radixware.wps.settings.ISettingsChangeListener;
 
 class TreeNode extends Node {
 
-    private final IExplorerTreeNode node;
+    private final ExplorerTreeNode node;
     private final WpsTree tree;
-    private final WpsEnvironment env;
-    private final ISettingsChangeListener l = new ISettingsChangeListener() {
-        @Override
-        public void onSettingsChanged() {
-            applySettings();
+    private TreeNodeSettings currentSettings;
+
+    protected TreeNode(final WpsTree tree, 
+                                   final IExplorerTreeNode node) {
+        super(createChildren(tree, node));
+        this.node = (ExplorerTreeNode)node;
+        this.tree = tree;
+        setObjectName(node.getName());
+        update();
+        applySettings(tree.getNodeSettings(getType()));
+    }
+    
+    public final void applySettings(final TreeNodeSettings settings){
+        if (settings!=null && !Objects.equals(currentSettings, settings)){
+            if (settings.isIconVisible()){
+                final Icon icon = getExplorerTreeNode().getView().getIcon();
+                if (icon instanceof WpsIcon){
+                    setIcon((WpsIcon)icon);
+                }            
+            }else{
+                setIcon(null);
+            }
+            if (currentSettings==null){
+                setBackground(settings.getBackgroundColor());
+                setForeground(settings.getForegroundColor());
+                setSelectedNodeForeground(settings.getSelectedForegroundColor());
+                setSelectedNodeBackground(settings.getSelectedBackgroundColor());
+            }else{
+                if (currentSettings.getBackgroundColor()!=settings.getBackgroundColor()){
+                    setBackground(settings.getBackgroundColor());
+                }
+                if (currentSettings.getForegroundColor()!=settings.getForegroundColor()){
+                    setForeground(settings.getForegroundColor());
+                }
+                if (currentSettings.getSelectedForegroundColor()!=settings.getSelectedForegroundColor()){
+                    setSelectedNodeForeground(settings.getSelectedForegroundColor());
+                }
+                if (currentSettings.getSelectedBackgroundColor()!=settings.getSelectedBackgroundColor()){
+                    setSelectedNodeBackground(settings.getSelectedBackgroundColor());
+                }
+            }
+            currentSettings = settings;
         }
-    };
+    }
+    
+    public final TreeNodeSettings.NodeType getType(){
+        return TreeNodeSettings.NodeType.detect(getExplorerTreeNode().getView());
+    }
 
-    private static Children createChildren(WpsTree tree, IExplorerTreeNode node) {
-        IExplorerItemView view = node.getView();
+    public final ExplorerTreeNode getExplorerTreeNode() {
+        return node;
+    }
+
+    public final TreeNode add(final int index, final IExplorerTreeNode childNode) {
+        Node.Children children = getChildNodes();
+        if (children == Node.Children.LEAF) {
+            children = new org.radixware.wps.tree.DefaultChildren(tree, node);
+            setChildNodes(children);
+        }
+
+        final TreeNode treeNode = new TreeNode(tree, childNode);
+        children.add(index, treeNode);
+        final int realIndex = children.getNodes().indexOf(treeNode);
+
+        getExplorerTreeNode().addNode(childNode, realIndex);
+        return treeNode;
+    }
+
+    @Override
+    public final void update() {
+        super.update();
+        final IExplorerItemView view = node.getView();
         if (view != null) {
+            if (view.isParagraphView()) {
+                html.addClass("rwt-ui-tree-radix-paragraph");
+            } else if (view.isEntityView() || view.isChoosenObject()) {
+                html.addClass("rwt-ui-tree-radix-entity");
+            } else if (view.isGroupView()) {
+                html.addClass("rwt-ui-tree-radix-group");
+            }
+        }
 
+        setDisplayName(node.getView().getTitle());
+    }
+    
+    private static Children createChildren(final WpsTree tree, final IExplorerTreeNode node) {
+        final IExplorerItemView view = node.getView();
+        if (view != null) {
             if (view.isParagraphView()) {
                 if (view.getChildsCount() == 0) {
                     return Children.LEAF;
@@ -63,167 +135,6 @@ class TreeNode extends Node {
             return Children.LEAF;
         }
     }
-
-    protected TreeNode(WpsTree tree, IExplorerTreeNode node) {
-        super(createChildren(tree, node));
-        this.node = node;
-        this.tree = tree;
-        this.env = ((WpsEnvironment) getEnvironment());
-        update();
-    }
-
-    private void applySettings() {
-        ExplorerTreeNode n = getExplorerTreeNode();
-        showIcons(n.getView());
-        applyColorSettings(n.getView());
-    }
-
-    private void showIcons(IExplorerItemView view) {
-        Icon icon = node.getView().getIcon();
-        WpsSettings settings = env.getConfigStore();
-        if (settings != null) {
-            try {
-                settings.beginGroup(SettingNames.SYSTEM);
-                settings.beginGroup(SettingNames.EXPLORER_TREE_GROUP);
-                settings.beginGroup(getSettingsGroup(view));
-                final boolean show_icons = settings.readBoolean(SettingNames.ExplorerTree.Common.SHOW_ICONS, true);
-                if (show_icons) {
-                    setIcon((WpsIcon) icon);
-                } else {
-                    setIcon(null);
-                }
-            } finally {
-                settings.endGroup();
-                settings.endGroup();
-                settings.endGroup();
-            }
-        } else {
-            if (icon instanceof WpsIcon) {
-                setIcon((WpsIcon) icon);
-            }
-        }
-    }
-
-    private void applyColorSettings(final IExplorerItemView view) {        
-        final WpsSettings settings = env.getConfigStore();
-        if (settings != null) {
-            settings.beginGroup(SettingNames.SYSTEM);
-            settings.beginGroup(SettingNames.EXPLORER_TREE_GROUP);            
-            try {                
-                final Color background, foreground;
-                settings.beginGroup(getSettingsGroup(view));
-                try{
-                    background = 
-                        settings.readColor(SettingNames.ExplorerTree.Common.BACKGROUND_COLOR, getDefaultBackgroundColor(view));
-                    foreground = 
-                        settings.readColor(SettingNames.ExplorerTree.Common.FOREGROUND_COLOR, getDefaultForegroundColor(view));
-                }finally{
-                    settings.endGroup();
-                }
-                setBackground(background);
-                setForeground(foreground);
-                
-                final Color selectedFont, selectedBackground;
-                settings.beginGroup(SettingNames.ExplorerTree.COMMON_GROUP);
-                try{
-                    selectedFont = 
-                        settings.readColor(SettingNames.ExplorerTree.Common.TREE_SELECTED_ITEM_FONT_COLOR, Color.BLACK);
-                    selectedBackground = 
-                        settings.readColor(SettingNames.ExplorerTree.Common.TREE_SELECTED_ITEM_BACKGROUND, Color.decode("#3399ff"));
-                }finally{
-                    settings.endGroup();    
-                }                
-                //setSelectedNodeBackground(selectedBackground);
-                setSelectedNodeForeground(selectedFont);
-            } finally {
-                settings.endGroup();
-                settings.endGroup();
-            }
-        }
-    }
     
-    private static Color getDefaultBackgroundColor(final IExplorerItemView v){
-        return Color.WHITE;
-    }
-    
-    private static Color getDefaultForegroundColor(final IExplorerItemView v){
-        if (v.isUserItemView()) {
-            return Color.decode("#0000ff");
-        } else if (v.isEntityView()) {
-            return Color.BLACK;
-        } else if (v.isGroupView()) {
-            return Color.BLACK;
-        } else if (v.isParagraphView()) {
-            return Color.decode("#000068");
-        } else {
-            throw new IllegalArgumentException("unknown type of explorer item " + v.toString());
-        }        
-    }
-
-    private static String getSettingsGroup(final IExplorerItemView v) {
-        if (v.isUserItemView()) {
-            return SettingNames.ExplorerTree.USER_GROUP;
-        } else if (v.isEntityView()) {
-            return SettingNames.ExplorerTree.EDITOR_GROUP;
-        } else if (v.isGroupView()) {
-            return SettingNames.ExplorerTree.SELECTOR_GROUP;
-        } else if (v.isParagraphView()) {
-            return SettingNames.ExplorerTree.PARAGRAPH_GROUP;
-        } else {
-            throw new IllegalArgumentException("unknown type of explorer item " + v.toString());
-        }
-    }
-
-    public ExplorerTreeNode getExplorerTreeNode() {
-        return (ExplorerTreeNode) node;
-    }
-
-    public TreeNode add(int index, IExplorerTreeNode childNode) {
-        Node.Children children = getChildNodes();
-        if (children == Node.Children.LEAF) {
-            children = new org.radixware.wps.tree.DefaultChildren(tree, node);
-            setChildNodes(children);
-        }
-
-        TreeNode treeNode = new TreeNode(tree, childNode);
-        children.add(index, treeNode);
-        int realIndex = children.getNodes().indexOf(treeNode);
-
-        getExplorerTreeNode().addNode(childNode, realIndex);
-        return treeNode;
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
-        if (l != null && env != null) {
-            env.removeSettingsChangeListener(l);
-        }
-    }
-
-    @Override
-    public final void update() {
-        super.update();
-        IExplorerItemView view = node.getView();
-        if (view != null) {
-            if (view.isParagraphView()) {
-                html.addClass("rwt-ui-tree-radix-paragraph");
-            } else if (view.isEntityView() || view.isChoosenObject()) {
-                html.addClass("rwt-ui-tree-radix-entity");
-            } else if (view.isGroupView()) {
-                html.addClass("rwt-ui-tree-radix-group");
-            }
-        }
-
-        setDisplayName(node.getView().getTitle());
-        if(env != null && l != null){
-            env.removeSettingsChangeListener(l);
-        }
-        if (env != null) {//npe after disconnect while saving current position in the tree
-            env.addSettingsChangeListener(l);
-            showIcons(view);
-            applyColorSettings(view);
-        }
-    }
 
 }

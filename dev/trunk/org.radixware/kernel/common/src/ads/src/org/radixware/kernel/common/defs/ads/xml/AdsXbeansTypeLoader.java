@@ -95,7 +95,7 @@ public class AdsXbeansTypeLoader implements SchemaTypeLoader {
 
         AdsType xmlType = xdef.getType(EValType.XML, null);
 
-        final String configPrefix = String.valueOf(((XmlType) xmlType).getJavaSourceSupport().getQualifiedPackageName(null));
+        final String configPrefix = String.valueOf(((XmlType) xmlType).getJavaSourceSupport().getQualifiedPackageName(null, false));
 
         if (xdef instanceof AdsXmlSchemeDef) {
             AdsXmlSchemeDef scheme = (AdsXmlSchemeDef) xdef;
@@ -144,7 +144,7 @@ public class AdsXbeansTypeLoader implements SchemaTypeLoader {
                                             AdsDefinition enumDef = AdsSearcher.Factory.newAdsDefinitionSearcher(context).findById(constSetId).get();
                                             if (enumDef instanceof AdsEnumDef) {
                                                 AdsEnumDef e = (AdsEnumDef) enumDef;
-                                                cc.getDomNode().getFirstChild().setNodeValue(new String(e.getType(e.getItemType(), null).getJavaSourceSupport().getQualifiedTypeName(JavaSourceSupport.UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, JavaSourceSupport.CodeType.EXCUTABLE))));
+                                                cc.getDomNode().getFirstChild().setNodeValue(new String(e.getType(e.getItemType(), null).getJavaSourceSupport().getQualifiedTypeName(JavaSourceSupport.UsagePurpose.getPurpose(ERuntimeEnvironmentType.COMMON, JavaSourceSupport.CodeType.EXCUTABLE), false)));
                                                 if (cc.getDomNode() instanceof Element) {
                                                     Node node = cc.getDomNode().getOwnerDocument().createAttribute("classId");
                                                     ((Element) cc.getDomNode()).getAttributes().setNamedItem(node);

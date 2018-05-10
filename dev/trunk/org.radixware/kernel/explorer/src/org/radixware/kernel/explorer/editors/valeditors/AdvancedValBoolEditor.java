@@ -20,7 +20,6 @@ import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QFont;
 import com.trolltech.qt.gui.QLabel;
-import com.trolltech.qt.gui.QLayout;
 import com.trolltech.qt.gui.QPalette;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QSizePolicy;
@@ -195,7 +194,7 @@ public class AdvancedValBoolEditor<T extends Object> extends ValEditor<T> {
         final QFont font = button.font();
         font.setPointSize(font.pointSize() - 1);
         button.setFont(font);
-        ((QBoxLayout) layout()).insertWidget(0, button, 0, new Qt.Alignment(Qt.AlignmentFlag.AlignVCenter, Qt.AlignmentFlag.AlignLeft));
+        insertWidgetToFront(button);        
         button.setSizePolicy(QSizePolicy.Policy.Maximum, QSizePolicy.Policy.Fixed);
         button.setFixedHeight(8);
         button.resize(button.sizeHint().width(), 8);
@@ -325,7 +324,7 @@ public class AdvancedValBoolEditor<T extends Object> extends ValEditor<T> {
     
     @Override
     public QSize sizeHint() {
-        return isInGrid() ? layout().sizeHint() : super.sizeHint();
+        return isAdjustWidthByContentModeEnabled() ? layout().sizeHint() : super.sizeHint();
     }    
 
     @Override

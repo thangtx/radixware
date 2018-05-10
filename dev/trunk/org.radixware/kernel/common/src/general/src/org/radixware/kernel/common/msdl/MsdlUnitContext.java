@@ -26,7 +26,8 @@ public class MsdlUnitContext {
     
     public static enum EContext {
         FIXED_LEN,
-        EMBEDDED_LEN
+        EMBEDDED_LEN,
+        NULL_INDICATOR
     }
 
     public EContext getContextType() {

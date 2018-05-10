@@ -11,35 +11,36 @@
 
 package org.radixware.kernel.server.instance;
 
+import org.radixware.kernel.common.enums.EInstanceThreadKind;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.lang.management.ThreadInfo;
 import java.sql.Connection;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import oracle.jdbc.pool.OracleDataSource;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.trace.IRadixTrace;
-import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
-import org.radixware.kernel.server.trace.IServerThread;
+import org.radixware.kernel.server.jdbc.RadixConnection;
+import org.radixware.kernel.server.jdbc.RadixDataSource;
+import org.radixware.kernel.server.trace.ServerThread;
 
-final class InstanceThread extends Thread implements IServerThread {
+public final class InstanceThread extends ServerThread {
 
     private static final long PAUSE_BEFORE_AUTO_RESTART_MILLIS = 5000;
 
-    InstanceThread(final Instance instance, final OracleDataSource oraDataSource, final String proxyOraUser, final Connection dbConnection, final int instanceId, final String instanceName) {
+    InstanceThread(final Instance instance, final RadixDataSource radixDataSource, final String proxyOraUser, final Connection dbConnection, final int instanceId, final String instanceName) {
+        super(null, null, instance.getClass().getClassLoader(), instance.getTrace().newTracer(EEventSource.INSTANCE.getValue()));
         this.instance = instance;
-        this.oraDataSource = oraDataSource;
+        this.radixDataSource = radixDataSource;
         this.proxyOraUser = proxyOraUser;
         this.dbConnection = dbConnection;
         this.instanceId = instanceId;
         this.instanceName = instanceName;
-        setContextClassLoader(instance.getClass().getClassLoader());
-        this.localTracer = instance.getTrace().newTracer(EEventSource.INSTANCE.getValue());
         setupUncaughtExceptionHandler();
     }
 
@@ -73,7 +74,7 @@ final class InstanceThread extends Thread implements IServerThread {
         try {
             try {
                 instance.setState(InstanceState.STARTING);
-                instance.startImpl(oraDataSource, proxyOraUser, dbConnection, instanceId, instanceName);
+                instance.startImpl(radixDataSource, proxyOraUser, dbConnection, instanceId, instanceName);
                 instance.setState(InstanceState.STARTED);
                 instance.runImpl();
             } catch (Throwable e) {
@@ -91,7 +92,7 @@ final class InstanceThread extends Thread implements IServerThread {
                     instance.stopImpl();
                     instance.setState(InstanceState.STOPPED);
                     instance.setDbConnection(null, null, null);
-                    oraDataSource.close();
+                    radixDataSource.close();
                 } catch (Throwable e) {
                     final String exStack = ExceptionTextFormatter.exceptionStackToString(e);
                     instance.getTrace().put(EEventSeverity.ERROR, Messages.ERR_ON_INSTANCE_STOP + exStack, Messages.MLS_ID_ERR_ON_INSTANCE_STOP, new ArrStr(instance.getFullTitle(), exStack), EEventSource.INSTANCE, false);
@@ -114,11 +115,6 @@ final class InstanceThread extends Thread implements IServerThread {
     }
 
     @Override
-    public LocalTracer getLocalTracer() {
-        return localTracer;
-    }
-
-    @Override
     public Connection getConnection() {
         return instance.getDbConnection();
     }
@@ -127,8 +123,18 @@ final class InstanceThread extends Thread implements IServerThread {
     public IRadixTrace getTrace() {
         return instance.getTrace();
     }
-    final private LocalTracer localTracer;
-    final private OracleDataSource oraDataSource;
+
+    @Override
+    public boolean isAborted() {
+        return false;
+    }
+    
+    @Override
+    public InstanceThreadStateRecord getThreadStateRecord(ThreadInfo threadInfo) {
+        return InstanceThreadStateRecord.createRecord(EInstanceThreadKind.INSTANCE, this, threadInfo, null, null, null, (RadixConnection) getConnection());
+    }
+    
+    final private RadixDataSource radixDataSource;
     final private String proxyOraUser;
     final private Connection dbConnection;
     final private int instanceId;

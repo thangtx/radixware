@@ -35,16 +35,22 @@ import org.radixware.kernel.common.defs.ads.src.clazz.presentation.AdsEditorPage
 import org.radixware.kernel.common.defs.ads.ui.AdsAbstractUIDef;
 import org.radixware.kernel.common.defs.ads.ui.AdsCustomPageEditorDef;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtCustomPageEditorDef;
+import org.radixware.kernel.common.defs.localization.ILocalizedDef;
+import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.*;
 import org.radixware.kernel.common.exceptions.DefinitionError;
+import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.radixdoc.DocumentOptions;
 import org.radixware.kernel.common.radixdoc.IRadixdocPage;
 import org.radixware.kernel.common.radixdoc.IRadixdocProvider;
 import org.radixware.kernel.common.radixdoc.RadixdocSupport;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.utils.RadixObjectsUtils;
 import org.radixware.schemas.adsdef.AbstractDialogDefinition;
 import org.radixware.schemas.adsdef.EditorPage;
+import org.radixware.schemas.adsdef.EditorPageItem;
+import org.radixware.schemas.adsdef.EditorPagePropertyGroup;
 import org.radixware.schemas.radixdoc.Page;
 
 public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSource, ICustomViewable<AdsEditorPageDef, AdsAbstractUIDef>, IOverridable<AdsEditorPageDef>, IOverwritable<AdsEditorPageDef>,
@@ -83,7 +89,7 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
         }
     }
 
-    public static final class PagePropertyRef extends RadixObject {
+    public final static class PagePropertyRef extends RadixObject {
 
         public static final class Factory {
 
@@ -94,27 +100,64 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
             public static PagePropertyRef newInstance(final Id id) {
                 return new PagePropertyRef(id, 0, 0);
             }
+            
+            public static PagePropertyRef copyPagePropertyRef(PagePropertyRef sourse) {
+                return new PagePropertyRef(sourse);
+            }
+            
+            public static PagePropertyRef loadFrom(EditorPageItem xProp) {
+                return new PagePropertyRef(xProp);
+            }
         }
+        
         private final Id id;
+        private final AdsProperiesGroupDef groupDef;
         private int col;
         private int row;
         private int colSpan = 1;
         private boolean glueToLeft;
         private boolean glueToRight;
-
+        
+        public PagePropertyRef(EditorPageItem xProp) {
+            if (xProp.getPropertyGroup() != null) {
+                this.groupDef = new AdsProperiesGroupDef(xProp.getPropertyGroup());
+                groupDef.setContainer(this);
+            } else {
+                this.groupDef = null;
+            }
+            this.id = xProp.isSetId()? xProp.getId(): null;
+            
+            this.col = xProp.getColumn();
+            this.row = xProp.getRow();
+            this.colSpan = xProp.getColSpan();
+            this.glueToLeft = xProp.getGlutToLeft();
+            this.glueToRight = xProp.getGlutToRight();
+            
+        }
+        
+        public PagePropertyRef(PagePropertyRef source) {
+            this.id = source.getId();
+            this.col = source.getColumn();
+            this.row = source.getRow();
+            this.groupDef = source.getGroupDef();
+            if (this.groupDef != null){
+                groupDef.setContainer(this);
+            }
+        }
+        
         public PagePropertyRef(Id id, int col, int row) {
             this.id = id;
             this.col = col;
             this.row = row;
+            this.groupDef = null;
         }
-
-        public PagePropertyRef(Id id, int col, int row, int colspan, boolean glutToLeft, boolean glutToRight) {
-            this.id = id;
+        
+        public PagePropertyRef(AdsProperiesGroupDef group, int col, int row) {
+            this.id = null;
             this.col = col;
             this.row = row;
-            this.colSpan = colspan;
-            this.glueToLeft = glutToLeft;
-            this.glueToRight = glutToRight;
+            this.groupDef = group;
+            groupDef.setContainer(this);
         }
 
         public Id getId() {
@@ -178,31 +221,76 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
             }
         }
 
-        public AdsDefinition findProperty() {
+        public AdsDefinition findItem() {
             final AdsEditorPageDef page = getOwnerEditorPageDef();
             if (page == null) {
                 return null;
             }
-            return page.getUsedProperties().getReference(id).findProperty();
+            if (id != null) {
+                return page.getUsedProperties().getReference(id).findProperty();
+            } else {
+                return groupDef;
+            }
         }
-
+        
         public String getReferencedPropertyName() {
-            final AdsDefinition def = findProperty();
+            final AdsDefinition def = findItem();
             return def == null ? "#" + id.toString() : def.getQualifiedName(this);
         }
 
-        private AdsEditorPageDef getOwnerEditorPageDef() {
-            return (AdsEditorPageDef) getOwnerDefinition();
+        public AdsEditorPageDef getOwnerEditorPageDef() {
+            return RadixObjectsUtils.findContainer(getContainer(), AdsEditorPageDef.class);
         }
+
+        protected synchronized void appendTo(EditorPageItem xProp, ESaveMode saveMode) {
+            if (this.id != null){
+                xProp.setId(id);
+            }
+            
+            if (this.groupDef != null){
+                EditorPagePropertyGroup xGroup = xProp.addNewPropertyGroup();
+                groupDef.appendTo(xGroup, saveMode);
+            }
+            
+            xProp.setRow(row);
+            xProp.setColumn(col);
+            if (colSpan > 1) {
+                xProp.setColSpan(colSpan);
+            }
+            if (glueToLeft) {
+                xProp.setGlutToLeft(true);
+            }
+            if (glueToRight) {
+                xProp.setGlutToRight(true);
+            }
+        }
+        
+        @Override
+        public void setContainer(RadixObject container) {
+            super.setContainer(container);
+        }
+
+        public AdsProperiesGroupDef getGroupDef() {
+            return groupDef;
+        }
+
+        @Override
+        public void visitChildren(IVisitor visitor, VisitorProvider provider) {
+            super.visitChildren(visitor, provider);
+            if (groupDef != null){
+                groupDef.visit(visitor, provider);
+            }
+        }
+
     }
 
-    public static final class Properties extends RadixObjects<PagePropertyRef> {
+    public static final class Properties extends RadixObjects<PagePropertyRef> implements IPagePropertyGroup{
 
         private Properties(AdsEditorPageDef container, EditorPage.Properties xDef) {
             this(container);
             if (xDef != null) {
-                for (EditorPage.Properties.Property xProp : xDef.getPropertyList()) {
-                    add(new PagePropertyRef(xProp.getId(), xProp.getColumn(), xProp.getRow(), xProp.getColSpan(), xProp.getGlutToLeft(), xProp.getGlutToRight()));
+                for (EditorPageItem xProp : xDef.getPropertyList()) {
+                    add(PagePropertyRef.Factory.loadFrom(xProp));
                 }
             }
         }
@@ -215,7 +303,18 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
             this(container);
             if (!source.isEmpty()) {
                 for (PagePropertyRef ref : source) {
-                    add(new PagePropertyRef(ref.getId(), ref.getColumn(), ref.getRow()));
+                    add(new PagePropertyRef(ref));
+                }
+            }
+        }
+
+        @Override
+        public void getIds(List<Id> ids) {
+            for (PagePropertyRef ref : this) {
+                if (ref.getId() != null) {
+                    ids.add(ref.getId());
+                } else if (ref.getGroupDef() != null){
+                    ref.getGroupDef().getIds(ids);
                 }
             }
         }
@@ -224,54 +323,61 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
             if (isEmpty()) {
                 return Collections.emptyList();
             } else {
-                final ArrayList<Id> ids = new ArrayList<>(size());
-                for (PagePropertyRef ref : this) {
-                    ids.add(ref.getId());
-                }
+                final ArrayList<Id> ids = new ArrayList<>();
+                getIds(ids);
                 return ids;
             }
         }
 
         boolean contains(final Id id) {
+            return deepContains(id, false);
+        }
+        
+        boolean deepContains(final Id id, boolean isDeep) {
             if (isEmpty()) {
                 return false;
             } else {
-
                 for (PagePropertyRef ref : this) {
                     if (ref.getId() == id) {
-                        return true;
+                            return true;
+                    } else {
+                        if (isDeep && ref.getGroupDef() != null){
+                            PagePropertyRef pageProperty = ref.getGroupDef().findItemById(id);
+                            if (pageProperty != null){
+                                return true;
+                            }
+                        }
                     }
                 }
                 return false;
             }
         }
 
-        private void appendTo(EditorPage xDef) {
+        private void appendTo(EditorPage xDef, ESaveMode saveMode) {
             if (!isEmpty()) {
                 final EditorPage.Properties xProps = xDef.addNewProperties();
                 for (PagePropertyRef ref : this) {
-                    final EditorPage.Properties.Property xProp = xProps.addNewProperty();
-                    xProp.setId(ref.id);
-                    xProp.setRow(ref.row);
-                    xProp.setColumn(ref.col);
-                    if (ref.colSpan > 1) {
-                        xProp.setColSpan(ref.colSpan);
-                    }
-                    if (ref.glueToLeft) {
-                        xProp.setGlutToLeft(true);
-                    }
-                    if (ref.glueToRight) {
-                        xProp.setGlutToRight(true);
-                    }
+                    ref.appendTo(xProps.addNewProperty(), saveMode);
                 }
             }
         }
 
-        public PagePropertyRef findByPropId(Id id) {
+        @Override
+        public PagePropertyRef findItemById(Id id) {
             synchronized (this) {
                 for (PagePropertyRef ref : this) {
                     if (ref.getId() == id) {
                         return ref;
+                    } else if (ref.getGroupDef() != null) {
+                        AdsProperiesGroupDef group = ref.getGroupDef();
+                        if (group.getId() == id) {
+                            return ref;
+                        } else {
+                            PagePropertyRef pageProperty = group.findItemById(id);
+                            if (pageProperty != null) {
+                                return pageProperty;
+                            }
+                        }
                     }
                 }
                 return null;
@@ -280,7 +386,7 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
 
         public boolean removeByPropId(Id id) {
             synchronized (this) {
-                PagePropertyRef ref = findByPropId(id);
+                PagePropertyRef ref = findItemById(id);
                 if (ref == null) {
                     return false;
                 } else {
@@ -291,7 +397,7 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
 
         public PagePropertyRef addPropId(Id id) {
             synchronized (this) {
-                PagePropertyRef ref = findByPropId(id);
+                PagePropertyRef ref = findItemById(id);
                 if (ref != null) {
                     return ref;
                 } else {
@@ -305,6 +411,29 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
             }
         }
 
+        @Override
+        public PagePropertyRef addGroup(AdsProperiesGroupDef group) {
+            PagePropertyRef ref = new PagePropertyRef(group, 0, 0);
+            synchronized (this) {
+                int row = getAutoRowNumver(0);
+                add(ref);
+                ref.setColumn(0);
+                ref.setRow(row);
+                return ref;
+            }
+        }
+        
+        
+        @Override
+        public boolean removeGroup(AdsProperiesGroupDef group) {
+            PagePropertyRef ref = group.getOwnerRef();
+            if (ref != null) {
+                return remove(ref);
+            }
+            return false;
+        }
+       
+        @Override
         public int getColumnCount() {
             int minColumn = -1;//changed by yremizov, old code: int minColumn = 0;
             for (PagePropertyRef ref : this) {
@@ -315,6 +444,7 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
             return minColumn + 1;
         }
 
+        @Override
         public int getRowCount() {
             int minRow = -1;//changed by yremizov, old code: int minRow = 0;
             for (PagePropertyRef ref : this) {
@@ -340,12 +470,24 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
             }
             return 0;
         }
+        
+        public List<AdsProperiesGroupDef> getProperiesGroups(){
+            List<AdsProperiesGroupDef> result = new ArrayList<>();
+            for(PagePropertyRef ref : this){
+                if (ref.getGroupDef() != null){
+                    AdsProperiesGroupDef group = ref.getGroupDef();
+                    result.add(group);
+                    group.collectProperiesGroups(result);
+                }
+            }
+            return result;
+        }
 
         @Override
         public void collectDependences(List<Definition> list) {
             super.collectDependences(list);
             for (PagePropertyRef ref : this) {
-                final AdsDefinition def = ref.findProperty();
+                final AdsDefinition def = ref.findItem();
                 if (def != null) {
                     list.add(def);
                 }
@@ -650,7 +792,7 @@ public class AdsEditorPageDef extends AdsPresentationsMember implements IJavaSou
             xDef.setIconId(iconId);
         }
         if (type == EEditorPageType.STANDARD) {
-            properties.appendTo(xDef);
+            properties.appendTo(xDef, saveMode);
         }
 //        if (customViewId != null) {
 //            xDef.setCustomEditorId(customViewId);

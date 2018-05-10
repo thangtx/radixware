@@ -16,6 +16,7 @@
  */
 package org.radixware.kernel.common.design.msdleditor.field.panel;
 
+import org.radixware.kernel.common.msdl.MsdlPreprocessorAccessAas;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -46,6 +47,7 @@ public class TestPanel extends javax.swing.JPanel {
     private static final String ARRAY_KEY = "Array";
     private static final String XML_KEY = "Xml";
     private static final String IS_HEX_KEY = "IsHex";
+    private static final String AAS_ADDRESS_KEY = "AasAddress";
     private static final String DIVIDER_POS = "DividerPos";
     AbstractFieldModel fieldModel;
     TestDialog owner;
@@ -66,6 +68,7 @@ public class TestPanel extends javax.swing.JPanel {
                     Preferences dialog = editorPreferences.node(TESTDIALOG_KEY);
                     if (dialog.nodeExists(TESTPARAM_KEY)) {
                         Preferences param = dialog.node(TESTPARAM_KEY);
+                        hexEditor1.setAasAddress(param.get(AAS_ADDRESS_KEY, null));
                         String ns = fieldModel.getRootMsdlScheme().getNamespace();
                         if (ns != null && !ns.equals("")) {
                             String ns1 = ns.replace("//","_");
@@ -101,6 +104,7 @@ public class TestPanel extends javax.swing.JPanel {
         Preferences editorPreferences = Preferences.userRoot().node(PREFERENCES_KEY);
         Preferences dialog = editorPreferences.node(TESTDIALOG_KEY);
         Preferences param = dialog.node(TESTPARAM_KEY);
+        param.put(AAS_ADDRESS_KEY, hexEditor1.getAasAddress() != null ? hexEditor1.getAasAddress() : "");
         String ns = fieldModel.getRootMsdlScheme().getNamespace();
         if (ns != null && !ns.equals("")) {
             String ns1 = ns.replace("//","_");
@@ -162,6 +166,21 @@ public class TestPanel extends javax.swing.JPanel {
         restoreCfg();
         xmlEditor1.resetStatus();
         SwingUtilities.getRootPane(this).setDefaultButton(jButtonClose);
+    }
+    
+    private void initPreprocessorAccess() {
+        try {
+            if (fieldModel.getRootMsdlScheme().getPreprocessorClassGuid() != null && hexEditor1.getAasAddress() != null) {
+                fieldModel.getRootMsdlScheme().setPreprocessorAccess(
+                        new MsdlPreprocessorAccessAas(
+                                fieldModel.getRootMsdlScheme().getPreprocessorClassGuid(),
+                                hexEditor1.getAasAddress()));
+            } else {
+                fieldModel.getRootMsdlScheme().setPreprocessorAccess(null);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(TestPanel.class.getName()).log(Level.SEVERE, "Error on create msdl preprocessor access.", ex);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -294,6 +313,7 @@ public class TestPanel extends javax.swing.JPanel {
                 return;
             }
             DataSourceByteBuffer dsbf = new DataSourceByteBuffer(from);
+            initPreprocessorAccess();
             fieldModel.getParser().parse(obj, dsbf);
             //RADIX-5111
             //JOptionPane.showMessageDialog(owner, "String sucessfully converted to xml");
@@ -330,6 +350,7 @@ public class TestPanel extends javax.swing.JPanel {
         boolean fail = true;
         try {
             xmlEditor1.resetStatus();
+            initPreprocessorAccess();
             ByteBuffer res = fieldModel.getParser().merge(getXml());
             setArray(ParseUtil.extractByteBufferContent(res));
             fail = false;

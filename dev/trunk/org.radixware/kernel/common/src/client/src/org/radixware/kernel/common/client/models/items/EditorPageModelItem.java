@@ -20,7 +20,9 @@ import java.util.List;
 
 import java.lang.ref.WeakReference;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.errors.CantLoadCustomViewError;
 import org.radixware.kernel.common.client.exceptions.ClientException;
@@ -41,7 +43,6 @@ import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
-import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
 
@@ -58,7 +59,8 @@ public final class EditorPageModelItem extends ModelItem {
     private Icon icon;
     private List<EditorPageModelItem> childPages = null;
     private List<Property> properties = null;
-    private List<Property> userProperties = new ArrayList<>();
+    private List<PropertiesGroupModelItem> propertyGroups = null;
+    private List<Property> userProperties = new ArrayList<>();    
 
     @SuppressWarnings("UseSpecificCatch")
     public EditorPageModelItem(final ModelWithPages owner, final RadEditorPageDef page) {
@@ -166,16 +168,54 @@ public final class EditorPageModelItem extends ModelItem {
     }
 
     public boolean isVisible() {
-        return visible && !restricted;
+        return visible && !restricted && hasVisibleContent();
+    }    
+    
+    private boolean hasVisibleContent(){
+        if (def instanceof RadStandardEditorPageDef){
+            for (Property property: getProperties()){
+                if (property.isVisible()){
+                    return true;
+                }
+            }
+            for (EditorPageModelItem childPage: getChildPages()){
+                if (childPage.isVisible()){
+                    return true;
+                }
+            }
+            for (PropertiesGroupModelItem childGroup: getPropertyGroups()){
+                if (childGroup.isVisible()){
+                    return true;
+                }
+            }
+            return false;
+        }else{
+            return true;
+        }
     }
 
     public RadEditorPageDef getDefinition() {
         return def;
     }
 
-    public void setVisible(boolean visible) {
+    public void setVisible(boolean visible) {        
+        final boolean oldVisibility = isVisible();
+        final List<EditorPageModelItem> parentPages = getParentPages();
+        /*final Map<Id,Boolean> parentPagesVisibility = new HashMap<>();
+        for (EditorPageModelItem parentPage: parentPages){
+            parentPagesVisibility.put(parentPage.getId(), parentPage.isVisible());
+        } */       
         this.visible = visible;
-        afterModify();
+        if (oldVisibility!=isVisible()){
+            afterModify();
+            for (int i=parentPages.size()-1; i>=0; i--){
+                parentPages.get(i).afterModify();
+                /*final EditorPageModelItem parentPage = parentPages.get(i);
+                if (parentPage.isVisible()!=parentPagesVisibility.get(parentPage.getId()).booleanValue()){
+                    parentPage.afterModify();
+                }*/
+            }
+        }
     }
 
     public IEditorPageWidget getEditorPageWidget() {
@@ -186,21 +226,16 @@ public final class EditorPageModelItem extends ModelItem {
         if (properties == null) {
             properties = new ArrayList<>();
             if (def instanceof RadStandardEditorPageDef) {
-//                final List<Id> items = new ArrayList<Id>();
                 final RadStandardEditorPageDef pageDef = (RadStandardEditorPageDef) def;
                 final Collection<RadStandardEditorPageDef.PageItem> pageItems =
                         pageDef.getRootPropertiesGroup().getPageItems();
                 Property property;
                 for (RadStandardEditorPageDef.PageItem item : pageItems) {
-                    if (item.getItemId().getPrefix() != EDefinitionIdPrefix.ADS_PROPERTY_GROUP && 
+                    if (item.getItemId().getPrefix() != EDefinitionIdPrefix.EDITOR_PAGE_PROP_GROUP && 
                         owner.getDefinition().isPropertyDefExistsById(item.getItemId())
                        ) {
                         property = owner.getProperty(item.getItemId());
-                        if (!(owner instanceof EntityModel) || ((EntityModel) owner).isExists()
-                                || property.getDefinition().getType() != EValType.OBJECT)//ignore object properties when new entity
-                        {
-                            properties.add(property);
-                        }
+                        properties.add(property);
                     }
                 }
             }
@@ -209,7 +244,7 @@ public final class EditorPageModelItem extends ModelItem {
         result.addAll(properties);
         result.addAll(userProperties);
         return Collections.unmodifiableList(result);
-    }
+    }        
 
     public final void addProperty(final Id propertyId) {
         final Property property = owner.getProperty(propertyId);
@@ -254,16 +289,14 @@ public final class EditorPageModelItem extends ModelItem {
         } else {
             pageView = getEnvironment().getApplication().getStandardViewsFactory().newStandardEditorPage(getEnvironment(), parentView, def);
         }
+        pageView.setObjectName("rx_editor_page_view_#"+getId().toString());
         viewRef = new WeakReference<>(pageView);
-        return pageView;        
+        return pageView;
     }
 
     public IEditorPageView getView() {
-        if (viewRef == null || viewRef.get() == null || !viewRef.get().hasUI()) {
-            return null;
-        } else {
-            return viewRef.get();
-        }
+        final IEditorPageView pageView = viewRef == null ? null : viewRef.get();
+        return pageView==null || !pageView.hasUI() ? null : pageView;
     }
 
     void disposeView() {
@@ -314,6 +347,25 @@ public final class EditorPageModelItem extends ModelItem {
         return Collections.unmodifiableList(childPages);
     }
     
+    public Collection<PropertiesGroupModelItem> getPropertyGroups(){
+        if (propertyGroups==null){
+            propertyGroups = new ArrayList<>();
+            if (def instanceof RadStandardEditorPageDef) {
+                final RadStandardEditorPageDef pageDef = (RadStandardEditorPageDef) def;
+                final Collection<RadStandardEditorPageDef.PageItem> pageItems =
+                        pageDef.getRootPropertiesGroup().getPageItems();
+                RadStandardEditorPageDef.PropertiesGroup groupDef;
+                for (RadStandardEditorPageDef.PageItem item : pageItems) {
+                    if (item.getItemId().getPrefix() == EDefinitionIdPrefix.EDITOR_PAGE_PROP_GROUP
+                        && getOwner().isPropertiesGroupExists(item.getItemId())) {
+                        propertyGroups.add(getOwner().getPropertiesGroup(item.getItemId()));
+                    }
+                }
+            }
+        }
+        return Collections.unmodifiableList(propertyGroups);
+    }
+    
     public boolean isAccessible() throws ServiceClientException, InterruptedException {
         if(def instanceof RadContainerEditorPageDef){
             //Для страниц-контейнеров проверяем, что владелец - существующая entity
@@ -338,10 +390,21 @@ public final class EditorPageModelItem extends ModelItem {
     }
     
     public void setRestricted(final boolean isRestricted){
+        final List<EditorPageModelItem> parentPages = getParentPages();
+        final Map<Id,Boolean> parentPagesVisibility = new HashMap<>();
+        for (EditorPageModelItem parentPage: parentPages){
+            parentPagesVisibility.put(parentPage.getId(), parentPage.isVisible());
+        }        
         final boolean oldVisibility = isVisible();
         restricted = isRestricted;
         if (oldVisibility!=isVisible()){
             afterModify();
+            for (int i=parentPages.size()-1; i>=0; i--){
+                final EditorPageModelItem parentPage = parentPages.get(i);
+                if (parentPage.isVisible()!=parentPagesVisibility.get(parentPage.getId()).booleanValue()){
+                    parentPage.afterModify();
+                }
+            }            
         }
     };        
 
@@ -394,9 +457,15 @@ public final class EditorPageModelItem extends ModelItem {
             parentPage = editorPages.getParentPageById(parentPage.getId());
         }
         return parentPages;
-    }
+    }    
     
     private EditorPageModelItem getEditorPageModelItem(final Id pageId){
         return getOwner().getEditorPage(pageId);
+    }
+    
+    public EditorPageModelItem getParentPage(){
+        final RadEditorPages editorPages = ((IEditorPagesHolder)owner.getDefinition()).getEditorPages();
+        final RadEditorPageDef parentPage = editorPages.getParentPageById(getId());
+        return parentPage==null ? null : getEditorPageModelItem(parentPage.getId());
     }
 }

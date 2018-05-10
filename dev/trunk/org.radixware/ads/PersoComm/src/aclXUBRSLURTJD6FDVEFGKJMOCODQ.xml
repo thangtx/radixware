@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:edit="http://schemas.radixware.org/editmask.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aclXUBRSLURTJD6FDVEFGKJMOCODQ" Name="Unit.Channel.Wns" Type="2">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaclXUBRSLURTJD6FDVEFGKJMOCODQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaclXUBRSLURTJD6FDVEFGKJMOCODQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgZPHJID5WKRD7LJ4AHHF3NDWYME" Name="Root"/>
+    <PropertyGroup Id="cpgMMCJDY3J2FEJBFITSNGQTDDF6A" Name="Root"/>
+    <Properties>
+      <Property Id="colCS76OB3OTNFKPEVX7KUMX4KSGQ" Name="wnsClientId" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colDOMJ5BIHIRDLBBZX6CMS5BL5OA" DetailRefId="refLJSTGVRFVLOBDCLSAALOMT5GDM">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mls7KWBYK5I3NF5XM7RIFLA4DA76A" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colEXHLUMSNPNDZHPAOHQSR42QJO4" Name="wnsClientSecret" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colD4FMZZ5MN5EZ5LB6Y366GDNJ2I" DetailRefId="refLJSTGVRFVLOBDCLSAALOMT5GDM">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsJKXKKNZGXBEJZHIU7LSULSZWDQ" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Str IsPassword="true" MaxLength="400" AllowEmptyString="false" Mask="" NoBlankCharacter="false"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mthD77F2HBL2FGSVPJHR3SEAMPWMA" Name="afterInit" Nature="0" IsOverride="true">
+        <AccessRules Access="1" IsPublished="false"/>
+        <Parameters>
+          <Parameter Name="src" Id="mprYZM7BYAKUZH4VJIINN7HMCWFVQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="phase" Id="mprXEM4NGHHZ5F5LMIP3Z7IRJJTL4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E mthD77F2HBL2FGSVPJHR3SEAMPWMA" Invoke="true">
+                <xsc:Presentation>afterInit</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src, phase);
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM col62V3FXUDVTOBDCLTAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>kind</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsZ5EEISSCVXOBDCLUAALOMT5GDM aciFY4JJPNTENBNHOR3A5UCTXOLOU" Invoke="true">
+                <xsc:Presentation>ChannelKind:WNS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aec5HP4XTP3EGWDBRCRAAIT4AGD7E colEWJT6TIHR5VDBNSIAAUMFADAIA" Invoke="true">
+                <xsc:Presentation>type</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsLSG35D4GIHNRDJIEACQMTAIZT4 aciT53W4KQ7PJB7FGUSO3VKPZ5WKE" Invoke="true">
+                <xsc:Presentation>System::UnitType:DPC_WNS</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM colXJZDYDMEVTOBDCLTAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>sendAddress</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = "&lt;not used>";
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclVCLH3TEDVTOBDCLTAALOMT5GDM colXNZDYDMEVTOBDCLTAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>recvAddress</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = "&lt;not used>";</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E"/>
+    <Presentations ObjectTitleId="mls6SZPPJRFVFA2BD72G4FZO5MCQU">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccKOGFFVPJAHOBDA26AAMPGXSZKU" Name="Default">
+          <ClassRef TopicId="cctC4I7K35XCFFEDEJ4E3TVGTP4G4" Order="165.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprPWFGYPTR5FD4RE3U6RK6ZNPMGQ" Name="Edit" BasePresentationId="eprGVZBTVH6VXOBDCLVAALOMT5GDM" InheritanceMask="36016" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprXCFCDDGTRHNRDB5MAALOMT5GDM" RightsSourceId="eprGVZBTVH6VXOBDCLVAALOMT5GDM" ClientEnvironment="explorer">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgRTEJ2K77VXOBDCLVAALOMT5GDM" Name="Channel" TitleId="mlsXSBXL5LJXRFYVPWIIYAB5NHMXI" Type="1">
+              <Properties>
+                <Property Id="col62V3FXUDVTOBDCLTAALOMT5GDM" Row="0" Column="0"/>
+                <Property Id="colXVZDYDMEVTOBDCLTAALOMT5GDM" Row="5" Column="0"/>
+                <Property Id="colXBZDYDMEVTOBDCLTAALOMT5GDM" Row="6" Column="0"/>
+                <Property Id="col7HPHZW2DJRHVJEYJSANRF7CASM" Row="3" Column="0"/>
+                <Property Id="col4TIXFUZ7YNDYPDT5MVYA5XWERA" Row="4" Column="0"/>
+                <Property Id="colXRZDYDMEVTOBDCLTAALOMT5GDM" Row="7" Column="0"/>
+                <Property Id="pruZYMZD3ODGNDZZDU2Q746Q65XXE" Row="9" Column="0"/>
+                <Property Id="colDCFB4V6V7VC47GPA5WGBSCKPWA" Row="8" Column="0"/>
+                <Property Id="colC7GIBM6CVJDIXB2MCZKYXAAEJI" Row="10" Column="0"/>
+                <Property Id="colCS76OB3OTNFKPEVX7KUMX4KSGQ" Row="1" Column="0"/>
+                <Property Id="colEXHLUMSNPNDZHPAOHQSR42QJO4" Row="2" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgOCDVZAOTBXOBDNTPAAMPGXSZKU" Level="1"/>
+              <Item PageId="epgRTEJ2K77VXOBDCLVAALOMT5GDM" Level="1"/>
+              <Item PageId="epgUJB2RCH6KZHD5IMTQTE76DQSZA" Level="1"/>
+              <Item PageId="epgJ4BHY7HBLBBBXIIQZEPCKTW2MU" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfUIKSI2V6M5HPVP6U454SQQ4LYM"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprDSYGBLVXMBCT7NRC7V7Y2JPHRE" Name="Create" BasePresentationId="eprPWFGYPTR5FD4RE3U6RK6ZNPMGQ" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprS6PW3X2EKJFUNPGCXYDBACXY7A" ClientEnvironment="explorer">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfN76QCKK4I5AILORV45ETZZ4KNA"/>
+        </EditorPresentation>
+      </EditorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="aclUSOKQ66VW5AO3GE7FKEPHT6VDY"/>
+  </AdsClassDefinition>
+</AdsDefinition>

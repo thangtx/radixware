@@ -183,8 +183,8 @@ public class StackTraceDialog extends ExplorerDialog {
                 JmlEditor editor = ufLocator.getEditorIfAny();
                 final IPidGetter externalFuncLookuper = this.pidGetter;
 
-                editor = ufLocator.getEditorIfAny();
-                if (editor != null && item.id == editor.getUserFuncPid()) {
+                final boolean searchInCurEditor = editor != null && (ufLocator.considerUserFuncIdOnSearch() ? item.id == editor.getUserFuncPid() : true);
+                if (searchInCurEditor) {
                     userFunc = editor.getUserFunc();
                 } else {
                     if (switchToContext(item.id, null, new JmlEditor.IPostOpenAction() {
@@ -324,24 +324,23 @@ public class StackTraceDialog extends ExplorerDialog {
         }
 
         private int getLineNumber(final String string) {
-            final int lparen = string.indexOf('(');
-            if (lparen < 0) {
-                return -1;
-            }
-            final int javaMarker = string.indexOf(".java", lparen + 1);
+            final int javaMarker = string.indexOf(".java:");
             if (javaMarker < 0) {
                 return -1;
             }
-            final int colon = string.indexOf(":", javaMarker + 1);
-            if (colon < 0) {
+            final int lineNumStart = javaMarker + ".java:".length();
+            int lineNumEnd = lineNumStart;
+            for (int pos = lineNumStart; pos < string.length(); pos++) {
+                if (Character.isDigit(string.charAt(pos))) {
+                    lineNumEnd++;
+                } else {
+                    break;
+                }
+            }
+            if (lineNumStart == lineNumEnd) {
                 return -1;
             }
-            final int rparen = string.indexOf(")", colon + 1);
-            if (rparen < 0) {
-                return -1;
-            }
-            final String lineNumberStr = string.substring(colon + 1, rparen);
-            return Integer.decode(lineNumberStr);
+            return Integer.parseInt(string.substring(lineNumStart, lineNumEnd));
         }
 
         public Object getElementAt(final int index) {

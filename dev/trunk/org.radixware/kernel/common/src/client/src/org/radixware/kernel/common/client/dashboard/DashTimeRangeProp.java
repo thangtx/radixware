@@ -74,17 +74,43 @@ public class DashTimeRangeProp implements IDashInheritableProp {
     private void setPeriod(double res, int timeUnit) {
         if (!(Double.compare(res, Math.round(res)) == 0)) {
             if (timeUnit == Calendar.HOUR) {
-                period = (int) (res * 60 * 60 * 1000);
+                res = (int) Math.round(res * 60);
+                timeUnit = Calendar.MINUTE;
             } else if (timeUnit == Calendar.MINUTE) {
-                period = (int) (res * 60 * 1000);
+                res = (int) Math.round(res * 60);
+                timeUnit = Calendar.SECOND;
             } else if (timeUnit == Calendar.SECOND) {
-                period = (int) (res * 1000);
+                res = 1;
             }
-            periodUnit = Calendar.MILLISECOND;
-        } else {
-            period = (int) res;
-            periodUnit = timeUnit;
+        } else if (timeUnit == Calendar.MILLISECOND) {
+            final int[] periodAndUnit = getPeriodAndUnitForMillis(Math.round(res));
+            res = periodAndUnit[0];
+            timeUnit = periodAndUnit[1];
         }
+        period = (int) res;
+        periodUnit = timeUnit;
+    }
+    
+    public static int[] getPeriodAndUnitForMillis(long millis) {
+        final int seconds = (int) (millis / 1000);
+        final int minutes = seconds / 60;
+        final int hours = minutes / 60;
+        final int period;
+        final int unit;
+        if (hours > 0) {
+            period = hours;
+            unit = Calendar.HOUR;
+        } else if (minutes > 0) {
+            period = minutes;
+            unit = Calendar.MINUTE;
+        } else if (seconds > 0) {
+            period = seconds;
+            unit = Calendar.SECOND;
+        } else {
+            period = 1;
+            unit = Calendar.SECOND;
+        }
+        return new int[]{period, unit};
     }
     
     public long getLastSeconds() {

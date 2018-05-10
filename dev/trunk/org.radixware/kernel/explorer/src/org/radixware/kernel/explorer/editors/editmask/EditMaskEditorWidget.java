@@ -44,6 +44,7 @@ import org.radixware.kernel.common.client.widgets.IEditMaskEditor;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.editmask.EditMaskTimeInterval.Scale;
 import org.radixware.kernel.common.enums.EEditMaskType;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.explorer.editors.editmask.booleditor.BoolEditMaskEditorWidget;
 import org.radixware.kernel.explorer.editors.editmask.consteditor.ConstSetEditMaskEditorWidget;
 import org.radixware.kernel.explorer.editors.editmask.datetimeeditor.DateTimeEditMaskEditorWidget;
 import org.radixware.kernel.explorer.editors.editmask.inteditor.IntEditMaskEditorWidget;
@@ -150,7 +151,9 @@ public final class EditMaskEditorWidget extends ExplorerWidget implements IEditM
             case LIST:
                 throw new UnsupportedOperationException("Unsupported for LIST. Use newEditMaskEditor(IClientEnvironment, IWidget, EValType)");
             case BOOL:
-                throw new UnsupportedOperationException("Unsupported for BOOL. Use newEditMaskEditor(IClientEnvironment, IWidget, EValType)");
+                widget = new BoolEditMaskEditorWidget(environment, this);
+                defaultMask = new EditMaskBool();
+                break;
             case OBJECT_REFERENCE:
                 throw new UnsupportedOperationException("Unsupported for OBJECT_REFERENCE. Use newEditMaskEditor(IClientEnvironment, IWidget, EValType)");
             default:
@@ -190,7 +193,7 @@ public final class EditMaskEditorWidget extends ExplorerWidget implements IEditM
         } else if (editMask instanceof EditMaskConstSet) {
             widget = findChild(ConstSetEditMaskEditorWidget.class);
         } else if (editMask instanceof EditMaskBool) {
-            widget = null;//findChild(BoolEditMaskEditorWidget.class);
+            widget = findChild(BoolEditMaskEditorWidget.class);
         } else if (editMask instanceof EditMaskFilePath) {
             widget = null;
         } else if (editMask instanceof EditMaskRef) {
@@ -433,5 +436,9 @@ public final class EditMaskEditorWidget extends ExplorerWidget implements IEditM
                 cbMaskTypeSelector.setCurrentIndex(maskContainer.currentIndex() + 1);
             }
         }
+    }
+    
+    public boolean isDefaultEditMaskUsed() {
+        return isDefaultMaskUsed;
     }
 }

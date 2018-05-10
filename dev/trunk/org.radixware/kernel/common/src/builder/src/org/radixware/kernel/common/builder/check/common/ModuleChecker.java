@@ -22,8 +22,10 @@ import org.radixware.kernel.common.defs.IVisitor;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.VisitorProviderFactory;
+import org.radixware.kernel.common.defs.ads.build.BuildOptions;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.uds.module.UdsModule;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.kernel.KernelModule;
 import org.radixware.kernel.common.types.Id;
 
@@ -36,6 +38,8 @@ public abstract class ModuleChecker<T extends Module> extends DefinitionChecker<
     @Override
     public void check(T module, IProblemHandler problemHandler) {
         super.check(module, problemHandler);
+        Layer l = module.getLayer();
+        boolean isLocalizing = l != null && l.isLocalizing();
 
         boolean istest = module.isTest();
         for (Dependence dependence : module.getDependences()) {
@@ -44,9 +48,10 @@ public abstract class ModuleChecker<T extends Module> extends DefinitionChecker<
             if (deps.isEmpty()) {
                 error(module, problemHandler, "Dependence module(s) not found: #" + dependence.getDependenceModuleId());
             } else {
-                if (!(module instanceof UdsModule) && !module.isWarningSuppressed(Module.ModuleWarningSuppressionSupport.DEPENDS_FROM_TEST_MODULE)) {
+                if (!isLocalizing && !(module instanceof UdsModule) && !module.isWarningSuppressed(Module.ModuleWarningSuppressionSupport.DEPENDS_FROM_TEST_MODULE)) {
+                    boolean isUserDefEnv = BuildOptions.UserModeHandlerLookup.getUserModeHandler() != null;
                     for (Module dep : deps) {
-                        if (dep.isTest() && !istest) {
+                        if (dep.isTest() && !istest && !isUserDefEnv) {
                             warning(module, problemHandler, Module.ModuleWarningSuppressionSupport.DEPENDS_FROM_TEST_MODULE, dep.getQualifiedName());
                         }
                     }
@@ -86,20 +91,23 @@ public abstract class ModuleChecker<T extends Module> extends DefinitionChecker<
             }
         }, VisitorProviderFactory.createDefaultVisitorProvider());
         //Set<Id> currentDeps = module.getDependences().getModuleIds();
-        for (Dependence dep : module.getDependences()) {
-            if (dep.isForced()) {
-                continue;
-            }
-            final Id id = dep.getDependenceModuleId();
-            if (!actualDeps.contains(id)) {
+        Layer layer = module.getLayer();
+        if (layer == null || !layer.isLocalizing()) {
+            for (Dependence dep : module.getDependences()) {
+                if (dep.isForced()) {
+                    continue;
+                }
+                final Id id = dep.getDependenceModuleId();
+                if (!actualDeps.contains(id)) {
 
-                final List<Module> ms = module.getDependences().findModuleById(id);
-                for (Module m : ms) {
-                    if ((module instanceof AdsModule && ((AdsModule) module).isCompanionOf(m)) || m instanceof KernelModule) {
-                        continue;
+                    final List<Module> ms = module.getDependences().findModuleById(id);
+                    for (Module m : ms) {
+                        if ((module instanceof AdsModule && ((AdsModule) module).isCompanionOf(m)) || m instanceof KernelModule) {
+                            continue;
+                        }
+                        final String message = "Unused dependency: " + (m == null ? "#" + id : m.getQualifiedName());
+                        warning(module, ph, message);
                     }
-                    final String message = "Unused dependency: " + (m == null ? "#" + id : m.getQualifiedName());
-                    warning(module, ph, message);
                 }
             }
         }

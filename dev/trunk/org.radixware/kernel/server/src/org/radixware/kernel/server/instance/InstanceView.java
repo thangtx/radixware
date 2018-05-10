@@ -12,6 +12,7 @@ package org.radixware.kernel.server.instance;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -26,10 +27,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import org.apache.commons.logging.LogFactory;
 
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.SystemTools;
 import org.radixware.kernel.server.Server;
+import org.radixware.kernel.server.SrvRunParams;
 import org.radixware.kernel.server.instance.arte.ArtesPanel;
 import org.radixware.kernel.server.widgets.TraceView;
 import org.radixware.kernel.starter.radixloader.RadixLoader;
@@ -40,12 +43,31 @@ import org.radixware.kernel.starter.radixloader.RadixLoader;
  */
 public final class InstanceView {
 
+    static {
+        System.setProperty("suppressSwingDropSupport", "true");
+    }
+
     private final Instance instance;
     private volatile InstanceController controller;
     private volatile TraceView traceList;
+    private volatile ViewUnitsPanel viewUnitsPanel;
     private volatile JFrame frame;
     private volatile ArtesPanel artesPanel;
     private static final Dimension MIN_SIZE = new Dimension(300, 350);
+    volatile boolean disposing = false;
+
+    private final Runnable disposeFrameRunnable = new Runnable() {
+        @Override
+        public void run() {
+            final Frame[] allFrames = Frame.getFrames();
+            if (allFrames != null) {
+                for (Frame f : allFrames) {
+                    f.dispose();
+                }
+            }
+            Server.returnFromMain();
+        }
+    };
 
     static InstanceView newInstanceView(final Instance model) {
         //use factory method to prevent unconstructed this escape
@@ -66,22 +88,24 @@ public final class InstanceView {
 
     private void createFrame() {
         frame = new JFrame();
+        int pid = -1;
+        try {
+            pid = org.radixware.kernel.starter.utils.SystemTools.getCurrentProcessPid();
+        } catch (Exception ex) {
+        }
+        final String titleSuffix = (pid >= 0 ? " (PID: " + pid + ")" : "") + " | " + SrvRunParams.getUser() + " (schema " + SrvRunParams.getDbSchema() + ") on " + SrvRunParams.getDbUrl();
         instance.registerListener(new InstanceListener() {
             @Override
             public void stateChanged(final Instance unit, final InstanceState oldState, final InstanceState newState) {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
+
                         if (instance.getState() == InstanceState.STARTED) {
-                            String pidPart = "";
-                            try {
-                                pidPart = " (PID: " + org.radixware.kernel.starter.utils.SystemTools.getCurrentProcessPid() + ")";
-                            } catch (Exception ex) {
-                                //ignore
-                            }
-                            frame.setTitle(instance.getFullTitle() + " [" + RadixLoader.getInstance().getTopLayerUrisAsString() + "]" + pidPart);
+
+                            frame.setTitle(instance.getFullTitle() + " [" + RadixLoader.getInstance().getTopLayerUrisAsString() + "]" + titleSuffix);
                         } else if (instance.getState() == InstanceState.STOPPED) {
-                            frame.setTitle(Messages.TITLE_INSTANCE);
+                            frame.setTitle(Messages.TITLE_INSTANCE + titleSuffix);
                         }
                     }
                 });
@@ -96,7 +120,7 @@ public final class InstanceView {
         frame.setSize(MIN_SIZE);
         frame.setLocationRelativeTo(null);//center window   
         InstanceConfigStore.restoreMainWindowBounds(frame);
-        frame.setTitle(Messages.TITLE_INSTANCE);
+        frame.setTitle(Messages.TITLE_INSTANCE + titleSuffix);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         //ContentPane
@@ -116,7 +140,8 @@ public final class InstanceView {
         //tabs
         tabs = new JTabbedPane();
         tabs.addTab(Messages.TAB_TRACE, traceList);
-        tabs.addTab(Messages.TAB_UNITS, ViewUnitsPanel.newViewUnitsPanel(instance));
+        viewUnitsPanel = ViewUnitsPanel.newViewUnitsPanel(instance);
+        tabs.addTab(Messages.TAB_UNITS, viewUnitsPanel);
         artesPanel = new ArtesPanel(instance);
         tabs.addTab(Messages.TAB_ARTE_POOL, artesPanel);
         contentPane.add(tabs);
@@ -144,7 +169,10 @@ public final class InstanceView {
     InstanceController getController() {
         return controller;
     }
-    volatile boolean disposing = false;
+
+    public boolean isDisposing() {
+        return disposing;
+    }
 
     public void dispose() {
         synchronized (disposeSem) {// ����� ���������� � ���������� ����� � ��������
@@ -153,11 +181,26 @@ public final class InstanceView {
             }
             disposing = true;
         }
-        if (traceList != null) {
-            traceList.close();
+        try {
+            if (traceList != null) {
+                traceList.close();
+            }
+        } catch (Exception ex) {
+            LogFactory.getLog(InstanceView.class).warn("Exception while closing trace list", ex);
         }
-        if (artesPanel != null) {
-            artesPanel.stop();
+        try {
+            if (artesPanel != null) {
+                artesPanel.stop();
+            }
+        } catch (Exception ex) {
+            LogFactory.getLog(InstanceView.class).warn("Exception while closing ARTEs panel", ex);
+        }
+        try {
+            if (viewUnitsPanel != null) {
+                viewUnitsPanel.stop();
+            }
+        } catch (Exception ex) {
+            LogFactory.getLog(InstanceView.class).warn("Exception while closing units panel", ex);
         }
         try {
             InstanceConfigStore.storeMainWindowBounds(frame);
@@ -168,13 +211,7 @@ public final class InstanceView {
                 JOptionPane.showMessageDialog(frame, Messages.ERR_CANT_SAVE_CFG + ExceptionTextFormatter.getExceptionMess(e), Messages.TITLE_ERROR, JOptionPane.ERROR_MESSAGE);
             }
         } finally {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    frame.dispose();
-                    Server.returnFromMain();
-                }
-            });
+            SwingUtilities.invokeLater(disposeFrameRunnable);
         }
     }
     private final Object disposeSem = new Object();

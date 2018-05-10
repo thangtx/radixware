@@ -150,12 +150,20 @@ public class JarFiles {
         collectFilesForJar(sourceDir, fileList, filter);
         return fileList;
     }
-
+    
     public static boolean mkJar(File sourceDir, File jarFile, FileFilter filter, String pathPrefix, boolean cleanUpBinaries) throws IOException {
         return mkJar(new File[]{sourceDir}, jarFile, filter, pathPrefix, cleanUpBinaries);
     }
-
+    
     public static boolean mkJar(File sourceDirs[], File jarFile, FileFilter filter, String pathPrefix, boolean cleanUpBinaries) throws IOException {
+        return mkJarFile(sourceDirs, jarFile, filter, pathPrefix == null ? null : new FilePathPrefix(pathPrefix), cleanUpBinaries);
+    }
+    
+    public static boolean mkJarFile(File sourceDir, File jarFile, FileFilter filter, FilePathPrefix pathPrefix, boolean cleanUpBinaries) throws IOException {
+        return mkJarFile(new File[]{sourceDir}, jarFile, filter, pathPrefix, cleanUpBinaries);
+    }
+
+    public static boolean mkJarFile(File sourceDirs[], File jarFile, FileFilter filter, FilePathPrefix pathPrefix, boolean cleanUpBinaries) throws IOException {
 
         assert filter != null;
 
@@ -172,23 +180,23 @@ public class JarFiles {
         List<File2RelPath> filePathList = new ArrayList<>();
         ArrayList<File> fileList = new ArrayList<>();
 
-        String prefix = null;
-
-        if (pathPrefix != null) {
-            prefix = pathPrefix.replace(File.separatorChar, '/');
-            if (!prefix.endsWith("/")) {
-                prefix += "/";
-            }
-        }
+//        String prefix = null;
+//
+//        if (pathPrefix != null) {
+//            prefix = pathPrefix.replace(File.separatorChar, '/');
+//            if (!prefix.endsWith("/")) {
+//                prefix += "/";
+//            }
+//        }
         for (File sourceDir : sourceDirs) {
             fileList.clear();
             collectFilesForJar(sourceDir, fileList, filter);
             for (File file : fileList) {
                 String entryPath;
-                if (prefix == null) {
+                if (pathPrefix == null) {
                     entryPath = FileUtils.getRelativePath(sourceDir, file).replace(File.separatorChar, '/');
                 } else {
-                    entryPath = prefix + file.getName();
+                    entryPath = pathPrefix.getFilePath(file);
                 }
                 filePathList.add(new File2RelPath(file, entryPath));
             }
@@ -251,7 +259,7 @@ public class JarFiles {
         }
         return true;
     }
-
+    
     public static File[] lookupJreJars() {
         String javaHomePath = System.getProperty("java.home");
         File javaHome = javaHomePath == null ? null : new File(javaHomePath);

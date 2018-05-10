@@ -14,10 +14,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.radixware.kernel.starter.Starter;
+import static org.radixware.kernel.starter.log.StarterLog.isCurrentThreadInSafeMode;
 import org.radixware.kernel.starter.utils.ExceptionTextFormatter;
 
 /**
@@ -31,9 +33,21 @@ public class SafeLogger {
     private static final int MAX_RECORDS_COUNT = 10000;
     private final ArrayBlockingQueue<Record> recordsQueue = new ArrayBlockingQueue<>(MAX_RECORDS_COUNT);
     private final Thread flusherThread;
+    public static final String SUPPRESS_SAFELOG_MARKER = "[rdx.safelogging.suppress]";
 
     private SafeLogger() {
+        LogFactory.getLog(SafeLogger.class);
+        final AtomicBoolean lockClassloader = new AtomicBoolean();
         flusherThread = new Thread() {
+
+            @Override
+            public void setContextClassLoader(ClassLoader cl) {
+                if (lockClassloader.get()) {
+                    return;
+                }
+                super.setContextClassLoader(cl);
+            }
+
             @Override
             public void run() {
                 while (!Thread.currentThread().isInterrupted()) {
@@ -41,7 +55,12 @@ public class SafeLogger {
                         final Record record = recordsQueue.take();
                         try {
                             if (record != null) {
-                                final Log log = LogFactory.getLog(record.source == null ? SafeLogger.class.getName() : record.source);
+                                final Log log;
+                                if (record.delegate == null) {
+                                    log = LogFactory.getLog(record.source == null ? SafeLogger.class.getName() : record.source);
+                                } else {
+                                    log = record.delegate;
+                                }
                                 if (log != null) {
                                     if (record.level == null || record.level == Level.FINE) {
                                         log.debug(record.message, record.throwable);
@@ -73,6 +92,7 @@ public class SafeLogger {
         flusherThread.setName("SafeLog flusher thread for " + (Starter.isRoot() ? "root" : "app") + " starter");
         flusherThread.setDaemon(true);
         flusherThread.setContextClassLoader(getClass().getClassLoader());
+        lockClassloader.set(true);
     }
 
     public static SafeLogger getInstance() {
@@ -81,6 +101,21 @@ public class SafeLogger {
 
     public static void interrupt() {
         getInstance().flusherThread.interrupt();
+    }
+
+    public static boolean setSafeLogSuppressedForCurrentThread(final boolean suppress) {
+        final boolean prevSuppressed = isSafeLogSuppressedForCurrentThread();
+        if (!prevSuppressed && suppress) {
+            Thread.currentThread().setName(Thread.currentThread().getName() + SUPPRESS_SAFELOG_MARKER);
+        }
+        if (prevSuppressed && !suppress) {
+            Thread.currentThread().setName(Thread.currentThread().getName().replace(SUPPRESS_SAFELOG_MARKER, ""));
+        }
+        return prevSuppressed;
+    }
+
+    public static boolean isSafeLogSuppressedForCurrentThread() {
+        return Thread.currentThread().getName().contains(SUPPRESS_SAFELOG_MARKER);
     }
 
     private void startThread() {
@@ -106,7 +141,11 @@ public class SafeLogger {
     }
 
     public void debugFromSource(final String source, final Object message, final Throwable throwable) {
-        final Record record = new Record(source, Level.FINE, message, throwable);
+        debugFromSourceWithDelegate(source, message, throwable, null);
+    }
+
+    public void debugFromSourceWithDelegate(final String source, final Object message, final Throwable throwable, final Log delegate) {
+        final Record record = new Record(source, Level.FINE, message, throwable, delegate);
         writeRecord(record);
     }
 
@@ -123,7 +162,11 @@ public class SafeLogger {
     }
 
     public void infoFromSource(final String source, final Object message, final Throwable throwable) {
-        final Record record = new Record(source, Level.INFO, message, throwable);
+        infoFromSourceWithDelegate(source, message, throwable, null);
+    }
+
+    public void infoFromSourceWithDelegate(final String source, final Object message, final Throwable throwable, final Log delegate) {
+        final Record record = new Record(source, Level.INFO, message, throwable, delegate);
         writeRecord(record);
     }
 
@@ -140,7 +183,11 @@ public class SafeLogger {
     }
 
     public void eventFromSource(final String source, final Object message, final Throwable throwable) {
-        final Record record = new Record(source, StarterLog.EVENT_LEVEL, message, throwable);
+        eventFromSourceWithDelegate(source, message, throwable, null);
+    }
+
+    public void eventFromSourceWithDelegate(final String source, final Object message, final Throwable throwable, final Log delegate) {
+        final Record record = new Record(source, StarterLog.EVENT_LEVEL, message, throwable, delegate);
         writeRecord(record);
     }
 
@@ -157,7 +204,11 @@ public class SafeLogger {
     }
 
     public void warningFromSource(final String source, final Object message, final Throwable throwable) {
-        final Record record = new Record(source, Level.WARNING, message, throwable);
+        warningFromSourceWithDelegate(source, message, throwable, null);
+    }
+
+    public void warningFromSourceWithDelegate(final String source, final Object message, final Throwable throwable, final Log delegate) {
+        final Record record = new Record(source, Level.WARNING, message, throwable, delegate);
         writeRecord(record);
     }
 
@@ -174,11 +225,19 @@ public class SafeLogger {
     }
 
     public void errorFromSource(final String source, final Object message, final Throwable throwable) {
-        final Record record = new Record(source, Level.SEVERE, message, throwable);
+        errorFromSourceWithDelegate(source, message, throwable, null);
+    }
+
+    public void errorFromSourceWithDelegate(final String source, final Object message, final Throwable throwable, final Log delegate) {
+        final Record record = new Record(source, Level.SEVERE, message, throwable, delegate);
         writeRecord(record);
     }
 
     private void writeRecord(final Record record) {
+        final String threadName = Thread.currentThread().getName();
+        if (threadName.contains(SUPPRESS_SAFELOG_MARKER)) {
+            return;
+        }
         if (!recordsQueue.offer(record)) {
             writeRecordToSystemErr(record);
         }
@@ -209,12 +268,14 @@ public class SafeLogger {
         public final Level level;
         public final Object message;
         public final Throwable throwable;
+        public final Log delegate;
 
-        public Record(String source, Level level, Object message, Throwable throwable) {
+        public Record(String source, Level level, Object message, Throwable throwable, Log delegate) {
             this.source = source;
             this.level = level;
             this.message = message;
             this.throwable = throwable;
+            this.delegate = delegate;
         }
     }
 }

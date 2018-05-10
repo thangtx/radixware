@@ -14,13 +14,13 @@ package org.radixware.kernel.explorer.editors.monitoring.diagram.dialogs;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.Alignment;
 import com.trolltech.qt.gui.QComboBox;
-import com.trolltech.qt.gui.QDoubleSpinBox;
 import com.trolltech.qt.gui.QGridLayout;
 import com.trolltech.qt.gui.QGroupBox;
 import com.trolltech.qt.gui.QHBoxLayout;
 import com.trolltech.qt.gui.QLabel;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QRadioButton;
+import com.trolltech.qt.gui.QSpinBox;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 import java.io.ByteArrayInputStream;
@@ -48,7 +48,7 @@ import org.radixware.kernel.explorer.editors.valeditors.ValDateTimeEditor;
 public class DashTimeRangeEditor extends QGroupBox {
 
     private DashTimeRangeProp timeRange;
-    private QDoubleSpinBox sbPeriod;
+    private QSpinBox sbPeriod;
     private QComboBox cbPeriodUnit;
     private QComboBox cbPropSource;
     private QRadioButton rbIntervalTime;
@@ -101,13 +101,13 @@ public class DashTimeRangeEditor extends QGroupBox {
     private String getPropSourceLocalazied(EDashPropSource src) {
         switch(src) {
             case OWN:
-                return mp.translate("SystemMonitoring", "Individual Settings");
+                return mp.translate("SystemMonitoring", "Individual settings");
             case DASHBOARD:
                 return mp.translate("SystemMonitoring", "Dashboard");
             case COMMON_REF:
-                return mp.translate("SystemMonitoring", "Common Configuration");
+                return mp.translate("SystemMonitoring", "Common configuration");
             default:
-                return mp.translate("SystemMonitoring", "Undefined Source");
+                return mp.translate("SystemMonitoring", "Undefined source");
         }
     }
 
@@ -120,10 +120,10 @@ public class DashTimeRangeEditor extends QGroupBox {
         savedCfgLayout.setAlignment(new Alignment(Qt.AlignmentFlag.AlignLeft));
         savedCfgLayout.setMargin(0);
         savedCfgWidget.setLayout(savedCfgLayout);
-        final QPushButton saveCfgBtn = new QPushButton(mp.translate("SystemMonitoring", "Save range parameters"));
+        final QPushButton saveCfgBtn = new QPushButton(mp.translate("SystemMonitoring", "Copy Range Parameters"));
         saveCfgBtn.clicked.connect(this, "onSaveCfgBtnClick()");
         savedCfgWidget.layout().addWidget(saveCfgBtn);
-        applyCfgBtn = new QPushButton(mp.translate("SystemMonitoring", "Apply saved parameters"));
+        applyCfgBtn = new QPushButton(mp.translate("SystemMonitoring", "Apply Copied Parameters"));
         applyCfgBtn.clicked.connect(this, "onApplyCfgBtnClick()");
         savedCfgWidget.layout().addWidget(applyCfgBtn);
         if (getPrevSavedCfgFromSettings() == null) {
@@ -149,9 +149,9 @@ public class DashTimeRangeEditor extends QGroupBox {
         } 
 
         QLabel lbSince = new QLabel(mp.translate("SystemMonitoring", "Show recent statistics for"), this);
-        sbPeriod = new QDoubleSpinBox(this);
-        sbPeriod.setMinimum(0.1);
-        sbPeriod.setDecimals(1);
+        sbPeriod = new QSpinBox(this);
+        sbPeriod.setMinimum(1);
+        sbPeriod.setSingleStep(1);
         sbPeriod.setMaximum(999);
         sbPeriod.setValue(timeRange.getPeriod());
         
@@ -213,8 +213,9 @@ public class DashTimeRangeEditor extends QGroupBox {
         }
         this.timeRange = timeRange_;
         this.timeRangeVal = timeRange_.getTimeRange();
-        sbPeriod.setValue(timeRange_.getPeriod());
-        cbPeriodUnit.setCurrentIndex(cbPeriodUnit.findData(timeRange_.getPeriodUnit()));
+        
+        setPeriod(timeRange_.getPeriod(), timeRange_.getPeriodUnit());
+        
         timeFromEditor.setValue(timeRange_.getTimeFrom());
         timeToEditor.setValue(timeRange_.getTimeTo());
         if (timeRange_.getTimeRange() == HistoricalDiagramSettings.TimeRange.INTERVAL) {
@@ -358,9 +359,18 @@ public class DashTimeRangeEditor extends QGroupBox {
     }
 
     public void setPeriod(double value, int periodUnit) {
-        sbPeriod.setValue(value);
-        int curIndex = cbPeriodUnit.findData(periodUnit);
-        cbPeriodUnit.setCurrentIndex(curIndex);
+        if(periodUnit == Calendar.MILLISECOND) {
+            updateEditorIfUnitIsMillis(Math.round(value));
+        } else {
+            sbPeriod.setValue((int) value);
+            cbPeriodUnit.setCurrentIndex(cbPeriodUnit.findData(periodUnit));
+        }
+    }
+    
+    private void updateEditorIfUnitIsMillis(long period) {
+        final int[] periodAndUnit = DashTimeRangeProp.getPeriodAndUnitForMillis(period);
+        sbPeriod.setValue(periodAndUnit[0]);
+        cbPeriodUnit.setCurrentIndex(cbPeriodUnit.findData(periodAndUnit[1]));
     }
 
     public void setTimeTo(Timestamp timeTo) {

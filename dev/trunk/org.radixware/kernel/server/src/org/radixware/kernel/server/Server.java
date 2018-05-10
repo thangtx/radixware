@@ -8,12 +8,13 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server;
 
+import org.radixware.kernel.server.instance.RadixLoaderActualizer;
 import java.awt.GraphicsEnvironment;
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.net.URI;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.MessageFormat;
@@ -24,7 +25,6 @@ import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.xml.transform.TransformerFactory;
-import oracle.jdbc.pool.OracleDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.impl.NoOpLog;
 import org.apache.xalan.xsltc.trax.TransformerFactoryImpl;
@@ -33,6 +33,8 @@ import org.radixware.kernel.server.dbq.OraExCodes;
 import org.radixware.kernel.server.instance.Instance;
 import org.radixware.kernel.server.instance.InstanceListener;
 import org.radixware.kernel.server.instance.InstanceState;
+import org.radixware.kernel.server.jdbc.RadixDataSource;
+import org.radixware.kernel.server.jdbc.RadixDataSourceFactory;
 import org.radixware.kernel.server.trace.FileLogOptions;
 import org.radixware.kernel.server.utils.RecoveryInstanceFactory;
 import org.radixware.kernel.server.utils.RecoveryInstanceFactory.InstanceCreationError;
@@ -153,13 +155,13 @@ public class Server {
     }
 
     private static DbConnectionInfo openDbConnection(final Log log) throws SQLException, DecryptionException {
-        final OracleDataSource oraDataSource = new OracleDataSource();
         if (SrvRunParams.getDbUrl() == null || SrvRunParams.getDbUrl().isEmpty()) {
             log.error(MessageFormat.format("Database URL is not defined.\nUse {0} parameter to define database URL.", SrvRunParams.DB_URL));
             return null;
         }
+        final RadixDataSource radixDataSource = RadixDataSourceFactory.getDataSource(URI.create(SrvRunParams.getDbUrl()));
         log.info("DB URL: " + SrvRunParams.getDbUrl());
-        oraDataSource.setURL(SrvRunParams.getDbUrl());
+//        oraDataSource.setURL(SrvRunParams.getDbUrl());
         final String proxyOraUser;
         if (SrvRunParams.getDbSchema() == null || SrvRunParams.getDbSchema().isEmpty()) {
             log.error(MessageFormat.format("DB Schema is not defined.\nUse {0} parameter to define the schema.", SrvRunParams.DB_SCHEMA));
@@ -168,8 +170,8 @@ public class Server {
         log.info("DB Schema: " + SrvRunParams.getDbSchema());
         if (SrvRunParams.getIsExternalAuthOn()) {
             log.info("Connecting to DB using external authentication");
-            oraDataSource.setUser("");
-            oraDataSource.setPassword("");
+            radixDataSource.setUser("");
+            radixDataSource.setPassword("");
             proxyOraUser = SrvRunParams.getDbSchema();
         } else {
             if (SrvRunParams.getUser() == null || SrvRunParams.getUser().isEmpty()) {
@@ -177,20 +179,20 @@ public class Server {
                 return null;
             }
             log.info("Connecting to DB as user " + SrvRunParams.getUser());
-            oraDataSource.setUser(SrvRunParams.getUser());
+            radixDataSource.setUser(SrvRunParams.getUser());
             SrvRunParams.recieveDbPwd(new SrvRunParams.PasswordReciever() {
                 @Override
                 public void recievePassword(String password) {
                     if (password == null || password.isEmpty()) {
                         log.error(MessageFormat.format("DB password is not defined.\nUse {0} parameter to define the password.", SrvRunParams.DB_PWD));
                     }
-                    oraDataSource.setPassword(password);
+                    radixDataSource.setPassword(password);
                 }
             });
 
             proxyOraUser = SrvRunParams.getDbSchema().equals(SrvRunParams.getUser()) ? null : SrvRunParams.getDbSchema();
         }
-        final Connection dbConnection = Instance.openNewDbConnection(null, null, null, oraDataSource, proxyOraUser, null);
+        final Connection dbConnection = Instance.openNewDbConnection(null, null, null, radixDataSource, proxyOraUser, null);
         try {
             log.info("Connection to DB was established");
             final String[] oraWalletPwd = new String[1];
@@ -212,7 +214,7 @@ public class Server {
                     throw ex;
                 }
             }
-            return new DbConnectionInfo(oraDataSource, proxyOraUser, dbConnection);
+            return new DbConnectionInfo(radixDataSource, proxyOraUser, dbConnection);
         } catch (Exception ex) {
             dbConnection.close();
             throw ex;
@@ -221,11 +223,19 @@ public class Server {
 
     private static boolean attemptTostartWithoutGui(final Instance instance) throws InstanceIsAlreadyRunningException, DatabaseIsUnavailable {
         try {
-            STARTUP_LOG.info("Starting RadixWare Server");
             if (SrvRunParams.getInstanceId() == 0 && SrvRunParams.getNewInstanceSettings() == null) {
                 STARTUP_LOG.error(MessageFormat.format("Instancd ID is not defined.\nUse {0} parameter to define instance ID.", SrvRunParams.INSTANCE));
                 return false;
             }
+
+            int pid = -1;
+            try {
+                pid = org.radixware.kernel.starter.utils.SystemTools.getCurrentProcessPid();
+            } catch (Exception ex) {
+            }
+            final String pidPart = pid >= 0 ? " (PID: " + pid + ")" : "";
+
+            STARTUP_LOG.info("Starting RadixWare Server Instance #" + SrvRunParams.getInstanceId() + pidPart);
 
             final DbConnectionInfo connectionData;
             try {
@@ -284,7 +294,6 @@ public class Server {
 
                 final AtomicBoolean stopMessageGenerated = new AtomicBoolean(false);
 
-
                 STARTUP_LOG.info("Starting server instance #" + String.valueOf(SrvRunParams.getInstanceId()));
                 final Runnable shutdownHook = new Runnable() {
                     @Override
@@ -338,7 +347,7 @@ public class Server {
                     onDecryptError(ex);
                 }
                 STARTUP_LOG.disableDuplicationToFile();
-                instance.start(connectionData.oraDataSource, connectionData.proxyOraUser, connectionData.dbConnection, SrvRunParams.getInstanceId(), null);
+                instance.start(connectionData.radixDataSource, connectionData.proxyOraUser, connectionData.dbConnection, SrvRunParams.getInstanceId(), null);
                 closeConnection = false;
                 STARTUP_LOG.info("Startup procedure is successfully initiated, logging is switched to instance log");
             } finally {
@@ -402,7 +411,7 @@ public class Server {
             returnFromMainLatch.countDown();
         }
     }
-    
+
     private static void configureHeadlessEnvironment() {
         final String awtHeadlessPropName = "java.awt.headless";
         if (System.getProperty(awtHeadlessPropName) == null) {//if no explicit value is given, set to true
@@ -430,15 +439,12 @@ public class Server {
     }
 
     public static void tryOraWalletPwd(final Connection db, final String pwd) throws SQLException {
-        final PreparedStatement altSysSt = db.prepareStatement("ALTER SYSTEM SET WALLET OPEN IDENTIFIED BY \"" + pwd + "\"");
-        try {
+        try (final PreparedStatement altSysSt = db.prepareStatement("ALTER SYSTEM SET WALLET OPEN IDENTIFIED BY \"" + pwd + "\"")) {
             altSysSt.execute();
         } catch (SQLException e) {
             if (e.getErrorCode() != OraExCodes.WALLET_IS_ALREADY_OPEN) {
                 throw e;
             }
-        } finally {
-            altSysSt.close();
         }
     }
     private static volatile CountDownLatch returnFromMainLatch = new CountDownLatch(1);
@@ -463,12 +469,12 @@ public class Server {
 
     private static class DbConnectionInfo {
 
-        public final OracleDataSource oraDataSource;
+        public final RadixDataSource radixDataSource;
         public final String proxyOraUser;
         public final Connection dbConnection;
 
-        public DbConnectionInfo(OracleDataSource oraDataSource, String proxyOraUser, Connection dbConnection) {
-            this.oraDataSource = oraDataSource;
+        public DbConnectionInfo(final RadixDataSource radixDataSource, final String proxyOraUser, final Connection dbConnection) {
+            this.radixDataSource = radixDataSource;
             this.proxyOraUser = proxyOraUser;
             this.dbConnection = dbConnection;
         }

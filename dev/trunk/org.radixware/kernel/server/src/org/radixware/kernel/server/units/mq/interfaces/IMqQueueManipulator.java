@@ -11,20 +11,20 @@
  */
 package org.radixware.kernel.server.units.mq.interfaces;
 
-import org.apache.kafka.common.TopicPartition;
+import org.radixware.kernel.server.units.mq.MqMessage;
 
-public interface IMqQueueManipulator<DataSourceId> {
+public interface IMqQueueManipulator<PartitionType> {
     /**
      * <p>Pause processing for the given data source</p>
      * @param parameter data source to pause
      */
-    void pause(final DataSourceId parameter);
+    void pause(final PartitionType parameter);
 
     /**
      * <p>Resume processing for the given data source</p>
      * @param parameter  data source to resume
      */
-    void resume(final DataSourceId parameter);
+    void resume(final PartitionType parameter);
     
     /**
      * <p>Pause polling for the all data sources</p>
@@ -35,4 +35,15 @@ public interface IMqQueueManipulator<DataSourceId> {
      * <p>Resume polling for the all data sources</p>
      */
     void resumePolling();
+    
+    boolean canPausePartition();
+    
+    boolean canPausePolling();
+    
+    boolean canRestoreOffset();
+    
+    void rememberOffset(MqMessage mess);
+    
+    boolean isOffsetRemembered(MqMessage mess);
+    
 }

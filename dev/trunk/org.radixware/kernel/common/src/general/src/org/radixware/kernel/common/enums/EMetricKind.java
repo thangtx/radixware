@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -33,7 +33,9 @@ public enum EMetricKind implements IKernelStrEnum {
     INST_CPU_USAGE("Inst.CpuUsage"),
     INST_MEMORY_CODE_CACHE("Inst.Memory.CodeCache"),
     INST_MEMORY_PERM_GEN("Inst.Memory.PermGen"),
+    INST_MEMORY_META_SPACE("Inst.Memory.MetaSpace"),
     INST_MEMORY_HEAP("Inst.Memory.Heap"),
+    INST_AADC_LAG("Inst.Aadc.Lag"),
     UNIT_STOP("Unit.Stop"),
     UNIT_HANG("Unit.Hang"),
     UNIT_ARTE_SESSCNT("Unit.Arte.SessionCnt"),
@@ -43,9 +45,27 @@ public enum EMetricKind implements IKernelStrEnum {
     UNIT_JOB_WAITCNT("Unit.Job.WaitCnt"),
     UNIT_ISO8583_CONNECT("Unit.Iso8583.Connect"),
     UNIT_ISO8583_LOGON("Unit.Iso8583.Logon"),
+    UNIT_MQ_PROC_MESSAGES_PER_SEC("Unit.Mq.MessagesPerSec"),
+    UNIT_MQ_PROC_DURATION("Unit.Mq.ProcDuration"),
+    UNIT_MQ_AAS_SEANCES_COUNT("Unit.Mq.UsedArteCnt"),
+    UNIT_PC_OUTGOING_QUEUE_SIZE("Unit.PersoComm.OutgoingQueueSize"),
+    UNIT_PC_MESSAGES_PER_SEC_SENT("Unit.PersoComm.MessagesPerSecSent"),
+    UNIT_PC_MESSAGE_SEND_DURATION("Unit.PersoComm.MessageSendDuration"),
+    UNIT_PC_MESSAGES_SENT_CNT("Unit.PersoComm.MessagesSentCnt"),
+    UNIT_PC_MESSAGES_NOT_SENT_CNT("Unit.PersoComm.MessagesNotSentCnt"),
+    UNIT_PC_MESSAGES_RECEIVED_CNT("Unit.PersoComm.MessagesReceivedCnt"),
+    UNIT_PC_MESSAGE_RECEIVED_PROC_DURATION("Unit.PersoComm.MessageReceivedProcDuration"),
     NET_SERVER_CONNECT("Net.ServerConnect"),
     NET_CLIENT_CONNECT("Net.ClientConnect"),
-    NET_CLIENT_CONNECT_TIME_PERCENT("Net.ClientConnectTimePercent");
+    NET_CLIENT_CONNECT_TIME_PERCENT("Net.ClientConnectTimePercent"),
+    NET_SYNC_BUSY_CONNECTIONS("Net.Sync.BusyConnCnt"),
+    NET_AAS_QUEUE_SIZE("Net.Aas.QueueSize"),
+    NET_AAS_QUEUE_WAIT_DURATION("Net.Aas.QueueWaitDuration"),
+    NET_AAS_PROC_DURATION_PURE("Net.Aas.ProcDurationPure"),
+    NET_AAS_PROC_DURATION_TOTAL("Net.Aas.ProcDurationTotal"),
+    NET_AAS_INVOCATIONS_PER_SEC("Net.Aas.InvocationsPerSec"),
+    ;
+    
     private final String value;
 
     private EMetricKind(final String value) {

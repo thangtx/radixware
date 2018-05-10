@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.client.eas;
 
 import java.util.Arrays;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.schemas.eas.GetSecurityTokenRs;
 
@@ -52,7 +53,7 @@ interface ITokenCalculator {
 
     SecurityToken calcToken(final byte[] inToken);
 
-    byte[] createEncryptedHashForNewPassword(final String userName, final char[] newPassword);
+    byte[] createEncryptedHashForNewPassword(final PasswordHash newPwdHash);
 
     void dispose();
 

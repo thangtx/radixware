@@ -46,6 +46,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.radixware.kernel.common.enums.EDatabaseType;
 import org.radixware.kernel.common.enums.EOptionMode;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.LayerUtils;
@@ -68,7 +69,7 @@ public class TargetDatabasesPanel extends JPanel {
         addButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String type = "";
+                String type = EDatabaseType.ORACLE.getName();
                 if (!Layer.ORG_RADIXWARE_LAYER_URI.equals(layer.getURI())) {
                     final List<String> availableTypes = getAvailableTypesToCreate();
                     if (availableTypes == null || availableTypes.isEmpty()) {

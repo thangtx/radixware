@@ -10,33 +10,81 @@
  */
 
 /*
- * AlignPanel.java
+ * UnitPanel.java
  *
  * Created on 22.01.2009, 11:21:49
  */
-
 package org.radixware.kernel.common.design.msdleditor.field.panel.simple;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.EnumSet;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
 import org.radixware.kernel.common.design.msdleditor.enums.EUnit;
-
+import org.radixware.kernel.common.msdl.enums.EEncoding;
+import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
+import org.radixware.kernel.common.msdl.fields.BCHFieldModel;
 
 public class UnitPanel extends AbstractEditItem {
 
     private EUnit parentValue;
+    private final EnumSet<EUnit> allowedUnits;
+    private static final EnumSet<EUnit> ALL_UNITS = 
+                EnumSet.of(EUnit.NOTDEFINED, EUnit.CHAR, EUnit.BYTE, EUnit.ELEMENT);
+
     public static class UnitModel extends DefaultComboBoxModel {
-        public UnitModel() {
-            super(new EUnit[]{EUnit.NOTDEFINED,EUnit.BYTE,EUnit.CHAR,EUnit.ELEMENT});
+
+        public UnitModel(EUnit[] types) {
+            super(types);
         }
     }
-
-    /** Creates new form AlignPanel */
-    public UnitPanel() {
+    
+    public UnitPanel(boolean isElementAllowed) {
+        this(isElementAllowed, ALL_UNITS);
+    }
+    
+    public UnitPanel(boolean isElementAllowed, EnumSet<EUnit> selectableUnits) {
         initComponents();
-        setAlignModel(new UnitModel());
+        allowedUnits = EnumSet.of(EUnit.NOTDEFINED, EUnit.CHAR, EUnit.BYTE);
+        if (isElementAllowed) {
+            allowedUnits.add(EUnit.ELEMENT);
+        }
+        jComboBoxUnit.setModel(new UnitModel(selectableUnits.toArray(new EUnit[selectableUnits.size()])));
+        jComboBoxUnit.setRenderer(new UnitListCellRenderer());
+        jComboBoxUnit.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    changeSelectedItemColor((EUnit) e.getItem());
+                }
+            }
+        });
+    }
+
+    public UnitPanel() {
+        this(true);
+    }
+    
+    public void setElementAllowed(AbstractFieldModel field) {
+        final boolean isElementAllowed = field instanceof BCHFieldModel
+                || EEncoding.getInstance(field.calcEncoding(true)) == EEncoding.BCD;
+        setElementAllowed(isElementAllowed);
+    }
+
+    public void setElementAllowed(boolean isElementAllowed) {
+        if (isElementAllowed) {
+            allowedUnits.add(EUnit.ELEMENT);
+        } else {
+            allowedUnits.remove(EUnit.ELEMENT);
+        }
+        changeSelectedItemColor((EUnit) jComboBoxUnit.getModel().getSelectedItem());
     }
 
     public void addActionListener(final ActionListener l) {
@@ -47,20 +95,29 @@ public class UnitPanel extends AbstractEditItem {
         jComboBoxUnit.removeActionListener(l);
     }
 
-
-    public void setAlignModel(ComboBoxModel model) {
+    public void setUnitModel(ComboBoxModel model) {
         jComboBoxUnit.setModel(model);
     }
 
     public void setUnit(EUnit value, EUnit parentValue) {
         this.parentValue = parentValue;
         getSetParentPanel().setSelected(false);
-        jComboBoxUnit.getModel().setSelectedItem(value);
         getSetParentPanel().setEnabled(parentValue != EUnit.NOTDEFINED);
+        EUnit val = value;
         if (value == EUnit.NOTDEFINED) {
+            val = parentValue;
             getSetParentPanel().setSelected(parentValue != EUnit.NOTDEFINED);
-            jComboBoxUnit.getModel().setSelectedItem(parentValue);
             jComboBoxUnit.setEnabled(parentValue == EUnit.NOTDEFINED);
+        }
+        
+        jComboBoxUnit.getModel().setSelectedItem(val);
+    }
+    
+    private void changeSelectedItemColor(EUnit val) {
+        if (!allowedUnits.contains(val)) {
+            jComboBoxUnit.setForeground(Color.red);
+        } else {
+            jComboBoxUnit.setForeground(Color.black);
         }
     }
 
@@ -69,10 +126,9 @@ public class UnitPanel extends AbstractEditItem {
             jComboBoxUnit.getModel().setSelectedItem(parentValue);
             jComboBoxUnit.setEnabled(false);
             return EUnit.NOTDEFINED;
-        }
-        else {
+        } else {
             jComboBoxUnit.setEnabled(true);
-            EUnit result = (EUnit)jComboBoxUnit.getModel().getSelectedItem();
+            EUnit result = (EUnit) jComboBoxUnit.getModel().getSelectedItem();
             if (result == EUnit.NOTDEFINED && parentValue != EUnit.NOTDEFINED) {
                 jComboBoxUnit.getModel().setSelectedItem(parentValue);
                 jComboBoxUnit.setEnabled(false);
@@ -83,17 +139,17 @@ public class UnitPanel extends AbstractEditItem {
     }
 
     public EUnit getViewedUnit() {
-        return (EUnit)jComboBoxUnit.getModel().getSelectedItem();
+        return (EUnit) jComboBoxUnit.getModel().getSelectedItem();
     }
 
     public SetParentPanel getSetParentPanel() {
         return setParentPanel;
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -113,5 +169,22 @@ public class UnitPanel extends AbstractEditItem {
     private javax.swing.JComboBox jComboBoxUnit;
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.SetParentPanel setParentPanel;
     // End of variables declaration//GEN-END:variables
+
+    class UnitListCellRenderer extends DefaultListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(JList<?> list,
+                Object value,
+                int index,
+                boolean isSelected,
+                boolean cellHasFocus) {
+
+            Component c = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            if (!allowedUnits.contains((EUnit) value)) {
+                c.setForeground(Color.red);
+            }
+            return c;
+        }
+    }
 
 }

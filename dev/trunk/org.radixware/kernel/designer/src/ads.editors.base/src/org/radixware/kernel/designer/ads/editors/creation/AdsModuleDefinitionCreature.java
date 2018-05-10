@@ -17,6 +17,7 @@ import org.apache.xmlbeans.impl.xb.xsdschema.FormChoice;
 import org.apache.xmlbeans.impl.xb.xsdschema.SchemaDocument;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.RadixObjectIcon;
+import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
 import org.radixware.kernel.common.defs.ads.AdsDefinitions;
@@ -53,6 +54,13 @@ public class AdsModuleDefinitionCreature<T extends AdsDefinition> extends Creatu
     protected AdsModule module;
     protected ERuntimeEnvironmentType targetEnv = ERuntimeEnvironmentType.COMMON;
     private final ERuntimeEnvironmentType env;
+    
+     public AdsModuleDefinitionCreature(RadixObjects container, EDefType defType) {
+        super(container);
+        this.module = (AdsModule) container.getModule();
+        this.defType = defType;
+        this.env = null;
+    }
 
     public AdsModuleDefinitionCreature(AdsDefinitions<? extends AdsDefinition> definitions, EDefType defType, ERuntimeEnvironmentType env) {
         super(definitions);

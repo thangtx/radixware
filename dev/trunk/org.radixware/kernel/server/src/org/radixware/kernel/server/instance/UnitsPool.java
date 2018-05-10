@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.instance;
 
 import java.math.BigDecimal;
@@ -16,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.*;
 
 import org.radixware.kernel.server.units.Factory;
@@ -28,18 +28,34 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.common.utils.SystemPropUtils;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.units.UnitListener;
 import org.radixware.kernel.server.units.UnitState;
-
 
 final class UnitsPool extends CopyOnWriteArrayList<Unit> {
 
     private static final long UNITS_GROUP_START_WAIT_MILLIS = 10000;
     private static final int POSTPONED_UNITS_START_PERIOD_MILLIS = 60000;
+    private static final long LENGTHY_STOPPING_UNITS_ABORT_PERIOD_MILLIS = SystemPropUtils.getLongSystemProp("rdx.unit.lengthy.stopping.abort.period.millis", 5 * 60 * 1000);
+    private static final long LENGTHY_STOPPING_UNITS_MAINTENANCE_PERIOD_MILLIS = SystemPropUtils.getLongSystemProp("rdx.unit.lengthy.stopping.maintenance.period.millis", 30 * 1000);
     //
+
+    private static final String clearStartedStmtSQL = "update rdx_unit set started = 0, postponed = 0 where instanceId=?";
+    private static final Stmt clearStartedStmt = new Stmt(clearStartedStmtSQL, Types.BIGINT);
+
+    private static final String selectUnitDescStmtSQL = "select id, type, title, aadctestmode from rdx_unit where instanceid = ? and use <> 0 " + Factory.getUnitLoadOrderBySql("type") + " , id";
+    private static final Stmt selectUnitDescStmt = new Stmt(selectUnitDescStmtSQL, Types.BIGINT);
+
+    //
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
     private volatile boolean isRefreshUnitListScheduled = true;
     //maintenance
     private long lastPostponedUnitsStartMillis = 0;
+    private long lastLengthyStoppingUnitsMaintenanceMillis = 0; // maintenance = abort and unload
 
     private static final class UnitInfo {
 
@@ -70,6 +86,10 @@ final class UnitsPool extends CopyOnWriteArrayList<Unit> {
         }
     }
     private final Instance instance;
+
+    private UnitsPool() {
+        this.instance = null;
+    }
 
     UnitsPool(final Instance instance) {
         super();
@@ -109,6 +129,8 @@ final class UnitsPool extends CopyOnWriteArrayList<Unit> {
         }
 
         startPostponedUnits(Messages.AUTOSTART_POSTPONED_UNITS, forcedPostponedStart);
+        releaseUnreleasedSingletoneLocks();
+        abortAndUnloadLengthyStoppingUnits();
     }
 
     public List<List<Unit>> sortByPriorities(final List<Unit> units) {
@@ -209,6 +231,10 @@ final class UnitsPool extends CopyOnWriteArrayList<Unit> {
         final String qUnitTitle = "\"" + unit.getFullTitle() + "\"";
         try {
             instance.getTrace().debug("Starting unit " + unit.getFullTitle(), EEventSource.INSTANCE, false);
+            final Long lastWrittenSelfCheckTimeMillis = instance.getLastWrittenUnitCheckTimeMillis(unit.getId());
+            if (lastWrittenSelfCheckTimeMillis != null) {
+                instance.getDbQueries().clearOutdatedUnitStartedState(unit.getId(), lastWrittenSelfCheckTimeMillis);
+            }
             return unit.start(reason);
         } catch (Throwable e) {
             if (e instanceof InterruptedException || Thread.currentThread().isInterrupted()) {
@@ -225,7 +251,10 @@ final class UnitsPool extends CopyOnWriteArrayList<Unit> {
         final List<Unit> stoppedUnitsToUnload = new ArrayList<>();
         for (Unit unit : this) {
             if (!currentlyUsedUnits.containsId(unit.getId())) {
-                if (unit.getState() == UnitState.STOPPED || unit.getState() == UnitState.START_POSTPONED) {
+                if (unit.getState() == UnitState.STOPPED) {
+                    stoppedUnitsToUnload.add(unit);
+                }
+                if (unit.getState() == UnitState.START_POSTPONED && unit.stop("deleted from database")) {
                     stoppedUnitsToUnload.add(unit);
                 }
             }
@@ -250,6 +279,16 @@ final class UnitsPool extends CopyOnWriteArrayList<Unit> {
             }
         }
         startUnits(unitsToStart, reason);
+    }
+
+    void releaseUnreleasedSingletoneLocks() {
+        for (Unit unit : this) {
+            if (unit.getState() == UnitState.START_POSTPONED 
+                    || unit.getState() == UnitState.STOPPED
+                    || unit.getState() == UnitState.STARTED) {
+                unit.releaseAcquiredSingletoneUnitLock();
+            }
+        }
     }
 
     boolean stopUnit(final Unit unit, final String reason) {
@@ -282,7 +321,7 @@ final class UnitsPool extends CopyOnWriteArrayList<Unit> {
     void setUnitsNotStartedInDb() {
         if (instance.getDbConnection() != null) {
 
-            try (PreparedStatement st = instance.getDbConnection().prepareStatement("update rdx_unit set started = 0 where instanceId=?")) {
+            try (PreparedStatement st = ((RadixConnection) instance.getDbConnection()).prepareStatement(clearStartedStmt)) {
                 st.setLong(1, instance.getId());
                 st.executeUpdate();
                 instance.getDbConnection().commit();
@@ -298,12 +337,17 @@ final class UnitsPool extends CopyOnWriteArrayList<Unit> {
         try {
             final Connection dbConnection = instance.getDbConnection();
             if (dbConnection != null) {
-                final PreparedStatement qryReadUnitList = dbConnection.prepareStatement("select id, type, title from rdx_unit where instanceid = ? and use <> 0 " + Factory.getUnitLoadOrderBySql("type") + " , id");
-                try {
+                try (PreparedStatement qryReadUnitList = ((RadixConnection) dbConnection).prepareStatement(selectUnitDescStmt)) {
                     qryReadUnitList.setInt(1, instance.getId());
-                    final ResultSet rs = qryReadUnitList.executeQuery();
-                    try {
+                    try (final ResultSet rs = qryReadUnitList.executeQuery()) {
                         while (rs.next()) {
+                            Boolean unitTestMode = rs.getBoolean("aadctestmode");
+                            if (rs.wasNull())
+                                unitTestMode = null;
+                            if (instance.isAadcTestedMember() &&  unitTestMode == false || 
+                                    !instance.isAadcTestedMember() && unitTestMode == true) {
+                                continue;
+                            }
                             final long id = rs.getLong("id");
                             final String unitTitle =/*
                                      * Messages.UNIT + " #" + String.valueOf(id)
@@ -311,11 +355,7 @@ final class UnitsPool extends CopyOnWriteArrayList<Unit> {
                                      */ rs.getString("title");
                             list.add(new UnitInfo(id, rs.getLong("type"), unitTitle));
                         }
-                    } finally {
-                        rs.close();
                     }
-                } finally {
-                    qryReadUnitList.close();
                 }
             }
         } catch (SQLException ex) {
@@ -327,7 +367,11 @@ final class UnitsPool extends CopyOnWriteArrayList<Unit> {
 
     void unloadAll(final String reason) {
         while (!stopAll(true, reason)) {
-            //do nothing
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
+                return;
+            }
         }
     }
 
@@ -438,4 +482,36 @@ final class UnitsPool extends CopyOnWriteArrayList<Unit> {
     boolean stopAll(final String reason) {
         return stopAll(false, reason);
     }
+    
+    void abortAndUnloadLengthyStoppingUnits() {
+        final long now = System.currentTimeMillis();
+        if (now - lastLengthyStoppingUnitsMaintenanceMillis < LENGTHY_STOPPING_UNITS_MAINTENANCE_PERIOD_MILLIS) {
+            return;
+        }
+        lastLengthyStoppingUnitsMaintenanceMillis = now;
+        
+        final List<Unit> toAbort = new ArrayList<>();
+        for (final Unit unit: this) {
+            if (unit.getState() == UnitState.STOPPING && now - unit.getLastStoppingStateTimeMillis() > LENGTHY_STOPPING_UNITS_ABORT_PERIOD_MILLIS) {
+                toAbort.add(unit);
+            }
+        }
+        
+        for (final Unit unit: toAbort) {
+            unit.setLastStoppingStateTimeMillis(Long.MAX_VALUE);
+            final Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        instance.getTrace().put(EEventSeverity.ERROR, "Initiating abort and unload for lengthy stopping " + unit.getFullTitle(), EEventSource.INSTANCE);
+                        unit.abortAndUnload("stop timeout");
+                    } catch (Throwable t) {
+                        instance.getTrace().put(EEventSeverity.ERROR, "Exception on initiating abort and unload for lengthy stopping " + unit.getFullTitle() + ":\n" + ExceptionTextFormatter.exceptionStackToString(t), EEventSource.INSTANCE);
+                    }
+                }
+            };
+            new Thread(r, unit.getFullTitle() + " abort and unload thread").start();
+        }
+    }
+    
 }

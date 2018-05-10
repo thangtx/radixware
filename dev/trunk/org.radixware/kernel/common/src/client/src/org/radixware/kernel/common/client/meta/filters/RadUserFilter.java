@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.client.meta.filters;
 
 import org.apache.xmlbeans.XmlException;
+import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
@@ -30,6 +31,9 @@ import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
+import org.radixware.schemas.groupsettings.CustomFilter;
+import org.radixware.schemas.sqmlexpression.SqmlExpression;
+import org.radixware.schemas.sqmlexpression.SqmlExpressionDocument;
 
 
 public class RadUserFilter extends RadFilterDef {
@@ -65,11 +69,29 @@ public class RadUserFilter extends RadFilterDef {
         }
 
         public static RadUserFilter loadFromString(final IClientEnvironment environment, final String xmlAsString, final RadSelectorPresentationDef presentation, final boolean keepId) throws XmlException {
-            final org.radixware.schemas.groupsettings.FilterDocument document =                    
+            try{
+                return loadFromFilterDocument(environment, xmlAsString, presentation, keepId);
+            }catch(XmlException firstChanceException){
+                try{
+                    return loadFromSqmlExpression(environment, xmlAsString, presentation);
+                }catch(XmlException exception){
+                    throw firstChanceException;
+                }
+            }
+        }
+        
+        private static RadUserFilter loadFromFilterDocument(final IClientEnvironment environment, final String xmlAsString, final RadSelectorPresentationDef presentation, final boolean keepId) throws XmlException {
+            final org.radixware.schemas.groupsettings.FilterDocument document = 
                     org.radixware.schemas.groupsettings.FilterDocument.Factory.parse(xmlAsString);
             return loadFromXml(environment, document.getFilter(), presentation, keepId);
         }
         
+        private static RadUserFilter loadFromSqmlExpression(final IClientEnvironment environment, final String xmlAsString, final RadSelectorPresentationDef presentation) throws XmlException {
+            final SqmlExpressionDocument document = 
+                   SqmlExpressionDocument.Factory.parse(xmlAsString);
+            return loadFromXml(environment, document.getSqmlExpression(), presentation);
+        }
+                
         public static RadUserFilter loadFromXml(final IClientEnvironment environment, 
                                                 final org.radixware.schemas.groupsettings.CustomFilter xml,
                                                 final RadSelectorPresentationDef presentation, 
@@ -92,6 +114,30 @@ public class RadUserFilter extends RadFilterDef {
                     xml);
             return filter;            
         }
+        
+        public static RadUserFilter loadFromXml(final IClientEnvironment environment, 
+                                                final SqmlExpression xml,
+                                                final RadSelectorPresentationDef presentation){
+            final Id tableId = xml.getTableId();
+            if (tableId != null && !tableId.equals(presentation.getTableId())) {
+                final String message = environment.getMessageProvider().translate("SelectorAddons", "This filter cannot be used for '%s'");
+                throw new DefinitionError(String.format(message, presentation.getTitle()));
+            }
+            final org.radixware.schemas.xscml.SqmlDocument condition =
+                    org.radixware.schemas.xscml.SqmlDocument.Factory.newInstance();
+            if (xml.getSqml() != null) {
+                condition.setSqml(xml.getSqml());
+            }            
+            final RadUserFilter filter = new RadUserFilter(environment, presentation,
+                    Id.Factory.newInstance(EDefinitionIdPrefix.FILTER),                    
+                    environment.getMessageProvider().translate("SelectorAddons", "New Filter"),
+                    null,
+                    condition.xmlText(),
+                    xml.getParameters(),
+                    null);
+            return filter;
+        }
+        
     }
     
     private static void actualizeSqml(final org.radixware.schemas.xscml.Sqml sqml, final ISqmlDefinitions sqmlDefinitions){
@@ -111,7 +157,7 @@ public class RadUserFilter extends RadFilterDef {
                 }
             }
         }        
-    }
+    }    
 
     protected RadUserFilter(final IClientEnvironment environment, final RadSelectorPresentationDef presentation,
             final Id id,
@@ -119,6 +165,23 @@ public class RadUserFilter extends RadFilterDef {
             final Id baseFilterId,
             final String condition,
             final org.radixware.schemas.groupsettings.CustomFilter xml) {
+        this( environment, 
+               presentation, 
+               id, 
+               name, 
+               baseFilterId, 
+               condition, 
+               xml==null ?  null : xml.getParameters(),
+               xml==null ? null : xml.getPersistentValues());
+    }
+    
+    protected RadUserFilter(final IClientEnvironment environment, final RadSelectorPresentationDef presentation,
+            final Id id,
+            final String name,
+            final Id baseFilterId,
+            final String condition,
+            final XmlObject xmlParameters,
+            final CustomFilter.PersistentValues persistentValues) {
         super(id,
               name,
               environment.getApplication().getRuntimeEnvironmentType(),
@@ -148,11 +211,11 @@ public class RadUserFilter extends RadFilterDef {
                 baseFilter = null;
             }            
         }
-        parameters = new RadFilterParameters(environment, xml, baseFilter, presentation.getOwnerClassId());
+        parameters = new RadFilterParameters(environment, xmlParameters, persistentValues, baseFilter, presentation.getOwnerClassId());
         editorPages = baseFilter == null ? null : new RadUserFilterEditorPages(baseFilter, parameters);
         title = name;
         icon = environment.getApplication().getImageManager().getIcon(ClientIcon.Definitions.USER_FILTER);
-    }
+    }    
 
     public RadFilterDef getBaseFilter() {
         return baseFilter;
@@ -234,7 +297,11 @@ public class RadUserFilter extends RadFilterDef {
 
     @Override
     protected Model createModelImpl(final IClientEnvironment environment) {
-        return new FilterModel(environment, this);
+        if (baseFilter==null){
+            return new FilterModel(environment, this);
+        }else{
+            return createModelImpl(environment, baseFilter.getId(), this);
+        }
     }
 
     public void setCondition(final org.radixware.schemas.xscml.Sqml newCondition) {
@@ -262,26 +329,31 @@ public class RadUserFilter extends RadFilterDef {
         if (condition != null) {
             customFilter.setCondition(condition);
         }
-        boolean customParameters=false,persistentValies=false;
+        boolean customParameters=false,persistentValues=false;
         for (ISqmlParameter parameter: parameters.getAll()){
             if (parameter instanceof RadFilterUserParamDef){
                 customParameters = true;
-                if (persistentValies){
+                if (persistentValues){
                     break;
                 }
             }
             if (parameter.getPersistentValue()!=null){
-                persistentValies = true;
+                persistentValues = true;
                 if (customParameters){
                     break;
                 }
             }
         }
+        final org.radixware.schemas.groupsettings.FilterParameters xmlParams;
         if (customParameters){
-            parameters.writeCustomParametersToXml(customFilter.addNewParameters());
+            xmlParams =parameters.writeCustomParametersToXml(customFilter.addNewParameters());
+        }else {
+            xmlParams = null;
         }
-        if (persistentValies){
-            parameters.writePersistentValuesToXml(customFilter.addNewPersistentValues());
+        if (persistentValues){            
+            final org.radixware.schemas.groupsettings.FilterParameters.Values xmlValues =
+                xmlParams==null ? customFilter.addNewParameters().addNewValues() : xmlParams.addNewValues();
+            parameters.writePersistentValuesToXml(xmlValues);
         }        
         return customFilter;
     }

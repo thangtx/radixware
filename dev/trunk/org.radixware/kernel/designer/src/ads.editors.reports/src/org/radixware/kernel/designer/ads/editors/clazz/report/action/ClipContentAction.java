@@ -24,7 +24,7 @@ public class ClipContentAction extends AbstractAction {
     private final AdsReportFormDiagram diagram;
 
     public ClipContentAction(final AdsReportFormDiagram diagram) {
-        super("Clip content",RadixWareIcons.REPORT.CLIP_CONTENT.getIcon());
+        super("Clip Content",RadixWareIcons.REPORT.CLIP_CONTENT.getIcon());
         this.diagram = diagram;
     }
 

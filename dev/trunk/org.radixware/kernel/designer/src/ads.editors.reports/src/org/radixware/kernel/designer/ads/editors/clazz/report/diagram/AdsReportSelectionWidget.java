@@ -8,40 +8,45 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.clazz.report.diagram;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.MouseInputListener;
-
+import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.selection.SelectionEvent;
 
 public class AdsReportSelectionWidget extends JComponent {
+    enum Mode {
+        WINDOW, CROSS
+    }
 
     private class MouseListener extends MouseInputAdapter {
 
         private int getX(final MouseEvent e) {
-            int result;
-            if (e.getComponent() instanceof AdsReportBaseContainer) {
-                result = e.getX() + e.getComponent().getLocation().x;
-            } else {
-                result = e.getX();                
+            int result = e.getX();
+            Component c = e.getComponent();
+            while (c != null && !(c instanceof AdsReportFormDiagram)) {
+                result += c.getLocation().x;
+                c = c.getParent();
             }
             return result;
         }
 
         private int getY(final MouseEvent e) {
-            int result;
-            if (e.getComponent() instanceof AdsReportBaseContainer) {
-                result = e.getY() + e.getComponent().getLocation().y;
-            } else {
-                result = e.getY();                
+            int result = e.getY();
+            Component c = e.getComponent();
+            while (c != null && !(c instanceof AdsReportFormDiagram)) {
+                result += c.getLocation().y;
+                c = c.getParent();
             }
             return result;
         }
@@ -58,19 +63,25 @@ public class AdsReportSelectionWidget extends JComponent {
         public void mouseReleased(final MouseEvent e) {
             if (isVisible()) {
                 setVisible(false);
-                selectCells();
+                selectCells(mode == Mode.WINDOW);
+                e.consume();
             }
         }
 
         @Override
         public void mouseDragged(final MouseEvent e) {
+            if (e.isConsumed()){
+                return;
+            }
             int width = getX(e) - x;
             int left;
             if (width > 0) {
                 left = x;
+                mode = Mode.WINDOW;
             } else {
                 width = -width;
                 left = x - width;
+                mode = Mode.CROSS;
             }
 
             int height = getY(e) - y;
@@ -97,6 +108,8 @@ public class AdsReportSelectionWidget extends JComponent {
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
     }
     private static final Color SELECTION_COLOR = new Color(100, 100, 255);
+    private static final Color ALL_SELECTION_COLOR = new Color(100, 255, 100);
+    private Mode mode = Mode.WINDOW;
 
     @Override
     protected void paintComponent(final Graphics g) {
@@ -107,8 +120,12 @@ public class AdsReportSelectionWidget extends JComponent {
 
         // g.setColor(Color.black);
         //g.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
-
-        g.setColor(SELECTION_COLOR);
+        if (mode == Mode.CROSS){
+            g.setColor(ALL_SELECTION_COLOR);
+        } else {
+            g.setColor(SELECTION_COLOR);
+        }
+        
         g.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
     }
 
@@ -116,21 +133,70 @@ public class AdsReportSelectionWidget extends JComponent {
         widget.addMouseListener(mouseListener);
         widget.addMouseMotionListener(mouseListener);
     }
+    
+    public void detachFrom(final AbstractAdsReportWidget widget) {
+        widget.removeMouseListener(mouseListener);
+        widget.removeMouseMotionListener(mouseListener);
+    }
 
-    private void selectCells() {
-        final AdsReportBandWidget bandWidget = (AdsReportBandWidget) getParent();
+    private void selectCells(boolean isAll) {
+        final AdsReportFormDiagram form = (AdsReportFormDiagram) getParent();
+        boolean selectionChange = false;
+        for (AdsReportBandWidget bandWidget : form.getBandWidgets()) {
+            final Dimension size = bandWidget.bandSubWidget.getSize();
+            final int x = bandWidget.getX() + bandWidget.bandSubWidget.getX();
+            final int y = bandWidget.getY() + bandWidget.bandSubWidget.getY();
+            if (contains(false, x, y, (int) size.getWidth(), (int) size.getHeight())) {
+                if (contains(isAll, x, y, (int) size.getWidth(), (int) size.getHeight())) {
+                    selectionChange = selectWidget(selectionChange, form, bandWidget);
+                }
 
-        final int x = this.getLocation().x - bandWidget.bandSubWidget.getLocation().x;
-        final int y = this.getLocation().y - bandWidget.bandSubWidget.getLocation().y;
-        final int width = this.getSize().width;
-        final int height = this.getSize().height;
+                selectionChange = selectedCells(isAll, bandWidget.bandSubWidget, form, selectionChange, x, y);
+            }
 
-        AdsReportWidgetUtils.selectBand(bandWidget);
-        for (AdsReportSelectableWidget cellWidget : bandWidget.getCellWidgets()) {
-            final int centerX = cellWidget.getLocation().x + cellWidget.getSize().width / 2;
-            final int centerY = cellWidget.getLocation().y + cellWidget.getSize().height / 2;
-            final boolean selected = (centerX >= x && centerY >= y && centerX <= x + width && centerY <= y + height);
-            cellWidget.setSelected(selected);
+            for (AdsSubReportWidget subReportWidget : bandWidget.getSubReportWidgets()) {
+                final int subReportX = bandWidget.getX() + subReportWidget.getX();
+                final int subReportY = bandWidget.getY() + subReportWidget.getY();
+                final Dimension subReportSize = subReportWidget.getSize();
+                if (contains(isAll, subReportX, subReportY, (int) subReportSize.getWidth(), (int) subReportSize.getHeight())) {
+                    selectionChange = selectWidget(selectionChange, form, subReportWidget);
+                }
+            }
+
+        }
+    }
+
+    public boolean selectedCells(final boolean isAll, AdsReportBaseContainer subBandWidget, AdsReportFormDiagram form, boolean selectionChange, int subBandX, int subBandY) {
+        for (AdsReportSelectableWidget cellWidget : subBandWidget.getCellWidgets()) {
+            final int cellX = subBandX + cellWidget.getX();
+            final int cellY = subBandY + cellWidget.getY();
+            if (contains(false, cellX, cellY, (int) cellWidget.getWidth(), (int) cellWidget.getHeight())) {
+                if (contains(isAll, cellX, cellY, (int) cellWidget.getWidth(), (int) cellWidget.getHeight())) {
+                    selectionChange = selectWidget(selectionChange, form, cellWidget);
+                }
+                if (cellWidget.getCell().isReportContainer()) {
+                    selectionChange = selectedCells(isAll, (AdsReportBaseContainer) cellWidget, form, selectionChange, cellX, cellY);
+                }
+            }
+        }
+        return selectionChange;
+    }
+
+    public boolean selectWidget(boolean selectionChange, AdsReportFormDiagram form, AdsReportAbstractSelectableWidget widget) {
+        if (!selectionChange) {
+            form.fireSelectionChanged(new SelectionEvent(form, true));
+            selectionChange = true;
+        }
+        form.fireSelectionChanged(new SelectionEvent(widget, true, false));
+        return selectionChange;
+    }
+
+    public boolean contains(boolean isAll, int x, int y, int width, int height) {
+        Point location = getLocation();
+        if (isAll) {
+            return (x >= location.x) && (x + width <= location.x + getWidth()) && (y >= location.y) && (y + height <= location.y + getHeight());
+        } else {
+            return (x + width >= location.x) && (x <= location.x + getWidth()) && (y + height >= location.y) && (y <= location.y + getHeight());
         }
     }
 }

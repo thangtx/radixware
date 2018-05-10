@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:this="http://schemas.radixware.org/clientstate.xsd" 
+           xmlns:types="http://schemas.radixware.org/types.xsd"
+           targetNamespace="http://schemas.radixware.org/clientstate.xsd"
+           elementFormDefault="qualified">
+    
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    
+    <xs:complexType name="ExplorerTreeNode">
+        <xs:choice>
+            <xs:element name="ExplorerItem">
+                <xs:complexType>
+                    <xs:attribute name="Id" type="types:Id" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Object">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="PID" type="types:SafeStr" minOccurs="1" maxOccurs="1"/>
+                        <xs:element name="Context" type="types:SafeStr" minOccurs="1" maxOccurs="1"/>
+                    </xs:sequence>
+                    <xs:attribute name="TableId" type="types:Id" use="required"/>
+                    <xs:attribute name="ClassId" type="types:Id" use="required"/>
+                    <xs:attribute name="EditorPresentationId" type="types:Id" use="required"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+    </xs:complexType>
+    
+    <xs:complexType name="ExplorerTreePath">
+        <xs:sequence>
+            <xs:element name="Node" type="this:ExplorerTreeNode"  minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="ExplorerTreeState">
+        <xs:sequence>
+            <xs:element name="ExpandedNodes" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Path" type="this:ExplorerTreePath"  minOccurs="1" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="InsertedObjects" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Path" type="this:ExplorerTreePath"  minOccurs="1" maxOccurs="unbounded"/>
+                    </xs:sequence>                    
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="CurrentPath" type="this:ExplorerTreePath"  minOccurs="1" maxOccurs="1"/>            
+            <xs:element name="RootExplorerItemIds" minOccurs="1" maxOccurs="1">
+                <xs:simpleType>
+                    <xs:list itemType="types:Id"/>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>        
+    </xs:complexType>
+    
+    <xs:complexType name="ConnectionParams">
+        <xs:sequence>
+            <xs:element name="ConnectionName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="UserName" type="xs:string" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="EncSessionKey" type="types:BinBase64" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="EncSessionId" type="types:BinBase64" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ClientState">
+        <xs:sequence>
+            <xs:element name="Connection" type="this:ConnectionParams" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ExplorerTree" type="this:ExplorerTreeState" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:element name="ClientState" type="this:ClientState"/>
+</xs:schema>

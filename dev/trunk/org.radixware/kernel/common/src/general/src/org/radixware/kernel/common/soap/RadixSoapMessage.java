@@ -16,15 +16,20 @@ import java.util.Map;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.enums.ESoapMessageType;
 import org.radixware.kernel.common.sc.SapClientOptions;
+import org.radixware.kernel.common.utils.SoapFormatter;
+import org.xmlsoap.schemas.soap.envelope.EnvelopeDocument;
 
 
 public class RadixSoapMessage {
+    
+    private static volatile Long DEFAULT_THIS_INSTANCE_ID = 0l;
 
+    private EnvelopeDocument envDoc;
     private XmlObject bodyDoc;
-    private ESoapMessageType type;
+    private ESoapMessageType type = ESoapMessageType.REQUEST;
     private Map<String, String> attrs;
     private Class resultClass;
-    private Long systemId;
+    private Long systemId = 1l;
     private Long thisInstanceId;
     private String serviceUri;
     private List<SapClientOptions> additionalSaps;
@@ -33,12 +38,14 @@ public class RadixSoapMessage {
     private int connectTimeoutSec;
     public String destinationInfo;
     private int spentReceiveMillis;
+    private boolean isEnvelopeMess;
 
     public RadixSoapMessage() {
+        thisInstanceId = DEFAULT_THIS_INSTANCE_ID;
     }
 
-    public RadixSoapMessage(XmlObject bodyDoc, ESoapMessageType type, Map<String, String> messsageAttrs, Class resultClass, Long systemId, Long thisInstanceId, String serviceUri, List<SapClientOptions> additionalSaps, String destinationInfo, int keepConnectTimeSec, int receiveTimeoutSec, int connectTimeoutSec) {
-        this.bodyDoc = bodyDoc;
+    public RadixSoapMessage(XmlObject doc, ESoapMessageType type, Map<String, String> messsageAttrs, Class resultClass, Long systemId, Long thisInstanceId, String serviceUri, List<SapClientOptions> additionalSaps, String destinationInfo, int keepConnectTimeSec, int receiveTimeoutSec, int connectTimeoutSec) {
+        setXmlObject(doc);
         this.type = type;
         this.attrs = messsageAttrs;
         this.resultClass = resultClass;
@@ -50,6 +57,24 @@ public class RadixSoapMessage {
         this.destinationInfo = destinationInfo;
         this.receiveTimeoutSec = receiveTimeoutSec;
         this.connectTimeoutSec = connectTimeoutSec;
+    }
+    
+    private void setXmlObject(final XmlObject doc) {
+        if (doc == null) {
+            this.envDoc = null;
+            this.bodyDoc = null;
+            return;
+        }
+        
+        this.envDoc = SoapFormatter.getEnvelopeDoc(doc);
+        this.bodyDoc = envDoc != null ? envDoc.getEnvelope().getBody() : doc;
+        if (envDoc == null) {
+            isEnvelopeMess = false;
+            envDoc = EnvelopeDocument.Factory.newInstance();
+            envDoc.addNewEnvelope().addNewBody().set(bodyDoc);
+        } else {
+            isEnvelopeMess = true;
+        }
     }
 
     public int getSpentReceiveMillis() {
@@ -135,12 +160,23 @@ public class RadixSoapMessage {
         this.connectTimeoutSec = connectTimeoutSec;
     }
 
+    public EnvelopeDocument getEnvDocument() {
+        return envDoc;
+    }
+
+    public void setEnvDocument(EnvelopeDocument envDoc) {
+        setXmlObject(envDoc);
+    }
+    
     public XmlObject getBodyDocument() {
         return bodyDoc;
     }
 
     public void setBodyDoc(XmlObject bodyDoc) {
+        isEnvelopeMess = false;
         this.bodyDoc = bodyDoc;
+        envDoc = EnvelopeDocument.Factory.newInstance();
+        envDoc.addNewEnvelope().addNewBody().set(bodyDoc);
     }
 
     public ESoapMessageType getType() {
@@ -157,5 +193,13 @@ public class RadixSoapMessage {
 
     public void setAttrs(Map<String, String> messsageAttrs) {
         this.attrs = messsageAttrs;
+    }
+
+    public boolean isEnvelopeMess() {
+        return isEnvelopeMess;
+    }
+    
+    public static void setDefaultThisInstanceId(final Long defaultThisInstanceId) {
+        DEFAULT_THIS_INSTANCE_ID = defaultThisInstanceId;
     }
 }

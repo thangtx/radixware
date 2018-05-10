@@ -18,10 +18,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import net.miginfocom.swing.MigLayout;
 import org.openide.util.ChangeSupport;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.Definition;
@@ -157,6 +164,9 @@ public final class ChangeProfilePanel extends javax.swing.JPanel implements Chan
     private IdSourcePanel idSrcPanel;
     private JButton btInheritIdOption = new JButton();
     private DescriptionModel descriptionModel;
+    private final JPanel parametersPanel = new JPanel();
+    private final JSplitPane innerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+    private final JSplitPane outerSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 
     public ChangeProfilePanel() {
         ActionListener fixListener = new ActionListener() {
@@ -285,33 +295,8 @@ public final class ChangeProfilePanel extends javax.swing.JPanel implements Chan
                 c.gridwidth = 2;
                 add(envSelectorPanel, c);
             }
-
-            JLabel paramLabel = new JLabel(NbBundle.getMessage(ChangeProfilePanel.class, "PP-Label-Params"));
             c.insets = new Insets(0, 10, 10, 10);
-            c.gridy++;
             c.gridwidth = 2;
-            gbl.setConstraints(paramLabel, c);
-            add(paramLabel);
-
-            c.gridy++;
-            //c.gridwidth = 1;
-            c.fill = GridBagConstraints.BOTH;
-            paramsPanel = new MethodParametersPanel();
-            paramsPanel.open(method);
-            paramsPanel.addChangeListener(this);
-//            paramsPanel.open(method, owner, !canChangeProfile);
-            gbl.setConstraints(paramsPanel, c);
-            add(paramsPanel);
-
-            c.gridy++;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            throwsPanel = new AdsMethodThrowsListEditor();
-            throwsPanel.addChangeListener(this);
-            throwsPanel.open(method, owner, !canChangeProfile);
-            gbl.setConstraints(throwsPanel, c);
-            add(throwsPanel);
-
-
             if (method.isOverride()) {
                 c.gridy++;
                 c.weightx = 0.0;
@@ -321,11 +306,18 @@ public final class ChangeProfilePanel extends javax.swing.JPanel implements Chan
                 gbl.setConstraints(fixButton, c);
                 add(fixButton);
             }
-
-            c.gridy++;
-            c.weightx = 1.0;
-            c.weighty = 1.0;
-            c.fill = GridBagConstraints.BOTH;
+            parametersPanel.setLayout(new BorderLayout());
+            JLabel paramLabel = new JLabel(NbBundle.getMessage(ChangeProfilePanel.class, "PP-Label-Params"));
+            parametersPanel.add(paramLabel, BorderLayout.PAGE_START);
+            paramLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+            paramsPanel = new MethodParametersPanel();
+            paramsPanel.open(method);
+            paramsPanel.addChangeListener(this);
+            parametersPanel.add(paramsPanel, BorderLayout.CENTER);
+            throwsPanel = new AdsMethodThrowsListEditor();
+            throwsPanel.addChangeListener(this);
+            throwsPanel.open(method, owner, !canChangeProfile);
+            innerSplitPane.setTopComponent(throwsPanel);
 
             descriptionModel = DescriptionModel.Factory.newInstance(method);
             descriptionPanel.open(descriptionModel);
@@ -338,8 +330,22 @@ public final class ChangeProfilePanel extends javax.swing.JPanel implements Chan
             });
 
             descriptionPanel.setReadonly(method.isReadOnly());
-
-            add(descriptionPanel, c);
+            descriptionPanel.setMinimumSize(new Dimension(30, 70));
+            
+            innerSplitPane.setBottomComponent(descriptionPanel);
+            outerSplitPane.setTopComponent(parametersPanel);
+            outerSplitPane.setBottomComponent(innerSplitPane);
+            innerSplitPane.setOneTouchExpandable(true);
+            outerSplitPane.setOneTouchExpandable(true);
+            innerSplitPane.setBorder(null);
+            outerSplitPane.setBorder(null);
+            outerSplitPane.setResizeWeight(0.33);
+            innerSplitPane.setResizeWeight(0.5);
+            c.gridy++;
+            c.weightx = 1.0;
+            c.weighty = 1.0;
+            c.fill = GridBagConstraints.BOTH;
+            add(outerSplitPane, c);
 
             if (isDialogComponent) {
                 c.gridwidth = 1;

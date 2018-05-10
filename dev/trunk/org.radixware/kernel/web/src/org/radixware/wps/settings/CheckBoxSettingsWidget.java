@@ -19,32 +19,35 @@ import org.radixware.wps.rwt.Container;
 import org.radixware.wps.rwt.UIObject;
 
 
-public class CheckBoxSettingsWidget extends SettingsWidget {
+final class CheckBoxSettingsWidget extends SettingsWidget {
 
-    private String descr;
-    private CheckBox checkBox;
+    private final String descr;
+    private final CheckBox checkBox = new CheckBox();
 
-    public CheckBoxSettingsWidget(final WpsEnvironment env, final UIObject parent, final String gr, final String sub, final String n, final String descr, boolean val) {
-        super(env, parent, gr, sub, n, val);
+    public CheckBoxSettingsWidget(final WpsEnvironment env, final UIObject parent, final String gr, final String sub, final String n, final String descr) {
+        super(env, parent, gr, sub, n);
         createUI();
-        defaultValue = val;//getDefaultSettings().readBoolean(getSettingCfgName());
         this.descr = descr;
     }
 
     private void createUI() {
-        Container container = new Container();
-        this.add(container);
-        checkBox = new CheckBox();
+        final Container container = new Container();
+        this.add(container);        
         checkBox.setParent(container);
         checkBox.setTitle(descr);
         container.add(checkBox);
     }
+    
+    private boolean getDefaultValue(){
+        final String valueAsStr = readDefaultValue();
+        return valueAsStr!=null && "true".equalsIgnoreCase(valueAsStr);
+    }
 
     @Override
     public void readSettings(WpsSettings src) {
-        boolean val = src.readBoolean(getSettingCfgName(), (boolean)defaultValue);
+        boolean val = src.readBoolean(getSettingCfgName(), getDefaultValue());
         if (src.getValue(getSettingCfgName()) == null || "".equals(src.getValue(getSettingCfgName()))){
-            val = (boolean)defaultValue;
+            val = getDefaultValue();
         }
         checkBox.setSelected(val);
     }
@@ -56,6 +59,6 @@ public class CheckBoxSettingsWidget extends SettingsWidget {
 
     @Override
     public void restoreDefaults() {
-        checkBox.setSelected((boolean)defaultValue);
+        checkBox.setSelected(getDefaultValue());
     }
 }

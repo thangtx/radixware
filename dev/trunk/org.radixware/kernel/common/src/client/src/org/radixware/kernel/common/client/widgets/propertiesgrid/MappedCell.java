@@ -12,17 +12,18 @@
 package org.radixware.kernel.common.client.widgets.propertiesgrid;
 
 import org.radixware.kernel.common.client.localization.MessageProvider;
-import org.radixware.kernel.common.client.models.items.properties.Property;
+import org.radixware.kernel.common.client.models.items.ModelItem;
+import org.radixware.kernel.common.client.views.IPropertiesGroupWidget;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
 import org.radixware.kernel.common.client.widgets.propertiesgrid.IPropertiesGridCell.ELinkageDirection;
 
 
-final class MappedCell<L extends IModelWidget, E extends IModelWidget> implements IPropertiesGridCell<L, E> {
+final class MappedCell<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget> implements IPropertiesGridCell<L, E, G> {
 
-    private final IPropertiesGridCell<L, E> actualCell;
+    private final IPropertiesGridCell<L, E, G> actualCell;
     private final int column, row;
 
-    public MappedCell(final IPropertiesGridCell<L, E> actualCell, final int column, final int row) {
+    public MappedCell(final IPropertiesGridCell<L, E, G> actualCell, final int column, final int row) {
         this.actualCell = actualCell;
         this.column = column;
         this.row = row;
@@ -49,8 +50,23 @@ final class MappedCell<L extends IModelWidget, E extends IModelWidget> implement
     }
 
     @Override
-    public Property getProperty() {
-        return actualCell.getProperty();
+    public G getPropertiesGroupWidget() {
+        return actualCell.getPropertiesGroupWidget();
+    }        
+
+    @Override
+    public ModelItem getModelItem() {
+        return actualCell.getModelItem();
+    }
+
+    @Override
+    public boolean isModelItemReadOnly() {
+        return actualCell.isModelItemReadOnly();
+    }
+
+    @Override
+    public boolean isModelItemVisible() {
+        return actualCell.isModelItemVisible();
     }
 
     @Override
@@ -67,15 +83,20 @@ final class MappedCell<L extends IModelWidget, E extends IModelWidget> implement
     public int getColumnSpan() {
         return actualCell.getColumnSpan();
     }
+    
+    @Override
+    public int getRowSpan() {
+        return actualCell.getRowSpan();
+    }    
 
     @Override
-    public IPropertiesGridCell<L, E> getLinkedCell(ELinkageDirection direction) {
-        final IPropertiesGridCell<L, E> linkedCell = actualCell.getLinkedCell(direction);
+    public IPropertiesGridCell<L, E, G> getLinkedCell(ELinkageDirection direction) {
+        final IPropertiesGridCell<L, E, G> linkedCell = actualCell.getLinkedCell(direction);
         if (linkedCell == null) {
             return null;
         } else {
             final int mappedCol = direction == ELinkageDirection.LEFT ? column - 1 : column + 1;
-            return new MappedCell<L, E>(linkedCell, mappedCol, row);
+            return new MappedCell<L, E, G>(linkedCell, mappedCol, row);
         }
     }
 
@@ -90,7 +111,7 @@ final class MappedCell<L extends IModelWidget, E extends IModelWidget> implement
     }
 
     @Override
-    public void linkWith(IPropertiesGridCell<L, E> cell, ELinkageDirection direction) {
+    public void linkWith(IPropertiesGridCell<L, E, G> cell, ELinkageDirection direction) {
         throw new UnsupportedOperationException("Can't link mapped column");
     }
 
@@ -100,16 +121,16 @@ final class MappedCell<L extends IModelWidget, E extends IModelWidget> implement
     }
 
     @Override
-    public IPropertiesGridCell<L, E> createCopy() {
-        return new MappedCell<L, E>(actualCell, column, row);
+    public IPropertiesGridCell<L, E, G> createCopy() {
+        return new MappedCell<L, E, G>(actualCell, column, row);
     }
 
     @Override
-    public void close(final IPropertiesGridPresenter<L, E> presenter) {
+    public void close(final IPropertiesGridPresenter<L, E, G> presenter) {
         actualCell.close(presenter);
     }
 
-    public IPropertiesGridCell<L, E> getActualCell() {
+    public IPropertiesGridCell<L, E, G> getActualCell() {
         return actualCell;
     }
 }

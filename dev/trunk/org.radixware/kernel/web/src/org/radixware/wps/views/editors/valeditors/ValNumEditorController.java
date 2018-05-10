@@ -142,13 +142,17 @@ public class ValNumEditorController extends InputBoxController<BigDecimal,EditMa
     private boolean isSpinButtonsVisible;
 
     public ValNumEditorController(final IClientEnvironment env) {
-        super(env);        
+        this(env,null);
+    }
+    
+    public ValNumEditorController(final IClientEnvironment env, final LabelFactory factory) {
+        super(env, factory);
         numberFormat = (NumberFormat)NumberFormat.getNumberInstance(env.getLocale()).clone();
         numberFormat.setGroupingUsed(false);
         numberFormat.setMaximumFractionDigits(Integer.MAX_VALUE);
         if (numberFormat instanceof DecimalFormat){
             ((DecimalFormat)numberFormat).setParseBigDecimal(true);
-        }        
+        }
         setEditMask(new EditMaskNum());        
     }
 

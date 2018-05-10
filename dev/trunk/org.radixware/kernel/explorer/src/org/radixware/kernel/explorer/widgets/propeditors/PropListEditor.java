@@ -12,6 +12,7 @@
 package org.radixware.kernel.explorer.widgets.propeditors;
 
 import org.radixware.kernel.common.client.editors.property.PropertyProxy;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.meta.mask.EditMaskConstSet;
 import org.radixware.kernel.common.client.meta.mask.EditMaskList;
 import org.radixware.kernel.common.client.models.items.properties.Property;
@@ -73,19 +74,33 @@ public class PropListEditor extends PropEditor {
                 return value;
             }
 
-        });        
+        });
     }
 
+    @Override
+    protected void updateSettings() {
+        super.updateSettings();
+        final ValEditor valEditor = getValEditor();
+        if (valEditor instanceof ValConstSetEditor){
+            ((ValConstSetEditor)valEditor).refreshShowListDialogButton();
+        }else if (valEditor instanceof ValListEditor){
+            ((ValListEditor)valEditor).refreshShowListDialogButton();
+        }             
+    }
+        
     @Override
     public void bind() {
         super.bind();
         getValEditor().valueChanged.disconnect();
         getValEditor().valueChanged.connect(this,"finishEdit()");                
     }
-    
-    
-    
+            
     public static ValEditorFactory getValEditorFactory(){
         return ValEditorFactory.getDefault();
     }
+    
+    @Override
+    public final EWidgetMarker getWidgetMarker() {
+        return EWidgetMarker.LIST_PROP_EDITOR;
+    }    
 }

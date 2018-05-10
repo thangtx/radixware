@@ -119,7 +119,7 @@ final class RootParagraphNavigator {
 
                     final AdsSegment ads = (AdsSegment) currLayer.getAds();
                     for (final AdsModule module : ads.getModules()) {
-                        final AdsDefinition def = module.getDefinitions().findById(id);
+                        final AdsDefinition def = module.getTopContainer().findById(id);
 
                         if (def != null) {
                             paragraph = def;

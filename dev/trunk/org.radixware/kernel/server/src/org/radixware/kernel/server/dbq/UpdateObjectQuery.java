@@ -26,8 +26,10 @@ import org.radixware.kernel.server.exceptions.DatabaseError;
 import org.radixware.kernel.server.exceptions.DbQueryBuilderError;
 import org.radixware.kernel.server.exceptions.EntityObjectNotExistsError;
 import org.radixware.kernel.server.exceptions.PropNotLoadedException;
+import org.radixware.kernel.server.jdbc.RadixPreparedStatement;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.EntityPropVals;
+import org.radixware.kernel.server.types.Pid;
 
 public final class UpdateObjectQuery extends DbQuery {
 
@@ -115,6 +117,13 @@ public final class UpdateObjectQuery extends DbQuery {
         super.free();
     }
 
+    @Override
+    protected void releaseTemporaryLobs() {
+        if (pendingUpdates == 0) {
+            super.releaseTemporaryLobs();
+        }
+    }
+
     private void onUpdateException(final SQLException e, final Entity entity) throws DatabaseError, EntityObjectNotExistsError {
         checkIfItIsUniqueConstraintViolated(arte, e, table, entity.getRadMeta());
         checkIfItIsNullConstraintViolated(arte, e, table);
@@ -122,49 +131,54 @@ public final class UpdateObjectQuery extends DbQuery {
         if (e.getErrorCode() == OraExCodes.NO_DATA_FOUND) {
             throw new EntityObjectNotExistsError(entity.getPid());
         }
-        throw new DatabaseError("Update query error: " + ExceptionTextFormatter.getExceptionMess(e), e);
+        final Pid pid = entity == null ? null : entity.getPid();
+        throw new DatabaseError("Update query error (TableID: " + (pid == null ? null : pid.getEntityId()) + ", PID: '" + pid + "'): " + ExceptionTextFormatter.getExceptionMess(e), e);
     }
 
     void sendBatch(final boolean bThrowExceptionOnDbErr) {
-        if (asOracleStatement() == null) {
+        if (asStatement() == null) {
             return;
         }
-        arte.getProfiler().enterTimingSection(ETimingSection.RDX_ENTITY_DB_UPDATE_BATCH);
         try {
-            if (arte.getDbConnection().get().isClosed()) {
-                return;
-            }
-            int updatedCount = asOracleStatement().sendBatch();
-            afterBatchUpdate(updatedCount);
-        } catch (SQLException | DatabaseError e) {
-            if (bThrowExceptionOnDbErr) {
-                if (e instanceof DatabaseError) {
-                    throw (DatabaseError) e;
+            arte.getProfiler().enterTimingSection(ETimingSection.RDX_ENTITY_DB_UPDATE_BATCH);
+            try {
+                if (arte.getDbConnection().get().isClosed()) {
+                    return;
                 }
-                throw new DatabaseError("Update query error: " + ExceptionTextFormatter.getExceptionMess(e), e);
-            } else {
-                arte.getTrace().put(EEventSeverity.DEBUG, "Error happend on UpdateObjectQuery.sendBatch() is hidden: " + ExceptionTextFormatter.exceptionStackToString(e), EEventSource.DB_QUERY_BUILDER);
+                int updatedCount = ((RadixPreparedStatement) asStatement()).sendBatch();
+                afterBatchUpdate(updatedCount);
+            } catch (SQLException | DatabaseError e) {
+                if (bThrowExceptionOnDbErr) {
+                    if (e instanceof DatabaseError) {
+                        throw (DatabaseError) e;
+                    }
+                    throw new DatabaseError("Update query error: " + ExceptionTextFormatter.getExceptionMess(e), e);
+                } else {
+                    arte.getTrace().put(EEventSeverity.DEBUG, "Error happend on UpdateObjectQuery.sendBatch() is hidden: " + ExceptionTextFormatter.exceptionStackToString(e), EEventSource.ARTE_DB);
+                }
+            } finally {
+                arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ENTITY_DB_UPDATE_BATCH);
             }
         } finally {
-            arte.getProfiler().leaveTimingSection(ETimingSection.RDX_ENTITY_DB_UPDATE_BATCH);
+            releaseTemporaryLobs();
         }
     }
 
     void setExecuteBatch(final int batchSize) {
-        if (asOracleStatement() == null) {
+        if (asStatement() == null) {
             return;
         }
         try {
-            asOracleStatement().setExecuteBatch(batchSize);
+            ((RadixPreparedStatement) asStatement()).setExecuteBatch(batchSize);
         } catch (SQLException e) {
-            throw new DatabaseError("Update query error: " + ExceptionTextFormatter.getExceptionMess(e), e);
+            throw new DatabaseError("Error on setting batch size: " + ExceptionTextFormatter.getExceptionMess(e), e);
         }
     }
 
     int getExecuteBatch() {
-        if (asOracleStatement() == null) {
+        if (asStatement() == null) {
             return 0;
         }
-        return asOracleStatement().getExecuteBatch();
+        return ((RadixPreparedStatement) asStatement()).getExecuteBatch();
     }
 }

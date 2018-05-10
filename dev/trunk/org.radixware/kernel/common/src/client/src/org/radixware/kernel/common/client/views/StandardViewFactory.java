@@ -16,6 +16,7 @@ import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.RadSortingDef;
 import org.radixware.kernel.common.client.meta.editorpages.RadEditorPageDef;
+import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameter;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlParameterFactory;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
@@ -37,7 +38,10 @@ import org.radixware.kernel.common.client.models.items.properties.PropertyObject
 import org.radixware.kernel.common.client.models.items.properties.PropertyRef;
 import org.radixware.kernel.common.client.models.items.properties.PropertyStr;
 import org.radixware.kernel.common.client.models.items.properties.PropertyXml;
+import org.radixware.kernel.common.client.widgets.IListWidget;
 import org.radixware.kernel.common.client.widgets.IWidget;
+import org.radixware.kernel.common.client.widgets.area.IWidgetArea;
+import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Arr;
 
 
@@ -85,18 +89,23 @@ public interface StandardViewFactory {
 
     public IPropEditor newPropObjectlEditor(PropertyObject prop);
 
-    public IPropEditor newPropRefEditor(PropertyRef prop);
+    public IPropEditor newPropRefEditor(PropertyRef prop);    
     
     public IPropEditor newPropTextStrEditor(PropertyStr prop);
+    
     public IPropEditor newPropTextClobEditor(PropertyClob prop);
 
     public <T extends Arr> IPropEditor newPropArrEditor(PropertyArr<T> prop);
+    
+    public IProxyPropEditor newProxyPropEditor(Property prop, EValType valType, EditMask editMask);
 
     public IPropLabel newPropLabel(Property prop);
 
     public IEntityEditorDialog newEntityEditorDialog(EntityModel entity);
 
-    public ISelectEntityDialog newSelectEntityDialog(GroupModel parentGroupMode, boolean canClear);
+    public ISelectEntityDialog newSelectEntityDialog(GroupModel groupModel, boolean canClear);
+    
+    public ISelectEntitiesDialog newSelectEntitiesDialog(GroupModel groupModel, boolean canClear);
 
     public IFilterEditorDialog newFilterEditorDialog(final FilterModel filter, final Collection<String> restrictedNames, final boolean showApplyButton, final IWidget parent);
     
@@ -106,5 +115,9 @@ public interface StandardViewFactory {
 
     public IEditorPageView newStandardEditorPage(IClientEnvironment environment, IView parentView, RadEditorPageDef editorPage);
 
-    public IArrayEditorDialog newArrayEditorDialog(PropertyArr prop, IWidget parent);        
+    public IArrayEditorDialog newArrayEditorDialog(PropertyArr prop, IWidget parent); 
+    
+    public IListWidget newListWidget(IClientEnvironment environment, IWidget parent);
+    
+    public IWidgetArea newWidgetArea(IClientEnvironment environment, IWidget parent);
 }

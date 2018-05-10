@@ -25,6 +25,7 @@ import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.items.EditorPageModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.Icon;
+import org.radixware.kernel.common.client.widgets.IModifableComponent;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EDialogIconType;
@@ -83,10 +84,12 @@ public class ModificationsList {
     }
 
     public interface ModifiedObject {
+        
+        EDialogButtonType confirmToApplyChanges(final IClientEnvironment environment);
 
-        boolean applyChanges(IProgressHandle progressHandle, IProblemHandler problemHandle);
+        boolean applyChanges(IProgressHandle progressHandle, IProblemHandler problemHandle, final boolean cascade);
 
-        void cancelChanges();
+        void cancelChanges(final boolean cascade);
 
         void activate();
 
@@ -108,30 +111,68 @@ public class ModificationsList {
         protected abstract Collection<IEmbeddedView> embeddedViewsToUpdate();
 
         @Override
-        public boolean applyChanges(final IProgressHandle progressHandle, IProblemHandler problemHandler) {
+        public boolean applyChanges(final IProgressHandle progressHandle, IProblemHandler problemHandler, final boolean cascade) {
             final Collection<IEmbeddedView> modifiedChildren = embeddedViewsToUpdate();
+            final Stack<IModifableComponent> components = new Stack<>();
+            Collection<IModifableComponent> innerComponents;
+            IModifableComponent currentComponent;
             for (IEmbeddedView embeddedView : modifiedChildren) {
                 if (progressHandle.wasCanceled()) {
                     return false;
                 }
-                if (embeddedView.inModifiedStateNow() && !applyChanges(embeddedView.getView(), problemHandler)) {
-                    return false;
+                components.clear();
+                components.add(embeddedView);
+                while(!components.isEmpty()){
+                    currentComponent = components.pop();
+                    if (currentComponent.inModifiedStateNow()
+                        && currentComponent.getView()!=null
+                        && !applyChanges(currentComponent.getView(), problemHandler)) {
+                        return false;
+                    }
+                    if (cascade){
+                        innerComponents = currentComponent.getInnerComponents();
+                        if (innerComponents!=null){
+                            for (IModifableComponent innerComponent: innerComponents){
+                                components.push(innerComponent);
+                            }
+                        }
+                    }
                 }
             }
             return true;
         }
 
         @Override
-        public void cancelChanges() {
+        public void cancelChanges(final boolean cascade) {
             final Collection<IEmbeddedView> modifiedChildren = embeddedViewsToUpdate();
+            final Stack<IModifableComponent> components = new Stack<>();
+            Collection<IModifableComponent> innerComponents;
+            IModifableComponent currentComponent;            
             for (IEmbeddedView embeddedView : modifiedChildren) {
                 if (embeddedView.inModifiedStateNow()) {
                     cancelChanges(embeddedView.getView());
                 }
+                components.clear();
+                components.add(embeddedView);
+                while(!components.isEmpty()){
+                    currentComponent = components.pop();
+                    if (currentComponent.inModifiedStateNow()
+                        && currentComponent.getView()!=null){
+                        cancelChanges(currentComponent.getView());
+                    }
+                    if (cascade){
+                        innerComponents = currentComponent.getInnerComponents();
+                        if (innerComponents!=null){
+                            for (IModifableComponent innerComponent: innerComponents){
+                                components.push(innerComponent);
+                            }
+                        }
+                    }
+                }                
             }
         }
 
-        protected final boolean applyChanges(final IView view, final IProblemHandler problemHandler) {
+        protected final boolean applyChanges(final IView view, final IProblemHandler problemHandler) {            
             try {
                 if (view instanceof IEditor) {
                     return ((IEditor) view).applyChanges();
@@ -185,6 +226,15 @@ public class ModificationsList {
             }
         }
 
+        @Override
+        public EDialogButtonType confirmToApplyChanges(final IClientEnvironment environment) {
+            final Set<EDialogButtonType> buttons = EnumSet.of(EDialogButtonType.YES, EDialogButtonType.NO, EDialogButtonType.CANCEL);
+            return environment.messageBox(environment.getMessageProvider().translate("ExplorerDialog", "Save Changes?"),
+                    getSaveConfirmationMessage(environment.getMessageProvider()),
+                    EDialogIconType.QUESTION,
+                    buttons);            
+        }                
+
         protected abstract String getApplyChangesProblemTitle();
     }
 
@@ -225,23 +275,23 @@ public class ModificationsList {
         }
 
         @Override
-        public boolean applyChanges(IProgressHandle progressHandle, IProblemHandler problemHandle) {
+        public boolean applyChanges(final IProgressHandle progressHandle, final IProblemHandler problemHandle, final boolean cascade) {
             if (self != null && !applyChanges(self, problemHandle)) {
                 return false;
             }
             if (progressHandle.wasCanceled()) {
                 return false;
             } else {
-                return super.applyChanges(progressHandle, problemHandle);
+                return super.applyChanges(progressHandle, problemHandle, cascade);
             }
         }
 
         @Override
-        public void cancelChanges() {
+        public void cancelChanges(final boolean cascade) {
             if (self != null) {
                 cancelChanges(self);
             }
-            super.cancelChanges();
+            super.cancelChanges(cascade);
         }
 
         @Override
@@ -305,6 +355,23 @@ public class ModificationsList {
             }
             return false;
         }
+
+        @Override
+        public EDialogButtonType confirmToApplyChanges(final IClientEnvironment environment) {
+            final Model selfModel = self==null ? null : self.getModel();
+            if (selfModel instanceof EntityModel && !((EntityModel)selfModel).isNew()){
+                return ((EntityModel)selfModel).showUpdateMessageConfirmation();
+            }else{
+                if (self instanceof ISelector && modifiedChildren.size()==1){
+                    final IEmbeddedView modifiedView = modifiedChildren.iterator().next();
+                    final Model childModel = modifiedView.getModel();
+                    if (childModel instanceof EntityModel && !((EntityModel)childModel).isNew()){
+                        return ((EntityModel)childModel).showUpdateMessageConfirmation();
+                    }
+                }
+                return super.confirmToApplyChanges(environment);                
+            }
+        }                
     }
 
     private static final class ModifiedPage extends AbstractModifiedObject {
@@ -432,11 +499,7 @@ public class ModificationsList {
             final List<ModifiedObject> modifiedObjectsList = getModifiedObjectsList();
             if (modifiedObjectsList.size() == 1) {
                 final ModifiedObject modifiedObject = modifiedObjectsList.get(0);
-                Set<EDialogButtonType> buttons = EnumSet.of(EDialogButtonType.YES, EDialogButtonType.NO, EDialogButtonType.CANCEL);
-                final EDialogButtonType answer = environment.messageBox(environment.getMessageProvider().translate("ExplorerDialog", "Save Changes?"),
-                        modifiedObject.getSaveConfirmationMessage(environment.getMessageProvider()),
-                        EDialogIconType.QUESTION,
-                        buttons);
+                final EDialogButtonType answer = modifiedObject.confirmToApplyChanges(environment);
                 switch (answer) {
                     case YES:
                         return Collections.<ModifiedObject>singletonList(modifiedObject);
@@ -471,7 +534,7 @@ public class ModificationsList {
         final StandardProblemHandler problemHandler = new StandardProblemHandler();
         final List<ModifiedObject> processedObjects;
         try {
-            processedObjects = applyChanges(environment, objects, problemHandler);
+            processedObjects = applyChangesCascade(environment, objects, problemHandler);
         } catch (InterruptedException exception) {
             return false;
         } finally {
@@ -486,7 +549,7 @@ public class ModificationsList {
                 final List<ModifiedObject> objectsList = getModifiedObjectsListFromTree(objects);
                 for (ModifiedObject object : modifiedObjectsList) {
                     if (!objectsList.contains(object)) {
-                        object.cancelChanges();
+                        object.cancelChanges(true);
                     }
                 }
                 return true;
@@ -496,14 +559,14 @@ public class ModificationsList {
             return processedObjects.containsAll(objects);
         }
     }
-
-    public List<ModifiedObject> applyChanges(final IClientEnvironment environment, final List<ModifiedObject> items, final IProblemHandler problemHandler) throws InterruptedException {
+    
+    private List<ModifiedObject> applyChanges(final IClientEnvironment environment, final List<ModifiedObject> items, final IProblemHandler problemHandler, final boolean cascade) throws InterruptedException {
         final List<ModifiedObject> processedObjects = new LinkedList<>();
         final IProgressHandle progressHandle = environment.getProgressHandleManager().newStandardProgressHandle();
         progressHandle.startProgress(environment.getMessageProvider().translate("Wait Dialog", "Saving Data..."), true);
         try {
             for (ModifiedObject item : items) {
-                if (item.applyChanges(progressHandle, problemHandler)){
+                if (item.applyChanges(progressHandle, problemHandler, cascade)){
                     processedObjects.add(item);
                 }
                 if (progressHandle.wasCanceled()) {
@@ -513,14 +576,30 @@ public class ModificationsList {
         } finally {
             progressHandle.finishProgress();
         }
-        return processedObjects;
+        return processedObjects;        
+    }
+    
+    public List<ModifiedObject> applyChanges(final IClientEnvironment environment, final List<ModifiedObject> items, final IProblemHandler problemHandler) throws InterruptedException {
+        return applyChanges(environment, items, problemHandler, false);
+    }    
+
+    public List<ModifiedObject> applyChangesCascade(final IClientEnvironment environment, final List<ModifiedObject> items, final IProblemHandler problemHandler) throws InterruptedException {
+        return applyChanges(environment, items, problemHandler, true);
     }
 
-    public void cancelChanges() {
+    private void cancelChanges(final boolean cascade) {
         final List<ModifiedObject> modifiedObjectsList = getModifiedObjectsList();
         for (ModifiedObject object : modifiedObjectsList) {
-            object.cancelChanges();
+            object.cancelChanges(cascade);
         }
+    }
+    
+    public void cancelChanges() {
+        cancelChanges(false);
+    }
+    
+    public void cancelChangesCascade(){
+        cancelChanges(true);
     }
 
     private static boolean hasCriticalProblem(final StandardProblemHandler handler) {

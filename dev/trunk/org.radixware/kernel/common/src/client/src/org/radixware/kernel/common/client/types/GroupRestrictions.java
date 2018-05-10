@@ -98,7 +98,7 @@ public final class GroupRestrictions extends ModelRestrictions {
 
     public void setDeleteAllRestricted(boolean flag) {
         setMask(ERestriction.DELETE_ALL, flag);
-    }
+    }    
 
     public void setTransferInRestricted(boolean flag) {
         setMask(ERestriction.TRANSFER_IN, flag);
@@ -136,6 +136,14 @@ public final class GroupRestrictions extends ModelRestrictions {
         setMask(ERestriction.MULTIPLE_DELETE, flag);
     }    
 
+    public void setMultipleCreateRestricted(boolean flag){
+        setMask(ERestriction.MULTIPLE_CREATE, flag);
+    }
+    
+    public void setCalcStatisticRestricted(final boolean flag){
+        setMask(ERestriction.CALC_STATISTIC, flag);
+    }
+    
     /**
      * Позволяет установить/снять ограничение на получение сущности из группы.
      * @param pid идентификатор сущности, на  которую накладывается/снимается ограничения

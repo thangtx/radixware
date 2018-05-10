@@ -20,15 +20,18 @@ import org.radixware.kernel.common.client.tree.nodes.ExplorerTreeNode;
 import org.radixware.kernel.common.client.tree.nodes.IExplorerTreeNode;
 import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.schemas.clientstate.ExplorerTreeState;
 
 
 public interface IExplorerTree {
     
-    public interface Actions{
+    public static interface Actions{
         Action getRemoveCurrentNodeAction();
         Action getRemoveChildChoosenObjectsAction();
         Action getGoToParentNodeAction();
         Action getGoToCurrentNodeAction();
+        Action getGoBackAction();
+        Action getGoForwardAction();
     }
 
     void setNodeVisible(final IExplorerTreeNode node, final boolean isVisible);
@@ -70,4 +73,8 @@ public interface IExplorerTree {
     IClientEnvironment getEnvironment();
     
     Actions getActions();
+    
+    ExplorerTreeState writeStateToXml();
+    
+    void restoreStateFromXml(ExplorerTreeState state);
 }

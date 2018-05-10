@@ -24,7 +24,7 @@ import org.radixware.kernel.designer.dds.script.IScriptGenerationHandler;
 
 public class DdsPlSqlBodyScriptGenerator extends DdsPlSqlPartScriptGenerator<DdsPlSqlBodyDef> {
 
-    protected DdsPlSqlBodyScriptGenerator() {
+    public DdsPlSqlBodyScriptGenerator() {
     }
 
     @Override
@@ -42,9 +42,7 @@ public class DdsPlSqlBodyScriptGenerator extends DdsPlSqlPartScriptGenerator<Dds
 
         cp.print("create or replace ");
         printSqlClassName(cp, body);
-        cp.print(' ');
-        cp.print(plSqlObject.getDbName());
-        cp.print(" as");
+        cp.print(' ').print(plSqlObject.getDbName()).print(" as");
 
         for (DdsPlSqlObjectItemDef item : plSqlObject.getBody().getItems()) {
             if (handler != null) {
@@ -74,10 +72,15 @@ public class DdsPlSqlBodyScriptGenerator extends DdsPlSqlPartScriptGenerator<Dds
             }
         }
 
-        cp.println();
-        cp.print("end");
-        cp.print(';');
-        cp.printCommandSeparator();
+        cp.println().print("end").print(';').printCommandSeparator();
+    }
+
+    @Override
+    public void getReCreateScript(CodePrinter printer, DdsPlSqlBodyDef definition, boolean storeData) {
+    }
+
+    @Override
+    public void getEnableDisableScript(CodePrinter cp, DdsPlSqlBodyDef definition, boolean enable) {
     }
 
     public static final class Factory {

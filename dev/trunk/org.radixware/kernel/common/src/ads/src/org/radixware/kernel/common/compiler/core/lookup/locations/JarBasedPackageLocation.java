@@ -28,6 +28,7 @@ import org.eclipse.jdt.internal.compiler.util.SuffixConstants;
 import org.radixware.kernel.common.build.xbeans.XbeansSchemaCompiler;
 import org.radixware.kernel.common.compiler.core.lookup.AdsJavaPackage;
 import org.radixware.kernel.common.compiler.core.lookup.AdsNameEnvironment;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.fs.IJarDataProvider;
 import org.radixware.kernel.common.utils.CharOperations;
@@ -468,8 +469,9 @@ public abstract class JarBasedPackageLocation extends PackageLocation {
 
     @Override
     public String toString() {
-        List<IJarDataProvider> files = getJarFiles();
         StringBuilder sb = new StringBuilder();
+        List<IJarDataProvider> files = getJarFiles();
+
         for (IJarDataProvider f : files) {
             sb.append(f.getName()).append("\n");
         }

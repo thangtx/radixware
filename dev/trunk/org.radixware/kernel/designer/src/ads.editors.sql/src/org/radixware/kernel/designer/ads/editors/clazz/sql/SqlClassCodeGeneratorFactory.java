@@ -32,6 +32,8 @@ import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumUtils;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsTableDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTable;
 import org.radixware.kernel.common.enums.EPropNature;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.Scml;
@@ -97,22 +99,25 @@ public class SqlClassCodeGeneratorFactory implements CodeGenerator.Factory {
 
         @Override
         public AdsParameterPropertyDef createParameter() {
-            final AdsSqlClassDef sqlClass = editor.getSqlClass();
-            final List<ICreature> creatures = PropertyCreature.Factory.createInstances(sqlClass.getPropertyGroup(), Collections.singleton(EPropNature.SQL_CLASS_PARAMETER));
-            final ICreatureGroup group = new ICreatureGroup() {
-                @Override
-                public List<ICreature> getCreatures() {
-                    return creatures;
-                }
+            ISqlDef sqmlDef = editor.getSqlClass();
+            if (sqmlDef instanceof AdsSqlClassDef) {
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) sqmlDef;
+                final List<ICreature> creatures = PropertyCreature.Factory.createInstances(sqlClass.getPropertyGroup(), Collections.singleton(EPropNature.SQL_CLASS_PARAMETER));
+                final ICreatureGroup group = new ICreatureGroup() {
+                    @Override
+                    public List<ICreature> getCreatures() {
+                        return creatures;
+                    }
 
-                @Override
-                public String getDisplayName() {
-                    return "group";
+                    @Override
+                    public String getDisplayName() {
+                        return "group";
+                    }
+                };
+                final ICreature result = CreationWizard.execute(new ICreatureGroup[]{group}, creatures.get(0));
+                if (result != null) {
+                    return ((AdsParameterPropertyDef) result.commit());
                 }
-            };
-            final ICreature result = CreationWizard.execute(new ICreatureGroup[]{group}, creatures.get(0));
-            if (result != null) {
-                return ((AdsParameterPropertyDef) result.commit());
             }
             return null;
         }
@@ -132,34 +137,37 @@ public class SqlClassCodeGeneratorFactory implements CodeGenerator.Factory {
         @Override
         public AdsParameterPropertyDef createParameter() {
             final List<DdsTableDef> allowedTables = new ArrayList<DdsTableDef>();
-            for (UsedTable usedTable : editor.getSqlClass().getUsedTables().list()) {
-                final DdsTableDef usedTableDef = usedTable.findTable();
-                if (usedTableDef != null) {
-                    allowedTables.add(usedTableDef);
+            if (editor.getSqlClass() instanceof AdsSqlClassDef) {
+                AdsSqlClassDef adsSqlClassDef = (AdsSqlClassDef) editor.getSqlClass();
+                for (UsedTable usedTable : adsSqlClassDef.getUsedTables().list()) {
+                    final DdsTableDef usedTableDef = usedTable.findTable();
+                    if (usedTableDef != null) {
+                        allowedTables.add(usedTableDef);
+                    }
                 }
+
+                final ChooseDefinitionCfg cfg = ChooseDefinitionCfg.Factory.newInstance(allowedTables);
+                final Definition def = ChooseDefinition.chooseDefinition(cfg);
+
+                if (def == null) {
+                    return null;
+                }
+
+                final DdsTableDef table = (DdsTableDef) def;
+
+                final AdsParameterPropertyDef parameter = AdsParameterPropertyDef.Factory.newInstance();
+                final AdsEntityClassDef entity = AdsUtils.findEntityClass(table);
+                final String name = getName("p" + entity.getName());
+                if (name == null) {
+                    return null;
+                }
+                final AdsTypeDeclaration type = AdsTypeDeclaration.Factory.newParentRef(entity);
+                parameter.setName(name);
+                parameter.getValue().setType(type);
+                adsSqlClassDef.getProperties().getLocal().add(parameter);
+                return parameter;
             }
-
-            final ChooseDefinitionCfg cfg = ChooseDefinitionCfg.Factory.newInstance(allowedTables);
-            final Definition def = ChooseDefinition.chooseDefinition(cfg);
-
-            if (def == null) {
-                return null;
-            }
-
-            final DdsTableDef table = (DdsTableDef) def;
-
-            final AdsParameterPropertyDef parameter = AdsParameterPropertyDef.Factory.newInstance();
-            final AdsEntityClassDef entity = AdsUtils.findEntityClass(table);
-            final String name = getName("p" + entity.getName());
-            if (name == null) {
-                return null;
-            }
-            final AdsTypeDeclaration type = AdsTypeDeclaration.Factory.newParentRef(entity);
-            parameter.setName(name);
-            parameter.getValue().setType(type);
-
-            editor.getSqlClass().getProperties().getLocal().add(parameter);
-            return parameter;
+            return null;
         }
     }
 
@@ -178,15 +186,20 @@ public class SqlClassCodeGeneratorFactory implements CodeGenerator.Factory {
 
         @Override
         protected AdsParameterPropertyDef createParameter() {
-            final AdsParameterPropertyDef parameter = AdsParameterPropertyDef.Factory.newInstance();
-            final String name = getName("p" + Character.toUpperCase(property.getName().charAt(0)) + property.getName().substring(1));
-            if (name == null) {
-                return null;
+            if (editor.getSqlClass() instanceof AdsSqlClassDef) {
+                AdsSqlClassDef adsSqlClassDef = (AdsSqlClassDef) editor.getSqlClass();
+                final AdsParameterPropertyDef parameter = AdsParameterPropertyDef.Factory.newInstance();
+                final String name = getName("p" + Character.toUpperCase(property.getName().charAt(0)) + property.getName().substring(1));
+                if (name == null) {
+                    return null;
+                }
+                parameter.setName(name);
+                parameter.getValue().setType(AdsTypeDeclaration.Factory.newInstance(property.getValType()));
+
+                adsSqlClassDef.getProperties().getLocal().add(parameter);
+                return parameter;
             }
-            parameter.setName(name);
-            parameter.getValue().setType(AdsTypeDeclaration.Factory.newInstance(property.getValType()));
-            editor.getSqlClass().getProperties().getLocal().add(parameter);
-            return parameter;
+            return null;
         }
 
         @Override
@@ -241,19 +254,22 @@ public class SqlClassCodeGeneratorFactory implements CodeGenerator.Factory {
 
         @Override
         protected AdsFieldPropertyDef createField() {
-            final AdsSqlClassDef sqlClass = editor.getSqlClass();
-            final String name = getName(column.getName());
-            if (name == null) {
-                return null;
-            }
-            final AdsFieldPropertyDef field = AdsFieldPropertyDef.Factory.newInstance(name);
-            sqlClass.getProperties().getLocal().add(field);
-            field.setConst(true);
-            field.getAccessFlags().setPublic();
+            if (editor.getSqlClass() instanceof AdsSqlClassDef) {
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) editor.getSqlClass();
+                final String name = getName(column.getName());
+                if (name == null) {
+                    return null;
+                }
+                final AdsFieldPropertyDef field = AdsFieldPropertyDef.Factory.newInstance(name);
+                sqlClass.getProperties().getLocal().add(field);
+                field.setConst(true);
+                field.getAccessFlags().setPublic();
 
-            final AdsTypeDeclaration typeDecl = getColumnTypeDeclaration(column);
-            field.getValue().setType(typeDecl);
-            return field;
+                final AdsTypeDeclaration typeDecl = getColumnTypeDeclaration(column);
+                field.getValue().setType(typeDecl);
+                return field;
+            }
+            return null;
         }
 
         @Override
@@ -270,22 +286,24 @@ public class SqlClassCodeGeneratorFactory implements CodeGenerator.Factory {
 
         @Override
         protected AdsFieldPropertyDef createField() {
-            final AdsSqlClassDef sqlClass = editor.getSqlClass();
-            final List<ICreature> creatures = PropertyCreature.Factory.createInstances(sqlClass.getPropertyGroup(), Collections.singleton(EPropNature.FIELD));
-            final ICreatureGroup group = new ICreatureGroup() {
-                @Override
-                public List<ICreature> getCreatures() {
-                    return creatures;
-                }
+            if (editor.getSqlClass() instanceof AdsSqlClassDef) {
+                final AdsSqlClassDef sqlClass = (AdsSqlClassDef) editor.getSqlClass();
+                final List<ICreature> creatures = PropertyCreature.Factory.createInstances(sqlClass.getPropertyGroup(), Collections.singleton(EPropNature.FIELD));
+                final ICreatureGroup group = new ICreatureGroup() {
+                    @Override
+                    public List<ICreature> getCreatures() {
+                        return creatures;
+                    }
 
-                @Override
-                public String getDisplayName() {
-                    return "group";
+                    @Override
+                    public String getDisplayName() {
+                        return "group";
+                    }
+                };
+                final ICreature result = CreationWizard.execute(new ICreatureGroup[]{group}, creatures.get(0));
+                if (result != null) {
+                    return ((AdsFieldPropertyDef) result.commit());
                 }
-            };
-            final ICreature result = CreationWizard.execute(new ICreatureGroup[]{group}, creatures.get(0));
-            if (result != null) {
-                return ((AdsFieldPropertyDef) result.commit());
             }
             return null;
         }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import org.openide.util.NbBundle;
+import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.VisitorProviderFactory;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionIcon;
@@ -89,6 +90,12 @@ public class AdsClassCreature extends AdsModuleDefinitionCreature<AdsClassDef> {
     }
     protected EClassType classType;
     protected boolean isUserReport;
+    
+    protected AdsClassCreature(RadixObjects container, EClassType classType, boolean userReport) {
+        super(container, EDefType.CLASS);
+        this.classType = classType;
+        this.isUserReport = userReport;
+    }
 
     protected AdsClassCreature(AdsModule module, EClassType classType, boolean userReport) {
         super(module, EDefType.CLASS);
@@ -136,7 +143,7 @@ public class AdsClassCreature extends AdsModuleDefinitionCreature<AdsClassDef> {
             case ENTITY_GROUP:
                 return AdsDefinitionIcon.CLASS_ENTITY_GROUP;
             case PRESENTATION_ENTITY_ADAPTER:
-                return null;
+                return AdsDefinitionIcon.CLASS_ENTITY_ADAPTER;
             case APPLICATION:
                 return AdsDefinitionIcon.CLASS_APPLICATION;
             case SQL_CURSOR:

@@ -43,9 +43,9 @@ import javax.swing.tree.TreePath;
 import org.openide.util.actions.Presenter;
 import org.radixware.kernel.common.defs.RadixObjects.ContainerChangedEvent;
 import org.radixware.kernel.common.defs.RadixObjects.ContainerChangesListener;
-import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
-import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef.UsedTable;
 import org.radixware.kernel.common.defs.dds.DdsColumnDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTable;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.sqml.tags.DbFuncCallTag;
 import org.radixware.kernel.common.sqml.tags.TableSqlNameTag;
@@ -74,7 +74,7 @@ public class AdsSqlClassTree extends JTree {
     private DefaultMutableTreeNode root;
     private final AdsSqlClassCodeEditor editor;
     private NodeFactory factory;
-    private AdsSqlClassDef sqlClass;
+    private ISqlDef sqlDef;
     private UsedTablesChangeListener usedTablesListener;
     private boolean initied = false;
 
@@ -106,20 +106,20 @@ public class AdsSqlClassTree extends JTree {
 
         @Override
         public void tagAdded(TagBounds tagBounds) {
-            if (sqlClass == null) {
+            if (sqlDef == null) {
                 return;
             }
             if (tagBounds.getVTag().getTag() instanceof TableSqlNameTag) {
                 final TableSqlNameTag tag = (TableSqlNameTag) tagBounds.getVTag().getTag();
                 boolean isUsed = false;
-                for (UsedTable usedTable : sqlClass.getUsedTables()) {
+                for (IUsedTable usedTable : sqlDef.getUsedTables().list()) {
                     if (Utils.equals(usedTable.getTableId(), tag.getTableId()) && Utils.aliasesAreEqual(usedTable.getAlias(), tag.getTableAlias())) {
                         isUsed = true;
                         break;
                     }
                 }
                 if (!isUsed) {
-                    sqlClass.getUsedTables().add(tag.getTableId(), tag.getTableAlias());
+                    sqlDef.getUsedTables().add(tag.getTableId(), tag.getTableAlias());
                 }
             } else if (tagBounds.getVTag().getTag() instanceof DbFuncCallTag) {
                 update();
@@ -185,19 +185,19 @@ public class AdsSqlClassTree extends JTree {
         }
     }
 
-    public void open(AdsSqlClassDef sqlClass, OpenInfo info) {
-        this.sqlClass = sqlClass;
+    public void open(ISqlDef sqlDef, OpenInfo info) {
+        this.sqlDef = sqlDef;
         if (usedTablesListener != null) {
             usedTablesListener.invalidate();
         }
         usedTablesListener = new UsedTablesChangeListener();
-        sqlClass.getUsedTables().getContainerChangesSupport().addEventListener(usedTablesListener);
+        sqlDef.getUsedTables().getContainerChangesSupport().addEventListener(usedTablesListener);
         rebuildTreeWithStatePersistance();
         initied = true;
     }
 
     public boolean isReadOnly() {
-        return (sqlClass == null) || sqlClass.isReadOnly();
+        return (sqlDef == null) || sqlDef.isReadOnly();
     }
 
     private class UsedTablesChangeListener implements ContainerChangesListener {
@@ -217,7 +217,7 @@ public class AdsSqlClassTree extends JTree {
     }
 
     private void rebuildTree() {
-        root = factory.create(sqlClass, this);
+        root = factory.create(sqlDef, this);
         DefaultTreeModel model = new DefaultTreeModel(root);
 
         setRootVisible(false);
@@ -274,8 +274,8 @@ public class AdsSqlClassTree extends JTree {
         }
     }
 
-    public AdsSqlClassDef getSqlClass() {
-        return sqlClass;
+    public ISqlDef getSqlDef() {
+        return sqlDef;
     }
 
     private JPopupMenu buildPopupMenu(DefaultMutableTreeNode node) {

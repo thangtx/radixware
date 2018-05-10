@@ -26,9 +26,9 @@ import org.radixware.wps.rwt.TableLayout;
 import org.radixware.wps.rwt.UIObject;
 
 
-public class ColumnAlignmentSettings extends SettingsWidget {
+final class ColumnAlignmentSettings extends SettingsWidget {
 
-    private final static EnumSet<EValType> valueTypes = EnumSet.of(
+    private final static EnumSet<EValType> VALUE_TYPES = EnumSet.of(
             EValType.BIN,
             EValType.BLOB, EValType.CHAR,
             EValType.CLOB, EValType.DATE_TIME,
@@ -37,7 +37,7 @@ public class ColumnAlignmentSettings extends SettingsWidget {
     private final Map<EValType, ColumnAlignmentSettingsWidget> vtypesToSettings = new HashMap<>();
 
     public ColumnAlignmentSettings(final WpsEnvironment env, UIObject parent) {
-        super(env, parent, SettingNames.SELECTOR_GROUP, null, "", null);
+        super(env, parent, SettingNames.SELECTOR_GROUP, null, "");
         setUpUi();
     }
 
@@ -64,8 +64,8 @@ public class ColumnAlignmentSettings extends SettingsWidget {
 
     private void setUpUi() {
         TableLayout table = new TableLayout();
-        for (EValType t : valueTypes) {
-            ColumnAlignmentSettingsWidget widget = new ColumnAlignmentSettingsWidget((WpsEnvironment) e, this, t);
+        for (EValType t : VALUE_TYPES) {
+            ColumnAlignmentSettingsWidget widget = new ColumnAlignmentSettingsWidget(getWpsEnvironment(), this, t);
             TableLayout.Row r = table.addRow();
             r.addCell().add(new Label(labelText(getEnvironment().getMessageProvider(), t)));
             r.addCell().add(widget);

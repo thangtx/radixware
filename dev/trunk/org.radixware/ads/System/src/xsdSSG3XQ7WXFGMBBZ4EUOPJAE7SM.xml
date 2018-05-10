@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdSSG3XQ7WXFGMBBZ4EUOPJAE7SM" Name="SysManagementXsd" TargetNamespace="http://schemas.radixware.org/systemmanagement.xsd" NeedsDoc="false" Environment="common"><ads:AccessRules IsFinal="true" IsPublished="false"/><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://schemas.radixware.org/systemmanagement.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/systemmanagement.xsd" xmlns:t="http://schemas.radixware.org/types.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:complexType name="SystemInstanceInfo">
+        <xs:sequence>
+            <xs:element name="Id" type="t:Int" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Title" type="t:Str" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ActivityStatus" type="t:Str" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="KernelVersion" type="t:Str" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="AppVersion" type="t:Str" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="RestartExitCode" type="t:Int" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="ArteCount" type="t:Int" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="AvgActiveArteCount" type="t:Num" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="StartTimeMillis" type="t:Int" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="OsPid" type="t:Int" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="Revision" type="t:Int" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="KernelCompatibleToRepo" type="t:Bool" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="AadcMemberId" type="t:Int" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="SystemInstancesInfo">
+        <xs:sequence>
+            <xs:element name="DbVersion" type="t:Str" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="RepoKernelVersion" type="t:Str" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="RepoAppVersion" type="t:Str" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="RepoRevision" type="t:Int" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="AadcMember1StickedVersion" type="t:Int" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="AadcMember2StickedVersion" type="t:Int" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SystemInstances">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="SystemInstanceInfo" type="this:SystemInstanceInfo" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="ManageInstancesTask">
+        <xs:sequence>
+            <xs:element name="TaskItem" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="Id" type="t:Int"/>
+                    <xs:attribute name="DelaySec" type="t:Int"/>
+                </xs:complexType>            
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="Action" use="required">
+            <xs:simpleType>
+                <xs:annotation>
+                    <xs:appinfo source="http://schemas.radixware.org/types.xsd">
+                        <t:class classId="acsBTUYDDEMGFECJEQOMKLX3WZQDQ">org.radixware.ads.mdlSYSTEM____________________.common.acsBTUYDDEMGFECJEQOMKLX3WZQDQ</t:class>
+                    </xs:appinfo>
+                </xs:annotation>
+                <xs:restriction base="t:StrEnum"/>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="HardStopDelaySec" type="t:Int" use="optional"/>
+        <xs:attribute name="MarkInactiveAsStopped" type="t:Bool" use="optional"/>
+        <xs:attribute name="SwitchRolling" type="t:Bool" use="optional"/>
+    </xs:complexType>
+    
+    <xs:element name="ManageInstancesTask" type="this:ManageInstancesTask"/>
+    <xs:element name="SystemInstanceInfo" type="this:SystemInstanceInfo"/>
+    <xs:element name="SystemInstancesInfo" type="this:SystemInstancesInfo"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

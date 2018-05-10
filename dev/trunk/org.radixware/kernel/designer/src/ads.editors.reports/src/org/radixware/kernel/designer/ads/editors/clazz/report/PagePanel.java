@@ -13,6 +13,7 @@ package org.radixware.kernel.designer.ads.editors.clazz.report;
 import java.awt.Color;
 import java.math.BigDecimal;
 import javax.swing.AbstractSpinnerModel;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JColorChooser;
 import javax.swing.JPanel;
@@ -142,15 +143,7 @@ class PagePanel extends JPanel {
         heightEditor.setMinValue(Long.valueOf(1));
         heightEditor.setMaxValue(Long.valueOf(Integer.MAX_VALUE));
         
-        topSpinner.setModel(new BigDecimalSpinnerModel());
-        bottomSpinner.setModel(new BigDecimalSpinnerModel());
-        rightSpinner.setModel(new BigDecimalSpinnerModel());
-        leftSpinner.setModel(new BigDecimalSpinnerModel());
-        topSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(topSpinner));
-        bottomSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(bottomSpinner));
-        rightSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(rightSpinner));
-        leftSpinner.setEditor(new CheckedBigDecimalSpinnerEditor(leftSpinner));
-        
+        marginPanel.setBorder(BorderFactory.createTitledBorder("Margins"));
         if (form.getMode() == AdsReportForm.Mode.TEXT) {
             jLabel4.setText(jLabel4.getText().replace("(mm.)", "(cols)"));
             jLabel3.setText(jLabel3.getText().replace("(mm.)", "(rows)"));
@@ -176,10 +169,7 @@ class PagePanel extends JPanel {
         if (form.getMode() == AdsReportForm.Mode.TEXT) {
             widthSpinner.setValue(Long.valueOf(form.getPageWidthCols()));
             heightEditor.setValue(EValType.INT, ValAsStr.Factory.newInstance(Long.valueOf(form.getPageHeightRows()), EValType.INT));
-            topSpinner.setValue(BigDecimal.valueOf(form.getMargin().getTopRows()));
-            bottomSpinner.setValue(BigDecimal.valueOf(form.getMargin().getBottomRows()));
-            rightSpinner.setValue(BigDecimal.valueOf(form.getMargin().getRightCols()));
-            leftSpinner.setValue(BigDecimal.valueOf(form.getMargin().getLeftCols()));
+            marginPanel.open(form.getMarginTxt());
         } else {
             
             if (form.getPageHeightMm() > form.getPageWidthMm()) {
@@ -194,10 +184,7 @@ class PagePanel extends JPanel {
                 heightEditor.setValue(EValType.INT, ValAsStr.Factory.newInstance(Long.valueOf(form.getPageHeightMm()), EValType.INT));
             }
             
-            topSpinner.setValue(BigDecimal.valueOf(form.getMargin().getTopMm()));
-            bottomSpinner.setValue(BigDecimal.valueOf(form.getMargin().getBottomMm()));
-            rightSpinner.setValue(BigDecimal.valueOf(form.getMargin().getRightMm()));
-            leftSpinner.setValue(BigDecimal.valueOf(form.getMargin().getLeftMm()));
+            marginPanel.open(form.getMargin());
             bgColor = form.getBgColor();
             fgColor = form.getFgColor();
           
@@ -219,10 +206,7 @@ class PagePanel extends JPanel {
         landscapeRadioButton.setEnabled(en && !isTextMode);
         widthSpinner.setEnabled(enabled && (/*format == EPageFormat.INFINITE || */format == EPageFormat.OTHER || isTextMode));
         heightEditor.setEnabled(enabled && (format == EPageFormat.OTHER || isTextMode));
-        topSpinner.setEnabled(enabled);
-        bottomSpinner.setEnabled(enabled);
-        rightSpinner.setEnabled(enabled);
-        leftSpinner.setEnabled(enabled);
+        marginPanel.setEnabled(enabled);
         bgColorButton.setEnabled(enabled && !isTextMode);
         textColorButton.setEnabled(enabled && !isTextMode);
        
@@ -250,17 +234,7 @@ class PagePanel extends JPanel {
         widthSpinner = new javax.swing.JSpinner();
         jLabel3 = new javax.swing.JLabel();
         heightEditor = new org.radixware.kernel.designer.common.dialogs.components.ValAsStrEditPanel();
-        jPanel4 = new javax.swing.JPanel();
-        middlePanel = new javax.swing.JPanel();
-        topSpinner = new javax.swing.JSpinner();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        leftSpinner = new javax.swing.JSpinner();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        rightSpinner = new javax.swing.JSpinner();
-        iconPanel = new javax.swing.JPanel();
-        bottomSpinner = new javax.swing.JSpinner();
+        marginPanel = new org.radixware.kernel.designer.ads.editors.clazz.report.MarginPanel();
         jPanel9 = new javax.swing.JPanel();
         textColorButton = new org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton();
         bgColorButton = new org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton();
@@ -384,106 +358,6 @@ class PagePanel extends JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(PagePanel.class, "PagePanel.jPanel4.border.title"))); // NOI18N
-        jPanel4.setLayout(new java.awt.GridBagLayout());
-
-        topSpinner.setPreferredSize(new java.awt.Dimension(64, 20));
-        topSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                topSpinnerStateChanged(evt);
-            }
-        });
-
-        jLabel8.setText(org.openide.util.NbBundle.getMessage(PagePanel.class, "PagePanel.jLabel8.text")); // NOI18N
-
-        jLabel5.setText(org.openide.util.NbBundle.getMessage(PagePanel.class, "PagePanel.jLabel5.text")); // NOI18N
-
-        leftSpinner.setPreferredSize(new java.awt.Dimension(64, 20));
-        leftSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                leftSpinnerStateChanged(evt);
-            }
-        });
-
-        jLabel6.setText(org.openide.util.NbBundle.getMessage(PagePanel.class, "PagePanel.jLabel6.text")); // NOI18N
-
-        jLabel7.setText(org.openide.util.NbBundle.getMessage(PagePanel.class, "PagePanel.jLabel7.text")); // NOI18N
-
-        rightSpinner.setPreferredSize(new java.awt.Dimension(64, 20));
-        rightSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                rightSpinnerStateChanged(evt);
-            }
-        });
-
-        javax.swing.GroupLayout iconPanelLayout = new javax.swing.GroupLayout(iconPanel);
-        iconPanel.setLayout(iconPanelLayout);
-        iconPanelLayout.setHorizontalGroup(
-            iconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
-        );
-        iconPanelLayout.setVerticalGroup(
-            iconPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 49, Short.MAX_VALUE)
-        );
-
-        bottomSpinner.setPreferredSize(new java.awt.Dimension(64, 20));
-        bottomSpinner.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                bottomSpinnerStateChanged(evt);
-            }
-        });
-
-        javax.swing.GroupLayout middlePanelLayout = new javax.swing.GroupLayout(middlePanel);
-        middlePanel.setLayout(middlePanelLayout);
-        middlePanelLayout.setHorizontalGroup(
-            middlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(middlePanelLayout.createSequentialGroup()
-                .addGroup(middlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel5)
-                    .addGroup(middlePanelLayout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(leftSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(middlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bottomSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(topSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(middlePanelLayout.createSequentialGroup()
-                        .addComponent(iconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rightSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-        );
-        middlePanelLayout.setVerticalGroup(
-            middlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(middlePanelLayout.createSequentialGroup()
-                .addGroup(middlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(topSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8))
-                .addGroup(middlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(middlePanelLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(middlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
-                            .addComponent(leftSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7)
-                            .addComponent(rightSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(middlePanelLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(iconPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(middlePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(bottomSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)))
-        );
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 10, 0);
-        jPanel4.add(middlePanel, gridBagConstraints);
-
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(PagePanel.class, "PagePanel.jPanel9.border.title"))); // NOI18N
 
         textColorButton.setText(org.openide.util.NbBundle.getMessage(PagePanel.class, "PagePanel.textColorButton.text")); // NOI18N
@@ -509,7 +383,7 @@ class PagePanel extends JPanel {
                 .addComponent(bgColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(textColorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(225, Short.MAX_VALUE))
+                .addContainerGap(228, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -527,9 +401,9 @@ class PagePanel extends JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(marginPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -538,7 +412,7 @@ class PagePanel extends JPanel {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(marginPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -604,30 +478,6 @@ class PagePanel extends JPanel {
         }
     }//GEN-LAST:event_widthSpinnerStateChanged
 
-    private void topSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_topSpinnerStateChanged
-        if (!updating) {
-            apply();
-        }
-    }//GEN-LAST:event_topSpinnerStateChanged
-
-    private void leftSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_leftSpinnerStateChanged
-        if (!updating) {
-            apply();
-        }
-    }//GEN-LAST:event_leftSpinnerStateChanged
-
-    private void bottomSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_bottomSpinnerStateChanged
-        if (!updating) {
-            apply();
-        }
-    }//GEN-LAST:event_bottomSpinnerStateChanged
-
-    private void rightSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rightSpinnerStateChanged
-        if (!updating) {
-            apply();
-        }
-    }//GEN-LAST:event_rightSpinnerStateChanged
-
     private void bgColorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bgColorButtonActionPerformed
         final Color clr = JColorChooser.showDialog(this, "Choose Background Color", bgColor);
         if (clr != null) {
@@ -651,48 +501,29 @@ class PagePanel extends JPanel {
         if (isTextMode) {
             form.setPageWidthCols(((Long) widthSpinner.getValue()).intValue());
             form.setPageHeightRows((int) ((Long) heightEditor.getValue().toObject(EValType.INT)).longValue());
-            form.getMargin().setTopRows(((BigDecimal) topSpinner.getValue()).intValue());
-            form.getMargin().setBottomRows(((BigDecimal) bottomSpinner.getValue()).intValue());
-            form.getMargin().setLeftCols(((BigDecimal) leftSpinner.getValue()).intValue());
-            form.getMargin().setRightCols(((BigDecimal) rightSpinner.getValue()).intValue());
         } else {
             form.setPageWidthMm(((Long) widthSpinner.getValue()).intValue());
             form.setPageHeightMm((int) ((Long) heightEditor.getValue().toObject(EValType.INT)).longValue());
-            form.getMargin().setTopMm(((BigDecimal) topSpinner.getValue()).doubleValue());
-            form.getMargin().setBottomMm(((BigDecimal) bottomSpinner.getValue()).doubleValue());
-            form.getMargin().setLeftMm(((BigDecimal) leftSpinner.getValue()).doubleValue());
-            form.getMargin().setRightMm(((BigDecimal) rightSpinner.getValue()).doubleValue());
             form.setBgColor(bgColor);
             form.setFgColor(fgColor);
-           
         }
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton bgColorButton;
-    private javax.swing.JSpinner bottomSpinner;
     private javax.swing.ButtonGroup buttonGroup1;
     private org.radixware.kernel.designer.common.dialogs.components.ValAsStrEditPanel heightEditor;
-    private javax.swing.JPanel iconPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JRadioButton landscapeRadioButton;
-    private javax.swing.JSpinner leftSpinner;
-    private javax.swing.JPanel middlePanel;
+    private org.radixware.kernel.designer.ads.editors.clazz.report.MarginPanel marginPanel;
     private javax.swing.JComboBox<EPageFormat> pageSizeComboBox;
     private javax.swing.JRadioButton portraitRadioButton;
-    private javax.swing.JSpinner rightSpinner;
     private org.radixware.kernel.designer.ads.editors.clazz.report.ColorButton textColorButton;
-    private javax.swing.JSpinner topSpinner;
     private javax.swing.JSpinner widthSpinner;
     // End of variables declaration//GEN-END:variables
 }

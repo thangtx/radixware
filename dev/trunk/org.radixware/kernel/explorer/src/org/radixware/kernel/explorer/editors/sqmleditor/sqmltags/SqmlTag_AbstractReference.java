@@ -19,6 +19,7 @@ import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlTableIndexDef;
 import org.radixware.kernel.common.enums.EPidTranslationMode;
+import org.radixware.kernel.common.html.Html;
 
 
 abstract class SqmlTag_AbstractReference extends SqmlTag {
@@ -53,9 +54,9 @@ abstract class SqmlTag_AbstractReference extends SqmlTag {
         strBuilder.append(referencedTableStr);
         strBuilder.append(":</b></br><br>&nbsp;&nbsp;&nbsp;&nbsp;");
         if (displayMode == EDefinitionDisplayMode.SHOW_TITLES) {
-            strBuilder.append(getReferencedTable().getFullName());
+            strBuilder.append(Html.string2HtmlString(getReferencedTable().getFullName()));
         } else {
-            strBuilder.append(getReferencedTable().getTitle());
+            strBuilder.append(Html.string2HtmlString(getReferencedTable().getTitle()));
         }
         strBuilder.append("</br><br><b>");
         strBuilder.append(translationModeStr);
@@ -81,9 +82,9 @@ abstract class SqmlTag_AbstractReference extends SqmlTag {
             for (ISqmlColumnDef column : columns) {
                 strBuilder.append("<br>&nbsp;&nbsp;&nbsp;&nbsp;");
                 if (displayMode == EDefinitionDisplayMode.SHOW_TITLES) {
-                    strBuilder.append(column.getShortName());
+                    strBuilder.append(Html.string2HtmlString(column.getShortName()));
                 } else {
-                    strBuilder.append(column.getTitle());
+                    strBuilder.append(Html.string2HtmlString(column.getTitle()));
                 }
                 strBuilder.append("</br>");
             }

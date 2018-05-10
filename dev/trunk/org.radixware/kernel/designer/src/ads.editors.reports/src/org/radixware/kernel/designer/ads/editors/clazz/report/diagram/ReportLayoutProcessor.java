@@ -43,13 +43,13 @@ public abstract class ReportLayoutProcessor {
         this.reportWidgetContainer = reportWidgetContainer;
     }
 
-    abstract void justifyLayout();
+    public abstract void justifyLayout();
 
     abstract EReportLayout getType();
 
     abstract InsertionInfo indexFromPoint(Point p, AdsReportSelectableWidget curcell);
 
-    abstract void updateIndex(AdsReportSelectableWidget widget, InsertionInfo info);
+    public abstract void updateIndex(AdsReportSelectableWidget widget, InsertionInfo info);
 
     abstract void highlightInsertPlace(InsertionInfo info);
 
@@ -503,7 +503,7 @@ public abstract class ReportLayoutProcessor {
             this.isAdding = isAdding;
         }
 
-        AdsReportBaseContainer getParent() {
+        public AdsReportBaseContainer getParent() {
             return parent;
         }
 

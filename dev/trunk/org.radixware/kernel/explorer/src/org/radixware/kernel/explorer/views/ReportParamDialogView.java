@@ -41,6 +41,7 @@ import org.radixware.kernel.common.client.views.IReportParamDialogView;
 import org.radixware.kernel.explorer.dialogs.DialogSizeManager;
 import org.radixware.kernel.explorer.dialogs.QtDialog;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.progress.ExplorerProgressHandleManager;
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.widgets.QWidgetProxy;
 
@@ -102,6 +103,7 @@ public class ReportParamDialogView extends QtDialog implements IExplorerView, IR
         opened.connect(this, "restoreGeometry()");
         setWindowTitle(model_.getWindowTitle());
         setWindowIcon(model_.getIcon());
+        setObjectName("rx_report_params_view_#"+model_.getDefinition().getId());
     }
 
     @SuppressWarnings("unused")
@@ -115,7 +117,9 @@ public class ReportParamDialogView extends QtDialog implements IExplorerView, IR
     
     @Override
     protected void closeEvent(QCloseEvent event) {
-        if (environment.getProgressHandleManager().getActive() != null) {
+        final ExplorerProgressHandleManager manager = 
+            (ExplorerProgressHandleManager)environment.getProgressHandleManager();
+        if (manager.getActive()!=null && !manager.isProgressBlocked()) {
             event.ignore();
         } else {
             super.closeEvent(event);

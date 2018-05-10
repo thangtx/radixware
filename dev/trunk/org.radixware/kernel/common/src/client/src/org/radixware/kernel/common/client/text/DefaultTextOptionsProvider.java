@@ -38,7 +38,7 @@ public abstract class DefaultTextOptionsProvider implements ITextOptionsProvider
         cfgPath.append(SettingNames.TextOptions.FCOLOR);
         cfgPath.append("/");
         cfgPath.append(value);
-        final String colorAsStr = getSettings().readString(cfgPath.toString());
+        final String colorAsStr = readString(cfgPath.toString());
         if (colorAsStr==null){
             if (SettingNames.Properties.INVALID.equals(value) || SettingNames.Properties.BROKEN.equals(value)){
                 return Color.RED;
@@ -64,7 +64,7 @@ public abstract class DefaultTextOptionsProvider implements ITextOptionsProvider
         cfgPath.append(SettingNames.Selector.COMMON_GROUP);
         cfgPath.append("/");
         cfgPath.append(SettingNames.Selector.Common.SELECTED_ROW_COLOR);
-        final String colorAsStr = getSettings().readString(cfgPath.toString());
+        final String colorAsStr = readString(cfgPath.toString());
         if (colorAsStr!=null){
             try{
                 return Color.decode(colorAsStr);
@@ -81,11 +81,29 @@ public abstract class DefaultTextOptionsProvider implements ITextOptionsProvider
         final StringBuilder cfgPath = new StringBuilder();
         for (String cfgGroup: cfgGroups){
             if (cfgPath.length()>0){
-                cfgPath.append("/");
+                cfgPath.append('/');
             }
             cfgPath.append(cfgGroup);
         }
-        return getSettings().readTextOptions(cfgPath.toString());
+        final ClientSettings settings = getSettings();
+        settings.pushGroup();
+        try{
+            settings.endAllGroups();
+            return settings.readTextOptions(cfgPath.toString());
+        }finally{
+            settings.popGroup();
+        }
+    }
+    
+    private String readString(final String cfgPath){
+        final ClientSettings settings = getSettings();
+        settings.pushGroup();
+        try{
+            settings.endAllGroups();
+            return settings.readString(cfgPath);
+        }finally{
+            settings.popGroup();
+        }        
     }
             
     public ITextOptions getOptions(final EnumSet<ETextOptionsMarker> markers) {
@@ -152,10 +170,10 @@ public abstract class DefaultTextOptionsProvider implements ITextOptionsProvider
                 foregroundColorSettingName = SettingNames.Properties.BROKEN;
             }else if (markers.contains(ETextOptionsMarker.INHERITED_VALUE)){
                 foregroundColorSettingName = SettingNames.Properties.INHERITED;
-            }else if (markers.contains(ETextOptionsMarker.UNDEFINED_VALUE) && !markers.contains(ETextOptionsMarker.LABEL)){
-                foregroundColorSettingName = SettingNames.Properties.UNDEFINED;
             }else if (markers.contains(ETextOptionsMarker.OVERRIDDEN_VALUE)){
                 foregroundColorSettingName = SettingNames.Properties.OVERRIDED;
+            }else if (markers.contains(ETextOptionsMarker.UNDEFINED_VALUE) && !markers.contains(ETextOptionsMarker.LABEL)){
+                foregroundColorSettingName = SettingNames.Properties.UNDEFINED;
             }else{
                 foregroundColorSettingName = null;
             }

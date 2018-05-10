@@ -3,6 +3,7 @@ package org.radixware.kernel.license;
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.Connection;
+import java.util.List;
 
 /*
  * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
@@ -23,11 +24,18 @@ public interface ILicenseReport {
 
     class Entry {
 
-        private final String name, sql;
+        private final String name;
+        private final String sql;
+        private final ILicenseReportCellDelegate delegate;
 
-        public Entry(String sql, String name) {
+        public Entry(String name, String sql) {
+            this(name, sql, null);
+        }
+
+        public Entry(String name, String sql, ILicenseReportCellDelegate delegate) {
             this.name = name;
             this.sql = sql;
+            this.delegate = delegate;
         }
 
         public final String getSql() {
@@ -37,7 +45,12 @@ public interface ILicenseReport {
         public final String getName() {
             return name;
         }
+
+        public ILicenseReportCellDelegate getDelegate() {
+            return delegate;
+        }
+
     }
 
-    void execute(Connection dbConnection, Entry[] entries, Writer xmlOutput, Writer htmlOutput) throws IOException;
+    void execute(Connection dbConnection, Entry[] entries, List<ILicenseInfo> licenseSet, Writer xmlOutput, Writer htmlOutput) throws IOException;
 }

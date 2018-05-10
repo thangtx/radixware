@@ -1,0 +1,27 @@
+
+class B {
+
+    static class E {
+
+	static E A = new E();
+
+	Int getV() {
+	    return null;
+	}
+    }
+    static E X = new E();
+}
+
+class Item {
+
+    void keep(Int a) {
+    }
+}
+
+class Test {
+
+    public void f() {
+	Item item = new Item();
+	item.keep(B.X.A.V);
+    }
+}

@@ -194,8 +194,9 @@ public class MlsTableUi {
                     setForeground(Color.black);
                 }
             }
-            
-            if (rowString.isStatusChanged(sourceLangs, translLangs)){
+            if (rowString.isChangeAgreedString(sourceLangs, translLangs)){
+                setBackground(new Color(255,200,200));
+            } else if (rowString.isStatusChanged(sourceLangs, translLangs)){
                 setBackground(new Color(255,255,224));
             } else {
                 setBackground(UIManager.getColor("Table.background"));

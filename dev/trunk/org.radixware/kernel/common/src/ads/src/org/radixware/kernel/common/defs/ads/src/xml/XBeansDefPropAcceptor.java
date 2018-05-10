@@ -179,4 +179,19 @@ class XBeansDefPropAcceptor implements XBeansPropAcceptor {
     public void acceptSeveralPropListAssignment() throws IOException {
         prop.setHasSeveralPropListAssignment(true);
     }
+
+    @Override
+    public void acceptSingletonPropGetterDateTimeWithTimezone(boolean several) throws IOException {
+        prop.setHasSingletonGetterDateTimeWithTimezone(true);
+    }
+
+    @Override
+    public void acceptSingletonPropSetterDateTimeWithTimezone(boolean several) throws IOException {
+        prop.setHasSingletonSetterDateTimeWithTimezone(true);
+    }
+
+    @Override
+    public void acceptSeveralPropListGetterDateTimeWithTimezone(String wrappedType) throws IOException {
+        prop.setHasSeveralPropListGetterDateTimeWithTimezone(true);
+    }
 }

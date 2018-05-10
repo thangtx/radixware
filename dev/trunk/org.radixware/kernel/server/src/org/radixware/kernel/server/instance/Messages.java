@@ -193,6 +193,24 @@ public final class Messages {
         SENSITIVE_TRACE_TIME_IS_SET_TO = bundle.getString("SENSITIVE_TRACE_TIME_IS_SET_TO");
         USING_CONFIG_FILE = bundle.getString("USING_CONFIG_FILE");
 
+        EXPIRE_SOON = bundle.getString("EXPIRE_SOON");
+        LESS_THEN = bundle.getString("LESS_THEN");
+        DAYS = bundle.getString("DAYS");
+        ONE_DAY = bundle.getString("ONE_DAY");
+        ONE_HOUR = bundle.getString("ONE_HOUR");
+        TEN_MINUTES = bundle.getString("TEN_MINUTES");
+        ONE_MINUTE = bundle.getString("ONE_MINUTE");
+        LICENSES_UPDATED = bundle.getString("LICENSES_UPDATED");
+        EXPIRED = bundle.getString("EXPIRED");
+        LICENSE_SET_IN_USE = bundle.getString("LICENSE_SET_IN_USE");
+        LOADING_ARTE_POOL = bundle.getString("LOADING_ARTE_POOL");
+        AADC_MEMBER = bundle.getString("AADC_MEMBER");
+        AADC_DG_ADDRESS = bundle.getString("AADC_DG_ADDRESS");
+        AUTO_RESTART_DELAY = bundle.getString("AUTO_RESTART_DELAY");
+        
+        KEYSTORE_LOADER_FROM = bundle.getString("KEYSTORE_LOADER_FROM");
+        ACCEPTABLE_VERSIONS_CHANGED = bundle.getString("ACCEPTABLE_VERSIONS_CHANGED");
+        JOBS_MOVED_TO_OTHER_AADC_MEMBER = bundle.getString("JOBS_MOVED_TO_OTHER_AADC_MEMBER");
     }
     static final String SENSITIVE_TRACE_TIME_IS_SET_TO;
     static final String MNU_RELOAD_ARTE_POOL;
@@ -283,6 +301,9 @@ public final class Messages {
     static final String ORA_IMPL_STMT_CACHE_SIZE;
     static final String INVALID_LOCAL_STARTER_VERSION;
     static final String USE_ACTIVE_ARTE_CONSTRAINTS;
+    static final String AUTO_RESTART_DELAY;
+    static final String JOBS_MOVED_TO_OTHER_AADC_MEMBER;
+    public static final String ACCEPTABLE_VERSIONS_CHANGED;
 
     static String getStateMessage(final InstanceState state) {
         if (state == InstanceState.STOPPED) {
@@ -339,6 +360,7 @@ public final class Messages {
     static final String ERR_UNHANDLED_IN_SERVICE;
     static final String ERR_ON_SINGL_UNIT_LOCK_RELEASE_;
     static final String ERR_WHILE_CHECKING_KEYSTORE;
+    static final String KEYSTORE_LOADER_FROM;
     static final String INCORRECT_KEYSTORE_PASSWORD;
     static final String HINT_YOU_HAVE_TO_ENABLE_SENSITIVE_TRC_LOCALY;
     static final String HINT_YOU_HAVE_TO_ENABLE_SENSITIVE_TRC_GLOBALY;
@@ -355,6 +377,19 @@ public final class Messages {
     static final String STARTER_TEMP_DIR;
     static final String USING_;
     static final String USING_CONFIG_FILE;
+    static final String EXPIRE_SOON;
+    static final String LESS_THEN;
+    static final String DAYS;
+    static final String ONE_DAY;
+    static final String ONE_HOUR;
+    static final String TEN_MINUTES;
+    static final String ONE_MINUTE;
+    static final String LICENSES_UPDATED;
+    static final String EXPIRED;
+    static final String LICENSE_SET_IN_USE;
+    static final String LOADING_ARTE_POOL;
+    static final String AADC_MEMBER;
+    static final String AADC_DG_ADDRESS;
 
     static String getStateMessageMslId(final InstanceState state) {
         if (state == InstanceState.STOPPED) {
@@ -442,5 +477,8 @@ public final class Messages {
     static final String MLS_ID_INSTANCE_MAINTENANCE_REQUESTED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsCVMUWFXSSBEXHA7CXF6FXKWQ6A";//eventCode["Instance maintenance requested. Reason: '%1'"] Server.Instance, Event
     static final String MLS_ID_INVALID_LOCAL_STARTER_VERSION = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsERLAGQ7ZLNER3HU4OJGZJWG6IY";//eventCode["Local starter version (%1) is not actual (%2)"], Warning
     static final String MLS_ID_USING_CONFIG_FILE = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsH4HA4C4OLZHWHAGNHUTRNVTXZA";//eventCode["Server is using configuration file '%1'"], Event
+    static final String MLS_ID_LOADING_ARTE_POOL = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsOQBR4YZAPRDINBZZDZOPJOZRWI";//eventCode["eventCode["Loading ARTE Pool..."]"], Event
+    static final String MLS_ID_KEYSTORE_LOADED_FROM = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsACF3ZADBQNFFRNEUVD37RY5J44";//eventCode["Keystore has been loaded from '%1'"], Event, Instance
+    public static final String MLS_ID_ACCEPTED_VERSIONS_CHANGED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsHBFRLJIZ2VEZTKGHXR6WNLEKOA";//eventCode["Instance '%1' serves versions [%2..%3]"], Event, Instance
 
 }

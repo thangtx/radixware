@@ -48,7 +48,7 @@ public final class SessionDoesNotExistError extends EasError implements IClientE
 
     @Override
     public String getLocalizedMessage(final MessageProvider messageProvider) {
-        return messageProvider.translate("ExplorerError", "Session does not exists");
+        return messageProvider.translate("ExplorerError", "Session does not exist");
     }
 
     @Override

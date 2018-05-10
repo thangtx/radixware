@@ -11,7 +11,9 @@
 
 package org.radixware.kernel.designer.ads.common.dialogs;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,6 +24,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.*;
+import net.miginfocom.swing.MigLayout;
 import org.openide.util.ChangeSupport;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
@@ -35,6 +38,7 @@ import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.utils.events.IRadixEventListener;
 import org.radixware.kernel.common.utils.events.RadixEvent;
 import org.radixware.kernel.designer.common.dialogs.components.KernelEnumComboBoxModel;
+import org.radixware.kernel.designer.common.dialogs.components.KernelEnumComboBoxModel.Item;
 
 
 public class AccessPanel extends javax.swing.JPanel {
@@ -159,10 +163,10 @@ public class AccessPanel extends javax.swing.JPanel {
     private final AccessModel accessModel;
 
     public AccessPanel(boolean directly) {
-        setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        setLayout(new MigLayout("insets 0, gap 5 0"));
         comboBox = new JComboBox();
         add(comboBox);
-        add(Box.createRigidArea(new Dimension(5, 5)));
+//        add(Box.createRigidArea(new Dimension(5, 5)));
 
 //        comboBox.setModel(model);
         comboBox.setEditable(false);
@@ -177,7 +181,7 @@ public class AccessPanel extends javax.swing.JPanel {
         finalCheck.setAlignmentY(CENTER_ALIGNMENT);
 
         add(publishedCheck);
-        add(Box.createRigidArea(new Dimension(GAP, GAP)));
+//        add(Box.createRigidArea(new Dimension(GAP, GAP)));
         add(finalCheck);
 
         checks.add(publishedCheck);
@@ -192,7 +196,7 @@ public class AccessPanel extends javax.swing.JPanel {
 
     public JCheckBox addCheckBox(String text) {
         CheckBox check = new CheckBox(text);
-        add(Box.createRigidArea(new Dimension(GAP, GAP)));
+//        add(Box.createRigidArea(new Dimension(GAP, GAP)));
         add(check);
         checksCount++;
         checks.add(check);
@@ -200,7 +204,7 @@ public class AccessPanel extends javax.swing.JPanel {
     }
 
     private class CheckBox extends JCheckBox {
-
+        
         CheckBox(String text) {
             super(text);
         }
@@ -224,42 +228,7 @@ public class AccessPanel extends javax.swing.JPanel {
             return new Dimension(super.getMinimumSize().width, comboBox.getMinimumSize().height);
         }
     }
-
-    @Override
-    public Dimension getPreferredSize() {
-        int h = comboBox.getPreferredSize().height;
-        int w = comboBox.getPreferredSize().width + GAP;
-        for (JCheckBox box : checks) {
-            w += box.getPreferredSize().width + GAP;
-        }
-        return new Dimension(w, h);
-    }
-
-    @Override
-    public Dimension getMaximumSize() {
-        int h = comboBox.getMaximumSize().height;
-        int w = comboBox.getMaximumSize().width + GAP;
-        for (JCheckBox box : checks) {
-            w += box.getMaximumSize().width + GAP;
-        }
-        return new Dimension(w, h);
-    }
-
-    @Override
-    public Dimension getMinimumSize() {
-        int h = comboBox.getMinimumSize().height;
-        int w = comboBox.getMinimumSize().width + GAP;
-        for (JCheckBox box : checks) {
-            w += box.getMinimumSize().width + GAP;
-        }
-        return super.getMinimumSize();
-    }
-
-    @Override
-    public int getBaseline(int width, int height) {
-        return comboBox.getBaseline(getPreferredSize().width, comboBox.getPreferredSize().height) + finalCheck.getY();
-    }
-
+    
     public boolean setEnabled(EOptions key, boolean enabled) {
         if (key == null) {
             return false;
@@ -347,6 +316,7 @@ public class AccessPanel extends javax.swing.JPanel {
                 comboBox.removeItemListener(itemListener);
                 finalCheck.removeActionListener(finalListener);
                 publishedCheck.removeActionListener(publishedListener);
+                comboBox.removeItemListener(itemListener);
                 updateChFinalState(canChangeFinal(true));
                 comboBox.setEnabled(!definition.isReadOnly() && definition.canChangeAccessMode());
                 finalCheck.setSelected(accessModel.isFinal());
@@ -356,6 +326,10 @@ public class AccessPanel extends javax.swing.JPanel {
                 final EAccess minAccess = definition.getMinimumAccess();
                 model = calculateAccessModel(definition, minAccess, deny);
                 comboBox.setModel(model);
+                Item item = model.getBy(EAccess.PROTECTED);
+                if (item != null){
+                    comboBox.setPrototypeDisplayValue(item);
+                }
                                 
                 if (definition instanceof AdsTransparentMethodDef){
                     comboBox.setEnabled(minAccess != definition.getAccessMode());

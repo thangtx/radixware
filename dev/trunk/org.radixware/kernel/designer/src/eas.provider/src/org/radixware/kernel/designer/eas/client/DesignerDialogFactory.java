@@ -13,12 +13,12 @@ package org.radixware.kernel.designer.eas.client;
 
 import java.sql.Timestamp;
 import java.util.List;
-import org.radixware.kernel.common.auth.PasswordRequirements;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.dialogs.*;
 import org.radixware.kernel.common.client.exceptions.StandardProblemHandler;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.EditMaskDateTime;
+import org.radixware.kernel.common.client.models.AbstractBatchOperationResult;
 import org.radixware.kernel.common.client.models.groupsettings.Filters;
 import org.radixware.kernel.common.client.models.groupsettings.Sortings;
 import org.radixware.kernel.common.client.models.items.properties.Property;
@@ -72,9 +72,14 @@ class DesignerDialogFactory implements DialogFactory {
     }
 
     @Override
-    public ISelectInstantiatableClassDialog newInstantiatableClassDialog(IClientEnvironment ice, IWidget iw, List<InstantiatableClass> list, String configPrefix, boolean sortByTitles) {
+    public ISelectInstantiatableClassDialog newInstantiatableClassDialog(IClientEnvironment environment, IWidget parentWidget, List<InstantiatableClass> classes, String configPrefix, boolean sortByTitles) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    @Override
+    public ISelectInstantiatableClassDialog newInstantiatableClassDialog(IClientEnvironment environment, IWidget parentWidget, List<InstantiatableClass> classes, String configPrefix, boolean sortByTitles, boolean isMultiSelectEnabled) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }    
 
     @Override
     public IMandatoryPropertiesConfirmationDialog newMandatoryPropertiesConfirmationDialog(IClientEnvironment ice, IWidget iw, List<String> list) {
@@ -115,4 +120,31 @@ class DesignerDialogFactory implements DialogFactory {
     public IDateTimeDialog newDateTimeDialog(IClientEnvironment ice, IWidget iw, String string, Timestamp tmstmp) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+    
+    @Override
+    public IListDialog newListDialog(IClientEnvironment environment, IWidget parent, String configPrefix){
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    @Override
+    public IBatchOperationResultDialog newBatchOperationResultDialog(final IClientEnvironment environment,final IWidget parent, final AbstractBatchOperationResult result) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public IWaitForAadcMemberSwitchDialog newWaitForAadcMemberSwitchDialog(IClientEnvironment ice) {
+        return new IWaitForAadcMemberSwitchDialog() {
+            @Override
+            public void display() {
+            }
+            @Override
+            public IWaitForAadcMemberSwitchDialog.Button getPressedButton() {
+                return null;
+            }
+            @Override
+            public void finish() {                
+            }
+        };
+    }
+        
 }

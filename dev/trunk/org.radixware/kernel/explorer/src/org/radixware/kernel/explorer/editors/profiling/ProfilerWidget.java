@@ -29,6 +29,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -529,12 +530,22 @@ public class ProfilerWidget extends ExplorerWidget implements IExplorerSelectorW
     @Override
     public void rereadAndSetCurrent(Pid pid) {
         QTreeWidgetItem curItem = tree.getCurrentItem();
-        if (pid == null) {
+        if (pid != null) {
             curItem = tree.getItemByPid(pid);
         }
         reread();
         tree.setCurrentItem(curItem);
     }
+
+    @Override
+    public void rereadAndSetCurrent(Collection<Pid> pids) throws InterruptedException, ServiceClientException {
+        QTreeWidgetItem curItem = tree.getCurrentItem();
+        if (pids != null && !pids.isEmpty()) {
+            curItem = tree.getItemByPid(pids);
+        }
+        reread();
+        tree.setCurrentItem(curItem);        
+    }        
 
     @Override
     public void reread() {

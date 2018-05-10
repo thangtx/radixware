@@ -26,7 +26,7 @@ public class TextField extends AbstractTextField {
 
     private static enum EAttrName {
 
-        InputType("inputType"),
+        InputType("inputtype"),
         MaxDigitsCount("maxDigitsCount"),
         IsPassword("isPassword");
         private final String attrName;

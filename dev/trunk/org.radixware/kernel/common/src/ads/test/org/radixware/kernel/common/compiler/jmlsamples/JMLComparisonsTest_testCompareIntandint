@@ -1,0 +1,35 @@
+
+class A {
+
+    A(boolean b) {
+    }
+
+    class E {
+
+	E(boolean n) {
+	}
+    }
+
+    Long getC() {
+	return Long.valueOf(1);
+    }
+}
+
+class B {
+
+    A getA() {
+	return new A(false);
+    }
+
+    void setA(A a) {
+    }
+}
+
+public class Test {
+
+    public static void f() {
+	B b = new B();
+	A a = new A(b.A.C == 1);
+	A.E e = a.new E(b.A.C == 1);
+    }
+}

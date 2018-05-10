@@ -180,19 +180,25 @@ if (</xsc:Java>
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl2QQ7GRLAFNE73NPWZJ4I4CLSMU pruPSTIRHU6HRH2TJTGTE6XD6NZTI" Invoke="true"/>
+              <xsc:IdReference Path="acl2QQ7GRLAFNE73NPWZJ4I4CLSMU pruPSTIRHU6HRH2TJTGTE6XD6NZTI" Invoke="true">
+                <xsc:Presentation>transformRq</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl2G2QDD5EXRBCROWISX5QR5CUCA mthZX73HVJVBVH4TKBNAZ2G3XU6TA" Invoke="true"/>
+              <xsc:IdReference Path="acl2G2QDD5EXRBCROWISX5QR5CUCA mthZX73HVJVBVH4TKBNAZ2G3XU6TA" Invoke="true">
+                <xsc:Presentation>transform</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>((</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="acl4TJBHQN7PJBZFLBHDI3WHSWDSY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="acl4TJBHQN7PJBZFLBHDI3WHSWDSY">
+                <xsc:Presentation>Transformer</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)transformer, rq, rq.PrevStage.Data);</xsc:Java>
@@ -223,25 +229,43 @@ if (</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>return </xsc:Java>
+              <xsc:Java>if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl2QQ7GRLAFNE73NPWZJ4I4CLSMU pruVGX63H52ZRFMNAAH5JHB6U5LGM" Invoke="true"/>
+              <xsc:IdReference Path="acl2QQ7GRLAFNE73NPWZJ4I4CLSMU pruVGX63H52ZRFMNAAH5JHB6U5LGM" Invoke="true">
+                <xsc:Presentation>transformRs</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>!=null){
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acl2QQ7GRLAFNE73NPWZJ4I4CLSMU pruVGX63H52ZRFMNAAH5JHB6U5LGM" Invoke="true">
+                <xsc:Presentation>transformRs</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclIB36HWWSIZFGHBNZC4SXAYP2J4 mthYN2D6WEWXBCS7HA3MNT7W623CQ" Invoke="true"/>
+              <xsc:IdReference Path="aclIB36HWWSIZFGHBNZC4SXAYP2J4 mthYN2D6WEWXBCS7HA3MNT7W623CQ" Invoke="true">
+                <xsc:Presentation>transform</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>((</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="acl4TJBHQN7PJBZFLBHDI3WHSWDSY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="acl4TJBHQN7PJBZFLBHDI3WHSWDSY">
+                <xsc:Presentation>Transformer</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>)transformer, rs, rs.PrevStage.Data, inRq, outRq);</xsc:Java>
+              <xsc:Java>)transformer, rs, rs.PrevStage.Data, inRq, outRq);
+}else{
+    return null;
+}</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>

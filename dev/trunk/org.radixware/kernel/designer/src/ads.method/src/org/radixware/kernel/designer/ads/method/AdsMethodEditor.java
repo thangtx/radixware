@@ -13,6 +13,7 @@ package org.radixware.kernel.designer.ads.method;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,6 +28,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import net.miginfocom.swing.MigLayout;
+import org.openide.DialogDescriptor;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.IVisitor;
@@ -46,6 +49,8 @@ import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EMethodNature;
 import org.radixware.kernel.common.repository.ads.AdsSegment;
 import org.radixware.kernel.common.resources.RadixWareIcons;
+import org.radixware.kernel.designer.ads.common.dialogs.DeprecatedPanel;
+import org.radixware.kernel.designer.ads.common.dialogs.ReleaseNamePanel;
 import org.radixware.kernel.designer.ads.editors.AdsSourceCodePanel;
 import org.radixware.kernel.designer.ads.editors.base.EnvSelectorPanel;
 
@@ -53,6 +58,7 @@ import org.radixware.kernel.designer.ads.editors.clazz.transparent.PublishedClas
 import org.radixware.kernel.designer.ads.method.profile.ChangeProfilePanel;
 import org.radixware.kernel.designer.common.annotations.registrators.EditorFactoryRegistration;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
+import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 import org.radixware.kernel.designer.common.dialogs.utils.PublicationUtils;
 import org.radixware.kernel.designer.common.editors.RadixObjectEditor;
 import org.radixware.kernel.designer.common.general.editors.EditorsManager;
@@ -77,12 +83,13 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
     private JButton profileBtn;
     private JButton changePublishedBtn;
     private JPanel rpcButtonsPanel;
+    private final DeprecatedPanel deprecatedPanel;
     //code editor
-    private AdsSourceCodePanel codeEditor = new AdsSourceCodePanel();
-    private AdsCommandHandlerPropertiesPanel commandHandlerPanel = new AdsCommandHandlerPropertiesPanel();
-    private AdsPresentationSlotPropertiesPanel slotPanel = new AdsPresentationSlotPropertiesPanel();
-    private Color defaultForeground;
-    private ActionListener callableListener = new ActionListener() {
+    private final AdsSourceCodePanel codeEditor = new AdsSourceCodePanel();
+    private final AdsCommandHandlerPropertiesPanel commandHandlerPanel = new AdsCommandHandlerPropertiesPanel();
+    private final AdsPresentationSlotPropertiesPanel slotPanel = new AdsPresentationSlotPropertiesPanel();
+    private final Color defaultForeground;
+    private final ActionListener callableListener = new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
             boolean selected = callableCheck.isSelected();
@@ -101,10 +108,10 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
 
         initComponents();        
         setupProfileEditor();
-
         abstractCheck = accessList.addCheckBox("Abstract");
         staticCheck = accessList.addCheckBox("Static");
-        deprecatedCheck = accessList.addCheckBox("Deprecated");
+        deprecatedPanel = new DeprecatedPanel(accessList, method.getAccessFlags());
+        accessList.add(deprecatedPanel);
         callableCheck = accessList.addCheckBox("Reflective callable");
 
         setupOvrBtns();
@@ -174,7 +181,8 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
         staticCheck.setEnabled(state);
 
         AdsTransparence transparence = getMethod().getOwnerClass().getTransparence();
-        deprecatedCheck.setEnabled(state || transparence != null && transparence.isTransparent());
+        deprecatedPanel.setDeprecatedEnabled(state || transparence != null && transparence.isTransparent());
+        deprecatedPanel.setExpirationReleaseEnabled(state);
     }
 
     private void setupChecks() {
@@ -218,20 +226,23 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
             }
         });
 
-        deprecatedCheck.addItemListener(new ItemListener() {
+        deprecatedPanel.addDeprecatedItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 if (!isUpdate) {
                     final AdsMethodDef method = getMethod();
                     if (e.getStateChange() == ItemEvent.SELECTED) {
                         method.getProfile().getAccessFlags().setDeprecated(true);
+                        deprecatedPanel.setExpirationReleaseEnabled(true);
                     }
                     if (e.getStateChange() == ItemEvent.DESELECTED) {
                         method.getProfile().getAccessFlags().setDeprecated(false);
+                        deprecatedPanel.setExpirationReleaseEnabled(false);
                     }
                 }
             }
         });
+        deprecatedPanel.setDefaultListenr();
     }
 
     private void setupListeners() {
@@ -388,7 +399,6 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
 
         abstractCheck = new javax.swing.JCheckBox();
         staticCheck = new javax.swing.JCheckBox();
-        deprecatedCheck = new javax.swing.JCheckBox();
         callableCheck = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
@@ -408,13 +418,16 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
 
         staticCheck.setText(org.openide.util.NbBundle.getMessage(AdsMethodEditor.class, "StaticTip")); // NOI18N
 
-        deprecatedCheck.setText(org.openide.util.NbBundle.getMessage(AdsMethodEditor.class, "DeprecatedTip")); // NOI18N
-
         callableCheck.setText(org.openide.util.NbBundle.getMessage(AdsMethodEditor.class, "CallableTip")); // NOI18N
 
         setMaximumSize(null);
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        editorsPane.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 0, 0, 0));
         editorsPane.setLayout(new java.awt.BorderLayout());
+        jPanel1.add(editorsPane, java.awt.BorderLayout.CENTER);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -455,10 +468,10 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(profileEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 648, Short.MAX_VALUE)
+                    .addComponent(profileEditor, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(accessList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 238, Short.MAX_VALUE)
                         .addComponent(overwriteCheck)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(editOverwrittenBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -478,7 +491,7 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(profileEditor, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(overwriteCheck)
                     .addComponent(accessList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -487,39 +500,14 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
                     .addComponent(overrideCheck)
                     .addComponent(editOvrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(showOvrBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(10, 10, 10)
                 .addComponent(envSelectorPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {overrideCheck, overwriteCheck});
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(editorsPane, javax.swing.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(262, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel1Layout.createSequentialGroup()
-                    .addGap(143, 143, 143)
-                    .addComponent(editorsPane, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
-                    .addContainerGap()))
-        );
+        jPanel1.add(jPanel2, java.awt.BorderLayout.PAGE_START);
 
         jScrollPane1.setViewportView(jPanel1);
 
@@ -531,14 +519,14 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox abstractCheck;
     private org.radixware.kernel.designer.ads.common.dialogs.AccessPanel accessList;
     private javax.swing.JCheckBox callableCheck;
-    private javax.swing.JCheckBox deprecatedCheck;
     private javax.swing.JButton editOverwrittenBtn;
     private javax.swing.JButton editOvrBtn;
     private javax.swing.JPanel editorsPane;
@@ -642,7 +630,9 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
                 AdsUserMethodDef user = (AdsUserMethodDef) method;
                 //Jml code = user.getSource();
                 codeEditor.open(user.getSources(), info, readonly);
-                editorsPane.add(codeEditor, BorderLayout.CENTER);
+                if (codeEditor.getParent() != editorsPane){
+                    editorsPane.add(codeEditor, BorderLayout.CENTER);
+                }
                 updateCodeEditorVisibility();
             } else {
                 if (method instanceof AdsRPCMethodDef) {
@@ -812,7 +802,8 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
 
         abstractCheck.setSelected(flags.isAbstract());
         staticCheck.setSelected(flags.isStatic());
-        deprecatedCheck.setSelected(flags.isDeprecated());
+        deprecatedPanel.setDeprecatedSelected(flags.isDeprecated());
+        
         if (!readonly) {
             if (owner instanceof AdsInterfaceClassDef
                     || method instanceof AdsTransparentMethodDef) {
@@ -826,7 +817,8 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
 
                 updateChecks();
             }
-            deprecatedCheck.setEnabled(true);
+            deprecatedPanel.setDeprecatedEnabled(true);
+            deprecatedPanel.setExpirationReleaseEnabled(deprecatedPanel.isDeprecatedSelected());
         } else {
             switchChecks(false);
         }
@@ -901,6 +893,15 @@ public class AdsMethodEditor extends RadixObjectEditor<AdsMethodDef> {
                     }
                 }
             }
+        }
+    }  
+
+    @Override
+    public void onClosed() {
+        final AdsMethodDef method = getMethod();
+        if (method != null) {
+            method.getAccessChangeSupport().removeEventListener(accListener);
+            method.getProfile().removeRenameListener(adsMethodProfileChangeListener);
         }
     }
 }

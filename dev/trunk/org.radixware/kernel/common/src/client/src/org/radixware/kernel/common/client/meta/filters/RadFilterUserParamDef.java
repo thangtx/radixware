@@ -10,6 +10,7 @@
  */
 package org.radixware.kernel.common.client.meta.filters;
 
+import java.util.Objects;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.KernelIcon;
@@ -21,6 +22,7 @@ import org.radixware.kernel.common.client.meta.RadPropertyDef;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskConstSet;
 import org.radixware.kernel.common.client.meta.mask.EditMaskNone;
+import org.radixware.kernel.common.client.meta.mask.EditMaskRef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlColumnDef;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinitions;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlModifiableParameter;
@@ -36,9 +38,12 @@ import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.kernel.common.utils.Utils;
+import org.radixware.schemas.xscml.Sqml;
 
 public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlModifiableParameter {
+    
+    private final static int DEFAULT_MIN_ARRAY_ITEMS_COUNT = 1;
+    private final static int DEFAULT_MAX_ARRAY_ITEMS_COUNT = 1000;
 
     final static class Factory {
 
@@ -48,7 +53,7 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
         public static RadFilterUserParamDef newInstance(final RadPropertyDef targetProperty, final boolean allowPersistentValue) {
             final RadFilterUserParamDef parameter =
                     new RadFilterUserParamDef(Id.Factory.newInstance(EDefinitionIdPrefix.USER_FILTER_PARAMETER),
-                    null, targetProperty, null, null, null, allowPersistentValue);
+                    null, targetProperty, null, null, null, allowPersistentValue, null, null);
             parameter.wasModified = true;
             return parameter;
         }
@@ -56,15 +61,28 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
         public static RadFilterUserParamDef newInstance(final ISqmlColumnDef column, final boolean allowPersistentValue) {
             final RadFilterUserParamDef parameter =
                     new RadFilterUserParamDef(Id.Factory.newInstance(EDefinitionIdPrefix.USER_FILTER_PARAMETER),
-                    column.getShortName(), null, column, null, null, allowPersistentValue);
+                    column.getShortName(), null, column, null, null, allowPersistentValue, null, null);
             parameter.wasModified = true;
             return parameter;
         }
 
         public static RadFilterUserParamDef newInstance(final EValType valType, final boolean allowPersistentValue) {
-            final RadFilterUserParamDef parameter =
+            final RadFilterUserParamDef parameter =       
                     new RadFilterUserParamDef(Id.Factory.newInstance(EDefinitionIdPrefix.USER_FILTER_PARAMETER),
-                    "Filter param", valType, false, null, null, null, null, null, allowPersistentValue);
+                                              "Filter param",
+                                              valType,
+                                              false,//isMandatory
+                                              null,//editMask
+                                              null,//nullTitle
+                                              null,//defaultValue
+                                              null,//referencedClassId
+                                              null,//parentSelectorPresentationId
+                                              null,
+                                              allowPersistentValue,
+                                              false,//useDropDownList,
+                                              DEFAULT_MIN_ARRAY_ITEMS_COUNT,
+                                              DEFAULT_MAX_ARRAY_ITEMS_COUNT
+                                              );
             parameter.wasModified = true;
             return parameter;
         }
@@ -77,6 +95,8 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                 final Id basePropertyId = propertyBasedParam.getPropertyId();
                 final ValAsStr defaultVal = propertyBasedParam.isSetDefaultVal() ? ValAsStr.Factory.loadFrom(propertyBasedParam.getDefaultVal()) : null;
                 final Boolean isMandatory = propertyBasedParam.isSetNotNull() ? propertyBasedParam.getNotNull() : null;
+                final Boolean isUseDropDownList = propertyBasedParam.isSetUseDropDownList() ? propertyBasedParam.getUseDropDownList() : null;
+                final Sqml parentSelectorCondition = propertyBasedParam.getParentSelectorCondition();
                 if (classDef.isPropertyDefExistsById(basePropertyId)) {
                     final RadPropertyDef baseProperty = classDef.getPropertyDefById(basePropertyId);
                     return new RadFilterUserParamDef(propertyBasedParam.getId(),
@@ -85,7 +105,9 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                             null,
                             isMandatory,
                             defaultVal,
-                            allowPersistentValue);
+                            allowPersistentValue,
+                            isUseDropDownList,
+                            parentSelectorCondition);
                 } else {
                     return new RadFilterUserParamDef(propertyBasedParam.getId(),
                             propertyBasedParam.getTitle(),
@@ -94,7 +116,9 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                             isMandatory,
                             defaultVal,
                             allowPersistentValue,
-                            environment);
+                            environment,
+                            isUseDropDownList,
+                            parentSelectorCondition);
                 }
 
             } else {
@@ -117,7 +141,10 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                         editMask = EditMask.loadFrom(editMaskDoc);
                     }
                 }
+                final Boolean isUseDropDownList = customFilterParam.isSetUseDropDownList() ? customFilterParam.getUseDropDownList() : null;
                 final ValAsStr defaultVal = customFilterParam.isSetDefaultVal() ? ValAsStr.Factory.loadFrom(customFilterParam.getDefaultVal()) : null;
+                final int minArrayItemsCount = customFilterParam.isSetMinArrayItemsCount() ? customFilterParam.getMinArrayItemsCount() : DEFAULT_MIN_ARRAY_ITEMS_COUNT;
+                final int maxArrayItemsCount = customFilterParam.isSetMaxArrayItemsCount() ? customFilterParam.getMaxArrayItemsCount() : DEFAULT_MAX_ARRAY_ITEMS_COUNT;
                 return new RadFilterUserParamDef(
                         customFilterParam.getId(),
                         customFilterParam.getTitle(),
@@ -128,7 +155,11 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                         defaultVal,
                         customFilterParam.getReferencedClassId(),
                         customFilterParam.getParentSelectorPresentationId(),
-                        allowPersistentValue);
+                        customFilterParam.getParentSelectorCondition(),
+                        allowPersistentValue,
+                        isUseDropDownList,
+                        minArrayItemsCount,
+                        maxArrayItemsCount);
             }
         }
     }
@@ -136,6 +167,10 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
     private EValType type = null;
     private ValAsStr defaultVal;
     private Boolean mandatory;
+    private Boolean useDropDownList;
+    private Sqml parentSelectorAdditionalCondition;
+    private int minArrayItemsCount = DEFAULT_MIN_ARRAY_ITEMS_COUNT;
+    private int maxArrayItemsCount = DEFAULT_MAX_ARRAY_ITEMS_COUNT;
     private EditMask mask = null;
     private boolean wasModified;
     private ISqmlColumnDef column;
@@ -155,7 +190,9 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
             final ISqmlColumnDef targetColumn, //не равно null. только колонки из базовой entity
             final Boolean isMandatory,
             final ValAsStr defaultValue, //значение по-умолчанию может быть null
-            final boolean allowPersistentValue) {
+            final boolean allowPersistentValue,            
+            final Boolean useDropDownList,
+            final Sqml parentSelectorAdditionalCondition) {
         super(id,
                 "",//name          //собственное имя (берется из тега)
                 null,//titleId
@@ -167,16 +204,25 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                 defaultValue,
                 //Editing
                 false,//isMandatory
+                targetProperty == null ? true : targetProperty.isArrayItemMandatory(),
                 false,//storeHistory
                 false,//isCustomDialog
                 null,//customDialogId
                 false,//isCustomEditOnly
                 null,//editMaskStr
                 null,//nullStringId
+                null,//arrayItemNullStringId
+                null,//emptyArrayStringId (onlyForArrayProperties)
+                targetProperty==null ? false : targetProperty.isDuplicatesEnabled(),
+                targetProperty==null ? DEFAULT_MIN_ARRAY_ITEMS_COUNT : targetProperty.getMinArrayItemsCount(),
+                targetProperty==null ? DEFAULT_MAX_ARRAY_ITEMS_COUNT : targetProperty.getMaxArrayItemsCount(),
+                targetProperty==null ? 1 : targetProperty.getFirstArrayItemIndex(),                
                 false,//isMemo
+                
                 //Parent selector
                 null,// referencedClassId,
-                null);
+                null,//parentSelectorPresentationId
+                useDropDownList);
         userTitle = title;
         defaultVal = defaultValue;
         if (targetColumn != null) {
@@ -198,6 +244,9 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
         this.allowPersistentValue = allowPersistentValue;
         targetOwnerId = null;
         targetId = null;
+        this.useDropDownList = useDropDownList;
+        this.parentSelectorAdditionalCondition = 
+            parentSelectorAdditionalCondition==null ? null : (Sqml)parentSelectorAdditionalCondition.copy();        
     }
 
     //Конструктор для параметра по колонке таблицы
@@ -209,7 +258,9 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
             final Boolean isMandatory,
             final ValAsStr defaultValue, //значение по-умолчанию может быть null
             final boolean allowPersistentValue,
-            final IClientEnvironment environment) {
+            final IClientEnvironment environment,
+            final Boolean useDropDownList,
+            final Sqml parentSelectorAdditionalCondition) {
         super(id,
                 "",//name          //собственное имя (берется из тега)
                 null,//titleId
@@ -230,7 +281,8 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                 false,//isMemo
                 //Parent selector
                 null,// referencedClassId,
-                null);
+                null,
+                useDropDownList);
         this.environment = environment;
         userTitle = title;
         defaultVal = defaultValue;
@@ -241,6 +293,9 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
             mandatory = isMandatory;
         }
         this.allowPersistentValue = allowPersistentValue;
+        this.useDropDownList = useDropDownList;
+        this.parentSelectorAdditionalCondition = 
+            parentSelectorAdditionalCondition==null ? null : (Sqml)parentSelectorAdditionalCondition.copy();        
     }
 
     //Конструктор испорченного параметра (когда не найдено свойство)
@@ -268,7 +323,8 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                 false,//isMemo
                 //Parent selector
                 null,// referencedClassId,
-                null);
+                null,
+                false);
         allowPersistentValue = false;
         this.targetOwnerId = targetOwnerId;
         this.targetColumnId = null;
@@ -286,7 +342,11 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
             final ValAsStr defaultValue, //значение по-умолчанию может быть null
             final Id referencedClassId,
             final Id parentSelectorPresentationId,
-            final boolean allowPersistentValue) {
+            final Sqml parentSelectorAdditionalCondition,
+            final boolean allowPersistentValue,
+            final Boolean useDropDownList,
+            final int minArrayItemsCount,
+            final int maxArrayItemsCount) {
         super(id,
                 "",//name          //собственное имя (берется из тега)
                 null,//titleId
@@ -298,16 +358,24 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                 defaultValue,
                 //Editing
                 false,//isMandatory
+                true,//arrayItemIsMandatory
                 false,//storeHistory
                 false,//isCustomDialog
                 null,//customDialogId
                 false,//isCustomEditOnly
                 null,//editMaskStr
                 null,//nullStringId
+                null,//arrayItemNullStringId
+                null,//emptyArrayStringId (onlyForArrayProperties)
+                false,//isDuplicatesEnabled (onlyForArrayProperties)
+                minArrayItemsCount,//minArrayItemsCount
+                maxArrayItemsCount,//maxArrayItemsCount
+                1,//firstArrayItemIndex                
                 false,//isMemo
                 //Parent selector
                 referencedClassId,// referencedClassId,
-                parentSelectorPresentationId);
+                parentSelectorPresentationId,
+                useDropDownList);
         if (valType == null) {
             throw new NullPointerException("valType must be not null'");
         }
@@ -326,7 +394,11 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
         this.targetOwnerId = null;
         this.targetColumnId = null;
         this.targetId = null;
-    }
+        this.minArrayItemsCount = minArrayItemsCount;
+        this.maxArrayItemsCount = maxArrayItemsCount;
+        this.parentSelectorAdditionalCondition = 
+            parentSelectorAdditionalCondition==null ? null : (Sqml)parentSelectorAdditionalCondition.copy();
+    }        
 
     @Override
     public boolean isPredefined() {
@@ -368,7 +440,16 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
     }
 
     @Override
+    public String getTitle(final IClientEnvironment environment) {
+        return getTitleImpl(environment);
+    }
+        
+    @Override
     public String getTitle() {
+        return getTitleImpl(null);
+    }
+    
+    private String getTitleImpl(final IClientEnvironment environment){
         if (!isValid()) {
             if (targetId == null) {
                 return "??? " + targetColumnId.toString() + " ???";
@@ -376,10 +457,10 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                 return "??? " + targetId.toString() + " ???";
             }
         } else if (userTitle == null) {
-            return target == null ? getName() : target.getTitle();
+            return target == null ? getName() : target.getTitle(environment);
         } else {
             return userTitle;
-        }
+        }        
     }
 
     @Override
@@ -406,16 +487,21 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
 
     @Override
     public EditMask getEditMask() {
+        final EditMask resultMask;
         if (!isValid()) {
-            return new EditMaskNone();
+            resultMask = new EditMaskNone();
         } else if (target != null) {
-            return target.getEditMask();
+            resultMask = target.getEditMask();
         } else if (getSqmlColumn() != null) {
-            return EditMask.newCopy(getSqmlColumn().getEditMask());
+            resultMask = EditMask.newCopy(getSqmlColumn().getEditMask());
+        }else{
+            resultMask = mask == null ? EditMask.newInstance(getType()) : EditMask.newCopy(mask);
+            if (nullValueTitle != null) {
+                resultMask.setNoValueStr(nullValueTitle);
+            }
         }
-        final EditMask resultMask = mask == null ? EditMask.newInstance(getType()) : EditMask.newCopy(mask);
-        if (nullValueTitle != null) {
-            resultMask.setNoValueStr(nullValueTitle);
+        if (getUseDropDownList()!=null && resultMask instanceof EditMaskRef){
+            ((EditMaskRef)resultMask).setUseDropDownList(getUseDropDownList());
         }
         return resultMask;
     }
@@ -475,6 +561,11 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
             }
         }
     }
+    
+    @Override
+    public Sqml getParentSelectorAdditionalCondition(){
+        return parentSelectorAdditionalCondition==null ? null : (Sqml)parentSelectorAdditionalCondition.copy();
+    }
 
     @Override
     public ValAsStr getInitialVal() {
@@ -512,7 +603,7 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
 
     @Override
     public void setNullString(final String nullTitle) {
-        if (!Utils.equals(nullTitle, getNullString())) {
+        if (!Objects.equals(nullTitle, getNullString())) {
             nullValueTitle = nullTitle;
             wasModified = true;
         }
@@ -529,7 +620,7 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
 
     @Override
     public void setInitialValue(final ValAsStr value) {
-        if (!Utils.equals(value, defaultVal)) {
+        if (!Objects.equals(value, defaultVal)) {
             defaultVal = value;
             updateChangeValueTimestamp();
             wasModified = true;
@@ -596,20 +687,68 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
 
     @Override
     public void setParentSelectorPresentation(final Id classId, final Id presentationId) {
-        if (!Utils.equals(classId, referencedClassId) || !Utils.equals(presentationId, parentSelectorPresentationId)) {
+        if (!Objects.equals(classId, referencedClassId) || !Objects.equals(presentationId, parentSelectorPresentationId)) {
             referencedClassId = classId;
             parentSelectorPresentationId = presentationId;
             wasModified = true;
         }
     }
+    
+    @Override
+    public void setParentSelectorAdditionalCondition(final Sqml condition){
+        if (!Objects.equals(condition==null ? null : condition.xmlText(), parentSelectorAdditionalCondition==null ? null : parentSelectorAdditionalCondition.xmlText())){
+            parentSelectorAdditionalCondition = condition==null ? null : (Sqml)condition.copy();
+            wasModified = true;
+        }
+    }
+
+    @Override
+    public void setUseDropDownList(final Boolean useDropDownList) {
+        if (!Objects.equals(this.useDropDownList, useDropDownList)){
+            this.useDropDownList = useDropDownList;
+            wasModified = true;
+        }
+    }
+
+    @Override
+    public int getMinArrayItemsCount() {
+        return target==null ? minArrayItemsCount : target.getMinArrayItemsCount();
+    }
+        
+    @Override
+    public void setMinArrayItemsCount(final int count) {
+        if (target==null && minArrayItemsCount!=count){
+            minArrayItemsCount = count;
+            wasModified = true;
+        }
+    }
+
+    @Override
+    public int getMaxArrayItemsCount() {
+        return target==null ? maxArrayItemsCount : target.getMaxArrayItemsCount();
+    }
+        
+    @Override
+    public void setMaxArrayItemsCount(final int count) {
+        if (target==null && maxArrayItemsCount!=count){
+            maxArrayItemsCount = count;
+            wasModified = true;
+        }
+    }        
+
+    @Override
+    public Boolean getUseDropDownList() {
+        return useDropDownList;
+    }
+       
 
     @Override
     public void setValType(final EValType valType, final EditMask editMask, final boolean isMandatory, final String nullTitle) {
         if (valType == null) {
-            throw new NullPointerException("target property must be not null");
+            throw new IllegalArgumentException("value type must be not null");
         }
         if (valType != getType() || !editMaskEquals(editMask, mask) || mandatory == null || isMandatory != mandatory.booleanValue()
-                || !Utils.equals(nullTitle, nullValueTitle) || target != null) {
+                || !Objects.equals(nullTitle, nullValueTitle) || target != null) {
             target = null;
             column = null;
             type = valType;
@@ -659,9 +798,9 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
         if (!isValid()) {
             copy = new RadFilterUserParamDef(getId(), targetOwnerId, targetId);
         } else if (targetColumnId != null && column == null) {
-            copy = new RadFilterUserParamDef(getId(), userTitle, targetOwnerId, targetColumnId, mandatory, defaultVal, allowPersistentValue, environment);
+            copy = new RadFilterUserParamDef(getId(), userTitle, targetOwnerId, targetColumnId, mandatory, defaultVal, allowPersistentValue, environment, useDropDownList, parentSelectorAdditionalCondition);
         } else if (target != null || getSqmlColumn() != null) {
-            copy = new RadFilterUserParamDef(getId(), userTitle, target, getSqmlColumn(), mandatory, defaultVal, allowPersistentValue);
+            copy = new RadFilterUserParamDef(getId(), userTitle, target, getSqmlColumn(), mandatory, defaultVal, allowPersistentValue, useDropDownList, parentSelectorAdditionalCondition);
         } else {
             copy = new RadFilterUserParamDef(getId(), userTitle,
                     type,
@@ -671,7 +810,11 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
                     defaultVal,
                     referencedClassId,
                     parentSelectorPresentationId,
-                    allowPersistentValue);
+                    parentSelectorAdditionalCondition,
+                    allowPersistentValue,
+                    useDropDownList,
+                    minArrayItemsCount,
+                    maxArrayItemsCount);
         }
         if (persistentValue != null) {
             copy.persistentValue = persistentValue.copy();
@@ -712,6 +855,15 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
             } else {
                 persistentValue = null;
             }
+            if (copy.target==null){
+                minArrayItemsCount = copy.getMinArrayItemsCount();
+                maxArrayItemsCount = copy.getMaxArrayItemsCount();
+            }
+            if (copy.parentSelectorAdditionalCondition==null){
+                parentSelectorAdditionalCondition=null;
+            }else{
+                parentSelectorAdditionalCondition = (Sqml)copy.parentSelectorAdditionalCondition.copy();
+            }
             wasModified = saveModifiedState;
         }
     }
@@ -719,7 +871,7 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
     final void switchToFixedState() {
         wasModified = false;
     }
-
+    
     public void writeToXml(final org.radixware.schemas.groupsettings.FilterParameters parameters) {
         final org.radixware.schemas.groupsettings.FilterParameters.Parameter param = parameters.addNewParameter();
         if (!isValid()) {
@@ -728,7 +880,9 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
             parameter.setId(getId());
             parameter.setDefinitionType(EDefType.FILTER_PARAM);
             parameter.setOwnerClassId(targetOwnerId);
-            parameter.setPropertyId(targetId);
+            if (targetId!=null){
+                parameter.setPropertyId(targetId);
+            }
         } else if (target != null || getSqmlColumn() != null) {
             final org.radixware.schemas.groupsettings.PropertyBasedFilterParameter parameter =
                     param.addNewPropertyBasedParamter();
@@ -741,6 +895,12 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
             if (defaultVal != null) {
                 parameter.setDefaultVal(defaultVal.toString());
             }
+            if (useDropDownList!=null && (getType()==EValType.ARR_REF || getType()==EValType.PARENT_REF)){
+                parameter.setUseDropDownList(useDropDownList);
+            }
+            if (parentSelectorAdditionalCondition!=null && (getType()==EValType.ARR_REF || getType()==EValType.PARENT_REF)){
+                parameter.setParentSelectorCondition(parentSelectorAdditionalCondition);
+            }            
         } else {
             final org.radixware.schemas.groupsettings.CustomFilterParameter parameter =
                     param.addNewCustomParameter();
@@ -767,6 +927,12 @@ public class RadFilterUserParamDef extends RadFilterParamDef implements ISqmlMod
             if (parentSelectorPresentationId != null) {
                 parameter.setParentSelectorPresentationId(parentSelectorPresentationId);
             }
+            if (parentSelectorAdditionalCondition!=null && (getType()==EValType.ARR_REF || getType()==EValType.PARENT_REF)){
+                parameter.setParentSelectorCondition(parentSelectorAdditionalCondition);
+            }
+            if (useDropDownList!=null && (getType()==EValType.ARR_REF || getType()==EValType.PARENT_REF)){
+                parameter.setUseDropDownList(useDropDownList);
+            }            
         }
     }
 

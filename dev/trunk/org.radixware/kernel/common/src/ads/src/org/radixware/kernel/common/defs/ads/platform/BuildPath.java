@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
 import org.radixware.kernel.common.compiler.core.lookup.LookupUtils;
 import org.radixware.kernel.common.defs.RadixObject;
@@ -70,46 +71,41 @@ public class BuildPath extends RadixObject {
     public AdsSegment getSegment() {
         return (AdsSegment) getContainer();
     }
-    private static final Map<String, AdsTypeDeclaration> platformClassName2ItsSuperClassName = new HashMap<String, AdsTypeDeclaration>(19);
-    private static final Map<String, AdsTypeDeclaration[]> platformClassName2ItsSuperInterfaces = new HashMap<>(19);
+    private static final ConcurrentHashMap<String, AdsTypeDeclaration> platformClassName2ItsSuperClassName = new ConcurrentHashMap<>(19);
+    private static final ConcurrentHashMap<String, AdsTypeDeclaration[]> platformClassName2ItsSuperInterfaces = new ConcurrentHashMap<>(19);
 
     public final AdsTypeDeclaration getPlatformClassBaseClass(String platformClassName, ERuntimeEnvironmentType env) {
-        synchronized (lock) {
-            AdsTypeDeclaration superClass = platformClassName2ItsSuperClassName.get(platformClassName);
-            if (superClass == null) {
-                ReferenceBinding clazz = LookupUtils.findPlatformClass(platformClassName, getLayer(), env);
-                if (clazz != null && clazz.superclass() != null) {
-                    superClass = AdsTypeDeclaration.Factory.newInstance(clazz.superclass());
-                } else {
-                    return null;
-                }
-                if (superClass != null) {
-                    platformClassName2ItsSuperClassName.put(platformClassName, superClass);
-                }
+        AdsTypeDeclaration superClass = platformClassName2ItsSuperClassName.get(platformClassName);
+        if (superClass == null) {
+            ReferenceBinding clazz = LookupUtils.findPlatformClass(platformClassName, getLayer(), env);
+            if (clazz != null && clazz.superclass() != null) {
+                superClass = AdsTypeDeclaration.Factory.newInstance(clazz.superclass());
+            } else {
+                return null;
             }
-            return superClass;
+            if (superClass != null) {
+                platformClassName2ItsSuperClassName.putIfAbsent(platformClassName, superClass);
+            }
         }
+        return superClass;
     }
-    private static final Object lock = new Object();
     private static final AdsTypeDeclaration[] NO_INTERFACES = new AdsTypeDeclaration[0];
 
     public final AdsTypeDeclaration[] getPlatformClassBaseInterfaces(String platformClassName, ERuntimeEnvironmentType env) {
-        synchronized (lock) {
-            AdsTypeDeclaration[] superIfaces = platformClassName2ItsSuperInterfaces.get(platformClassName);
-            if (superIfaces == null) {
-                ReferenceBinding clazz = LookupUtils.findPlatformClass(platformClassName, getLayer(), env);
-                if (clazz != null && clazz.superInterfaces() != null && clazz.superInterfaces().length > 0) {
-                    superIfaces = new AdsTypeDeclaration[clazz.superInterfaces().length];
-                    for (int i = 0; i < superIfaces.length; i++) {
-                        superIfaces[i] = AdsTypeDeclaration.Factory.newInstance(clazz.superInterfaces()[i]);
-                    }
-                } else {
-                    superIfaces = NO_INTERFACES;
+        AdsTypeDeclaration[] superIfaces = platformClassName2ItsSuperInterfaces.get(platformClassName);
+        if (superIfaces == null) {
+            ReferenceBinding clazz = LookupUtils.findPlatformClass(platformClassName, getLayer(), env);
+            if (clazz != null && clazz.superInterfaces() != null && clazz.superInterfaces().length > 0) {
+                superIfaces = new AdsTypeDeclaration[clazz.superInterfaces().length];
+                for (int i = 0; i < superIfaces.length; i++) {
+                    superIfaces[i] = AdsTypeDeclaration.Factory.newInstance(clazz.superInterfaces()[i]);
                 }
-                platformClassName2ItsSuperInterfaces.put(platformClassName, superIfaces);
+            } else {
+                superIfaces = NO_INTERFACES;
             }
-            return superIfaces;
+            platformClassName2ItsSuperInterfaces.putIfAbsent(platformClassName, superIfaces);
         }
+        return superIfaces;
     }
 
     File[] getKernelDirs() {

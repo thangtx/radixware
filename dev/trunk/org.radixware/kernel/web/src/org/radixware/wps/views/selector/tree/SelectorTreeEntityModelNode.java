@@ -22,6 +22,7 @@ import org.radixware.kernel.common.client.models.items.SelectorColumnModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.enums.ESelectorColumnAlign;
+import org.radixware.kernel.common.enums.ESelectorRowStyle;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.types.Id;
@@ -76,7 +77,8 @@ public class SelectorTreeEntityModelNode extends SelectorTreeNode {
         setUserData(entityModel);
        // initCells();
         updateNodeDisplayName();
-
+        final Pid pid = entityModel.getPid();
+        setObjectName("rx_selector_row_"+pid.getTableId().toString()+"_"+pid.toString());
         ((WpsEnvironment) getEnvironment()).addSettingsChangeListener(l);
     }
 
@@ -108,8 +110,17 @@ public class SelectorTreeEntityModelNode extends SelectorTreeNode {
         for (SelectorColumnModelItem column : columns) {
             if (column.isVisible()) {
                 property = getPropertyForColumn(column);
-                Alignment alignment = applyBodyAlignmentSettings(property, column.getAlignment());
-                WpsTextOptions options = getTextOptions(property).changeAlignment(ETextAlignment.fromStr(alignment.name()));
+                WpsTextOptions options;
+                if (property==null){
+                    final ESelectorRowStyle rowStyle = entityModel.getSelectorRowStyle();
+                    options = (WpsTextOptions)entityModel.getEnvironment().getTextOptionsProvider().getOptions(EnumSet.of(ETextOptionsMarker.SELECTOR_ROW), rowStyle);
+                }else{
+                    Alignment alignment = applyBodyAlignmentSettings(property, column.getAlignment());
+                    options = getTextOptions(property);
+                    if (alignment!=null){
+                        options = options.changeAlignment(ETextAlignment.fromStr(alignment.name()));
+                    }                
+                }
                 setColumnTextOptions(visibleColumnIndex, options);
             }
             visibleColumnIndex++;
@@ -137,7 +148,8 @@ public class SelectorTreeEntityModelNode extends SelectorTreeNode {
             if (property.isEnabled()) {
                 setCellEditorProvider(index, PropertyTreeCellEditorProvider.getInstance());
             }
-            setCellValue(index, property);
+            setCellValue(index, property);            
+            setCellObjectName(index, "rx_selector_cell_"+property.getId().toString());
         } else {
             setCellValue(index, "");
         }
@@ -191,7 +203,7 @@ public class SelectorTreeEntityModelNode extends SelectorTreeNode {
         return alignment;
     }
 
-    public WpsTextOptions getTextOptions(Property property) {
+    public WpsTextOptions getTextOptions(final Property property) {
         if (property == null) {
             return WpsTextOptions.Factory.getOptions((WpsEnvironment) getEnvironment(), ETextOptionsMarker.SELECTOR_ROW);
         } else {

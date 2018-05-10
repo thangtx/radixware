@@ -12,27 +12,18 @@ package org.radixware.kernel.common.defs.ads.clazz.sql.report;
 
 import java.util.List;
 import org.radixware.kernel.common.defs.Definition;
-import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
-import org.radixware.kernel.common.defs.IVisitor;
-import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObjects;
-import org.radixware.kernel.common.defs.VisitorProvider;
-import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsDefinition.ESaveMode;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
-import org.radixware.kernel.common.defs.ads.profiling.AdsProfileSupport;
-import org.radixware.kernel.common.defs.ads.profiling.AdsProfileSupport.IProfileable;
 import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.adsdef.ExportReportToCsvInfo;
 import org.radixware.schemas.adsdef.ExportReportToCsvInfo.ExportCsvColumn;
 
-public class AdsCsvReportInfo extends RadixObject implements IProfileable {
+public class AdsCsvReportInfo extends AdsAbstractReportInfo {
 
-    private final CsvExportColumns csvExportColumns;
-    private Jml csvRowVisibleCondition;
+    private final CsvExportColumns csvExportColumns;    
     private boolean exportToCsvEnabled = false;
-    private boolean exportColumnNames = true;
     public static final String IS_CSV_ROW_VISIBLE_CONDITION_NAME = "isCsvRowVisible";
     private String delimiter = ";";
 
@@ -47,16 +38,16 @@ public class AdsCsvReportInfo extends RadixObject implements IProfileable {
         csvExportColumns = new CsvExportColumns();
         if (xExportReportToCsv != null) {
             this.exportToCsvEnabled = true;
-            List<ExportCsvColumn> columns = xExportReportToCsv.getExportCsvColumnList();
-            for (ExportCsvColumn column : columns) {
-                AdsExportCsvColumn exportCsvColumn = new AdsExportCsvColumn(column);
-                csvExportColumns.add(exportCsvColumn);
-            }
+//            List<ExportCsvColumn> columns = xExportReportToCsv.getExportCsvColumnList();
+//            for (ExportCsvColumn column : columns) {
+//                AdsExportCsvColumn exportCsvColumn = new AdsExportCsvColumn(column);
+//                csvExportColumns.add(exportCsvColumn);
+//            }
 
             if (xExportReportToCsv.isSetIsRowVisible()) {
-                csvRowVisibleCondition = Jml.Factory.loadFrom(this, xExportReportToCsv.getIsRowVisible(), IS_CSV_ROW_VISIBLE_CONDITION_NAME);
+                rowVisibleCondition = Jml.Factory.loadFrom(this, xExportReportToCsv.getIsRowVisible(), IS_CSV_ROW_VISIBLE_CONDITION_NAME);
             } else {
-                csvRowVisibleCondition = getDefaultJml(this);
+                rowVisibleCondition = getDefaultJml(this, IS_CSV_ROW_VISIBLE_CONDITION_NAME);
             }
             if (xExportReportToCsv.isSetDelimiter()) {
                 delimiter = xExportReportToCsv.getDelimiter();
@@ -65,21 +56,14 @@ public class AdsCsvReportInfo extends RadixObject implements IProfileable {
                 exportColumnNames = xExportReportToCsv.getIsExportColumnNames();
             }
         } else {
-            csvRowVisibleCondition = null;
+            rowVisibleCondition = null;
         }
-    }
-
-    private static Jml getDefaultJml(RadixObject context) {
-        Jml jml = Jml.Factory.newInstance(context, IS_CSV_ROW_VISIBLE_CONDITION_NAME);
-        Jml.Item textItem = Jml.Text.Factory.newInstance("return true;");
-        jml.getItems().add(textItem);
-        return jml;
     }
 
     public void appendTo(ExportReportToCsvInfo xExportReportToCsv, ESaveMode saveMode) {
         csvExportColumns.appendTo(xExportReportToCsv);
-        if (csvRowVisibleCondition != null && !csvRowVisibleCondition.getItems().isEmpty()) {
-            csvRowVisibleCondition.appendTo(xExportReportToCsv.addNewIsRowVisible(), saveMode);
+        if (rowVisibleCondition != null && !rowVisibleCondition.getItems().isEmpty()) {
+            rowVisibleCondition.appendTo(xExportReportToCsv.addNewIsRowVisible(), saveMode);
         }
      //   String toSave = delimiter == null ? "" : delimiter.replace("\t", "&#x9;").replace("\t", "&#xA;").replace("\r", "&#xD;");
 
@@ -109,20 +93,9 @@ public class AdsCsvReportInfo extends RadixObject implements IProfileable {
     public void setIsExportToCsvEnabled(boolean isExportToCsvEnabled) {
         if (this.exportToCsvEnabled != isExportToCsvEnabled) {
             this.exportToCsvEnabled = isExportToCsvEnabled;
-            if (isExportToCsvEnabled && csvRowVisibleCondition == null) {
-                csvRowVisibleCondition = getDefaultJml(this);
+            if (isExportToCsvEnabled && rowVisibleCondition == null) {
+                rowVisibleCondition = getDefaultJml(this, IS_CSV_ROW_VISIBLE_CONDITION_NAME);
             }
-            setEditState(EEditState.MODIFIED);
-        }
-    }
-
-    public boolean isExportColumnName() {
-        return exportColumnNames;
-    }
-
-    public void setIsExportColumnName(boolean isExportColumnNames) {
-        if (this.exportColumnNames != isExportColumnNames) {
-            this.exportColumnNames = isExportColumnNames;
             setEditState(EEditState.MODIFIED);
         }
     }
@@ -131,43 +104,11 @@ public class AdsCsvReportInfo extends RadixObject implements IProfileable {
         return csvExportColumns;
     }
 
-    public Jml getRowCondition() {
-        return csvRowVisibleCondition;
-    }
-
-    @Override
-    public void visitChildren(final IVisitor visitor, final VisitorProvider provider) {
-        super.visitChildren(visitor, provider);
-        csvExportColumns.visit(visitor, provider);
-        if (csvRowVisibleCondition != null) {
-            csvRowVisibleCondition.visit(visitor, provider);
-        }
-    }
-
     /**
      * @return property or null if not found.
      */
     public AdsPropertyDef findProperty(Id propId) {
-        final AdsReportClassDef ownerReport = (AdsReportClassDef) getContainer();
-        if (ownerReport != null) {
-            return ownerReport.getProperties().findById(propId, EScope.LOCAL).get();
-        }
-        return null;
-    }
-
-    @Override
-    public AdsProfileSupport getProfileSupport() {
-        return new AdsProfileSupport(this);
-    }
-
-    @Override
-    public boolean isProfileable() {
-        return true;
-    }
-
-    @Override
-    public AdsDefinition getAdsDefinition() {
-        return (AdsReportClassDef) getContainer();
+        return AdsReportClassDef.ReportUtils.findProperty((AdsReportClassDef) getContainer(), propId);        
     }
 
     public static class CsvExportColumns extends RadixObjects<AdsExportCsvColumn> {
@@ -191,5 +132,4 @@ public class AdsCsvReportInfo extends RadixObject implements IProfileable {
         }
 
     }
-
 }

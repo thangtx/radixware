@@ -30,6 +30,7 @@ public class EditorPage extends UIObject implements IEditorPageWidget {
 
     public EditorPage(EditorPageModelItem item) {
         super(new Div());
+        setObjectName("rx_editor_page_widget_#"+item.getId().toString());
         this.page = item;
     }
 
@@ -106,43 +107,66 @@ public class EditorPage extends UIObject implements IEditorPageWidget {
             throw new IllegalStateException("Editor page was not defined");
         }
         UIObject w = null;
-        try {
-            if (errorView != null) {
-                errorView.setVisible(false);
-                remove(errorView);
-                errorView = null;
-            }            
-            pageView = page.getView();
-            if (pageView==null){
-                pageView = page.createView();
-            }
-            w = (UIObject) pageView;
-            w.setParent(this);
-            pageView.open(page.getOwner());
-            set(w);
-            page.getOwner().afterOpenEditorPageView(page.getId());
-        } catch (Exception ex) {
-            if (pageView != null) {
-                if (w != null) {
-                    w.setVisible(false);
+        final String modelTitle = page.getTitle();
+        final long time = System.currentTimeMillis();
+        {
+            final String message = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Start opening editor page \'%1$s\'");
+            getEnvironment().getTracer().debug(String.format(message, modelTitle));
+        }        
+        try{
+            try {
+                if (errorView != null) {
+                    errorView.setVisible(false);
+                    remove(errorView);
+                    errorView = null;
+                }            
+                pageView = page.getView();
+                if (pageView==null){
+                    pageView = page.createView();
                 }
-                pageView.close(true);
-                if (w != null) {
-                    remove(w);
+                w = (UIObject) pageView;
+                w.setParent(this);
+                pageView.open(page.getOwner());
+                set(w);
+                page.getOwner().afterOpenEditorPageView(page.getId());
+            } catch (Exception ex) {
+                if (pageView != null) {
+                    if (w != null) {
+                        w.setVisible(false);
+                    }
+                    pageView.close(true);
+                    if (w != null) {
+                        remove(w);
+                    }
+                    pageView = null;
                 }
-                pageView = null;
+                final String message = page.getEnvironment().getMessageProvider().translate("ExplorerError", "Can't open editor page '%s'");
+                getErrorView().setError(String.format(message, page.getTitle()), ex);
+                getErrorView().setVisible(true);
+                page.getEnvironment().getTracer().put(ex);
+                return;
             }
-            final String message = page.getEnvironment().getMessageProvider().translate("ExplorerError", "Can't open editor page '%s'");
-            getErrorView().setError(String.format(message, page.getTitle()), ex);
-            getErrorView().setVisible(true);
-            page.getEnvironment().getTracer().put(ex);
-            return;
+            page.subscribe(this);
+            refresh(page);
+            //setFocusProxy(w);
+        }finally{
+            final long elapsedTime = System.currentTimeMillis()-time;        
+            final String message = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Opening editor page \'%1$s\' finished. Elapsed time: %2$s ms");
+            getEnvironment().getTracer().debug(String.format(message, modelTitle, elapsedTime));            
         }
-        page.subscribe(this);
-        refresh(page);
-        //setFocusProxy(w);
     }
 
+    @Override
+    public void setFocused(boolean focused) {
+        if (page != null && page.getView() != null && focused) {
+            page.getView().setFocus();
+        } else {
+            super.setFocused(focused);
+        }
+    }
+    
     public void reread() {
         if (pageView != null) {
             try {

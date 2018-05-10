@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ads:AdsDefinition FormatVersion="0" xmlns:ads="http://schemas.radixware.org/adsdef.xsd"><ads:AdsXmlSchemeDefinition Id="xsdZSI43OXUWJGKXFRIHW5YNC4YCQ" Name="AADCLocksListXsd" TargetNamespace="http://schemas.radixware.org/AADCLocksListXsd.xsd" NeedsDoc="false" Environment="common"><ads:AccessRules IsFinal="true" IsPublished="false"/><ads:Documentation/><ads:LinkedSchemas ActualizeOnSave="true">
+  <ads:LinkedSchema Id="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" LinkMode="Import"/>
+</ads:LinkedSchemas><xs:schema elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://schemas.radixware.org/AADCLocksListXsd.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:this="http://schemas.radixware.org/AADCLocksListXsd.xsd" xmlns:types="http://schemas.radixware.org/types.xsd">
+    <xs:import namespace="http://schemas.radixware.org/types.xsd" schemaLocation="types.xsd"/>
+    <xs:complexType name="AADCLocksList">
+        <xs:sequence>
+            <xs:element name="AADCLock" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType> 
+                    <xs:sequence>
+                        <xs:element name="LockCacheKey" type="this:LockCacheKey"/>                                                    
+                    </xs:sequence>                                       
+                    <xs:attribute name="Object" type="xs:string"/>
+                    <xs:attribute name="OwnerMember" type="xs:int"/>
+                    <xs:attribute name="Commited" type="xs:boolean"/>
+                    <xs:attribute name="Created" type="xs:long"/>                    
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="LockCacheKey">
+        <xs:sequence>
+            <xs:element name="ObjPid" type="xs:string"/>
+            <xs:element name="LockType" type="xs:byte"/>
+        </xs:sequence>
+    </xs:complexType>
+    
+    <xs:complexType name="AADCLocksFilter">
+        <xs:attribute name="ObjectType" type="xs:string"/>
+        <xs:attribute name="ObjectPid" type="xs:string"/>
+        <xs:attribute name="OwnerMember" type="types:Int"/>
+    </xs:complexType>       
+    
+    <xs:complexType name="AADCLocksStatistics">
+        <xs:sequence>
+            <xs:element name="Entry" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>                                                          
+                    <xs:attribute name="ObjectType" type="xs:string"/>
+                    <xs:attribute name="OwnerMember" type="xs:string"/>
+                    <xs:attribute name="LocksCount" type="xs:string"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>    
+        
+    <xs:element name="AADCLocksList" type="this:AADCLocksList"/>
+    <xs:element name="DeletingLockCacheKey" type="this:LockCacheKey"/>
+    
+    <xs:element name="AADCLocksFilter" type="this:AADCLocksFilter"/>
+    
+    <xs:element name="AADCLocksStatistics" type="this:AADCLocksStatistics"/>
+</xs:schema></ads:AdsXmlSchemeDefinition></ads:AdsDefinition>

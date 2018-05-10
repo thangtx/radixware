@@ -21,6 +21,7 @@ import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.text.ITextOptionsProvider;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
 import org.radixware.kernel.common.client.widgets.IButton;
+import org.radixware.kernel.common.html.ToolTip;
 import org.radixware.wps.rwt.ValueEditor;
 import org.radixware.wps.rwt.ValueEditor.ValueChangeListener;
 import org.radixware.wps.text.WpsTextOptions;
@@ -254,7 +255,7 @@ public abstract class ValEditorController<T, V extends EditMask> implements IVal
     public IValEditor<T, V> getValEditor() {
         if (valEditor == null) {
             valEditor = createValEditor();
-            valEditor.addValueChangeListener(changeValueListener);
+            //valEditor.addValueChangeListener(changeValueListener);
             valEditor.addStartChangeValueListener(startChangeListener);
             valEditor.addFinishChangeValueListener(finishChangeListener);
             valEditor.addUnacceptableInputListener(unacceptableInputListener);
@@ -437,7 +438,9 @@ public abstract class ValEditorController<T, V extends EditMask> implements IVal
 
     @Override
     public void refresh() {
-        setValue(value);
+        if (getValEditor().hasAcceptableInput()){
+            setValue(value);
+        }
     }
 
     public void close() {
@@ -449,18 +452,40 @@ public abstract class ValEditorController<T, V extends EditMask> implements IVal
     }
 
     @Override
-    public void addButton(IButton button) {
+    public void addButton(final IButton button) {
         getValEditor().addButton(button);
     }
+    
+    @Override
+    public void addButton(final IButton button, final int priority) {
+        getValEditor().addButton(button, priority);
+    }    
 
+    @Override
+    public void removeButton(final IButton button) {
+        getValEditor().removeButton(button);
+    }        
+
+    @Override
+    public void setButtonsVisible(final boolean isVisible) {
+        getValEditor().setButtonsVisible(isVisible);
+    }
+
+    @Override
+    public boolean isButtonsVisible() {
+        return getValEditor().isButtonsVisible();
+    }        
+
+    @SuppressWarnings("unchecked")
     public void setEditMask(V editMask) {
-        this.editMask = editMask;
+        this.editMask = editMask==null ? null : (V)EditMask.newCopy(editMask);
         doValidation();
         getValEditor().refresh();
     }
 
+    @SuppressWarnings("unchecked")
     public V getEditMask() {
-        return editMask;
+        return editMask==null ? null : (V)EditMask.newCopy(editMask);
     }
 
     @Override
@@ -468,6 +493,11 @@ public abstract class ValEditorController<T, V extends EditMask> implements IVal
         getValEditor().setToolTip(toolTip);
     }
 
+    
+    public void setHtmlToolTip(ToolTip toolTip) {
+        getValEditor().setHtmlToolTip(toolTip);
+    }
+    
     @Override
     public void setInitialValue(final T value) {
         getValEditor().setInitialValue(value);

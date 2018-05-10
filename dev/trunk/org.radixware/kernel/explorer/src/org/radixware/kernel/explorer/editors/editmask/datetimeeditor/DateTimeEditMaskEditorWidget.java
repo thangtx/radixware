@@ -148,6 +148,11 @@ public class DateTimeEditMaskEditorWidget extends ExplorerFrame implements IEdit
 
     @Override
     public boolean checkOptions() {
+        if (timeStyle.getValue() == EDateTimeStyle.NONE && dateStyle.getValue() == EDateTimeStyle.NONE) {
+            final String msg = environment.getMessageProvider().translate("EditMask", "Incorrect input: date or time style should be set");
+            environment.messageError(msg);            
+            return false;    
+        }
         if (minVal.checkInput() && maxVal.checkInput()){
             final long max = maxVal.getValue().getTime();
             final long min = minVal.getValue().getTime();

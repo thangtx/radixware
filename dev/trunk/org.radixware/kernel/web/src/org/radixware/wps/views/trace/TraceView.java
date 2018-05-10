@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.wps.views.trace;
 
 import org.radixware.kernel.common.html.Html;
@@ -26,6 +25,8 @@ import org.radixware.kernel.common.client.editors.traceprofile.TraceProfileTreeC
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.meta.mask.EditMaskDateTime;
+import org.radixware.kernel.common.client.meta.mask.EditMaskInt;
 import org.radixware.kernel.common.client.meta.mask.EditMaskList;
 import org.radixware.kernel.common.client.trace.ClientTraceItem;
 import org.radixware.kernel.common.client.trace.ClientTraceParser;
@@ -33,11 +34,14 @@ import org.radixware.kernel.common.client.trace.TraceBuffer;
 import org.radixware.kernel.common.client.views.IDialog;
 import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.enums.EDateTimeStyle;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.trace.TraceParser;
+import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.kernel.common.utils.Utils;
+import org.radixware.wps.WebServerRunParams;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.dialogs.FindAndReplaceDialog;
 import org.radixware.wps.icons.WpsIcon;
@@ -46,7 +50,6 @@ import org.radixware.wps.views.RwtAction;
 import org.radixware.wps.views.editors.valeditors.ValDateTimeEditorController;
 import org.radixware.wps.views.editors.valeditors.ValIntEditorController;
 import org.radixware.wps.views.editors.valeditors.ValListEditorController;
-
 
 public class TraceView extends VerticalBoxContainer {
 
@@ -108,8 +111,8 @@ public class TraceView extends VerticalBoxContainer {
             tableLayout.getAnchors().setRight(new Anchors.Anchor(1, 0));
 
             final ToolBar toolBar = new ToolBar();
-            final boolean canTranslateMessage =
-                clientTraceParser != null && (traceItem.getSeverity() == EEventSeverity.ERROR || traceItem.getSeverity() == EEventSeverity.ALARM);
+            final boolean canTranslateMessage
+                    = clientTraceParser != null && (traceItem.getSeverity() == EEventSeverity.ERROR || traceItem.getSeverity() == EEventSeverity.ALARM);
             final boolean canTranslateStackTrace = traceItem.getStackTrace() != null && traceParser != null;
             final boolean isTranslateButtonVisible = canTranslateMessage || canTranslateStackTrace;
             toolBar.setVisible(isTranslateButtonVisible);
@@ -158,7 +161,8 @@ public class TraceView extends VerticalBoxContainer {
             translateAction.addActionListener(new Action.ActionListener() {
                 @Override
                 public void triggered(Action action) {
-                    if (traceItem.getSeverity() == EEventSeverity.ERROR || traceItem.getSeverity() == EEventSeverity.ALARM) {
+                    if (traceItem.getSeverity().getValue()>EEventSeverity.EVENT .getValue()
+                        && traceItem.getSeverity().getValue() <= EEventSeverity.ALARM.getValue()) {
                         messageArea.setText(translateAction.isChecked() ? clientTraceParser.parse(traceItem.getMessageText()) : traceItem.getMessageText());
                     }
                     if (stackTraceArea != null && traceParser != null) {
@@ -267,6 +271,7 @@ public class TraceView extends VerticalBoxContainer {
     };
     private final TraceBuffer traceBuffer;
     private final IClientEnvironment environment;
+    private final boolean inDevelopmentMode;
     private TraceListItem currentItem;
     private FindAndReplaceDialog searchDialog = null;
     private RwtAction findAction;
@@ -280,6 +285,7 @@ public class TraceView extends VerticalBoxContainer {
         super();
         this.environment = environment;
         this.traceBuffer = traceBuffer;
+        inDevelopmentMode = WebServerRunParams.getIsDevelopmentMode();
         setupUi();
 
         traceBuffer.addTraceBufferListener(new TraceBuffer.TraceBufferListener<ClientTraceItem>() {
@@ -326,8 +332,8 @@ public class TraceView extends VerticalBoxContainer {
             WpsIcon icon;
             EEventSeverity severity = EEventSeverity.getForValue((long) currentLevel);
             EditMaskList mask = new EditMaskList();
-            final List<TraceProfileTreeController.EventSeverity> eventSeverityItems =
-                    TraceProfileTreeController.getEventSeverityItemsByOrder(environment);
+            final List<TraceProfileTreeController.EventSeverity> eventSeverityItems
+                    = TraceProfileTreeController.getEventSeverityItemsByOrder(environment);
             for (TraceProfileTreeController.EventSeverity eventSeverity : eventSeverityItems) {
                 if (!Utils.equals(eventSeverity.getValue(), EEventSeverity.NONE.getName())) {
                     icon = (WpsIcon) eventSeverity.getIcon();//gotta do something with that!
@@ -392,10 +398,10 @@ public class TraceView extends VerticalBoxContainer {
             });
         }
         {
-            final String actionTitle =
-                    environment.getMessageProvider().translate("TraceDialog", "Save");
-            final RwtAction action =
-                    new RwtAction(environment, ClientIcon.CommonOperations.SAVE, actionTitle);
+            final String actionTitle
+                    = environment.getMessageProvider().translate("TraceDialog", "Save");
+            final RwtAction action
+                    = new RwtAction(environment, ClientIcon.CommonOperations.SAVE, actionTitle);
             action.addActionListener(new Action.ActionListener() {
                 @Override
                 public void triggered(final Action action) {
@@ -405,10 +411,10 @@ public class TraceView extends VerticalBoxContainer {
             actionsPanel.addAction(action);
         }
         {
-            final String actionTitle =
-                    environment.getMessageProvider().translate("TraceDialog", "Clear");
-            final RwtAction action =
-                    new RwtAction(environment, ClientIcon.CommonOperations.CLEAR, actionTitle);
+            final String actionTitle
+                    = environment.getMessageProvider().translate("TraceDialog", "Clear");
+            final RwtAction action
+                    = new RwtAction(environment, ClientIcon.CommonOperations.CLEAR, actionTitle);
             action.addActionListener(new Action.ActionListener() {
                 @Override
                 public void triggered(final Action action) {
@@ -418,10 +424,10 @@ public class TraceView extends VerticalBoxContainer {
             actionsPanel.addAction(action);
         }
         {
-            final String actionTitle =
-                    environment.getMessageProvider().translate("TraceDialog", "Find");
-            findAction =
-                    new RwtAction(environment, ClientIcon.CommonOperations.FIND, actionTitle);
+            final String actionTitle
+                    = environment.getMessageProvider().translate("TraceDialog", "Find");
+            findAction
+                    = new RwtAction(environment, ClientIcon.CommonOperations.FIND, actionTitle);
             findAction.addActionListener(new Action.ActionListener() {
                 @Override
                 public void triggered(final Action action) {
@@ -447,10 +453,10 @@ public class TraceView extends VerticalBoxContainer {
             actionsPanel.addAction(findAction);
         }
         {
-            final String actionTitle =
-                    environment.getMessageProvider().translate("TraceDialog", "Find Next");
-            findNextAction =
-                    new RwtAction(environment, ClientIcon.CommonOperations.FIND_NEXT, actionTitle);
+            final String actionTitle
+                    = environment.getMessageProvider().translate("TraceDialog", "Find Next");
+            findNextAction
+                    = new RwtAction(environment, ClientIcon.CommonOperations.FIND_NEXT, actionTitle);
             findNextAction.addActionListener(new Action.ActionListener() {
                 @Override
                 public void triggered(final Action action) {
@@ -460,6 +466,7 @@ public class TraceView extends VerticalBoxContainer {
                 }
             });
             findNextAction.setEnabled(false);
+            findNextAction.setTextShown(false);
             actionsPanel.addAction(findNextAction);
         }
         row.addCell().add(actionsPanel);
@@ -487,8 +494,12 @@ public class TraceView extends VerticalBoxContainer {
         ((UIObject) maxCountBox.getValEditor()).getHtml().setCss("padding", "4px 10px");
         maxCountBox.setLabel(environment.getMessageProvider().translate("TraceDialog", "Keep items: "));
         maxCountBox.setLabelVisible(true);
-        maxCountBox.getEditMask().setMaxValue(1000);
-        maxCountBox.getEditMask().setMinValue(-1);
+        final EditMaskInt mask = new EditMaskInt();        
+        mask.setMaxValue(10000);
+        mask.setMinValue(0);
+        mask.setNoValueStr(environment.getMessageProvider().translate("TraceDialog", "all"));
+        maxCountBox.setEditMask(mask);
+        maxCountBox.setMandatory(!inDevelopmentMode);
         maxCountBox.addValueChangeListener(new ValueEditor.ValueChangeListener<Long>() {
             @Override
             public void onValueChanged(Long oldValue, Long newValue) {
@@ -496,7 +507,11 @@ public class TraceView extends VerticalBoxContainer {
             }
         });
         long initMaxSizeItems = environment.getConfigStore().readInteger(SettingNames.SYSTEM + "/TraceDialog/MaxItemCount", 500);
-        maxCountBox.setValue(initMaxSizeItems);
+        if (initMaxSizeItems<0){
+            maxCountBox.setValue(inDevelopmentMode ? null : 500l);
+        }else{
+            maxCountBox.setValue(initMaxSizeItems);
+        }
     }
 
     private void filterTrace() {
@@ -505,29 +520,30 @@ public class TraceView extends VerticalBoxContainer {
     }
 
     private void filterBySeverity() {
-        if (maxCountBox.getValue() != null) {
-            for (int i = 0; i < traceItems.getRowCount(); ++i) {
-                boolean visible = isAllowed(getItem(i).getTraceItem());
-                getItem(i).setVisible(visible);
-            }
+        for (int i = 0; i < traceItems.getRowCount(); ++i) {
+            boolean visible = isAllowed(getItem(i).getTraceItem());
+            getItem(i).setVisible(visible);
         }
     }
 
     private void checkTraceItemCount() {
-        if (maxCountBox.getValue() != null) {
-            int val = maxCountBox.getValue().intValue();
-            if (getEnvironment().getTracer().getBuffer().getMaxSize() != val) {
-                getEnvironment().getTracer().getBuffer().setMaxSize(val);
-            }
+        final int val;
+        if (maxCountBox.getValue()==null){
+            val = inDevelopmentMode ? -1 : 500;
+        }else{
+            val = maxCountBox.getValue().intValue();
+        }
+        if (getEnvironment().getTracer().getBuffer().getMaxSize() != val) {                
+            getEnvironment().getTracer().getBuffer().setMaxSize(val);
+        }
 
-            if (val >= 0 && traceItems.getRowCount() >= val) {
-                final int cnt = traceItems.getRowCount() - val;
-                for (int i = 0; i < cnt; ++i) {
-                    traceItems.removeRow(traceItems.getRow(traceItems.getRowCount() - 1));
-                }
+        if (val >= 0 && traceItems.getRowCount() >= val) {
+            final int cnt = traceItems.getRowCount() - val;
+            for (int i = 0; i < cnt; ++i) {
+                traceItems.removeRow(traceItems.getRow(traceItems.getRowCount() - 1));
             }
-                }
-            }
+        }
+    }
 
     public boolean isAllowed(final ClientTraceItem traceItem) {
         if (traceItem.getSeverity().getValue() < getSeverity().getValue()) {
@@ -558,6 +574,7 @@ public class TraceView extends VerticalBoxContainer {
             for (int row = getNextRowToSearch(findCurrentRow(), searchForward); row >= 0; row = getNextRowToSearch(row, searchForward)) {
                 traceItem = getItem(row);
                 if (searchDialog.match(traceItem.getTraceItem().getMessageText())) {
+                    traceItems.scrollToRow(row);
                     setCurrentItem(traceItem);
                     return true;
                 }
@@ -602,13 +619,14 @@ public class TraceView extends VerticalBoxContainer {
     private void addNewItem(final ClientTraceItem traceItem, final int maxItems) {
         boolean currentItemRemoved = false;
         int i = 0;
-        if(maxItems>=0)
-        while (traceItems.getRowCount() > 0 && traceItems.getRowCount() + 1 > maxItems) {
-            if (currentItem == getItem(i)) {
-                currentItemRemoved = true;
+        if (maxItems >= 0) {
+            while (traceItems.getRowCount() > 0 && traceItems.getRowCount() + 1 > maxItems) {
+                if (currentItem == getItem(i)) {
+                    currentItemRemoved = true;
+                }
+                traceItems.removeRow(traceItems.getRow(i));
+                i++;
             }
-            traceItems.removeRow(traceItems.getRow(i));
-            i++;
         }
         if (maxItems != 0) {
             final TraceListItem listItem = new TraceListItem(traceItem, environment);
@@ -673,10 +691,10 @@ public class TraceView extends VerticalBoxContainer {
             tmpFile = File.createTempFile("radix_client_trace", null);
             tmpFile.deleteOnExit();
         } catch (IOException exception) {
-            final String title =
-                    getEnvironment().getMessageProvider().translate("ExplorerError", "Input/Output Exception");
-            final String message =
-                    getEnvironment().getMessageProvider().translate("TraceDialog", "Could not open file");
+            final String title
+                    = getEnvironment().getMessageProvider().translate("ExplorerError", "Input/Output Exception");
+            final String message
+                    = getEnvironment().getMessageProvider().translate("TraceDialog", "Could not open file");
             getEnvironment().messageException(title, message, exception);
             getEnvironment().getTracer().error(title, exception);
             return;
@@ -684,19 +702,22 @@ public class TraceView extends VerticalBoxContainer {
         try (FileWriter fileWriter = new FileWriter(tmpFile)) {
             for (int i = 0, count = traceItems.getRowCount(); i < count; i++) {
                 if (traceItems.getRow(i).isVisible()) {
-                    final TraceListItem listItem =
-                            (TraceListItem) traceItems.getRow(i).getCell(0).getChildren().get(0);
+                    final TraceListItem listItem
+                            = (TraceListItem) traceItems.getRow(i).getCell(0).getChildren().get(0);
                     fileWriter.write(listItem.getTraceItem().toString() + "\r\n");
                 }
-            }
-            final String title =
-                    getEnvironment().getMessageProvider().translate("TraceDialog", "Save to file");
+            }            
+            final EditMaskDateTime mask = new EditMaskDateTime(EDateTimeStyle.SHORT, EDateTimeStyle.SHORT, null, null);
+            final String fileNameTemplate = "client_trace_%1$s.txt";
+            final String timeString = mask.toStr(getEnvironment(), new Timestamp(System.currentTimeMillis()));
+            final String fileName = String.format(fileNameTemplate,timeString);
+            final String title = FileUtils.string2UniversalFileNameNoExt(fileName, '-');
             ((WpsEnvironment) getEnvironment()).sendFileToTerminal(title, tmpFile, "Text", false);
         } catch (IOException exception) {
-            final String title =
-                    getEnvironment().getMessageProvider().translate("ExplorerError", "Input/Output Exception");
-            final String message =
-                    getEnvironment().getMessageProvider().translate("ExplorerError", "Can't write file '%s'");
+            final String title
+                    = getEnvironment().getMessageProvider().translate("ExplorerError", "Input/Output Exception");
+            final String message
+                    = getEnvironment().getMessageProvider().translate("ExplorerError", "Can't write file '%s'");
             final String formattedMessage = String.format(message, tmpFile.getAbsolutePath());
             getEnvironment().messageException(title, formattedMessage, exception);
             getEnvironment().getTracer().error(formattedMessage, exception);

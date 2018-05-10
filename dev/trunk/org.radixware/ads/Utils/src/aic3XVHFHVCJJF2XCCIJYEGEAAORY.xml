@@ -150,6 +150,163 @@
           <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
         </ThrownExceptions>
       </Method>
+      <Method Id="mthEIEIZH65PRFF5D3FDAWJZNTIYY" Name="getRootMsdlScheme" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getRootMsdlScheme()Lorg.radixware.kernel.common.msdl.RootMsdlScheme;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.msdl.RootMsdlScheme"/>
+      </Method>
+      <Method Id="mthFVNRDO7KCVGFZEYXLFEG6UC3KQ" Name="writeStructuredMessage" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="writeStructuredMessage(Lorg.radixware.kernel.common.msdl.RootMsdlScheme;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprIAUKLYZ45VDW7D2YO374FER26E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.msdl.RootMsdlScheme"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioError"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthZ6B6ZGPYE5EARM4SBAJJ4RRXXA" Name="clearXml" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="clearXml()V"/>
+        </AccessRules>
+      </Method>
+      <Method Id="mthRRHFRFKVVNASRMJRJWONG3NWEU" Name="readStructuredMessage" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="readStructuredMessage([BLorg.radixware.kernel.common.msdl.RootMsdlScheme;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprHT4IPMQQLFFQJCMEAQAWEPRFAA">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprWVUEXCRTRBELBJJ6LC52MIKUY4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.msdl.RootMsdlScheme"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioError"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthIJLTFLFYQRF3BNDYACHFSJARGE" Name="readStructuredMessageFromInput" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="readStructuredMessageFromInput(Ljava.io.InputStream;Lorg.radixware.kernel.common.msdl.RootMsdlScheme;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprPHQZGPJ4BZA7FC2N3DN7QB3E3M">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprPZ7N36WK5RFMPK5SAVMDDBSCZ4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.msdl.RootMsdlScheme"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioError"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthX6GHHHBP3ZFIZIREOPX7IHC3XQ" Name="readStructuredMessageFromInputParamWithClear" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="readStructuredMessageFromInputParamWithClear(Ljava.io.InputStream;Lorg.radixware.schemas.msdl.Structure;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprDHK3MMIRYVGB5MB4YOTJ4LFQ5Q">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprSC5QRXJOCRC6DL2CCX4SY3HUC4">
+            <Type TypeId="400" extStr="org.radixware.schemas.msdl.Structure"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioError"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthGBYQANZDNFEXRET333IBZR4N24" Name="readStructuredMessageFromInputWithClear" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="readStructuredMessageFromInputWithClear(Ljava.io.InputStream;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mpr7LGRGGZY5VFFXEGEIYYHCS6FS4">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioError"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthTY7SEWPXIRHAPLWP5NFRLMMW2E" Name="readStructuredMessageParamWithClear" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="readStructuredMessageParamWithClear([BLorg.radixware.schemas.msdl.Structure;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprF6BOY2N3KVBF5DDFGAWYI7TNZY">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprMXGE5TVVRJESBEZINGVUH7ZPE4">
+            <Type TypeId="400" extStr="org.radixware.schemas.msdl.Structure"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioError"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthGDDPL7P5UZCWNLNSB4JNIRBAJM" Name="readStructuredMessageWithClear" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="readStructuredMessageWithClear([B)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mpr2UULGYK5NFBPDM7YCRDVC7NB7E">
+            <Type TypeId="401" extStr="byte" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioError"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mth4EOGRAXK35A4PKVBARXGSYZKHI" Name="writeStructuredMessageToOutput" Nature="0" IsOverride="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="writeStructuredMessageToOutput(Ljava.io.OutputStream;Lorg.radixware.kernel.common.msdl.RootMsdlScheme;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprZDKPWNCDEZBVTFM5GCZIKQUWKU">
+            <Type TypeId="400" extStr="java.io.OutputStream"/>
+          </Parameter>
+          <Parameter Name="arg1" Id="mprHKECEVYDPFBWHNLUACIQZI7JT4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.msdl.RootMsdlScheme"/>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.io.IOException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioError"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthVMMKM6SO2RD6XCBE7PK755DBWI" Name="openMsdlStreamReader" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="openMsdlStreamReader(Ljava.io.InputStream;)Lorg.radixware.kernel.common.msdl.MsdlStreamReader;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprHYY4BXZ4PVDTZAYRVEUMF2HYOQ">
+            <Type TypeId="400" extStr="java.io.InputStream"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.msdl.MsdlStreamReader"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.SmioException"/>
+        </ThrownExceptions>
+      </Method>
     </Methods>
   </AdsClassDefinition>
 </AdsDefinition>

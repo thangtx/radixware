@@ -1,0 +1,8 @@
+alter table RDX_JS_JOBQUEUE
+	add THREADPOOLCLASSGUID VARCHAR2(100 char) null
+/
+
+alter table RDX_JS_JOBQUEUE
+	add THREADPOOLPID VARCHAR2(250 char) null
+/
+

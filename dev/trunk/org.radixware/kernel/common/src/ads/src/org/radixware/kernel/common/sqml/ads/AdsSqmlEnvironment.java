@@ -33,6 +33,7 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.AdsCursorClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
 import org.radixware.kernel.common.defs.ads.common.AdsCondition;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.ads.common.AdsVisitorProviders;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.explorerItems.AdsSelectorExplorerItemDef;
@@ -920,7 +921,7 @@ public class AdsSqmlEnvironment implements ISqmlEnvironment {
 
     @Override
     public void printTagCondition(CodePrinter cp, IfParamTag ifParamTag) {
-        AdsParameterPropertyDef.printTagCondition(cp, ifParamTag);
+        AdsUtils.printTagCondition(cp, ifParamTag);
     }
 
     private static boolean isColumnProperty(AdsPropertyDef prop) {

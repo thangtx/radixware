@@ -1,0 +1,19 @@
+
+class Sample<T> {
+
+    public Integer func() {
+	return new Integer(64846489);
+    }
+}
+
+class SampleDescendant extends Sample<Object> {
+}
+
+class Test {
+
+    static public void main(String[] args) {
+	SampleDescendant s = new SampleDescendant();
+	Integer i = s.func();
+	System.out.print(i);
+    }
+}

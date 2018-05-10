@@ -12,6 +12,7 @@ package org.radixware.kernel.common.defs.ads.platform;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -30,6 +31,7 @@ import org.radixware.kernel.common.defs.ads.xml.AbstractXmlDefinition;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.ads.AdsSegment;
+import org.radixware.kernel.common.repository.fs.IJarDataProvider;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.common.utils.XmlUtils;
 import org.xmlsoap.schemas.wsdl.DefinitionsDocument;
@@ -42,7 +44,7 @@ public class PlatformXml {
     private class XbeansTsCache {
 
         private final Map<String, SchemaTypeSystem[]> uri2Sts = new HashMap<>();
-        private final List<SchemaTypeSystem> pool = new LinkedList<>();
+        private final Map<String, SchemaTypeSystem> pool = new HashMap<>();
 
         public SchemaTypeSystem[] get(AbstractXmlDefinition def) {
             synchronized (uri2Sts) {
@@ -61,7 +63,8 @@ public class PlatformXml {
 
         private SchemaTypeSystem[] buildMapForRequest(String namespace) {
             Map<String, List<SchemaTypeSystem>> map = new HashMap<>();
-            for (SchemaTypeSystem ts : pool) {
+            for (String path : pool.keySet()) {
+                SchemaTypeSystem ts = pool.get(path);
                 if (ts.isNamespaceDefined(namespace)) {
                     List<SchemaTypeSystem> list = map.get(namespace);
                     if (list == null) {
@@ -90,6 +93,18 @@ public class PlatformXml {
             });
             for (final AdsNameEnvironment.XBeansDataProvider provider : providers) {
                 String stsName = provider.getTypeSystemName();
+                IJarDataProvider dataProvider = provider.getDataSource();
+                StringBuilder sb = new StringBuilder();
+                if (dataProvider != null) {
+                    sb.append(dataProvider.getName());
+                    sb.append("#");
+                }
+                sb.append(stsName);
+                String path = sb.toString();
+                if(pool.containsKey(path)) {
+                    continue;
+                }
+                
                 final SchemaTypeSystemImpl sts = new SchemaTypeSystemImpl(new ResourceLoader() {
                     @Override
                     public InputStream getResourceAsStream(String string) {
@@ -118,7 +133,7 @@ public class PlatformXml {
                     }
                 }, null));
                 sts.resolve();
-                pool.add(sts);
+                pool.put(path, sts);
             }
         }
     }
@@ -195,6 +210,8 @@ public class PlatformXml {
 
     private static XmlObject findXmlObjects(final Layer layer, final String namespace, final char[] locationHint, ERuntimeEnvironmentType env, final Map<String, XmlObject> results) {
         final XmlObject[] schemaObj = new XmlObject[1];
+        List<ERuntimeEnvironmentType> envs = new ArrayList<>();
+
         AdsNameEnvironment nameEnv = ((AdsSegment) layer.getAds()).getBuildPath().getPlatformLibs().getKernelLib(env).getAdsNameEnvironment();
         nameEnv.invokeRequest(new AdsNameEnvironment.XmlNameRequest() {
             @Override

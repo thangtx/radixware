@@ -14,11 +14,13 @@ package org.radixware.kernel.server.arte.services.eas;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.enums.EEntityInitializationPhase;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 
 import org.radixware.kernel.common.exceptions.ServiceProcessClientFault;
 import org.radixware.kernel.common.exceptions.ServiceProcessFault;
@@ -26,124 +28,157 @@ import org.radixware.kernel.common.exceptions.ServiceProcessServerFault;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.server.meta.clazzes.RadClassDef;
 import org.radixware.kernel.server.meta.clazzes.RadPropDef;
+import org.radixware.kernel.server.meta.presentations.RadClassPresentationDef;
 import org.radixware.kernel.server.meta.presentations.RadEditorPresentationDef;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.Pid;
 import org.radixware.kernel.server.types.PresentationEntityAdapter;
 import org.radixware.kernel.server.types.PropValHandlersByIdMap;
-import org.radixware.kernel.server.types.Restrictions;
 import org.radixware.kernel.server.types.presctx.PresentationContext;
 import org.radixware.schemas.aas.ExceptionEnum;
 import org.radixware.schemas.eas.Definition;
-import org.radixware.schemas.eas.EditorPages;
 import org.radixware.schemas.eas.PrepareCreateMess;
 import org.radixware.schemas.eas.PrepareCreateRq;
 import org.radixware.schemas.eas.PrepareCreateRs;
 import org.radixware.schemas.easWsdl.PrepareCreateDocument;
 
 final class PrepareCreateRequest extends ObjectRequest {
+    
+    private static class TemplatePresentationInfo{
+        private final PresentationEntityAdapter presEntAdapter;
+        private final PresentationOptions presOptions;
+        private final RadEditorPresentationDef pres;
+        
+        public TemplatePresentationInfo(final RadEditorPresentationDef presentation,
+                                                         final PresentationOptions options,
+                                                         final PresentationEntityAdapter adapter
+                                                        ){
+            presEntAdapter = adapter;
+            presOptions = options;
+            pres = presentation;
+        }
+        
+        public PresentationEntityAdapter getPresentationEntityAdapter(){
+            return presEntAdapter;
+        }
+        
+        public PresentationOptions getPresentationOptions(){
+            return presOptions;
+        }
+        
+        public RadEditorPresentationDef getPresentation(){
+            return pres;
+        }
+        
+        public RadClassPresentationDef getClassPresentation(){
+            return presEntAdapter.getEntity().getPresentationMeta();
+        }
+    }
 
     PrepareCreateRequest(final ExplorerAccessService presenter) {
         super(presenter);
-    }
+    }        
 
     final PrepareCreateDocument process(final PrepareCreateMess request) throws ServiceProcessFault, InterruptedException {
         final PrepareCreateRq rqParams = request.getPrepareCreateRq();
-        final RadClassDef classDef = getClassDef(rqParams);
-        final PresentationOptions presOptions = getPresentationOptions(rqParams, classDef, false, false, null);
-        if (presOptions.context instanceof ObjPropContext) {
-            final ObjPropContext c = (ObjPropContext) presOptions.context;
-            if (c.getContextPropertyDef().getValType() == EValType.OBJECT) {
-                c.assertOwnerPropIsEditable();
-            }
-        }
-        Entity src = null;
-        if (rqParams.isSetData() && rqParams.getData().isSetSrcPID()) {
-            try {
-                src = getArte().getEntityObject(new Pid(getArte(), classDef.getEntityId(), rqParams.getData().getSrcPID()));
-            } catch (Throwable e) {
-                throw EasFaults.exception2Fault(getArte(), e, "Can't get the source object");
-            }
-        }
-        final Entity entity;
-        try {
-            entity = (Entity) getArte().newObject(classDef.getId());
-        } catch (Throwable e) {
-            throw EasFaults.exception2Fault(getArte(), e, "Can't get a class instance");
-        }
-
-        final List<Id> edPresIds;
-        if (rqParams.getPresentations() != null && !rqParams.getPresentations().getItemList().isEmpty()) {
-            final List<Definition> presXmls = rqParams.getPresentations().getItemList();
-            edPresIds = new ArrayList<>(presXmls.size());
-            for (Definition presXml : presXmls) {
-                edPresIds.add(presXml.getId());
-            }
-        } else {
-            if (presOptions.context == null || presOptions.context.getCreationEditorPresentationIds() == null || presOptions.context.getCreationEditorPresentationIds().isEmpty()) {
-                throw new ServiceProcessClientFault(ExceptionEnum.APPLICATION_ERROR.toString(), "Can't determinate CreationEditorPresentation from context.\nContext is undefined or invalid.", null, null);
-            }
-            edPresIds = presOptions.context.getCreationEditorPresentationIds();
-        }
-
-        final List<RadEditorPresentationDef> presList = new ArrayList<>(edPresIds.size());
-        for (Id id : edPresIds) {
-            presList.add(classDef.getPresentation().getEditorPresentationById(id));
-        }        
-        final PresentationEntityAdapter<Entity> presEntAdapter = getArte().getPresentationAdapter(entity);
-        final PresentationContext presCtx = getPresentationContext(getArte(), presOptions.context, null);
-        presEntAdapter.setPresentationContext(presCtx);
-        RadEditorPresentationDef pres = getActualEditorPresentation(presEntAdapter, presList, true);
-        PropValHandlersByIdMap initialPropValsById = null;
-        if (rqParams.isSetData()) {
-            initialPropValsById = new PropValHandlersByIdMap();
-            writeCurData2Map(entity.getRadMeta(), pres, rqParams.getData(), initialPropValsById, NULL_PROP_LOAD_FILTER);
-        }
-        initNewObject(entity, presOptions.context, pres, initialPropValsById, src, EEntityInitializationPhase.TEMPLATE_PREPARATION);
-        //entity.setReadonly(true);
-        getArte().switchToReadonlyTransaction(); // to prevent commit of new object before it saved from edtitor
-        pres = getActualEditorPresentation(presEntAdapter, Collections.singletonList(pres), true);
-
-        //there is no use to check EdPres restriction before inserting object in DB (i.e. until Access Control Partition are not defined)
-        //if (pres.getDefRestrictions(getArte()).getIsCreateRestricted())
-        //	throw EasFaults.newAccessViolationFault("create object");
-
         final PrepareCreateDocument res = PrepareCreateDocument.Factory.newInstance();
-        final PrepareCreateRs rsStruct = res.addNewPrepareCreate().addNewPrepareCreateRs();
-        final Collection<RadPropDef> usedPropDefs = pres.getUsedPropDefs(entity.getPresentationMeta());
-
-
-        //RADIX-7112
-        Restrictions restr = pres.getTotalRestrictions(entity);
-        EditorPages enadledEditorPages = rsStruct.addNewEnabledEditorPages();
-
-        if (restr.getIsAccessRestricted() || restr.getIsViewRestricted()) {
-            enadledEditorPages.setAll(false);
-        } else if (!restr.getIsAllEditPagesRestricted()) {
-            enadledEditorPages.setAll(true);
-        } else {
-            enadledEditorPages.setAll(false);
-            Collection<Id> allowedEditPages = restr.getAllowedEditPages();
-            for (Id id : allowedEditPages) {
-                EditorPages.Item item = enadledEditorPages.addNewItem();
-                item.setId(id);
-            }
+        final PrepareCreateRs rsStruct = res.addNewPrepareCreate().addNewPrepareCreateRs();        
+        final List<org.radixware.schemas.eas.Object> objectTemplates = rqParams.getObjectTemplateList();
+        if (objectTemplates==null || objectTemplates.isEmpty()){
+            return res;
         }
-        //end RADIX-7112
+        final List<TemplatePresentationInfo> templates = new LinkedList<>();
+        for (org.radixware.schemas.eas.Object objectTemplate: objectTemplates){
+            final Id classId = objectTemplate.getClassId();
+            final RadClassDef classDef;
+            try {
+                classDef = getArte().getDefManager().getClassDef(classId);
+            } catch (DefinitionNotFoundError e) {
+                throw EasFaults.newDefWithIdNotFoundFault("Class", rqParams.getDomNode().getNodeName(), classId);
+            }            
+            final PresentationOptions presOptions = getPresentationOptions(rqParams, classDef, false, false, null);
+            if (presOptions.context instanceof ObjPropContext) {
+                final ObjPropContext c = (ObjPropContext) presOptions.context;
+                if (c.getContextPropertyDef().getValType() == EValType.OBJECT) {
+                    c.assertOwnerPropIsEditable();
+                    c.assertOwnerPropIsEditable(c.getOwnerObjectPresentationAdapter());
+                }
+            }
+            Entity src = null;
+            if (objectTemplate.isSetSrcPID()) {
+                try {
+                    src = getArte().getEntityObject(new Pid(getArte(), classDef.getEntityId(), objectTemplate.getSrcPID()));
+                } catch (Throwable e) {
+                    throw EasFaults.exception2Fault(getArte(), e, "Can't get the source object");
+                }
+            }
+            final Entity entity;
+            try {
+                entity = (Entity) getArte().newObject(classDef.getId());
+            } catch (Throwable e) {
+                throw EasFaults.exception2Fault(getArte(), e, "Can't get a class instance");
+            }
 
-        writeReadResponse(rsStruct, presEntAdapter, presOptions, true, pres, usedPropDefs);
+            final List<Id> edPresIds;
+            if (rqParams.getPresentations() != null && !rqParams.getPresentations().getItemList().isEmpty()) {
+                final List<Definition> presXmls = rqParams.getPresentations().getItemList();
+                edPresIds = new ArrayList<>(presXmls.size());
+                for (Definition presXml : presXmls) {
+                    edPresIds.add(presXml.getId());
+                }
+            } else {
+                if (presOptions.context == null || presOptions.context.getCreationEditorPresentationIds() == null || presOptions.context.getCreationEditorPresentationIds().isEmpty()) {
+                    throw new ServiceProcessClientFault(ExceptionEnum.APPLICATION_ERROR.toString(), "Can't determinate CreationEditorPresentation from context.\nContext is undefined or invalid.", null, null);
+                }
+                edPresIds = presOptions.context.getCreationEditorPresentationIds();
+            }
+
+            final List<RadEditorPresentationDef> presList = new ArrayList<>(edPresIds.size());
+            for (Id id : edPresIds) {
+                presList.add(classDef.getPresentation().getEditorPresentationById(id));
+            }        
+            final PresentationEntityAdapter<Entity> presEntAdapter = getArte().getPresentationAdapter(entity);
+            final PresentationContext presCtx = getPresentationContext(getArte(), presOptions.context, null);
+            presEntAdapter.setPresentationContext(presCtx);
+            RadEditorPresentationDef pres = getActualEditorPresentation(presEntAdapter, presList, true);
+            final PropValHandlersByIdMap initialPropValsById = new PropValHandlersByIdMap();            
+            writeCurData2Map(entity.getRadMeta(), pres, objectTemplate, initialPropValsById, NULL_PROP_LOAD_FILTER);
+            initNewObject(entity, presOptions.context, pres, initialPropValsById, src, EEntityInitializationPhase.TEMPLATE_PREPARATION);
+            templates.add(new TemplatePresentationInfo(pres, presOptions, presEntAdapter));
+        }
+        getArte().switchToReadonlyTransaction(); // to prevent commit of new object before it saved from edtitor
+        for (TemplatePresentationInfo presInfo: templates){
+            final RadEditorPresentationDef actualPres = 
+                getActualEditorPresentation(presInfo.getPresentationEntityAdapter(), Collections.singletonList(presInfo.getPresentation()), true);            
+            //there is no use to check EdPres restriction before inserting object in DB (i.e. until Access Control Partition are not defined)
+            //if (pres.getDefRestrictions(getArte()).getIsCreateRestricted())
+            //	throw EasFaults.newAccessViolationFault("create object");
+            final Collection<RadPropDef> usedPropDefs = actualPres.getUsedPropDefs(presInfo.getClassPresentation());
+            writePresentableObject(rsStruct.addNewObject(), 
+                                                presInfo.getPresentationEntityAdapter(), 
+                                                presInfo.getPresentationOptions(), 
+                                                true, 
+                                                actualPres, 
+                                                usedPropDefs,
+                                                true);
+        }
         return res;
     }
 
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(((PrepareCreateMess) rqXml).getPrepareCreateRq());
     }
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final PrepareCreateDocument doc = process((PrepareCreateMess) rq);
-        postProcess(rq, doc.getPrepareCreate().getPrepareCreateRs());
+        PrepareCreateDocument doc = null;
+        try{
+            doc = process((PrepareCreateMess) rq);
+        }finally{
+            postProcess(rq, doc == null ? null : doc.getPrepareCreate().getPrepareCreateRs());
+        }
         return doc;
     }
 }

@@ -21,6 +21,12 @@ import org.radixware.kernel.designer.environment.merge.MergeUtils;
 
 public class MergeChangesToBranchAction extends AbstractContextAwareAction implements ActionListener {
 
+    
+    public static final MergeChangesToBranchAction create() {
+        return new MergeChangesToBranchAction();
+    }
+
+    
     //private boolean useLocaRepositary;
     ChooseMergeBranchDlg chooseMergeBranchDlg = null;
 

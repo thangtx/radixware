@@ -41,10 +41,10 @@ public class SocketChannelPort extends ChannelPort implements EventHandler {
         updateDescription();
     }
 
-    protected final void updateDescription() {
+    public final void updateDescription() {
         String descr;
         try {
-            descr = channel == null ? "<null>" : ("sock{lcl=" + String.valueOf(channel.getLocalAddress() + ",rmt=" + String.valueOf(channel.getRemoteAddress())) + "}");
+            descr = channel == null ? "<null>" : ("socket{lcl=" + String.valueOf(channel.getLocalAddress() + ",rmt=" + String.valueOf(channel.getRemoteAddress())) + "}");
         } catch (IOException ex) {
             descr = "<unknown>";
         }
@@ -111,7 +111,7 @@ public class SocketChannelPort extends ChannelPort implements EventHandler {
     }
 
     @Override
-    SelectableChannel getSelectableInChannel() {
+    public SelectableChannel getSelectableInChannel() {
         return getChannel();
     }
 }

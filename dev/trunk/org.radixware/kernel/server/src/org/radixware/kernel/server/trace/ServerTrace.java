@@ -49,19 +49,32 @@ public class ServerTrace implements IRadixTrace {
     private FileLog log = null;
     private final FloodController floodController = new FloodController();
     private final List<ITraceFilter> traceFilters = new ArrayList<>();
+    private volatile String ownerDescription;
 
     public static final class Factory {
 
         private static volatile Factory FACTORY = new Factory();
 
+        @Deprecated
+        /**
+         * Use prototype with description
+         */
         public ServerTrace createNewInstance(final Instance instance) {
-            return newInstance(instance, ServerTrace.class);
+            return newInstance(instance, ServerTrace.class, null);
         }
 
+        @Deprecated
+        /**
+         * Use prototype with description
+         */
         public <T extends ServerTrace> T createNewInstance(final Instance instance, final Class<T> c) {
+            return newInstance(instance, c, null);
+        }
+
+        public <T extends ServerTrace> T createNewInstance(final Instance instance, final Class<T> c, final String ownerDescription) {
             final T trace;
             try {
-                trace = c.newInstance();
+                    trace = c.newInstance();
             } catch (InstantiationException ex) {
                 throw new RadixError(ex.getMessage(), ex);
             } catch (IllegalAccessException ex) {
@@ -87,6 +100,7 @@ public class ServerTrace implements IRadixTrace {
                     return trace.getMinSeverity(eventSource);
                 }
             };
+            trace.setOwnerDescription(ownerDescription);
             trace.initLogs(instance, traceErrorTracer);
             return trace;
         }
@@ -95,12 +109,28 @@ public class ServerTrace implements IRadixTrace {
             FACTORY = delegate;
         }
 
+        @Deprecated
+        /**
+         * Use prototype with description
+         */
         public static ServerTrace newInstance(final Instance instance) {
             return FACTORY.createNewInstance(instance);
         }
 
+        @Deprecated
+        /**
+         * Use prototype with description
+         */
         public static <T extends ServerTrace> T newInstance(final Instance instance, final Class<T> c) {
             return FACTORY.createNewInstance(instance, c);
+        }
+
+        public static ServerTrace newInstance(final Instance instance, final String ownerDescription) {
+            return FACTORY.createNewInstance(instance, ServerTrace.class, ownerDescription);
+        }
+
+        public static <T extends ServerTrace> T newInstance(final Instance instance, final Class<T> c, final String ownerDescription) {
+            return FACTORY.createNewInstance(instance, c, ownerDescription);
         }
     }
 
@@ -123,7 +153,15 @@ public class ServerTrace implements IRadixTrace {
 
     protected synchronized void initLogs(final Instance instance, final LocalTracer traceErrorTracer) {
         eventLog = createDbTrace(instance, traceErrorTracer);
-        dbLogHandl = eventLog.addTargetLog(profiles.getDbTraceProfile());
+        dbLogHandl = eventLog.addTargetLog(profiles.getDbTraceProfile(), ownerDescription);
+    }
+
+    public void setOwnerDescription(final String description) {
+        this.ownerDescription = description;
+    }
+
+    public String getOwnerDescription() {
+        return ownerDescription;
     }
 
     protected Trace createDbTrace(final Instance instance, final LocalTracer traceErrorTracer) {
@@ -159,15 +197,15 @@ public class ServerTrace implements IRadixTrace {
     public synchronized void clearFloodSettingsAndStats() {
         floodController.clearFloodSettingsAndStats();
     }
-    
+
     public synchronized void clearLastFloodMessageTime(final String key) {
         floodController.clearLastFloodMessageTime(key);
     }
-    
+
     public synchronized void addTraceFilter(final ITraceFilter filter) {
         traceFilters.add(filter);
     }
-    
+
     public synchronized void removeTraceFilter(final ITraceFilter filter) {
         traceFilters.remove(filter);
     }
@@ -232,7 +270,33 @@ public class ServerTrace implements IRadixTrace {
             final long millisOrMinusOne,
             final boolean isSensitive,
             final Collection<ETraceDestination> targetDestinations) {
-        doPut(severity, localizedMessage, mlsId, mlsArgs, source, eventLog.getNormalizedContextStackAsStr(), millisOrMinusOne, isSensitive, targetDestinations, null);
+        doPut(severity, localizedMessage, mlsId, mlsArgs, source, eventLog == null ? null : eventLog.getNormalizedContextStackAsStr(), millisOrMinusOne, isSensitive, targetDestinations, null, null);
+    }
+
+    public void put(
+            EEventSeverity severity,
+            final String localizedMessage,
+            final String mlsId,
+            final List<String> mlsArgs,
+            final String source,
+            final long millisOrMinusOne,
+            final boolean isSensitive,
+            final Collection<ETraceDestination> targetDestinations,
+            final List<TraceContext> additionalContexts) {
+        doPut(severity, localizedMessage, mlsId, mlsArgs, source, eventLog == null ? null : eventLog.getNormalizedContextStackAsStr(additionalContexts), millisOrMinusOne, isSensitive, targetDestinations, null, additionalContexts);
+    }
+
+    public void put(
+            EEventSeverity severity,
+            final String localizedMessage,
+            final String mlsId,
+            final List<String> mlsArgs,
+            final String source,
+            final String contextView,//for including in file trace and viewing in GUI
+            final long millisOrMinusOne,
+            final boolean isSensitive,
+            final Collection<ETraceDestination> targetDestinations) {
+        doPut(severity, localizedMessage, mlsId, mlsArgs, source, contextView, millisOrMinusOne, isSensitive, targetDestinations, null, null);
     }
 
     public void putFloodControlled(
@@ -245,13 +309,17 @@ public class ServerTrace implements IRadixTrace {
             final long millisOrMinusOne,
             final boolean isSensitive,
             final Collection<ETraceDestination> targetDestinations) {
-        doPut(severity, localizedMessage, mlsId, mlsArgs, source, eventLog.getNormalizedContextStackAsStr(), millisOrMinusOne, isSensitive, targetDestinations, floodKey);
+        doPut(severity, localizedMessage, mlsId, mlsArgs, source, eventLog.getNormalizedContextStackAsStr(), millisOrMinusOne, isSensitive, targetDestinations, floodKey, null);
     }
-    
+
     public void put(final TraceItem item, final Collection<ETraceDestination> targetDestinations, final String floodKey) {
-        doPut(item.severity, item.getMess(), item.code, item.words, item.source, item.context, item.time, item.isSensitive, targetDestinations, floodKey);
+        doPut(item.severity, item.getMess(), item.code, item.words, item.source, item.context, item.time, item.isSensitive, targetDestinations, floodKey, null);
     }
-    
+
+    public void put(final TraceItem item, final Collection<ETraceDestination> targetDestinations, final String floodKey, final List<TraceContext> additionalContexts) {
+        doPut(item.severity, item.getMess(), item.code, item.words, item.source, item.context, item.time, item.isSensitive, targetDestinations, floodKey, additionalContexts);
+    }
+
     private synchronized boolean doPut(
             EEventSeverity severity,
             final String localizedMessage,
@@ -262,12 +330,13 @@ public class ServerTrace implements IRadixTrace {
             final long millisOrMinusOne,
             final boolean isSensitive,
             final Collection<ETraceDestination> targetDestinations,
-            final String floodKey) {
+            final String floodKey,
+            final List<TraceContext> additionalContexts) {
 
         if (floodKey != null && !floodController.canPut(floodKey)) {
             return false;
         }
-        
+
         for (ITraceFilter filter : traceFilters) {
             try {
                 if (!filter.canPut(severity, localizedMessage, mlsId, mlsArgs, source, context, millisOrMinusOne, isSensitive, targetDestinations, floodKey)) {
@@ -307,8 +376,8 @@ public class ServerTrace implements IRadixTrace {
                 }
             }
         }
-        if (targetDestinations == null || targetDestinations.contains(ETraceDestination.DATABASE)) {
-            eventLog.put(severity, mlsId, mlsId == null ? new ArrStr(localizedMessage) : mlsArgs, source, isSensitive, timeMillis);
+        if (targetDestinations == null || targetDestinations.contains(ETraceDestination.DATABASE) && eventLog != null) {
+            eventLog.put(severity, mlsId, mlsId == null ? new ArrStr(localizedMessage) : mlsArgs, source, isSensitive, timeMillis, false, additionalContexts);
         }
         return true;
     }
@@ -363,6 +432,10 @@ public class ServerTrace implements IRadixTrace {
         eventLog.enterContext(contextType, contextId);
     }
 
+    public synchronized String getContextStackAsStr() {
+        return eventLog.getContextStackAsStr();
+    }
+
     public synchronized void leaveContext(final EEventContextType contextType, final Long contextId, final String viewContext) {
         eventLog.leaveContext(contextType, contextId);
     }
@@ -377,7 +450,11 @@ public class ServerTrace implements IRadixTrace {
     }
 
     public synchronized Object addTargetBuffer(final String profile, final TraceBuffer buffer) {
-        return eventLog.addTargetBuffer(profile, buffer);
+        return addTargetBuffer(profile, buffer, false);
+    }
+
+    public synchronized Object addTargetBuffer(final String profile, final TraceBuffer buffer, final boolean passive) {
+        return eventLog.addTargetBuffer(profile, buffer, passive);
     }
 
     public synchronized void delTarget(final Object traceHandler) {
@@ -498,7 +575,7 @@ public class ServerTrace implements IRadixTrace {
             lastMessageByKeyMillis.clear();
             intervalByKey.clear();
         }
-        
+
         public void clearLastFloodMessageTime(final String floodKey) {
             if (floodKey != null) {
                 lastMessageByKeyMillis.remove(floodKey);

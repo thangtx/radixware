@@ -18,6 +18,7 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportGroup;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportGroupBand;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsXlsxReportInfo;
 import org.radixware.kernel.common.jml.Jml;
 
 public class AdsReportWriterUtils {
@@ -76,6 +77,8 @@ public class AdsReportWriterUtils {
             ownerJavaName = getGroupJavaName((AdsReportGroup) owner);
         } else if (owner instanceof AdsCsvReportInfo) {
             ownerJavaName = AdsCsvReportInfo.IS_CSV_ROW_VISIBLE_CONDITION_NAME;
+        } else if (owner instanceof AdsXlsxReportInfo) {
+            ownerJavaName = AdsXlsxReportInfo.IS_XLSX_ROW_VISIBLE_CONDITION_NAME;
         } else {
             throw new IllegalStateException(String.valueOf(owner));
         }

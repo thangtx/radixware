@@ -30,23 +30,26 @@ import org.radixware.kernel.common.utils.Utils;
  *
  */
 public class SqmlTranslator {
+    protected static final TagPostprocessor EMPTY_POSTPROCESSOR = new TagPostprocessor(){
+                                                @Override
+                                                public String postprocessTag(final String tagContent, final ISqlTag tag) {
+                                                    return tagContent != null ? tagContent : "";
+                                                }
+                                            };
+    
+    protected final TagPostprocessor postprocessor;
 
     /**
      * Use SqmlTranslator.Factory.newInstance();
      */
     protected SqmlTranslator() {
+        this(EMPTY_POSTPROCESSOR);
     }
 
-    public static class Factory {
-
-        private Factory() {
-        }
-
-        public static SqmlTranslator newInstance() {
-            return new SqmlTranslator();
-        }
+    protected SqmlTranslator(final TagPostprocessor postProcessor) {
+        this.postprocessor = postProcessor;
     }
-
+    
     protected TagTranslatorFactory getTagTranslatorFactory(IProblemHandler problemHandler) {
         return SqmlTagTranslatorFactory.Factory.newInstance(problemHandler);
     }
@@ -115,8 +118,9 @@ public class SqmlTranslator {
     private void translate(final Sqml.Tag tag, final CodePrinter cp) {
         if (isPossibleToActualize(tag)) {
             final String sql = ((ISqlTag) tag).getSql();
+            
             if (sql != null && !sql.isEmpty()) {
-                cp.print(sql);
+                cp.print(postprocessor.postprocessTag(sql,(ISqlTag)tag));
                 return;
             }
         }
@@ -194,4 +198,23 @@ public class SqmlTranslator {
             }
         }
     }
+
+    public interface TagPostprocessor {
+        String postprocessTag(String tagContent, ISqlTag tag);
+    }
+    
+    public static class Factory {
+
+        private Factory() {
+        }
+
+        public static SqmlTranslator newInstance() {
+            return new SqmlTranslator();
+        }
+
+        public static SqmlTranslator newInstance(final TagPostprocessor postProcessor) {
+            return new SqmlTranslator(postProcessor);
+        }
+    }
+
 }

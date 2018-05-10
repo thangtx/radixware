@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.defs.ads.clazz.members;
 
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.EMethodNature;
 import org.radixware.schemas.adsdef.AbstractMethodDefinition;
 
@@ -24,5 +25,10 @@ public class AdsWrapperMethodDef extends AdsMethodDef {
     @Override
     public EMethodNature getNature() {
         return EMethodNature.SYSTEM;
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
     }
 }

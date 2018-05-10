@@ -17,36 +17,9 @@ import java.nio.ByteBuffer;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.exceptions.SmioException;
-import org.radixware.kernel.common.msdl.fields.parser.datasource.DataSourceByteBuffer;
 import org.radixware.kernel.common.msdl.fields.parser.datasource.IDataSource;
-import org.radixware.schemas.msdl.Piece;
 
 public class SmioPiece {
-
-    public static class Factory {
-
-        public static SmioPiece newInstance(SmioField field, Piece piece) {
-
-            SmioPiece  res = null;
-            if (piece.isSetFixedLen()) {
-                res = new SmioPieceFixedLen(field, piece.getFixedLen());
-            }
-
-            if (piece.isSetSeparated()) {
-                res = new SmioPieceSeparated(field, piece.getSeparated());
-            }
-
-            if (piece.isSetEmbeddedLen()) {
-                res = new SmioPieceEmbeddedLen(field, piece.getEmbeddedLen());
-            }
-
-            if (res == null) {
-                res = new SmioPiece(field);
-            }
-
-            return res;
-        }
-    }
 
     protected SmioField smioField;
 
@@ -55,12 +28,7 @@ public class SmioPiece {
     }
 
     public IDataSource parse(IDataSource ids) throws IOException, SmioException {
-        DataSourceByteBuffer dsbf = new DataSourceByteBuffer();
-        while (ids.available() > 0) {
-            dsbf.extPut(ids.get());
-        }
-        dsbf.getByteBuffer().flip();
-        return dsbf;
+        return ids;
     }
 
     public ByteBuffer merge(ByteBuffer bf) throws SmioException {

@@ -19,6 +19,11 @@ public class UdsDefinitionIcon extends RadixIcon {
     public static final UdsDefinitionIcon SEGMENT = new UdsDefinitionIcon("uds/segment.svg");
     public static final UdsDefinitionIcon MODULE = new UdsDefinitionIcon("uds/module.svg");
     public static final UdsDefinitionIcon USERFUNC = new UdsDefinitionIcon("uds/userfunc.svg");
+    public static final UdsDefinitionIcon USERLIB = new UdsDefinitionIcon("file/load.svg");
+   
+    public static final UdsDefinitionIcon FILE = new UdsDefinitionIcon("file/file.svg");
+    public static final UdsDefinitionIcon FOLDER = new UdsDefinitionIcon("file/folder.svg");
+    public static final UdsDefinitionIcon XML_FILE = new UdsDefinitionIcon("file/xml_file.svg");
 
     public UdsDefinitionIcon(String name) {
         super(name);

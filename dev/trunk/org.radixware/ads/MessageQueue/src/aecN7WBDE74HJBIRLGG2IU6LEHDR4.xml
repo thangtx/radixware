@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="aecN7WBDE74HJBIRLGG2IU6LEHDR4" Name="QueueSafMess" Type="1">
+    <AccessRules IsFinal="true"/>
+    <Headers>
+      <Src Name="Headeraec2OHXZBIVPFCIHP5J6MJSQDDBWE"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyaec2OHXZBIVPFCIHP5J6MJSQDDBWE"/>
+    </Bodies>
+    <MethodGroup Id="cmgZLA5ZDAIZNEEPFGOX6TO2U2I74" Name="Root"/>
+    <PropertyGroup Id="cpg4DD2SN5CPVHFHOTOTS7T63SBUA" Name="Root"/>
+    <Properties>
+      <Property Id="colDLITJLCB6ZBLNBTVPZCHRM3BJI" Name="id" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsOQA6H4GVYBHLHAEEY355WMRA7A" InheritanceMask="4">
+          <Editing NotNull="true" EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colAUH7CUC34FCYFIEAD7BF7FU5FA" Name="mess" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="27"/>
+        <Presentation TitleId="mls5CP3ZM6JUFHGLL6XUBFQNL457E" InheritanceMask="4">
+          <Editing IsMemo="true" IsDuplicatesEnabled="true" ReadSeparately="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colCLCJ6EEIERAG7OQK6AJZ3UESCQ" Name="partitionId" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsPH2E5D2V7NHOJJXIWNN3LW6HI4" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colYFDVBGNTNBENRBZL4AYTVA6GTQ" Name="queueId" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="col5MDJUH6LZZEI3DLFFFO5UATULA" Name="queue" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false" ParentRefId="refXH73Q56QQRABBEQJ4LQ5U3LAHM">
+        <AccessRules/>
+        <Type TypeId="31" Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ"/>
+        <Presentation InheritanceMask="21">
+          <Editing EditEnvironment="explorer" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colRIWHGQQ4NBAAPBDTB3DPILNHOY" Name="storeDate" Nature="0" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="12"/>
+        <Presentation TitleId="mlsWQAIMO42BNHDTAK3IGF255KMXY" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prd7JQZQIA73NBQHMIA5KQT2NENXU" Name="messageXml" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="451"/>
+        <Presentation TitleId="mlsVVVUPDY74FC2JLTK3D2CHNCMJY" InheritanceMask="4">
+          <Editing EditPossibility="1" IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <GetterSources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecN7WBDE74HJBIRLGG2IU6LEHDR4 prd7JQZQIA73NBQHMIA5KQT2NENXU" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>messageXml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecN7WBDE74HJBIRLGG2IU6LEHDR4 prd7JQZQIA73NBQHMIA5KQT2NENXU" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>messageXml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+}
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecN7WBDE74HJBIRLGG2IU6LEHDR4 colAUH7CUC34FCYFIEAD7BF7FU5FA" Invoke="true">
+                <xsc:Presentation>mess</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    try {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecN7WBDE74HJBIRLGG2IU6LEHDR4 prd7JQZQIA73NBQHMIA5KQT2NENXU" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>messageXml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451">
+                <xsc:Presentation>Xml</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.Factory.parse(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecN7WBDE74HJBIRLGG2IU6LEHDR4 colAUH7CUC34FCYFIEAD7BF7FU5FA" Invoke="true">
+                <xsc:Presentation>mess</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.getSubString(1l, (int)</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecN7WBDE74HJBIRLGG2IU6LEHDR4 colAUH7CUC34FCYFIEAD7BF7FU5FA" Invoke="true">
+                <xsc:Presentation>mess</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.length()));
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcCOEVNNRGS5DITM72ZNKZFX6EIU">
+                <xsc:Presentation>Exceptions::XmlException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthP66N3O2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>warning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unable to parse settings document " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6GKQ2BYOTRFG7D7DJ5SYZSLMSE" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:ServiceBus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    } catch (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="axcG6PZC4JQPBAI5C7ZFKWL4SWGKA">
+                <xsc:Presentation>Exceptions::SQLException</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> ex) {
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthP66N3O2SRPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>warning</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>("Unable to parse settings document " + </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+                <xsc:Presentation>Arte::Trace</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(ex), </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aci6GKQ2BYOTRFG7D7DJ5SYZSLMSE" Invoke="true">
+                <xsc:Presentation>Arte::EventSource:ServiceBus</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+    }
+}
+return  </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecN7WBDE74HJBIRLGG2IU6LEHDR4 prd7JQZQIA73NBQHMIA5KQT2NENXU" Invoke="true" extStr="#STD_PROP_VALUE#">
+                <xsc:Presentation>messageXml</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </GetterSources>
+      </Property>
+    </Properties>
+    <Methods/>
+    <Entity EntityId="tblN7WBDE74HJBIRLGG2IU6LEHDR4">
+      <AccessAreas Type="None"/>
+    </Entity>
+    <Presentations ObjectTitleId="mls6QQ23EXCXVBU7KJKV5LJMEJL34" EntityTitleId="mlsYEQCBXQYUZGA7FCLTOZFWT4F6A" DefaultSelectorPresentationId="sprY4ELKKXTPZGLHEJNSAC73AGJM4" Restrictions="28677">
+      <ObjectTitleFormat Id="etfSJTRM7ZJ2BDFVK5AYJMFQBVTDM"/>
+      <Sortings>
+        <Sorting Id="srtCGOUCTBJ35FJHANP47XBLZHLUE" Name="ByID" TitleId="mlsJUOPKK3EKNGYLPINZXI7ZYKMOQ">
+          <AccessRules IsPublished="false"/>
+          <OrderBy Desc="false" PropId="colDLITJLCB6ZBLNBTVPZCHRM3BJI"/>
+          <Hint/>
+        </Sorting>
+      </Sortings>
+      <EditorPresentations>
+        <EditorPresentation Id="eprNQTK2C5L2ZCN3EIRKLBB54EGOY" Name="Default" InheritanceMask="144" Restrictions="0" EnabledCommandIds="" RightsInheritanceMode="0">
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgMTKRIZPRF5E7TE5NUXQQINHSIU" Name="General" TitleId="mlsVMTSU2SPDVCZ7BX53YL4SXFR6I" Type="1" ClientEnvironment="explorer">
+              <Properties>
+                <Property Id="colDLITJLCB6ZBLNBTVPZCHRM3BJI" Row="0" Column="0"/>
+                <Property Id="col5MDJUH6LZZEI3DLFFFO5UATULA" Row="1" Column="0"/>
+                <Property Id="colCLCJ6EEIERAG7OQK6AJZ3UESCQ" Row="2" Column="0"/>
+                <Property Id="colRIWHGQQ4NBAAPBDTB3DPILNHOY" Row="3" Column="0"/>
+                <Property Id="prd7JQZQIA73NBQHMIA5KQT2NENXU" Row="4" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgMTKRIZPRF5E7TE5NUXQQINHSIU" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etf7GCVNR22HJD5REIHVX3WQRVVLY">
+            <TitleItem PropId="colDLITJLCB6ZBLNBTVPZCHRM3BJI">
+              <Pattern>{0}</Pattern>
+            </TitleItem>
+          </ObjectTitleFormat>
+        </EditorPresentation>
+      </EditorPresentations>
+      <SelectorPresentations>
+        <SelectorPresentation Id="sprY4ELKKXTPZGLHEJNSAC73AGJM4" Name="Default" InheritanceMask="144" Restrictions="0" EnabledCommandIds="" EditorPresentationIds="eprNQTK2C5L2ZCN3EIRKLBB54EGOY">
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+          <Addons AnyBaseFilterEnabled="true" AnyBaseSortingEnabled="true" CustomFilterEnabled="true" CustomSortingEnabled="true" FilterIsObligatory="false" DefaultSortingId="srtCGOUCTBJ35FJHANP47XBLZHLUE">
+            <DefaultHint/>
+          </Addons>
+          <SelectorColumns>
+            <Column Align="-1" PropId="colDLITJLCB6ZBLNBTVPZCHRM3BJI" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="colRIWHGQQ4NBAAPBDTB3DPILNHOY" Visibility="1" SizePolicy="0"/>
+            <Column Align="-1" PropId="colCLCJ6EEIERAG7OQK6AJZ3UESCQ" Visibility="1" SizePolicy="0"/>
+          </SelectorColumns>
+        </SelectorPresentation>
+      </SelectorPresentations>
+    </Presentations>
+    <Extends TypeId="411" Path="pdcEntity____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

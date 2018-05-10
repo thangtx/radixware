@@ -15,30 +15,59 @@ import org.radixware.kernel.common.sqlscript.parser.SQLConstants.TokenType;
 
 
 public class SQLToken {
-
-    private TokenType type;
-    private SQLPosition position;
-    private Object value;
+    private final TokenType type;
+    private final SQLPosition position;
+    private final Object value;
 
     public SQLToken() {
-        type = TokenType.TK_UNKNOWN;
+        this.type = TokenType.TK_UNKNOWN;
+        this.position = null;
+        this.value = null;
     }
 
-    public SQLToken(SQLPosition pPosition, TokenType pType) {
-        position = pPosition.fork();
-        type = pType;
+    public SQLToken(final SQLPosition pPosition, final TokenType pType) {
+        if (pPosition == null) {
+            throw new IllegalArgumentException("Position can't be null");
+        }
+        else if (pType == null) {
+            throw new IllegalArgumentException("Token type can't be null");
+        }
+        else {
+            this.type = pType;
+            this.position = pPosition.fork();
+            this.value = null;
+        }
     }
 
-    public SQLToken(SQLPosition pPosition, TokenType pType, String name) {
-        position = pPosition.fork();
-        type = pType;
-        value = name;
+    public SQLToken(final SQLPosition pPosition, final TokenType pType, final String name) {
+        if (pPosition == null) {
+            throw new IllegalArgumentException("Position can't be null");
+        }
+        else if (pType == null) {
+            throw new IllegalArgumentException("Token type can't be null");
+        }
+        else if (name == null) {
+            throw new IllegalArgumentException("Name can't be null");
+        }
+        else {
+            this.position = pPosition.fork();
+            this.type = pType;
+            this.value = name;
+        }
     }
 
-    public SQLToken(SQLPosition pPosition, SQLScriptValue pValue) {
-        position = pPosition.fork();
-        type = TokenType.TK_SCRIPT_VALUE;
-        value = pValue;
+    public SQLToken(final SQLPosition pPosition, final SQLScriptValue pValue) {
+        if (pPosition == null) {
+            throw new IllegalArgumentException("Position can't be null");
+        }
+        else if (pValue == null) {
+            throw new IllegalArgumentException("Script value can't be null");
+        }
+        else {
+            this.position = pPosition.fork();
+            this.type = TokenType.TK_SCRIPT_VALUE;
+            this.value = pValue;
+        }
     }
 
     public TokenType getType() {
@@ -67,7 +96,7 @@ public class SQLToken {
         return false;
     }
 
-    public void checkType(TokenType pType) throws SQLScriptException {
+    public void checkType(final TokenType pType) throws SQLScriptException {
         if (type != pType) {
             if (type == TokenType.TK_EOF) {
                 throw new SQLScriptException("Unexpected EOF", position);
@@ -95,6 +124,4 @@ public class SQLToken {
     public String toString() {
         return "Token " + getType().name() + " '" + value + "' [" + position + "]";
     }
-    
-    
 }

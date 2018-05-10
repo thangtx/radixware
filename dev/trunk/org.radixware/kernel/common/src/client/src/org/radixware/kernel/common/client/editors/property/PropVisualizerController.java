@@ -79,7 +79,6 @@ public abstract class PropVisualizerController<T extends IModelWidget & IWidget>
         } else if (!finalProperty.isVisible()) {
             widget.setVisible(false);
         }
-        widget.setEnabled(finalProperty.isEnabled());
         updateSettings();
     }
 

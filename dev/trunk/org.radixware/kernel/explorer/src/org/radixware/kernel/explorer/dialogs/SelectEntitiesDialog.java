@@ -22,9 +22,7 @@ import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.GroupModelReader;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.views.ISelectEntitiesDialog;
-import org.radixware.kernel.common.client.widgets.IPushButton;
 import org.radixware.kernel.common.client.widgets.selector.IMultiSelectionWidget;
-import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 
@@ -151,6 +149,7 @@ public final class SelectEntitiesDialog extends SelectEntityDialog implements IS
         }
     }
     
+    @Override
     public boolean clearButtonWasClicked(){
         return cleanClicked;
     }    

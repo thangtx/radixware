@@ -46,6 +46,8 @@ public class ClientException {
             } else if (faultType == org.radixware.schemas.eas.ExceptionEnum.ACCESS_VIOLATION
                     || faultType == org.radixware.schemas.eas.ExceptionEnum.DEFINITION_ACCESS_VIOLATION) {
                 return mp.translate("ExplorerDialog", "Insufficient Privileges");
+            } else if (faultType == org.radixware.schemas.eas.ExceptionEnum.WEB_DRIVER_IS_NOT_ALLOWED){
+                return mp.translate("ExplorerMessage", "Connection Error");
             }
             if (fault instanceof ObjectNotFoundError) {
                 return ((ObjectNotFoundError) fault).getTitle(mp);
@@ -66,7 +68,7 @@ public class ClientException {
         }
         for (cause = exception; cause.getCause() != null;) {
             if (cause instanceof ObjectNotFoundError) {
-                return ((ObjectNotFoundError) exception).getMessageToShow();
+                return ((ObjectNotFoundError) cause).getMessageToShow();
             }
             cause = cause.getCause();
         }
@@ -139,7 +141,11 @@ public class ClientException {
         return result.toString();
     }
 
-    public static EEventSeverity getFaultSeverity(final ServiceCallFault fault) {
+    public static EEventSeverity getFaultSeverity(final Throwable exception) {
+        final ServiceCallFault fault = getServiceCallFault(exception);
+        if (fault==null){
+            return EEventSeverity.ERROR;
+        }
         final org.radixware.schemas.eas.ExceptionEnum.Enum faultType = getFaultType(fault);
         if (faultType == org.radixware.schemas.eas.ExceptionEnum.KERBEROS_AUTHENTICATION_FAILED
                 && org.radixware.schemas.eas.KerberosAuthFaultMessage.RENEW_CREDENTIALS_REQUIRED.toString().equals(fault.getMessage())) {
@@ -183,12 +189,16 @@ public class ClientException {
             Arrays.asList(
             org.radixware.schemas.eas.ExceptionEnum.CONFIRM_SUBOBJECTS_DELETE,
             org.radixware.schemas.eas.ExceptionEnum.REPEATATIVE_PASSWORD,
-            org.radixware.schemas.eas.ExceptionEnum.INVALID_DEFINITION_VERSION);
+            org.radixware.schemas.eas.ExceptionEnum.INVALID_DEFINITION_VERSION,
+            org.radixware.schemas.eas.ExceptionEnum.APPLICATION_ERROR);
     private static final List<org.radixware.schemas.eas.ExceptionEnum.Enum> EVENT_LEVEL_FAULTS =
             Arrays.asList(
                 org.radixware.schemas.eas.ExceptionEnum.SESSION_DOES_NOT_EXIST,
                 org.radixware.schemas.eas.ExceptionEnum.SHOULD_CHANGE_PASSWORD,                    
-                org.radixware.schemas.eas.ExceptionEnum.SESSIONS_LIMIT_EXCEED);
+                org.radixware.schemas.eas.ExceptionEnum.SESSIONS_LIMIT_EXCEED,
+                org.radixware.schemas.eas.ExceptionEnum.TEMPORARY_PASSWORD_EXPIRED,
+                org.radixware.schemas.eas.ExceptionEnum.INVALID_PASSWORD,
+                org.radixware.schemas.eas.ExceptionEnum.INVALID_CREDENTIALS);
     private static final List<org.radixware.schemas.eas.ExceptionEnum.Enum> WARNING_LEVEL_FAULTS =
             Arrays.asList(            
             org.radixware.schemas.eas.ExceptionEnum.INVALID_SORTING,
@@ -389,7 +399,10 @@ public class ClientException {
                     return environment.getMessageProvider().translate("ExplorerError", "Your password has expired");
                 }
                 case org.radixware.schemas.eas.ExceptionEnum.INT_SESSION_DOES_NOT_EXIST: {
-                    return environment.getMessageProvider().translate("ExplorerError", "Session does not exists");
+                    return environment.getMessageProvider().translate("ExplorerError", "Session does not exist");
+                }
+                case org.radixware.schemas.eas.ExceptionEnum.INT_WEB_DRIVER_IS_NOT_ALLOWED:{
+                    return environment.getMessageProvider().translate("ExplorerError", "WebDriver is restricted to use on server.\nRemove '-webDrvServerAddress' start argument and try again.");
                 }
                 default: {
                     final String exMessage = fault.getCauseExMessage();

@@ -39,6 +39,7 @@ abstract class RfsRepositoryModule<T extends Module> implements IRepositoryModul
     protected final String dirName;
     private final String name;
     protected final RfsRepositorySegment<T> segment;
+    protected Module module;
 
     public RfsRepositoryModule(RfsRepositorySegment<T> segment, String dirName) {
         if (!dirName.endsWith("/")) {
@@ -156,5 +157,9 @@ abstract class RfsRepositoryModule<T extends Module> implements IRepositoryModul
             return result;
         }
         return Collections.emptyList();
+    }
+
+    @Override
+    public void setModule(T module) {
     }
 }

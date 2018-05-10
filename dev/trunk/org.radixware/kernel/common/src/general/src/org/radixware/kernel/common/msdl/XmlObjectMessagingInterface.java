@@ -37,19 +37,24 @@ public interface XmlObjectMessagingInterface {
     void readStructuredMessageFromInputWithClear(InputStream inp) throws IOException, SmioException, SmioError;
 
     void readStructuredMessageWithClear(byte[] inp) throws SmioException, SmioError;
-
-    void writeStructuredMessageToOutput(OutputStream out) throws IOException, SmioError, SmioException;
-
-    byte[] writeStructuredMessage() throws SmioError, SmioException;
-
-    void readStructuredMessageFromInputParam(InputStream inp, Structure defaults) throws IOException, SmioException, SmioError;
-
-    void readStructuredMessageParam(byte[] inp, Structure defaults) throws SmioException, SmioError;
-
+    
     void readStructuredMessageFromInputParamWithClear(InputStream inp, Structure defaults) throws IOException, SmioException, SmioError;
 
     void readStructuredMessageParamWithClear(byte[] inp, Structure defaults) throws SmioException, SmioError;
 
+    void readStructuredMessageFromInputParam(InputStream inp, Structure defaults) throws IOException, SmioException, SmioError;
+
+    void readStructuredMessageParam(byte[] inp, Structure defaults) throws SmioException, SmioError;
+    
+    void readStructuredMessageFromInput(InputStream inp, RootMsdlScheme rootScheme) throws IOException, SmioException, SmioError;
+
+    void readStructuredMessage(byte[] inp, RootMsdlScheme rootScheme) throws SmioException, SmioError;
+    
+    
+    void writeStructuredMessageToOutput(OutputStream out) throws IOException, SmioError, SmioException;
+
+    byte[] writeStructuredMessage() throws SmioError, SmioException;
+    
     void writeStructuredMessageToOutputParam(OutputStream out, Structure defaults) throws IOException, SmioError, SmioException;
 
     byte[] writeStructuredMessageParam(Structure defaults) throws SmioError, SmioException;
@@ -57,7 +62,12 @@ public interface XmlObjectMessagingInterface {
     void writeStructuredMessageSeparator(OutputStream out) throws IOException, SmioError;
 
     byte[] writeStructuredMessageSeparator() throws SmioError;
+    
+    void writeStructuredMessageToOutput(OutputStream out, RootMsdlScheme rootScheme) throws IOException, SmioError, SmioException;
 
+    byte[] writeStructuredMessage(RootMsdlScheme rootScheme) throws SmioError, SmioException;
+
+    
     DBFWriter openDbfFileWriter() throws SmioException;
 
     void writeNextRecordToDbf(DBFWriter writer) throws IOException, SmioException;
@@ -67,8 +77,14 @@ public interface XmlObjectMessagingInterface {
     DBFReader openDbfReader(InputStream stream) throws SmioException;
 
     boolean readNextRecordFromDbf(DBFReader reader) throws IOException, SmioException;
-
+    
+    
+    MsdlStreamReader openMsdlStreamReader(InputStream stream) throws SmioException;
+    
+    
     RootMsdlScheme getRootMsdlScheme();
     
     MsdlField getField(String name);
+    
+    void clearXml();
 }

@@ -1273,4 +1273,8 @@ public class MathOperations {
     static public boolean and(Boolean i, Boolean j) {
         return i != null && j != null && i.booleanValue() && j.booleanValue();
     }
+    
+    static public boolean boolNvl(Boolean b){
+        return b == null ? false : b.booleanValue();
+    }
 }

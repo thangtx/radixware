@@ -253,6 +253,12 @@ public class DesignerClientApplication implements IClientApplication {
                 }
                 secret = null;
             }
+
+            @Override
+            public boolean isEmpty() {
+                return secret==null || secret.length==0;
+            }
+
         };
     }
     
@@ -263,6 +269,11 @@ public class DesignerClientApplication implements IClientApplication {
     
     @Override
     public boolean isExtendedMetaInformationAccessible() {
+        return true;
+    }    
+    
+    @Override
+    public boolean isSqmlAccessible() {
         return true;
     }    
 }

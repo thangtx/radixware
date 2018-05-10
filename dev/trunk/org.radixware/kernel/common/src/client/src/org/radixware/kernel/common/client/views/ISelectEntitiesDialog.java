@@ -16,4 +16,5 @@ import org.radixware.kernel.common.client.models.EntityModel;
 
 public interface ISelectEntitiesDialog extends ISelectEntityDialog {
     public List<EntityModel> getSelectedEntities();
+    public boolean clearButtonWasClicked();
 }

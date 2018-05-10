@@ -46,6 +46,7 @@ public class DropDownTextAreaDelegate extends DropDownDelegate<TextArea> {
     protected ToolButton createDropDownButton() {
         final ToolButton listBoxButton = new ToolButton();
         listBoxButton.setText("...");
+        listBoxButton.setObjectName("tbTextEdit");
         return listBoxButton;
     }
 

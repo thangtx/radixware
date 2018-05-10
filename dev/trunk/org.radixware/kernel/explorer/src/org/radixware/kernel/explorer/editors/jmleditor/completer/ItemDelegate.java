@@ -16,10 +16,9 @@ import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QCDEStyle;
-import com.trolltech.qt.gui.QColor;
+import com.trolltech.qt.gui.QFontMetrics;
 import com.trolltech.qt.gui.QMotifStyle;
 import com.trolltech.qt.gui.QPainter;
-import com.trolltech.qt.gui.QPalette;
 import com.trolltech.qt.gui.QStyle;
 import com.trolltech.qt.gui.QStyle.State;
 import com.trolltech.qt.gui.QStyleFactory;
@@ -34,7 +33,7 @@ public class ItemDelegate  extends QStyledItemDelegate{
     
     private final QTextDocument document = new QTextDocument();
     public final static int SPACE_HEIGHT=7;
-    private static final QSize DEFAULT_ITEM_SIZE = new QSize(200, 22);
+    private final QSize DEFAULT_ITEM_SIZE;
 
     public ItemDelegate(QWidget widget){
         super();
@@ -50,6 +49,9 @@ public class ItemDelegate  extends QStyledItemDelegate{
             style = QStyleFactory.create("plastique");
             widget.setStyle(style);
         }
+        
+        final int height = new QFontMetrics(widget.font()).height() + SPACE_HEIGHT;
+        DEFAULT_ITEM_SIZE  = new QSize(200, height);
     }
 
     @Override

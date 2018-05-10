@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.instance;
 
 import java.awt.*;
@@ -37,7 +36,6 @@ import org.radixware.kernel.server.dialogs.CreateConfigFilePanel;
 import org.radixware.kernel.server.dialogs.Login;
 import org.radixware.kernel.starter.Starter;
 
-
 final class InstanceMenu extends JMenuBar {
 
     private static final long serialVersionUID = 2009882282697829711L;
@@ -65,9 +63,12 @@ final class InstanceMenu extends JMenuBar {
         menuItemStop = new JMenuItem(Messages.MNU_STOP);
         menuItemStop.addActionListener(new StopActionListener());
         mainMenu.add(menuItemStop);
+
         menuItemActualizeVer = new JMenuItem(Messages.MNU_ACTUALIZE_VER);
         menuItemActualizeVer.addActionListener(new ActualizeVerActionListener());
-        mainMenu.add(menuItemActualizeVer);
+        if (SrvRunParams.getIsDevelopmentMode()) {
+            mainMenu.add(menuItemActualizeVer);
+        }
         mainMenu.addSeparator();
 
         mainMenu.add(menuItemRefreshUnits = new JMenuItem(Messages.MNU_REFRESH_UNITS));

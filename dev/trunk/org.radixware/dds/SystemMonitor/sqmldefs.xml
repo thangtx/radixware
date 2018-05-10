@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SqmlModule xmlns="http://schemas.radixware.org/sqmldef.xsd" Id="mdl5H2HQUJP6VFMPDK7TYSVR7D6GA" QualifiedName="Radix::SystemMonitor">
+  <PackageDef Id="pkgPXQJOH6ETJCTNIUT65DYEKLTSM" Name="RDX_SM_METRIC">
+    <Function Id="dfn6FPZAXH5BNB6TGDIIV3FGLEEFI" Name="dailyMaintenance" ResultDbType=""/>
+  </PackageDef>
+  <PackageDef Id="pkgYKFLEPXA2FFI5NEPBZS7VER7UQ" Name="RDX_SM_InstStateHist">
+    <Function Id="dfnZEPEYX4S2FBZFFJJSYKUZQVE4U" Name="dailyMaintenance" ResultDbType=""/>
+    <Function Id="dfnTT2RVE7FHZGTXJW2UCLBO242D4" Name="getStackByDigest" ResultDbType="clob">
+      <Parameter Id="dfpSPPNZPL3HBEDVOO3U35YNTA7KM" Name="pDigest" DbName="pDigest" DbType="varchar2" ValType="21" Direction="0"/>
+    </Function>
+  </PackageDef>
+  <TableDef Id="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" Name="MetricType">
+    <Indexes>
+      <Index Id="idxOTMJZSHDVJCZ3CUWJZTNF6MCAI" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colNS4TO66OSNH3DCZS64EDNL7VDU"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref2L6D7LCZH5HOLESXXT4PBROHSE" Name="MetricType=>User (lastUpdateUser=>name)" ReferencedTableId="tblSY4KIOLTGLNRDHRZABQAQH3XQ4" ChildColumnNames="lastUpdateUser"/>
+      <Reference Id="ref2RXWMT2TDVERPBYVVIWPKUQGHY" Name="MetricType=>NetChannel (netChannelId=>id)" ReferencedTableId="tblHBE24OUE2DNRDB7AAALOMT5GDM" ChildColumnNames="netChannelId"/>
+      <Reference Id="refBCXO4FN5ABD6ZDZIQIGY67G6ME" Name="MetricType=>Instance (instanceId=>id)" ReferencedTableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E" ChildColumnNames="instanceId"/>
+      <Reference Id="refBRBSH532FRC3BOQAMSVBUJQA74" Name="MetricType=>Unit (unitId=>id)" ReferencedTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ChildColumnNames="unitId"/>
+      <Reference Id="refIXSOX75UENE4FFXOIBRBWLS5RQ" Name="MetricType=>Service (systemId=>systemId, serviceUri=>uri)" ReferencedTableId="tblC2OWQGDVVHWDBROXAAIT4AGD7E" ChildColumnNames="systemId serviceUri"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colNS4TO66OSNH3DCZS64EDNL7VDU" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colQKG6VKSKMBFG7G2WMCOW2DCD2A" Name="enabled" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colBI36OSBML5D73KDJOQKMSMISQI" Name="classGuid" ValType="21" Length="50" Precision="0" NotNull="true"/>
+      <Column Id="col2JJNBDFWIVG47OCFOCMCXVBFXI" Name="kind" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colKK3G7VOVNBESRPNV7SEYWFKLDQ" Name="title" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="col773ODXVAM5DIZIORVOBGIBYK7Y" Name="period" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colOSR5Z6WKAZB4ZEAJQTDWKJA6J4" Name="instanceId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colFYLCZQEXTJG5JGNSHCWLJTQUSU" Name="unitId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colP2GTEKTBT5A7RLD32JUJ7AZ52E" Name="serviceUri" ValType="21" Length="300" Precision="0"/>
+      <Column Id="colMVLLX5SQNVDBRMQ2ZYOQ6WDVH4" Name="netChannelId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col3MKU34INANH5XP7OKUZ64JQNF4" Name="timingSection" ValType="21" Length="200" Precision="0"/>
+      <Column Id="col3MOMAPD33ZDATALTAP45PLIN5Y" Name="userQuery" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colSYQ72HEL2RD3VFYFLWVG6GFZEA" Name="lowErrorVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colP5GRYC4WIRFDVCOV3AYNBAPYY4" Name="lowWarnVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colXHO3TMONUZFWVLGCBFATASRCZ4" Name="highWarnVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="col2RJUTHZLBFGDPHT5NR6S6APSYM" Name="highErrorVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colI5HMBXQKAZBVTJSJ5YVNSGCR5Y" Name="warnDelay" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colNWD3JCD37ZDAVKKCLTUEPMO3TQ" Name="errorDelay" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col4YKCVXTHZVETTGSLJZFJB6PPEY" Name="escalationDelay" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colPSRIBABNSJD45B3FB3UDKHACIM" Name="controlledValue" ValType="21" Length="50" Precision="0"/>
+      <Column Id="colUH6LIE6A55C5BEX56Y7GPPZMHQ" Name="notes" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colJERRR2BH2ZD2XGDYMYUS67KOKY" Name="minSeverityForSnmpNtfy" ValType="2" Length="1" Precision="0"/>
+      <Column Id="colFAATRVDUDJBSLA2GVBLSKLS3EA" Name="lastUpdateTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colYUWJY5SQSZEHZM7TT2SNIIB54Y" Name="lastUpdateUser" ValType="21" Length="200" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tbl2R4PKYCFCVHGRP2YVVFOORGWIE" Name="StackData">
+    <Indexes>
+      <Index Id="idxQW4K2PMUNFBHHJHGTKNC7YONJE" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colIAUYIKCLEBHP5MU4ELPXVEQWJU"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colIAUYIKCLEBHP5MU4ELPXVEQWJU" Name="digest" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colKLS76H6PRRGDTL2GZCCMYNFJXM" Name="stackTop" ValType="21" Length="4000" Precision="0" NotNull="true"/>
+      <Column Id="colUILPI7J34VDJTGKLOXKYLVL2K4" Name="compressedStack" ValType="28" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="col44NUKJ4ADBF6NPXJIPJGQH7TNI" Name="lastUsageTimeMillis" ValType="2" Length="18" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tbl3G6E4BULWRH7ZA4VZTKRWMWNAE" Name="InstanceStateView">
+    <Indexes>
+      <Index Id="idxAMCVLOEWTFEDDFTMGTGJMRF2YQ" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="col5OGO5NEBLZDGBAMLYODQKQCKGI col6TQVCYYYJNG2NBZMIJDASO3OA4"/>
+    </Indexes>
+    <Columns>
+      <Column Id="col5OGO5NEBLZDGBAMLYODQKQCKGI" Name="instanceId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colDWP5EW3HT5GGZIZPSJB56SJG4U" Name="regTimeMillis" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="col6TQVCYYYJNG2NBZMIJDASO3OA4" Name="threadId" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colBEGFZAR2VJC4BANRGNQQQABUUI" Name="threadKind" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colFKTJTZUPVNH3DKSOIMY5VEEHAY" Name="forced" ValType="1" Length="1" Precision="0"/>
+      <Column Id="col2ZFWPK5GB5GOPEGL3A4UBGA3NI" Name="name" ValType="21" Length="400" Precision="0"/>
+      <Column Id="colIYCXIAC4URDXPKQTMKWRECX5IY" Name="ancestorThreadId" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colGP5SMKKYGVHGHEPPPM5H6D3PMI" Name="unitId" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colRGY524BFEFC5TAGSFQV2PGC3VM" Name="arteSeq" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colTAFFHJSSTBEDFFCSI3T53OZKAM" Name="arteSerial" ValType="2" Length="18" Precision="0"/>
+      <Column Id="col7E55CENSHZCINLSINN2RNDPTFI" Name="dbSid" ValType="21" Length="400" Precision="0"/>
+      <Column Id="colWGW2Y5RYFBEL3IQN3RKEXM27C4" Name="dbSerial" ValType="21" Length="400" Precision="0"/>
+      <Column Id="col5PJX6P43LJARXFEZZLK43X4OII" Name="traceContexts" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colITDWTRNSWVB4PPUSSD3YVEXPXU" Name="cpuDiffMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colGNTWFNDZORFFFJDL2SOYSAPYK4" Name="dbDiffMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="col25LKLNINYNEFTKR3FPGWTAUR6M" Name="extDiffMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="col6UA6S5RWGBHNJPJSI4HESMWDCQ" Name="queueDiffMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colOXD7BA52YFH5TIBHPFBD3ZX3SU" Name="uptimeSec" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colIUYS773MARCE7GRHYPEWYAHNBY" Name="stackDigest" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colYHJ4HBXKY5CSVG64JJNGCYOU4E" Name="stackTop" ValType="21" Length="4000" Precision="0"/>
+      <Column Id="colNBGJNROWORGENOLDMB53BJUKM4" Name="compressedStack" ValType="28" Length="0" Precision="0"/>
+      <Column Id="colR2KL2562RZBRHIJVENZEKBA4TQ" Name="stack" ValType="27" Length="0" Precision="0"/>
+      <Column Id="colGQA6GIL7EVC53M53BKJLRWXL7I" Name="lockName" ValType="21" Length="400" Precision="0"/>
+      <Column Id="colJHJ3LGLJW5HBROWTCQDHIXG2RU" Name="lockOwnerName" ValType="21" Length="400" Precision="0"/>
+      <Column Id="colLDQB4Z6W3ZHUZBGEYVVQLZIBOM" Name="rqStartTimeMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colXC367T4ZV5CEXGO4ZBN4SEYM5A" Name="extData" ValType="21" Length="4000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" Name="MetricState">
+    <Indexes>
+      <Index Id="idxQXJQX3VGHBB3NIQT5TKW34HTLA" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colAJKGMNFACVDP3NKSFE74FBBJWI"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refIQBBVSRJXRDM3PXIITJPTW3FDA" Name="MetricState=>Instance (instanceId=>id)" ReferencedTableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E" ChildColumnNames="instanceId"/>
+      <Reference Id="refPKWMUTUDJZBOTDIDPVBV5O4NFA" Name="MetricState=>MetricType (typeId=>id)" ReferencedTableId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM" ChildColumnNames="typeId"/>
+      <Reference Id="refQ2SO47M7JJB6PNNK7LBJM4X5DY" Name="MetricState=>Service (systemId=>systemId, serviceUri=>uri)" ReferencedTableId="tblC2OWQGDVVHWDBROXAAIT4AGD7E" ChildColumnNames="systemId serviceUri"/>
+      <Reference Id="refUADVQEC5XFBGLES4RIJP3JRRGE" Name="MetricState=>Unit (unitId=>id)" ReferencedTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ChildColumnNames="unitId"/>
+      <Reference Id="refUGC5XGY2U5AFDCM3LOYVUVQFLA" Name="MetricState=>NetChannel (netChannelId=>id)" ReferencedTableId="tblHBE24OUE2DNRDB7AAALOMT5GDM" ChildColumnNames="netChannelId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colAJKGMNFACVDP3NKSFE74FBBJWI" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col5BUNKNNFDJBKVPBACEGLW3XMOU" Name="lastHistId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colFEAY3AHK6NBWFIEFHY5HMNRCSI" Name="typeId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colEEXFHX3OG5DRXHVGXLXN54ML5Q" Name="instanceId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col4NS2RGMIDNGC5GK5TWJ5XRLZDE" Name="unitId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colQIQHM6FF7RAGBCSDMPA3UKA5WQ" Name="serviceUri" ValType="21" Length="300" Precision="0"/>
+      <Column Id="colJLPTXSSK4VG4ZPZKPLWUCMSSQE" Name="netChannelId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col74ZDIJTPCRBI7KJOX377SQ6KVE" Name="begTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colZN2B3DUPUBFXVP2Y6YPM4RPSV4" Name="endTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colVEBTRZIJMJF4TOWNB5PIPDYA5M" Name="begVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colS6PS354Y5BHPHPHGOKRSUOZV5Q" Name="endVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="col3BIXCHNDMFGR7JUU7XALKBE56U" Name="minVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colZC74COQVIBDVVEPBBQW5ABKCXU" Name="maxVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colOGEYLUNXKFEAVNBPXV2DLLDEUM" Name="avgVal" ValType="11" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblMCNK4E6FFNA5DHESZPKNLKJ3FQ" Name="MetricHist">
+    <Indexes>
+      <Index Id="idxI4BBBWE5CFEKZLRTNZLOAVQR2Q" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colGUQOPXPQIFE63KK5JQWPP36JIY col5HEQNQF275CG7PZHGA75LNZQPM colTIMOHINPBBHPHBF7IQRMHPYWVY"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refZUPIBS4ZZVHFHKXOY3B6ASGPRY" Name="MetricHist=>MetricState (metricId=>id)" ReferencedTableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" ChildColumnNames="metricId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colGUQOPXPQIFE63KK5JQWPP36JIY" Name="metricId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="col5HEQNQF275CG7PZHGA75LNZQPM" Name="endTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colTIMOHINPBBHPHBF7IQRMHPYWVY" Name="id" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colGSIRTHVQ7ZAGBMWHJPA5PNOGTU" Name="begTime" ValType="12" Length="0" Precision="6" NotNull="true"/>
+      <Column Id="colRLSYWQAJHFG7RIX5YSNCD7CEMM" Name="begVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colMGT6QJTQPJCHZFO442VOT5EAPE" Name="endVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colZ5NP4RP6IBBAFMSIGDA6JBU5TI" Name="minVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="col4UAQSFEFFVAE3ACSXME7AQQVPM" Name="maxVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colQLTULHD7JZAR5HRVNFO2ICDSZQ" Name="avgVal" ValType="11" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblO2BKTEHY6NA5TA52H2RCK4B2VY" Name="SnmpAgentUnit" MasterTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E">
+    <Indexes>
+      <Index Id="idxSCESA4WSE5C63IBJU3TUTRAM7Y" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colLL6KPRLRZNHULO5AA2COHWC2ZI"/>
+    </Indexes>
+    <ReferenceToMasterTable Id="refPIO6QSHCVZDVXIN7FEEAUQPSVY" Name="SnmpAgentUnit=>Unit (id=>id)"/>
+    <OutgoingReferences>
+      <Reference Id="ref5FL4DDOPDFAVXMA4FST5AC45NQ" Name="SnmpAgentUnit=>Sap (sapId=>id)" ReferencedTableId="tblR7FXMYDVVHWDBROXAAIT4AGD7E" ChildColumnNames="sapId"/>
+      <Reference Id="refLT6UL56WTBF5PIHVOGITUPZMOI" Name="SnmpAgentUnit=>SnmpManager (managerId=>id)" ReferencedTableId="tblZ3AVBWYAONAXNDCS3W4GTU5K44" ChildColumnNames="managerId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colLL6KPRLRZNHULO5AA2COHWC2ZI" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colG332KYF4D5DZ7NEMNJBFIVWLMA" Name="agentAddress" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="col7KS2KZBBONDTRL7NHIKM6J2UTA" Name="sapId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colVOFEDFFZ7FHCDGIJRWRPJAKJ6A" Name="useNotificationService" ValType="1" Length="1" Precision="0" NotNull="true"/>
+      <Column Id="colZJYJV7BLRFFTZJ3M6JZ2FAMK7I" Name="managerId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colFQVJZDKOYBENXED6NGM6QPXP7A" Name="communityString" ValType="21" Length="100" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblQZWAUN4CFZF53OBH7NVJCP535Q" Name="MetricControlData">
+    <Indexes>
+      <Index Id="idxKSN4JTDYLBFQRBB22YEV7PLFLE" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colRBTZ4GAAEFAKBIQKK7WLVPVIOE"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="ref5SKI5LHV65EJNAINHJDTKRXS4I" Name="MetricControlData=>MetricState (stateId=>id)" ReferencedTableId="tbl4QTN5SWVEFB55HPL32XOX6KZ7Y" ChildColumnNames="stateId"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colRBTZ4GAAEFAKBIQKK7WLVPVIOE" Name="stateId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colLUG2MUPCGBBXTKKKB62IET7HZM" Name="lastProcessedHistId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colEJXXN7LBPBGEBKUQPK2FAT7ZXI" Name="lastWarnVal" ValType="11" Length="12" Precision="3"/>
+      <Column Id="colJW2LSIY7RNGCRMEP5WZZFS3P4Q" Name="lastErrorVal" ValType="11" Length="12" Precision="3"/>
+      <Column Id="colNOKDH37F3RH6TGGXRHIQ5PVLEE" Name="lastControlSeverity" ValType="2" Length="1" Precision="0"/>
+      <Column Id="colAXL3DKGODVC3DKU3BVFGAEZKTQ" Name="lastControlActionMask" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colML3Z2LRIGNCURCSPA42Z5MK5QE" Name="lastWarnTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colCHMIHLA6NVFNLFSIDPSO4RLS74" Name="lastErrorTime" ValType="12" Length="0" Precision="6"/>
+      <Column Id="colSFIUZXGFHRCZLDHOABMOO7UCGE" Name="lastControlTime" ValType="12" Length="0" Precision="6"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblRHY4TVWIC5C4TJN2GKL2ABRKKQ" Name="InstanceStateHistory">
+    <Indexes>
+      <Index Id="idxYSAVBTX2LFA4JMOBS5J6FMDZLY" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colIFISIE3XWBD3LLQ3MZGOOG7N6M colELAJRXSM7NCG7FLQYSVADANYP4 colEVE536NNOZBI7N7IOSAL5WOAIQ"/>
+    </Indexes>
+    <OutgoingReferences>
+      <Reference Id="refSNWJCJEAINHT7CN2I4NZQNAXXY" Name="InstanceStateHistory=>StackData (stackDigest=>digest)" ReferencedTableId="tbl2R4PKYCFCVHGRP2YVVFOORGWIE" ChildColumnNames="stackDigest"/>
+    </OutgoingReferences>
+    <Columns>
+      <Column Id="colIFISIE3XWBD3LLQ3MZGOOG7N6M" Name="instanceId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colELAJRXSM7NCG7FLQYSVADANYP4" Name="regTimeMillis" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="colEVE536NNOZBI7N7IOSAL5WOAIQ" Name="threadId" ValType="2" Length="18" Precision="0" NotNull="true"/>
+      <Column Id="col4P6GRGWAKVF35LL2VSBKJRJ4O4" Name="threadKind" ValType="21" Length="100" Precision="0"/>
+      <Column Id="colATYCTWD3AFBIVE3AS4TOYUPHSM" Name="forced" ValType="1" Length="1" Precision="0"/>
+      <Column Id="colB4Y5IM6SMBHIVEYIGJSXMALEPQ" Name="name" ValType="21" Length="400" Precision="0"/>
+      <Column Id="colKEUJLICU4JAIJHRZPG62HNGFGU" Name="ancestorThreadId" ValType="2" Length="18" Precision="0"/>
+      <Column Id="col66UBVRCJQFEWPDJXIWUQN2EQP4" Name="unitId" ValType="2" Length="18" Precision="0"/>
+      <Column Id="col3KCBW5QZFREURM6WDQKR5JKHDQ" Name="arteSeq" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colU4MHPYS6PVANJMDUSQ5W7RJCIY" Name="arteSerial" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colJBVEDU3XFFC3LLANH2EAOMVKV4" Name="dbSid" ValType="21" Length="400" Precision="0"/>
+      <Column Id="colLYPEWDCHDVBVVMMA4SFRKIKFW4" Name="dbSerial" ValType="21" Length="400" Precision="0"/>
+      <Column Id="col5UOR3QOSWNBPJCRIEZ7F7MZW3I" Name="traceContexts" ValType="21" Length="1000" Precision="0"/>
+      <Column Id="colNKGIWVA7PZFZXEPGNO5JPZQRV4" Name="cpuDiffMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colSMAJMWPRYBHHNCZF6WPLKUCGBQ" Name="dbDiffMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colHNUTRIYQXVA2FKJLMS25H2ZO54" Name="extDiffMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colPZ5AOPCVBVHYFKD5O3MLHV75LY" Name="queueDiffMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colHNE7Z4ANKBECRGESFUUFQVCSQQ" Name="uptimeSec" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col5NJRGYCSDZERZAQFIWHARWHNTQ" Name="stackDigest" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col3ENNZJ2XUVHWJABO3YCDY4WD2Y" Name="lockName" ValType="21" Length="400" Precision="0"/>
+      <Column Id="col62UUOQ3FM5C3VETVE73AV6T2JI" Name="lockOwnerName" ValType="21" Length="400" Precision="0"/>
+      <Column Id="colJFE25SOPHZDSXA3XU22NI623HQ" Name="rqStartTimeMillis" ValType="2" Length="18" Precision="0"/>
+      <Column Id="colI7V5NLFAUBA4HGY7VUF6JFLKRI" Name="extData" ValType="21" Length="4000" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblVGSKITRX4FHZJAGAQ7V7VGZUJY" Name="DashConfig">
+    <Indexes>
+      <Index Id="idxAG3QC27EG5BWRMYZLNX5IQ2S3A" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colQU77X4CEHNCMPMBTEGPP2OQ3IY"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colQU77X4CEHNCMPMBTEGPP2OQ3IY" Name="guid" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colQVV4T5O6B5COJMBD3EZL53BF3A" Name="title" ValType="21" Length="300" Precision="0" NotNull="true"/>
+      <Column Id="colXTE7QVLZ3FGCFDGLAXN7EWNN54" Name="xmlContent" ValType="27" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="colBD47EI456VGBLLZ5AUVGEZFKOU" Name="lastUpdateTime" ValType="12" Length="0" Precision="0" NotNull="true"/>
+      <Column Id="col2JC6467ZUBDORDSTW5SLDQMFVI" Name="lastUpdateUser" ValType="21" Length="100" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblWQK6FDKV4BHXVHI62W7MV3AGMI" Name="MetricStateView">
+    <Indexes>
+      <Index Id="idxUDLOZLYZHBFVRJBZ5APNTZ4TIM" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colE6T7IPRVTFFVDKYLOSFZCLMCTI"/>
+    </Indexes>
+    <Columns>
+      <Column Id="col4DFFLKJPZZCNFFJHK4WO7LFJQA" Name="typeInstanceId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col5RHY3KHFPBGRDK6LUWXXCNSE4A" Name="typeId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colT65HMSDOUVFJXJXUDBCKNZL6QE" Name="typeTitle" ValType="21" Length="200" Precision="0" NotNull="true"/>
+      <Column Id="colBL3ITU6IUZCYPJ2VXPFBQDGATQ" Name="typeServiceUri" ValType="21" Length="300" Precision="0"/>
+      <Column Id="col7T66XXRR2BE7PHILZ2OEPBZDS4" Name="typeTimingSection" ValType="21" Length="200" Precision="0"/>
+      <Column Id="colE6T7IPRVTFFVDKYLOSFZCLMCTI" Name="stateId" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colDVZEATMUZJDRTHRHWF6HXQ276Q" Name="kind" ValType="21" Length="100" Precision="0"/>
+      <Column Id="col32O6NQZTM5E3JG7YJ4PM3QDAOA" Name="stateInstanceId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colB7BZ6PAH5BE3HN3AHL6WYHHBFY" Name="typeUnitId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colNGQ357ZOJ5A6TKL2HVQPH7OBXE" Name="stateUnitId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colEMF6GO7HKFE6NMNJLU4GVNPJ4A" Name="stateNetChannelId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="col2G4MXOVTKVB2JBOM75ZFSRGJ5Q" Name="typeNetChannelId" ValType="2" Length="9" Precision="0"/>
+      <Column Id="colNSMQQXSIDZHYTFTUV5AHIXECHQ" Name="lowErrorVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colIW36ISYLQ5GFDNAWFQJ5NJFKIQ" Name="lowWarnVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colNBNTUV24WFCOLJYJCQ7BLUCS3I" Name="highErrorVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colEGVMKECYG5DNLIYAW7SFJJD77E" Name="highWarnVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colWTL4DBZ3XVEDJP4F3GIGMW3DQE" Name="endVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="colFVN7CMMGPNGNZASBP5POKFTONE" Name="avgVal" ValType="11" Length="0" Precision="0"/>
+      <Column Id="col2N5YAJIRMJAR5BI75G5T2OBS5I" Name="maxVal" ValType="11" Length="0" Precision="0"/>
+    </Columns>
+  </TableDef>
+  <TableDef Id="tblZ3AVBWYAONAXNDCS3W4GTU5K44" Name="SnmpManager">
+    <Indexes>
+      <Index Id="idxWATMQCGLENFSJK5ZR6JHCX63II" Name="PrimaryKey" IsPrimaryKey="true" IndexColumns="colGIPH2WMI55GCTLGZQ62QI7ZGKY"/>
+    </Indexes>
+    <Columns>
+      <Column Id="colGIPH2WMI55GCTLGZQ62QI7ZGKY" Name="id" ValType="2" Length="9" Precision="0" NotNull="true"/>
+      <Column Id="colFBAYGRC2V5HIZG36WYM3FUABAE" Name="title" ValType="21" Length="300" Precision="0"/>
+      <Column Id="col6UTARJF4QJCSZHRRVIXMLKIX3E" Name="address" ValType="21" Length="100" Precision="0" NotNull="true"/>
+      <Column Id="colAVS3EYY7BBBJJGO3H6MXEUPNHQ" Name="active" ValType="1" Length="1" Precision="0" NotNull="true"/>
+    </Columns>
+  </TableDef>
+</SqmlModule>

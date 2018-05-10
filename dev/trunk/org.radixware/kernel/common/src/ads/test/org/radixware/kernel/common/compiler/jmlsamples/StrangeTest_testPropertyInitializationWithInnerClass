@@ -1,0 +1,22 @@
+
+class Test {
+
+    String getprop() {
+	return null;
+    }
+
+    void setprop(String val) {
+    }
+
+    CharSequence calc(Comparable<String> c) {
+	return null;
+    }
+
+    void f() {
+	prop = (String) calc(new Comparable<String>() {
+	    public int compareTo(String o) {
+		return 0;
+	    }
+	});
+    }
+}

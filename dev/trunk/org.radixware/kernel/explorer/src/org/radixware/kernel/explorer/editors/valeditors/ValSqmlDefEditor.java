@@ -12,7 +12,6 @@
 package org.radixware.kernel.explorer.editors.valeditors;
 
 import com.trolltech.qt.core.QSize;
-import com.trolltech.qt.gui.QAbstractButton;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QDialog;
 import com.trolltech.qt.gui.QIcon;
@@ -32,14 +31,14 @@ import org.radixware.kernel.common.client.meta.sqml.ISqmlTableDef;
 import org.radixware.kernel.explorer.dialogs.ChooseSqmlDefinitionDialog;
 
 import org.radixware.kernel.explorer.models.SqmlTreeModel;
+import org.radixware.kernel.explorer.widgets.propeditors.IDisplayStringProvider;
 
 
 public class ValSqmlDefEditor extends ValEditor<ISqmlDefinition> {
 
     private final SqmlTreeModel treeModel;
     private ISqmlDefinitionsFilter filter;
-    private final QToolButton selectBtn;
-    private String dialogTitle;
+    private final QToolButton selectBtn;    
     private EDefinitionDisplayMode displayMode = EDefinitionDisplayMode.SHOW_SHORT_NAMES;
 
     public ValSqmlDefEditor(IClientEnvironment environment, final QWidget parent, final SqmlTreeModel definitionsModel, final boolean mandatory, final boolean readonly) {
@@ -51,6 +50,7 @@ public class ValSqmlDefEditor extends ValEditor<ISqmlDefinition> {
             action.triggered.connect(this, "selectDefinition()");
             action.setToolTip(environment.getMessageProvider().translate("SqmlEditor", "Select Definition"));
             action.setText("...");
+            action.setObjectName("select");
             selectBtn = addButton(null, action);
             selectBtn.setText("...");
         }
@@ -85,14 +85,6 @@ public class ValSqmlDefEditor extends ValEditor<ISqmlDefinition> {
         refresh();
     }
 
-    public final String getDialogTitle() {
-        return dialogTitle;
-    }
-
-    public final void setDialogTitle(final String title) {
-        dialogTitle = title;
-    }
-
     @Override
     public void setMandatory(boolean mandatory) {
         super.setMandatory(mandatory);
@@ -104,17 +96,25 @@ public class ValSqmlDefEditor extends ValEditor<ISqmlDefinition> {
         super.setReadOnly(readOnly);
         updateButtons();
     }
+    
+    @Override
+    protected String getStringToShow(final Object value) {
+        final String defaultString;
+        if (value == null) {
+            defaultString = getEditMask().getNoValueStr(getEnvironment().getMessageProvider());
+        } else {
+            defaultString = ((ISqmlDefinition)value).getDisplayableText(displayMode);
+        }        
+        final IDisplayStringProvider displayStringProvider = this.getDisplayStringProvider();
+        if (displayStringProvider == null) {
+            return defaultString;
+        }
+        return displayStringProvider.format(getEditMask(), value, defaultString);
+    }    
 
     @Override
     public void refresh() {
-        if (value == null) {
-            getLineEdit().setText(getEditMask().getNoValueStr(getEnvironment().getMessageProvider()));
-        } else {
-            getLineEdit().setText(value.getDisplayableText(displayMode));
-        }
-        getLineEdit().setCursorPosition(0);
-        getLineEdit().clearFocus();
-        clearBtn.setVisible(!isMandatory() && !isReadOnly() && getValue() != null);
+        super.refresh();
         updateButtons();
     }
 
@@ -135,9 +135,24 @@ public class ValSqmlDefEditor extends ValEditor<ISqmlDefinition> {
         return super.calcValidationResult(value);
     }
 
-
-
     public ISqmlDefinition selectDefinition() {
+        final List<ISqmlDefinition> path = getPath();
+        final ChooseSqmlDefinitionDialog dialog =
+                new ChooseSqmlDefinitionDialog(getEnvironment(), treeModel, filter, path, false, this);
+        final String dialogTitle = getDialogTitle();
+        if (dialogTitle!=null){
+            dialog.setWindowTitle(dialogTitle);
+        }
+        if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
+            final ISqmlDefinition val = dialog.getCurrentItem();
+            setValue(val);
+            editingFinished.emit(getValue());
+            return val;
+        }
+        return null;
+    }
+    
+    public List<ISqmlDefinition> getPath() {
         final List<ISqmlDefinition> path = new ArrayList<>();
         if (value instanceof ISqmlColumnDef) {
             final ISqmlTableDef ownerTable = ((ISqmlColumnDef) value).getOwnerTable();
@@ -146,16 +161,7 @@ public class ValSqmlDefEditor extends ValEditor<ISqmlDefinition> {
         } else if (value != null) {
             path.add(value);
         }
-        final ChooseSqmlDefinitionDialog dialog =
-                new ChooseSqmlDefinitionDialog(getEnvironment(), treeModel, filter, path, false, this);
-        dialog.setWindowTitle(dialogTitle);
-        if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
-            final ISqmlDefinition val = dialog.getCurrentItem();
-            setValue(val);
-            editingFinished.emit(getValue());
-            return val;
-        }
-        return null;
+        return path;
     }
         
     private void updateButtons() {

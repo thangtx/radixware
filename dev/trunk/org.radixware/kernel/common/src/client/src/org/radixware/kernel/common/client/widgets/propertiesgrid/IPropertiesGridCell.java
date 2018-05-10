@@ -12,22 +12,23 @@
 package org.radixware.kernel.common.client.widgets.propertiesgrid;
 
 import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.views.IPropertiesGroupWidget;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
 
 
-interface IPropertiesGridCell<L extends IModelWidget, E extends IModelWidget> extends IPropertiesGridPresenter.IPresenterItem<L,E>{
+interface IPropertiesGridCell<L extends IModelWidget, E extends IModelWidget, G extends IPropertiesGroupWidget> extends IPropertiesGridPresenter.IPresenterItem<L,E,G>{
 
     public enum ELinkageDirection{
-        LEFT,RIGHT
+        LEFT,RIGHT,TOP,BOTTOM
     }
     
     boolean isEmpty();
     boolean isVisible();
     boolean isLinked(ELinkageDirection direction);
-    IPropertiesGridCell<L, E> getLinkedCell(ELinkageDirection direction);
-    void linkWith(IPropertiesGridCell<L, E> cell, ELinkageDirection direction);    
+    IPropertiesGridCell<L, E, G> getLinkedCell(ELinkageDirection direction);
+    void linkWith(IPropertiesGridCell<L, E, G> cell, ELinkageDirection direction);    
     int getLinkedCellsCount(ELinkageDirection direction);
     String getDescription(final MessageProvider mp);    
-    IPropertiesGridCell<L,E> createCopy();
-    void close(IPropertiesGridPresenter<L,E> presenter);
+    IPropertiesGridCell<L,E, G> createCopy();
+    void close(IPropertiesGridPresenter<L, E, G> presenter);
 }

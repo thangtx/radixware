@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsParagraphDefinition Id="parHWC5PCPMLNC53KVMKOTK2TS5SM" Name="Monitoring" TitleId="mlsQ6B2QNOZBNHINK5B5V4WTMZ6NE" IconId="imgYBSGP55CQBBVPF4ADPC3JFN6DY" IsRoot="true">
+    <ChildExplorerItems>
+      <Item>
+        <Entity Id="xpiBAMA7SNATJBFNJUMNZWAFLKGWI" Name="AllEventLog" InheritanceMask="16560" IsVisibleInTree="true" ClassId="aecACQVZOMVVHWDBROXAAIT4AGD7E" SelectorPresentationId="sprVWY625ANRTNRDB5PAALOMT5GDM" Restrictions="65535" EnabledCommands="">
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+      <Item>
+        <ParagraphLink Id="prlAXBFNNGYZFG5FOUGIWPILDW5MQ" Name="Dashboard" InheritanceMask="128" ParagraphId="parUPM7S7MVZJGGFKQEDEQMXDBEN4"/>
+      </Item>
+      <Item>
+        <ParagraphLink Id="prlR5ZFJN7PGNDWTNHAAJQN6ZT4XM" Name="Workflow" TitleId="mlsVGEUBKGVX5DHRIGW2TDYF6GHIQ" InheritanceMask="0" ParagraphId="parJZCKKMX7X7NRDF5PABIFNQAABA"/>
+      </Item>
+      <Item>
+        <ParagraphLink Id="prlRS2LBR52OVEKBNZE4FQSA65T3Y" Name="PersoComm" InheritanceMask="128" ParagraphId="parRCS7IY2IRHORDATLABIFNQAABA"/>
+      </Item>
+      <Item>
+        <Entity Id="xpiPZDWZWK645GLFJ53YCSCZHL7CY" Name="AuditLog" InheritanceMask="16560" IsVisibleInTree="true" ClassId="aecXXXFKJLLMLNBDKV7ABINU7DB2Q" SelectorPresentationId="sprH66EAYZCOTORDASXABIFNQAABA" Restrictions="0" EnabledCommands="">
+          <Condition>
+            <ConditionWhere/>
+            <ConditionFrom/>
+          </Condition>
+        </Entity>
+      </Item>
+      <Item>
+        <ParagraphLink Id="prlUPQLFEVERZCFDAMK7R3LXGKHJM" Name="SysUnitsHiddenDoNotRemove" InheritanceMask="128" ParagraphId="parCDX4BA646BG5DKJCYPHI77ECKM">
+          <AccessRules IsPublished="false"/>
+        </ParagraphLink>
+      </Item>
+    </ChildExplorerItems>
+    <Model Id="apmHWC5PCPMLNC53KVMKOTK2TS5SM" Name="Monitoring:Model" Type="13">
+      <AccessRules/>
+      <Headers>
+        <Src Name="HeaderapmHWC5PCPMLNC53KVMKOTK2TS5SM"/>
+      </Headers>
+      <Bodies>
+        <Src Name="BodyapmHWC5PCPMLNC53KVMKOTK2TS5SM"/>
+      </Bodies>
+      <MethodGroup Id="cmgCDNFVMELCFD3DGGAIZRMYVCZ2A" Name="Root"/>
+      <PropertyGroup Id="cpg6ZOENCVWGNAITEOPK3RPHPSJEA" Name="Root"/>
+      <Properties/>
+      <Methods>
+        <Method Id="mthZE6JBXUTKNEWVB3HN2YTVGT3JQ" Name="isExplorerItemAccessible" Nature="0" IsOverride="true" isDescriptionInherited="true">
+          <AccessRules/>
+          <Parameters>
+            <Parameter Name="explorerItemId" Id="mprRG42PSHSORGYTP5UGQ4IYRHMAQ">
+              <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+            </Parameter>
+          </Parameters>
+          <ReturnType TypeId="401" extStr="boolean"/>
+          <ThrownExceptions>
+            <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+            <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          </ThrownExceptions>
+          <Sources>
+            <Src>
+              <xsc:Item>
+                <xsc:Java>if (explorerItemId == </xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="parHWC5PCPMLNC53KVMKOTK2TS5SM prlUPQLFEVERZCFDAMK7R3LXGKHJM">
+                  <xsc:Presentation>Monitoring:SysUnitsHiddenDoNotRemove</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>) {
+    return false;
+}
+return super.</xsc:Java>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:IdReference Path="adc24D3IJUTHVH7HJZFW2PSATWURU mthZE6JBXUTKNEWVB3HN2YTVGT3JQ" Invoke="true">
+                  <xsc:Presentation>isExplorerItemAccessible</xsc:Presentation>
+                </xsc:IdReference>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Java>(explorerItemId);</xsc:Java>
+              </xsc:Item>
+            </Src>
+          </Sources>
+        </Method>
+      </Methods>
+    </Model>
+  </AdsParagraphDefinition>
+</AdsDefinition>

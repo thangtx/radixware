@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicMC777OIWCRDOLJFJHLSUTYXBDI" Name="IWidgetArea" Type="5" Environment="common-client">
+    <AccessRules IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.widgets.area.IWidgetArea"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicMC777OIWCRDOLJFJHLSUTYXBDI"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicMC777OIWCRDOLJFJHLSUTYXBDI"/>
+    </Bodies>
+    <MethodGroup Id="cmgFJTHW7KOKVDUZM6DZOODVXQQY4" Name="Root"/>
+    <PropertyGroup Id="cpgHFFI3T5MPVHXPIOXEOD4E3VDL4" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthCZKICTV4DVGMBMQQRM2CNVHME4" Name="getToolBar" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getToolBar()Lorg.radixware.kernel.common.client.widgets.actions.IToolBar;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.actions.IToolBar"/>
+      </Method>
+      <Method Id="mthCAB44UQHXNDADIV4XUFMPS5NCM" Name="getItemsByController" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getItemsByController(Ljava.lang.Class&lt;+Lorg.radixware.kernel.common.client.widgets.area.IWidgetAreaItemController;>;)Ljava.util.List&lt;Lorg.radixware.kernel.common.client.widgets.area.WidgetAreaItem;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="controllerClass" Id="mprSBZ5LIVJVJGWZI77GXCLYE62PY">
+            <Type TypeId="400" extStr="java.lang.Class">
+              <xsc:GenericArguments>
+                <xsc:Argument DerivationRule="extends" Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.area.IWidgetAreaItemController"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.area.WidgetAreaItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthWAB5IOW7E5FMJCPDO5ZJ3HDNOA" Name="getItemsByController" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getItemsByController(Lorg.radixware.kernel.common.types.Id;)Ljava.util.List&lt;Lorg.radixware.kernel.common.client.widgets.area.WidgetAreaItem;>;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="controllerClassId" Id="mprD5GA2DWIQFA2NCP3VMPWLYG4NA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.area.WidgetAreaItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthCXHONHCL3BECHKSGUO6T2U6HCE" Name="getItemsByOrder" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getItemsByOrder()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.widgets.area.WidgetAreaItem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.area.WidgetAreaItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthBO52VQ3IWRF7ROWGQW6YGL5OP4" Name="addTab" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="addTab(Ljava.lang.String;)Lorg.radixware.kernel.common.client.widgets.area.WidgetAreaTab;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="title" Id="mprGUZI2LMSGZGGLLIGLYY2JUMVGM">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.area.WidgetAreaTab"/>
+      </Method>
+      <Method Id="mthKBWKMOL4FNAYTDSFHUZGEARCA4" Name="getCurrentTab" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getCurrentTab()Lorg.radixware.kernel.common.client.widgets.area.WidgetAreaTab;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.area.WidgetAreaTab"/>
+      </Method>
+      <Method Id="mthNXCU5DZN7JC5ZHJ6Q33I2RCXEE" Name="getTab" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getTab(I)Lorg.radixware.kernel.common.client.widgets.area.WidgetAreaTab;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="tabIndex" Id="mprWZFJG4RVOFAVPASSG76WHQ6X5U">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.widgets.area.WidgetAreaTab"/>
+      </Method>
+      <Method Id="mthYMUVIUDFSZFQ7FMOQN7BDUHAZ4" Name="isTabsEnabled" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="isTabsEnabled()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthXI7ZGNLQTZEULOFDZKLQS7C73I" Name="getGridHeight" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getGridHeight()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthPYD7GICFKVHU3OPNVGXNZDXL2E" Name="getGridWidth" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getGridWidth()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthZXWZVTVRYRBZRGI4UGAK57RTLQ" Name="getTabCount" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getTabCount()I"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="int"/>
+      </Method>
+      <Method Id="mthLORJPR7BFNAEZF6R6W3RL2JQ6E" Name="removeTab" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="removeTab(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="tabIndex" Id="mpr7EX3PBKWTJE3ZEP6MHW2UX6HYE">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthQ7OUTVIH3NFTRCCBISY4NOOECA" Name="setControllerClassIds" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setControllerClassIds([Lorg.radixware.kernel.common.types.Id;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="controllerClassIds" Variable="true" Id="mprL4G33GOQUJFGHAULXN54OG4UGQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.types.Id" Dimension="1"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZFXUXA6C2FHYJLTPP4NYIXLPFI" Name="setControllerClasses" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setControllerClasses(Ljava.util.List&lt;Ljava.lang.Class&lt;+Lorg.radixware.kernel.common.client.widgets.area.IWidgetAreaItemController;>;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="controllerClassesList" Id="mpr6AV6ORTYO5ERPENK7CI5VW35XM">
+            <Type TypeId="400" extStr="java.util.List">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="java.lang.Class">
+                    <xsc:GenericArguments>
+                      <xsc:Argument DerivationRule="extends" Alias="?">
+                        <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.area.IWidgetAreaItemController"/>
+                      </xsc:Argument>
+                    </xsc:GenericArguments>
+                  </xsc:Type>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthTBAVVMUXPVCGBJCBYSLJGML3OU" Name="setCurrentTab" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setCurrentTab(I)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="tabIndex" Id="mprEXIT76BGHRH7DLK4C2OWECHOI4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthSPTIF5T3JBBJTJLANB3ICX6HFY" Name="setGridSize" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setGridSize(II)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="width" Id="mpr5FY34I7BDJDQPFUDC3S6IQ67N4">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+          <Parameter Name="height" Id="mprSEVQFPZYLNBVXITZG6X2QVS4BI">
+            <Type TypeId="401" extStr="int"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthZ4654G524BFX7DMNSVYF2SBZLQ" Name="setTabsEnabled" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="setTabsEnabled(Z)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="isTabsEnabled" Id="mpr7UXY5ZCNCBENBBGLO3MEKNXL24">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthKM5EMXCNUJHHVC7CMOREBHC5ZE" Name="saveToXml" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="saveToXml()Lorg.radixware.schemas.widgetsarea.WidgetsAreaDocument;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.schemas.widgetsarea.WidgetsAreaDocument"/>
+      </Method>
+      <Method Id="mth3QTHY3KVNBCU3LRXK6SWLEL4OQ" Name="loadFromXml" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="loadFromXml(Lorg.radixware.schemas.widgetsarea.WidgetsAreaDocument;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="widgetAreaDocument" Id="mprSROB2NTMJJB35N3BM3HMGYG7DU">
+            <Type TypeId="400" extStr="org.radixware.schemas.widgetsarea.WidgetsAreaDocument"/>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mth7MZLX257VNFYTMI3PRQQNVVSC4" Name="applyChanges" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="applyChanges()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthGLFK45NX4JAOZPOEEGCBADG6YU" Name="close" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="close(Z)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprQGL3MELQRBFKHEZL2GKCEOZ6EQ">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthFBBYEEVIZNARDC7CXQ45CNPQ5Y" Name="getModifiedItems" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getModifiedItems()Ljava.util.List&lt;Lorg.radixware.kernel.common.client.widgets.area.WidgetAreaItem;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.List">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.widgets.area.WidgetAreaItem"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthF7TP3YRVAJDSNOG7CB26ODRA24" Name="cancelChanges" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="cancelChanges()V"/>
+        </AccessRules>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

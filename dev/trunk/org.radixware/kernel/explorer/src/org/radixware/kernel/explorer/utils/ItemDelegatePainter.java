@@ -95,7 +95,7 @@ public final class ItemDelegatePainter {
     public CellLayout doLayout(final QStyleOptionViewItem option, 
                                final CellLayout layout, 
                                final int focusFrameMargin){
-        final Qt.LayoutDirection direction = option.direction();
+            final Qt.LayoutDirection direction = option.direction();
         final QStyleOptionViewItem.Position position = option.decorationPosition();
         final Qt.Alignment decorationAlignment = option.decorationAlignment();
         final Qt.Alignment displayAlignment = option.displayAlignment();
@@ -256,7 +256,7 @@ public final class ItemDelegatePainter {
     }
     
     private static Qt.Alignment visualAlignment(final Qt.LayoutDirection direction, final Qt.Alignment alignment){
-        if (!alignment.isSet(Qt.AlignmentFlag.AlignHorizontal_Mask)){
+        if (!WidgetUtils.isSetHorizontalAlignmentFlag(alignment)){
             alignment.set(Qt.AlignmentFlag.AlignLeft);
         }
         if (!alignment.isSet(Qt.AlignmentFlag.AlignAbsolute)

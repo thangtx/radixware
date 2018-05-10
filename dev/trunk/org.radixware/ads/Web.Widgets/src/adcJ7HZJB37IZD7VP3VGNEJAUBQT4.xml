@@ -14,51 +14,57 @@
     <PropertyGroup Id="cpg3Z36HW4OXBGLBNMKUVRUN3Q2TQ" Name="Root"/>
     <Properties/>
     <Methods>
-      <Method Id="mthHT5NGGYNVFAOHOGS4ARCKLD3SM" Name="getEditMask" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true">
-          <Transparence Extendable="false" PublishedName="getEditMask()Lorg.radixware.kernel.common.client.meta.mask.EditMask;"/>
-        </AccessRules>
-        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
-      </Method>
-      <Method Id="mthZN3QR3M37FDO3NQF7JGTEVFOII" Name="getType" Nature="0" IsOverride="false">
-        <AccessRules IsFinal="true">
-          <Transparence Extendable="false" PublishedName="getType()Lorg.radixware.kernel.common.enums.EValType;"/>
-        </AccessRules>
-        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
-      </Method>
       <Method Id="mthJSNCTQOVJBCPXBWCDSJVSCETDY" Name="ProxyPropEditor" Nature="0" IsConstructor="true" IsOverride="false">
         <AccessRules>
           <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.items.properties.Property;Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.client.meta.mask.EditMask;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="arg0" Id="mprI2DOHN7HNVHDTHEZBPDKGN2NVY">
+          <Parameter Name="property" Id="mprI2DOHN7HNVHDTHEZBPDKGN2NVY">
             <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
           </Parameter>
-          <Parameter Name="arg1" Id="mprGCC7RWHK25BK5O6BJCTLNVOP4A">
+          <Parameter Name="valType" Id="mprGCC7RWHK25BK5O6BJCTLNVOP4A">
             <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
           </Parameter>
-          <Parameter Name="arg2" Id="mprOL6ATK66SRCITBGW7ZRIIB7BJI">
+          <Parameter Name="editMask" Id="mprOL6ATK66SRCITBGW7ZRIIB7BJI">
             <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mthX7CY4QOXWRHOHGPFMULEPOKI4U" Name="setEditMask" Nature="0" IsOverride="false">
+      <Method Id="mthQPBE67PAANBRPFNV7Y2YLNTV7U" Name="ProxyPropEditor" Nature="0" IsConstructor="true" IsOverride="false">
         <AccessRules>
-          <Transparence Extendable="false" PublishedName="setEditMask(Lorg.radixware.kernel.common.client.meta.mask.EditMask;)V"/>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.items.properties.Property;Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.client.meta.mask.EditMask;Lorg.radixware.kernel.common.client.utils.IValAsStrConverter;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="arg0" Id="mprO5N54JDXPZCDPIKDIAEFGQ7QUI">
+          <Parameter Name="prop" Id="mprLEVAEPXZKBHHHJF5ZMWOFS6N3I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+          <Parameter Name="type" Id="mprOQXJNRFB5BE5NNKNCFM6R6LGQY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="mask" Id="mprTBDBK6PWTVAHVPXBRFZ2X7UBKA">
             <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+          <Parameter Name="converter" Id="mpr46DTYYVD7NCZZMQQWS4TTGPCWA">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.utils.IValAsStrConverter"/>
           </Parameter>
         </Parameters>
       </Method>
-      <Method Id="mth6BEZTPEK6JDVRAZIBDKYUKYTAQ" Name="setType" Nature="0" IsOverride="false">
+      <Method Id="mth2MKDRJQUVJDPDD2UEUYTYWKR6E" Name="ProxyPropEditor" Nature="0" IsConstructor="true" IsOverride="false">
         <AccessRules>
-          <Transparence Extendable="false" PublishedName="setType(Lorg.radixware.kernel.common.enums.EValType;)V"/>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.models.items.properties.Property;Lorg.radixware.kernel.common.enums.EValType;Lorg.radixware.kernel.common.client.meta.mask.EditMask;Lorg.radixware.kernel.common.client.enums.EReferenceStringFormat;)V"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="arg0" Id="mprTY5M3GTMRFCBTJUQ62WQL5MRGE">
+          <Parameter Name="prop" Id="mprSGHKU7UTGNDYXMT4CN34YBE4O4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.models.items.properties.Property"/>
+          </Parameter>
+          <Parameter Name="type" Id="mprEMP7KBS4OFBVNKOO2IDK5Z5XUI">
             <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+          <Parameter Name="mask" Id="mprPVXDG5PAG5E3RIYLP6K7DXIR2Q">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.meta.mask.EditMask"/>
+          </Parameter>
+          <Parameter Name="format" Id="mpr2HCW75CQ7BFPLCKK37KH2I3XKQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.enums.EReferenceStringFormat"/>
           </Parameter>
         </Parameters>
       </Method>

@@ -26,17 +26,16 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel2" min="-2" pref="75" max="-2" attributes="0"/>
-                  <Group type="102" attributes="0">
-                      <EmptySpace min="24" pref="24" max="24" attributes="0"/>
-                      <Component id="jLabel1" min="-2" pref="51" max="-2" attributes="0"/>
-                  </Group>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="jLabel2" alignment="1" max="32767" attributes="0"/>
+                  <Component id="nullIndicatorLabel" alignment="1" max="32767" attributes="0"/>
+                  <Component id="jLabel1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="nullIndicatorPanel1" alignment="1" pref="152" max="32767" attributes="2"/>
-                  <Component id="encodingPanel1" alignment="0" pref="152" max="32767" attributes="2"/>
+                  <Component id="encodingPanel1" alignment="0" pref="364" max="32767" attributes="2"/>
+                  <Component id="nullIndicatorUnitPanel" alignment="0" max="32767" attributes="0"/>
+                  <Component id="nullIndicatorPanel1" alignment="0" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -44,23 +43,27 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="encodingPanel1" max="32767" attributes="0"/>
+                  <Component id="jLabel1" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="encodingPanel1" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel1" min="-2" pref="21" max="-2" attributes="0"/>
+                  <Component id="jLabel2" min="-2" pref="24" max="-2" attributes="1"/>
+                  <Component id="nullIndicatorPanel1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jLabel2" max="32767" attributes="1"/>
-                  <Component id="nullIndicatorPanel1" alignment="0" min="-2" max="-2" attributes="1"/>
+                  <Component id="nullIndicatorUnitPanel" pref="26" max="32767" attributes="0"/>
+                  <Component id="nullIndicatorLabel" max="32767" attributes="0"/>
               </Group>
+              <EmptySpace pref="66" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
     <Component class="org.radixware.kernel.common.design.msdleditor.field.panel.simple.EncodingPanel" name="encodingPanel1">
-    </Component>
-    <Component class="org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel" name="nullIndicatorPanel1">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
@@ -77,6 +80,17 @@
           <ResourceString bundle="org/radixware/kernel/common/design/msdleditor/field/panel/simple/Bundle.properties" key="SimpleFieldPanel.jLabel2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel" name="nullIndicatorUnitPanel">
+    </Component>
+    <Component class="javax.swing.JLabel" name="nullIndicatorLabel">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/radixware/kernel/common/design/msdleditor/field/panel/simple/Bundle.properties" key="SimpleFieldPanel.nullIndicatorLabel.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitValuePanel" name="nullIndicatorPanel1">
     </Component>
   </SubComponents>
 </Form>

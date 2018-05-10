@@ -38,7 +38,7 @@ public class HttpQuery {
     private static final String PARAM_NAME_RQ_ID = "_rq_id_";    
     private final Map<String, String> params = new HashMap<>(21);
     private final List<EventSet> events = new LinkedList<>();
-    private boolean isDisposeRequest = false;
+    private final boolean isDisposeRequest;
     private final ClientAuthData authData;
 
     public static class EventSet {
@@ -101,12 +101,13 @@ public class HttpQuery {
 
     public HttpQuery(final String queryString, final String authzHeader) {
         authData = authzHeader==null || authzHeader.isEmpty() ? null : new ClientAuthData(authzHeader);
+        boolean disposeRequest = false;
         if (queryString != null && !queryString.isEmpty()) {
             String[] elements = queryString.split("&");
             for (String e : elements) {
                 if (e.startsWith("_w_e")) {
                     EventSet set = new EventSet(e);
-                    events.add(set);
+                    events.add(set);                    
                 } else {
                     int idx = e.indexOf("=");
                     if (idx > 0) {
@@ -114,11 +115,12 @@ public class HttpQuery {
                         String value = e.substring(idx + 1);
                         params.put(name, value);
                     } else if (e.equals("dispose")) {
-                        isDisposeRequest = true;
+                        disposeRequest = true;
                     }
                 }
             }
         }
+        isDisposeRequest = disposeRequest;
     }
     
     public HttpQuery(final String queryString) {
@@ -131,6 +133,16 @@ public class HttpQuery {
 
     public boolean isDisposeRequest() {
         return isDisposeRequest;
+    }
+    
+    public boolean isInitRequest(){
+        for (HttpQuery.EventSet event : getEvents()) {
+            if (Events.isActionEvent(event.getEventName()) 
+                && "init".equals(Events.getActionName(event))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<EventSet> getEvents() {
@@ -159,7 +171,10 @@ public class HttpQuery {
             }
         }
         return rootId;
-
+    }
+    
+    public String getToken(){
+        return get("token");
     }
 
     @Override
@@ -178,7 +193,7 @@ public class HttpQuery {
         }
         return sb.toString();
     }
-
+    
     public boolean isEmpty() {
         return params.isEmpty();
     }

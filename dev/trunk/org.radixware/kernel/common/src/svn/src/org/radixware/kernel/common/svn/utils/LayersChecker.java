@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.api.Usages2APIComparator;
+import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.svn.RadixSvnException;
 import org.radixware.kernel.common.svn.SVNRepositoryAdapter;
 import org.radixware.kernel.common.svn.client.SvnEntry;
@@ -85,6 +86,12 @@ public abstract class LayersChecker implements NoizyVerifier {
                         return layerInfo.getAPIDocument(moduleId);
                     }
                 }
+
+                @Override
+                public boolean isExpired(String layerUri, String expirationRelease) {
+                    return false;
+                }
+                
             }, new Usages2APIComparator.UsagesLookup() {
                 @Override
                 public UsagesDocument.Usages lookup(String layerUri, Id moduleId) throws IOException {
@@ -98,7 +105,7 @@ public abstract class LayersChecker implements NoizyVerifier {
                 }
             }, new Usages2APIComparator.Reporter() {
                 @Override
-                public void message(String message) {
+                public void message(EEventSeverity severity, String message) {
                     LayersChecker.this.error(message);
                 }
             });
@@ -276,50 +283,63 @@ public abstract class LayersChecker implements NoizyVerifier {
             if (modules == null) {
                 modules = new HashMap<>();
                 String adsPath = SvnPath.append(layerSvnPath, "ads");
-                final List<String> candidates = new LinkedList<>();
+                
+                boolean findAds; //empty layer - RADIXMANAGER-392
                 try {
-                    getRepository().getDir(adsPath, revision,
-                            new SVNRepositoryAdapter.EntryHandler() {
+                    findAds = getRepository().isDir(adsPath, revision);
+                }
+                catch (RadixSvnException ex) {
+                    reportError(ex);
+                    findAds = false;
+                }
+                    
+                    
+                if (findAds) {
+                    final List<String> candidates = new LinkedList<>();
+                    try {
+                        getRepository().getDir(adsPath, revision,
+                                new SVNRepositoryAdapter.EntryHandler() {
 
-                                @Override
-                                public void accept(SvnEntry entry) throws RadixSvnException {
-                                    candidates.add(entry.getName());
-                                }
-                            }
-                    );
-
-                    for (String candidate : candidates) {
-                        String path = SvnPath.append(adsPath, candidate);
-                        String moduelXmlPath = SvnPath.append(path, "module.xml");
-                        if (getRepository().isFile(moduelXmlPath, revision)) {
-                            ByteArrayOutputStream out = new ByteArrayOutputStream();
-                            try {
-                                getRepository().getFile(moduelXmlPath, revision, null, out);
-                                ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
-                                try {
-                                    Module xModule = ModuleDocument.Factory.parse(in).getModule();
-                                    if (xModule != null) {
-                                        modules.put(xModule.getId(), new ModuleInfo(xModule, path));
+                                    @Override
+                                    public void accept(SvnEntry entry) throws RadixSvnException {
+                                        candidates.add(entry.getName());
                                     }
+                                }
+                        );
+
+                        for (String candidate : candidates) {
+                            String path = SvnPath.append(adsPath, candidate);
+                            String moduelXmlPath = SvnPath.append(path, "module.xml");
+                            if (getRepository().isFile(moduelXmlPath, revision)) {
+                                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                try {
+                                    getRepository().getFile(moduelXmlPath, revision, null, out);
+                                    ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+                                    try {
+                                        Module xModule = ModuleDocument.Factory.parse(in).getModule();
+                                        if (xModule != null) {
+                                            modules.put(xModule.getId(), new ModuleInfo(xModule, path));
+                                        }
+                                    } finally {
+                                        try {
+                                            in.close();
+                                        } catch (IOException e) {
+                                        }
+                                    }
+                                } catch (RadixSvnException | XmlException | IOException e) {
+                                    reportError(e);
+                                    continue;
                                 } finally {
                                     try {
-                                        in.close();
-                                    } catch (IOException e) {
+                                        out.close();
+                                    } catch (IOException ex) {
                                     }
-                                }
-                            } catch (RadixSvnException | XmlException | IOException e) {
-                                reportError(e);
-                                continue;
-                            } finally {
-                                try {
-                                    out.close();
-                                } catch (IOException ex) {
                                 }
                             }
                         }
+                    } catch (RadixSvnException ex) {
+                        reportError(ex);
                     }
-                } catch (RadixSvnException ex) {
-                    reportError(ex);
                 }
             }
         }

@@ -54,6 +54,16 @@
             .threadDumpInfo {
                 display: none;
             }
+            .instanceStateHistory {
+                display: none;
+            }
+            .instanceStateHistory table {
+                border-collapse: collapse;
+            }
+            .instanceStateHistory td,th {
+                padding: 2px 5px 2px 5px;
+                border: 1px solid lightgray;
+            }
 
             .legend li {
                 display: inline;
@@ -187,26 +197,24 @@
             }
 
             function selectGenericInfo(event) {
-                var target = event.target || event.srcElement;
-                var snapshot = target.parentNode.parentNode;
-                var diagnosticInfo = snapshot.getElementsByClassName("diagnosticInfo")[0];
-
-                for (var i = 0; i < diagnosticInfo.children.length; i++) {
-                    if (diagnosticInfo.children[i].className === "genericInfo") {
-                        diagnosticInfo.children[i].style.display = "block";
-                    } else {
-                        diagnosticInfo.children[i].style.display = "none";
-                    }
-                }
+                selectXxxInfo(event, "genericInfo");
             }
 
             function selectThreadDumpInfo(event) {
+                selectXxxInfo(event, "threadDumpInfo");
+            }
+            
+            function selectInstanceStateHistoryInfo(event) {
+                selectXxxInfo(event, "instanceStateHistory");
+            }
+            
+            function selectXxxInfo(event, className) {
                 var target = event.target || event.srcElement;
                 var snapshot = target.parentNode.parentNode;
                 var diagnosticInfo = snapshot.getElementsByClassName("diagnosticInfo")[0];
 
                 for (var i = 0; i < diagnosticInfo.children.length; i++) {
-                    if (diagnosticInfo.children[i].className === "threadDumpInfo") {
+                    if (diagnosticInfo.children[i].className === className) {
                         diagnosticInfo.children[i].style.display = "block";
                     } else {
                         diagnosticInfo.children[i].style.display = "none";

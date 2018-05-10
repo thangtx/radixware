@@ -49,8 +49,13 @@
                         <xs:attribute name="ownerEntityId" type="xs:string"/>
                     </xs:complexType>
                 </xs:element>
+                <xs:element name="ResultHtml" type="types:SafeStr" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
             <xs:attribute name="CompileWasCancelled" type="types:Bool" default="false"/>
+            <xs:attribute name="TotalCount" type="xs:int"/>
+            <xs:attribute name="FuncsWithErrors" type="xs:int"/>
+            <xs:attribute name="TotalErrors" type="xs:int"/>
+            <xs:attribute name="TotalWarnings" type="xs:int"/>
         </xs:complexType>
     </xs:element>    
     

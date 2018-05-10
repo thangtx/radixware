@@ -22,7 +22,7 @@ public enum ENotificationEventType implements IKernelStrEnum {
     DATABASE_UPGRADED("Database Upgraded", "DatabaseUpgraded"),
     //
     DISTRIBUTIVE_PREPARED("Distribution Kit Prepared", "DistribPrepared"), // created new distributive in client entry
-    DISTRIBUTIVE_EXPORTED("Distrion Kit Exported", "DistribExported"), // distributive exported to zip file
+    DISTRIBUTIVE_EXPORTED("Distribution Kit Exported", "DistribExported"), // distributive exported to zip file
     DISTRIBUTIVE_IMPORTED("Distribution Kit Imported", "DistribImported"), // distributive loaded from zip file
     //SEND_DISTRIB_TO_RELEASES("Distribution Kit Sent to Releases", "SendDistribToReleases"),
     SEND_DISTRIB_TO_DEVELOPMENT("Distribution Kit Sent to Development", "SendDistribToDevelopment"),

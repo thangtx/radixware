@@ -11,10 +11,18 @@
 
 package org.radixware.kernel.explorer.editors.jmleditor.jmltags;
 
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QMouseEvent;
+import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
+import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
+import org.radixware.kernel.common.client.utils.DialogUtils;
 import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
+import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.jml.JmlTagInvocation;
+import org.radixware.kernel.common.types.Id;
 
 
 public class JmlTag_Invocate extends JmlTag {
@@ -52,4 +60,48 @@ public class JmlTag_Invocate extends JmlTag {
             return super.setDisplayedInfo(showMode);
         }
     }
+    
+    @Override
+    public void onMouseReleased(QMouseEvent e, IClientEnvironment env) {
+        //ctrl + click, event was checked in XscmlEditor
+        Id tableId = null;
+        String pidAsStr = null;
+        if (tag instanceof JmlTagInvocation) {
+            final JmlTagInvocation invTag = (JmlTagInvocation) tag;
+            final List<Id> path = invTag.getPath().asList();
+                if (path.size() == 1 && path.get(0).getPrefix() == EDefinitionIdPrefix.LIB_USERFUNC_PREFIX) {
+                    tableId = AdsUserFuncDef.LIB_USER_FUNC_TABLE;
+                    pidAsStr = path.get(0).toString();
+                }
+        }
+        if (tableId != null && pidAsStr != null) {
+            try {
+                DialogUtils.showEntityEditor(tableId, pidAsStr, env);
+            } catch (InterruptedException | ServiceClientException ex) {
+                final String cause;
+                if (ex instanceof ObjectNotFoundError) {
+                    cause = "Object not found:\n" + ex.getMessage();
+                } else {
+                    cause = ex.getClass().getName() + "\n" + ex.getMessage();
+                }
+                environment.messageError("Can not open editor dialog. " + cause);
+            }
+        }
+    }
+
+    @Override
+    public Qt.CursorShape getCursorShape(QMouseEvent e) {
+        Id tableId = null;
+        String pidAsStr = null;
+        if (tag instanceof JmlTagInvocation) {
+            final JmlTagInvocation invTag = (JmlTagInvocation) tag;
+            final List<Id> path = invTag.getPath().asList();
+                if (path.size() == 1 && path.get(0).getPrefix() == EDefinitionIdPrefix.LIB_USERFUNC_PREFIX) {
+                    tableId = AdsUserFuncDef.LIB_USER_FUNC_TABLE;
+                    pidAsStr = path.get(0).toString();
+                }
+        }
+        return tableId != null && pidAsStr != null ? Qt.CursorShape.PointingHandCursor : null;
+    }
+    
 }

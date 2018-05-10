@@ -19,12 +19,24 @@ import org.radixware.kernel.common.html.Div;
 
 
 public class GroupBox extends Container {
+    
+    public enum AdjustMode{
+            EXPAND_HEIGHT_BY_CONTENT("heightByContent"), 
+            EXPAND_CONTENT_HEIGTH("contentByHeight");
+        
+        private final String attrValue;
+        
+        private AdjustMode(final String value){
+            attrValue = value;
+        }
+    };
 
-    private final Html legend = new Html("label");
+    private final Html legend = new Html("label");    
     private final Html header = new Div();
     private boolean isHeaderVisible = true;
     private boolean isFrameVisible = true;
-    private final Container fieldset = new Container();
+    private AdjustMode adjustMode;
+    private final Container fieldset = new Container();    
 
     public GroupBox() {
         super();
@@ -64,6 +76,7 @@ public class GroupBox extends Container {
         
         html.layout("$RWT.groupBox.layout");
         setHSizePolicy(SizePolicy.EXPAND);
+        setAdjustMode(AdjustMode.EXPAND_CONTENT_HEIGTH);
     }
 
     public String getTitle() {
@@ -130,7 +143,7 @@ public class GroupBox extends Container {
                 legend.setCss(Html.CSSRule.WIDTH, null);
                 fieldset.html.setCss("position", "relative");
                 fieldset.html.setCss("top", "0px");
-                fieldset.setHSizePolicy(hSizePolicy);
+                fieldset.setHSizePolicy(hSizePolicy);                
                 super.setHSizePolicy(hSizePolicy);
                 break;
             case EXPAND:
@@ -224,5 +237,16 @@ public class GroupBox extends Container {
     @Override
     public void remove(UIObject child) {
         fieldset.remove(child);
+    }
+    
+    public final void setAdjustMode(final AdjustMode mode){
+        if (adjustMode!=mode){
+            adjustMode = mode;
+            html.setAttr("adjustMode", mode.attrValue);
+        }
+    }
+    
+    public final AdjustMode getAdjustMode(){
+        return adjustMode;
     }
 }

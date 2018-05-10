@@ -716,5 +716,70 @@ $RWT.dashboard = {
                 }
             }
         }
+    },
+    progressbar: {
+        layout: function (target) {
+            function setUncertainBehavior() {
+                $(target).children().first().css("transition-duration", "0s");
+                $(target).children().first().addClass("rwt-uncertain-behavior-progress-bar");
+
+                var magic = target.offsetLeft;  //HERE COMES THE MAGIC - reading this prop forces delay we need
+                $(target).children().first().css("width", "20px");
+                magic = target.offsetLeft;
+
+                target.setAttribute("UNCERTAIN_BEHAVIOR", "true");
+            }
+
+            function removeUncertainBehavior() {
+                $(target).children().first().removeClass("rwt-uncertain-behavior-progress-bar");
+                $(target).children().first().css("left", "1px");
+                target.setAttribute("UNCERTAIN_BEHAVIOR", "false");
+            }
+
+            if (target.getAttribute("PROGRESSBAR_VALUE") !== null && target.getAttribute("PROGRESSBAR_MAX_VALUE") !== null) {
+                var progressValue = (+target.getAttribute("PROGRESSBAR_VALUE"));
+                var progressValueMax = (+target.getAttribute("PROGRESSBAR_MAX_VALUE")) * 1000;
+                var layoutUpdateTime_ms = 2000;
+                var isStop = false;
+
+                if (target.getAttribute("STOP_UNCERTAIN_BEHAVIOR_tmp") === null) {
+                    target.setAttribute("STOP_UNCERTAIN_BEHAVIOR_tmp", 1);
+                }
+                
+                if (target.getAttribute("UNCERTAIN_BEHAVIOR") === null) {
+                    target.setAttribute("UNCERTAIN_BEHAVIOR", "false");
+                }
+                
+                if (target.getAttribute("STOP_UNCERTAIN_BEHAVIOR") !== null) {
+                    isStop = target.getAttribute("STOP_UNCERTAIN_BEHAVIOR") !== target.getAttribute("STOP_UNCERTAIN_BEHAVIOR_tmp");
+                    if(isStop) {
+                        target.setAttribute("STOP_UNCERTAIN_BEHAVIOR_tmp", target.getAttribute("STOP_UNCERTAIN_BEHAVIOR"));
+                    }
+                }
+                
+                if (target.getAttribute("UNCERTAIN_BEHAVIOR") !== null && target.getAttribute("UNCERTAIN_BEHAVIOR") === "true" && isStop) {
+                    removeUncertainBehavior();
+                    
+                    var magic = target.offsetLeft;  //HERE COMES THE MAGIC - reading this prop forces delay we need
+                    $(target).children().first().css("width", "100px");
+                    magic = target.offsetLeft;
+                }
+                
+                if (target.getAttribute("UNCERTAIN_BEHAVIOR") !== null && target.getAttribute("UNCERTAIN_BEHAVIOR") === "false") {
+                    if ((progressValueMax - progressValue) > layoutUpdateTime_ms) {
+                        $(target).children().first().css("transition-duration", layoutUpdateTime_ms + "ms");
+                        $(target).children().first().css("width", Math.floor(100 - ((progressValue + layoutUpdateTime_ms) / progressValueMax) * 100) + "px");
+                    } else if ((progressValueMax - progressValue) === layoutUpdateTime_ms) {
+                        $(target).children().first().css("transition-duration", layoutUpdateTime_ms + "ms");
+                        $(target).children().first().css("width", Math.floor(100 - ((progressValue + layoutUpdateTime_ms) / progressValueMax) * 100) + "px");
+                        window.setTimeout(setUncertainBehavior, layoutUpdateTime_ms);
+                    } else if ((progressValueMax - progressValue) < layoutUpdateTime_ms && (progressValueMax - progressValue) > 0) {
+                        $(target).children().first().css("transition-duration", (progressValueMax - progressValue) + "ms");
+                        $(target).children().first().css("width", "0px");
+                        window.setTimeout(setUncertainBehavior, progressValueMax - progressValue);
+                    }
+                }
+            }
+        }
     }
 };

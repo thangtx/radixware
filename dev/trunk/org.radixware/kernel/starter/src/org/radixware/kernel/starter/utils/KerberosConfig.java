@@ -36,12 +36,11 @@ public class KerberosConfig extends javax.security.auth.login.Configuration {
     }
 
     public static void setConfiguration(HashMap<String, String> params) {
-        if (params != null) {
+        if (params != null && !params.isEmpty()) {
             setParams(params);
             java.security.Security.setProperty("login.configuration.provider", "org.radixware.kernel.starter.utils.KerberosConfig");
+            java.security.Security.setProperty("auth.login.defaultCallbackHandler", "com.sun.security.auth.callback.DialogCallbackHandler");
         }
-        java.security.Security.setProperty("auth.login.defaultCallbackHandler", "com.sun.security.auth.callback.DialogCallbackHandler");
-        //java.security.Security.setProperty("auth.login.defaultCallbackHandler", "org.radixware.kernel.common.kerberos.LoginCallbackHandler");
     }
 
     static void setParams(HashMap<String, String> params) {

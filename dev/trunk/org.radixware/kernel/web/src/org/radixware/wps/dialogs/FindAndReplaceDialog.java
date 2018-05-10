@@ -210,7 +210,7 @@ public class FindAndReplaceDialog extends Dialog implements IFindAndReplaceDialo
         public final void setSearchWidget(final IFindAndReplaceDialog.ISearchWidget customWidget){
             if (customWidget!=null && customSearchWidget==null){
                 tfFindWhat.setVisible(false);
-                searchWidget = (UIObject)customSearchWidget;
+                searchWidget = (UIObject)customWidget;
                 formBox.addLabledEditor(findLabel, searchWidget);
                 searchWidget.setVisible(true);
                 customSearchWidget = customWidget;

@@ -24,7 +24,7 @@ public class NoClipContentAction extends AbstractAction {
     private final AdsReportFormDiagram diagram;
 
     public NoClipContentAction(final AdsReportFormDiagram diagram) {
-        super("Do not clip content",RadixWareIcons.EDIT.NO_ICON.getIcon());
+        super("Do not Clip Content",RadixWareIcons.EDIT.NO_ICON.getIcon());
         this.diagram = diagram;
     }
 

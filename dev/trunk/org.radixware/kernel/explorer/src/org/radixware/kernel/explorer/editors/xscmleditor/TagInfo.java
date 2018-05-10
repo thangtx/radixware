@@ -11,13 +11,16 @@
 
 package org.radixware.kernel.explorer.editors.xscmleditor;
 
+import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.gui.QBrush;
 import com.trolltech.qt.gui.QColor;
 import com.trolltech.qt.gui.QFont;
+import com.trolltech.qt.gui.QMouseEvent;
 import com.trolltech.qt.gui.QTextCharFormat;
 import com.trolltech.qt.gui.QTextCharFormat.UnderlineStyle;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EDefinitionDisplayMode;
+import org.radixware.kernel.common.html.Html;
 import org.radixware.kernel.explorer.editors.jmleditor.completer.HtmlCompletionItem;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 
@@ -30,7 +33,7 @@ public class TagInfo {
     private long endPos;
     protected String fullName;
     private QTextCharFormat charFormat = new QTextCharFormat();
-    protected boolean valid = true;
+    private boolean valid = true;
     protected final IClientEnvironment environment;
     private boolean isDeprecated;
 
@@ -66,8 +69,12 @@ public class TagInfo {
     public String getToolTip() {
         return HtmlCompletionItem.changeColor(title);
     }
+    
+    protected final void setValid(final boolean isValid){
+        valid = isValid;
+    }
 
-    public boolean isValid() {
+    public final boolean isValid() {
         return valid;
     }
 
@@ -77,10 +84,7 @@ public class TagInfo {
      * @return - ????????? ????????????? ????
      */
     public String createHtmlTag(final String space) {
-        String sName = getDisplayName();
-        if (sName.indexOf('<') != -1) {
-            sName = sName.replaceAll("<", "&#60;");
-        }
+        final String sName = Html.string2HtmlString(getDisplayName());
         return "<a href=\"1\" title=\"" + getToolTip() + "\">" + sName + "</a>" + space;
     }
 
@@ -207,4 +211,13 @@ public class TagInfo {
         startPos = startPosForTag + 1;
         endPos = startPos + getDisplayName().length();
     }
+    
+    public void onMouseReleased(QMouseEvent e, IClientEnvironment env) {
+        //do nothing
+    }
+    
+    public Qt.CursorShape getCursorShape(QMouseEvent e) {
+        return null;
+    }
+    
 }

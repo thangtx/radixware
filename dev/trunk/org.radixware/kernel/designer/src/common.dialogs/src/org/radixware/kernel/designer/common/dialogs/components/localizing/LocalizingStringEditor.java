@@ -8,18 +8,22 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.dialogs.components.localizing;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 import java.util.List;
+import java.util.Map.Entry;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.AncestorEvent;
@@ -39,56 +43,45 @@ import org.radixware.kernel.designer.common.dialogs.components.BorderedCollapsab
 import org.radixware.kernel.designer.common.dialogs.components.CollapsablePanel;
 import org.radixware.kernel.designer.common.dialogs.components.TabManager;
 import org.radixware.kernel.designer.common.dialogs.components.localizing.LocalizingStringEditor.LocalizingEditorComponent;
+import org.radixware.kernel.designer.common.dialogs.components.localizing.html.EHtmlEditorState;
 import org.radixware.kernel.designer.common.dialogs.components.values.EventsSupport;
 import org.radixware.kernel.designer.common.dialogs.spellchecker.Spellchecker;
 import org.radixware.kernel.designer.common.dialogs.spellchecker.Spellchecker.SpellcheckControl;
+import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
+import org.radixware.kernel.designer.common.dialogs.utils.RadixNbEditorUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.TextComponentUtils;
 
-
 public class LocalizingStringEditor extends JPanel {
-
+    protected boolean useRichFormat = false;
+    private EHtmlEditorState htmlEditorState = EHtmlEditorState.ALL;
     public enum EEditorMode {
 
         LINE, MULTILINE, EXPANDABLE, USER;
     }
 
     protected static abstract class LocalizingEditorComponent {
-        
-        static JToggleButton createIgnoreSpellCheckButton() {
-            final JToggleButton ignoreSpellCheck = new JToggleButton() {
-                @Override
-                public Icon getIcon() {
-                    return isSelected() ? RadixWareIcons.CHECK.STOP.getIcon()
-                            : RadixWareIcons.CHECK.CHECK.getIcon();
-                }
-            };
-            ignoreSpellCheck.setToolTipText(NbBundle.getMessage(LocalizingStringEditor.class,
-                            ignoreSpellCheck.isSelected() ? "IgnoreSpellCheckBoxDisabled.tooltip" : "IgnoreSpellCheckBoxDisabled.tooltip"));
-            ignoreSpellCheck.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ignoreSpellCheck.setToolTipText(NbBundle.getMessage(LocalizingStringEditor.class,
-                            ignoreSpellCheck.isSelected() ? "IgnoreSpellCheckBoxDisabled.tooltip" : "IgnoreSpellCheckBoxDisabled.tooltip"));
-                }
-            });
-            ignoreSpellCheck.setFocusable(false);
-            return ignoreSpellCheck;
-        }
         final Map<EIsoLanguage, ILocalizedEditor> editors = new EnumMap<>(EIsoLanguage.class);
         final LocalizingStringEditor localizingStringEditor;
         private boolean inUpdate;
         private boolean isReadonly;
+
         private final ChangeListener changeValueListener = new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
                 if (!inUpdate()) {
                     final ILocalizedEditor valueField = (ILocalizedEditor) e.getSource();
-                    localizingStringEditor.getLocalizingStringContext().setValue(valueField.getLanguage(), valueField.getText());
-                    localizingStringEditor.fireChange();
+                    setValue(valueField.getLanguage(), valueField.getText());
                 }
             }
         };
-
+        
+        
+        final void setValue(EIsoLanguage language, String value) {
+            localizingStringEditor.getLocalizingStringContext().setValue(language, value);
+            localizingStringEditor.fireChange();
+            updateEditor();
+        }
+        
         LocalizingEditorComponent(LocalizingStringEditor editor) {
             this.localizingStringEditor = editor;
         }
@@ -123,6 +116,10 @@ public class LocalizingStringEditor extends JPanel {
             }
         }
 
+        public boolean isUseRichFormat() {
+            return localizingStringEditor.isUseRichFormat();
+        }
+        
         void connect() {
             for (final ILocalizedEditor c : editors.values()) {
                 c.addChangeListener(changeValueListener);
@@ -164,31 +161,130 @@ public class LocalizingStringEditor extends JPanel {
         }
 
         public abstract JPanel getComponent();
+
+        protected abstract void updateEditor();
+
+        public abstract void requestEditorFocus();
+        
+        public abstract EIsoLanguage getCurrentLanguage();
+        
+        public abstract void goToLanguage(EIsoLanguage language);
     }
-
-    private static final class LineEditor extends LocalizingEditorComponent {
-
-        private final String ROW_NUMBER = "row-number";
-        private boolean isExpandable;
-        private final JToggleButton ignoreSpellCheck;
+    
+    protected static abstract class LocalizingEditor extends LocalizingEditorComponent{
+        protected final JToggleButton ignoreSpellCheck;
+        private volatile boolean isRichEditorOpened = false;
         private final ActionListener ignoreSpellCheckListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 enableSpellcheck(!ignoreSpellCheck.isSelected());
             }
         };
+
+        public LocalizingEditor(LocalizingStringEditor editor) {
+            super(editor);
+            ignoreSpellCheck = createIgnoreSpellCheckButton();
+        }
+        
+        
+        protected JToggleButton createIgnoreSpellCheckButton() {
+            final JToggleButton ignoreSpellCheck = new JToggleButton() {
+                @Override
+                public Icon getIcon() {
+                    return RadixWareIcons.MLSTRING_EDITOR.SPELLCHECK.getIcon();
+                }
+            };
+            ignoreSpellCheck.setToolTipText(NbBundle.getMessage(LocalizingStringEditor.class,
+                    ignoreSpellCheck.isSelected() ? "IgnoreSpellCheckBoxDisabled.tooltip" : "IgnoreSpellCheckBoxEnabled.tooltip"));
+            ignoreSpellCheck.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ignoreSpellCheck.setToolTipText(NbBundle.getMessage(LocalizingStringEditor.class,
+                            ignoreSpellCheck.isSelected() ? "IgnoreSpellCheckBoxDisabled.tooltip" : "IgnoreSpellCheckBoxEnabled.tooltip"));
+                }
+            });
+            ignoreSpellCheck.addMouseListener(new MouseListener() {
+
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                }
+
+                @Override
+                public void mousePressed(MouseEvent e) {
+                }
+
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                }
+            });
+            ignoreSpellCheck.setFocusable(false);
+            return ignoreSpellCheck;
+        }
+        
+        public void setReadonly(boolean readonly) {
+            super.setReadonly(readonly);
+            ignoreSpellCheck.setEnabled(!readonly);
+        }
+        
+        @Override
+        void connect() {
+            super.connect();
+            ignoreSpellCheck.addActionListener(ignoreSpellCheckListener);
+        }
+        
+        
+        @Override
+        void updateImpl() {
+            super.updateImpl();
+            ignoreSpellCheck.setSelected(!localizingStringEditor.getLocalizingStringContext().isSpellcheckEnable());
+        }
+        
+        protected JButton createOpenRichEditor(){
+            JButton openRichEditor = new JButton();
+            openRichEditor.setIcon(RadixWareDesignerIcon.EDIT.FOREGROUND.getIcon());
+            openRichEditor.setFocusable(false);
+            return openRichEditor;
+        }
+        
+        
+        protected void openRichEditor(ILocalizingStringContext context, EIsoLanguage language) {
+//            if (isRichEditorOpened){
+//                return;
+//            }
+//            
+//            isRichEditorOpened = true;
+//            richEditor.setText(context.getValue(language));
+//            final ModalDisplayer md = new ModalDisplayer(richEditor, "Html Editor - " + language);
+//            if (md.showModal()) {
+//                setValue(language, richEditor.getFormatedText());
+//                update();
+//                
+//                localizingStringEditor.fireChange();
+//            }
+//            isRichEditorOpened = false;
+        }
+
+    }
+ 
+
+    private static final class LineEditor extends LocalizingEditor {
+
+        private final String ROW_NUMBER = "row-number";
+        private boolean isExpandable;
+
         private final JPanel panel = new JPanel();
 
         public LineEditor(final LocalizingStringEditor editor) {
             super(editor);
-            ignoreSpellCheck = createIgnoreSpellCheckButton();
             build();
-        }
-
-        @Override
-        public void setReadonly(boolean readonly) {
-            super.setReadonly(readonly);
-            ignoreSpellCheck.setEnabled(!readonly);
         }
 
         private void build() {
@@ -204,7 +300,7 @@ public class LocalizingStringEditor extends JPanel {
             int totalLanguages = 0;
             for (final EIsoLanguage lang : curLanguages) {
 
-                final ILocalizedEditor localizedEditor = isExpandable
+                final ILineLocalizedEditor localizedEditor = isExpandable
                         ? new ExpandableLanguageTextField(lang, context)
                         : new LocalizedTextField(lang);
 
@@ -229,30 +325,65 @@ public class LocalizingStringEditor extends JPanel {
 
                 ((JComponent) localizedEditor).putClientProperty(ROW_NUMBER, totalLanguages);
                 panel.add((JComponent) localizedEditor, constraints);
-
-                final JLabel iconInfo = new JLabel(RadixWareDesignerIcon.WORKFLOW.PALETTE_INFORMATION.getIcon());
-
-//                final EIsoLanguage currLang = lang;
-                iconInfo.addMouseListener(new MouseAdapter() {
+                
+                JButton openRichEditor = createOpenRichEditor();
+                openRichEditor.setPreferredSize(new Dimension(20, 20));
+                RadixNbEditorUtils.processToolbarButton(openRichEditor);
+                openRichEditor.addActionListener(new ActionListener() {
                     @Override
-                    public void mouseEntered(MouseEvent e) {
-                        final ILocalizedStringInfo stringInfo = localizingStringEditor.getLocalizingStringContext().getStringInfo();
-                        if (stringInfo != null) {
-                            iconInfo.setToolTipText(stringInfo.asHtml(lang));
+                    public void actionPerformed(ActionEvent e) {
+                        if (!inUpdate() && !isReadonly() && isUseRichFormat()) {
+//                            final ILocalizingStringContext context = localizingStringEditor.getLocalizingStringContext();
+//                            if (context != null) {
+//                                    final HtmlRichEditor richEditor = new HtmlRichEditor();
+//                                    richEditor.addPropertyChangeListener(HtmlEditor.HTMLEDITOR_OPENED, new PropertyChangeListener() {
+//
+//                                        @Override
+//                                        public void propertyChange(PropertyChangeEvent evt) {
+//                                            openRichEditor(context, richEditor, lang);
+//                                        }
+//
+//                                    });
+//                                richEditor.setHtmlEditorState(localizingStringEditor.htmlEditorState);
+//                            }
                         }
                     }
                 });
-
+                openRichEditor.setVisible(isUseRichFormat());
                 constraints.weightx = 0;
                 constraints.gridx = 2;
                 constraints.fill = GridBagConstraints.NONE;
                 constraints.anchor = GridBagConstraints.CENTER;
-                panel.add(iconInfo, constraints);
+                panel.add(openRichEditor, constraints);
 
+                final ILocalizedStringInfo stringInfo = localizingStringEditor.getLocalizingStringContext().getStringInfo();
+                if (stringInfo != null) {
+                    JLabel checkedInfoLable = new JLabel();
 
+                    checkedInfoLable.setIcon(stringInfo.isNeedsCheck(lang) ? RadixWareDesignerIcon.MLSTRING.UNCHECKED_STR.getIcon() : RadixWareDesignerIcon.MLSTRING.CHECKED_STR.getIcon());
+                    checkedInfoLable.setToolTipText(stringInfo.isCheckedHtml(lang));
+                    localizedEditor.setCheckedInfoLable(checkedInfoLable);
+
+                    constraints.weightx = 0;
+                    constraints.gridx = 3;
+                    constraints.fill = GridBagConstraints.NONE;
+                    constraints.anchor = GridBagConstraints.CENTER;
+                    panel.add(checkedInfoLable, constraints);
+
+                    JLabel agreedInfoLable = new JLabel();
+                    agreedInfoLable.setIcon(stringInfo.isAgreed(lang) ? RadixWareDesignerIcon.MLSTRING.AGREED_STR.getIcon() : RadixWareDesignerIcon.MLSTRING.DISAGREED_STR.getIcon());
+                    agreedInfoLable.setToolTipText(stringInfo.isAgreedHtml(lang));
+                    localizedEditor.setAgreedInfoLable(agreedInfoLable);
+
+                    constraints.weightx = 0;
+                    constraints.gridx = 4;
+                    constraints.fill = GridBagConstraints.NONE;
+                    constraints.anchor = GridBagConstraints.CENTER;
+                    panel.add(agreedInfoLable, constraints);
+                }
                 constraints.gridy = totalLanguages++;
             }
-            constraints.gridx = 3;
+            constraints.gridx = 5;
             constraints.gridy = 0;
             constraints.fill = GridBagConstraints.NONE;
             constraints.weightx = 0.0;
@@ -270,20 +401,70 @@ public class LocalizingStringEditor extends JPanel {
             return panel;
         }
 
-        @Override
-        void updateImpl() {
-            super.updateImpl();
-            ignoreSpellCheck.setSelected(!localizingStringEditor.getLocalizingStringContext().isSpellcheckEnable());
+        private void updateLables(ILocalizedStringInfo stringInfo, EIsoLanguage language) {
+            ILocalizedEditor editor =  editors.get(language);
+            if (editor instanceof ILineLocalizedEditor){
+                ILineLocalizedEditor  lineEditor = (ILineLocalizedEditor) editor;
+                JLabel checkedInfoLable = lineEditor.getCheckedInfoLable();
+                if (checkedInfoLable != null) {
+                    checkedInfoLable.setIcon(stringInfo.isNeedsCheck(language) ? RadixWareDesignerIcon.MLSTRING.UNCHECKED_STR.getIcon() : RadixWareDesignerIcon.MLSTRING.CHECKED_STR.getIcon());
+                    checkedInfoLable.setToolTipText(stringInfo.isCheckedHtml(language));
+                }
+
+                JLabel agreedInfoLable = lineEditor.getAgreedInfoLable();
+                if (agreedInfoLable != null) {
+                    agreedInfoLable.setIcon(stringInfo.isAgreed(language) ? RadixWareDesignerIcon.MLSTRING.AGREED_STR.getIcon() : RadixWareDesignerIcon.MLSTRING.DISAGREED_STR.getIcon());
+                    agreedInfoLable.setToolTipText(stringInfo.isAgreedHtml(language));
+                }
+            }
         }
 
         @Override
-        void connect() {
-            super.connect();
-            ignoreSpellCheck.addActionListener(ignoreSpellCheckListener);
+        protected void updateEditor() {
+            final ILocalizedStringInfo stringInfo = localizingStringEditor.getLocalizingStringContext().getStringInfo();
+            if (stringInfo != null) {
+                for (final EIsoLanguage language : localizingStringEditor.getLanguages()) {
+                    updateLables(stringInfo, language);
+                }
+            }
+        }
+
+        @Override
+        public void requestEditorFocus() {
+            Entry<EIsoLanguage, ILocalizedEditor> editor = editors.entrySet().iterator().next();
+            editor.getValue().requestFocus();
+        }
+
+        @Override
+        public EIsoLanguage getCurrentLanguage() {
+            EIsoLanguage result = null;
+            for (EIsoLanguage language : editors.keySet()) {
+                ILocalizedEditor editor = editors.get(language);
+                if (isExpandable) {
+                    if(((ExpandableLanguageTextField) editor).isFocusOwner()){
+                        result = language;
+                        break;
+                    }
+                } else {
+                    if(((LocalizedTextField) editor).isFocusOwner()){
+                        result = language;
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public void goToLanguage(EIsoLanguage language) {
+            ILocalizedEditor editor = editors.get(language);
+            if (editor != null){
+                editor.requestFocus();
+            }
         }
     }
 
-    private static final class AreaEditor extends LocalizingEditorComponent {
+    private static final class AreaEditor extends LocalizingEditor {
 
         private class Policy extends FocusTraversalPolicy {
 
@@ -325,15 +506,13 @@ public class LocalizingStringEditor extends JPanel {
                 final EditorTab tab = (EditorTab) tabManager.getSelectedTab();
                 return (Component) editors.get(tab.getLanguage());
             }
-
+            
             private Component move(EIsoLanguage lang) {
-                tabManager.getTabbedPane().setFocusTraversalPolicyProvider(false);
-                tabManager.setSelectedTab(lang.getValue());
-//                tabManager.getTabbedPane().updateUI();
-                tabManager.getTabbedPane().setFocusTraversalPolicyProvider(true);
+                goToLanguage(lang);
 
                 return (Component) editors.get(lang);
             }
+
         }
 
         private class EditorTab extends TabManager.TabAdapter {
@@ -366,6 +545,7 @@ public class LocalizingStringEditor extends JPanel {
             @Override
             protected void opened() {
                 ((JComponent) tab.getLocalizedEditor()).requestFocusInWindow();
+                updateEditor();
             }
         }
 
@@ -398,6 +578,11 @@ public class LocalizingStringEditor extends JPanel {
             }
 
             @Override
+            public void requestFocus() {
+                localizedEditor.requestFocus();
+            }                        
+            
+            @Override
             public Dimension getPreferredSize() {
                 if (localizedEditor != null) {
                     final Dimension size = ((LocalizedTextArea) localizedEditor).calcPreferredSize();
@@ -416,27 +601,19 @@ public class LocalizingStringEditor extends JPanel {
             }
         }
         private JPanel panel;
-        private final JToggleButton ignoreSpellCheck;
-        private final ActionListener ignoreSpellCheckListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                enableSpellcheck(!ignoreSpellCheck.isSelected());
-            }
-        };
+        private final JButton openRichEditor;
+        private final JLabel checkedInfoLable = new JLabel();
+        private final JLabel agreedInfoLable = new JLabel();
+
+        
         private TabManager tabManager;
+        private EditorPanel oneEditor = null;
 
         public AreaEditor(final LocalizingStringEditor editor) {
             super(editor);
-
-            ignoreSpellCheck = createIgnoreSpellCheckButton();
-
+            checkedInfoLable.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+            openRichEditor = createOpenRichEditor();
             build();
-        }
-
-        @Override
-        public void setReadonly(boolean readonly) {
-            super.setReadonly(readonly);
-            ignoreSpellCheck.setEnabled(!readonly);
         }
 
         private void build() {
@@ -456,9 +633,9 @@ public class LocalizingStringEditor extends JPanel {
             final List<EIsoLanguage> langs = localizingStringEditor.getLanguages();
 
             if (langs.size() == 1) {
-                panel.add(new EditorPanel(langs.get(0)), constraints);
+                oneEditor = new EditorPanel(langs.get(0));
+                panel.add(oneEditor, constraints);
             } else {
-
 
                 tabManager = new TabManager(new JTabbedPane());
                 if (!langs.isEmpty()) {
@@ -504,29 +681,34 @@ public class LocalizingStringEditor extends JPanel {
             constraints.fill = GridBagConstraints.NONE;
             constraints.insets = new Insets(0, 4, 4, 0);
             constraints.anchor = GridBagConstraints.PAGE_START;
+            
+            JPanel p = new JPanel();
+            p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
+//            ignoreSpellCheck.addActionListener(ignoreSpellCheckListener);
+//            ignoreSpellCheck.setSelected(!localizingStringEditor.getLocalizingStringContext().isSpellcheckEnable());
+            p.add(ignoreSpellCheck);
+            p.add(openRichEditor);
+            openRichEditor.setVisible(isUseRichFormat());
+            panel.add(p, constraints);
 
-            ignoreSpellCheck.addActionListener(ignoreSpellCheckListener);
-            ignoreSpellCheck.setSelected(!localizingStringEditor.getLocalizingStringContext().isSpellcheckEnable());
-            panel.add(ignoreSpellCheck, constraints);
+            final ILocalizedStringInfo stringInfo = localizingStringEditor.getLocalizingStringContext().getStringInfo();
+            if (stringInfo != null) {
+                p = new JPanel();
+                p.setLayout(new BoxLayout(p, BoxLayout.Y_AXIS));
 
-            constraints = new GridBagConstraints();
-            constraints.gridx = 1;
-            constraints.gridy = 1;
-            constraints.fill = GridBagConstraints.NONE;
-            constraints.insets = new Insets(0, 4, 4, 0);
-            constraints.anchor = GridBagConstraints.PAGE_END;
+                updateLables(stringInfo, getCurrentEditorLang());
+                p.add(checkedInfoLable);
+                p.add(agreedInfoLable);
 
-            final JLabel iconInfo = new JLabel(RadixWareDesignerIcon.WORKFLOW.PALETTE_INFORMATION.getIcon());
-            iconInfo.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    final ILocalizedStringInfo stringInfo = localizingStringEditor.getLocalizingStringContext().getStringInfo();
-                    if (stringInfo != null) {
-                        iconInfo.setToolTipText(stringInfo.asHtml(getCurrentEditorLang()));
-                    }
-                }
-            });
-            panel.add(iconInfo, constraints);
+                constraints = new GridBagConstraints();
+                constraints.gridx = 1;
+                constraints.gridy = 1;
+                constraints.fill = GridBagConstraints.NONE;
+                constraints.insets = new Insets(0, 4, 4, 0);
+                constraints.anchor = GridBagConstraints.PAGE_END;
+
+                panel.add(p, constraints);
+            }
         }
 
         @Override
@@ -540,14 +722,8 @@ public class LocalizingStringEditor extends JPanel {
             ignoreSpellCheck.setSelected(!localizingStringEditor.getLocalizingStringContext().isSpellcheckEnable());
         }
 
-        @Override
-        void connect() {
-            super.connect();
-            ignoreSpellCheck.addActionListener(ignoreSpellCheckListener);
-        }
-
         private EIsoLanguage getCurrentEditorLang() {
-            if (tabManager != null) {
+            if (tabManager != null && tabManager.getSelectedTab() != null) {
                 return ((EditorTab) tabManager.getSelectedTab()).getLanguage();
             }
             final List<EIsoLanguage> languages = localizingStringEditor.getLanguages();
@@ -557,6 +733,76 @@ public class LocalizingStringEditor extends JPanel {
 
             return EIsoLanguage.ENGLISH;
         }
+
+        @Override
+        public EIsoLanguage getCurrentLanguage() {
+            return getCurrentEditorLang();
+        }
+
+        private void updateLables(ILocalizedStringInfo stringInfo, EIsoLanguage language) {
+            checkedInfoLable.setIcon(stringInfo.isNeedsCheck(language) ? RadixWareDesignerIcon.MLSTRING.UNCHECKED_STR.getIcon() : RadixWareDesignerIcon.MLSTRING.CHECKED_STR.getIcon());
+            checkedInfoLable.setToolTipText(stringInfo.isCheckedHtml(language));
+
+            agreedInfoLable.setIcon(stringInfo.isAgreed(language) ? RadixWareDesignerIcon.MLSTRING.AGREED_STR.getIcon() : RadixWareDesignerIcon.MLSTRING.DISAGREED_STR.getIcon());
+            agreedInfoLable.setToolTipText(stringInfo.isAgreedHtml(language));
+        }
+
+        @Override
+        protected void updateEditor() {
+            final ILocalizedStringInfo stringInfo = localizingStringEditor.getLocalizingStringContext().getStringInfo();
+            if (stringInfo != null) {
+                updateLables(stringInfo, getCurrentEditorLang());
+            }
+            openRichEditor.setVisible(isUseRichFormat());
+        }
+        
+        @Override
+        public void requestEditorFocus() {    
+            ((EditorTab) tabManager.getSelectedTab()).tab.requestFocus();
+        }
+
+        @Override
+        void connect() {
+            super.connect();
+            openRichEditor.addActionListener(openRichEditorListener);
+        }
+
+        @Override
+        public void goToLanguage(EIsoLanguage language) {
+            if (oneEditor != null){
+                oneEditor.requestFocus();
+            } else if (editors.get(language) != null && tabManager != null) {
+                tabManager.getTabbedPane().setFocusTraversalPolicyProvider(false);
+                tabManager.setSelectedTab(language.getValue());
+                tabManager.getTabbedPane().setFocusTraversalPolicyProvider(true);
+            }
+        }
+        
+        
+
+        private final ActionListener openRichEditorListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!inUpdate() && !isReadonly() && isUseRichFormat()) {
+//                    final ILocalizingStringContext context = localizingStringEditor.getLocalizingStringContext();
+//                    if (context != null) {
+//                        final HtmlRichEditor richEditor = new HtmlRichEditor();
+//                        richEditor.addPropertyChangeListener(HtmlEditor.HTMLEDITOR_OPENED, new PropertyChangeListener() {
+//
+//                            @Override
+//                            public void propertyChange(PropertyChangeEvent evt) {
+//                                EIsoLanguage language = getCurrentEditorLang();
+//                                if (language != null) {
+//                                    openRichEditor(context, richEditor, language);
+//                                }
+//                            }
+//
+//                        });
+//                        richEditor.setHtmlEditorState(localizingStringEditor.htmlEditorState);
+//                    }
+                }
+            }
+        };
     }
 
     private static final class CollapsableWrap extends LocalizingEditorComponent {
@@ -615,6 +861,28 @@ public class LocalizingStringEditor extends JPanel {
             source.updateImpl();
             collapsablePanel.expand(localizingStringEditor.getLocalizingStringContext().hasValue());
         }
+
+        @Override
+        protected void updateEditor() {
+            source.updateEditor();
+        }
+
+        @Override
+        public void requestEditorFocus() {
+            source.requestEditorFocus();
+        }         
+
+        @Override
+        public EIsoLanguage getCurrentLanguage() {
+            return source.getCurrentLanguage();
+        }
+
+        @Override
+        public void goToLanguage(EIsoLanguage language) {
+            source.goToLanguage(language);
+        }
+        
+        
     }
 
     private static class CollapsableEditor extends BorderedCollapsablePanel {
@@ -825,8 +1093,25 @@ public class LocalizingStringEditor extends JPanel {
     protected final LocalizingEditorComponent getEditor() {
         return editorComponent;
     }
+    
 
-    protected final void fireChange() {
+    public void setUseRichFormat(boolean useRichFormat) {
+//        this.useRichFormat = useRichFormat;
+//        fireChange();
+//        if (getEditor() != null){
+//            getEditor().updateEditor();
+//        }
+    }
+    
+    public boolean isUseRichFormat() {
+        return useRichFormat;
+    }
+
+    public void setHtmlEditorState(EHtmlEditorState htmlEditorState) {
+        this.htmlEditorState = htmlEditorState;
+    }
+
+    public final void fireChange() {
         eventsSupport.fireChange(new ChangeEvent(this));
     }
 
@@ -847,8 +1132,7 @@ public class LocalizingStringEditor extends JPanel {
             editorComponent = createComponent();
             installComponent(editorComponent);
 
-            final Definition definition = localizingStringContext.getAdsDefinition();
-            setReadonly(definition == null ? true : definition.isReadOnly());
+            setReadonly(localizingStringContext.isReadOnly());
         }
     }
 
@@ -890,6 +1174,14 @@ public class LocalizingStringEditor extends JPanel {
         }
         return Collections.<EIsoLanguage>emptyList();
     }
+    
+    public EIsoLanguage getCurrentLanguage() {
+        return getEditor().getCurrentLanguage();
+    }
+    
+    public void goToLanguage(EIsoLanguage language) {
+        getEditor().goToLanguage(language);
+    }
 
     public void setReadonly(boolean readonly) {
         if (editorComponent != null) {
@@ -912,4 +1204,8 @@ public class LocalizingStringEditor extends JPanel {
     public boolean isReadonly() {
         return editorComponent.isReadonly();
     }
+
+    public void requestEditorFocus() {
+        getEditor().requestEditorFocus();
+    }    
 }

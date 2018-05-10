@@ -101,7 +101,7 @@ public class OptionsGroup {
         entries.add(new Entry(name, value));
         return this;
     }
-
+    
     public OptionsGroup addGroup(final String name) {
         final OptionsGroup group = new OptionsGroup(name);
         entries.add(new Entry(null, group));

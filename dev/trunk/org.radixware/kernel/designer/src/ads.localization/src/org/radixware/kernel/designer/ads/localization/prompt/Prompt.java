@@ -45,11 +45,11 @@ public class Prompt {
         this.translations=new LinkedHashMap<>();
         this.mlstring=rowString.getMlStrings().get(0);
         for(EIsoLanguage lang : sourceLangs){
-            if(!rowString.needsCheck(lang))
+            if(!rowString.isNeedsCheck(lang))
                 sourceTexts.put(lang, rowString.getValue(lang));
         }
         for(EIsoLanguage lang : translLangs){
-            if(!rowString.needsCheck(lang))
+            if(!rowString.isNeedsCheck(lang))
                 translations.put(lang, rowString.getValue(lang));
         }
     }

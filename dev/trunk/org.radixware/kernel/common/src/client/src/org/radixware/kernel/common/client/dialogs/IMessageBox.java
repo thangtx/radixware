@@ -207,4 +207,6 @@ public interface IMessageBox {
     public EDialogButtonType execMessageBox();
     
     public void addButton(final EDialogButtonType buttonType, final String title, final Icon icon);
+    
+    public void removeButton(final EDialogButtonType buttonType);
 }

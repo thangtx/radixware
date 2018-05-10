@@ -356,8 +356,20 @@ public class DescriptionEditor extends JPanel {
                     @Override
                     public void itemStateChanged(ItemEvent e) {
                         boolean isSelected = e.getStateChange() == ItemEvent.SELECTED;
+                        Map<EIsoLanguage, String> values = null;
+                        if (!isSelected){
+                            values = handleInfo.getValueMap();
+                        }
                         owner.setDescriptionInherited(isSelected);
+                        if (values != null){
+                            if (owner.getDescriptionId() == null){
+                                for (EIsoLanguage language : values.keySet()){
+                                    handleInfo.setValue(language, values.get(language));
+                                }
+                            }
+                        }
                         editor.update();
+                        commit();
                         editor.setReadonly(readonly || isSelected);
                     }
                 };

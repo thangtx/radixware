@@ -42,6 +42,7 @@ import org.radixware.kernel.common.defs.ads.ui.enums.UIEnum;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
 
@@ -111,7 +112,9 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
         printer.println('{');
         printer.enterBlock();
 
-        writeExecutableBody(printer);
+        if(!writeExecutableBody(printer)){
+            return false;
+        }
 
         printer.leaveBlock();
         printer.println();
@@ -139,25 +142,27 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
         return cls;
     }
 
-    public static final void writeWidgetType(AdsUIDef def, AdsWidgetDef widget, UsagePurpose up, CodePrinter printer) {
+    public static final boolean writeWidgetType(AdsUIDef def, AdsWidgetDef widget, UsagePurpose up, CodePrinter printer) {
         if (AdsUIUtil.isCustomWidget(widget)) {
             AdsAbstractUIDef customUI = getCustomUI(widget);
-            writeCustomType(printer, customUI, up);
+            return writeCustomType(printer, customUI, up);
         } else {
             String clazz = widget.getClassName();
             clazz = getActualClass(clazz);
-            printer.print(getGuiClassNameStatic(def, clazz));
+            printer.print(getGuiClassNameStatic(def, clazz, printer instanceof  IHumanReadablePrinter));
         }
+        return true;
     }
 
-    private void writeExecutableBody(final CodePrinter printer) {
+    private boolean writeExecutableBody(final CodePrinter printer) {
         // register default font
         writeDefaultFontDeclaration(printer);
         // register signals
         writeCustomSignals(printer);
         // register properties
         writeCustomProperties(printer);
-
+        
+        final List<AdsWidgetDef> failWidgets = new ArrayList<>();
         // register data
         def.getWidget().visit(new IVisitor() {
             @Override
@@ -166,19 +171,25 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                     AdsWidgetDef widget = (AdsWidgetDef) object;
                     printer.print(TEXT_PUBLIC);
                     printer.printSpace();
-                    writeWidgetType(def, widget, usagePurpose, printer);
+                    if (!writeWidgetType(def, widget, usagePurpose, printer)){
+                        failWidgets.add(widget);
+                        return;
+                    }
                     printer.printSpace();
-                    printer.print(widget.getId());
+                    printer.print(JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter));
                     printer.printlnSemicolon();
 
                     printer.print(TEXT_PUBLIC);
                     printer.printSpace();
-                    writeWidgetType(def, widget, usagePurpose, printer);
+                    if (!writeWidgetType(def, widget, usagePurpose, printer)){
+                        failWidgets.add(widget);
+                        return;
+                    }
                     printer.printSpace();
                     printer.print("get");
-                    printer.print(widget.getId());
+                    printer.print(JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter, true));
                     printer.print("(){ return ");
-                    printer.print(widget.getId());
+                    printer.print(JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter));
                     printer.println(";}");
 
                 } else if (object instanceof AdsLayout) {
@@ -197,6 +208,9 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             }
         }, VisitorProviderFactory.createDefaultVisitorProvider());
 
+        if (!failWidgets.isEmpty()){
+            return false;
+        }
         // constructor
         writeConstructor(printer);
 
@@ -235,6 +249,8 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             printer.leaveBlock();
             printer.println("}");
         }
+        
+        return true;
     }
 
     private void writeTypeDeclaration(CodePrinter printer) {
@@ -339,7 +355,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             printer.print(TEXT_PUBLIC + " " + TEXT_FINAL + " ");
             writeSignalType(printer, signal);
             printer.print(" ");
-            printer.print(signal.getId());
+            printer.print(JavaSourceSupport.getName(signal, printer instanceof IHumanReadablePrinter));
             printer.print(" = new ");
             writeSignalType(printer, signal);
             printer.println("();");
@@ -449,7 +465,12 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
         }
     }
 
-    private static String getGuiClassNameStatic(AdsUIDef def, String clazz) {
+    private static String getGuiClassNameStatic(AdsUIDef def, String clazz, boolean isHumanReadable) {
+        if (isHumanReadable) {
+            if (clazz.equals(String.valueOf(def.getId()))){
+                return def.getName();
+            }
+        }
         return clazz.equals(String.valueOf(def.getId())) || clazz.contains(".") ? clazz : GUI_PATH + clazz;
     }
 
@@ -532,7 +553,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 if (name.equals("textAlignment") || AdsUIUtil.getUiClassName(AdsUIUtil.getOwner(prop)).equals(AdsMetaInfo.GROUP_BOX_CLASS)) {
                     printer.print(".value()");
                 }
-            } else if (name.equals("standardButtons")) {
+            } else if (name.equals(AdsWidgetProperties.STANDARD_BUTTONS)) {
                 UIEnum[] values = p.getValues();
                 for (int i = 0; i < values.length; i++) {
                     printer.print(values[i].getQualifiedValue());
@@ -603,10 +624,14 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
         }
     }
 
-    private static void writeCustomType(CodePrinter printer, AdsAbstractUIDef ui, UsagePurpose up) {
-        WriterUtils.writePackage(printer, ui, up);
-        printer.print(".");
-        printer.print(ui.getId());
+    private static boolean writeCustomType(CodePrinter printer, AdsAbstractUIDef ui, UsagePurpose up) {
+        if (ui != null){
+            WriterUtils.writePackage(printer, ui, up);
+            printer.print(".");
+            printer.print(JavaSourceSupport.getName(ui, printer instanceof IHumanReadablePrinter));
+            return true;
+        }
+        return false;
     }
 
     //=======================================================================
@@ -631,7 +656,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
 
             AdsWidgetDef widget;
             String ownerName;
-            String widgetName;
+//            String widgetName;
             String widgetClass;
             RadixObject owner;
             final Set<String> postProp;
@@ -657,6 +682,10 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 this.postProp = postProp;
                 this.excludeProp = excludeProp;
             }
+            
+            char[] getName(CodePrinter printer) {
+                return JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter);
+            }
 
             final String getVal(String key) {
                 return data.get(key);
@@ -671,7 +700,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 this.ownerName = ownerName;
                 this.widget = widget;
 
-                widgetName = String.valueOf(widget.getId());
+                
                 widgetClass = widget.getClassName();
                 owner = AdsUIUtil.getOwner(widget);
 
@@ -679,7 +708,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             }
 
             void genCreate(CodePrinter printer) {
-                printer.print(widgetName);
+                printer.print(getName(printer));
                 printer.print(" = new ");
                 printer.print(getGuiClassName(getActualClass(widgetClass)));
                 printer.print('(');
@@ -689,9 +718,12 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
 
             void genPreProp(CodePrinter printer) {
 
-                if (widget.getProperties().getByName("objectName") == null) {
-                    final String n = !(AdsMetaInfo.WIDGET_CLASS.equals(AdsUIUtil.getUiClassName(widget)) && widget.getLayout() != null) || AdsMetaInfo.TAB_WIDGET_CLASS.equals(AdsUIUtil.getUiClassName(owner)) ? widget.getName() : widgetName;
-                    printer.print(widgetName);
+                if (widget.getProperties().getByName(AdsWidgetProperties.OBJECT_NAME) == null) {
+                    final char[] name = getName(printer);
+                    final String n = !(AdsMetaInfo.WIDGET_CLASS.equals(AdsUIUtil.getUiClassName(widget)) && widget.getLayout() != null) 
+                            || AdsMetaInfo.TAB_WIDGET_CLASS.equals(AdsUIUtil.getUiClassName(owner)) ? 
+                            widget.getName() : String.valueOf(name);
+                    printer.print(name);
                     printer.print(".setObjectName(");
                     printer.printStringLiteral(n);
                     printer.println(");");
@@ -709,14 +741,15 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 }
 
                 if (!AdsMetaInfo.PROP_EDITOR_CLASS.equals(this.widgetClass) && !AdsMetaInfo.PROP_LABEL_CLASS.equals(this.widgetClass)) {
-                    printer.println(widgetName + ".setFont(DEFAULT_FONT);");
+                    printer.print(getName(printer));
+                    printer.println(".setFont(DEFAULT_FONT);");
                 }
             }
 
             void genChilds(CodePrinter printer) {
 
                 if (widget.getLayout() != null) {
-                    writeLayout(printer, widget.getLayout(), widgetName);
+                    writeLayout(printer, widget.getLayout(), String.valueOf(getName(printer)));
                 } else {
                     for (AdsWidgetDef w : widget.getWidgets()) {
                         genChild(printer, w);
@@ -757,7 +790,8 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                         processed.add(current);
                         for (AdsUIConnection c : current.getConnections()) {
                             if (widget.equals(c.getSender())) {
-                                printer.print(widgetName + "." + c.getSignalName() + ".connect(model, ");
+                                printer.print(getName(printer));
+                                printer.print("." + c.getSignalName() + ".connect(model, ");
                                 printer.print("\"" + c.getSlotId() + "(");
                                 final List<AdsUIConnection.Parameter> params = c.getSignalParams();
                                 for (AdsUIConnection.Parameter param : params) {
@@ -802,16 +836,16 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             }
 
             void genChild(CodePrinter printer, AdsWidgetDef child) {
-                writeWidget(printer, child, widgetName);
+                writeWidget(printer, child, String.valueOf(getName(printer)));
             }
 
             void genProperty(CodePrinter printer, AdsUIProperty prop) {
                 String propName = translatePropName(prop.getName());
-                if ("text".equals(propName) && AdsMetaInfo.COMMAND_PUSH_BUTTON_CLASS.equals(widget.getClassName())) {
-                    propName = "title";
+                if (AdsWidgetProperties.TEXT.equals(propName) && AdsMetaInfo.COMMAND_PUSH_BUTTON_CLASS.equals(widget.getClassName())) {
+                    propName = AdsWidgetProperties.TITLE;
                 }
 
-                writeProperty(printer, prop, propName, widgetName);
+                writeProperty(printer, prop, propName, getName(printer));
             }
 
             /**
@@ -880,7 +914,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             generators.put(AdsMetaInfo.ADVANCED_SPLITTER_CLASS, new DefaultCodeGen() {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    printer.print(widgetName);
+                    printer.print(getName(printer));
                     printer.print(" = new ");
                     printer.print(getGuiClassName(widgetClass));
                     printer.print('(');
@@ -895,7 +929,8 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                     final Widgets widgets = widget.getWidgets();
                     final int size = widgets.size();
                     if (size > 0) {
-                        printer.print(widgetName + ".setSizes(java.util.Arrays.asList(");
+                        printer.print(getName(printer));
+                        printer.print(".setSizes(java.util.Arrays.asList(");
                         for (int i = 0; i < size; i++) {
                             printer.print((int) (widgets.get(i).getWeight() * 1000));
                             if (i < size - 1) {
@@ -913,7 +948,8 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                     final Widgets widgets = widget.getWidgets();
                     final int size = widgets.size();
                     if (size > 0) {
-                        printer.print(widgetName + ".setSizes(java.util.Arrays.asList(");
+                        printer.print(getName(printer));
+                        printer.print(".setSizes(java.util.Arrays.asList(");
                         for (int i = 0; i < size; i++) {
                             printer.print((int) (widgets.get(i).getWeight() * 1000));
                             if (i < size - 1) {
@@ -925,16 +961,15 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 }
             });
 
-            postProp = Collect.set("currentIndex");
+            postProp = Collect.set(AdsWidgetProperties.CURRENT_INDEX);
             excludeProp = Collect.set("currentPageName");
             generators.put(AdsMetaInfo.STACKED_WIDGET_CLASS, new DefaultCodeGen(postProp, excludeProp) {
                 @Override
                 void genChild(CodePrinter printer, AdsWidgetDef child) {
                     super.genChild(printer, child);
-                    String childName = String.valueOf(child.getId());
-                    printer.print(widgetName);
+                    printer.print(getName(printer));
                     printer.print(".addWidget(");
-                    printer.print(childName);
+                    printer.print(JavaSourceSupport.getName(child, printer instanceof IHumanReadablePrinter));
                     printer.println(");");
                 }
             });
@@ -944,18 +979,21 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 @Override
                 void genChild(CodePrinter printer, AdsWidgetDef child) {
                     super.genChild(printer, child);
-                    printLine(printer, widgetName, ".setWidget(", String.valueOf(child.getId()), ");");
+                    printer.print(getName(printer)).print(".setWidget(")
+                            .print(JavaSourceSupport.getName(child, printer instanceof IHumanReadablePrinter))
+                            .print(")").printlnSemicolon();
                 }
             });
 
-            excludeProp = Collect.set("command");
+            excludeProp = Collect.set(AdsWidgetProperties.COMMAND);
             generators.put(AdsMetaInfo.COMMAND_TOOL_BUTTON_CLASS, new DefaultCodeGen(STRING_EMPTY_SET, excludeProp) {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    AdsUIProperty.CommandRefProperty prop = (AdsUIProperty.CommandRefProperty) AdsUIUtil.getUiProperty(widget, "command");
+                    AdsUIProperty.CommandRefProperty prop = (AdsUIProperty.CommandRefProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.COMMAND);
                     if (prop.getCommandId() == null) {
                         super.genCreate(printer);
                     } else {
+                        final char[] widgetName = getName(printer);
                         printer.print(widgetName);
                         printer.print(" = (");
                         printer.print(AdsMetaInfo.COMMAND_TOOL_BUTTON_CLASS);
@@ -975,7 +1013,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 }
             });
 
-            postProp = Collect.set("currentIndex");
+            postProp = Collect.set(AdsWidgetProperties.CURRENT_INDEX);
             generators.put(AdsMetaInfo.TAB_WIDGET_CLASS, new DefaultCodeGen(postProp, STRING_EMPTY_SET) {
                 @Override
                 void genChild(CodePrinter printer, AdsWidgetDef child) {
@@ -983,10 +1021,10 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
 
                     String childName = String.valueOf(child.getId());
 
-                    AdsUIProperty title = AdsUIUtil.getUiProperty(child, "title");
-                    AdsUIProperty icon = AdsUIUtil.getUiProperty(child, "icon");
+                    AdsUIProperty title = AdsUIUtil.getUiProperty(child, AdsWidgetProperties.TITLE);
+                    AdsUIProperty icon = AdsUIUtil.getUiProperty(child, AdsWidgetProperties.ICON);
 
-                    printer.print(widgetName);
+                    printer.print(getName(printer));
                     printer.print(".addTab(");
                     printer.print(childName);
                     printer.print(", ");
@@ -1013,9 +1051,9 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
 
                     AdsItemWidgetDef w = (AdsItemWidgetDef) widget;
                     for (WidgetItem item : w.getItems()) {
-                        AdsUIProperty.LocalizedStringRefProperty text = (AdsUIProperty.LocalizedStringRefProperty) AdsUIUtil.getUiProperty(item, "text");
-                        AdsUIProperty.ImageProperty icon = (AdsUIProperty.ImageProperty) AdsUIUtil.getUiProperty(item, "icon");
-                        printer.print(widgetName);
+                        AdsUIProperty.LocalizedStringRefProperty text = (AdsUIProperty.LocalizedStringRefProperty) AdsUIUtil.getUiProperty(item, AdsWidgetProperties.TEXT);
+                        AdsUIProperty.ImageProperty icon = (AdsUIProperty.ImageProperty) AdsUIUtil.getUiProperty(item, AdsWidgetProperties.ICON);
+                        printer.print(getName(printer));
                         printer.print(".addItem((com.trolltech.qt.gui.QIcon)");
                         writePropValue(printer, icon);
                         printer.print(", (String)");
@@ -1025,15 +1063,17 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 }
             });
 
-            excludeProp = Collect.set("actions");
+            excludeProp = Collect.set(AdsWidgetProperties.ACTIONS);
             generators.put(AdsMetaInfo.TOOL_BAR_CLASS, new DefaultCodeGen(STRING_EMPTY_SET, excludeProp) {
                 @Override
                 void genPreProp(CodePrinter printer) {
                     super.genPreProp(printer);
-                    final AdsUIProperty.IdListProperty actions = (AdsUIProperty.IdListProperty) AdsUIUtil.getUiProperty(this.widget, "actions");
+                    final AdsUIProperty.IdListProperty actions = (AdsUIProperty.IdListProperty) AdsUIUtil.getUiProperty(this.widget, AdsWidgetProperties.ACTIONS);
                     if (actions != null) {
                         for (final Id id : actions.getIds()) {
-                            printLine(printer, widgetName, ".addAction(", id.toString(), ");");
+                            printer.print(getName(printer)).print(".addAction(")
+                                    .print(getListItemName(widget, id, printer instanceof IHumanReadablePrinter))
+                                    .print(")").printlnSemicolon();
                         }
                     }
                 }
@@ -1041,12 +1081,13 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 @Override
                 void genChild(CodePrinter printer, AdsWidgetDef child) {
                     super.genChild(printer, child);
-
-                    printLine(printer, widgetName, ".addWidget(", child.getId().toString(), ");");
+                    printer.print(getName(printer)).print(".addWidget(")
+                                    .print(JavaSourceSupport.getName(child, printer instanceof IHumanReadablePrinter))
+                                    .print(")").printlnSemicolon();
                 }
             });
 
-            excludeProp = Collect.set("geometry");
+            excludeProp = Collect.set(AdsWidgetProperties.GEOMETRY);
             generators.put(AdsMetaInfo.ACTION_CLASS, new DefaultCodeGen(STRING_EMPTY_SET, excludeProp));
 
             generators.put(AdsMetaInfo.LIST_WIDGET_CLASS, new DefaultCodeGen() {
@@ -1063,7 +1104,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                         printer.print(" = new ");
                         printer.print(getGuiClassName(AdsMetaInfo.LIST_WIDGET_ITEM_CLASS));
                         printer.print("(");
-                        printer.print(widgetName);
+                        printer.print(getName(printer));
                         printer.println(");");
                         writeProps(printer, n, item.getProperties(), Collect.set(RESIZE_MODE), -1);
                     }
@@ -1078,7 +1119,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                     if (AdsMetaInfo.TREE_WIDGET_CLASS.equals(widgetClass)) {
                         AdsItemWidgetDef w = (AdsItemWidgetDef) widget;
                         Columns cols = w.getColumns();
-
+                        final char [] widgetName = getName(printer);
                         String n = "$header" + (++itemCounter);
                         printer.print(widgetName);
                         printer.print(".setColumnCount(");
@@ -1110,7 +1151,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 @Override
                 void genPreProp(CodePrinter printer) {
                     super.genPreProp(printer);
-
+                    final char [] widgetName = getName(printer);
                     if (AdsMetaInfo.TABLE_WIDGET_CLASS.equals(widgetClass)) {
                         AdsItemWidgetDef w = (AdsItemWidgetDef) widget;
 
@@ -1206,14 +1247,15 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 }
             });
 
-            excludeProp = Collect.set("command");
+            excludeProp = Collect.set(AdsWidgetProperties.COMMAND);
             generators.put(AdsMetaInfo.COMMAND_PUSH_BUTTON_CLASS, new DefaultCodeGen(STRING_EMPTY_SET, excludeProp) {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    AdsUIProperty.CommandRefProperty prop = (AdsUIProperty.CommandRefProperty) AdsUIUtil.getUiProperty(widget, "command");
+                    AdsUIProperty.CommandRefProperty prop = (AdsUIProperty.CommandRefProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.COMMAND);
                     if (prop.getCommandId() == null) {
                         super.genCreate(printer);
                     } else {
+                        final char [] widgetName = getName(printer);
                         printer.print(widgetName);
                         printer.print(" = (");
                         printer.print(AdsMetaInfo.COMMAND_PUSH_BUTTON_CLASS);
@@ -1233,11 +1275,12 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 }
             });
 
-            excludeProp = Collect.set("property");
+            excludeProp = Collect.set(AdsWidgetProperties.PROPERTY);
             generators.put(AdsMetaInfo.PROP_EDITOR_CLASS, new DefaultCodeGen(STRING_EMPTY_SET, excludeProp) {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    AdsUIProperty.PropertyRefProperty prop = (AdsUIProperty.PropertyRefProperty) AdsUIUtil.getUiProperty(widget, "property");
+                    AdsUIProperty.PropertyRefProperty prop = (AdsUIProperty.PropertyRefProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.PROPERTY);
+                    final char [] widgetName = getName(printer);
                     if (prop.getPropertyId() == null) {
                         printer.print(widgetName);
                         printer.println(" = null;");
@@ -1262,11 +1305,12 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 }
             });
 
-            excludeProp = Collect.set("editorPageRef", "editorPage");//!
+            excludeProp = Collect.set("editorPageRef", AdsWidgetProperties.EDITOR_PAGE);//!
             generators.put(AdsMetaInfo.EDITOR_PAGE_CLASS, new DefaultCodeGen(STRING_EMPTY_SET, excludeProp) {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    AdsUIProperty.EditorPageRefProperty prop = (AdsUIProperty.EditorPageRefProperty) AdsUIUtil.getUiProperty(widget, "editorPage");
+                    AdsUIProperty.EditorPageRefProperty prop = (AdsUIProperty.EditorPageRefProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.EDITOR_PAGE);
+                    final char [] widgetName = getName(printer);
                     if (prop.getEditorPageId() == null) {
                         printer.print(widgetName);
                         printer.print(" = new ");
@@ -1296,11 +1340,12 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 }
             });
 
-            excludeProp = Collect.set("openParams");
+            excludeProp = Collect.set(AdsWidgetProperties.OPEN_PARAMS);
             generators.put(AdsMetaInfo.EMBEDDED_SELECTOR_CLASS, new DefaultCodeGen(STRING_EMPTY_SET, excludeProp) {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    AdsUIProperty.EmbeddedSelectorOpenParamsProperty prop = (AdsUIProperty.EmbeddedSelectorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, "openParams");
+                    AdsUIProperty.EmbeddedSelectorOpenParamsProperty prop = (AdsUIProperty.EmbeddedSelectorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.OPEN_PARAMS);
+                    final char [] widgetName = getName(printer);
                     if (prop.getPropertyId() != null) {
                         printer.print(widgetName);
                         printer.print(" = new ");
@@ -1311,8 +1356,6 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                         WriterUtils.writeIdUsage(printer, prop.getPropertyId());
                         printer.println("));");
 
-                        printer.print(widgetName);
-                        printer.println(".bind();");
                     } else if (prop.getExplorerItemId() != null) {
                         printer.print(widgetName);
                         printer.print(" = new ");
@@ -1323,8 +1366,6 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                         WriterUtils.writeIdUsage(printer, prop.getExplorerItemId());
                         printer.println(");");
 
-                        printer.print(widgetName);
-                        printer.println(".bind();");
                     } else {
                         printer.print(widgetName);
                         printer.print(" = new ");
@@ -1338,13 +1379,26 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                         printer.println(");");
                     }
                 }
+
+                @Override
+                void genPreProp(CodePrinter printer) {
+                    super.genPreProp(printer);
+                    AdsUIProperty.EmbeddedSelectorOpenParamsProperty prop = (AdsUIProperty.EmbeddedSelectorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.OPEN_PARAMS);
+                    if (prop.getPropertyId() != null || prop.getExplorerItemId() != null) {
+                        printer.print(getName(printer));
+                        printer.println(".bind();");
+                    }
+                }
+                
+                
             });
 
-            excludeProp = Collect.set("openParams");
+            excludeProp = Collect.set(AdsWidgetProperties.OPEN_PARAMS);
             generators.put(AdsMetaInfo.EMBEDDED_EDITOR_CLASS, new DefaultCodeGen(STRING_EMPTY_SET, excludeProp) {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    AdsUIProperty.EmbeddedEditorOpenParamsProperty prop = (AdsUIProperty.EmbeddedEditorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, "openParams");
+                    AdsUIProperty.EmbeddedEditorOpenParamsProperty prop = (AdsUIProperty.EmbeddedEditorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.OPEN_PARAMS);
+                    final char [] widgetName = getName(printer);
                     if (prop.getPropertyId() != null) {
                         printer.print(widgetName);
                         printer.print(" = new ");
@@ -1355,8 +1409,6 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                         WriterUtils.writeIdUsage(printer, prop.getPropertyId());
                         printer.println("));");
 
-                        printer.print(widgetName);
-                        printer.println(".bind();");
                     } else if (prop.getExplorerItemId() != null) {
                         printer.print(widgetName);
                         printer.print(" = new ");
@@ -1366,9 +1418,6 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                         printer.print(", ");
                         WriterUtils.writeIdUsage(printer, prop.getExplorerItemId());
                         printer.println(");");
-
-                        printer.print(widgetName);
-                        printer.println(".bind();");
                     } else if (prop.getClassId() != null && prop.getEditorPresentationId() != null) {
                         printer.print(widgetName);
                         printer.print(" = new ");
@@ -1378,9 +1427,6 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                         printer.print(", ");
                         WriterUtils.writeIdUsage(printer, prop.getEditorPresentationId());
                         printer.println(", null);");
-
-                        printer.print(widgetName);
-                        printer.println(".bind();");
                     } else {
                         printer.print(widgetName);
                         printer.print(" = new ");
@@ -1394,6 +1440,18 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                         printer.println(");");
                     }
                 }
+
+                @Override
+                void genPreProp(CodePrinter printer) {
+                    super.genPreProp(printer);
+                    AdsUIProperty.EmbeddedEditorOpenParamsProperty prop = (AdsUIProperty.EmbeddedEditorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.OPEN_PARAMS);
+                    if (prop.getPropertyId() != null || prop.getExplorerItemId() != null || (prop.getClassId() != null && prop.getEditorPresentationId() != null)) {
+                        printer.print(getName(printer));
+                        printer.println(".bind();");
+                    }
+                }
+                
+                
             });
 
             class ValEditorGen extends DefaultCodeGen {
@@ -1420,7 +1478,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
 
                 @Override
                 void genCreate(CodePrinter printer) {
-                    printer.print(widgetName);
+                    printer.print(getName(printer));
                     printer.print(" = new ");
                     printer.print(getGuiClassName(widgetClass));
                     printer.print('(');
@@ -1433,9 +1491,9 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 void genChild(CodePrinter printer, AdsWidgetDef child) {
                     writeWidget(printer, child, null);
 
-                    String childName = String.valueOf(child.getId());
+                    final char[] childName = JavaSourceSupport.getName(child, printer instanceof IHumanReadablePrinter);
 
-                    printer.print(widgetName);
+                    printer.print(getName(printer));
                     printer.print(".addButton(");
                     printer.print(childName);
                     printer.println(");");
@@ -1460,7 +1518,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             generators.put(AdsMetaInfo.VAL_CONST_SET_EDITOR_CLASS, new ValEditorGen(STRING_EMPTY_SET, excludeProp, STRING_EMPTY_MAP) {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    printer.print(widgetName);
+                    printer.print(getName(printer));
                     printer.print(" = new ");
                     printer.print(getGuiClassName(widgetClass));
                     printer.print('(');
@@ -1485,7 +1543,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             generators.put(AdsMetaInfo.VAL_TIMEINTERVAL_EDITOR_CLASS, new ValEditorGen() {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    printer.print(widgetName);
+                    printer.print(getName(printer));
                     printer.print(" = new ");
                     printer.print(getGuiClassName(widgetClass));
                     printer.print('(');
@@ -1500,7 +1558,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             generators.put(AdsMetaInfo.VAL_LIST_EDITOR_CLASS, new ValEditorGen() {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    printer.print(widgetName);
+                    printer.print(getName(printer));
                     printer.print(" = new ");
                     printer.print(getGuiClassName(widgetClass));
                     printer.print('(');
@@ -1517,7 +1575,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             generators.put(AdsMetaInfo.DIALOG_BUTTON_BOX_CLASS, new DefaultCodeGen() {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    printer.print(widgetName);
+                    printer.print(getName(printer));
                     printer.print(" = new ");
                     printer.print(getActualClass(AdsMetaInfo.DIALOG_BUTTON_BOX_CLASS));
                     printer.print("(model.getEnvironment(), ");
@@ -1531,21 +1589,21 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                         switch (prop.getName()) {
                             case "autoConnectAcceptSignal":
                                 if (((AdsUIProperty.BooleanProperty) prop).value) {
-                                    printer.print(widgetName);
+                                    printer.print(getName(printer));
                                     printer.println(".accepted.connect(this, \"accept()\");");
                                 }
                                 return;
                             case "autoConnectRejectSignal":
                                 if (((AdsUIProperty.BooleanProperty) prop).value) {
-                                    printer.print(widgetName);
+                                    printer.print(getName(printer));
                                     printer.println(".rejected.connect(this, \"reject()\");");
                                 }
                                 return;
-                            case "standardButtons":
+                            case AdsWidgetProperties.STANDARD_BUTTONS:
                                 final AdsUIProperty.SetProperty buttons = (AdsUIProperty.SetProperty) prop;
                                 final UIEnum[] values = buttons.getValues();
                                 if (values.length > 0) {
-                                    printer.print(widgetName);
+                                    printer.print(getName(printer));
                                     printer.print(".addButtons(java.util.EnumSet.of(");
                                     boolean first = true;
                                     for (UIEnum value : values) {
@@ -1568,7 +1626,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             generators.put("%THIS_GENERATOR", new DefaultCodeGen() {
                 @Override
                 void genCreate(CodePrinter printer) {
-                    printer.print(widgetName);
+                    printer.print(getName(printer));
                     printer.print(" = ");
                     printer.print(TEXT_THIS);
                     printer.println(";");
@@ -1576,7 +1634,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
 
                 @Override
                 void genChilds(CodePrinter printer) {
-                    String thisName = widgetName;
+                    String thisName = String.valueOf(getName(printer));
 
                     if (DIALOGS_WITH_CONTENT_WIDGET.contains(def.getId().getPrefix())) {
                         thisName = TEXT_THIS + ".content";
@@ -1614,6 +1672,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             generators.put("%CUSTOM_WIDGET_GENERATOR", new DefaultCodeGen() {
                 @Override
                 void genCreate(CodePrinter printer) {
+                    final char [] widgetName = getName(printer);
                     printer.print(widgetName);
                     printer.print(" = new ");
                     AdsAbstractUIDef customUI = getCustomUI(widget);
@@ -1629,7 +1688,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 }
             });
 
-            excludeProp = Collect.set("title", "icon");
+            excludeProp = Collect.set(AdsWidgetProperties.TITLE, AdsWidgetProperties.ICON);
             generators.put(AdsMetaInfo.WIDGET_CLASS, new DefaultCodeGen(STRING_EMPTY_SET, excludeProp));
 
             generators.put("%DEFAULT_GENERATOR", new DefaultCodeGen());
@@ -1664,10 +1723,10 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             }
             generator.generate(printer, widget, ownerName);
 
-            return String.valueOf(widget.getId());
+            return String.valueOf(JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter));
         }
 
-        private void writeProperty(CodePrinter printer, AdsUIProperty prop, String propName, String ownerName) {
+        private void writeProperty(CodePrinter printer, AdsUIProperty prop, String propName, final char[] ownerName) {
             if (prop instanceof AdsUIProperty.AccessProperty) {
                 return;
             }
@@ -1681,14 +1740,14 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                 }
                 return;
             }
-            if ("enabled".equals(propName) && prop instanceof AdsUIProperty.BooleanProperty && ((AdsUIProperty.BooleanProperty) prop).value) {
+            if (AdsWidgetProperties.ENABLED.equals(propName) && prop instanceof AdsUIProperty.BooleanProperty && ((AdsUIProperty.BooleanProperty) prop).value) {
                 return;
             }
 
             writePropertySet(printer, prop, methodName, ownerName);
         }
 
-        private void writePropertySet(CodePrinter printer, AdsUIProperty prop, String methodName, String ownerName) {
+        private void writePropertySet(CodePrinter printer, AdsUIProperty prop, String methodName, final char[] ownerName) {
 
             printer.print(ownerName);
             printer.print(".");
@@ -1698,7 +1757,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             printer.println(");");
         }
 
-        private void writePropertySet(CodePrinter printer, String propValue, String methodName, String ownerName) {
+        private void writePropertySet(CodePrinter printer, String propValue, String methodName, final char[] ownerName) {
 
             if (!propValue.isEmpty()) {
                 printer.print(ownerName);
@@ -1742,7 +1801,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
                     continue;
                 }
 
-                if ("enabled".equals(n) && prop instanceof AdsUIProperty.BooleanProperty && ((AdsUIProperty.BooleanProperty) prop).value) {
+                if (AdsWidgetProperties.ENABLED.equals(n) && prop instanceof AdsUIProperty.BooleanProperty && ((AdsUIProperty.BooleanProperty) prop).value) {
                     continue;
                 }
                 printer.print(name + ".set" + n.substring(0, 1).toUpperCase() + n.substring(1) + "(");
@@ -1755,12 +1814,14 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             }
         }
 
-        private void writeTreeItems(CodePrinter printer, String name, AdsItemWidgetDef.Items items) {
+        private void writeTreeItems(CodePrinter printer, char[] name, AdsItemWidgetDef.Items items) {
             for (WidgetItem item : items) {
                 String n = "$item" + (++itemCounter);
-                printer.println(getGuiClassName(AdsMetaInfo.TREE_WIDGET_ITEM_CLASS) + " " + n + " = new " + getGuiClassName(AdsMetaInfo.TREE_WIDGET_ITEM_CLASS) + "(" + name + ");");
+                printer.print(getGuiClassName(AdsMetaInfo.TREE_WIDGET_ITEM_CLASS)).print(" ").print(n)
+                        .print(" = new ").print(getGuiClassName(AdsMetaInfo.TREE_WIDGET_ITEM_CLASS))
+                        .print("("). print(name).print(")").printlnSemicolon();
                 writeProps(printer, n, item.getProperties(), Collect.set(RESIZE_MODE), 0);
-                writeTreeItems(printer, n, item.getItems());
+                writeTreeItems(printer, n.toCharArray(), item.getItems());
             }
         }
 
@@ -1842,7 +1903,7 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
         private String writeSpacer(CodePrinter printer, AdsLayout.SpacerItem spacer) {
             final String name = "$spacer" + (++spacerCounter);
 
-            AdsUIProperty.EnumValueProperty orientation = (AdsUIProperty.EnumValueProperty) AdsUIUtil.getUiProperty(spacer, "orientation");
+            AdsUIProperty.EnumValueProperty orientation = (AdsUIProperty.EnumValueProperty) AdsUIUtil.getUiProperty(spacer, AdsWidgetProperties.ORIENTATION);
             EOrientation o = orientation.getValue();
 
             AdsUIProperty.EnumValueProperty sizeType = (AdsUIProperty.EnumValueProperty) AdsUIUtil.getUiProperty(spacer, "sizeType");
@@ -1858,6 +1919,20 @@ public class AdsUIWriter extends AbstractDefinitionWriter<AdsUIDef> {
             //printer.printStringLiteral(spacer.getName());
             //printer.println(");");
             return name;
+        }
+    }
+    
+        
+    public static String getListItemName(AdsUIItemDef widget, Id id, boolean isHumanReadable) {
+        if (isHumanReadable) {
+            AdsUIItemDef item = widget.getOwnerUIDef().getWidget().findWidgetById(id);
+            if (item != null) {
+                return item.getName();
+            } else {
+                return id.toString();
+            }
+        } else {
+            return id.toString();
         }
     }
 

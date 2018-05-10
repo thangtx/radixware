@@ -121,8 +121,8 @@ public final class ArteUnitMessages {
     static final String LBL_USAGE;
     static final String MLS_ID_CLIENT_CONNECTED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsD4OJQF5MNVAWLNHPV7FWT2NX6E";//MLS "Client \"%2\" connected to \"%1\"", EEventSeverity.EVENT, EEventSource.ARTE_COMMUNICATOR
     static final String MLS_ID_CLIENT_DISCONNECTED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsSJZ5AOEF3NEYLA5PJZKVYZKN6I";// MLS "Client \"%2\" disconnected from \"%1\"", EEventSeverity.EVENT, EEventSource.ARTE_COMMUNICATOR
-    static final String MLS_ID_ERR_CANT_FLUSH_EVENT_LOG = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls5VEPBY2DPNCUTGVFMNLND7HVSM"; //MLS "Can't write events of  \"%1\" ARTE instance to database: %2", Error, ARTE_UNIT
-    static final String MLS_ID_ERR_CANT_GET_ARTE_VIEW = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls3ZUOTJAJJFE73FNE7YYTH32Z7U"; // MLS "Can't get view of \"%1\" ARTE instance: %2", Error, ARTE_UNIT
+    static final String MLS_ID_ERR_CANT_FLUSH_EVENT_LOG = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls5VEPBY2DPNCUTGVFMNLND7HVSM"; //MLS "Can't write events of  \"%1\" ARTE to database: %2", Error, ARTE_UNIT
+    static final String MLS_ID_ERR_CANT_GET_ARTE_VIEW = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls3ZUOTJAJJFE73FNE7YYTH32Z7U"; // MLS "Can't get view of \"%1\" ARTE: %2", Error, ARTE_UNIT
     static final String MLS_ID_ERR_ON_SOCKET_CLOSE = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsQN7NJUGYTVDOZDBOVZZEYV6WFU";// MLS "Can't close server socket of \"%1\" unit: %2", Error, ARTE_UNIT
     static final String MLS_ID_SOCKET_LISTENS = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsX3JB5G35VBBWDEQJ4QMXTSDTCM";// MLS "\"%1\" ARTE unit listens %2", Error, ARTE_UNIT
     static final String MLS_ID_ERR_ON_SOCKET_START = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls7D4OVIGAIFB6LDWS53JEQ4P27Q"; //MLS "Can't start server socket of \"%1\": %2", Error, EEventSource.ARTE_COMMUNICATOR
@@ -131,10 +131,10 @@ public final class ArteUnitMessages {
     static final String MLS_ID_ERR_ON_SOCKET_IO = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsA3VMJBFDB5G2PJ5HBKEZRHQYEM"; // MLS "\"%1\" server socket IO error: %2", EEventSeverity.ERROR, EEventSource.ARTE_COMMUNICATOR
     static final String MLS_ID_ERR_ON_SERVICE_RQ_PROC = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsBBZPMQ7LTNCINN6XWELWUEXJMA";// MLS "\"%1\" ARTE service error: %2", EEventSeverity.ERROR, EEventSource.ARTE;
     static final String MLS_ID_ERR_ON_ACCEPTED_SOCKET_CLOSE = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls77UT2J2UINHNZMH6ES6LQ3OK7E";// MLS "\"%1\" can't close accepted socket: %2", EEventSeverity.WARNING, EEventSource.ARTE_COMMUNICATOR
-    static final String MLS_ID_INSUF_ARTE_COUNT = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsGVK53K2MINGYBEJPIE4NV7LLEY";// MLS "Unit \"%1\" has insufficient ARTE instances count", Warning, ARTE_UNIT
-    static final String MLS_ID_ERR_ON_ARTE_INST_INIT = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsN5BQ7VKUIZFSRND2L56RBBU6WM";// MLS "Unit \"%1\" can't init new ARTE instance: %2", Error, ARTE_UNIT
-    static final String MLS_ID_ERR_ON_ARTE_INST_STOP = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls4FR67PQAU5A2XNUKNCZ3XSNVHY";// MLS "Error on ARTE instance \"%1\" stopping: %2", Error, ARTE_UNIT
+    static final String MLS_ID_INSUF_ARTE_COUNT = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsGVK53K2MINGYBEJPIE4NV7LLEY";// MLS "Unit \"%1\" has insufficient ARTEs count", Warning, ARTE_UNIT
+    static final String MLS_ID_ERR_ON_ARTE_INST_INIT = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsN5BQ7VKUIZFSRND2L56RBBU6WM";// MLS "Unit \"%1\" can't init new ARTE: %2", Error, ARTE_UNIT
+    static final String MLS_ID_ERR_ON_ARTE_INST_STOP = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls4FR67PQAU5A2XNUKNCZ3XSNVHY";// MLS "Error on ARTE \"%1\" stopping: %2", Error, ARTE_UNIT
     public static final String MLS_ID_CANT_INIT_ARTE = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsSLRTXPRVABEXXH3TYLRLJSYEZ4"; //MLS "Can't initialize ARTE \"%1\": %2", Error, EEventSource.ARTE_UNIT
     public static final String MLS_ID_KEPT_CONNECTION_NOT_FOUND = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsW453NQ7VZFHSXLV362ORIHVR5U";//MLS "Kept connection not found for received data", Error, ARTE_UNIT
-    public static final String MLS_ID_ARTE_INST_USAGE_LIMIT_EXCEEDED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls45R77NRZ2VCTPOKZE3GNR4H24U";//MLS: "ARTE instance usage limit exceeded", Warning, ARTE_UNIT
+    public static final String MLS_ID_ARTE_INST_USAGE_LIMIT_EXCEEDED = "mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mls45R77NRZ2VCTPOKZE3GNR4H24U";//MLS: "ARTE usage limit exceeded", Warning, ARTE_UNIT
 }

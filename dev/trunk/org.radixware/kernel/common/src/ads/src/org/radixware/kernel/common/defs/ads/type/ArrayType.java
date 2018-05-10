@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.defs.ads.type;
 
+import java.util.Map;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.check.RadixProblem;
 import org.radixware.kernel.common.defs.RadixObject;
@@ -41,39 +42,39 @@ public class ArrayType extends AdsType {
         return new TypeJavaSourceSupport(this) {
 
             @Override
-            public char[][] getPackageNameComponents(UsagePurpose env) {
+            public char[][] getPackageNameComponents(UsagePurpose env, boolean isHumanReadable) {
                 if (itemType != null) {
-                    return itemType.getJavaSourceSupport().getPackageNameComponents(env);
+                    return itemType.getJavaSourceSupport().getPackageNameComponents(env, isHumanReadable);
                 } else {
                     return TypeJavaSourceSupport.DEFAULT_PACKAGE;
                 }
             }
 
             @Override
-            public char[] getLocalTypeName(UsagePurpose env) {
+            public char[] getLocalTypeName(UsagePurpose env, boolean isHumanReadable) {
                 if (itemType != null) {
                     char[] suffix = getDimensionSuffix();
-                    return CharOperations.merge(itemType.getJavaSourceSupport().getLocalTypeName(env), suffix);
+                    return CharOperations.merge(itemType.getJavaSourceSupport().getLocalTypeName(env, isHumanReadable), suffix);
                 } else {
                     return "???".toCharArray();
                 }
             }
 
             @Override
-            public char[] getQualifiedTypeName(UsagePurpose env, char separator) {
+            public char[] getQualifiedTypeName(UsagePurpose env, char separator, boolean isHumanReadable) {
                 if (itemType != null) {
                     char[] suffix = getDimensionSuffix();
-                    return CharOperations.merge(itemType.getJavaSourceSupport().getQualifiedTypeName(env, separator), suffix);
+                    return CharOperations.merge(itemType.getJavaSourceSupport().getQualifiedTypeName(env, separator, false), suffix);
                 } else {
                     return "???".toCharArray();
                 }
             }
 
             @Override
-            public char[] getQualifiedTypeName(UsagePurpose env) {
+            public char[] getQualifiedTypeName(UsagePurpose env, boolean isHumanReadable) {
                 if (itemType != null) {
                     char[] suffix = getDimensionSuffix();
-                    return CharOperations.merge(itemType.getJavaSourceSupport().getQualifiedTypeName(env), suffix);
+                    return CharOperations.merge(itemType.getJavaSourceSupport().getQualifiedTypeName(env, isHumanReadable), suffix);
                 } else {
                     return "???".toCharArray();
                 }
@@ -109,12 +110,17 @@ public class ArrayType extends AdsType {
     }
 
     @Override
-    protected void check(RadixObject referenceContext, ERuntimeEnvironmentType environment, IProblemHandler problemHandler) {
+    protected void check(RadixObject referenceContext, ERuntimeEnvironmentType environment, IProblemHandler problemHandler, Map<Object, Object> checkHistory) {
         if (itemType != null) {
-            itemType.check(referenceContext, environment, problemHandler);
+            itemType.check(referenceContext, environment, problemHandler, checkHistory);
         } else {
             problemHandler.accept(RadixProblem.Factory.newError(referenceContext, "Indefined item type"));
         }
+    }
+
+    @Override
+    protected void check(RadixObject referenceContext, ERuntimeEnvironmentType environment, IProblemHandler problemHandler) {
+        check(referenceContext, environment, problemHandler, null);
     }
 
     @Override

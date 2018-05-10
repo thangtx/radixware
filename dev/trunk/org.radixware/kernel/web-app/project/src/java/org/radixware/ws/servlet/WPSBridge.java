@@ -14,6 +14,7 @@ package org.radixware.ws.servlet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -34,8 +35,46 @@ public class WPSBridge {
     private static InvalidVersionError invalidVersionError = null;
     private static final Object regLock = new Object();
     private static volatile Method method;
-    private static Thread starterThread;
     private static final Object initLock = new Object();
+    private static String initError = null;
+    
+    private static class StarterThread extends Thread{
+        
+        private final StringBuilder stdErr = new StringBuilder();
+        private final StdOutWrapper errWrapper = new StdOutWrapper(stdErr);        
+        private final String[] arguments;
+        
+        public StarterThread(final String[] args){
+            super("RadixWare Starter Thread");
+            arguments = args;
+            setDaemon(true);
+        }
+
+        @Override
+        public void run() {
+            System.setErr(new PrintStream(errWrapper));
+            String stackTrace = null;
+            try {
+                Starter.main(arguments);
+            } catch (Exception exception) {
+                stackTrace = WPSBridge.getStackTrace(exception);
+            }
+            webServer = null;
+            try {
+                errWrapper.flush();
+            } catch (IOException ex) {
+            }
+            if (stackTrace!=null){
+                stdErr.append('\n');
+                stdErr.append(stackTrace);
+            }
+        }
+        
+        public String getThreadErrorMessage(){
+            return stdErr.toString();
+        }
+        
+    }
 
     private static class StdOutWrapper extends OutputStream {
 
@@ -58,8 +97,7 @@ public class WPSBridge {
                 buffer.append(w.toString());
             }
         }
-    }
-    private static String initError = null;
+    }        
 
     public static String wpsInit() {
         synchronized (initLock) {
@@ -69,27 +107,11 @@ public class WPSBridge {
             } else {
                 try {
                     return initError = wpsInitImpl();
-                } catch (Throwable ex) {
+                } catch (Throwable ex) {                    
                     Logger.getLogger(WPSBridge.class.getName()).log(Level.SEVERE, null, ex);
-
-                    StringBuilder stack = new StringBuilder();
-                    while (ex != null) {
-                        stack.append(ex.getClass().getName());
-                        if (ex.getMessage() != null) {
-                            stack.append(": ").append(ex.getMessage());
-                        }
-                        stack.append('\n');
-                        for (StackTraceElement e : ex.getStackTrace()) {
-                            stack.append(e.toString()).append('\n');
-                        }
-                        ex = ex.getCause();
-                        if (ex != null) {
-                            stack.append("Caused by ");
-                        }
-                    }
-                    return initError = stack.toString();
+                    initError = getStackTrace(ex);
+                    return initError;
                 }
-
             }
         }
     }
@@ -128,32 +150,9 @@ public class WPSBridge {
                 return "Incorrect or missing value of variable " + varName
                         + "\nCheck  your context description file";
             }
-
-            final StringBuilder stdErr = new StringBuilder();
-            final StdOutWrapper errWrapper = new StdOutWrapper(stdErr);
-            final String[] args = appArgList;
-            starterThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                    System.setErr(new PrintStream(errWrapper));
-                    try {
-                        Starter.main(args);
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
-                    webServer = null;
-                    try {
-                        errWrapper.flush();
-                    } catch (IOException ex) {
-                        //ignore
-                    }
-
-                }
-            });
+            final StarterThread starterThread = new StarterThread(appArgList);
             try {
                 invalidVersionError = null;
-                starterThread.setDaemon(true);
                 starterThread.start();
                 for (;;) {
                     synchronized (regLock) {
@@ -165,9 +164,10 @@ public class WPSBridge {
                                 return invalidVersionError.getMessage();
                             }
                             if (!starterThread.isAlive()) {
-                                if (stdErr.length() != 0) {
-                                    return stdErr.toString();
-                                } else {
+                                final String errorMessage = starterThread.getThreadErrorMessage();
+                                if (errorMessage!=null && !errorMessage.isEmpty()){
+                                    return errorMessage;
+                                }else{
                                     return "Web presentation server startup was failed.";
                                 }
                             }
@@ -176,33 +176,36 @@ public class WPSBridge {
                 }
 
             } catch (Throwable t) {
-                return "";
+                return getStackTrace(t);
             }
         } else {
             Logger.getLogger(LifecycleListener.class.getName()).log(Level.FINE, "Web Presentation Server bridge module is already initialized. Ignore this attemt");
             return null;
         }
     }
-    private static final String VERSION = "1.2.21";
 
-    public static String getWPSVersion() {
-        return VERSION;
+    public static String getStackTrace(final Throwable exception){
+        final StringWriter writer = new StringWriter();
+        exception.printStackTrace(new PrintWriter(writer));
+        return writer.toString();        
     }
-
+    
     private static void checkVersion(Object obj) {
         Field versionField;
         try {
-            versionField = obj.getClass().getField("VERSION");
-            Object fieldVal = versionField.get(null);
+            final ClassLoader cl = obj.getClass().getClassLoader();
+            final Class versionClass = cl.loadClass("org.radixware.ws.servlet.WPSVersion");
+            versionField = versionClass.getField("VERSION");
+            final Object fieldVal = versionField.get(null);
             if (fieldVal instanceof String) {
                 String serverVersion = (String) fieldVal;
-                if (!VERSION.equals(serverVersion)) {
-                    throw new InvalidVersionError("Launcher version " + VERSION + " does not match to server version " + serverVersion + ". Launcher update requred");
+                if (!WPSVersion.VERSION.equals(serverVersion)) {
+                    throw new InvalidVersionError("Launcher version " + WPSVersion.VERSION + " does not match to server version " + serverVersion + ". Launcher update requred");
                 } else {
                     return;
                 }
             }
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+        } catch (ClassNotFoundException | NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
             //  Logger.getLogger(WPSBridge.class.getName()).log(Level.SEVERE, null, ex);
         }
         throw new InvalidVersionError("Launcher version is not compatible with product installation. Replace yor launcher with one from your product distribution");

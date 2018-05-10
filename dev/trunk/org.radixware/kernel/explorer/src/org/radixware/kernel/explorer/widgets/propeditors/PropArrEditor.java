@@ -15,6 +15,7 @@ import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QToolButton;
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.errors.SettingPropertyValueError;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
@@ -30,7 +31,7 @@ import org.radixware.kernel.explorer.editors.valeditors.ValEditor;
 import org.radixware.kernel.explorer.editors.valeditors.ValEditorFactory;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 
-public final class PropArrEditor<T extends Arr> extends PropEditor {
+public class PropArrEditor<T extends Arr> extends PropEditor {
 
     private static class ValEditorFactoryImpl extends ValEditorFactory{
         
@@ -57,6 +58,7 @@ public final class PropArrEditor<T extends Arr> extends PropEditor {
 
         final QAction action = new QAction(this);
         action.triggered.connect(this, "edit()");
+        action.setObjectName("edit");
         editButton = getValEditor().addButton(null, action);
 
         getValEditor().getLineEdit().setReadOnly(true);
@@ -76,7 +78,7 @@ public final class PropArrEditor<T extends Arr> extends PropEditor {
         } else {
             editButton.setToolTip(getEnvironment().getMessageProvider().translate("PropArrEditor", "Edit Array"));
             editButton.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.EDIT));
-            editButton.setVisible(isEditButtonVisible);
+            editButton.setVisible(isEditButtonVisible && !controller.isInheritedValue());
         }
 
     }
@@ -112,4 +114,9 @@ public final class PropArrEditor<T extends Arr> extends PropEditor {
         isEditButtonVisible = isVisible;
         refresh(getProperty());
     }
+    
+    @Override
+    public final EWidgetMarker getWidgetMarker() {
+        return EWidgetMarker.ARR_PROP_EDITOR;
+    }    
 }

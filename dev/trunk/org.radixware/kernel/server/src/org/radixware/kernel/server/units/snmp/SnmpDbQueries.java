@@ -17,17 +17,61 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import org.radixware.kernel.server.IDbQueries;
+import org.radixware.kernel.server.jdbc.AbstractDbQueries;
 import org.radixware.kernel.server.sap.ReadSapOptionsQuery;
 import org.snmp4j.smi.OctetString;
 
 
-public class SnmpDbQueries implements IDbQueries {
+public class SnmpDbQueries extends AbstractDbQueries {
 
     private final SnmpAgentUnit unit;
-    private PreparedStatement qryReadMetricData;
-    private PreparedStatement qryReadOptions;
     private ReadSapOptionsQuery qryReadSapOptions;
+    
+    private PreparedStatement qryReadMetricData = null;
+    private static final String qryReadMetricDataSQL = "select "
+                                                     + "t.id typeId,"
+                                                     + "t.kind, "
+                                                     + "t.title, "
+                                                     + "t.period, "
+                                                     + "t.lowErrorVal, " 
+                                                     + "t.lowWarnVal, "
+                                                     + "t.highWarnVal, "
+                                                     + "t.highErrorVal, "
+                                                     + "t.warnDelay, "
+                                                     + "t.errorDelay, "
+                                                     + "t.escalationDelay, "
+                                                     + "t.timingSection, "
+                                                     + "s.id stateId, "
+                                                     + "s.instanceId, "
+                                                     + "s.unitId, "
+                                                     + "s.systemId, "
+                                                     + "s.serviceUri, "
+                                                     + "s.netChannelId, "
+                                                     + "s.begTime, "
+                                                     + "s.endTime, "
+                                                     + "s.begVal, "
+                                                     + "s.endVal, "
+                                                     + "s.minVal, "
+                                                     + "s.maxVal, "
+                                                     + "s.avgVal "
+                                                     + "from rdx_sm_metricstate s inner join rdx_sm_metrictype t on s.typeId = t.id order by t.id";
+    
+    private PreparedStatement qryReadOptions = null;
+    private static final String qryReadOptionsSQL = "select "
+                                                  + "a.agentAddress, "
+                                                  + "(select extSystemCode from rdx_system where id = 1) systemRid, "
+                                                  + "a.sapId, "
+                                                  + "a.useNotificationService, "
+                                                  + "a.communityString, "
+                                                  + "m.id managerId, "
+                                                  + "m.title managerTitle, "
+                                                  + "m.address managerAddress "
+                                                  + "from rdx_sm_snmpagentunit a left join rdx_sm_snmpmanager m on a.managerId = m.id "
+                                                  + "where a.id = ?";
+
+    private SnmpDbQueries() {
+        this(null);
+    }
 
     public SnmpDbQueries(SnmpAgentUnit unit) {
         this.unit = unit;
@@ -35,17 +79,7 @@ public class SnmpDbQueries implements IDbQueries {
 
     public SnmpAgentUnit.Options readOptions() throws SQLException {
         if (qryReadOptions == null) {
-            qryReadOptions = unit.getDbConnection().prepareStatement("select "
-                    + "a.agentAddress, "
-                    + "(select extSystemCode from rdx_system where id = 1) systemRid, "
-                    + "a.sapId, "
-                    + "a.useNotificationService, "
-                    + "a.communityString, "
-                    + "m.id managerId, "
-                    + "m.title managerTitle, "
-                    + "m.address managerAddress "
-                    + "from rdx_sm_snmpagentunit a left join rdx_sm_snmpmanager m on a.managerId = m.id "
-                    + "where a.id = ?");
+            qryReadOptions = unit.getDbConnection().prepareStatement(qryReadOptionsSQL);
             qryReadOptions.setLong(1, unit.getId());
 
             qryReadSapOptions = new ReadSapOptionsQuery(unit.getDbConnection());
@@ -67,33 +101,7 @@ public class SnmpDbQueries implements IDbQueries {
 
     public List<MetricDataRecord> readMetricData() throws SQLException {
         if (qryReadMetricData == null) {
-            qryReadMetricData = unit.getDbConnection().prepareStatement("select "
-                    + "t.id typeId,"
-                    + "t.kind, "
-                    + "t.title, "
-                    + "t.period, "
-                    + "t.lowErrorVal, "
-                    + "t.lowWarnVal, "
-                    + "t.highWarnVal, "
-                    + "t.highErrorVal, "
-                    + "t.warnDelay, "
-                    + "t.errorDelay, "
-                    + "t.escalationDelay, "
-                    + "t.timingSection, "
-                    + "s.id stateId, "
-                    + "s.instanceId, "
-                    + "s.unitId, "
-                    + "s.systemId, "
-                    + "s.serviceUri, "
-                    + "s.netChannelId, "
-                    + "s.begTime, "
-                    + "s.endTime, "
-                    + "s.begVal, "
-                    + "s.endVal, "
-                    + "s.minVal, "
-                    + "s.maxVal, "
-                    + "s.avgVal "
-                    + "from rdx_sm_metricstate s inner join rdx_sm_metrictype t on s.typeId = t.id order by t.id");
+            qryReadMetricData = unit.getDbConnection().prepareStatement(qryReadMetricDataSQL);
         }
         final List<MetricDataRecord> result = new ArrayList<>();
         try (ResultSet rs = qryReadMetricData.executeQuery()) {
@@ -144,6 +152,11 @@ public class SnmpDbQueries implements IDbQueries {
         return new VTimestamp(val == null ? 0 : val.getTime());
     }
 
+    @Override
+    public void prepareAll() throws SQLException {
+        prepareAll(unit.getDbConnection());
+    }
+    
     @Override
     public void closeAll() {
         if (qryReadMetricData != null) {

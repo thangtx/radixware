@@ -32,7 +32,7 @@ public final class ParameterEditorWidget extends ExplorerWidget {
     private final boolean readonly;
     private final ISqmlTableDef contextTable;
     private final QGridLayout gridLayout = new QGridLayout(this);
-    private final Map<EFilterParamAttribute, AbstractAttributeEditor> attributeEditors = new LinkedHashMap<EFilterParamAttribute, AbstractAttributeEditor>(10);
+    private final Map<EFilterParamAttribute, AbstractAttributeEditor> attributeEditors = new LinkedHashMap<>(10);
 
     public ParameterEditorWidget(IClientEnvironment environment, final ISqmlTableDef context, final boolean isReadonly, final QWidget parent) {
         super(environment, parent);
@@ -48,7 +48,7 @@ public final class ParameterEditorWidget extends ExplorerWidget {
     }
 
     public void open(final ISqmlParameter parameter, final List<String> restrictedNames) {
-        final List<EFilterParamAttribute> attributes = new ArrayList<EFilterParamAttribute>();
+        final List<EFilterParamAttribute> attributes = new ArrayList<>();
         attributes.add(EFilterParamAttribute.NAME);
 
         if (parameter.getBasePropertyId() == null) {
@@ -62,10 +62,11 @@ public final class ParameterEditorWidget extends ExplorerWidget {
             attributes.add(EFilterParamAttribute.PROPERTY);
             attributes.add(EFilterParamAttribute.IS_MANDATORY);
         }
+        attributes.add(EFilterParamAttribute.ADDITIONAL_SELECTOR_CONDITION);
+        attributes.add(EFilterParamAttribute.PARENT_REF_EDITING_MODE);
         if (parameter.getType() != EValType.PARENT_REF && parameter.getType() != EValType.ARR_REF) {
             attributes.add(EFilterParamAttribute.DEFAULT_VALUE);
         } else {
-            //attributes.add(EFilterParamAttribute.SELECTOR_PRESENTATION);
             if (attributes.contains(EFilterParamAttribute.EDIT_MASK)) {
                 attributes.remove(EFilterParamAttribute.EDIT_MASK);
             }
@@ -150,7 +151,7 @@ public final class ParameterEditorWidget extends ExplorerWidget {
             }
         }
         {//link editors
-            final Collection<EFilterParamAttribute> baseAttributes = new ArrayList<EFilterParamAttribute>();
+            final Collection<EFilterParamAttribute> baseAttributes = new ArrayList<>();
             AbstractAttributeEditor baseAttributeEditor;
             for (AbstractAttributeEditor editor : attributeEditors.values()) {
                 baseAttributes.clear();

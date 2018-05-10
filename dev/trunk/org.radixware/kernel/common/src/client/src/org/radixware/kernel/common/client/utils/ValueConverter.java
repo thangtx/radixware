@@ -24,9 +24,11 @@ import java.util.Calendar;
 import java.util.List;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.dialogs.IMessageBox;
+import org.radixware.kernel.common.client.env.DefManager;
 import org.radixware.kernel.common.client.types.ArrRef;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.Reference;
+import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.enums.EReferencedObjectActions;
 import org.radixware.kernel.common.enums.EValType;
@@ -61,16 +63,9 @@ public class ValueConverter {
             case OBJECT:
             case PARENT_REF: {
                 if (val != null || valType == EValType.PARENT_REF) {
-                    final org.radixware.schemas.eas.Property.Ref refXml = xmlProp.addNewRef();
-                    if (val != null) {
-                        final Reference ref = (Reference) val;
-                        final Pid pid = ref.getPid();
-                        if (pid != null) {
-                            refXml.setPID(pid.toString());
-                        }
-                        if (ref.isBroken()) {
-                            refXml.setBrokenRef("");
-                        }
+                    final org.radixware.schemas.eas.ObjectReference refXml = xmlProp.addNewRef();
+                    if (val != null) {                        
+                        ((Reference) val).writeToXml(refXml);
                     }
                 } else {
                     xmlProp.setNilRef();
@@ -132,15 +127,20 @@ public class ValueConverter {
             case ARR_REF: {
                 if (val != null) {
                     final org.radixware.schemas.eas.Property.ArrRef xmlArr = xmlProp.addNewArrRef();
-                    final ArrRef arr = (ArrRef) val;
-                    org.radixware.schemas.eas.Property.ArrRef.Item item;
+                    final ArrRef arr = (ArrRef) val;  
+                    Id tableId=null;
                     for (Reference ref : arr) {
-                        if (ref != null && ref.getPid() != null) {
-                            item = xmlArr.addNewItem();
-                            item.setPID(ref.getPid().toString());
+                        if (ref == null || ref.getPid() == null) {
+                            xmlArr.addNewItem().setNil();                            
                         } else {
-                            xmlArr.addNewItem().setNil();
+                            if (tableId==null){
+                                tableId = ref.getPid().getTableId();
+                            }
+                            ref.writeToXml(xmlArr.addNewItem(),false);
                         }
+                    }
+                    if (tableId!=null){
+                        xmlArr.setTableId(tableId);
                     }
                 } else {
                     xmlProp.setNilArrStr();
@@ -211,8 +211,11 @@ public class ValueConverter {
                 throw new WrongFormatError("Can't convert value to XML value: value type \"" + valType.getName() + "\" is not supported in DbpValueConverter.objVal2DasPropXmlVal()", null);
         }
     }
-
     public static Object easPropXmlVal2ObjVal(final org.radixware.schemas.eas.Property xmlProp, final EValType valType, final Id valTableId) {
+        return easPropXmlVal2ObjVal(xmlProp, valType, valTableId, null);
+    }
+
+    public static Object easPropXmlVal2ObjVal(final org.radixware.schemas.eas.Property xmlProp, final EValType valType, final Id valTableId, final DefManager defManager) {
         switch (valType) {
             case STR:
             case CLOB: {
@@ -232,22 +235,10 @@ public class ValueConverter {
                 if (valTableId == null) {
                     throw new WrongFormatError("Cannot convert to reference: entity identifier is required.", null);
                 }
-                if (xmlProp.isSetRef()) {
-                    if (xmlProp.getRef().isSetPID()) {
-                        return new Reference(new Pid(valTableId, xmlProp.getRef().getPID()),
-                                xmlProp.getRef().getTitle(),
-                                xmlProp.getRef().getBrokenRef(),
-                                EReferencedObjectActions.fromBitMask(xmlProp.getRef().getAllowedActionsBitMask()));
-                    } else if (xmlProp.getRef().isSetTitle() && xmlProp.getRef().getTitle() != null) {
-                        //В презентационных атрибутах свойства может быть задан
-                        //формат заголовка при нулевом значении
-                        return new Reference((Pid) null, xmlProp.getRef().getTitle(), xmlProp.getRef().getBrokenRef());
-                    } else if (xmlProp.getRef().isSetBrokenRef() && xmlProp.getRef().getBrokenRef() != null) {//RADIX-3199
-                        //У ссылки на несуществующий объект может быть задано сообщение об ошибке
-                        return new Reference((Pid) null, null, xmlProp.getRef().getBrokenRef());
-                    }
+                if (xmlProp.isSetObj()){
+                    return Reference.fromXml(xmlProp.getObj(), defManager, valTableId);
                 }
-                return null;
+                return xmlProp.isSetRef() ? Reference.fromXml(xmlProp.getRef(), defManager, valTableId) : null;
             }
             case INT:
                 return xmlProp.getInt();
@@ -322,31 +313,15 @@ public class ValueConverter {
             }
             case ARR_REF: {
                 if (xmlProp.isSetArrRef() && !xmlProp.isNilArrRef()) {
-                    if (valTableId == null) {
-                        throw new WrongFormatError("Cannot convert to reference array: entity identifier is required.", null);
-                    }
                     final org.radixware.schemas.eas.Property.ArrRef xmlArr = xmlProp.getArrRef();
+                    final Id arrTableId = xmlArr.getTableId();
+                    final Id tableId = arrTableId==null ? valTableId : arrTableId;
                     final Reference[] arr = new Reference[xmlArr.sizeOfItemArray()];
-                    org.radixware.schemas.eas.Property.ArrRef.Item xmlRef;
                     for (int i = 0; i < xmlArr.sizeOfItemArray(); i++) {
-                        if (!xmlArr.isNilItemArray(i) && xmlArr.getItemArray(i) != null) {
-                            xmlRef = xmlArr.getItemArray(i);
-                            if (xmlRef.isSetPID()) {
-                                arr[i] = new Reference(new Pid(valTableId, xmlRef.getPID()),
-                                        xmlRef.getTitle(),
-                                        xmlRef.getBrokenRef());
-                            } else if (xmlRef.isSetTitle() && xmlRef.getTitle() != null) {
-                                //В презентационных атрибутах свойства может быть задан
-                                //формат заголовка при нулевом значении
-                                arr[i] = new Reference((Pid) null, xmlRef.getTitle(), xmlRef.getBrokenRef());
-                            } else if (xmlRef.isSetBrokenRef()) {//RADIX-3199
-                                //У ссылки на несуществующий объект может быть задано сообщение об ошибке
-                                arr[i] = new Reference((Pid) null, null, xmlRef.getBrokenRef());
-                            } else {
-                                arr[i] = null;
-                            }
-                        } else {
+                        if (xmlArr.isNilItemArray(i) || xmlArr.getItemArray(i) == null) {
                             arr[i] = null;
+                        } else {
+                            arr[i] = Reference.fromXml(xmlArr.getItemArray(i), defManager, tableId);
                         }
                     }
                     return new ArrRef(arr);
@@ -517,7 +492,7 @@ public class ValueConverter {
             if (decimalDelimeterPos > -1 && decimalDelimeterPos < str.length() - 2) {
                 final String fractionalPart = str.substring(decimalDelimeterPos + 1, str.length());
                 final String stringToParse =
-                        str.substring(0, decimalDelimeterPos + 1) + fractionalPart.replaceAll(String.valueOf(triadDelimeter), "");
+                        str.substring(0, decimalDelimeterPos + 1) + fractionalPart.replace(String.valueOf(triadDelimeter), "");
                 return parseFormattedString(stringToParse, format, triadDelimeter, forcedPositive);
             } else {
                 return parseFormattedString(str, format, triadDelimeter, forcedPositive);
@@ -538,7 +513,56 @@ public class ValueConverter {
         if (pos.getIndex() == stringToParse.length() && (valObj instanceof BigDecimal)) {
             return (BigDecimal) valObj;
         } else {
-            return new BigDecimal(stringToParse.replaceAll(String.valueOf(triadDelimeter), ""));
+            return new BigDecimal(stringToParse.replace(String.valueOf(triadDelimeter), ""));
+        }
+    }
+    
+    @SuppressWarnings("fallthrough")
+    public static ValAsStr obj2ValAsStr(final Object obj, final EValType type){
+        if (obj==null){
+            return null;
+        }
+        switch (type){
+            case CLOB:
+            case ARR_BLOB:
+            case ARR_CLOB:
+            case ARR_REF:
+                return ValAsStr.Factory.loadFrom(String.valueOf(obj));
+            case PARENT_REF:
+                if (obj instanceof Reference){
+                    return ValAsStr.Factory.loadFrom(((Reference)obj).toValAsStr());
+                }else if (obj instanceof Pid){
+                    return ValAsStr.Factory.loadFrom(((Pid)obj).toStr());
+                }
+            default:
+                return ValAsStr.Factory.newInstance(obj, serverValType2ClientValType(type));
+        }
+    }
+    
+    public static Object valAsStr2Obj(final ValAsStr val, final EValType type){
+        if (val==null){
+            return null;
+        }
+        if (type==EValType.PARENT_REF){
+            final String str = val.toString();
+            if (str.isEmpty()){
+                return null;
+            }
+            if (str.length()>1 && str.charAt(1)=='['){
+                return Reference.fromValAsStr(str);
+            }else{
+                final Pid result = Pid.fromStr(str);
+                if (result==null){
+                    throw new WrongFormatError("Failed to restore object PID from \'"+str+"\' string");
+                }else{
+                    return result;
+                }
+            }
+        }else if (type==EValType.ARR_REF){
+            final String str = val.toString();
+            return ArrRef.fromValAsStr(str);
+        }else{
+            return ValAsStr.fromStr(val, serverValType2ClientValType(type));
         }
     }
 }

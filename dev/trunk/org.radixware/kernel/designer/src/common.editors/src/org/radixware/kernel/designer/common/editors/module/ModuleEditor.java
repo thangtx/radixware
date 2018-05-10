@@ -8,18 +8,17 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.editors.module;
 
 import java.awt.BorderLayout;
 import javax.swing.*;
 import org.radixware.kernel.common.defs.*;
+import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.designer.common.annotations.registrators.EditorFactoryRegistration;
 import org.radixware.kernel.designer.common.dialogs.components.TabManager;
 import org.radixware.kernel.designer.common.editors.RadixObjectEditor;
 import org.radixware.kernel.designer.common.general.editors.IEditorFactory;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
-
 
 public class ModuleEditor<ModuleType extends Module> extends RadixObjectEditor<ModuleType> {
 
@@ -31,7 +30,7 @@ public class ModuleEditor<ModuleType extends Module> extends RadixObjectEditor<M
             return new ModuleEditor<>(module);
         }
     }
-    
+
     private final TabManager tabManager = new TabManager(new JTabbedPane());
 
     public ModuleEditor(final ModuleType module) {

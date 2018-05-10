@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accN5K5M3I64JF4HOUPXJGU2TQDT4" Name="CurScnCursor" Type="4">
+    <AccessRules Access="4" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccN5K5M3I64JF4HOUPXJGU2TQDT4"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccN5K5M3I64JF4HOUPXJGU2TQDT4"/>
+    </Bodies>
+    <MethodGroup Id="cmgCCDMDEQU2FBHDMHTBRX5V7HIK4" Name="Root"/>
+    <PropertyGroup Id="cpgTUJNRC22CZFHHEH5GPK7OXG67Y" Name="Root"/>
+    <Properties>
+      <Property Id="prfGFVHX7L4UFGE7PXCEICKDOROBA" Name="curScn" Nature="3" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <ReturnType TypeId="411" Path="accN5K5M3I64JF4HOUPXJGU2TQDT4"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select
+    current_scn </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accN5K5M3I64JF4HOUPXJGU2TQDT4" PropId="prfGFVHX7L4UFGE7PXCEICKDOROBA" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+from 
+    GV$DATABASE</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tbl52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

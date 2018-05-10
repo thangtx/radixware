@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2017, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -20,7 +20,8 @@ public enum EPortSecurityProtocol implements IKernelIntEnum {
 
     //constant values for compiling
     NONE(new Long(0)),
-    SSL(new Long(1));
+    SSL(new Long(1)),
+    TLSv1_2(new Long(2));
     
     private final Long value;
 
@@ -56,5 +57,9 @@ public enum EPortSecurityProtocol implements IKernelIntEnum {
     @Override
     public boolean isInDomains(List<Id> ids) {
         return false;
+    }
+    
+    public boolean isTls() {
+        return this == SSL || this == TLSv1_2;
     }
 }

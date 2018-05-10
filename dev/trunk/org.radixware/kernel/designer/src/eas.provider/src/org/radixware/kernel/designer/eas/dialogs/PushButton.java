@@ -22,12 +22,23 @@ import org.radixware.kernel.common.client.widgets.IPeriodicalTask;
 import org.radixware.kernel.common.client.widgets.IPushButton;
 import org.radixware.kernel.common.client.widgets.TimerEventHandler;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 
 
 public class PushButton extends JButton implements IPushButton {
     
     private String objectName;
     private List<ClickHandler> handlers = new LinkedList<>();
+
+    @Override
+    public void setMenu(IMenu imenu) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public IMenu getMenu() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
     public static class ButtonIcon extends ImageIcon implements Icon {
         

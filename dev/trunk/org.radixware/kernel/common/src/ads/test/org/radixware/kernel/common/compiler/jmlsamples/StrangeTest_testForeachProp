@@ -1,0 +1,25 @@
+
+class Test {
+
+    public void f(String k,Int v) {
+        System.out.println("Map entry: " + k + " -> " + String.valueOf(v));
+    }
+
+    public void test() {
+	java.util.Map.Entry<Int, Object> e = null;
+        try{
+            f("",e.Key);
+        }catch(NullPointerException ex){
+            System.out.println("npe");
+        }          
+        java.util.Map<String,Long> map = new java.util.HashMap<>();
+        for(int i = 0; i < 10; i ++){
+            map.put(String.valueOf(i),i);
+        }
+        for(java.util.Map.Entry<String,Long> en : map.entrySet()){
+            String key = en.Key;
+            Int val = en.Value;
+            f(en.Key,en.Value);
+        }
+    }
+}

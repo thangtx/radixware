@@ -49,6 +49,7 @@ import org.radixware.kernel.designer.common.editors.sqml.editors.SequenceDbNameT
 import org.radixware.kernel.designer.common.editors.sqml.editors.ThisTableRefTagEditor;
 import org.radixware.kernel.designer.common.editors.sqml.actions.SqmlTopLevelActions.*;
 import org.radixware.kernel.designer.common.editors.jml.editors.TaskEditor;
+import org.radixware.kernel.designer.common.editors.sqml.editors.IfTagEditor;
 import org.radixware.kernel.designer.common.editors.sqml.editors.TargetDbPreprocessorTagEditor;
 import org.radixware.kernel.designer.common.editors.sqml.editors.XPathTagEditor;
 import org.radixware.kernel.designer.common.editors.sqml.vtag.ConstValueVTag;
@@ -123,7 +124,6 @@ public class SqmlEditorPanel extends ScmlEditor<Sqml> {
             new InsertDbFuncCallAcion(this),
             new InsertInputParameterTag(this),
             new InsertThisTableRefAction(this),
-            new InsertTaskTagAction(this),
             new InsertXPathTagAction(this),
             new InsertPreprocessorAction(this),
             new PreviewSqlAction(this)};
@@ -243,6 +243,8 @@ public class SqmlEditorPanel extends ScmlEditor<Sqml> {
                 return new XPathTagEditor();
             } else if (tag instanceof TargetDbPreprocessorTag) {
                 return new TargetDbPreprocessorTagEditor();
+            } else if (tag instanceof IfParamTag) {
+                return new IfTagEditor();
             } else {
                 return null;
             }

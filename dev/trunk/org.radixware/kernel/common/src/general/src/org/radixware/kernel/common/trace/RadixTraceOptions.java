@@ -17,5 +17,7 @@ public class RadixTraceOptions {
     public final static String MIN_LOGGABLE_DB_OPERATION_DURATION_MILLIS = "minLogDbDurationMs";
     public final static String LOG_PLAN = "logPlan";
     public final static String LOG_STACK = "logStack";
+    public final static String DB_QRY_MASK = "qryMask";
     
+    public final static String LOG_PRES_CALC = "logPresCalc";
 }

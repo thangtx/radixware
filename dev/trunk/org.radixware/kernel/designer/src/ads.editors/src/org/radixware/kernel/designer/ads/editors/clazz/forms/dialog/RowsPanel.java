@@ -13,6 +13,7 @@ package org.radixware.kernel.designer.ads.editors.clazz.forms.dialog;
 import java.awt.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
@@ -74,10 +75,14 @@ public class RowsPanel extends SetPanel<Row, AdsItemWidgetDef> {
                 return new UIPropertySupport(prop, uiDef, row) {
 
                     @Override
-                    public void setValue(Object val) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-                        super.setValue(val);
-                        getListModel().fireContentChanged(row);
-                        ((ListModel) getListModel()).getRows().getContainerChangesSupport().fireEvent(new ContainerChangedEvent(row, EChangeType.MODIFY));
+                    public void setValue(Object val) {
+                        try {
+                            super.setValue(val);
+                            getListModel().fireContentChanged(row);
+                            ((ListModel) getListModel()).getRows().getContainerChangesSupport().fireEvent(new ContainerChangedEvent(row, EChangeType.MODIFY));
+                        } catch (Throwable ex) {
+                            java.util.logging.Logger.getLogger(UIPropertySupport.class.getName()).log(Level.WARNING, "Can not change property", ex);
+                        }
                     }
                 };
             }

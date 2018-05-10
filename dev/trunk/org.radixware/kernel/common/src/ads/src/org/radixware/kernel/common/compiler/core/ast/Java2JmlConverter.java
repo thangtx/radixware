@@ -20,6 +20,7 @@ import org.eclipse.jdt.internal.codeassist.complete.CompletionOnSingleTypeRefere
 import org.eclipse.jdt.internal.compiler.ASTVisitor;
 import org.eclipse.jdt.internal.compiler.ast.AND_AND_Expression;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
+import org.eclipse.jdt.internal.compiler.ast.AbstractMethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.AllocationExpression;
 import org.eclipse.jdt.internal.compiler.ast.Argument;
 import org.eclipse.jdt.internal.compiler.ast.ArrayAllocationExpression;
@@ -59,6 +60,7 @@ import org.eclipse.jdt.internal.compiler.ast.ForeachStatement;
 import org.eclipse.jdt.internal.compiler.ast.Initializer;
 import org.eclipse.jdt.internal.compiler.ast.InstanceOfExpression;
 import org.eclipse.jdt.internal.compiler.ast.LabeledStatement;
+import org.eclipse.jdt.internal.compiler.ast.MethodDeclaration;
 import org.eclipse.jdt.internal.compiler.ast.ParameterizedQualifiedTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.ParameterizedSingleTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.PostfixExpression;
@@ -69,6 +71,7 @@ import org.eclipse.jdt.internal.compiler.ast.ReturnStatement;
 import org.eclipse.jdt.internal.compiler.ast.SingleTypeReference;
 import org.eclipse.jdt.internal.compiler.ast.SubRoutineStatement;
 import org.eclipse.jdt.internal.compiler.ast.SwitchStatement;
+import org.eclipse.jdt.internal.compiler.ast.SynchronizedStatement;
 import org.eclipse.jdt.internal.compiler.ast.ThrowStatement;
 import org.eclipse.jdt.internal.compiler.ast.TryStatement;
 import org.eclipse.jdt.internal.compiler.ast.TypeDeclaration;
@@ -78,6 +81,7 @@ import org.eclipse.jdt.internal.compiler.ast.Wildcard;
 import org.eclipse.jdt.internal.compiler.lookup.AdsSourceTypeDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.AdsTypeDeclaration;
 import org.eclipse.jdt.internal.compiler.lookup.ClassScope;
+import org.eclipse.jdt.internal.compiler.lookup.MethodBinding;
 import org.eclipse.jdt.internal.compiler.lookup.MethodScope;
 import org.eclipse.jdt.internal.compiler.lookup.Scope;
 
@@ -169,6 +173,43 @@ public class Java2JmlConverter extends ASTVisitor {
         }
 
         return result;
+    }
+    
+    public void convertFields(FieldDeclaration[] fields, BlockScope scope) {
+        if (fields != null) {
+            for (int i = 0; i < fields.length; i++) {
+                if (!(fields[i] instanceof JMLFieldDeclaration)) {
+                    fields[i] = (FieldDeclaration) convertToJML(fields[i], scope);
+                }
+            }
+        }
+    }
+    
+    public void convertMethod(AbstractMethodDeclaration methodDecl, MethodScope scope) {
+        if (methodDecl.thrownExceptions != null) {
+            convertToJML(methodDecl.thrownExceptions, scope);
+        }
+        if (methodDecl.annotations != null) {
+            convertToJML(methodDecl.annotations, scope);
+        }
+        if (methodDecl.arguments != null) {
+            convertToJML(methodDecl.arguments, scope);
+        }
+        if (methodDecl instanceof MethodDeclaration) {
+            if (((MethodDeclaration) methodDecl).typeParameters != null) {
+                convertToJML(((MethodDeclaration) methodDecl).typeParameters, scope);
+            }
+        }
+        if (methodDecl instanceof ConstructorDeclaration) {
+            ConstructorDeclaration init = (ConstructorDeclaration) methodDecl;
+            if (init.constructorCall != null) {
+                init.constructorCall = (ExplicitConstructorCall) convertToJML(init.constructorCall, scope);
+            }
+        }
+
+        if (methodDecl.statements != null) {
+            convertToJML(methodDecl.statements, scope);
+        } 
     }
 
     public static TypeReference convertTypeReference(TypeReference reference, RadixObjectLocator locator) {
@@ -711,4 +752,26 @@ public class Java2JmlConverter extends ASTVisitor {
         }
     }
 
+    @Override
+    public void endVisit(TypeDeclaration localTypeDeclaration, BlockScope scope) {
+        if (!(localTypeDeclaration instanceof AdsTypeDeclaration)) {//Otherwise, the type has already been converted.
+            convertFields(localTypeDeclaration.fields, scope);
+            if (localTypeDeclaration.methods != null) {
+                for (AbstractMethodDeclaration methodDecl : localTypeDeclaration.methods) {
+                    if (!methodDecl.isClinit()) {
+                        convertMethod(methodDecl, methodDecl.scope);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void endVisit(SynchronizedStatement synchronizedStatement, BlockScope scope) {
+        if (synchronizedStatement.block != null) {
+            synchronizedStatement.block = (Block) convertStatement(synchronizedStatement.block, scope);
+        }
+    }
+    
+    
 }

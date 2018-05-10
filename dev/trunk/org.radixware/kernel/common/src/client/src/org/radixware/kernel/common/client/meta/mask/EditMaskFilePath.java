@@ -12,7 +12,11 @@ package org.radixware.kernel.common.client.meta.mask;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,82 +25,109 @@ import org.radixware.kernel.common.client.env.DefManager;
 import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.enums.EEditMaskType;
+import org.radixware.kernel.common.enums.EFileDialogOpenMode;
 import org.radixware.kernel.common.enums.EFileSelectionMode;
 import org.radixware.kernel.common.enums.EMimeType;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.types.Arr;
 import org.radixware.kernel.common.types.Id;
 
 public final class EditMaskFilePath extends EditMask {
 
-    private static final EnumSet<EValType> SUPPORTED_VALTYPES =
-            EnumSet.of(EValType.STR, EValType.ARR_STR);
-    EFileSelectionMode mode;//недоступно на web
+    private static final EnumSet<EValType> SUPPORTED_VALTYPES
+            = EnumSet.of(EValType.STR, EValType.ARR_STR);
+    private EFileSelectionMode selectionMode = EFileSelectionMode.SELECT_FILE;//недоступно на web
+    private EFileDialogOpenMode dialogMode;
     boolean isHandleInputAvailable;
-    private EMimeType mimeType;
+    private EnumSet<EMimeType> mimeTypes;
     private String fileDialogTitle;//недоступно на web
-    boolean checkIfPathExists;
-    public Id fileDialogTitleId;
-    public Id titleOwnerId;
+    private String initialPath;
+    private boolean checkIfPathExists;
+    private Id fileDialogTitleId;
+    private Id titleOwnerId;
     private boolean storeLastPath = true;
 
     public EditMaskFilePath() {
         this(EFileSelectionMode.SELECT_FILE, true, null, true, "File Dialog", false);
     }
 
-    public EditMaskFilePath(EFileSelectionMode mode, final boolean handleInput,
-            final EMimeType mimeType, final boolean store, Id fileDialogTitleId, boolean checkIfPathExists) {
+    public EditMaskFilePath(final EFileSelectionMode mode,
+            final boolean handleInput,
+            final EMimeType mimeType,
+            final boolean store,
+            final Id fileDialogTitleId,
+            final boolean checkIfPathExists) {
         super();
-        this.mimeType = mimeType;
+        if (mimeType != null) {
+            mimeTypes = EnumSet.of(mimeType);
+        }
 
         this.isHandleInputAvailable = handleInput;
-        if (mode == null) {
-            mode = EFileSelectionMode.SELECT_FILE;
-        }
-        this.mode = mode;
+        this.selectionMode = mode == null ? EFileSelectionMode.SELECT_FILE : mode;
         this.fileDialogTitleId = fileDialogTitleId;
         this.checkIfPathExists = checkIfPathExists;
         this.storeLastPath = store;
     }
 
-    public EditMaskFilePath(EFileSelectionMode mode, final boolean handleInput,
-            final EMimeType mimeType, final boolean store, String title, boolean checkIfPathExists) {
+    public EditMaskFilePath(final EFileSelectionMode mode,
+            final boolean handleInput,
+            final EMimeType mimeType,
+            final boolean store,
+            final String title,
+            final boolean checkIfPathExists) {
         super();
-        this.mimeType = mimeType;
+        if (mimeType != null) {
+            mimeTypes = EnumSet.of(mimeType);
+        }
 
         this.isHandleInputAvailable = handleInput;
-        if (mode == null) {
-            mode = EFileSelectionMode.SELECT_FILE;
-        }
-        this.mode = mode;
+        this.selectionMode = mode == null ? EFileSelectionMode.SELECT_FILE : mode;
         this.fileDialogTitle = title;
         this.checkIfPathExists = checkIfPathExists;
         this.storeLastPath = store;
     }
 
-    public EditMaskFilePath(EditMaskFilePath source) {
+    public EditMaskFilePath(final EditMaskFilePath source) {
         super();
-        this.mimeType = source.mimeType;
+        this.mimeTypes = source.mimeTypes;
         this.isHandleInputAvailable = source.isHandleInputAvailable;
-        this.mode = source.mode;
+        this.selectionMode = source.selectionMode;
+        this.dialogMode = source.dialogMode;
         this.fileDialogTitle = source.fileDialogTitle;
         this.checkIfPathExists = source.checkIfPathExists;
         this.fileDialogTitleId = source.fileDialogTitleId;
+        this.initialPath = source.initialPath;
     }
 
     protected EditMaskFilePath(final org.radixware.schemas.editmask.EditMaskFilePath editMask) {
         super();
         this.fileDialogTitle = editMask.getFileDialogTitle();
-        this.mimeType = editMask.getMimeType();
+        if (editMask.getMimeTypes() != null) {
+            final List<EMimeType> typesFromXml = editMask.getMimeTypes().getItemList();
+            if (typesFromXml != null && !typesFromXml.isEmpty()) {
+                mimeTypes = EnumSet.copyOf(typesFromXml);
+            }
+        } else if (editMask.getMimeType() != null) {
+            mimeTypes = EnumSet.of(editMask.getMimeType());
+        }
+        this.initialPath = editMask.getInitialPath();
         this.isHandleInputAvailable = editMask.getHandleInputAvailable();
-        this.mode = editMask.getSelectionMode();
+        if (editMask.getSelectionMode() == null) {
+            this.selectionMode = EFileSelectionMode.SELECT_FILE;
+        } else {
+            this.selectionMode = editMask.getSelectionMode();
+        }
+        if (editMask.getFileDialogMode() != null) {
+            this.dialogMode = editMask.getFileDialogMode();
+        }
         this.checkIfPathExists = editMask.getCheckIfPathExists();
         this.fileDialogTitleId = editMask.getFileDialogTitleId();
         this.storeLastPath = editMask.getStoreLastPath();
     }
 
     @Override
-    public String toStr(IClientEnvironment environment, Object o) {
+    public String toStr(final IClientEnvironment environment, final Object o) {
         if (o == null) {
             return getNoValueStr(environment.getMessageProvider());
         } else if (o instanceof Arr) {
@@ -115,7 +146,7 @@ public final class EditMaskFilePath extends EditMask {
     }
 
     @Override
-    public ValidationResult validate(IClientEnvironment environment, Object o) {
+    public ValidationResult validate(final IClientEnvironment environment, final Object o) {
         if (o == null) {
             return ValidationResult.ACCEPTABLE;
         }
@@ -123,26 +154,48 @@ public final class EditMaskFilePath extends EditMask {
             return validateArray(environment, (Arr) o);
         }
         if (o instanceof String) {//result of a string validation depends on Environment.
-            /*String newpath = o.toString();
-             if (checkIfPathExists) {
-             if (newpath.contains("[\\\\/</>*?|'\":]")){//[\\\\/:*?\\\"<>|]
-             return ValidationResult.INVALID;
-             }
-             if (mode == EFileSelectionMode.SELECT_DIRECTORY) {//check it for web
-             Path path = Paths.get(newpath);
-             if (path.toFile().exists() && path.toFile().isDirectory()) {
-                        
-             return ValidationResult.ACCEPTABLE;
-             }
-             } else {
-             File file = Paths.get(newpath).toFile();
-             if (file.exists() && file.isFile()) {
-             return ValidationResult.ACCEPTABLE;
-             }
-             }
-             } else {
-             return ValidationResult.ACCEPTABLE;
-             }*/
+            if (checkIfPathExists && environment.getApplication().getRuntimeEnvironmentType() == ERuntimeEnvironmentType.EXPLORER) {
+                final String filePath = (String) o;
+                final Path path;
+                try {
+                    path = Paths.get(filePath);
+                } catch (InvalidPathException ex) {
+                    return ValidationResult.Factory.newIntermediateResult(InvalidValueReason.Factory.createForWrongFormatValue(environment));
+                }
+                if (path == null) {
+                    return ValidationResult.Factory.newIntermediateResult(InvalidValueReason.Factory.createForWrongFormatValue(environment));
+                }
+                final File file;
+                try {
+                    file = path.toFile();
+                } catch (UnsupportedOperationException ex) {
+                    return ValidationResult.Factory.newIntermediateResult(InvalidValueReason.Factory.createForWrongFormatValue(environment));
+                }
+                final boolean isDirectory;
+                final boolean isFile;
+                try {
+                    if (!file.exists()) {
+                        final String reason
+                                = environment.getMessageProvider().translate("ExplorerMessage", "File does not exist");
+                        return ValidationResult.Factory.newIntermediateResult(reason);
+                    }
+                    isDirectory = file.isDirectory();
+                    isFile = file.isFile();
+                } catch (SecurityException ex) {
+                    final String reason
+                            = environment.getMessageProvider().translate("ExplorerMessage", "File does not exist");
+                    return ValidationResult.Factory.newIntermediateResult(reason);
+                }
+                if (getSelectionMode() == EFileSelectionMode.SELECT_DIRECTORY && !isDirectory) {
+                    final String reason
+                            = environment.getMessageProvider().translate("ExplorerMessage", "Value is not path to directory");
+                    return ValidationResult.Factory.newIntermediateResult(reason);
+                } else if (getSelectionMode() == EFileSelectionMode.SELECT_FILE && !isFile) {
+                    final String reason
+                            = environment.getMessageProvider().translate("ExplorerMessage", "Value is not path to file");
+                    return ValidationResult.Factory.newIntermediateResult(reason);
+                }
+            }
             return ValidationResult.ACCEPTABLE;
         }
         return ValidationResult.Factory.newInvalidResult(InvalidValueReason.Factory.createForInvalidValueType(environment));
@@ -160,12 +213,10 @@ public final class EditMaskFilePath extends EditMask {
 
     @Override
     public void writeToXml(org.radixware.schemas.editmask.EditMask editMask) {
-        org.radixware.schemas.editmask.EditMaskFilePath editMaskFilePath = editMask.addNewFilePath();
-        if (mode != null) {
-            editMaskFilePath.setSelectionMode(mode);
-        } else {
-            mode = EFileSelectionMode.SELECT_FILE;
-            editMaskFilePath.setSelectionMode(mode);
+        final org.radixware.schemas.editmask.EditMaskFilePath editMaskFilePath = editMask.addNewFilePath();
+        editMaskFilePath.setSelectionMode(selectionMode == null ? EFileSelectionMode.SELECT_FILE : selectionMode);
+        if (dialogMode != null) {
+            editMaskFilePath.setFileDialogMode(dialogMode);
         }
         if (fileDialogTitle != null) {
             editMaskFilePath.setFileDialogTitle(fileDialogTitle);
@@ -173,14 +224,24 @@ public final class EditMaskFilePath extends EditMask {
             fileDialogTitle = "File Dialog";
             editMaskFilePath.setFileDialogTitle(fileDialogTitle);
         }
-        if (mimeType != null) {
-            editMaskFilePath.setMimeType(mimeType);
+        if (mimeTypes != null && !mimeTypes.isEmpty()) {
+            if (editMaskFilePath.getMimeTypes() == null) {
+                editMaskFilePath.addNewMimeTypes();
+            }
+            final org.radixware.schemas.editmask.EditMaskFilePath.MimeTypes xmlMimeTypes = editMaskFilePath.getMimeTypes();
+
+            for (EMimeType mimeType : mimeTypes) {
+                xmlMimeTypes.getItemList().add(mimeType);
+            }
         }
         if (titleOwnerId != null) {
             editMaskFilePath.setTitleOwnerId(titleOwnerId);
         }
         if (fileDialogTitleId != null) {
             editMaskFilePath.setFileDialogTitleId(titleOwnerId);
+        }
+        if (initialPath != null) {
+            editMaskFilePath.setInitialPath(initialPath);
         }
         editMaskFilePath.setHandleInputAvailable(isHandleInputAvailable);
         editMaskFilePath.setCheckIfPathExists(checkIfPathExists);
@@ -202,7 +263,7 @@ public final class EditMaskFilePath extends EditMask {
         if (!Objects.equals(this.fileDialogTitle, other.fileDialogTitle)) {
             return false;
         }
-        if (!Objects.equals(this.mimeType, other.mimeType)) {
+        if (!Objects.equals(this.mimeTypes, other.mimeTypes)) {
             return false;
         }
         if (this.storeLastPath != other.storeLastPath) {
@@ -214,7 +275,10 @@ public final class EditMaskFilePath extends EditMask {
         if (this.checkIfPathExists != other.checkIfPathExists) {
             return false;
         }
-        if (!Objects.equals(this.mode, other.mode)) {
+        if (!Objects.equals(this.selectionMode, other.selectionMode)) {
+            return false;
+        }
+        if (!Objects.equals(this.dialogMode, other.dialogMode)) {
             return false;
         }
         if (!Objects.equals(this.fileDialogTitleId, other.fileDialogTitleId)) {
@@ -223,7 +287,9 @@ public final class EditMaskFilePath extends EditMask {
         if (!Objects.equals(this.titleOwnerId, other.titleOwnerId)) {
             return false;
         }
-
+        if (!Objects.equals(this.initialPath, other.initialPath)) {
+            return false;
+        }
         return super.equals(obj);
     }
 
@@ -231,88 +297,113 @@ public final class EditMaskFilePath extends EditMask {
     public int hashCode() {
         int hash = 5;
         hash = 29 * hash + Objects.hashCode(this.fileDialogTitle);
-        hash = 29 * hash + Objects.hashCode(this.mimeType);
-        hash = 29 * hash + Objects.hashCode(this.mode);
+        hash = 29 * hash + Objects.hashCode(this.mimeTypes);
+        hash = 29 * hash + Objects.hashCode(this.selectionMode);
+        hash = 29 * hash + Objects.hashCode(this.dialogMode);
         hash = 29 * hash + (this.isHandleInputAvailable ? 1 : 0);
         hash = 29 * hash + (this.checkIfPathExists ? 1 : 0);
         hash = 29 * hash + (this.storeLastPath ? 1 : 0);
         hash = 29 * hash + Objects.hashCode(this.fileDialogTitleId);
         hash = 29 * hash + Objects.hashCode(this.titleOwnerId);
+        hash = 29 * hash + Objects.hashCode(this.initialPath);
         hash = 29 * hash + super.hashCode();
         return hash;
     }
 
-    public void setSelectionMode(EFileSelectionMode mode) {
-        this.mode = mode;
-        afterModify();
-    }
-
-    public EFileSelectionMode getSelectionMode() {
-        if (mode != null) {
-            return mode;
-        } else {
-            return EFileSelectionMode.SELECT_FILE;
+    public void setSelectionMode(final EFileSelectionMode mode) {
+        if (mode != null && mode != this.selectionMode) {
+            this.selectionMode = mode;
+            afterModify();
         }
     }
 
-    @Override
-    protected void afterModify() {
-        super.afterModify();
-        update();
+    public EFileSelectionMode getSelectionMode() {
+        return selectionMode == null ? EFileSelectionMode.SELECT_FILE : selectionMode;
     }
 
-    public void setHandleInputAvailable(boolean enabled) {
-        this.isHandleInputAvailable = enabled;
-        afterModify();
+    public EFileDialogOpenMode getDialogMode() {
+        if (dialogMode == null) {
+            return checkIfPathExists ? EFileDialogOpenMode.LOAD : EFileDialogOpenMode.SAVE;
+        } else {
+            return dialogMode;
+        }
+    }
+
+    public void setDialogMode(final EFileDialogOpenMode dialogMode) {
+        if (dialogMode != null && dialogMode != this.dialogMode) {
+            this.dialogMode = dialogMode;
+            afterModify();
+        }
+    }
+
+    public void setHandleInputAvailable(final boolean enabled) {
+        if (enabled != isHandleInputAvailable) {
+            this.isHandleInputAvailable = enabled;
+            afterModify();
+        }
     }
 
     public boolean getHandleInputAvailable() {
         return isHandleInputAvailable;
     }
 
-    public void setStoreLastPathInConfig(boolean store) {
-        this.storeLastPath = store;
-        afterModify();
+    public void setStoreLastPathInConfig(final boolean store) {
+        if (this.storeLastPath != store) {
+            this.storeLastPath = store;
+            afterModify();
+        }
     }
 
     public boolean getStoreLastPathInConfig() {
         return storeLastPath;
     }
 
-    public void setFileDialogTitle(String title) {
-        this.fileDialogTitle = title;
+    public String getInitialPath() {
+        return initialPath;
+    }
+
+    public void setInitialPath(final String initialPath) {
+        if (!Objects.equals(initialPath, this.initialPath)) {
+            this.initialPath = initialPath;
+            afterModify();
+        }
+    }
+
+    public void setFileDialogTitle(final String title) {
+        if (title != null && !title.equals(fileDialogTitle)) {
+            this.fileDialogTitle = title;
+            afterModify();
+        }
+    }
+
+    public void setMimeType(final EMimeType filter) {
+        mimeTypes = filter == null ? null : EnumSet.of(filter);
         afterModify();
     }
 
-    public void setMimeType(EMimeType filter) {
-        this.mimeType = filter;
-        afterModify();
+    public void setMimeTypes(final EnumSet<EMimeType> types) {
+        if (!Objects.equals(mimeTypes, types)) {
+            mimeTypes = types == null ? null : EnumSet.copyOf(types);
+            afterModify();
+        }
     }
 
-    public EMimeType getMimeType() {
-        return mimeType;
+    public EnumSet<EMimeType> getMimeTypes() {
+        return mimeTypes == null ? EnumSet.noneOf(EMimeType.class) : EnumSet.copyOf(mimeTypes);
     }
 
     public boolean getCheckIfPathExists() {
         return checkIfPathExists;
     }
 
-    public void setCheckIfPathExists(boolean check) {
-        checkIfPathExists = check;
-        afterModify();
-    }
-
-    private void update() {
-        if (getFileDialogTitleAsStr() == null || getFileDialogTitleAsStr().isEmpty()) {
-            setFileDialogTitle("File");
+    public void setCheckIfPathExists(final boolean check) {
+        if (checkIfPathExists != check) {
+            checkIfPathExists = check;
+            afterModify();
         }
     }
 
-    public String getFileDialogTitleAsStr() {
-        return this.fileDialogTitle;
-    }
-
-    public String getFileDialogTitle(DefManager manager) {
+    public String getFileDialogTitle(final DefManager manager) {
         if (fileDialogTitle == null && fileDialogTitleId != null && titleOwnerId != null) {
             fileDialogTitle = manager.getMlStringValue(titleOwnerId, fileDialogTitleId);
         }
@@ -323,7 +414,7 @@ public final class EditMaskFilePath extends EditMask {
         return this.titleOwnerId;
     }
 
-    public void setTitleOwnerId(Id ownerId) {
+    public void setTitleOwnerId(final Id ownerId) {
         this.titleOwnerId = ownerId;
         afterModify();
     }

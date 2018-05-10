@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.client.eas;
 
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.client.IClientEnvironment;
 
 
@@ -27,7 +28,7 @@ class DummyTokenCalculator implements ITokenCalculator {
     }
 
     @Override
-    public byte[] createEncryptedHashForNewPassword(String userName, char[] newPassword) {
+    public byte[] createEncryptedHashForNewPassword(final PasswordHash newPwdHash) {
         throw new UnsupportedOperationException("This operation is not supported");
     }
 

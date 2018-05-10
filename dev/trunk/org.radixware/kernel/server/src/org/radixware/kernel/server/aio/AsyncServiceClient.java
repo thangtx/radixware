@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.aio;
 
 import java.io.IOException;
@@ -20,6 +19,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.wsdl.WSDLException;
 
 import org.apache.xmlbeans.XmlObject;
@@ -31,12 +31,13 @@ import org.radixware.kernel.common.exceptions.ServiceCallException;
 import org.radixware.kernel.common.sc.SapClientOptions;
 import org.radixware.kernel.common.soap.IClientMessageProcessorFactory;
 import org.radixware.kernel.common.trace.LocalTracer;
+import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.common.utils.Utils;
-import org.radixware.kernel.server.arte.FlowLogger;
-import org.radixware.kernel.server.instance.ObjectCache;
+import org.radixware.kernel.common.cache.ObjectCache;
+import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.instance.aadc.AadcManager;
 import org.radixware.kernel.server.soap.CxfClientFactory;
 import org.radixware.kernel.server.soap.ICxfClientContext;
-
 
 public class AsyncServiceClient {
 
@@ -62,6 +63,7 @@ public class AsyncServiceClient {
     private final ObjectCache objectCache = new ObjectCache();
     private final Map<String, Long> sapLastWarnTimeMillis = new HashMap<>();
     private final Map<String, Long> noSapsByScpLastWarnTimeMillis = new HashMap<>();
+    private final AadcManager aadcManager;
 
     public AsyncServiceClient(EventDispatcher dispatcher, LocalTracer tracer, final ServiceManifestLoader manifest, Long systemId, Long thisInstanceId, String serviceUri, String scpName, InetSocketAddress myAddress) {
         this.tracer = tracer;
@@ -89,6 +91,12 @@ public class AsyncServiceClient {
                 return objectCache;
             }
         });
+        final Instance instance = Instance.get();
+        aadcManager = instance == null ? null : instance.getAadcManager();
+    }
+
+    public AadcManager getAadcManager() {
+        return aadcManager;
     }
 
     public void setScpName(String scpName) {
@@ -99,11 +107,19 @@ public class AsyncServiceClient {
         refreshSaps();
     }
 
+    public String getScpName() {
+        return scpName;
+    }
+    
     public ServiceClientSeance invoke(final XmlObject rqEnvBodyDoc, final Class resultClass, boolean keepConnect, int timeoutMillis, final EventHandler responseHandler) {
         return invoke(rqEnvBodyDoc, resultClass, null, keepConnect, timeoutMillis, responseHandler);
     }
 
     public ServiceClientSeance invoke(final XmlObject rqEnvBodyDoc, final Class resultClass, final Map<String, String> requestParams, boolean keepConnect, int timeoutMillis, final EventHandler responseHandler) {
+        return invoke(rqEnvBodyDoc, resultClass, requestParams, keepConnect, timeoutMillis, responseHandler, null);
+    }
+
+    public ServiceClientSeance invoke(final XmlObject rqEnvBodyDoc, final Class resultClass, final Map<String, String> requestParams, boolean keepConnect, int timeoutMillis, final EventHandler responseHandler, final AadcAffinity aadcAffinity) {
         ServiceClientSeance seance = null;
         for (ServiceClientSeance s : seances) {
             if (!s.busy()) {
@@ -118,7 +134,7 @@ public class AsyncServiceClient {
         if (responseHandler != null) {
             dispatcher.waitEvent(new ServiceClientSeance.ResponseEvent(seance), responseHandler, -1);
         }
-        seance.invoke(rqEnvBodyDoc, resultClass, requestParams, keepConnect, timeoutMillis);
+        seance.invoke(rqEnvBodyDoc, resultClass, requestParams, keepConnect, timeoutMillis, aadcAffinity);
         return seance;
     }
 
@@ -155,7 +171,7 @@ public class AsyncServiceClient {
         return cxfClientFactory.createMessageProcessorFactory(sap, tracer);
     }
 
-    protected SapClientOptions getSap(boolean enableBlocked) {
+    protected SapClientOptions getSap(boolean enableBlocked, Integer aadcMemberId) {
         long curTime = System.currentTimeMillis();
         if (curTime - lastSapsRefreshTime > SAPS_REFRESH_PERIOD_MILLIS || (saps.isEmpty() && enableBlocked)) {
             refreshSaps();
@@ -165,24 +181,28 @@ public class AsyncServiceClient {
         }
         long sumPriority = 0;
         for (SapClientOptions s : saps) {
-            if (s.getBlockTime() > 0) {
-                if (curTime > s.getBlockTime()) {
-                    s.unblock();
-                } else {
-                    continue;
+            if (aadcMemberId == null || Objects.equals(s.getAadcMemberId(), aadcMemberId)) {
+                if (s.getBlockTime() > 0) {
+                    if (curTime > s.getBlockTime()) {
+                        s.unblock();
+                    } else {
+                        continue;
+                    }
                 }
+                sumPriority += s.getPriorityAccountingLoad();
             }
-            sumPriority += s.getPriority();
         }
         if (sumPriority > 0) {
             long p = (long) (Math.random() * sumPriority);
             for (SapClientOptions s : saps) {
-                if (s.getBlockTime() > 0) {
-                    continue;
-                }
-                p -= s.getPriority();
-                if (p < 0) {
-                    return s;
+                if (aadcMemberId == null || Objects.equals(s.getAadcMemberId(), aadcMemberId)) {
+                    if (s.getBlockTime() > 0) {
+                        continue;
+                    }
+                    p -= s.getPriorityAccountingLoad();
+                    if (p < 0) {
+                        return s;
+                    }
                 }
             }
         }
@@ -191,13 +211,17 @@ public class AsyncServiceClient {
         }
         sumPriority = 0;
         for (SapClientOptions s : saps) {
-            sumPriority += s.getPriority();
+            if (aadcMemberId == null || Objects.equals(s.getAadcMemberId(), aadcMemberId)) {
+                sumPriority += s.getPriorityAccountingLoad();
+            }
         }
         long p = (long) (Math.random() * sumPriority);
         for (SapClientOptions s : saps) {
-            p -= s.getPriority();
-            if (p < 0) {
-                return s;
+            if (aadcMemberId == null || Objects.equals(s.getAadcMemberId(), aadcMemberId)) {
+                p -= s.getPriorityAccountingLoad();
+                if (p < 0) {
+                    return s;
+                }
             }
         }
         return null; //never	
@@ -206,7 +230,13 @@ public class AsyncServiceClient {
     private void refreshSaps() {
         final long cacheValidTimeMillis = (forceRereadSaps || saps.isEmpty()) ? 0 : SAPS_REFRESH_PERIOD_MILLIS;
         forceRereadSaps = false;
-        final List<SapClientOptions> new_saps = manifest.readSaps(systemId, thisInstanceId, serviceUri, scpName, cacheValidTimeMillis);
+        final List<SapClientOptions> new_saps;
+        try {
+            new_saps = manifest.readSaps(systemId, thisInstanceId, serviceUri, scpName, cacheValidTimeMillis);
+        } catch (Exception ex) {
+            tracer.put(EEventSeverity.WARNING, "Unable to refresh SAPs list: " + ExceptionTextFormatter.throwableToString(ex), null, null, false);
+            return;
+        }
         for (SapClientOptions newSap : new_saps) {
             for (SapClientOptions oldSap : saps) {
                 if (oldSap.getName().equals(newSap.getName())) {
@@ -254,7 +284,9 @@ public class AsyncServiceClient {
     }
 
     /**
-     * Will give no more that one event in ~10 sec, could be used to protect trace from flood
+     * Will give no more that one event in ~10 sec, could be used to protect
+     * trace from flood
+     *
      * @return true if event was generated
      */
     public boolean notifySapUnusable(final String sapName, final String reason) {
@@ -267,9 +299,11 @@ public class AsyncServiceClient {
         }
         return false;
     }
-    
+
     /**
-     * Will give no more that one error in ~10 sec, could be used to protect trace from flood
+     * Will give no more that one error in ~10 sec, could be used to protect
+     * trace from flood
+     *
      * @return true if error was generated
      */
     public boolean notifyNoSaps(final String scpName) {

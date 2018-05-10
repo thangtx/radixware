@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.instance;
 
 import java.util.Collections;
@@ -16,8 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.radixware.kernel.common.kerberos.KrbServiceOptions;
-import org.radixware.kernel.server.utils.PriorityResourceManager;
-
+import org.radixware.kernel.server.utils.IPriorityResourceManager;
 
 final class InstanceOptions {
 
@@ -40,7 +38,15 @@ final class InstanceOptions {
     //shouldn't be included in hash calculation and equals() check
     private final Map<Integer, Integer> priorityMap;
     private final boolean useActiveArteLimits;
-    private final PriorityResourceManager.Options activeArteLimits;
+    private final IPriorityResourceManager.Options activeArteLimits;
+    private final int aadcSysMemberId, aadcSysTestedMemberId, aadcInstMemberId;
+    private final String aadcDgAddress;
+    private final String aadcUnlockTables;
+    private final int aadcCommitedLockExp;
+    private final int delayBeforeAutoRestartSec;
+    private final int threadsStateGatherPeriodSec;
+    private final int threadsStateForcedGatherPeriodSec;
+    private final int aadcAffinityTimeoutSec;
 
     public InstanceOptions(
             final long profilePeriodMillis,
@@ -60,7 +66,18 @@ final class InstanceOptions {
             final KrbServiceOptions krbSeviceOptions,
             final String priorityMapStr,
             final boolean useActiveArteLimits,
-            final PriorityResourceManager.Options activeArteLimits) {
+            final IPriorityResourceManager.Options activeArteLimits,
+            final int aadcSysMemberId,
+            final int aadcSysTestedMemberId,
+            final int aadcInstMemberId,
+            final String aadcDgAddress,
+            final String aadcUnlockTables,
+            final int aadcCommitedLockExp,
+            final int delayBeforeAutoRestartSec,
+            final int threadsStateGatherPeriodSec,
+            final int threadsStateForcedGatherPeriodSec,
+            final int aadcAffinityTimeoutSec
+    ) {
         this.profilePeriodMillis = profilePeriodMillis;
         this.autoActualizeVer = autoActualizeVer;
         this.memoryCheckPeriodMillis = memoryCheckPeriodMillis;
@@ -80,6 +97,16 @@ final class InstanceOptions {
         this.priorityMap = calcPriorityMap(priorityMapStr);
         this.useActiveArteLimits = useActiveArteLimits;
         this.activeArteLimits = activeArteLimits;
+        this.aadcSysMemberId = aadcSysMemberId;
+        this.aadcSysTestedMemberId = aadcSysTestedMemberId;
+        this.aadcInstMemberId = aadcInstMemberId;
+        this.aadcDgAddress = aadcDgAddress;
+        this.aadcUnlockTables = aadcUnlockTables;
+        this.aadcCommitedLockExp = aadcCommitedLockExp;
+        this.delayBeforeAutoRestartSec = delayBeforeAutoRestartSec;
+        this.threadsStateGatherPeriodSec = threadsStateGatherPeriodSec;
+        this.threadsStateForcedGatherPeriodSec = threadsStateForcedGatherPeriodSec;
+        this.aadcAffinityTimeoutSec = aadcAffinityTimeoutSec;
     }
 
     @Override
@@ -104,6 +131,15 @@ final class InstanceOptions {
         hash = 19 * hash + Objects.hashCode(this.priorityMap);
         hash = 19 * hash + (this.useActiveArteLimits ? 1 : 0);
         hash = 19 * hash + Objects.hashCode(this.activeArteLimits);
+        hash = 19 * hash + this.aadcSysMemberId;
+        hash = 19 * hash + this.aadcInstMemberId;
+        hash = 19 * hash + Objects.hashCode(this.aadcDgAddress);
+        hash = 19 * hash + Objects.hashCode(this.aadcUnlockTables);
+        hash = 19 * hash + this.aadcCommitedLockExp;
+        hash = 19 * hash + this.delayBeforeAutoRestartSec;
+        hash = 19 * hash + this.threadsStateGatherPeriodSec;
+        hash = 19 * hash + this.threadsStateForcedGatherPeriodSec;
+        hash = 19 * hash + this.aadcAffinityTimeoutSec;
         return hash;
     }
 
@@ -143,6 +179,9 @@ final class InstanceOptions {
         if (this.criticalArteInstCount != other.criticalArteInstCount) {
             return false;
         }
+        if (this.delayBeforeAutoRestartSec != other.delayBeforeAutoRestartSec) {
+            return false;
+        }
         if (!Objects.equals(this.arteInstLiveTimeMin, other.arteInstLiveTimeMin)) {
             return false;
         }
@@ -173,6 +212,31 @@ final class InstanceOptions {
         if (!Objects.equals(this.activeArteLimits, other.activeArteLimits)) {
             return false;
         }
+        if (!Objects.equals(this.aadcSysMemberId, other.aadcSysMemberId)) {
+            return false;
+        }
+        if (!Objects.equals(this.aadcInstMemberId, other.aadcInstMemberId)) {
+            return false;
+        }
+        if (!Objects.equals(this.aadcDgAddress, other.aadcDgAddress)) {
+            return false;
+        }
+        if (!Objects.equals(this.aadcUnlockTables, other.aadcUnlockTables)) {
+            return false;
+        }
+        if (!Objects.equals(this.aadcCommitedLockExp, other.aadcCommitedLockExp)) {
+            return false;
+        }
+        if (this.threadsStateGatherPeriodSec != other.threadsStateGatherPeriodSec) {
+            return false;
+        }
+        if (this.threadsStateForcedGatherPeriodSec != other.threadsStateForcedGatherPeriodSec) {
+            return false;
+        }
+        if (this.aadcAffinityTimeoutSec != other.aadcAffinityTimeoutSec) {
+            return false;
+        }
+        
         return true;
     }
 
@@ -223,6 +287,13 @@ final class InstanceOptions {
 
         strBuilder.append(autoActualizeVer ? Messages.AUTO_ACTUALIZE_ON : Messages.AUTO_ACTUALIZE_OFF);
         strBuilder.append("; \n\t");
+
+        if (autoActualizeVer) {
+            strBuilder.append(Messages.AUTO_RESTART_DELAY);
+            strBuilder.append(": ");
+            strBuilder.append(String.valueOf(delayBeforeAutoRestartSec));
+            strBuilder.append("; \n\t");
+        }
 
         strBuilder.append(Messages.MEMORY_CHECK_PERIOD_SEC);
         strBuilder.append(": ");
@@ -282,7 +353,6 @@ final class InstanceOptions {
         printKrbOptions(strBuilder);
         strBuilder.append(";\n\t");
 
-
         Instance runningInstance = Instance.get();
         if (runningInstance != null) {
             strBuilder.append(Messages.USE_ORA_IMPL_STMT_CACHE);
@@ -304,11 +374,25 @@ final class InstanceOptions {
         }
         strBuilder.append(";\n\t");
 
+        strBuilder.append(Messages.AADC_MEMBER);
+        strBuilder.append(": ");
+        strBuilder.append(String.valueOf(aadcInstMemberId));
+        strBuilder.append(";\n\t");
+
+        strBuilder.append(Messages.AADC_DG_ADDRESS);
+        strBuilder.append(": ");
+        strBuilder.append(aadcDgAddress);
+        strBuilder.append(";\n\t");
+
         strBuilder.append("\n}");
 
         return strBuilder.toString();
     }
 
+    public int getDelayBeforeAutoRestartSec() {
+        return delayBeforeAutoRestartSec;
+    }
+    
     boolean getAutoActualizeVer() {
         return autoActualizeVer;
     }
@@ -377,7 +461,7 @@ final class InstanceOptions {
         return useActiveArteLimits;
     }
 
-    public PriorityResourceManager.Options getActiveArteLimitsOptions() {
+    public IPriorityResourceManager.Options getActiveArteLimitsOptions() {
         return activeArteLimits;
     }
 
@@ -387,4 +471,41 @@ final class InstanceOptions {
         }
         return priorityMap.get(radixPriority);
     }
+
+    public Integer getAadcSysMemberId() {
+        return aadcSysMemberId > 0 ? aadcSysMemberId : null;
+    }
+
+    public Integer getAadcSysTestedMemberId() {
+        return aadcSysTestedMemberId > 0 ? aadcSysTestedMemberId : null;
+    }
+
+    public Integer getAadcInstMemberId() {
+        return aadcInstMemberId > 0 ? aadcInstMemberId : null;
+    }
+
+    public String getAadcDgAddress() {
+        return aadcDgAddress;
+    }
+
+    public String getAadcUnlockTables() {
+        return aadcUnlockTables;
+    }
+    
+    public int getAadcCommitedLockExp() {
+        return aadcCommitedLockExp;
+    }
+
+    public int getThreadsStateGatherPeriodSec() {
+        return threadsStateGatherPeriodSec;
+    }
+
+    public int getThreadsStateForcedGatherPeriodSec() {
+        return threadsStateForcedGatherPeriodSec;
+    }
+
+    public int getAadcAffinityTimeoutSec() {
+        return aadcAffinityTimeoutSec;
+    }
+    
 }

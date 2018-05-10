@@ -158,7 +158,7 @@ public class Actualizer {
 
         copyPlSqlObjects();
 
-        final ScriptGenerator scriptGenerator = ScriptGenerator.Factory.newAlterInstance(reModel, scope);
+        final ScriptGenerator scriptGenerator = ScriptGeneratorImpl.Factory.newAlterInstance(reModel, scope);
         final CodePrinter cp = CodePrinter.Factory.newSqlPrinter();
         scriptGenerator.generateModificationScript(cp);
         final String result = cp.toString();
@@ -1055,7 +1055,7 @@ public class Actualizer {
                         ddsView.setWithOption(EDdsViewWithOption.NONE);
                     }
 
-                    ddsView.getQuery().setSql(query);
+                    ddsView.getSqml().setSql(query);
                 } finally {
                     withOptionSet.close();
                 }

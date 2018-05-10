@@ -27,6 +27,7 @@ import org.radixware.kernel.common.msdl.fields.IntFieldModel;
 import org.radixware.kernel.common.exceptions.SmioError;
 import org.radixware.kernel.common.exceptions.SmioException;
 import org.radixware.kernel.common.msdl.MsdlUnitContext;
+import org.radixware.kernel.common.msdl.enums.EEncoding;
 import org.radixware.kernel.common.msdl.fields.parser.SmioCoder;
 import org.radixware.kernel.common.msdl.fields.parser.datasource.DataSourceByteBuffer;
 import org.radixware.kernel.common.msdl.fields.parser.datasource.IDataSource;
@@ -36,6 +37,7 @@ import org.radixware.schemas.msdl.LenUnitDef;
 import org.radixware.schemas.types.Int;
 import org.radixware.schemas.msdl.AlignDef;
 import org.radixware.kernel.common.msdl.fields.parser.piece.extras.PadRemover;
+import org.radixware.schemas.msdl.EncodingDef;
 
 public class SmioPieceEmbeddedLen extends SmioPiecePadded {
 
@@ -62,7 +64,7 @@ public class SmioPieceEmbeddedLen extends SmioPiecePadded {
         if (smioCoder == null && getUnit() != LenUnitDef.BYTE) {
             String encoding = embeddedLenDef.getEncoding();
             if (encoding == null) {
-                encoding = getFieldLen().getModel().getEncoding();
+                encoding = getFieldLen().getModel().calcEncoding();
             }
             smioCoder = new SmioCoder(encoding);
         }
@@ -125,7 +127,7 @@ public class SmioPieceEmbeddedLen extends SmioPiecePadded {
             String bf = getCoder().decode(ids, len);
             exbf.extPut(ByteBuffer.wrap(getCoder().encode(bf)));
         } else if (getUnit() == LenUnitDef.ELEMENT) {
-            if (smioField.getIsBCH() || smioField.getIsBSD()) {
+            if (smioField.getIsBCH() || smioField.getIsBCD()) {
                 if (len % 2 == 1) {
                     len += 1;
                     isOddElNeeded = true;
@@ -155,7 +157,7 @@ public class SmioPieceEmbeddedLen extends SmioPiecePadded {
         }
         if (getUnit() == LenUnitDef.ELEMENT) {
             len = bf.remaining();
-            if (smioField.getIsBCH() || smioField.getIsBSD()) {
+            if (smioField.getIsBCH() || smioField.getIsBCD()) {
                 len *= 2;
                 if (smioField.needOddElementLen()) {
                     len -= 1;
@@ -211,12 +213,21 @@ public class SmioPieceEmbeddedLen extends SmioPiecePadded {
 
     @Override
     public void check(RadixObject source, IProblemHandler handler) {
-        super.check(source, handler);
-        if (getUnit() == null) {
-            handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName() + "' formating error: 'Unit not defined'"));
+        super.check(source, handler); 
+        final String msgSource = "MSDL Field '" + source.getQualifiedName();
+        final String msgTemplate = msgSource + "' formatting %s: '%s'";
+        LenUnitDef.Enum unit_ = getUnit();
+        if (unit_ != LenUnitDef.BYTE && getCoder() == null) {
+            handler.accept(RadixProblem.Factory.newError(source, String.format(msgTemplate, "error",
+                        "Encoding not defined (can be used 'Int Default Encoding' from parents also)")));
         }
-        if (getUnit() != LenUnitDef.BYTE && getCoder() == null) {
-            handler.accept(RadixProblem.Factory.newError(source, "MSDL Field '" + source.getQualifiedName() + "' formating error: 'Encoding not defined (can be used 'Int Default Encoding' from parents also)'"));
+        if (unit_ == LenUnitDef.ELEMENT && !smioField.getIsBCH() && getCoder() != null && getCoder().encoding != EncodingDef.BCD) {
+            handler.accept(RadixProblem.Factory.newWarning(source, String.format(msgTemplate, "warning",
+                        "formatting warning: 'Unit type 'Element' allowed only for BCH field type or field with BCD encoding)")));
+        }
+        if (embeddedLenDef.isSetBounds() && getAlign() != null && getAlign() != AlignDef.NONE && !isPadSymbolCorrect(unit_)) {
+            handler.accept(RadixProblem.Factory.newWarning(source, String.format(msgTemplate, "warning",
+                        "Pad symbol not defined")));
         }
     }
 
@@ -251,10 +262,10 @@ public class SmioPieceEmbeddedLen extends SmioPiecePadded {
                 if (getUnit() == LenUnitDef.CHAR) {
                     ret = insertPadCharacters(ret, low);
                 }
-                if (getUnit() == LenUnitDef.BYTE || (unit == LenUnitDef.ELEMENT && !smioField.getIsBCH() && !smioField.getIsBSD())) {
+                if (getUnit() == LenUnitDef.BYTE || (unit == LenUnitDef.ELEMENT && !smioField.getIsBCH() && !smioField.getIsBCD())) {
                     ret = insertPadBytes(ret, low);
                 }
-                if (unit == LenUnitDef.ELEMENT && (smioField.getIsBCH() || smioField.getIsBSD())) {
+                if (unit == LenUnitDef.ELEMENT && (smioField.getIsBCH() || smioField.getIsBCD())) {
                     if (low % 2 == 1) {
                         low += 1;
                     }
@@ -270,10 +281,8 @@ public class SmioPieceEmbeddedLen extends SmioPiecePadded {
     }
 
     @Override
-    protected Byte getPadByte() throws SmioException {
+    protected Byte getPadByte() {
         Byte padByte = null;
-//        padByte = embeddedLenDef.isSetPadBin() ? embeddedLenDef.getPadBin()[0] : smioField.getModel().getPadBin(true)[0];
-        padByte = embeddedLenDef.isSetPadBin() ? embeddedLenDef.getPadBin()[0] : smioField.getModel().getPadBin(true)[0];
         byte[] bin = null;
         
         if(embeddedLenDef.isSetPadBin()) {
@@ -289,15 +298,13 @@ public class SmioPieceEmbeddedLen extends SmioPiecePadded {
     }
 
     @Override
-    protected Character getPadChar() throws SmioException {
+    protected Character getPadChar() {
         Character padChar = null;
         if (padChar == null) {
             if (embeddedLenDef.isSetPadChar()) {
                 padChar = embeddedLenDef.getPadChar().charAt(0);
             } else if (smioField.getModel().getPadChar() != null && smioField.getModel().getPadChar().length() > 0) {
                 padChar = smioField.getModel().getPadChar().charAt(0);
-            } else {
-                throw new SmioException("No pad character set!");
             }
         }
         return padChar;
@@ -314,74 +321,5 @@ public class SmioPieceEmbeddedLen extends SmioPiecePadded {
             }
         }
         return align;
-    }
-
-    private ExtByteBuffer stripPadding(ExtByteBuffer exbf, int len) throws SmioException, IOException {
-        // Extract some methods into SmioPiecePadded from here and SmioPieceFixedLen
-        DataSourceByteBuffer dsbf = new DataSourceByteBuffer(exbf.flip());
-        ExtByteBuffer ret = exbf;
-        if (getUnit() == LenUnitDef.CHAR) {
-            final SmioCoder cs = getCoder();
-            if (cs == null) {
-                throw new SmioException("Encoding not defined");
-            }
-            
-            String data = cs.decode(dsbf, len);
-
-            if (getAlign() == AlignDef.LEFT) {
-                final Character ch = getPadChar();
-                int last;
-                for (last = len - 1; last > -1; last--) {
-                    if (data.charAt(last) != ch) {
-                        break;
-                    }
-                }
-                data = data.substring(0, last + 1);
-            }
-            
-            if (getAlign() == AlignDef.RIGHT) {
-                final Character ch = getPadChar();
-                int first;
-                for (first = 0; first < len; first++) {
-                    if (data.charAt(first) != ch) {
-                        break;
-                    }
-                }
-                data = data.substring(first, len);
-            }
-            ret = new ExtByteBuffer();
-            ret.extPut(ByteBuffer.wrap(cs.encode(data)));
-        }
-        if (getUnit() == LenUnitDef.BYTE || (unit == LenUnitDef.ELEMENT && !smioField.getIsBCH() && !smioField.getIsBSD())) {
-            final byte[] data = exbf.flip().array();
-            final ByteBuffer res = ByteBuffer.allocate(len);
-            final int minLen = smioField.getMinFieldLen();
-            if (getAlign() == AlignDef.LEFT) {
-                int last = len - 1;
-                if (getPadByte() != null) {
-                    for (last = len - 1; last > 0; last--) {
-                        if (data[last] != getPadByte()) {
-                            break;
-                        }
-                    }
-                }
-                res.put(data, 0, last + 1);
-            }
-            if (getAlign() == AlignDef.RIGHT) {
-                int first = 0;
-                if (getPadByte() != null) {
-                    for (first = 0; first < len - minLen; first++) {
-                        if (data[first] != getPadByte()) {
-                            break;
-                        }
-                    }
-                }
-                res.put(data, first, len - first);
-            }
-            res.flip();
-            ret = new ExtByteBuffer();
-            ret.extPut(res);
-        }
-        return ret;
     }
 }

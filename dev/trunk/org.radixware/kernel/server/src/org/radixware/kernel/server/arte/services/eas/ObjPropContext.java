@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.arte.services.eas;
 
 import java.util.ArrayList;
@@ -16,6 +15,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import org.radixware.kernel.common.defs.dds.DdsIndexDef;
+import org.radixware.kernel.common.defs.dds.DdsPrimaryKeyDef;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef.ColumnsInfoItem;
 import org.radixware.kernel.common.enums.EEditPossibility;
@@ -35,15 +36,19 @@ import org.radixware.kernel.server.meta.presentations.RadClassPresentationDef;
 import org.radixware.kernel.server.meta.presentations.RadConditionDef;
 import org.radixware.kernel.server.meta.presentations.RadEditorPresentationDef;
 import org.radixware.kernel.server.meta.presentations.RadParentTitlePropertyPresentationDef;
+import org.radixware.kernel.server.meta.presentations.RadSelectorPresentationDef;
 import org.radixware.kernel.server.types.Entity;
 import org.radixware.kernel.server.types.EntityGroup;
 import org.radixware.kernel.server.types.IRadClassInstance;
 import org.radixware.kernel.server.types.Pid;
 import org.radixware.kernel.server.types.PresentationEntityAdapter;
+import org.radixware.kernel.server.types.PropValHandlersByIdMap;
 import org.radixware.kernel.server.types.Restrictions;
 import org.radixware.kernel.server.types.presctx.EntityPropertyPresentationContext;
+import org.radixware.kernel.server.types.presctx.PresentationContext;
+import org.radixware.kernel.server.types.presctx.UnknownPresentationContext;
 import org.radixware.schemas.eas.ExceptionEnum;
-
+import org.radixware.schemas.eas.PropertyList;
 
 final class ObjPropContext extends PropContext {
 
@@ -53,10 +58,10 @@ final class ObjPropContext extends PropContext {
     private final Context context;
     private final RadConditionDef.Prop2ValueCondition contextProperties;
 
-    ObjPropContext(final SessionRequest rq, 
-                  final org.radixware.schemas.eas.Context.ObjectProperty xml,
-                  final org.radixware.schemas.eas.PropertyList groupProps) throws InterruptedException {
-        super(rq, xml.getPropertyId(),groupProps);
+    ObjPropContext(final SessionRequest rq,
+            final org.radixware.schemas.eas.Context.ObjectProperty xml,
+            final org.radixware.schemas.eas.PropertyList groupProps) throws InterruptedException {
+        super(rq, xml.getPropertyId(), groupProps);
         edPresId = xml.getEditorPresentationId();
         context = rq.getContext(xml.getObjectContext());
         final Arte arte = rq.getArte();
@@ -70,9 +75,21 @@ final class ObjPropContext extends PropContext {
             if (xml.getObject().isSetSrcPID()) {
                 src = arte.getEntityObject(new Pid(arte, classDef.getEntityId(), xml.getObject().getSrcPID()));
             }
-            rq.initNewObject(object, context, edPres, null, src, EEntityInitializationPhase.TEMPLATE_EDITING);
+
+            final List<Id> pkPropIds = getPkPropIds(object);
+            final PropValHandlersByIdMap pkValsMap = new PropValHandlersByIdMap();
+            rq.writeCurData2Map(classDef, edPres, xml.getObject(), pkValsMap, new SessionRequest.PropValLoadFilter() {
+
+                @Override
+                public boolean skip(SessionRequest.PropVal val) {
+                    return !pkPropIds.contains(val.prop.getId());
+                }
+            });
+
+            rq.initNewObject(object, context, edPres, pkValsMap, src, EEntityInitializationPhase.TEMPLATE_EDITING);
         }
         final PresentationEntityAdapter presAdapter = arte.getPresentationAdapter(object);
+        object.setReadRights(true);//RADIX-14087 - read rights immediately bacause later we will need them anyway
         rq.writeCurData2Entity(presAdapter, object.getPresentationMeta().getEditorPresentationById(edPresId), xml.getObject(), readOnlyPropIds, SessionRequest.NULL_PROP_LOAD_FILTER);
         if (context != null && context.getContextReferenceRole() == EContextRefRole.CHILDREN_SCOPE && context.getContextReference() != null) {
             for (DdsReferenceDef.ColumnsInfoItem refProp : context.getContextReference().getColumnsInfo()) {
@@ -81,9 +98,36 @@ final class ObjPropContext extends PropContext {
         }
         if (getContextRefProperty().getValType() == EValType.OBJECT) {
             contextProperties = RadConditionDef.Prop2ValueCondition.EMPTY_CONDITION;
-        }else{        
+        } else {
             contextProperties = calcContextProperties();
         }
+    }
+
+    ObjPropContext(final SessionRequest rq,
+            final Id propertyId,
+            final Id edPresId,
+            final Entity ownerObject,
+            final Context ownerObjectContext) {
+        super(rq, propertyId, null);
+        this.edPresId = edPresId;
+        this.object = ownerObject;
+        this.contextProperties = RadConditionDef.Prop2ValueCondition.EMPTY_CONDITION;
+        context = ownerObjectContext;
+    }
+
+    private List<Id> getPkPropIds(final Entity entity) {
+        final List<Id> pkPropIds = new ArrayList<>();
+
+        final DdsPrimaryKeyDef pkDef = entity.getRadMeta().getTableDef().getPrimaryKey();
+        if (pkDef == null) {
+            return pkPropIds;
+        }
+
+        for (DdsIndexDef.ColumnInfo info : pkDef.getColumnsInfo()) {
+            pkPropIds.add(info.getColumnId());
+        }
+
+        return pkPropIds;
     }
 
     protected RadEditorPresentationDef getContextPropOwnerEdPres() {
@@ -96,7 +140,7 @@ final class ObjPropContext extends PropContext {
         final Id classCatalogId;
         if (getContextRefProperty().getValType() == EValType.OBJECT) {
             classCatalogId = getContextPropOwnerEdPres().getPropClassCatalogIdByPropId(ptPropOwnerClassPres, getPropertyId());
-        } else {            
+        } else {
             classCatalogId = getSelectorPresentation().getClassCatalogId();
         }
         if (classCatalogId == null) {
@@ -104,8 +148,6 @@ final class ObjPropContext extends PropContext {
         }
         return getClassDef().getPresentation().getClassCatalogById(classCatalogId);
     }
-    
-    
 
     Collection<Id> getContextPropOwnerReadolyPropIds() {
         return Collections.unmodifiableCollection(readOnlyPropIds);
@@ -210,11 +252,27 @@ final class ObjPropContext extends PropContext {
 
     @Override
     void checkAccessible() {
+        final Entity propOwner = getContextPropOwner();
+        final List<Id> applicableRoleIds = propOwner.getCurUserApplicableRoleIds();
         final RadEditorPresentationDef parentPresentation = getContextPropOwnerEdPres();
-        final Restrictions parentPresRightsRest = parentPresentation.getTotalRestrictions(getContextPropOwner().getCurUserApplicableRoleIds());
+        final Restrictions parentPresRightsRest = parentPresentation.getTotalRestrictions(applicableRoleIds);
         if (parentPresRightsRest.getIsAccessRestricted()) {
             throw EasFaults.newAccessViolationFault(rq.getArte(), Messages.MLS_ID_INSUF_PRIV_TO_ACCESS_CNTX_ED_PRES, "\"" + parentPresentation.getName() + "\"(#" + parentPresentation.getId() + ")");
         }
+        if (getOwnerObjectPresentationAdapter().getAdditionalRestrictions(parentPresentation).getIsAccessRestricted()) {
+            throw EasFaults.newAccessViolationFault(rq.getArte(), Messages.MLS_ID_INSUF_PRIV_TO_ACCESS_CNTX_ED_PRES, "\"" + parentPresentation.getName() + "\"(#" + parentPresentation.getId() + ")");
+        }
+    }
+
+    PresentationEntityAdapter getOwnerObjectPresentationAdapter() {
+        final PresentationEntityAdapter presEntAdapter = rq.getArte().getPresentationAdapter(getContextPropOwner());
+        if (context == null) {
+            presEntAdapter.setPresentationContext(UnknownPresentationContext.INSTANCE);
+        } else {
+            final PresentationContext ownerPresContext = SessionRequest.getPresentationContext(rq.getArte(), context, null);
+            presEntAdapter.setPresentationContext(ownerPresContext);
+        }
+        return presEntAdapter;
     }
 
     void assertOwnerPropIsEditable() {
@@ -225,6 +283,13 @@ final class ObjPropContext extends PropContext {
         final EEditPossibility propEdPossibility = edPres.getPropEditPossibilityByPropId(getContextPropOwner().getPresentationMeta(), getPropertyId());
         if (propEdPossibility == EEditPossibility.NEVER || propEdPossibility == EEditPossibility.ON_CREATE && getContextPropOwner().isInDatabase(false)) {
             throw EasFaults.newAccessViolationFault(rq.getArte(), Messages.MLS_ID_INSUF_PRIV_TO_UPDATE_PROPERTY, "#" + getPropertyId());
+        }
+    }
+
+    void assertOwnerPropIsEditable(final PresentationEntityAdapter adapter) {
+        final RadEditorPresentationDef edPres = getContextPropOwnerEdPres();
+        if (adapter.getAdditionalRestrictions(edPres).getIsUpdateRestricted()) {
+            throw EasFaults.newAccessViolationFault(rq.getArte(), Messages.MLS_ID_INSUF_PRIV_TO_UPDATE_CONTEXT_OBJ, MultilingualString.get(rq.getArte(), Messages.MLS_OWNER_ID, Messages.MLS_ID_IN_PRESENTATION) + " \"" + edPres.getName() + "\"(#" + edPres.getId() + ")");
         }
     }
 
@@ -241,7 +306,7 @@ final class ObjPropContext extends PropContext {
     @Override
     public RadConditionDef.Prop2ValueCondition getContextProperties() {
         return contextProperties;
-    }    
+    }
 
     /**
      * @return the object
@@ -253,8 +318,10 @@ final class ObjPropContext extends PropContext {
 
     @Override
     EntityPropertyPresentationContext getPresentationContext(final EntityGroup entityGroup) {
-        return new EntityPropertyPresentationContext(object, getPropertyId(), entityGroup);
-    }        
+        final RadSelectorPresentationDef selectorPresentation = getSelectorPresentation();
+        final Id selectorPresentationId = selectorPresentation == null ? null : selectorPresentation.getId();
+        return new EntityPropertyPresentationContext(object, getPropertyId(), entityGroup, selectorPresentationId);
+    }
 
     @Override
     public String toString() {

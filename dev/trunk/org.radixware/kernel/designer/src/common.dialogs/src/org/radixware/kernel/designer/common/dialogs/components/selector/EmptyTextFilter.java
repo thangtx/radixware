@@ -12,6 +12,8 @@
 package org.radixware.kernel.designer.common.dialogs.components.selector;
 
 import java.awt.Component;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.jdesktop.swingx.JXSearchField;
@@ -51,6 +53,17 @@ public class EmptyTextFilter<TValue> extends ItemFilter<TValue> {
             @Override
             public void changedUpdate(DocumentEvent e) {
                 updatePattern();
+            }
+        });
+        field.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                field.setCaretPosition(field.getDocument().getLength());
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
             }
         });
     }

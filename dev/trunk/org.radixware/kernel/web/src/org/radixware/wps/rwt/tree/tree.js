@@ -95,36 +95,10 @@ $RWT.tree = {
         }
     },
     _syncScroll: function(e) {
-        var h = WpsUtils.findChildByLocalName(this.parentNode, 'div');
-        var table = WpsUtils.findChildByLocalName(h, 'table');
-        $(table).css('left', -this.scrollLeft + 'px');
+        $RWT.gridLayout._syncScroll(this);
     },
     layout: function(tree) {
         $RWT.gridLayout.doLayout(tree, true, $RWT.tree._setCellWidth);//see client.js
-        var editor = $RWT.tree._findFilterEditor(tree);
-        if (editor!=null){
-            $RWT.tree._initFilterEditor(editor, tree);
-        }        
-    },
-    _initFilterEditor: function(editor, tree){
-        var input = $RWT.inputBox.findInput(editor);
-        if (input!=null){
-            $(input).keyup(function() {
-                                $RWT.delay(function(){
-                                        $RWT.actions.event(tree, 'filter', input.value);
-                                       }, 500 );
-            });
-        }
-    },
-    _findFilterEditor: function(tree){
-        var filterEditorId = tree.getAttribute('filtereditor');
-        if ( filterEditorId!=null ){
-            var editors = $('#' + filterEditorId);
-            if (editors != null && editors.length > 0) {
-                return editors[0];
-            }
-        }
-        return null;
     },
     _findEditor: function(tree) {
         var editorId = tree.getAttribute('editor');

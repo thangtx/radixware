@@ -23,6 +23,7 @@ import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.enums.ERepositoryBranchType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.repository.Branch;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.dds.DdsSegment;
 import org.radixware.kernel.common.repository.dds.fs.IRepositoryDdsModule;
 import org.radixware.kernel.common.utils.FileUtils;
@@ -55,6 +56,10 @@ public class DdsModelManager {
     private void loadModels() throws IOException {
         final IRepositoryDdsModule repository = module.getRepository();
         if (repository == null) {
+            return;
+        }
+        Layer layer = module.getLayer();
+        if (layer != null && layer.isLocalizing()){
             return;
         }
 
@@ -313,7 +318,7 @@ public class DdsModelManager {
     public void switchModelToModificationState() throws IOException {
         synchronized (modelLock) {
             loadModelsIfNecessary();
-
+            
             if (modifiedModel != null) {
                 if (modifiedModel.getModifierInfo().isOwn()) {
                     return; // already
@@ -329,6 +334,9 @@ public class DdsModelManager {
                 fixedModel = newFixedModel;
 
                 modifiedModel.getModifierInfo().setCurrent();
+                
+                modifiedModel.getStringBundle().reloadStrings();
+                
                 if (modelSupport != null) {
                     modelSupport.fireEvent(new RadixEvent()); // update tree
                 }
@@ -340,25 +348,31 @@ public class DdsModelManager {
     static public class Support {
 
         //RADIX-8822
-        static public DdsModule loadAndGetDdsModule(final File modelXml) throws IOException, XmlException {
-
+        static public DdsModule loadAndGetDdsModule(final File modelXml, final Reference<Branch> refBranch) throws IOException, XmlException {
+            
             final File moduleDirFile = modelXml.getParentFile();
             final File moduleXmlFile = new File(moduleDirFile.getAbsolutePath() + "/" + FileNames.DDS_MODULE_XML);
             final File layerFile = moduleDirFile.getParentFile().getParentFile();
             final File branchAsFile = layerFile.getParentFile();
             final Reference<DdsModule> newDdsModule = new Reference();
+       
 
-            final Branch branch = Branch.Factory.loadFromDir(branchAsFile);
+            Branch branch = refBranch.get();
+            if (branch == null) {
+                branch = Branch.Factory.loadFromDir(branchAsFile);
+                refBranch.set(branch);
+            }
+
             branch.visit(new IVisitor() {
                 @Override
-                public void accept(RadixObject radixObject) {
+                public void accept(final RadixObject radixObject) {
                     if (radixObject instanceof DdsModule) {
                         newDdsModule.set((DdsModule) radixObject);
                     }
                 }
             }, new VisitorProvider() {
                 @Override
-                public boolean isTarget(RadixObject radixObject) {
+                public boolean isTarget(final RadixObject radixObject) {
                     if (radixObject instanceof DdsModule) {
                         final DdsModule ddsModule = (DdsModule) radixObject;
                         if (ddsModule.getFile().equals(moduleXmlFile)) {
@@ -368,6 +382,7 @@ public class DdsModelManager {
                     return false;
                 }
             });
+          
             final DdsModule ddsModule = newDdsModule.get();
             return ddsModule;
         }

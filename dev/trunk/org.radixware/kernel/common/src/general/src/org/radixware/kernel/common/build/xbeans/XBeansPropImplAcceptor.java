@@ -24,6 +24,8 @@ public interface XBeansPropImplAcceptor {
     void endProperty();
 
     void acceptSingletonPropGetter(SchemaProperty prop, String jtargetType, String identifier, String setIdentifier, int javaType, boolean isRadix) throws IOException;
+    
+    void acceptSingletonPropGetterDateTimeWithTimezone(SchemaProperty prop, String jtargetType, String identifier, String setIdentifier, int javaType, boolean isRadix) throws IOException;
 
     void acceptSingletonPropXmlGetter(SchemaProperty prop, String identifier, String setIdentifier) throws IOException;
 
@@ -34,6 +36,10 @@ public interface XBeansPropImplAcceptor {
     void acceptSeveralPropArrayAccess(SchemaProperty prop, String setIdentifier, int javaType) throws IOException;
 
     void acceptSeveralPropArrayElementAccess(SchemaProperty prop, String identifier, String setIdentifier, String jtargetType) throws IOException;
+    
+    void acceptSeveralPropArrayAccessDateTimeWithTimezone(SchemaProperty prop, String setIdentifier, int javaType) throws IOException;
+
+    void acceptSeveralPropArrayElementAccessDateTimeWithTimezone(SchemaProperty prop, String identifier, String setIdentifier, String jtargetType) throws IOException;
 
     void acceptSeveralPropArrayXmlGetter(String setIdentifier) throws IOException;
 
@@ -44,10 +50,14 @@ public interface XBeansPropImplAcceptor {
     void acceptSeveralPropSizeAccess(String setIdentifier) throws IOException;
 
     void acceptListGetter15GetList(boolean xget, String wrappedType, String parentThis, boolean xmltype) throws IOException;
+    
+    void acceptListGetter15GetListDateTimeWithTimezone(boolean xget, String wrappedType, String parentThis, boolean xmltype) throws IOException;
 
     void acceptListSetter15AssignList(SchemaType sType, String identifier, String setIdentifier, boolean isobj, boolean isSubstGroup) throws IOException;
 
     void acceptSingletonPropSetter(SchemaType sType, SchemaProperty prop, String jtargetType, int javaType, String identifier, String setIdentifier, boolean isRadix, boolean xmltype, String jSet, boolean optional, boolean nillable) throws IOException;
+    
+    void acceptSingletonPropSetterDateTimeWithTimezone(SchemaType sType, SchemaProperty prop, String jtargetType, int javaType, String identifier, String setIdentifier, boolean isRadix, boolean xmltype, String jSet, boolean optional, boolean nillable) throws IOException;
 
     void acceptSingletonPropXmlSetter(SchemaType sType, String identifier, String setIdentifier) throws IOException;
 
@@ -60,6 +70,8 @@ public interface XBeansPropImplAcceptor {
     void acceptSeveralPropArraySetter(SchemaType sType, String identifier, String setIdentifier, boolean isobj, boolean isSubstGroup) throws IOException;
 
     void acceptSeveralPropArrayElementSetter(SchemaType sType, SchemaProperty prop, String identifier, String setIdentifier, String jtargetType, String jSet, int javaType) throws IOException;
+    
+    void acceptSeveralPropArrayElementSetterDateTimeWithTimezone(SchemaType sType, SchemaProperty prop, String identifier, String setIdentifier, String jtargetType, String jSet, int javaType) throws IOException;
 
     void acceptSeveralPropArrayXmlSetter(SchemaType sType, String identifier) throws IOException;
 
@@ -70,6 +82,10 @@ public interface XBeansPropImplAcceptor {
     void acceptSeveralPropElementInsertion(SchemaType sType, String identifier, String setIdentifier, String jtargetType, boolean isSubstGroup, String jSet, int javaType) throws IOException;
 
     void acceptSeveralPropElementAddition(SchemaType sType, String identifier, String jtargetType, int javaType, String jSet) throws IOException;
+    
+    void acceptSeveralPropElementInsertionDateTimeWithTimezone(SchemaType sType, String identifier, String setIdentifier, String jtargetType, boolean isSubstGroup, String jSet, int javaType) throws IOException;
+
+    void acceptSeveralPropElementAdditionDateTimeWithTimezone(SchemaType sType, String identifier, String jtargetType, int javaType, String jSet) throws IOException;
 
     void acceptSeveralPropNewElementInsertion(SchemaType sType, String identifier, String setIdentifier, boolean isSubstGroup) throws IOException;
 

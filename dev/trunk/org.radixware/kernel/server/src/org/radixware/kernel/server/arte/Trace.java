@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.arte;
 
 import java.util.List;
@@ -16,11 +15,12 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 
 /**
  * ARTE Trace
  *
-
+ *
  *
  */
 public class Trace extends org.radixware.kernel.server.trace.Trace {
@@ -54,7 +54,7 @@ public class Trace extends org.radixware.kernel.server.trace.Trace {
                     }
                 }
             };
-            trace.initDbLog(arte.getDbConnection().get(), tracer);
+            trace.initDbLog(((RadixConnection) arte.getDbConnection().get()), tracer);
             return trace;
         }
     }

@@ -17,6 +17,7 @@ import org.radixware.kernel.common.defs.ads.clazz.AdsPropertyGroup;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.defs.dds.DdsReferenceDef;
+import org.radixware.kernel.common.defs.localization.LocalizedDescribableRef;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EPropNature;
 import org.radixware.schemas.adsdef.AbstractPropertyDefinition;
@@ -86,14 +87,13 @@ public class AdsDetailColumnPropertyDef extends AdsTablePropertyDef implements D
     }
     
     @Override
-    public Definition getDescriptionLocation(){
-        Definition owner = super.getDescriptionLocation();
-        if (isDescriptionInherited() && owner == this){
-            if (!isOverride() && !isOverwrite()){
-                DdsColumnDef column = columnInfo.findColumn();
-                if (column != null){
-                    return column;
-                }
+    public Definition getDescriptionLocation(boolean inherited){
+        Definition owner = super.getDescriptionLocation(inherited);
+        if (inherited && owner == this) {
+            DdsColumnDef column = columnInfo.findColumn();
+            if (column != null) {
+                describableRef = new LocalizedDescribableRef(column);
+                return column;
             }
         }
         return owner;

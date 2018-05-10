@@ -89,7 +89,7 @@ public class ValIntEditor extends AbstractNumberEditor<Long> {
         final IInputValidator inputValidator = new LongValidator(editMask.getMinValue(), 
                                                                  editMask.getMaxValue(), 
                                                                  editMask.getNumberBase(),
-                                                                 editMask.getTriadDelimeter(getEnvironment().getLocale()));
+                                                                 editMask.getTriadDelimeter(getEnvironment()));
         setInputValidator(inputValidator);
     }
 
@@ -118,7 +118,7 @@ public class ValIntEditor extends AbstractNumberEditor<Long> {
     protected Character getCharacter(final ESymbol symbol) {
         switch (symbol){
             case TRIAD_DELIMETER:
-                return ((EditMaskInt)getEditMask()).getTriadDelimeter(getEnvironment().getLocale());
+                return ((EditMaskInt)getEditMask()).getTriadDelimeter(getEnvironment());
             case DECIMAL_DELIMETER:
                 return null;
             case PLUS:

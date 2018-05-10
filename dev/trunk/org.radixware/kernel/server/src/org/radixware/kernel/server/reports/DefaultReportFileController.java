@@ -12,7 +12,9 @@
 package org.radixware.kernel.server.reports;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.UUID;
 import org.radixware.kernel.server.types.Report;
 
@@ -83,8 +85,14 @@ public class DefaultReportFileController implements IReportFileController {
     }
 
     public static File createTmpDir() {
-        final File tmpDir = new File(System.getProperty("java.io.tmpdir"));
-        return new File(tmpDir, UUID.randomUUID().toString());
+        try {
+            File result = Files.createTempDirectory(UUID.randomUUID().toString()).toFile();
+            result.deleteOnExit();
+            
+            return result;
+        } catch (IOException e) {
+            return null;
+        }
     }
 
 }

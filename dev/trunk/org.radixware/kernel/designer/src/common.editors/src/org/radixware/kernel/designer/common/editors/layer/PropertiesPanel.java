@@ -15,6 +15,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JComboBox;
 import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
@@ -22,12 +23,21 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.openide.util.ChangeSupport;
 import org.openide.util.NbBundle;
+import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.ads.common.AdsVisitorProvider;
+import org.radixware.kernel.common.defs.ads.doc.AdsDocMapDef;
 import org.radixware.kernel.common.defs.dds.utils.DbNameUtils;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.repository.Branch;
+import org.radixware.kernel.common.repository.Branch.Layers;
 import org.radixware.kernel.common.repository.Layer;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.RadixObjectsUtils;
 import org.radixware.kernel.designer.common.dialogs.ExtensionsPanel;
 import org.radixware.kernel.designer.common.dialogs.LanguagesSelector;
+import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinition;
+import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
 import org.radixware.kernel.designer.common.dialogs.components.ExpandableTextFieldPanel;
 import org.radixware.kernel.designer.common.dialogs.components.selector.ItemClusterizator;
 import org.radixware.kernel.designer.common.dialogs.components.state.StateManager;
@@ -73,6 +83,8 @@ class PropertiesPanel extends javax.swing.JPanel {
         titleValue.setEditable(!readonly);
         copyrightValue.setEditable(!readonly);
         selectLanguagesBtn.setEnabled(!readonly);
+        selectRootDocMapDefBtn.setEnabled(!readonly);
+        comboBoxMainDocLanguag.setEnabled(!readonly);
 
         paragraphNavigator = new RootParagraphNavigator(layer, true);
         rolesNavigator = new RootParagraphNavigator(layer, false);
@@ -131,6 +143,8 @@ class PropertiesPanel extends javax.swing.JPanel {
 
         refreshLanguagesField();
         refreshExtensionsField();
+        refreshMainDocLanguageField();
+        refreshRootDocMapDefId();
         isComplete();
     }
 
@@ -179,6 +193,11 @@ class PropertiesPanel extends javax.swing.JPanel {
         lblAccessibleRoles = new javax.swing.JLabel();
         txtAccessibleRoles = new javax.swing.JTextField();
         cmdAccessibleRoles = new javax.swing.JButton();
+        lbMainDoclLanguage = new javax.swing.JLabel();
+        selectRootDocMapDefBtn = new javax.swing.JButton();
+        rootDocMapDefValue = new javax.swing.JTextField();
+        lbRootDocMapDef = new javax.swing.JLabel();
+        comboBoxMainDocLanguag = new javax.swing.JComboBox();
 
         setBorder(javax.swing.BorderFactory.createEmptyBorder(4, 4, 4, 4));
         setLayout(new java.awt.GridBagLayout());
@@ -345,7 +364,7 @@ class PropertiesPanel extends javax.swing.JPanel {
         lblExtensions.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.lblExtensions.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
         add(lblExtensions, gridBagConstraints);
@@ -358,7 +377,7 @@ class PropertiesPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
@@ -368,7 +387,7 @@ class PropertiesPanel extends javax.swing.JPanel {
         extensionsValue.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.extensionsValue.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridy = 10;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(4, 0, 4, 0);
@@ -391,7 +410,7 @@ class PropertiesPanel extends javax.swing.JPanel {
         lblDbNameRestriction.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.lblDbNameRestriction.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 11;
+        gridBagConstraints.gridy = 13;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
         add(lblDbNameRestriction, gridBagConstraints);
@@ -404,14 +423,14 @@ class PropertiesPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 11;
+        gridBagConstraints.gridy = 13;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
         add(cmdDefaultRestriction, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 11;
+        gridBagConstraints.gridy = 13;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.weightx = 1.0;
@@ -426,7 +445,7 @@ class PropertiesPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
@@ -436,7 +455,7 @@ class PropertiesPanel extends javax.swing.JPanel {
         txtAccessibleRoots.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.txtAccessibleRoots.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(4, 0, 4, 0);
@@ -445,7 +464,7 @@ class PropertiesPanel extends javax.swing.JPanel {
         lblAccessibleRoots.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.lblAccessibleRoots.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 9;
+        gridBagConstraints.gridy = 11;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
         add(lblAccessibleRoots, gridBagConstraints);
@@ -453,7 +472,7 @@ class PropertiesPanel extends javax.swing.JPanel {
         spacer.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.spacer.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 12;
+        gridBagConstraints.gridy = 14;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weighty = 1.0;
@@ -462,7 +481,7 @@ class PropertiesPanel extends javax.swing.JPanel {
         lblAccessibleRoles.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.lblAccessibleRoles.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
         add(lblAccessibleRoles, gridBagConstraints);
@@ -471,7 +490,7 @@ class PropertiesPanel extends javax.swing.JPanel {
         txtAccessibleRoles.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.txtAccessibleRoles.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(4, 0, 4, 0);
@@ -485,11 +504,66 @@ class PropertiesPanel extends javax.swing.JPanel {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 10;
+        gridBagConstraints.gridy = 12;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
         gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
         add(cmdAccessibleRoles, gridBagConstraints);
+
+        lbMainDoclLanguage.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.lbMainDoclLanguage.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
+        add(lbMainDoclLanguage, gridBagConstraints);
+
+        selectRootDocMapDefBtn.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.selectRootDocMapDefBtn.text")); // NOI18N
+        selectRootDocMapDefBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectRootDocMapDefBtnActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
+        add(selectRootDocMapDefBtn, gridBagConstraints);
+
+        rootDocMapDefValue.setEditable(false);
+        rootDocMapDefValue.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.rootDocMapDefValue.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(4, 0, 4, 0);
+        add(rootDocMapDefValue, gridBagConstraints);
+
+        lbRootDocMapDef.setText(org.openide.util.NbBundle.getMessage(PropertiesPanel.class, "PropertiesPanel.lbRootDocMapDef.text")); // NOI18N
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 9;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(0, 4, 0, 4);
+        add(lbRootDocMapDef, gridBagConstraints);
+
+        comboBoxMainDocLanguag.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comboBoxMainDocLanguag.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comboBoxMainDocLanguagActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 8;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.LINE_START;
+        gridBagConstraints.insets = new java.awt.Insets(4, 0, 4, 4);
+        add(comboBoxMainDocLanguag, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
 
 private void selectLanguagesBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectLanguagesBtnActionPerformed
@@ -498,6 +572,7 @@ private void selectLanguagesBtnActionPerformed(java.awt.event.ActionEvent evt) {
         layer.setLanguages(languages);
     }
     refreshLanguagesField();
+    refreshMainDocLanguageField();
 }//GEN-LAST:event_selectLanguagesBtnActionPerformed
 
 private void selectExtensionsBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectExtensionsBtnActionPerformed
@@ -528,16 +603,46 @@ private void selectExtensionsBtnActionPerformed(java.awt.event.ActionEvent evt) 
         setAccessibleRoots(false);
     }//GEN-LAST:event_cmdAccessibleRolesActionPerformed
 
+    private void selectRootDocMapDefBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectRootDocMapDefBtnActionPerformed
+        Id oldRootMapId = layer.getRootDocMapDefId();
+
+        ChooseDefinitionCfg cfg = ChooseDefinitionCfg.Factory.newInstance(layer, new AdsVisitorProvider() {
+            @Override
+            public boolean isTarget(RadixObject object) {
+                return (object instanceof AdsDocMapDef);
+            }
+        }
+        );
+
+        Definition def = ChooseDefinition.chooseDefinition(cfg);
+        if (def != null && !def.getId().equals(oldRootMapId)) {
+            layer.setRootDocMapDefId(def.getId());
+            refreshRootDocMapDefId();
+        }
+    }//GEN-LAST:event_selectRootDocMapDefBtnActionPerformed
+
+    private void comboBoxMainDocLanguagActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comboBoxMainDocLanguagActionPerformed
+        EIsoLanguage oldLang = layer.getMainDocLanguage();
+        JComboBox cb = (JComboBox) evt.getSource();
+        EIsoLanguage lang = (EIsoLanguage) cb.getSelectedItem();
+        if (!lang.equals(oldLang)) {
+            layer.setMainDocLanguage(lang);
+        }
+    }//GEN-LAST:event_comboBoxMainDocLanguagActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField URIValue;
     private javax.swing.JButton btChooseBaseLayers;
     private javax.swing.JButton cmdAccessibleRoles;
     private javax.swing.JButton cmdAccessibleRoots;
     private javax.swing.JButton cmdDefaultRestriction;
+    private javax.swing.JComboBox comboBoxMainDocLanguag;
     private javax.swing.JTextField copyrightValue;
     private javax.swing.JPanel dbNameRestrictionPanel;
     private javax.swing.JTextField extensionsValue;
     private javax.swing.JTextField languagesValue;
+    private javax.swing.JLabel lbMainDoclLanguage;
+    private javax.swing.JLabel lbRootDocMapDef;
     private javax.swing.JLabel lblAccessibleRoles;
     private javax.swing.JLabel lblAccessibleRoots;
     private javax.swing.JLabel lblBaseLayers;
@@ -554,8 +659,10 @@ private void selectExtensionsBtnActionPerformed(java.awt.event.ActionEvent evt) 
     private javax.swing.JTextField ownerBranchValue;
     private javax.swing.JTextField prevLayerUriValue;
     private javax.swing.JTextField releaseValue;
+    private javax.swing.JTextField rootDocMapDefValue;
     private javax.swing.JButton selectExtensionsBtn;
     private javax.swing.JButton selectLanguagesBtn;
+    private javax.swing.JButton selectRootDocMapDefBtn;
     private javax.swing.JTextField titleValue;
     private javax.swing.JTextField txtAccessibleRoles;
     private javax.swing.JTextField txtAccessibleRoots;
@@ -579,6 +686,34 @@ private void selectExtensionsBtnActionPerformed(java.awt.event.ActionEvent evt) 
             languagesValue.setText(stringBuilder.toString());
         } else {
             languagesValue.setText("");
+        }
+    }
+
+    private void refreshMainDocLanguageField() {
+        final List<EIsoLanguage> languages = layer.getLanguages();
+        // TODO: !!! нужно обработать ситуацию когда язык который был выбран ранее пробпал из списка.
+        comboBoxMainDocLanguag.setModel(new javax.swing.DefaultComboBoxModel(languages.toArray()));
+        comboBoxMainDocLanguag.setSelectedItem(layer.getMainDocLanguage());
+    }
+
+    private void refreshRootDocMapDefId() {
+        final Id idMap = layer.getRootDocMapDefId();
+        final Branch branch = layer.getBranch();
+        Layers layers = branch.getLayers();
+
+        // ищим во всех слоях нужную map 
+        for (Layer item : layers) {
+            AdsDocMapDef map = (AdsDocMapDef) item.find(new AdsVisitorProvider() {
+                public boolean isTarget(RadixObject object) {
+                    return object instanceof AdsDocMapDef && (((AdsDocMapDef) object).getId() == idMap);
+                }
+
+            }
+            );
+            if (map != null) {
+                rootDocMapDefValue.setText(map.getQualifiedName());
+                break;
+            }
         }
     }
 

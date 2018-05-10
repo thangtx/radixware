@@ -21,6 +21,7 @@ import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.VisitorProviderFactory;
 import org.radixware.kernel.common.defs.ads.AdsDefinitions;
 import org.radixware.kernel.common.defs.ads.ICompilable;
+import org.radixware.kernel.common.defs.ads.IDefinitionContainer;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.ExtendableMembers;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityClassDef;
@@ -530,6 +531,11 @@ public class AdsVisitorProviders {
         return new AdsVisitorProvider.AdsTopLevelDefVisitorProvider() {
 
             @Override
+            public boolean isContainer(RadixObject object) {
+                return super.isContainer(object) || object instanceof IDefinitionContainer;
+            }
+
+            @Override
             public boolean isTarget(RadixObject object) {
                 return (object instanceof AdsReportClassDef);
             }
@@ -546,6 +552,21 @@ public class AdsVisitorProviders {
                     return report.isActualVersion();
                 } else {
                     return false;
+                }
+            }
+        };
+    }
+    
+    public static VisitorProvider newCommonReportAndUserReportProvider() {
+        return new AdsVisitorProvider.AdsTopLevelDefVisitorProvider() {
+
+            @Override
+            public boolean isTarget(RadixObject object) {
+                if (object instanceof AdsUserReportClassDef) {
+                    AdsUserReportClassDef report = (AdsUserReportClassDef) object;
+                    return report.isActualVersion();
+                } else {
+                    return object instanceof AdsReportClassDef;
                 }
             }
         };

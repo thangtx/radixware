@@ -177,4 +177,13 @@ class UFModuleRepository implements IRepositoryAdsModule {
     public List<IJarDataProvider> getBinaries() {
         return Collections.emptyList();
     }
+
+    @Override
+    public IRepositoryAdsDefinition getMlsRepository() {
+        return null;
+    }
+
+    @Override
+    public void setModule(AdsModule module) {
+    }
 }

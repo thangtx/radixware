@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.RunParams;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
@@ -61,6 +62,7 @@ import org.radixware.kernel.explorer.widgets.ExplorerAction;
 import org.radixware.kernel.common.client.widgets.IModifableComponent;
 import org.radixware.kernel.common.client.widgets.IModificationListener;
 import org.radixware.kernel.common.client.widgets.actions.IMenu;
+import org.radixware.kernel.explorer.dialogs.PresentationInfoDialog;
 import org.radixware.kernel.explorer.widgets.ExplorerMenu;
 import org.radixware.kernel.explorer.widgets.ExplorerToolBar;
 import org.radixware.kernel.explorer.widgets.QWidgetProxy;
@@ -116,8 +118,31 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
     private final ActionController actionController;
     private final EditorController editorController;
     private final EditorUIController editorUIController;    
+    private final List<OpenHandler> openHandlers = new LinkedList<>();
+    private final OpenHandler defaultOpenHandler = new OpenHandler() {
 
-    protected Editor(IClientEnvironment environment) {
+        @Override
+        public void afterOpen() {
+            final List<OpenHandler> handlers = new LinkedList<>(openHandlers);
+            for (OpenHandler c : handlers) {
+                c.afterOpen();
+            }
+        }
+    };
+    private final List<CloseHandler> closeHandlers = new LinkedList<>();
+    private final CloseHandler defaultCloseHandler = new CloseHandler() {
+
+        @Override
+        public void onClose() {
+            final List<CloseHandler> handlers = new LinkedList<>(closeHandlers);
+            for (CloseHandler c : handlers) {
+                c.onClose();
+            }
+        }
+    };
+    
+    
+    protected Editor(final IClientEnvironment environment) {
         this.environment = environment;
         //Редактор создается на основе QMainWindow,
         //чтобы можно было использовать QToolBar
@@ -136,6 +161,12 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
             @Override
             protected void execAuditLogDialog(IClientEnvironment env, IEditor editor, Id tableId, Pid pid, String title) {
                 AuditLogDialog.execAuditLogDialog(env, (QWidget) editor, tableId, pid, title);
+            }
+
+            @Override
+            protected void execPresentationInfoDialog(String title, String classId, String className, String presentationId, String presentationName, String explorerItemId, String pid) {
+                PresentationInfoDialog dlg = new PresentationInfoDialog(getEnvironment(), title, classId, className, presentationId, presentationName, explorerItemId, pid);
+                dlg.execDialog();
             }
         };
         actions = new Actions(actionController);
@@ -253,7 +284,7 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
         editorUIController.setCommandBarHidden(hidden);
     }
 
-    public void setToolButtonsSize(int size) {
+    public void setToolButtonsSize(final int size) {
         editorUIController.setToolButtonsSize(size);
     }
 
@@ -261,6 +292,7 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
         return editorUIController.getToolButtonsSize();
     }
 
+    @Override
     public void setMenu(final IMenu menu) {
         clearEditorMenu();
         editorMenu = menu;
@@ -304,14 +336,14 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
                 }
                 selfMenu = true;
             }
-            editorMenu.removeAllActions();
+            editorMenu.clear();
             editorMenu.addAction(actions.getDeleteAction());
             editorMenu.addAction(actions.getCopyAction());
             editorMenu.addAction(actions.getUpdateAction());
             editorMenu.addAction(actions.getCancelChangesAction());
             editorMenu.addAction(actions.getRereadAction());            
             if (RunParams.isDevelopmentMode()){
-                editorMenu.insertSeparator(null);
+                editorMenu.addSubSeparator();
                 editorMenu.addAction(actions.getCopyEditorPresIdAction());
             }
             editorMenu.setEnabled(true);
@@ -350,7 +382,7 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
     public void open(Model model_) {
         getController().open(model_);
         afterOpen();
-
+        setObjectName("rx_editor_view_#"+model_.getDefinition().getId());
     }
 
     private void afterOpen() {
@@ -361,7 +393,6 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
         setTabOrder(getToolBar(), getCommandBar());
 
         Application.getInstance().getActions().settingsChanged.connect(this, "applySettings()");
-        content.setFocus();
     }
 
     public void open(final Model model_, final ComponentModificationRegistrator registrator) {
@@ -371,7 +402,7 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
     //private boolean wasClosed;
 
     @Override
-    public boolean close(boolean forced) {
+    public boolean close(final boolean forced) {
         if (getController().close(forced)) {
             super.close();
             return true;
@@ -386,7 +417,7 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
     }        
 
     @Override
-    protected void closeEvent(QCloseEvent event) {
+    protected void closeEvent(final QCloseEvent event) {
         getController().setClosed();
         closeHandlers.clear();
         openHandlers.clear();
@@ -435,12 +466,12 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
     }
 
     @Override
-    public void visitChildren(Visitor visitor, boolean recursively) {
+    public void visitChildren(final Visitor visitor, final boolean recursively) {
         getController().visitChildren(visitor, recursively);
     }        
 
     @Override
-    protected void focusInEvent(QFocusEvent event) {
+    protected void focusInEvent(final QFocusEvent event) {
         super.focusInEvent(event);
         content.setFocus();
     }
@@ -503,7 +534,7 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
     }
 
     @Override
-    public void refresh() {
+    public void refresh() {        
         actions.refresh();
     }
 
@@ -511,76 +542,44 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
     public boolean isDisabled() {
         return !asQWidget().isEnabled();
     }
-    private final List<CloseHandler> closeHandlers = new LinkedList<>();
-    private final CloseHandler defaultCloseHandler = new CloseHandler() {
-
-        @Override
-        public void onClose() {
-            synchronized (closeHandlers) {
-                for (CloseHandler c : closeHandlers) {
-                    c.onClose();
-                }
-            }
-        }
-    };
 
     @Override
-    public void addCloseHandler(CloseHandler handler) {
-        synchronized (closeHandlers) {
-            if (!closeHandlers.contains(handler)) {
-                if (closeHandlers.isEmpty()) {
-                    closed.connect(defaultCloseHandler, "onClose()");
-                }
-                closeHandlers.add(handler);
+    public void addCloseHandler(final CloseHandler handler) {
+        if (handler!=null && !closeHandlers.contains(handler)) {
+            if (closeHandlers.isEmpty()) {
+                closed.connect(defaultCloseHandler, "onClose()");
             }
+            closeHandlers.add(handler);
         }
     }
 
     @Override
-    public void removeCloseHandler(CloseHandler handler) {
-        synchronized (closeHandlers) {
-            closeHandlers.remove(handler);
-        }
+    public void removeCloseHandler(final CloseHandler handler) {
+        closeHandlers.remove(handler);
     }
-    private final List<OpenHandler> openHandlers = new LinkedList<>();
-    private final OpenHandler defaultOpenHandler = new OpenHandler() {
 
-        @Override
-        public void afterOpen() {
-            synchronized (openHandlers) {
-                for (OpenHandler c : openHandlers) {
-                    c.afterOpen();
-                }
+    @Override
+    public void addOpenHandler(final OpenHandler handler) {
+        if (handler!=null && !openHandlers.contains(handler)) {
+            if (openHandlers.isEmpty()) {
+                opened.connect(defaultOpenHandler, "afterOpen()");
             }
-        }
-    };
-
-    @Override
-    public void addOpenHandler(OpenHandler handler) {
-        synchronized (openHandlers) {
-            if (!openHandlers.contains(handler)) {
-                if (openHandlers.isEmpty()) {
-                    opened.connect(defaultOpenHandler, "afterOpen()");
-                }
-                openHandlers.add(handler);
-            }
+            openHandlers.add(handler);
         }
     }
 
     @Override
-    public void removeOpenHandler(OpenHandler handler) {
-        synchronized (openHandlers) {
-            openHandlers.remove(handler);
-        }
+    public void removeOpenHandler(final OpenHandler handler) {
+        openHandlers.remove(handler);
     }
 
     @Override
-    public void addEditorListener(EditorListener l) {
+    public void addEditorListener(final EditorListener l) {
         getController().addEditorListener(l);
     }
 
     @Override
-    public void removeEditorListener(EditorListener l) {
+    public void removeEditorListener(final EditorListener l) {
         getController().removeEditorListener(l);
     }
 
@@ -590,7 +589,7 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
     }
 
     @Override
-    protected void customEvent(QEvent event) {
+    protected void customEvent(final QEvent event) {
         if (event instanceof SetupMenu){
             event.accept();
             setupMenu();
@@ -598,6 +597,8 @@ public abstract class Editor extends MainWindow implements IExplorerView, IEdito
             super.customEvent(event);
         }
     }
-    
-    
+
+    public final EWidgetMarker getWidgetMarker(){
+        return EWidgetMarker.EDITOR;
+    }    
 }

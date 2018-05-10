@@ -22,34 +22,27 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.defs.*;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
-import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
+import org.radixware.kernel.common.defs.ads.ITopContainer;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
-import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.module.ModuleDefinitions;
 import org.radixware.kernel.common.defs.uds.UdsDefinitionIcon;
-import org.radixware.kernel.common.defs.uds.userfunc.UdsUserFuncDef;
 import org.radixware.kernel.common.enums.ERepositorySegmentType;
-import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.Modules;
 import org.radixware.kernel.common.repository.Segment;
 import org.radixware.kernel.common.repository.uds.IRepositoryUdsModule;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.schemas.adsdef.*;
 
-import org.radixware.schemas.udsdef.UdsDefinitionDocument.UdsDefinition;
-import org.radixware.schemas.udsdef.UdsDefinitionListDocument;
-import org.radixware.schemas.udsdef.UdsDefinitionListDocument.UdsDefinitionList;
 
 
 public class UdsModule extends AdsModule {
 
     public static final String ETC_DIR_NAME = "etc";
+    private UdsFiles udsFiles;
 
     @Override
     public File getBinDirContainer() {
@@ -104,7 +97,7 @@ public class UdsModule extends AdsModule {
     public void collectDependences(final List<Definition> list) {
         final Set<Module> modules = new HashSet<>();
         final List<Definition> deps = new ArrayList<>(50);
-        this.getDefinitions().visit(new IVisitor() {
+        IVisitor visitor = new IVisitor() {
             @Override
             public void accept(RadixObject radixObject) {
                 deps.clear();
@@ -116,8 +109,9 @@ public class UdsModule extends AdsModule {
                     }
                 }
             }
-        }, VisitorProviderFactory.createDefaultVisitorProvider());
-
+        };
+        this.getDefinitions().visit(visitor,VisitorProviderFactory.createDefaultVisitorProvider());
+        this.getUdsFiles().visit(visitor, VisitorProviderFactory.createDefaultVisitorProvider());
         final Module overwritten = findOverwritten();
         if (overwritten != null) {
             list.add(overwritten);
@@ -184,100 +178,10 @@ public class UdsModule extends AdsModule {
     private boolean isImportInProgress = false;
     final Lock importLock = new ReentrantLock();
 
-    public int importUserDefinitions(File fromFile, boolean removeExisting, List<Definition> duplicates) throws IOException {
-
-        try {
-            importLock.lock();
-            enableAutoUpload(false);
-            ((org.radixware.kernel.common.defs.uds.module.ModuleDefinitions) getDefinitions()).enableAutoDependences(false);
-            isImportInProgress = true;
-            int count = 0;
-
-            try {
-                if (removeExisting) {
-                    List<AdsDefinition> defs = getDefinitions().list();
-                    for (Definition def : defs) {
-                        def.delete();
-                    }
-
-                }
-                UdsDefinitionListDocument xDoc = UdsDefinitionListDocument.Factory.parse(fromFile);
-                UdsDefinitionList xList = xDoc.getUdsDefinitionList();
-
-                if (xList != null) {
-
-                    List<UdsDefinition> xDefList = xList.getUdsDefinitionList();
-                    if (xDefList != null) {
-                        for (UdsDefinition xDef : xDefList) {
-                            AdsDefinition def = Loader.loadFromXml(xDef, true);
-                            if (def != null) {
-                                getDefinitions().add(def);
-                                count++;
-                            }
-                        }
-                    }
-                }
-            } catch (XmlException ex) {
-                try {
-                    AdsUserFuncDefinitionDocument xDoc = AdsUserFuncDefinitionDocument.Factory.parse(fromFile);
-                    AdsUserFuncDefinitionDocument.AdsUserFuncDefinition xDef = xDoc.getAdsUserFuncDefinition();
-                    if (xDef != null && xDef.getClassId() != null && xDef.getMethodId() != null && xDef.getOwnerClassId() != null && xDef.getPropId() != null && xDef.getName() != null) {
-                        AdsDefinition def = UdsUserFuncDef.Factory.loadFrom(xDef, true);
-                        if (def != null) {
-                            if (getDefinitions().findById(def.getId()) != null) {
-                                duplicates.add(getDefinitions().findById(def.getId()));
-                                return 0;
-                            }
-                            getDefinitions().add(def);
-                            return 1;
-                        }
-                    }
-                } catch (XmlException ex1) {
-                    //not a user func. it is possibly user report
-                    try {
-                        AdsUserReportExchangeDocument xDoc = AdsUserReportExchangeDocument.Factory.parse(fromFile);
-                        UserReportExchangeType xDefs = xDoc.getAdsUserReportExchange();
-                        for (UserReportDefinitionType xReportBundle : xDefs.getAdsUserReportDefinitionList()) {
-                            ClassDefinition xReport = xReportBundle.getReport();
-                            if (xReport != null) {
-                                AdsReportClassDef report = AdsReportClassDef.Factory.loadFrom(xReport);
-                                if (getDefinitions().findById(report.getId()) != null) {
-                                    duplicates.add(getDefinitions().findById(report.getId()));
-                                    continue;
-                                }
-                                getDefinitions().add(report);
-
-                                if (xReportBundle.getStrings() != null) {
-                                    AdsLocalizingBundleDef bundle = report.findLocalizingBundle();
-                                    if (bundle != null) {
-                                        for (LocalizedString xStr : xReportBundle.getStrings().getStringList()) {
-                                            AdsMultilingualStringDef string = AdsMultilingualStringDef.Factory.loadFrom(xStr);
-                                            bundle.getStrings().getLocal().add(string);
-                                        }
-                                    }
-                                    bundle.save();
-                                    getDefinitions().reload(report);
-                                }
-                                count++;
-                            }
-                        }
-                    } catch (XmlException e) {
-                        throw new IOException("Invalid input file format", e);
-                    }
-                }
-            }
-            return count;
-        } finally {
-            isImportInProgress = false;
-            enableAutoUpload(true);
-            ((org.radixware.kernel.common.defs.uds.module.ModuleDefinitions) getDefinitions()).enableAutoDependences(false);
-            importLock.unlock();
-        }
-    }
-
     @Override
     public void visitChildren(IVisitor visitor, VisitorProvider provider) {
         getDefinitions().visit(visitor, provider);
+        getUdsFiles().visit(visitor, provider);
     }
 
     @Override
@@ -398,4 +302,62 @@ public class UdsModule extends AdsModule {
     public Dependences createDependences() {
         return new UdsModuleDependences(this);
     }
+    
+    protected UdsFiles createFilesList() {
+        return new UdsFiles(this, true);
+    }
+
+    public UdsFiles getUdsFiles() {
+        synchronized (this) {
+            if (udsFiles == null){
+                udsFiles = createFilesList();
+            }
+            return udsFiles;
+        }
+    }
+    
+    public UdsFiles getUdsFilesIfLoaded() {
+        synchronized (this) {
+            return udsFiles;
+        }
+    }
+
+    @Override
+    public File getSourceFile(AdsDefinition def) {
+        if (def instanceof AdsLocalizingBundleDef){
+            return super.getSourceFile(def);
+        }
+        return getUdsFiles().getSourceFile(def, null);
+    }
+    
+    @Override
+    public ITopContainer getTopContainer(){
+        return getUdsFiles();
+    }
+
+    @Override
+    public void save(AdsDefinition def) throws IOException {
+        if (def instanceof AdsLocalizingBundleDef){
+            super.save(def);
+        } else {
+            getUdsFiles().save(def, null);
+        }
+    }
+    
+    protected class UdsModuleClipboardSupport extends AdsModuleClipboardSupport{
+
+        @Override
+        public CanPasteResult canPaste(List<Transfer> transfers, DuplicationResolver resolver) {
+            if (getUdsFiles().getClipboardSupport().canPaste(transfers, resolver) == CanPasteResult.YES) {
+                return CanPasteResult.YES;
+            }
+            return super.canPaste(transfers, resolver);
+        }
+    }
+
+    @Override
+    public ClipboardSupport<? extends AdsModule> getClipboardSupport() {
+        return new UdsModuleClipboardSupport();
+    }
+
 }

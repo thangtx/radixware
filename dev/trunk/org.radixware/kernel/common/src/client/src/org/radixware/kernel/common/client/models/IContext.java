@@ -11,10 +11,9 @@
 
 package org.radixware.kernel.common.client.models;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import org.apache.xmlbeans.XmlException;
@@ -42,7 +41,6 @@ import org.radixware.kernel.common.client.models.items.properties.PropertyObject
 import org.radixware.kernel.common.client.models.items.properties.PropertyRef;
 import org.radixware.kernel.common.client.models.items.properties.PropertyReference;
 import org.radixware.kernel.common.client.types.Pid;
-import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.types.Restrictions;
 import org.radixware.kernel.common.client.views.IExplorerItemView;
 import org.radixware.kernel.common.enums.EEditPossibility;
@@ -53,7 +51,6 @@ import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.WrongFormatError;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.kernel.common.utils.XmlUtils;
 import org.radixware.schemas.eas.Context;
 
 public interface IContext {
@@ -830,11 +827,7 @@ public interface IContext {
 
         @Override
         public org.radixware.schemas.eas.Context toXml() {
-            final org.radixware.schemas.eas.Context resultXml = getSelectorRowContext().toXml();
-            if (!getGroupModel().getActiveProperties().isEmpty()){
-                getGroupModel().writePropertiesToXml(resultXml.addNewGroupProperties());
-            }
-            return resultXml;
+            return getSelectorRowContext().toXml();
         }
 
         @Override
@@ -934,7 +927,7 @@ public interface IContext {
     }
 
 //	Редактирование заготовки при создании объекта без контекста
-    public static class ContextlessCreating extends Entity {
+    public static class ContextlessCreating extends Entity {        
         
         private final Model holderModel;
 
@@ -1217,7 +1210,13 @@ public interface IContext {
 
         @Override
         protected Restrictions calculateRestrictions() {
-            return explorerItemDef.getRestrictions();
+            final Restrictions explorerItemRestrictions = explorerItemDef.getRestrictions();            
+            if (parentEntity==null || !parentEntity.getContext().getRestrictions().getIsUpdateRestricted()){
+                return explorerItemRestrictions;
+            }else{
+                //RADIX-12971
+                return Restrictions.Factory.sum(explorerItemRestrictions, Restrictions.READ_ONLY);
+            }
         }
 
         @Override
@@ -1255,102 +1254,52 @@ public interface IContext {
                 rootItem.setExplorerItemId(explorerItemId);
             }
             
-            final RadContextFilter contextFilter = getFilter();
-            if (contextFilter!=null){
-                writeContextFilterToXml(contextFilter, treePath.addNewFilter());
+            final List<RadContextFilter> contextFilters = getFilters();
+            if (!contextFilters.isEmpty()){
+                final org.radixware.schemas.eas.Context.TreePath.FilterList filterList = treePath.addNewFilterList();
+                for (RadContextFilter contextFilter: contextFilters){
+                    writeContextFilterToXml(contextFilter, filterList.addNewFilter());
+                }
             }
             return result;
         }
         
         private static void writeContextFilterToXml(final RadContextFilter filter, 
-                                                    final org.radixware.schemas.eas.Filter filterXml){
-            filterXml.setAdditionalCondition(filter.getCondition());
+                                                                         final org.radixware.schemas.eas.Context.TreePath.FilterList.Filter filterXml){
+            if (filter.getCondition()!=null){
+                filterXml.setAdditionalCondition(filter.getCondition());
+            }
+            if (filter.getPredefinedFilterId()!=null){
+                filterXml.setId(filter.getPredefinedFilterId());
+            }
+            if (filter.getExplorerItemId()!=null){
+                filterXml.setExplorerItemId(filter.getExplorerItemId());
+            }
             final Collection<RadFilterParamValue> paramValues = filter.getParameterValues();
             if (!paramValues.isEmpty()){
-                final org.radixware.schemas.eas.Filter.Parameters parametersXml = filterXml.addNewParameters();
+                final org.radixware.schemas.eas.PropertyList parametersXml = filterXml.addNewParameters();
                 for (RadFilterParamValue value: paramValues){
-                    writeFilterParameterValueToXml(value, parametersXml.addNewItem());
+                    value.writeToXml(parametersXml.addNewItem());
                 }
             }
         }
         
-        private static void writeFilterParameterValueToXml(final RadFilterParamValue paramValue,
-                                                           final org.radixware.schemas.eas.Filter.Parameters.Item paramValueXml){
-            paramValueXml.setId(paramValue.getParamId());
-            switch(paramValue.getType()){
-                case INT:{
-                    final Long value;
-                    if (paramValue.getValue()==null){
-                        value=null;
-                    }else{
-                        value = (Long)paramValue.getValue().toObject(EValType.INT);
-                    }
-                    if (value==null){
-                        paramValueXml.setNilInt();
-                    }else{
-                        paramValueXml.setInt(value);
-                    }
-                    break;
-                }
-                case NUM:{
-                    final BigDecimal value;
-                    if (paramValue.getValue()==null){
-                        value=null;
-                    }else{
-                        value = (BigDecimal)paramValue.getValue().toObject(EValType.NUM);
-                    }
-                    if (value==null){
-                        paramValueXml.setNilNum();
-                    }else{
-                        paramValueXml.setNum(value);
-                    }
-                    break;
-                }
-                case DATE_TIME:{
-                    final Timestamp value;
-                    if (paramValue.getValue()==null){
-                        value=null;
-                    }else{
-                        value = (Timestamp)paramValue.getValue().toObject(EValType.DATE_TIME);
-                    }                    
-                    paramValueXml.setDateTime(value);
-                    break;
-                }
-                case PARENT_REF:{
-                    final String refAsStr;
-                    if (paramValue.getValue()==null){
-                        refAsStr=null;
-                    }else{
-                        refAsStr = (String)paramValue.getValue().toObject(EValType.STR);
-                    }                 
-                    final Reference ref = refAsStr==null ? null : Reference.fromValAsStr(refAsStr);
-                    final Pid value = ref==null ? null : ref.getPid();
-                    if (value==null){
-                        paramValueXml.setNilPID();
-                    }else{
-                        final org.radixware.schemas.eas.FilterParamValue.PID pidXml = paramValueXml.addNewPID();
-                        pidXml.setEntityId(value.getTableId());
-                        pidXml.setStringValue(XmlUtils.getSafeXmlString(value.toString()));
-                    }
-                    break;
-                }
-                default:{
-                    final String value = paramValue.getValue()==null ? null : paramValue.getValue().toString();
-                    if (value==null){
-                        paramValueXml.setNilStr();
-                    }else{
-                        paramValueXml.setStr(XmlUtils.getSafeXmlString(value));
-                    }
-                    break;
-                }
-            }
-        }
-        
+        @Deprecated//use getFilters instead
         public RadContextFilter getFilter(){
             if (explorerItemDef instanceof RadSelectorExplorerItemDef){
-                return ((RadSelectorExplorerItemDef)explorerItemDef).getContextFilter();
+                final List<RadContextFilter> contextFilters = 
+                    ((RadSelectorExplorerItemDef)explorerItemDef).getContextFilters();
+                return contextFilters.isEmpty() ? null : contextFilters.get(0);
             }else{
                 return null;
+            }            
+        }
+        
+        public List<RadContextFilter> getFilters(){
+            if (explorerItemDef instanceof RadSelectorExplorerItemDef){
+                return ((RadSelectorExplorerItemDef)explorerItemDef).getContextFilters();
+            }else{
+                return Collections.emptyList();
             }
         }
         
@@ -1512,7 +1461,7 @@ public interface IContext {
             if (property instanceof PropertyRef){
                 return ((PropertyRef)property).getParentSelectorPresentation();
             }else if (property instanceof PropertyArrRef){
-                return ((PropertyArrRef)property).getDefinition().getParentSelectorPresentation();
+                return ((PropertyArrRef)property).getParentSelectorPresentation();
             }else{
                 return null;
             }
@@ -1591,7 +1540,7 @@ public interface IContext {
             if (property instanceof PropertyRef){
                 return ((PropertyRef)property).getParentSelectorPresentation();
             }else if (property instanceof PropertyArrRef){
-                return ((PropertyArrRef)property).getDefinition().getParentSelectorPresentation();
+                return ((PropertyArrRef)property).getParentSelectorPresentation();
             }else{
                 return null;
             }
@@ -1670,7 +1619,7 @@ public interface IContext {
             if (property instanceof PropertyRef){
                 return ((PropertyRef)property).getParentSelectorPresentation();
             }else if (property instanceof PropertyArrRef){
-                return ((PropertyArrRef)property).getDefinition().getParentSelectorPresentation();
+                return ((PropertyArrRef)property).getParentSelectorPresentation();
             }else{
                 return null;
             }

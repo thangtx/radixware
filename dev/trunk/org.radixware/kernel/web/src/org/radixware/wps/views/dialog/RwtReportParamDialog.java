@@ -76,6 +76,7 @@ public class RwtReportParamDialog extends Dialog implements IReportParamDialogVi
         if (this.model.getReportPresentationDef().getDefaultHeight() > 0) {
             setHeight(this.model.getReportPresentationDef().getDefaultHeight());
         }
+        setObjectName("rx_report_param_view_#"+model.getDefinition().getId());
     }
 
     @Override

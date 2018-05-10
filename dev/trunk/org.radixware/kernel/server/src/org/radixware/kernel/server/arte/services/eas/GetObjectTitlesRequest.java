@@ -193,13 +193,18 @@ final class GetObjectTitlesRequest extends SessionRequest {
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final GetObjectTitlesDocument doc = process((GetObjectTitlesMess) rq);
-        postProcess(rq, doc.getGetObjectTitles().getGetObjectTitlesRs());
+        GetObjectTitlesDocument doc = null;
+        try{
+            doc = process((GetObjectTitlesMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getGetObjectTitles().getGetObjectTitlesRs());
+        }
         return doc;
     }
 
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(((GetObjectTitlesMess) rqXml).getGetObjectTitlesRq());
     }
 }

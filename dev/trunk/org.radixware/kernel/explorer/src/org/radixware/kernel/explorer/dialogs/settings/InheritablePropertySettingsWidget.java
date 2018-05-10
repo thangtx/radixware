@@ -25,13 +25,13 @@ import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.explorer.env.Application;
-import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 
 
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 
 
-public class InheritablePropertySettingsWidget extends SettingsWidget {
+final class InheritablePropertySettingsWidget extends SettingsWidget {
 
     private final List<SettingsWidget> settingsArrayList = new ArrayList<>();
     private final String foregroundSettingsKey;
@@ -105,14 +105,14 @@ public class InheritablePropertySettingsWidget extends SettingsWidget {
     }
 
     @Override
-    public void readSettings(ExplorerSettings src) {
+    public void readSettings(IExplorerSettings src) {
         for (SettingsWidget w : settingsArrayList) {
             w.readSettings(src);
         }
     }
 
     @Override
-    public void writeSettings(ExplorerSettings dst) {
+    public void writeSettings(IExplorerSettings dst) {
         for (SettingsWidget w : settingsArrayList) {
             w.writeSettings(dst);
         }

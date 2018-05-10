@@ -63,7 +63,9 @@ public final class GroupModelAsyncReader {
     private final List<Listener> listeners = new LinkedList<>();
     private final List<Id> disabledCommands = new ArrayList<>();
     private final EnumSet<ERestriction> restrictions = EnumSet.noneOf(ERestriction.class);
-    private boolean readingWasFinished = false;
+    private boolean readingWasFinished;
+    private int blocked;
+    private GroupModelData lastReceivedData;
 
     public GroupModelAsyncReader(final GroupModel groupModel, final int timeoutSec) {
         this.groupModel = groupModel;
@@ -75,11 +77,13 @@ public final class GroupModelAsyncReader {
         this(groupModel, 0);
     }
 
-    public void start() {
+    public void start() {        
         clean();
         readingWasFinished = false;
         dataSource = new DefaultGroupModelDataSource(groupModel, timeoutSec);
-        readMoreAsync();
+        if (blocked==0){
+            readMoreAsync();
+        }
     }
 
     public void start(final AbstractReaderController readerController) {
@@ -87,7 +91,9 @@ public final class GroupModelAsyncReader {
         readingWasFinished = false;
         this.readerController = readerController;
         dataSource = new DefaultGroupModelDataSource(groupModel, timeoutSec);
-        readMoreAsync();
+        if (blocked==0){
+            readMoreAsync();
+        }
     }
 
     public void start(final AbstractReaderController readerController, final GroupModelDataSource dataSource) {
@@ -95,7 +101,9 @@ public final class GroupModelAsyncReader {
         readingWasFinished = false;
         this.readerController = readerController;
         this.dataSource = dataSource;
-        readMoreAsync();
+        if (blocked==0){
+            readMoreAsync();
+        }        
     }
 
     public boolean inProgress() {
@@ -110,6 +118,23 @@ public final class GroupModelAsyncReader {
         //return readerController.has
         return hasMore;
     }
+    
+    public void block(){        
+        blocked++;
+    }
+    
+    public void unblock(){
+        if (blocked>0){
+            if (blocked==1){
+                if (lastReceivedData!=null){
+                    final GroupModelData data = lastReceivedData;
+                    lastReceivedData = null;
+                    processReceivedData(data);                
+                }
+            }
+            blocked--;
+        }
+    }
 
     public void reset() {
         final boolean inProgress = inProgress();
@@ -123,16 +148,21 @@ public final class GroupModelAsyncReader {
         if (inProgress()) {
             dataHandler.cancel();
             dataHandler = null;
+            lastReceivedData = null;
             notifyReadingWasCancelled();
+            if (readerController!=null){
+                readerController.clear();
+            }
         }
-    }
+    }        
 
     public void clean() {
         stop();
         entities.clear();
         disabledCommands.clear();
         restrictions.clear();
-        hasMore = true;
+        hasMore = true;        
+        lastReceivedData = null;
     }
 
     public void addListener(final Listener listener) {
@@ -164,6 +194,14 @@ public final class GroupModelAsyncReader {
 
     private void onDataReceived(final GroupModelData data) {
         updateEntities(data);
+        if (blocked>0){
+            lastReceivedData = data;
+        }else{
+            processReceivedData(data);
+        }
+    }
+    
+    private void processReceivedData(final GroupModelData data){
         if (hasMore) {
             readMoreAsync();
         } else {
@@ -172,13 +210,26 @@ public final class GroupModelAsyncReader {
             restrictions.addAll(data.getRestrictions());
             readingWasFinished = true;
             notifyReadingWasFinished();
-        }
+            if (readerController!=null){
+                readerController.clear();
+            }
+        }        
     }
 
     private void onException(final Throwable exception) {
-        readMoreAsync();
+        if (inProgress()) {
+            dataHandler.cancel();
+            dataHandler = null;
+        }
+        entities.clear();
+        disabledCommands.clear();
+        restrictions.clear();
+        hasMore = true;
         if (exception instanceof ServiceClientException) {
             notifyException((ServiceClientException) exception);
+        }
+        if (readerController!=null){
+            readerController.clear();
         }
     }
 
@@ -202,9 +253,6 @@ public final class GroupModelAsyncReader {
             } else {
                 entities.add(curEntity);
             }
-        }
-        if (readerController != null) {
-            readerController.clear();
         }
     }
 

@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.jml;
 
 import java.text.MessageFormat;
@@ -24,13 +23,13 @@ import org.radixware.kernel.common.defs.ads.localization.AdsEventCodeDef;
 import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.ads.module.AdsSearcher;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
+import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.xscml.JmlType;
 import org.radixware.schemas.xscml.JmlType.Item;
-
 
 public class JmlTagEventCode extends JmlTagLocalizedString {
 
@@ -49,7 +48,9 @@ public class JmlTagEventCode extends JmlTagLocalizedString {
     @Override
     public void appendTo(Item item) {
         Item.EventCode ev = item.addNewEventCode();
-        ev.setStringId(stringId.toString());
+        rememberDisplayName(null);
+        appendTo(ev);
+        ev.setStringId(stringId==null?null:stringId.toString());
     }
 
     @Override
@@ -69,16 +70,16 @@ public class JmlTagEventCode extends JmlTagLocalizedString {
             if (index >= 0) {
                 value = value.substring(0, index) + "...";
             }
-            return MessageFormat.format("eventCode[\"{0}\"]", value.replace("\"", "\\\""));
+            return "eventCode[\"" + rememberDisplayName(MessageFormat.format("{0}", value.replace("\"", "\\\""))) + "\"]";
         } else {
-            return MessageFormat.format("eventCode[\"!!!String not found: {0}\"]", stringId.toString());
+            return "eventCode[\"" + restoreDisplayName(MessageFormat.format("!!!String not found: {0}", stringId.toString())) + "\"]";
         }
     }
-    
+
     public EEventSeverity getEventSeverity() {
         final AdsMultilingualStringDef event = findString();
         if (event instanceof AdsEventCodeDef) {
-            return ((AdsEventCodeDef)event).getEventSeverity();
+            return ((AdsEventCodeDef) event).getEventSeverity();
         }
         return null;
     }
@@ -89,15 +90,18 @@ public class JmlTagEventCode extends JmlTagLocalizedString {
 
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(this, purpose) {
+                return new JmlTagWriter(this, purpose, JmlTagEventCode.this) {
 
                     @Override
                     public boolean writeCode(CodePrinter printer) {
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
                         StringBuilder b = new StringBuilder(100);
                         b.append(getBundleId());
                         b.append('-');
                         b.append(stringId.toString());
                         printer.printStringLiteral(b.toString());
+                        WriterUtils.leaveHumanUnreadableBlock(printer);
                         return true;
                     }
 
@@ -121,7 +125,6 @@ public class JmlTagEventCode extends JmlTagLocalizedString {
             }
         }
 
-
         Object obj = h.getHistory().get("EVENT_CODE_MESSAGE_MAP");
         Map<String, RadixObject> knownMessages = null;
 
@@ -133,7 +136,6 @@ public class JmlTagEventCode extends JmlTagLocalizedString {
             knownMessages = new HashMap<>();
             h.getHistory().put("EVENT_CODE_MESSAGE_MAP", knownMessages);
         }
-
 
         for (EIsoLanguage l : evCode.getLanguages()) {
             String text = evCode.getValue(l) + "|" + String.valueOf(evCode.getEventSource()) + "|" + String.valueOf(evCode.getEventSeverity());

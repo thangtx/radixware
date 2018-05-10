@@ -8,9 +8,9 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.dds;
 
+import org.radixware.kernel.common.defs.dds.radixdoc.DdsTableRadixdocSupport;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +37,7 @@ import org.radixware.kernel.common.defs.dds.utils.DbNameUtils;
 import org.radixware.kernel.common.defs.dds.utils.TablespaceCalculator;
 import org.radixware.kernel.common.enums.EDdsTableExtOption;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.DefinitionNotFoundError;
 import org.radixware.kernel.common.radixdoc.DocumentOptions;
@@ -59,7 +60,7 @@ import org.radixware.schemas.radixdoc.Page;
  *
  */
 public class DdsTableDef extends DdsDefinition implements IPlacementSupport, IDdsAutoDbNamedDefinition, IOverwritable, IRadixdocProvider {
-
+    
     @Override
     public void afterOverwrite() {
         // NOTHING
@@ -67,6 +68,11 @@ public class DdsTableDef extends DdsDefinition implements IPlacementSupport, IDd
 
     @Override
     public boolean allowOverwrite() {
+        return true;
+    }
+
+    @Override
+    public boolean needsDocumentation() {
         return true;
     }
 
@@ -250,10 +256,23 @@ public class DdsTableDef extends DdsDefinition implements IPlacementSupport, IDd
         }
     }
 
+    @Override
+    public void setFrozen(boolean frozen) {
+        super.setFrozen(frozen);
+        columns.setFrozen(frozen);
+        columns.getLocal().findById(getId());//any non-null ID can be used, need to initialize internal caches
+        columns.getLocal().setFrozen(true);
+    }
+
     private class DdsColumns extends DdsExtendableDefinitions<DdsColumnDef> {
 
         protected DdsColumns() {
             super(DdsTableDef.this, new DdsLocalColumns());
+        }
+        
+        @Override
+        public String getName() {
+            return "Columns";
         }
 
         @Override
@@ -286,7 +305,7 @@ public class DdsTableDef extends DdsDefinition implements IPlacementSupport, IDd
             return savedClassGuidColumn;
         } else {
             DdsColumnDef column = getColumns().findByDbName(CLASS_GUID_COLUMN_DB_NAME);
-            if (getLayer() != null && getLayer().isReadOnly()) {
+            if (isFrozen()) {
                 savedClassGuidColumn = column;
             }
             return column;
@@ -339,6 +358,11 @@ public class DdsTableDef extends DdsDefinition implements IPlacementSupport, IDd
                 }
             }
         }
+
+        @Override
+        public String toString() {
+            return "DdsLocalIndices{" + "isLoading=" + isLoading + "}: "+super.toString();
+        }
     }
 
     private class DdsIndices extends DdsExtendableDefinitions<DdsIndexDef> {
@@ -356,6 +380,18 @@ public class DdsTableDef extends DdsDefinition implements IPlacementSupport, IDd
                 }
             };
         }
+        
+        @Override
+        public String getName() {
+            return "Indices";
+        }
+
+        @Override
+        public String toString() {
+            return "DdsIndices{" + '}';
+        }
+        
+        
     }
     private final DdsExtendableDefinitions<DdsIndexDef> indices = new DdsIndices();
 
@@ -402,6 +438,11 @@ public class DdsTableDef extends DdsDefinition implements IPlacementSupport, IDd
                     return table.getTriggers();
                 }
             };
+        }
+        
+        @Override
+        public String getName() {
+            return "Triggers";
         }
     }
     private final DdsExtendableDefinitions<DdsTriggerDef> triggers = new DdsTriggers();
@@ -765,9 +806,13 @@ public class DdsTableDef extends DdsDefinition implements IPlacementSupport, IDd
     private Set<DdsReferenceDef> collectReferences(IFilter<DdsReferenceDef> primaryFilter, IFilter<DdsReferenceDef> secondaryFilter) {
         final Set<DdsReferenceDef> result = new HashSet<DdsReferenceDef>();
         final Branch branch = DdsTableDef.this.getBranch();
-        if(branch == null)
+        if (branch == null) {
             return Collections.emptySet();
+        }
         for (Layer layer : branch.getLayers()) {
+            if (layer.isLocalizing()) {
+                continue;
+            }
             for (DdsModule module : ((DdsSegment) layer.getDds()).getModules()) {
                 final DdsModelDef model = module.getModelManager().findModel();
                 if (model != null) {
@@ -1152,7 +1197,7 @@ public class DdsTableDef extends DdsDefinition implements IPlacementSupport, IDd
             public IRadixdocPage document(Page page, DocumentOptions options) {
                 return new DdsTableRadixdocSupport((DdsTableDef) getSource(), page, options);
             }
-          
+
         };
     }
 
@@ -1160,6 +1205,9 @@ public class DdsTableDef extends DdsDefinition implements IPlacementSupport, IDd
     public boolean isRadixdocProvider() {
         return true;
     }
-    
-    
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.TABLE;
+    }
 }

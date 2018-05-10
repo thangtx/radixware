@@ -17,10 +17,8 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
@@ -28,6 +26,7 @@ import java.util.logging.Logger;
 import org.radixware.kernel.common.client.Clipboard;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.RunParams;
+import org.radixware.kernel.common.client.dialogs.IBatchOperationResultDialog;
 import org.radixware.kernel.common.client.dialogs.IMessageBox;
 import org.radixware.kernel.common.client.enums.EEntityCreationResult;
 import org.radixware.kernel.common.client.env.ClientSettings;
@@ -38,13 +37,14 @@ import org.radixware.kernel.common.client.errors.CantOpenSelectorError;
 import org.radixware.kernel.common.client.errors.ObjectNotFoundError;
 import org.radixware.kernel.common.client.exceptions.BrokenEntityObjectException;
 import org.radixware.kernel.common.client.exceptions.ClientException;
-import org.radixware.kernel.common.client.exceptions.ExceptionMessage;
 import org.radixware.kernel.common.client.exceptions.ModelException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.meta.RadEditorPresentationDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.models.*;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.tree.ExplorerItemView;
+import org.radixware.kernel.common.client.types.EntityRestrictions;
 import org.radixware.kernel.common.client.types.GroupRestrictions;
 import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.views.ISelector.CurrentEntityHandler;
@@ -56,6 +56,7 @@ import org.radixware.kernel.common.client.widgets.ICommandToolBar;
 import org.radixware.kernel.common.client.widgets.ISplitter;
 import org.radixware.kernel.common.client.widgets.IToolButton;
 import org.radixware.kernel.common.client.widgets.IWidget;
+import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.client.widgets.actions.IToolBar;
 import org.radixware.kernel.common.client.widgets.selector.ISelectorWidget;
@@ -97,14 +98,12 @@ public abstract class SelectorController extends AbstractViewController {
 
         protected abstract boolean isUIUpdatesEnabled();
 
-        protected abstract void putTextToSystemClipboard(final String text);
-        
-        protected abstract void showBatchOperationResult(final AbstractBatchOperationResult result, final String message);
+        protected abstract void putTextToSystemClipboard(final String text);        
     }
             
     private final ISelector selector;
     GroupModel group;
-    ParentModelsCollector parentModels;
+    private ParentModelsCollector parentModels;
     private SelectorListener listener;
     private final EmbeddedEditorListener editorListener;
     private final IProgressHandle progressHandle;    
@@ -123,6 +122,7 @@ public abstract class SelectorController extends AbstractViewController {
     private IToolBarsManager toolBarsManager;    
     private boolean openingEditor = false;
     private boolean wasShown = false;
+    private boolean refreshing = false;
     private final Clipboard.ChangeListener clipboardListener = new Clipboard.ChangeListener() {
         @Override
         public void stateChanged() {
@@ -288,86 +288,96 @@ public abstract class SelectorController extends AbstractViewController {
         OPENING_INTERRUPTED,
         NORMAL
     }
+    
     SelectorState state = SelectorState.NORMAL;
 
     public abstract ISelectorMainWindow getSelectorMainWindow();
 
-    IExplorerItemView insertEntityImpl(final boolean autoInsert, final boolean replace, final boolean askToSetCurrentIfExists) {
-        if (getCurrentEntity() != null) {
-            IExplorerItemView explorerItemView = group.findNearestExplorerItemView();
-            if (explorerItemView != null) {
-                if (!autoInsert) {
-                    //RADIX-2348, RADIX-7253 Проверка был ли уже вставлен такой же объект выше по дереву.
-                    final List<EntityModel> parentEntityModels = explorerItemView.getParentEntityModels();
-                    for (EntityModel parentEntityModel : parentEntityModels) {
-                        if (getCurrentEntity().getPid().equals(parentEntityModel.getPid())) {
-                            explorerItemView = parentEntityModel.findNearestExplorerItemView();
-                            if (askToSetCurrentIfExists) {
-                                final String title
-                                        = getEnvironment().getMessageProvider().translate("Selector", "Confirm to Change Current Explorer Item");
-                                final String messageTemplate
-                                        = getEnvironment().getMessageProvider().translate("Selector", "Object '%s' was already inserted.\nDo you want to make current corresponding explorer item?");
-                                if (getEnvironment().messageConfirmation(title, String.format(messageTemplate, getCurrentEntity().getTitle()))) {
-                                    explorerItemView.setCurrent();
-                                }
+    IExplorerItemView insertCurrentEntityImpl(final boolean autoInsert, final boolean replace, final boolean askToSetCurrentIfExists) {
+        if (getCurrentEntity() == null) {
+            return null;            
+        }else{
+            return insertEntityImpl(getCurrentEntity(), autoInsert, replace, askToSetCurrentIfExists);
+        }
+    }
+    
+    IExplorerItemView insertEntityImpl(final EntityModel entityModel, final boolean autoInsert, final boolean replace, final boolean askToSetCurrentIfExists) {
+        if (!(entityModel.getContext() instanceof IContext.SelectorRow)) {
+            throw new IllegalArgumentError("current entity of selector should have selector row context");
+        }
+        IExplorerItemView explorerItemView = group.findNearestExplorerItemView();
+        if (explorerItemView != null) {
+            if (!autoInsert) {
+                //RADIX-2348, RADIX-7253 Проверка был ли уже вставлен такой же объект выше по дереву.
+                final List<EntityModel> parentEntityModels = explorerItemView.getParentEntityModels();
+                for (EntityModel parentEntityModel : parentEntityModels) {
+                    if (entityModel.getPid().equals(parentEntityModel.getPid())) {
+                        explorerItemView = parentEntityModel.findNearestExplorerItemView();
+                        if (askToSetCurrentIfExists) {
+                            final String title
+                                    = getEnvironment().getMessageProvider().translate("Selector", "Confirm to Change Current Explorer Item");
+                            final String messageTemplate
+                                    = getEnvironment().getMessageProvider().translate("Selector", "Object '%s' was already inserted.\nDo you want to make current corresponding explorer item?");
+                            if (getEnvironment().messageConfirmation(title, String.format(messageTemplate, entityModel.getTitle()))) {
+                                explorerItemView.setCurrent();
                             }
-                            return explorerItemView;
                         }
+                        return explorerItemView;
                     }
                 }
-                //Вставка родительских сущностей
-                final List<EntityModel> parentEntities = parentModels.getParentEntities();
-                if (!parentEntities.isEmpty()) {
-                    EntityModel choosenParentEntity;
-                    for (EntityModel parentEntity : parentEntities) {
-                        //Новый объект для вставки
-                        choosenParentEntity = parentEntity.openChoosenEditModel();
-                        //Ищем элемент проводника соответствующей группы
-                        final GroupModel parentGroup = ((IContext.SelectorRow) parentEntity.getContext()).parentGroupModel;
-                        final IExplorerItemView tableExplorerItem = findChildExplorerItem(explorerItemView, parentGroup);
-                        if (tableExplorerItem != null) {
-                            explorerItemView = tableExplorerItem.insertEntity(0, choosenParentEntity, true);
-                        } else {
-                            explorerItemView = explorerItemView.insertEntity(0, choosenParentEntity, true);
-                        }
-                    }
-                    final IExplorerItemView tableExplorerItem = findChildExplorerItem(explorerItemView, group);
-                    if (tableExplorerItem != null) {
-                        explorerItemView = tableExplorerItem;
-                    }
-                }
-
-                final EntityModel choosen = getCurrentEntity().openChoosenEditModel();
-                final IExplorerItemView result;
-                if (autoInsert) {
-                    result = explorerItemView.autoInsertEntity(choosen);
-                } else {
-                    if (replace) {
-                        List<IExplorerItemView> inserted = explorerItemView.getChoosenEntities(choosen.getEditorPresentationDef().getTableId());
-                        if (!inserted.isEmpty()) {
-                            inserted.get(0).remove();
-                        }
-                    }
-                    result = explorerItemView.insertEntity(0, choosen, true);
-                }
-                if (result != null) {
-                    getEnvironment().getConfigStore().beginGroup(SettingNames.SYSTEM);
-                    getEnvironment().getConfigStore().beginGroup(SettingNames.EXPLORER_TREE_GROUP);
-                    getEnvironment().getConfigStore().beginGroup(SettingNames.ExplorerTree.EDITOR_GROUP);
-                    final boolean editAfterInsert = getEnvironment().getConfigStore().readBoolean(SettingNames.ExplorerTree.Editor.EDIT_AFTER_INSERT, false);
-                    getEnvironment().getConfigStore().endGroup();
-                    getEnvironment().getConfigStore().endGroup();
-                    getEnvironment().getConfigStore().endGroup();
-                    if (editAfterInsert && !autoInsert) {
-                        result.setCurrent();
-                    } else {
-                        selector.getActions().refresh();
-                    }
-                    getSelectorListener().insertedIntoTree(result);
-
-                }
-                return result;
             }
+            //Вставка родительских сущностей
+            final List<EntityModel> parentEntities = parentModels.getParentEntities();
+            if (!parentEntities.isEmpty()) {
+                EntityModel choosenParentEntity;
+                for (EntityModel parentEntity : parentEntities) {
+                    //Новый объект для вставки
+                    choosenParentEntity = parentEntity.openChoosenEditModel();
+                    //Ищем элемент проводника соответствующей группы
+                    final GroupModel parentGroup = ((IContext.SelectorRow) parentEntity.getContext()).parentGroupModel;
+                    final IExplorerItemView tableExplorerItem = findChildExplorerItem(explorerItemView, parentGroup);
+                    if (tableExplorerItem != null) {
+                        explorerItemView = tableExplorerItem.insertEntity(0, choosenParentEntity, true);
+                    } else {
+                        explorerItemView = explorerItemView.insertEntity(0, choosenParentEntity, true);
+                    }
+                }
+                final IExplorerItemView tableExplorerItem = findChildExplorerItem(explorerItemView, group);
+                if (tableExplorerItem != null) {
+                    explorerItemView = tableExplorerItem;
+                }
+            }
+
+            final EntityModel choosen = entityModel.openChoosenEditModel();
+            final IExplorerItemView result;
+            if (autoInsert) {
+                result = explorerItemView.autoInsertEntity(choosen);
+            } else {
+                if (replace) {
+                    List<IExplorerItemView> inserted = explorerItemView.getChoosenEntities(choosen.getEditorPresentationDef().getTableId());
+                    if (!inserted.isEmpty()) {
+                        inserted.get(0).remove();
+                    }
+                }
+                result = explorerItemView.insertEntity(0, choosen, true);
+            }
+            if (result != null) {
+                getEnvironment().getConfigStore().beginGroup(SettingNames.SYSTEM);
+                getEnvironment().getConfigStore().beginGroup(SettingNames.EXPLORER_TREE_GROUP);
+                getEnvironment().getConfigStore().beginGroup(SettingNames.ExplorerTree.EDITOR_GROUP);
+                final boolean editAfterInsert = getEnvironment().getConfigStore().readBoolean(SettingNames.ExplorerTree.Editor.EDIT_AFTER_INSERT, false);
+                getEnvironment().getConfigStore().endGroup();
+                getEnvironment().getConfigStore().endGroup();
+                getEnvironment().getConfigStore().endGroup();
+                if (editAfterInsert && !autoInsert) {
+                    result.setCurrent();
+                } else {
+                    selector.getActions().refresh();
+                }
+                getSelectorListener().insertedIntoTree(result);
+
+            }
+            return result;
         }
         return null;
     }
@@ -397,19 +407,32 @@ public abstract class SelectorController extends AbstractViewController {
         }
         return null;
     }
-
+    
     private void rereadImpl(final Pid pid, final boolean setCurrent, final boolean forced) throws ServiceClientException {
-        final Pid dialogEntityPid;
-        if (currentEntityDialog != null && !currentEntityDialog.dialogClosing()) {
-            dialogEntityPid = currentEntityDialog.getEntityModel().getPid();
+        rereadImpl(pid==null ? null : Collections.singleton(pid), setCurrent, forced);
+    }
+
+    private void rereadImpl(final Collection<Pid> pids, final boolean setCurrent, final boolean forced) throws ServiceClientException {        
+        final IEntityEditorDialog savedEntityDialog;
+        if (currentEntityDialog != null && !currentEntityDialog.dialogClosing()) {            
+            savedEntityDialog = currentEntityDialog;
+            currentEntityDialog = null;
         } else {
-            dialogEntityPid = null;
+            savedEntityDialog = null;
         }
         final GroupRestrictions restrictions = getGroupModel().getRestrictions();
         final boolean canChangePosition = restrictions.getIsChangePositionRestricted();
         selector.blockRedraw();
         restrictions.setChangePositionRestricted(false);
         final Pid currentEntityPid = getCurrentEntity() == null ? null : getCurrentEntity().getPid();//NOPMD
+        final Collection<Pid> pidsToRestore = new LinkedList<>();
+        if (setCurrent){
+            if (pids != null && !pids.isEmpty()){
+                pidsToRestore.addAll(pids);
+            }else if (currentEntityPid!=null){
+                pidsToRestore.add(currentEntityPid);
+            }
+        }        
         if (!leaveCurrentEntityImpl(forced, false)) {//do not schedule refresh in leaveCurrentEntity - it will be performed later.
             selector.unblockRedraw();
             restrictions.setChangePositionRestricted(canChangePosition);
@@ -427,38 +450,33 @@ public abstract class SelectorController extends AbstractViewController {
         } else {
             progress = getEnvironment().getProgressHandleManager().getActive();
             if (progress.wasCanceled()) {
-                state = SelectorState.OPENING_INTERRUPTED;
+                setState(SelectorState.OPENING_INTERRUPTED);
                 refresh();
-                if (dialogEntityPid != null && getCurrentEntity() != null && dialogEntityPid.equals(getCurrentEntity().getPid())) {
-                    runEditorDialogImpl(progress);
-                }
+                reopenEntityEditorDialog(savedEntityDialog, pidsToRestore, progress);
                 return;
             }
             needForFinishProgress = false;
         }
-        final Pid pidWhenReadEntireObject;
+        final Collection<Pid> pidsWhenReadEntireObject;
         final boolean readEntireObjectAtFirstRow;
         if (!getGroupModel().getRestrictions().getIsEditorRestricted()) {
-            if (setCurrent && (currentEntityPid != null || pid != null)) {
+            if (!pidsToRestore.isEmpty()){
+                pidsWhenReadEntireObject = setupGroupModelForReadEntireObjectWithPid(pidsToRestore, true);
                 readEntireObjectAtFirstRow = false;
-                if (setupGroupModelForReadEntireObjectWithPid(pid == null ? currentEntityPid : pid, true)) {
-                    pidWhenReadEntireObject = pid == null ? currentEntityPid : pid;
-                } else {
-                    pidWhenReadEntireObject = null;
-                }
-            } else {
-                pidWhenReadEntireObject = null;
-                readEntireObjectAtFirstRow = setupGroupModelForEntireObjectAtFirstRow(true);
+            }else{
+                pidsWhenReadEntireObject = null;
+                setupGroupModelForEntireObjectAtFirstRow(true);
+                readEntireObjectAtFirstRow = true;
             }
         } else {
-            pidWhenReadEntireObject = null;
+            pidsWhenReadEntireObject = null;
             readEntireObjectAtFirstRow = false;
         }
         try {
             try {
                 if (getSelectorWidget() != null) {
                     if (setCurrent) {
-                        selector.getSelectorWidget().rereadAndSetCurrent(pid);
+                        selector.getSelectorWidget().rereadAndSetCurrent(pids);
                     } else {
                         selector.getSelectorWidget().reread();
                     }
@@ -466,28 +484,19 @@ public abstract class SelectorController extends AbstractViewController {
                     getGroupModel().reset();
                 }
                 if (progress.wasCanceled() && group.getEntitiesCount() == 0) {
-                    state = SelectorState.OPENING_INTERRUPTED;
+                    setState(SelectorState.OPENING_INTERRUPTED);
                     refresh();
                     if (selector.getSelectorWidget() != null) {
                         selector.getSelectorWidget().clear();
                     }
                 } else {
-                    state = SelectorState.NORMAL;
+                    setState(SelectorState.NORMAL);
                 }
-                if (dialogEntityPid != null && getCurrentEntity() != null && dialogEntityPid.equals(getCurrentEntity().getPid())) {
-                    refresh();
-                    runEditorDialogImpl(progress);
-                }
+                reopenEntityEditorDialog(savedEntityDialog, pidsToRestore, progress);
             } catch (InterruptedException ex) {
-                if (dialogEntityPid != null && getCurrentEntity() != null && dialogEntityPid.equals(getCurrentEntity().getPid())) {
-                    refresh();
-                    runEditorDialogImpl(progress);
-                }
+                reopenEntityEditorDialog(savedEntityDialog, pidsToRestore, progress);
             } catch (ServiceClientException ex) {
-                if (dialogEntityPid != null && getCurrentEntity() != null && dialogEntityPid.equals(getCurrentEntity().getPid())) {
-                    refresh();
-                    runEditorDialogImpl(progress);
-                }
+                reopenEntityEditorDialog(savedEntityDialog, pidsToRestore, progress);
                 throw ex;
             } finally {
                 try {
@@ -500,13 +509,44 @@ public abstract class SelectorController extends AbstractViewController {
                 }
                 rereadSynchronizedEmbeddedViews();
             }
-            getSelectorListener().afterReread(pid);
+            final Pid newCurrentEntityPid = getCurrentEntity() == null ? null : getCurrentEntity().getPid();//NOPMD
+            getSelectorListener().afterReread(newCurrentEntityPid);
         } finally {
             if (readEntireObjectAtFirstRow) {
                 setupGroupModelForEntireObjectAtFirstRow(false);
             }
-            if (pidWhenReadEntireObject != null) {
-                setupGroupModelForReadEntireObjectWithPid(pidWhenReadEntireObject, false);
+            if (pidsWhenReadEntireObject != null && !pidsWhenReadEntireObject.isEmpty()) {
+                setupGroupModelForReadEntireObjectWithPid(pidsWhenReadEntireObject, false);
+            }
+        }
+    }
+    
+    private void reopenEntityEditorDialog(final IEntityEditorDialog dialog, final Collection<Pid> pids, final IProgressHandle progress){
+        final EntityModel currentEntity = getCurrentEntity();
+        final Pid currentEntityPid = currentEntity==null ? null : currentEntity.getPid();
+        if (dialog!=null){
+            if (pids!=null && pids.size()==1 && pids.iterator().next().equals(currentEntityPid)){
+                final String savedProgressTitle;
+                if (progress==null){
+                    savedProgressTitle = null;
+                }else{
+                    savedProgressTitle = progress.getText();
+                    final String progressTitle = getEnvironment().getMessageProvider().translate("Wait Dialog", "Opening Editor...");
+                    progress.setText(progressTitle);
+                }
+                try {
+                    if (dialog.reopen(currentEntity.openInSelectorEditModel(), true)){
+                        currentEntityDialog = dialog;
+                    }else{
+                        dialog.forceClose();
+                    }
+                }finally{
+                    if (progress!=null){
+                        progress.setText(savedProgressTitle);
+                    }
+                }
+            }else{
+                dialog.forceClose();
             }
         }
     }
@@ -532,24 +572,25 @@ public abstract class SelectorController extends AbstractViewController {
         return true;
     }
 
-    private boolean setupGroupModelForReadEntireObjectWithPid(final Pid pid, final boolean readEntireObject) {
-        final Set<Pid> pids = new HashSet<>(getGroupModel().getPidsWhenReadEntireObject());
-        final boolean containsPid = pids.contains(pid);
-        if (readEntireObject) {
-            if (containsPid) {
-                return false;
+    private Collection<Pid> setupGroupModelForReadEntireObjectWithPid(final Collection<Pid> pids, final boolean readEntireObject) {
+        final Set<Pid> currentPids = new HashSet<>(getGroupModel().getPidsWhenReadEntireObject());
+        final Collection<Pid> changes = new LinkedList<>();
+        for (Pid pid: pids){
+            final boolean containsPid = currentPids.contains(pid);
+            if (readEntireObject) {
+                if (!containsPid) {
+                    changes.add(pid);
+                    currentPids.add(pid);
+                }
             } else {
-                pids.add(pid);
-            }
-        } else {
-            if (containsPid) {
-                pids.remove(pid);
-            } else {
-                return false;
+                if (containsPid) {
+                    currentPids.remove(pid);
+                    changes.add(pid);
+                } 
             }
         }
-        getGroupModel().setPidsWhenReadEntireObject(pids);
-        return true;
+        getGroupModel().setPidsWhenReadEntireObject(currentPids);
+        return changes;
     }
 
     public void setCurrentEntity(EntityModel entityModel) {
@@ -571,7 +612,7 @@ public abstract class SelectorController extends AbstractViewController {
          * && splitter.isCollapsed(1)) splitter.restorePosition();
          */
         //onSetCurrentEntity.emit(entityModel);
-        state = SelectorState.NORMAL;
+        setState(SelectorState.NORMAL);
         if (needTotalRefresh) {
             refresh();
         } else {
@@ -584,7 +625,7 @@ public abstract class SelectorController extends AbstractViewController {
         getDefaCurrentEntityHandler().onSetCurrentEntity(currentEntity);
 
         if (autoInsertEnabled) {
-            insertEntityImpl(true, false, false);
+            insertCurrentEntityImpl(true, false, false);
             if (selectorWidget instanceof IView && ((IView) selectorWidget).hasUI()) {
                 //((IExplorerSelectorWidget) getSelectorWidget()).asQWidget().repaint();
                 repaintSelectorWidget(selectorWidget);
@@ -594,7 +635,7 @@ public abstract class SelectorController extends AbstractViewController {
 
     public void showException(final Throwable exception) {
         if (exception != null) {
-            state = SelectorState.NORMAL;
+            setState(SelectorState.NORMAL);
             uiController.getEditorSpace().showException(exception);
             refresh();
             getSelectorListener().onShowException(exception);
@@ -671,7 +712,7 @@ public abstract class SelectorController extends AbstractViewController {
     public void copyAll() {
         group.finishEdit();
         if (group.getSelection().isSingleObjectSelected()){
-            final EntityModel entityModel = getSindleSelectedObject();
+            final EntityModel entityModel = getSingleSelectedObject();
             if (entityModel!=null){
                 group.getEnvironment().getClipboard().push(entityModel);
             }
@@ -680,9 +721,10 @@ public abstract class SelectorController extends AbstractViewController {
         }
     }
     
-    EntityModel getSindleSelectedObject(){
-        final Pid pid = group.getSelection().getNormalized().getSelectedObjects().iterator().next();
-        final int row = group.findEntityByPid(pid);
+    EntityModel getSingleSelectedObject(){
+        final Collection<Pid> selectedObjects = group.getSelection().getNormalized().getSelectedObjects();
+        final Pid pid = selectedObjects.isEmpty() ? null : selectedObjects.iterator().next();
+        final int row = pid==null ? -1 : group.findEntityByPid(pid);
         if (row>=0){            
             try{
                 return group.getEntity(row);                    
@@ -699,7 +741,7 @@ public abstract class SelectorController extends AbstractViewController {
                 group.finishEdit();
                 selector.blockRedraw();
                 if (group.deleteAll(false)) {
-                    rereadImpl(null, false, true);
+                    rereadImpl((Pid)null, false, true);
                 } else {
                     return false;
                 }
@@ -743,7 +785,7 @@ public abstract class SelectorController extends AbstractViewController {
                 }else{
                     message = mp.translate("Selector", "Selected objects was not deleted:");
                 }
-                uiController.showBatchOperationResult(result, message);
+                displayBatchOperationResult(result, message);
             }else if (numberOfRejections==1){
                 final String title = mp.translate("Selector", "Selected Object Was not Deleted");
                 final String message = result.getRejectionMessages().iterator().next();
@@ -751,7 +793,7 @@ public abstract class SelectorController extends AbstractViewController {
             }
             if (result.getNumberOfDeletedObjects()>0){
                 if (needForReread){
-                    rereadImpl(null, false, true);
+                    rereadImpl((Pid)null, false, true);
                 }else{
                     //remove from selector deleted objects except of current
                     for (Pid pid: selection.getSelectedObjects()){
@@ -818,7 +860,8 @@ public abstract class SelectorController extends AbstractViewController {
     }
 
     public void refresh() {
-        if (uiController.isUIUpdatesEnabled()) {
+        if (uiController.isUIUpdatesEnabled() && !refreshing) {
+            refreshing = true;
             try {
                 refreshUI();
                 selector.getActions().refresh();
@@ -828,7 +871,9 @@ public abstract class SelectorController extends AbstractViewController {
                 scheduleRefreshMenu();
             } catch (Exception exception) {
                 getEnvironment().getTracer().error(exception);
-            }
+            }finally{
+                refreshing = false;
+            }            
         } else {
             scheduleSelectorRefresh();//RADIX-6537
         }
@@ -838,7 +883,7 @@ public abstract class SelectorController extends AbstractViewController {
         autoInsertEnabled = enabled && selectorMenu != null;//RADIX-2426
         if (autoInsertEnabled && group != null) {
             group.finishEdit();
-            insertEntityImpl(true, false, false);
+            insertCurrentEntityImpl(true, false, false);
         }
     }
 
@@ -851,7 +896,7 @@ public abstract class SelectorController extends AbstractViewController {
             return true;
         }
         if (leaveCurrentEntity(false)) {
-            state = SelectorState.DISABLED;
+            setState(SelectorState.DISABLED);
             refresh();
             getEditorSpace().setHidden(true);
 
@@ -870,6 +915,11 @@ public abstract class SelectorController extends AbstractViewController {
     public boolean isCurrentEntityEditorHidden() {
         return (!getCurrentEntityEditor().isOpened() || uiController.getSplitter().isCollapsed(0) || getCurrentEntityEditor().isHidden())
                 && getCurrentEntity() != null;
+    }
+    
+    public boolean isEditorsAction() {
+        return (!getCurrentEntityEditor().isOpened() || uiController.getSplitter().isCollapsed(0))
+                    && getCurrentEntity() != null;
     }
 
     public boolean isEditorOperationsVisible() {
@@ -920,6 +970,9 @@ public abstract class SelectorController extends AbstractViewController {
     }
 
     public void setupToolBars() {
+        if (group==null){
+            return;
+        }
         getSelectorMainWindow().setUpdatesEnabled(false);
         try {
             if (editorToolBar != null) {
@@ -951,15 +1004,83 @@ public abstract class SelectorController extends AbstractViewController {
         } finally {
             getSelectorMainWindow().setUpdatesEnabled(true);
         }
+    }   
+    
+    public boolean canInsertEntity(final EntityModel entityModel){
+        if (entityModel==null){
+            return false;
+        }
+        final boolean someObjectSelected = !getGroupModel().getSelection().isEmpty();
+        final EntityRestrictions entityRestrictions = entityModel.getRestrictions();
+        final GroupRestrictions groupRestrictions = getGroupModel().getRestrictions();
+        if (someObjectSelected){
+            return false;
+        }else{
+            boolean insertionRestricted = 
+                groupRestrictions.getIsInsertIntoTreeRestricted() || !currentEntity.canInsertIntoTreeFromSelector();                
+            final List<GroupModel> parentGroups = parentModels.getParentGroups();
+            for (int i = parentGroups.size() - 1; i >= 0 && !insertionRestricted; i--) {
+                insertionRestricted = parentGroups.get(i).getRestrictions().getIsInsertIntoTreeRestricted();
+            }                
+            if (insertionRestricted){
+                return false;
+            }else{
+                final IExplorerItemView nearestExplorerItemView = group.findNearestExplorerItemView();
+                if (nearestExplorerItemView==null){
+                    return false;
+                }else if (nearestExplorerItemView.isChoosenObject()){//RADIX-7253
+                    return
+                        !currentEntity.getPid().equals(nearestExplorerItemView.getChoosenEntityInfo().pid);
+                }else{
+                    return true;
+                }
+            }
+        }
     }
-
-    public ExplorerItemView insertEntity() {
-        return (ExplorerItemView) insertEntityImpl(false, false, true);
-
+    
+    public boolean canInsertEntityWithReplace(final EntityModel entityModel){
+        if (canInsertEntity(entityModel)){
+            final Id tableId = getGroupModel().getSelectorPresentationDef().getTableId();
+            final IExplorerItemView nearestExplorerItemView = group.findNearestExplorerItemView();
+            if (nearestExplorerItemView==null){
+                return false;
+            }
+            List<IExplorerItemView> inserted = nearestExplorerItemView.getChoosenEntities(tableId);
+            return !inserted.isEmpty()
+                       && inserted.get(0).getChoosenEntityInfo().pid.equals(currentEntity.getPid())
+                       && isAutoInsertEnabled()
+                       && //Если есть промежуточные группы, то вставлять с заменой нельзя
+                       !parentModels.getParentGroups().isEmpty();
+        }else{
+            return false;
+        }
     }
+    
+    public boolean canAutoInsertEntity(final EntityModel entityModel){
+        //Если есть промежуточные группы, то автовставка запрещена
+        return canInsertEntity(entityModel) && parentModels.getParentGroups().isEmpty();
+    }    
 
-    public ExplorerItemView insertEntityWithReplace() {
-        return (ExplorerItemView) insertEntityImpl(false, true, true);
+    public ExplorerItemView insertEntity(final EntityModel entityModel) {        
+        final EntityModel finalEntityModel = entityModel==null ? getCurrentEntity() : entityModel;
+        if (finalEntityModel==null){
+            return null;
+        }else{
+            if (canInsertEntity(finalEntityModel)){
+                return (ExplorerItemView) insertEntityImpl(finalEntityModel, false, false, true);
+            }else{
+                return null;
+            }
+        }
+    }    
+    
+    public ExplorerItemView insertCurrentEntityWithReplace(){
+        final EntityModel currentEntityModel = getCurrentEntity();
+        if (canInsertEntityWithReplace(currentEntityModel)){
+            return (ExplorerItemView) insertEntityImpl(currentEntityModel, false, true, true);
+        }else{
+            return null;
+        }
     }
 
     public final void openCurrentEntityEditor() {
@@ -1016,26 +1137,28 @@ public abstract class SelectorController extends AbstractViewController {
                 }
 
                 progressHandle.finishProgress();
-                if (getCurrentEntityEditor().isOpened()) {
-                    if (isEditorToolbarHidden) {
-                        getCurrentEntityEditor().getView().setToolBarHidden(isEditorToolbarHidden);
+                if (group!=null){//was not closed
+                    if (getCurrentEntityEditor().isOpened()) {
+                        if (isEditorToolbarHidden) {
+                            getCurrentEntityEditor().getView().setToolBarHidden(isEditorToolbarHidden);
+                        }
+                        getCurrentEntityEditor().setVisible(true);
+                        getCurrentEntityEditor().getView().addEditorListener(editorListener);
+                        uiController.getSplitter().restorePosition();
+                        refresh();
+                    } else if (!uiController.getSplitter().isCollapsed(0)) {
+                        uiController.forceUnblockRedraw();
+                        uiController.getSplitter().collapse(1);
                     }
-                    getCurrentEntityEditor().setVisible(true);
-                    getCurrentEntityEditor().getView().addEditorListener(editorListener);
-                    uiController.getSplitter().restorePosition();
-                    refresh();
-                } else if (!uiController.getSplitter().isCollapsed(0)) {
-                    uiController.forceUnblockRedraw();
-                    uiController.getSplitter().collapse(1);
-                }
-                getActions().refresh();
-                setupToolBars();
-                getCurrentEntityEditor().setUpdatesEnabled(true);
-                if (getCurrentEntity() != null) {
-                    final long elapsedTime = System.currentTimeMillis() - time;
-                    final String message
-                            = getEnvironment().getMessageProvider().translate("TraceMessage", "Opening editor of \'%1$s\' entity object finished. Elapsed time: %2$s mls");
-                    getEnvironment().getTracer().debug(String.format(message, getCurrentEntity().getTitle(), elapsedTime));
+                    getActions().refresh();
+                    setupToolBars();
+                    getCurrentEntityEditor().setUpdatesEnabled(true);
+                    if (getCurrentEntity() != null) {
+                        final long elapsedTime = System.currentTimeMillis() - time;
+                        final String message
+                                = getEnvironment().getMessageProvider().translate("TraceMessage", "Opening editor of \'%1$s\' entity object finished. Elapsed time: %2$s ms");
+                        getEnvironment().getTracer().debug(String.format(message, getCurrentEntity().getTitle(), elapsedTime));
+                    }
                 }
             }
         } else {
@@ -1192,61 +1315,11 @@ public abstract class SelectorController extends AbstractViewController {
     public final boolean canChangeCurrentEntity(final boolean forced) {
         final EntityModel entity = getCurrentEntity();
         if (entity != null && !forced) {
-            if (getCurrentEntityEditor() == null) {
-                if (isCurrentEntityModified()) {
-                    if (getEnvironment().getApplication().getDefManager().getAdsVersion().isSupported()) {
-                        final String message = getEnvironment().getMessageProvider().translate("ExplorerDialog", "Save changes in editor of \'%s\'?");
-                        Set<EDialogButtonType> buttons = EnumSet.of(EDialogButtonType.YES, EDialogButtonType.NO, EDialogButtonType.CANCEL);
-
-                        EDialogButtonType answer = getEnvironment().messageBox(String.format(message, entity.getTitle()), getEnvironment().getMessageProvider().translate("ExplorerDialog", "Save Changes?"), EDialogIconType.QUESTION, buttons);
-
-                        if (answer.equals(EDialogButtonType.YES)) {
-                            blockSignals(true);//В случае смены презентации редактор переоткрыт не будет
-                            try {
-                                if (!update()) {
-                                    return false;
-                                }
-                            } catch (InterruptedException ex) {
-                                return false;
-                            } catch (Exception ex) {
-                                if (selectorWidget != null) {
-                                    selectorWidget.unlockInput();
-                                }
-                                //forceUnblockRedraw();
-                                selector.getModel().showException(selector.getActions().updateActionError, ex);
-                                if (ex instanceof ObjectNotFoundError) {//NOPMD
-                                    final ObjectNotFoundError objectNotFound = (ObjectNotFoundError) ex;
-                                    if (objectNotFound.inContextOf(entity)) {
-                                        return true;
-                                    }
-                                }
-                                return false;
-                            } finally {
-                                blockSignals(false);
-                            }
-                        } else if (answer.equals(EDialogButtonType.NO)) { //Если не сделать будут проблемы при повторной синхронизации
-                            cancelChanges();
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        final String title = getEnvironment().getMessageProvider().translate("ExplorerDialog", "Close Editor?");
-                        final String message = getEnvironment().getMessageProvider().translate("ExplorerDialog", "Close editor of \'%s\' without saving changes?");
-                        if (getEnvironment().messageConfirmation(title, String.format(message, entity.getTitle()))) {
-                            cancelChanges();
-                        } else {
-                            return false;
-                        }
-                    }
-                }
-                return canSafelyCleanCurrentEntity(CleanModelController.DEFAULT_INSTANCE);
-            } else {//if (getCurrentEntityEditor()==null)
-                blockSignals(true);//В случае смены презентации редактор переоткрыт не будет
-                try {
-                    return entity.canSafelyClean(CleanModelController.DEFAULT_INSTANCE);
-                } finally {
-                    blockSignals(false);
-                }
+            blockSignals(true);//В случае смены презентации редактор переоткрыт не будет
+            try {
+                return entity.canSafelyClean(CleanModelController.DEFAULT_INSTANCE);
+            } finally {
+                blockSignals(false);
             }
         }//if (entity != null && !forced) 
         return true;
@@ -1339,7 +1412,7 @@ public abstract class SelectorController extends AbstractViewController {
                 if (creationResult == IDialog.DialogResult.REJECTED){//создание текущего объекта было отменено
                     result.addCopyCancelledByUser(srcEntity);
                     if (iterator.hasNext() && askOnCancel){
-                        final IMessageBox confirmationDialog = createConfirmationDialog(environment);
+                        final IMessageBox confirmationDialog = createConfirmationDialog(environment,true);
                         if (confirmationDialog.execMessageBox()==EDialogButtonType.YES){
                             break;
                         }else{
@@ -1373,12 +1446,18 @@ public abstract class SelectorController extends AbstractViewController {
         return result;
     }
     
-    private static IMessageBox createConfirmationDialog(final IClientEnvironment environment){
+    private static IMessageBox createConfirmationDialog(final IClientEnvironment environment, final boolean paste){
         final MessageProvider mp = environment.getMessageProvider();
         final Set<EDialogButtonType> buttons = EnumSet.of(EDialogButtonType.YES, EDialogButtonType.NO);
 
+        final String confirmationText;
+        if (paste){
+            confirmationText = mp.translate("Selector", "Do you want to cancel all next objects paste?");
+        }else{
+            confirmationText = mp.translate("Selector", "Do you want to cancel all next objects creation?");
+        }
         final IMessageBox cancelDialog
-                    = environment.newMessageBoxDialog(mp.translate("Selector", "Do you want to cancel all next objects paste?"), mp.translate("Selector", "Question"), EDialogIconType.QUESTION, buttons);
+                    = environment.newMessageBoxDialog(confirmationText, mp.translate("Selector", "Question"), EDialogIconType.QUESTION, buttons);
         cancelDialog.setOptionText(mp.translate("Selector", "Do not ask again"));
         return cancelDialog;
     }
@@ -1423,7 +1502,7 @@ public abstract class SelectorController extends AbstractViewController {
         } else {
             final boolean needToRestorePosition
                     = state == SelectorState.NORMAL && getGroupModel().getSelectorPresentationDef().isRestoringPositionEnabled();
-            rereadImpl(null, needToRestorePosition, false);
+            rereadImpl((Pid)null, needToRestorePosition, false);
         }
     }
 
@@ -1437,6 +1516,26 @@ public abstract class SelectorController extends AbstractViewController {
             return newEntity == null ? null : afterEntityCreation(newEntity);
         } catch (InterruptedException e) {
             return null;
+        }
+    }
+    
+    public List<EntityModel> createMultiple() throws ServiceClientException {
+        try{
+            if (canChangeCurrentEntity(false)) {
+                final List<EntityModel> newEntities = createEntities(getGroupModel(), getSelectorWidget());
+                if (!newEntities.isEmpty()){
+                    if (newEntities.size()==1){
+                        return Collections.singletonList(afterEntityCreation(newEntities.get(0)));
+                    }else{
+                        afterEntitiesCreation(newEntities);                        
+                    }
+                }
+                return newEntities;
+            }else{
+                return Collections.emptyList();
+            }
+        }catch(InterruptedException e){
+            return Collections.emptyList();
         }
     }
 
@@ -1485,7 +1584,7 @@ public abstract class SelectorController extends AbstractViewController {
             return new BatchCopyResult();
         } else if (groupModel.getSelection().isSingleObjectSelected()){
             final BatchCopyResult result = new BatchCopyResult();
-            final EntityModel entityModel = getSindleSelectedObject();
+            final EntityModel entityModel = getSingleSelectedObject();
             if (entityModel!=null){
                 final EntityModel copy;
                 try{
@@ -1526,7 +1625,7 @@ public abstract class SelectorController extends AbstractViewController {
                 }else{
                     message = mp.translate("Selector", "Selected objects was not copied:");
                 }
-                uiController.showBatchOperationResult(result, message);
+                displayBatchOperationResult(result, message);
             }else if (numberOfRejections==1){
                 final String pidAsStr = rejections.get(0);
                 if (result.getRejectionReason(pidAsStr)!=EBatchCopyRejectionReason.CANCELLED_BY_USER
@@ -1540,6 +1639,13 @@ public abstract class SelectorController extends AbstractViewController {
             afterCopyObjects(groupModel, newObject);
             return result;
         }
+    }
+    
+    private void displayBatchOperationResult(final AbstractBatchOperationResult result, final String message){
+        final IBatchOperationResultDialog dialog = 
+            getEnvironment().getApplication().getDialogFactory().newBatchOperationResultDialog(getEnvironment(), selector, result);
+        dialog.setMessage(message);
+        dialog.execDialog();        
     }
 
     private static boolean needForCreationDialog(final EntityModel entity) {//RADIX-2567
@@ -1595,6 +1701,67 @@ public abstract class SelectorController extends AbstractViewController {
             return doCreateEntity(newEntity) && newEntity.isExists() ? newEntity : null;
         }
     }
+    
+    public static List<EntityModel> createEntities(final GroupModel groupModel, final ISelectorWidget selectorWidget) throws ServiceClientException, InterruptedException {
+        final List<EntityModel> newEntities = groupModel.openCreatingEntities(null);
+        if (newEntities == null || newEntities.isEmpty()) {
+            return Collections.emptyList();
+        }
+        if (selectorWidget != null) {
+            for (EntityModel entityModel: newEntities){
+                selectorWidget.afterPrepareCreate(entityModel);
+            }
+        }
+        final List<EntityModel> createdEntities = new LinkedList<>();
+        IDialog.DialogResult creationResult;
+        boolean askOnCancel = true;
+        for (int i=0, count=newEntities.size(); i<count; i++){
+            EntityModel newEntity = newEntities.get(i);
+            if (newEntity.isExists()){                
+                createdEntities.add(newEntity);
+            }else{
+                try{
+                    if (needForCreationDialog(newEntity)) {//RADIX-2567
+                        final IEntityEditorDialog dialog = getCreationDialog(newEntity);
+                        creationResult = dialog.execDialog();
+                    } else {
+                        if (doCreateEntity(newEntity)) {
+                            creationResult = IDialog.DialogResult.ACCEPTED;
+                        } else {
+                            creationResult = IDialog.DialogResult.REJECTED;
+                        }
+                    }                    
+                }catch(InterruptedException ex){
+                    creationResult = IDialog.DialogResult.REJECTED;
+                }catch(Exception ex){
+                    final String title = groupModel.getEnvironment().getMessageProvider().translate("Selector", "Failed to create object");
+                    groupModel.showException(title, ex);
+                    final String confirmation = 
+                             groupModel.getEnvironment().getMessageProvider().translate("Selector","Do you want to cancel all next objects creation?");
+                    if (i<count-1 && groupModel.getEnvironment().messageConfirmation(null, confirmation)){
+                        break;
+                    }else{
+                        continue;
+                    }
+                }
+                if (creationResult == IDialog.DialogResult.REJECTED){//создание текущего объекта было отменено
+                    if (i<count-1 && askOnCancel){
+                        final IMessageBox confirmationDialog = createConfirmationDialog(groupModel.getEnvironment(),false);
+                        if (confirmationDialog.execMessageBox()==EDialogButtonType.YES){
+                            break;
+                        }else{
+                            askOnCancel = !confirmationDialog.isOptionActivated();
+                            continue;
+                        }
+                    }
+                }
+                if (newEntity.isExists()) {
+                    createdEntities.add(newEntity);
+                }
+            }
+        }
+        return createdEntities;
+    }    
 
     private EntityModel createEntityImpl(final EntityModel src) throws ServiceClientException, InterruptedException {
         if (canChangeCurrentEntity(false)) {
@@ -1626,15 +1793,34 @@ public abstract class SelectorController extends AbstractViewController {
         notifyEntityObjectsCreated(Collections.singletonList(resultEntityModel));
         return resultEntityModel;
     }
+    
+    private void afterEntitiesCreation(final List<EntityModel> newEntities) throws ServiceClientException, InterruptedException {
+        if (state==SelectorState.NORMAL){
+            final GroupModel groupModel = getGroupModel();
+            final boolean isRestoringPositionEnabled = groupModel.getSelectorPresentationDef().isRestoringPositionEnabled();
+            if (isRestoringPositionEnabled){
+                final List<Pid> pids = new LinkedList<>();
+                for (EntityModel newEntity: newEntities){
+                    if (newEntity.getPid()!=null){
+                        pids.add(newEntity.getPid());
+                    }
+                }
+                rereadImpl(pids, true, true);
+            }else{
+                rereadImpl((Pid)null, false, true);
+            }
+        }
+        notifyEntityObjectsCreated(newEntities);
+    }    
 
     public void setCondition(org.radixware.schemas.xscml.Sqml condition) throws ServiceClientException, InterruptedException {
         getGroupModel().setCondition(condition);
-        rereadImpl(null, false, false);
+        rereadImpl((Pid)null, false, false);
     }
 
     public void setCondition(SqmlExpression expression) throws ServiceClientException, InterruptedException {
         getGroupModel().setCondition(expression);
-        rereadImpl(null, false, false);
+        rereadImpl((Pid)null, false, false);
     }
 
     public void runEditorDialog() throws ServiceClientException {
@@ -1850,7 +2036,7 @@ public abstract class SelectorController extends AbstractViewController {
             try {
                 getSelectorMainWindow().setupInitialFilterAndSorting();
             } catch (InterruptedException exception) {
-                state = SelectorState.OPENING_INTERRUPTED;
+                setState(SelectorState.OPENING_INTERRUPTED);
                 final String traceMessage = getEnvironment().getMessageProvider().translate("TraceMessage", "Opening of selector '%s' was interrupted");
                 getEnvironment().getTracer().event(String.format(traceMessage, selectorTitle));
             }
@@ -1862,7 +2048,7 @@ public abstract class SelectorController extends AbstractViewController {
                     } catch (ServiceClientException ex) {
                         throw new CantOpenSelectorError(group, ex);
                     } catch (InterruptedException ex) {
-                        state = SelectorState.OPENING_INTERRUPTED;
+                        setState(SelectorState.OPENING_INTERRUPTED);
                         final String traceMessage = getEnvironment().getMessageProvider().translate("TraceMessage", "Opening of selector '%s' was interrupted");
                         getEnvironment().getTracer().event(String.format(traceMessage, selectorTitle));
                     }
@@ -1890,7 +2076,7 @@ public abstract class SelectorController extends AbstractViewController {
                     } catch (ServiceClientException ex) {
                         throw new CantOpenSelectorError(group, ex);
                     } catch (InterruptedException ex) {
-                        state = SelectorState.OPENING_INTERRUPTED;
+                        setState(SelectorState.OPENING_INTERRUPTED);
                         final String traceMessage = getEnvironment().getMessageProvider().translate("TraceMessage", "Opening of selector '%s' was interrupted");
                         getEnvironment().getTracer().event(String.format(traceMessage, selectorTitle));
                     } catch (ActivatingPropertyError err) {
@@ -1908,14 +2094,17 @@ public abstract class SelectorController extends AbstractViewController {
         //видимой/невидимой в зависимости от наличия доступных команд
         //поверх сохраненных настроек
         selectorCommands.setModel(group);
+        getCurrentEntityEditor().setObjectName("rx_embedded_editor_for_selector_#"+group.getDefinition().getId());
         refresh();
         if (selectorMenu != null) {
             selectorMenu.setEnabled(true);
         }
-        if (getSelectorMainWindow().isAnyFilter() || selector.getActions().getShowFilterAndOrderToolBarAction().isChecked()) {
+        if (selector.getActions().getShowFilterAndOrderToolBarAction().isChecked()){
             getSelectorMainWindow().updateFilterAndOrderToolbarVisible(true);
+        }else if (getSelectorMainWindow().isAnyFilter()){
+            selector.getActions().getShowFilterAndOrderToolBarAction().setChecked(true);
         }
-        getEnvironment().getClipboard().addChangeListener(clipboardListener);
+        getEnvironment().getClipboard().addChangeListener(clipboardListener,group);
     }
 
     public void notifyOpened(IWidget content) {
@@ -1935,6 +2124,22 @@ public abstract class SelectorController extends AbstractViewController {
     public ISelectorWidget getSelectorWidget() {
         return selectorWidget;
     }
+    
+    private void setState(final SelectorState newState){
+        if (newState==SelectorState.DISABLED){
+            getSelectorMainWindow().switchToApplyFilter();            
+        }else{
+            getSelectorMainWindow().switchToSelectorContent();
+        }
+        if (group!=null){
+            if (state==SelectorState.NORMAL && newState!=SelectorState.NORMAL){
+                group.getAsyncReader().block();
+            }else if (state!=SelectorState.NORMAL && newState==SelectorState.NORMAL){
+                group.getAsyncReader().unblock();
+            }
+        }
+        state = newState;
+    }
 
     public void setSelectorWidget(ISelectorWidget widget) {
         this.selectorWidget = widget;
@@ -1944,12 +2149,12 @@ public abstract class SelectorController extends AbstractViewController {
 
     public void refreshMenu() {
         if (selectorMenu != null) {
-            selectorMenu.removeAllActions();
+            selectorMenu.clear();
             //Пункты меню селектора
             if (group.findNearestExplorerItemView() != null) {
                 selectorMenu.addAction(getActions().getInsertAction());
                 selectorMenu.addAction(getActions().getInsertAndEditAction());
-                selectorMenu.insertSeparator(null);
+                selectorMenu.addSubSeparator();//insertSeparator((Action)null);
             }
             selectorMenu.addAction(getActions().getCreateAction());
             selectorMenu.addAction(getActions().getDeleteAllAction());
@@ -1962,7 +2167,7 @@ public abstract class SelectorController extends AbstractViewController {
             final boolean showEditorActions = (!getCurrentEntityEditor().isOpened() || uiController.getSplitter().isCollapsed(0))
                     && getCurrentEntity() != null;
             if (showEditorActions) {
-                selectorMenu.insertSeparator(null);
+                selectorMenu.addSubSeparator();//insertSeparator((Action)null);
                 selectorMenu.addAction(getActions().getRunEditorDialogAction());
                 selectorMenu.addAction(getActions().getDeleteAction());
                 selectorMenu.addAction(getActions().getCopyAction());
@@ -1970,7 +2175,7 @@ public abstract class SelectorController extends AbstractViewController {
                 selectorMenu.addAction(getActions().getCancelChangesAction());
             }
             if (RunParams.isDevelopmentMode()) {
-                selectorMenu.insertSeparator(null);
+                selectorMenu.insertSeparator((Action)null);
                 selectorMenu.addAction(getActions().getCopySelectorPresIdAction());
                 if (showEditorActions) {
                     selectorMenu.addAction(getActions().getCopyEditorPresIdAction());
@@ -2074,20 +2279,45 @@ public abstract class SelectorController extends AbstractViewController {
 
     public IEmbeddedEditor getCurrentEntityEditor() {
         if (cee_ == null) {
-            cee_ = uiController.createEntityEditor();
-            cee_.setObjectName("entity editor");
+            cee_ = uiController.createEntityEditor();            
         }
         return cee_;
     }
 
     void copySelectorPresId() {
-        uiController.putTextToSystemClipboard(getGroupModel().getSelectorPresentationDef().getId().toString());
+        RadSelectorPresentationDef radSelectorPresentationDef = group.getSelectorPresentationDef();
+        String presentationId = radSelectorPresentationDef.getId().toString();
+        String presentationName = radSelectorPresentationDef.getClassPresentation().getName() + "::" + radSelectorPresentationDef.getName();
+        String explorerItemIdAsStr = null;
+        IExplorerItemView explorerItemView = group.getExplorerItemView();
+        if (explorerItemView != null) {
+            Id explorerItemId = explorerItemView.getExplorerItemId();
+            if (explorerItemId != null) {
+                explorerItemIdAsStr = explorerItemId.toString();
+            }
+        }
+        Id classId = group.getSelectorPresentationDef().getClassPresentation().getId();
+        String className = group.getSelectorPresentationDef().getClassPresentation().getName();
+        execPresentationInfoDialog(getEnvironment().getMessageProvider().translate("Selector", "Selector Presentation Info"), classId == null ? null : classId.toString(), className, presentationId, presentationName, explorerItemIdAsStr, null);
     }
 
     void copyEditorPresId() {        
-        final EntityModel curEntity = getCurrentEntity();
-        if (curEntity != null) {
-            uiController.putTextToSystemClipboard(curEntity.getEditorPresentationDef().getId().toString());
+        if (currentEntity != null) {
+            RadEditorPresentationDef radEditorPresentationDef = currentEntity.getEditorPresentationDef();
+            String presentationId = radEditorPresentationDef.getId().toString();
+            String presentationName = radEditorPresentationDef.getClassPresentation().getName() + "::" + radEditorPresentationDef.getName();
+            String explorerItemIdAsStr = null;
+            IExplorerItemView explorerItemView = currentEntity.getExplorerItemView();
+            if (explorerItemView != null) {
+                Id explorerItemId = explorerItemView.getExplorerItemId();
+                if (explorerItemId != null) {
+                    explorerItemIdAsStr = explorerItemId.toString();
+                }
+            }
+            Pid pid = currentEntity.getPid();
+            Id classId = currentEntity.getClassId();
+            String className = currentEntity.getClassPresentationDef().getName();
+            execPresentationInfoDialog(getEnvironment().getMessageProvider().translate("Editor", "Editor Presentation Info"), classId == null ? null : classId.toString(), className, presentationId, presentationName, explorerItemIdAsStr, pid == null ? null : pid.toString());
         }
     }
 
@@ -2107,7 +2337,8 @@ public abstract class SelectorController extends AbstractViewController {
         }
 
         if (selectorMenu != null) {
-            selectorMenu.removeAllActions();
+//            selectorMenu.removeAllActions();
+            selectorMenu.clear();
             selectorMenu.setEnabled(false);
             selectorMenu.disconnect(selector);
             selectorMenu = null;
@@ -2129,7 +2360,11 @@ public abstract class SelectorController extends AbstractViewController {
         getSelectorMainWindow().clear();
 
         uiController.closeChildWidgets(group);
+        if (group!=null){
+            group.getSelectorColumns().storeSettings();
+        }
         group = null;
     }
-
+    
+    protected abstract void execPresentationInfoDialog(String title, String classId, String className, String presentationId, String presentationName, String explorerItemId, String pid);
 }

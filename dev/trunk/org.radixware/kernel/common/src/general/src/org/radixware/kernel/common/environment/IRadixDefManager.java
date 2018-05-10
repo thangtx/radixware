@@ -22,4 +22,6 @@ public interface IRadixDefManager {
     boolean isDefInDomain(Id defId, Id domainId);
 
     RootMsdlScheme getMsdlScheme(final Id id);
+    
+    String getDefTitleById(final Id defId);
 }

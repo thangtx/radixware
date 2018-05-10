@@ -12,27 +12,32 @@
 package org.radixware.kernel.common.client.eas;
 
 import java.security.cert.X509Certificate;
+import org.radixware.kernel.common.auth.PasswordHash;
 import org.radixware.kernel.common.client.utils.ISecretStore;
 import org.radixware.kernel.common.enums.EAuthType;
 
 
 final class EasSessionPwdParameters extends AbstractEasSessionParameters{
     
-    public EasSessionPwdParameters(final String userName, final String stationName){
-        super(userName,stationName);
+    
+    public EasSessionPwdParameters(final String userName, 
+                                                      final String stationName, 
+                                                      final PasswordHash.Algorithm hashAlgo,
+                                                      final boolean isWebDriverEnabled){
+        super(userName, stationName, hashAlgo, isWebDriverEnabled);
     }
     
     public PwdTokenCalculator createTokenCalculator(final ISecretStore secretStore){
-        return new PwdTokenCalculator(secretStore);
+        return new PwdTokenCalculator(secretStore, getPwdHashAlgorithm());
     }
     
     public PwdTokenCalculator createTokenCalculator(final String pwd){
-        return new PwdTokenCalculator(getUserName(), pwd);
+        return new PwdTokenCalculator(getUserName(), pwd, getPwdHashAlgorithm());
     }
     
-    public PwdTokenCalculator createTokenCalculator(final byte[] pwdHash){
-        return new PwdTokenCalculator(pwdHash);
-    }
+    public PwdTokenCalculator createTokenCalculator(final PasswordHash pwdHash){
+        return new PwdTokenCalculator(pwdHash, getPwdHashAlgorithm());
+    }   
 
     @Override
     public EAuthType getAuthType() {
@@ -50,8 +55,11 @@ final class EasSessionPwdParameters extends AbstractEasSessionParameters{
     }
 
     @Override
-    public EasSessionPwdParameters createCopy(final String newUserName) {
-        return new EasSessionPwdParameters(newUserName==null ? getUserName() : newUserName, getStationName());
+    public EasSessionPwdParameters createCopy(final String newUserName, final PasswordHash.Algorithm newHashAlgorithm) {
+        return new EasSessionPwdParameters(newUserName==null ? getUserName() : newUserName,
+                                           getStationName(), 
+                                           newHashAlgorithm==null ? getPwdHashAlgorithm() : newHashAlgorithm,
+                                           isWebDriverEnabled());
     }
         
 }

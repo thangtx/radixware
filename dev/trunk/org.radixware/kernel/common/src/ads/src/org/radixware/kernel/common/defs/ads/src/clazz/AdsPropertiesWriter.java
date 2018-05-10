@@ -71,6 +71,7 @@ public class AdsPropertiesWriter extends RadixObjectWriter<Properties> {
     public static final Id CREATE_PROP_METHOD_ID = Id.Factory.loadFrom("mthATSWVRFVCZA77JH7QMXVA2SOMQ");
 
     public static boolean writePropertiesCreator(AdsClassDef propOwner, List<AdsPropertyDef> props, CodePrinter printer, UsagePurpose purpose) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         final char[] refPropCastClassName = propOwner.getClassDefType() == EClassType.FILTER_MODEL ? PropertyPresentationWriter.EXPLORER_FILTER_PARAM_PRESENTATION_CLASS_NAME : PropertyPresentationWriter.EXPLORER_PARENT_REF_PROPERTY_PRESENTATION_CLASS_NAME;
 
         printer.print("protected ");
@@ -123,6 +124,7 @@ public class AdsPropertiesWriter extends RadixObjectWriter<Properties> {
         printer.println("return super.createProperty(def);");
         printer.leaveBlock();
         printer.println('}');
+        WriterUtils.leaveHumanUnreadableBlock(printer);
         return true;
     }
 
@@ -335,8 +337,9 @@ public class AdsPropertiesWriter extends RadixObjectWriter<Properties> {
         };
         Collections.sort(constantProperties, comparator);
 
+        WriterUtils.enterHumanUnreadableBlock(printer);
         //read accessor
-        printer.println("/**Poperty accessor for metainformation. Do not use this class directly*/");
+        printer.println(AdsPropertyWriter.PROPERTY_ACCESSOR_WARNING);
         printer.print("public static final class " + READ_ACCESSOR_CLASS_NAME);
         printer.print(" implements ");
         printer.print(AdsPropertyWriter.READ_ACCESSOR_CLASS_NAME);
@@ -347,7 +350,7 @@ public class AdsPropertiesWriter extends RadixObjectWriter<Properties> {
         writeReadOnlyAccessorCodePart(printer, constantProperties, READ_ACCESSOR_CLASS_NAME);
         printer.println('}');
         //read write accessor
-        printer.println("/**Poperty accessor for metainformation. Do not use this class directly*/");
+        printer.println(AdsPropertyWriter.PROPERTY_ACCESSOR_WARNING);
         printer.print("public static final class " + READ_WRITE_ACCESSOR_CLASS_NAME);
         printer.print(" implements ");
         printer.print(AdsPropertyWriter.READ_WRITE_ACCESSOR_CLASS_NAME);
@@ -392,7 +395,7 @@ public class AdsPropertiesWriter extends RadixObjectWriter<Properties> {
         printer.println(";");
         printer.leaveBlock();
         printer.println("}");
-
+        WriterUtils.leaveHumanUnreadableBlock(printer);
         return true;
     }
 

@@ -8,6 +8,8 @@ public interface ILicenseInfo {
     
     public String getName();
     
-    public long getMillisLeft();
+    public long getMillisLeftFromNanoTime(final long fromNanoTime);
+    
+    public boolean wasAvailable();
 
 }

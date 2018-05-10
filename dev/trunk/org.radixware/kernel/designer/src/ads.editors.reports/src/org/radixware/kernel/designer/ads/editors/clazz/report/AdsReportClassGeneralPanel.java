@@ -14,6 +14,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Collection;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -25,17 +27,21 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import net.miginfocom.swing.MigLayout;
+import org.openide.util.ChangeSupport;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
 import org.radixware.kernel.common.defs.IFilter;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.build.BuildOptions;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
 import org.radixware.kernel.common.defs.ads.common.AdsVisitorProviders;
 import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.EReportExportFormat;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.designer.ads.editors.changelog.ChangeLogEditor;
 import org.radixware.kernel.designer.ads.editors.clazz.simple.SuperClassHierarchyPanel;
 import org.radixware.kernel.designer.common.dialogs.components.DefaultFormSizePanel;
 import org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel;
@@ -47,9 +53,12 @@ import org.radixware.kernel.designer.common.general.editors.OpenInfo;
 
 class AdsReportClassGeneralPanel extends JPanel {
 
-    private final AdsReportCsvExportPanel csvExportPanel;
+    private final AdsReportColumnsExportPanel csvExportPanel;
+    private final AdsReportColumnsExportPanel xlsxExportPanel;
+    private final AdsReportColumnsPanel columnsPanel;
     private final AdsReportClassDef report;
     private final DescriptionPanel descriptionEditor;
+    private final ChangeLogEditor changeLogEditor;
     private final LocalizingEditorPanel titleEditor;
     private final HandleInfo handleInfo;
     private final JLabel contextParamTitle;
@@ -63,9 +72,12 @@ class AdsReportClassGeneralPanel extends JPanel {
             report.setContextParameterId(cntxParamEditor.getDefinitionId());
         }
     };
+    private final JCheckBox cbExportTxt;
     private final JCheckBox cbIsSubreport;
     //private final AccessEditPanel accessEditPanel;
     private final SuperClassHierarchyPanel superClassPanel;
+    //Added for notification report editor on changing the list of report export formats on preview panel
+    private final ChangeSupport changeSupport = new ChangeSupport(this);
 
     public AdsReportClassGeneralPanel(final AdsReportClassDef report) {
         super(new BorderLayout()/*
@@ -77,9 +89,9 @@ class AdsReportClassGeneralPanel extends JPanel {
         final JScrollPane scroller = new JScrollPane();
         scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scroller.setViewportView(mainContent);
-        mainContent.add(content,BorderLayout.CENTER);
+        mainContent.add(content, BorderLayout.CENTER);
         JPanel persistentHeader = new JPanel(new MigLayout("fillx, wrap"));
-        mainContent.add(persistentHeader,BorderLayout.NORTH);
+        mainContent.add(persistentHeader, BorderLayout.NORTH);
 
         this.add(scroller);
         //scroller.setLayout(new MigLayout("fillx, wrap"));
@@ -87,6 +99,7 @@ class AdsReportClassGeneralPanel extends JPanel {
 
         this.report = report;
         this.descriptionEditor = new DescriptionPanel();
+        this.changeLogEditor = new ChangeLogEditor(this.report);
         this.titleEditor = new LocalizingEditorPanel();
         this.cbUseDesktopCustomView = new JCheckBox("Use custom view (Desktop)");
         this.cbUseWebCustomView = new JCheckBox("Use custom view (Web)");
@@ -174,30 +187,59 @@ class AdsReportClassGeneralPanel extends JPanel {
 
         persistentHeader.add(titleEditor, "growx");
         persistentHeader.add(descriptionEditor, "growx");
-        
+
+        persistentHeader.add(ChangeLogEditor.wrapPanelWithLabel(changeLogEditor), "growx");
+
         if (BuildOptions.UserModeHandlerLookup.getUserModeHandler() == null) {
             content.add(cbUseDesktopCustomView);
             content.add(cbUseWebCustomView);
         }
-        
+
         content.add(contextParamTitle = new JLabel("Context parameter:"), "newline");
 
         content.add(cntxParamEditor, "growx, newline, sx 2");
 
-        
         persistentHeader.add(cbIsSubreport);
         //this.add(accessEditPanel);
         persistentHeader.add(superClassPanel, "growx");
 
-        csvExportPanel = new AdsReportCsvExportPanel();
-        //this.add(csvExportPanel, "growx");
+        columnsPanel = new AdsReportColumnsPanel();
+        persistentHeader.add(columnsPanel, "growx");
+        
+        cbExportTxt = new JCheckBox("Export to TXT");
+        cbExportTxt.setSelected(this.report.getForm().isSupportsTxt());
+        persistentHeader.add(cbExportTxt, "growx");
+        cbExportTxt.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                AdsReportClassGeneralPanel.this.report.getForm().setTextModeAccepted(cbExportTxt.isSelected());
+            }
+        });
+
+        csvExportPanel = new AdsReportColumnsExportPanel(EReportExportFormat.CSV);
         persistentHeader.add(csvExportPanel, "growx");
+        csvExportPanel.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                changeSupport.fireChange();
+            }
+        });
+
+        xlsxExportPanel = new AdsReportColumnsExportPanel(EReportExportFormat.XLSX);
+        persistentHeader.add(xlsxExportPanel, "growx");
+        xlsxExportPanel.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                changeSupport.fireChange();
+            }
+        });
 
         Border border = defaultSizePanel.getBorder();
         if (border instanceof TitledBorder) {
-            ((TitledBorder) border).setTitle("Report parameter dialog default size");
+            ((TitledBorder) border).setTitle("Default size of report parameter dialog box");
         }
-        content.add(defaultSizePanel,"growx,newline, sx 2");
+        content.add(defaultSizePanel, "growx,newline, sx 2");
     }
 
     public void open(final OpenInfo openInfo) {
@@ -215,10 +257,13 @@ class AdsReportClassGeneralPanel extends JPanel {
 
         //accessEditPanel.open(report);
         superClassPanel.open(report);
+        columnsPanel.open(report, openInfo);
         csvExportPanel.open(report, openInfo);
+        xlsxExportPanel.open(report, openInfo);
 
         defaultSizePanel.open(report.getPresentations());
         updateContextParameterEditor();
+        changeLogEditor.update();
         updateVisibility();
     }
 
@@ -265,6 +310,7 @@ class AdsReportClassGeneralPanel extends JPanel {
         titleEditor.update(handleInfo);
         descriptionEditor.update();
         superClassPanel.update();
+        changeLogEditor.update();
 
         cbUseDesktopCustomView.setSelected(report.getPresentations().getCustomViewSupport().isUseCustomView(ERuntimeEnvironmentType.EXPLORER));
         cbUseDesktopCustomView.setEnabled(!report.isReadOnly());
@@ -278,5 +324,13 @@ class AdsReportClassGeneralPanel extends JPanel {
         defaultSizePanel.update();
         updateContextParameterEditor();
         updateVisibility();
+    }
+
+    public final void addChangeListener(ChangeListener listener) {
+        changeSupport.addChangeListener(listener);
+    }
+
+    public final void removeChangeListener(ChangeListener listener) {
+        changeSupport.removeChangeListener(listener);
     }
 }

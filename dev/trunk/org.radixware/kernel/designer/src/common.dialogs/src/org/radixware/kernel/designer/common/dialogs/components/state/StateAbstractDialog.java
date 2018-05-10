@@ -44,6 +44,10 @@ public abstract class StateAbstractDialog extends ModalDisplayer {
         }
 
         protected StateManager stateManager = new StateManager(this);
+        
+        public String getMessage() {
+            return stateManager.getMessage();
+        }
     }
 
     public StateAbstractDialog(final StateAbstractPanel panel, final String title) {

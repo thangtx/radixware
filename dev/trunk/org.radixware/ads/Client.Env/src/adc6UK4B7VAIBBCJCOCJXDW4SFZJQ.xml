@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="adc6UK4B7VAIBBCJCOCJXDW4SFZJQ" Name="EntryPointRequest" Type="3" Environment="common-client">
+    <AccessRules>
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.env.EntryPointRequest"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="Headeradc6UK4B7VAIBBCJCOCJXDW4SFZJQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyadc6UK4B7VAIBBCJCOCJXDW4SFZJQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg7S5LR6EI35GZ7DKMUCSBRELX4A" Name="Root"/>
+    <PropertyGroup Id="cpgH7W67KILMRDW3HVZHJXMU2AOMQ" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mth2KE565VKNRFS3MIWK67Q5RVG2Y" Name="getEnvironment" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEnvironment()Lorg.radixware.kernel.common.client.IClientEnvironment;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+      </Method>
+      <Method Id="mthWJPD342ZUVCBVCYQKCREEAHC3Y" Name="getParameters" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getParameters()Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.util.Map">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="21"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
+      </Method>
+      <Method Id="mthQROW74LTXNDLVPG4OQKN5W2J74" Name="getEntryPointName" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getEntryPointName()Ljava.lang.String;"/>
+        </AccessRules>
+        <ReturnType TypeId="21"/>
+      </Method>
+      <Method Id="mthYB2L7LPHQZB4ZPWBZC6SWIIQUU" Name="EntryPointRequest" Nature="0" IsConstructor="true" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(Lorg.radixware.kernel.common.client.IClientEnvironment;Ljava.lang.String;Ljava.util.Map&lt;Ljava.lang.String;Ljava.lang.String;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="environment" Id="mprG4F56REGVNDWTFHLF2GUECT2UY">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
+          </Parameter>
+          <Parameter Name="entryPointName" Id="mprSGZTC4FHSRHRBG5MJEPLQ7CIBE">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="parameters" Id="mprBU3P5QP5DVE2LNGNR6Y42SB5PI">
+            <Type TypeId="400" extStr="java.util.Map">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

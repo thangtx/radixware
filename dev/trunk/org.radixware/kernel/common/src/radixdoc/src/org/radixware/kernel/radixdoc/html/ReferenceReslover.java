@@ -57,7 +57,7 @@ final class ReferenceReslover implements IResolver {
     }
 
     private String getRootPath(String ref) {
-        final int divPsition = ref.indexOf("/");
+        final int divPsition = ref.indexOf('/');
         return divPsition >= 0 ? ref.substring(0, divPsition) : ref;
     }
 

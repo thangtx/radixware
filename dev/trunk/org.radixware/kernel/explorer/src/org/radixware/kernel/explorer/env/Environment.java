@@ -14,22 +14,28 @@ package org.radixware.kernel.explorer.env;
 import com.trolltech.qt.core.QDir;
 import com.trolltech.qt.core.QSettings;
 import com.trolltech.qt.core.QTimer;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.security.cert.X509Certificate;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import org.apache.xmlbeans.XmlException;
 import org.radixware.kernel.common.client.Clipboard;
 import org.radixware.kernel.common.client.IClientApplication;
 import org.radixware.kernel.common.client.IClientEnvironment;
@@ -49,26 +55,29 @@ import org.radixware.kernel.common.client.env.EnvironmentVariables;
 import org.radixware.kernel.common.client.env.IEventLoop;
 import org.radixware.kernel.common.client.env.ITaskWaiter;
 import org.radixware.kernel.common.client.env.LocaleManager;
+import org.radixware.kernel.common.client.env.ProductInstallationOptions;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.env.progress.ProgressHandleManager;
-import org.radixware.kernel.common.client.errors.BranchIsNotAccessibleError;
+import org.radixware.kernel.common.client.errors.AccessViolationError;
 import org.radixware.kernel.common.client.errors.CredentialsWasNotDefinedError;
 import org.radixware.kernel.common.client.errors.EasError;
 import org.radixware.kernel.common.client.errors.IClientError;
 import org.radixware.kernel.common.client.errors.KerberosError;
+import org.radixware.kernel.common.client.errors.SqmlIsNotAccessibleError;
 import org.radixware.kernel.common.client.errors.WrongPasswordError;
 import org.radixware.kernel.common.client.exceptions.ClientException;
+import org.radixware.kernel.common.client.exceptions.ExceptionMessage;
 import org.radixware.kernel.common.client.exceptions.KernelClassModifiedException;
 import org.radixware.kernel.common.client.exceptions.SignatureException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.sqml.ISqmlDefinitions;
-import org.radixware.kernel.common.client.meta.sqml.impl.SqmlDefinitions;
 import org.radixware.kernel.common.client.models.groupsettings.FilterSettingsStorage;
 import org.radixware.kernel.common.client.models.groupsettings.GroupSettingsStorage;
 import org.radixware.kernel.common.client.trace.JavaProxyLogger;
 import org.radixware.kernel.common.client.tree.IExplorerTreeManager;
 import org.radixware.kernel.common.client.types.ExplorerRoot;
 import org.radixware.kernel.common.client.types.TimeZoneInfo;
+import org.radixware.kernel.common.client.utils.CryptoUtils;
 import org.radixware.kernel.common.client.utils.ISecretStore;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
 import org.radixware.kernel.common.client.views.IProgressHandle;
@@ -97,16 +106,23 @@ import org.radixware.kernel.explorer.env.session.Connections;
 import org.radixware.kernel.explorer.text.DefaultTextOptionsProvider;
 import org.radixware.kernel.explorer.tree.ExplorerTreeManager;
 import org.radixware.kernel.common.client.utils.Pkcs11Token;
+import org.radixware.kernel.common.client.utils.ThreadDumper;
 import org.radixware.kernel.common.client.widgets.IMainStatusBar;
+import org.radixware.kernel.common.exceptions.ServiceCallFault;
 import org.radixware.kernel.common.utils.RequestProcessor;
+import org.radixware.kernel.explorer.Explorer;
 import org.radixware.kernel.explorer.env.trace.ExplorerCompressableTraceBuffer;
 import org.radixware.kernel.explorer.env.trace.ExplorerTracer;
 import org.radixware.kernel.explorer.utils.LeakedWidgetsDetector;
+import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.views.MainWindow;
+import org.radixware.kernel.explorer.webdriver.WebDrvServer;
+import org.radixware.kernel.explorer.webdriver.WebDrvSessionsManager;
 import org.radixware.kernel.explorer.widgets.propeditors.PropEditorsPool;
 import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.radixware.kernel.starter.radixloader.RadixLoaderException;
 import org.radixware.kernel.starter.radixloader.RadixSVNLoader;
+import org.radixware.schemas.clientstate.ConnectionParams;
 import org.radixware.schemas.eas.CreateSessionRs;
 import org.radixware.schemas.eas.Definition;
 
@@ -122,14 +138,18 @@ class Environment implements IClientEnvironment {
     private IExplorerTreeManager treeManager = null;
     private final EasSession easSession;
     private TimeZoneInfo serverTimeZoneInfo;
+    private ProductInstallationOptions productInstallationOptions;
     final ExplorerLocaleManager localeManager;
     QDir workPath;
     ConnectionOptions connection;
+    private String connectingUserName;
     private List<Id> contextlessCommands;
     private List<EDrcServerResource> allowedResources;
     private final org.radixware.kernel.explorer.env.progress.ExplorerProgressHandleManager progressHandleManager;
+    private final Clipboard clipboard = new Clipboard(this);
     private ClientSettings configStore;
     private final MainWindow mainWindow;
+    private final ResponseNotificationScheduler easResponseNotificator;
     private final ExplorerStatusBar statusBar;
     private final QTimer tokenPoller;
     private Pkcs11Token token;
@@ -139,6 +159,7 @@ class Environment implements IClientEnvironment {
     private SqmlLoadingTask sqmlLoadingTask;
     private Thread sqmlLoadingThread;    
     private final ExplorerCompressableTraceBuffer traceBuffer = new ExplorerCompressableTraceBuffer();
+    private org.radixware.schemas.clientstate.ClientStateDocument clientStateXml;
 
     TraceDialog getTraceDialog() {
         if (traceDialog == null) {
@@ -155,14 +176,14 @@ class Environment implements IClientEnvironment {
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
-    Environment(final Application app, final MainWindow mainWindow) {
+    Environment(final Application app, final MainWindow mainWindow, final byte[] appState) {
         this.app = app;
         this.mainWindow = mainWindow;
         localeManager = new ExplorerLocaleManager(this, app.getCodeBase());
         progressHandleManager = new org.radixware.kernel.explorer.env.progress.ExplorerProgressHandleManager(this, app);
         pwdStore = app.newSecretStore();
-        
-        tracer = new ExplorerTracer(this);
+                
+        tracer = new ExplorerTracer(this, appState!=null && appState.length>0);
         tracer.registerStarterLogger();        
         tracer.setBuffer(traceBuffer);
         JavaProxyLogger.addProxyForSource("com.trolltech.qt", this);
@@ -177,12 +198,24 @@ class Environment implements IClientEnvironment {
 
         setupLocale(RunParams.getLanguage(), RunParams.getCountry());
         initSettings(RunParams.getConfigPath());
-        easSession = new EasSession(this, pwdStore);
+        easResponseNotificator = new ResponseNotificationScheduler(this);
+        easSession = new EasSession(this, pwdStore, easResponseNotificator);
         resourceManager = new org.radixware.kernel.explorer.env.session.resources.ExplorerResourceManager(this);
 
         tokenPoller = new QTimer(app);
         tokenPoller.setInterval(POLL_INTERVAL); //FIX magic constant to nonmagic
-        tokenPoller.timeout.connect(this, "onPollerTimeout()");        
+        tokenPoller.timeout.connect(this, "onPollerTimeout()");
+        
+        if (appState!=null && appState.length>0){
+            try{
+                clientStateXml = 
+                    org.radixware.schemas.clientstate.ClientStateDocument.Factory.parse(new ByteArrayInputStream(appState));
+            }catch(XmlException | IOException exception){
+                final String message = app.getMessageProvider().translate("TraceMessage","Failed to read application state");
+                tracer.error(message, exception);
+                clientStateXml = null;
+            }
+        }
     }
 
     Connections getConnections() {
@@ -199,11 +232,16 @@ class Environment implements IClientEnvironment {
             getTraceDialog().init();
         }
         EnvironmentVariables.clearAll(this);
-        PropEditorsPool.getInstance().clear();        
-        if (app.isExtendedMetaInformationAccessible()){
-            startSqmlLoadingThread(Thread.MIN_PRIORITY);
+        PropEditorsPool.getInstance().clear();
+        final boolean preloadBranch = 
+            app.isExtendedMetaInformationAccessible() && RunParams.isExtendedMetaInformationPreloadEnabled();
+        if (app.isSqmlAccessible() && RunParams.isSqmlPreloadEnabled()){
+            startSqmlLoadingThread(Thread.MIN_PRIORITY,preloadBranch);
+        }else if (preloadBranch){
+            getDefManager().getRepository().preloadBranch();
         }
         sqmlDefinitions = null;
+        clipboard.clear();
     }
 
     @Override
@@ -345,10 +383,14 @@ class Environment implements IClientEnvironment {
     }
 
     @Override
+    public String getConnectionName() {
+        return connection == null ? null : connection.getName();
+    }        
+
+    @Override
     public ProgressHandleManager getProgressHandleManager() {
         return progressHandleManager;
-    }
-    private final Clipboard clipboard = new Clipboard(this);
+    }    
 
     @Override
     public Clipboard getClipboard() {
@@ -420,9 +462,9 @@ class Environment implements IClientEnvironment {
     }
 
     private IExplorerTreeManager initTreeManager() {
-        Iterator ps = javax.imageio.spi.ServiceRegistry.lookupProviders(IExplorerTreeManager.class);
+        final Iterator<IExplorerTreeManager> ps = ServiceLoader.load(IExplorerTreeManager.class).iterator();
         if (ps.hasNext()) {
-            return (IExplorerTreeManager) ps.next();
+            return ps.next();
         } else {
             return new ExplorerTreeManager(this);
         }
@@ -465,17 +507,56 @@ class Environment implements IClientEnvironment {
             }
         }
     }
+    
+    boolean connect(){
+        try{
+            return connectImpl();
+        }finally{
+            clientStateXml = null;
+        }
+    }
 
-    boolean connect() {
-        setStatusBarLabel(getMessageProvider().translate("StatusBar", "Connecting..."));
+    private boolean connectImpl() {
+        setStatusBarLabel(getMessageProvider().translate("StatusBar", "Connecting..."));        
+        ConnectionParams connectionParams;        
+        if (clientStateXml==null || clientStateXml.getClientState()==null){
+            connectionParams = null;
+        }else{
+            connectionParams = clientStateXml.getClientState().getConnection();            
+        }
+        Long replacedSessionId = null;
+        final boolean isWebDrvServerStarted = WebDrvServer.getInstance().started();
         while (true) {
-            final LogonDialog logonDialog = new LogonDialog(this, mainWindow, getConnections(), pwdStore);
-            RunParams.clearPassword();//use this parameters only first time
+            if (connectionParams==null){
+                pwdStore.clearSecret();
+            }else{
+                if (connectionParams.isSetEncSessionKey()){
+                    pwdStore.setSecret(connectionParams.getEncSessionKey());
+                }
+                final byte[] encSessionId = connectionParams.getEncSessionId();
+                if (encSessionId!=null && encSessionId.length>0){
+                    final byte[] decryptedSessionId;
+                    if (pwdStore.isEmpty()){
+                        decryptedSessionId = 
+                               CryptoUtils.decrypt3Des(connectionParams.getEncSessionId(), new byte[]{});
+                    }else{
+                        decryptedSessionId = 
+                               CryptoUtils.decrypt3Des(connectionParams.getEncSessionId(), pwdStore);
+                    }
+                    final ByteBuffer buffer = ByteBuffer.allocate(Long.SIZE/Byte.SIZE);            
+                    buffer.put(decryptedSessionId, 0, decryptedSessionId.length);
+                    buffer.flip();//need flip 
+                    replacedSessionId = buffer.getLong();                
+                }
+            }
+            final LogonDialog logonDialog = createLogonDialog(connectionParams);
+            connectionParams = null;            
             if (logonDialog.execDialog() != DialogResult.ACCEPTED) {
                 break;
             }
             try {
                 connection = logonDialog.getConnection();
+                connectingUserName  = logonDialog.getUserName();
                 if (!connection.hasResolvedAddress()) {
                     if (connection.getInitialServerAddresses().size() == 1) {
                         final String message = getMessageProvider().translate("ExplorerMessage", "Unknown server '%s'");
@@ -505,18 +586,22 @@ class Environment implements IClientEnvironment {
                         }
                     }
                 }
-                if (app.isExtendedMetaInformationAccessible()){
+                final boolean preloadBranch = 
+                    app.isExtendedMetaInformationAccessible() && RunParams.isExtendedMetaInformationPreloadEnabled();
+                if (app.isSqmlAccessible() && RunParams.isSqmlPreloadEnabled()){
                     runInGuiThreadAsync(new Runnable() {
                         @Override
                         public void run() {
                             if (sqmlLoadingThread == null) {
-                                startSqmlLoadingThread(Thread.MIN_PRIORITY);
+                                startSqmlLoadingThread(Thread.MIN_PRIORITY,preloadBranch);
                             }
                         }
                     });
+                }else if (preloadBranch){
+                    getDefManager().getRepository().preloadBranch();
                 }
                 final IEasClient client;
-                final CreateSessionRs response;
+                final CreateSessionRs response;                
                 try {
                     client = logonDialog.createEasClient(connection);
                     final EAuthType authType = connection.getAuthType();
@@ -527,7 +612,14 @@ class Environment implements IClientEnvironment {
                         final IProgressHandle ph = getProgressHandleManager().newProgressHandle();
                         ph.startProgress(getMessageProvider().translate("StatusBar", "Connecting..."), false);
                         try {
-                            response = easSession.open(client, connection.getStationName(), krbCredsProvider, null, getInitialExplorerRootId(connection), null);
+                            response = easSession.open(client, 
+                                                                       connection.getStationName(), 
+                                                                       krbCredsProvider, 
+                                                                       null, 
+                                                                       getInitialExplorerRootId(connection), 
+                                                                       null,
+                                                                       replacedSessionId,
+                                                                       isWebDrvServerStarted);
                         } catch (KerberosError error) {
                             rejectConnection();
                             processException(error);
@@ -536,13 +628,20 @@ class Environment implements IClientEnvironment {
                             ph.finishProgress();
                         }
                     } else {
-                        response = easSession.open(client, connection.getStationName(),
-                                logonDialog.getUserName(), null, authType,
-                                getInitialExplorerRootId(connection));
+                        response = easSession.open(client, 
+                                                                   connection.getStationName(),
+                                                                   logonDialog.getUserName(), 
+                                                                   null, 
+                                                                   authType,
+                                                                   getInitialExplorerRootId(connection),
+                                                                   replacedSessionId,
+                                                                   isWebDrvServerStarted);
                     }
+                    connectingUserName = null;
                     connection.setConnectedUserName(response.getUser());
                 } finally {
-                    logonDialog.clear();
+                    replacedSessionId = null;
+                    logonDialog.clear();                    
                 }
                 final List<ExplorerRoot> explorerRoots =
                         ExplorerRoot.loadFromResponse(response.getExplorerRoots(), this);
@@ -562,6 +661,7 @@ class Environment implements IClientEnvironment {
                 setServerResources(response.getServerResources());
                 final org.radixware.schemas.eas.TimeZone timeZone = response.getServerTimeZone();
                 serverTimeZoneInfo = timeZone == null ? null : TimeZoneInfo.parse(timeZone);
+                productInstallationOptions =  ProductInstallationOptions.loadOptions(response.getProductInstallationOptions());
                 configStore.setConfigProfile(connection.getUserName() + "_" + connection.getStationName());
                 configStore.beginGroup(SettingNames.SYSTEM);
                 configStore.beginGroup(SettingNames.APP_STYLE);
@@ -573,22 +673,21 @@ class Environment implements IClientEnvironment {
                 getTracer().getBuffer().setMaxSize(configStore.readInteger(SettingNames.SYSTEM + "_TRACE_MAX_SIZE", 500));
 
                 app.mainToolBar.setHidden(true);
-                if (RunParams.isDevelopmentMode()) {
-                    LeakedWidgetsDetector.getInstance().init();
+                LeakedWidgetsDetector.getInstance().init();
+                if (RunParams.isDevelopmentMode()) {                    
                     final boolean isMemLeakDetectorEnabled =
                             configStore.readBoolean(SettingNames.SYSTEM + "/" + SettingNames.MEM_LEAK_DETECTOR, true);
                     app.getActions().memoryLeakDetector.setChecked(isMemLeakDetectorEnabled);
                     LeakedWidgetsDetector.getInstance().setEnabled(isMemLeakDetectorEnabled);
                 }
-                if (treeManager.openTree(explorerRoots, mainWindow) == null) {
+                if (treeManager.openTree(explorerRoots, mainWindow, clientStateXml==null ? null : clientStateXml.getClientState()) == null) {
                     rejectConnection();
                     continue;
                 }
-                RunParams.setConnectionParams(connection.getName(), logonDialog.getUserName());
                 getTraceDialog().init();
 
                 final String mainWindowTitleTemplate = getMessageProvider().translate("MainWindow", "%s Explorer - Connection \"%s\", User \"%s\", Station \"%s\"");
-                final String topLayerName = Application.getProductName();
+                final String topLayerName = Explorer.getProductName();
                 final String mainWindowTitle = String.format(mainWindowTitleTemplate, topLayerName, connection.getName(), getUserName(), getStationName());
                 mainWindow.setWindowTitle(mainWindowTitle);
 
@@ -623,8 +722,8 @@ class Environment implements IClientEnvironment {
             } catch (WrongPasswordError error) {
                 if (error.getLocalizedMessage() != null && !error.getLocalizedMessage().isEmpty()) {
                     final String traceMessage =
-                            getMessageProvider().translate("ExplorerMessage", "Can't establish connection") + "\n" + error.getLocalizedMessage();
-                    getTracer().error(traceMessage);
+                            getMessageProvider().translate("ExplorerMessage", "Unable to establish connection\n%1$s");
+                    getTracer().event(String.format(traceMessage, error.getLocalizedMessage()));
                     messageError(getMessageProvider().translate("ExplorerMessage", "Connection Error"), error.getLocalizedMessage());
                 }
                 treeManager.closeAll(true);
@@ -644,7 +743,7 @@ class Environment implements IClientEnvironment {
                     severity = ClientException.getFaultSeverity(error.getSouceFault());
                 }
                 final String traceMessage =
-                        getMessageProvider().translate("ExplorerMessage", "Can't establish connection") + "\n" + reason;
+                        getMessageProvider().translate("ExplorerMessage", "Failed to establish connection") + "\n" + reason;
                 getTracer().put(severity, traceMessage);
                 final String title;
                 if (error instanceof IClientError){
@@ -657,7 +756,7 @@ class Environment implements IClientEnvironment {
                 RunParams.removeRestoringContextParam();                
                 rejectConnection();
             } catch (Exception ex) {
-                if (!processExceptionOnConnect(ex, logonDialog.getUserName())){
+                if (!processExceptionOnConnect(ex)){
                     return false;
                 }
             } catch (java.lang.ExceptionInInitializerError ex) {
@@ -668,6 +767,7 @@ class Environment implements IClientEnvironment {
             }
         }
         connection = null;
+        connectingUserName = null;
         setStatusBarLabel(getMessageProvider().translate("StatusBar", "Disconnected"));
         RunParams.removeRestoringContextParam();
         app.getActions().runSettingsDialog.setEnabled(false);
@@ -680,29 +780,68 @@ class Environment implements IClientEnvironment {
         return false;
     }    
     
-    private boolean processExceptionOnConnect(final Exception ex, final String userName){
+    private LogonDialog createLogonDialog(final ConnectionParams connectionParams){
+        final LogonDialog logonDialog = new LogonDialog(this, mainWindow, getConnections(), pwdStore);
+        RunParams.clearPassword();//use this parameters only first time
+        String connectionName = connectionParams==null ? null : connectionParams.getConnectionName();
+        if (connectionName==null){
+            connectionName = RunParams.getConnectionName();
+        }
+        if (connectionName!=null){
+            logonDialog.setConnectionName(connectionName);
+        }                        
+        String userName = connectionParams==null ? null : connectionParams.getUserName();
+        if (userName==null){
+            userName = RunParams.getUserName();
+        }
+        if (userName!=null){
+            logonDialog.setUserName(userName);
+        }
+        logonDialog.setAutoLogin(connectionParams!=null || RunParams.needToRestoreConnection());
+        return logonDialog;
+    }
+    
+    private boolean processExceptionOnConnect(final Exception ex){
+        ServiceCallFault fault = null;
         for (Throwable exception = ex; exception != null; exception = exception.getCause()) {
             if (exception instanceof KernelClassModifiedException) {
                 final KernelClassModifiedException kernelModifiedExc =
                         (KernelClassModifiedException) exception;
                 if (kernelModifiedExc.restartScheduled()) {
                     //Если был RestartAppScheduledException, то на этот момент disconnect уже был вызван 
-                    RunParams.setConnectionParams(connection.getName(), userName);
-                    RunParams.addRestartParams();
                     setStatusBarLabel(getMessageProvider().translate("StatusBar", "Disconnected"));
                     return false;
                 }
                 break;
+            }else if (exception instanceof ServiceCallFault){
+                fault = (ServiceCallFault)exception;
             }
-
         }
-        if (KeystoreController.isIncorrectPasswordException(ex)) {
+        if (KeystoreController.isIncorrectPasswordException(ex)) {           
+            final String messageTitle = getMessageProvider().translate("ExplorerMessage", "Connection Error");
             final String message = getMessageProvider().translate("ExplorerError", "Password is invalid!");
-            messageError(getMessageProvider().translate("ExplorerMessage", "Connection Error"), message);
-            getTracer().error(message);
-        } else {
-            getTracer().error(getMessageProvider().translate("ExplorerMessage", "Can't establish connection"), ex);
-            messageException(getMessageProvider().translate("ExplorerMessage", "Connection Error"), getMessageProvider().translate("ExplorerMessage", "Can't establish connection"), ex);
+            messageError(messageTitle, message);
+            final String traceMessage = 
+                getMessageProvider().translate("ExplorerMessage", "Unable to establish connection:\n%1$s");
+            getTracer().event(String.format(traceMessage,message));
+        } else if (fault instanceof AccessViolationError){
+            final String messageTitle = getMessageProvider().translate("ExplorerMessage", "Unable to Establish Connection");
+            final String messageText =
+                getMessageProvider().translate("ExplorerMessage", "You do not have permission to login. Please contact your system administrator.");
+            messageError(messageTitle, messageText);
+        }else{
+            final MessageProvider mp = getMessageProvider();
+            final String messageTitle = mp.translate("ExplorerMessage", "Connection Error");
+            final EEventSeverity severity = fault==null ? EEventSeverity.ERROR : ClientException.getFaultSeverity(fault);
+            if (severity==EEventSeverity.ERROR){
+                getTracer().error(mp.translate("ExplorerMessage", "Failed to establish connection"), ex);
+            }else{
+                final String traceMessage = 
+                    getMessageProvider().translate("ExplorerMessage", "Unable to establish connection:\n%1$s");
+                final String reason = new ExceptionMessage(this, fault).getDialogMessage();
+                getTracer().put(severity, String.format(traceMessage, reason));
+            }
+            messageException(messageTitle, mp.translate("ExplorerMessage", "Unable to establish connection"), ex);
         }
         treeManager.closeAll(true);
         RunParams.removeRestoringContextParam();
@@ -710,20 +849,38 @@ class Environment implements IClientEnvironment {
         return true;
     }
 
-    private void startSqmlLoadingThread(final int priority) {
-        sqmlLoadingTask = new SqmlLoadingTask(this);
+    private void startSqmlLoadingThread(final int priority, final boolean preloadBranch) {
+        sqmlLoadingTask = new SqmlLoadingTask(this, preloadBranch);
         sqmlLoadingThread = new Thread(sqmlLoadingTask, "SQML Loader");
         sqmlLoadingThread.setPriority(priority);
         sqmlLoadingThread.start();
     }
+    
+    private void stopSqmlLoadingThread(){
+        if (sqmlLoadingThread != null) {
+            if (sqmlLoadingThread.isAlive()) {
+                sqmlLoadingTask.cancel();
+                try {
+                    waitForSqmlDefinitionsLoad();
+                } catch (DefinitionError error) {//NOPMD
+                    //ignore
+                }
+            } else {
+                sqmlLoadingThread = null;
+                sqmlLoadingTask = null;
+            }
+        }
+        sqmlDefinitions = null;        
+    }
 
     private void rejectConnection() {
+        connectingUserName = null;
         easSession.close(false);
         pwdStore.clearSecret();
         if (connection != null) {
             connection.onClose();
         }
-        configStore.endAllGroups();
+        configStore.setConfigProfile(null);
     }
 
     boolean disconnect() {
@@ -737,6 +894,10 @@ class Environment implements IClientEnvironment {
                 traceBuffer.stopCompressing();
                 progressHandleManager.clear();
                 closeRequestProcessor();
+                stopSqmlLoadingThread();
+                if (app.getDefManager().getAdsVersion() != null) {
+                    app.getDefManager().getAdsVersion().clear();//stop branch loading thread
+                }
             }
             return true;
         }
@@ -752,7 +913,7 @@ class Environment implements IClientEnvironment {
         if (!forced && progressHandleManager.getActive() != null) {
             return false;
         }
-        if (treeManager.closeAll(forced)) {
+        if (treeManager.closeAll(forced)) {            
             easSession.close(forced && onExit);
             pwdStore.clearSecret();
             RunParams.clearConnectionParams();
@@ -769,7 +930,7 @@ class Environment implements IClientEnvironment {
             //actions.checkForUpdates.setEnabled(false);
             configStore.setValue(SettingNames.SYSTEM + "_TRACE_PROFILE", tracer.getProfile().toString());
             configStore.writeInteger(SettingNames.SYSTEM + "_TRACE_MAX_SIZE", tracer.getBuffer().getMaxSize());
-            configStore.endAllGroups();
+            configStore.setConfigProfile(null);
             groupSettingStorage = null;
             if (connections!=null){
                 connections.store();
@@ -787,28 +948,18 @@ class Environment implements IClientEnvironment {
                 app.mainToolBar.setHidden(false);
             }
             notifyDisconnected(forced);
-            if (sqmlLoadingThread != null) {
-                if (sqmlLoadingThread.isAlive()) {
-                    sqmlLoadingTask.cancel();
-                    try {
-                        waitForSqmlDefinitionsLoad();
-                    } catch (DefinitionError error) {//NOPMD
-                        //ignore
-                    }
-                } else {
-                    sqmlLoadingThread = null;
-                    sqmlLoadingTask = null;
-                }
-            }
-            sqmlDefinitions = null;
-            if (!onExit && app.getDefManager().getAdsVersion() != null) {
+            stopSqmlLoadingThread();
+            if (app.getDefManager().getAdsVersion() != null) {
                 EnvironmentVariables.clearAll(this);
-                PropEditorsPool.getInstance().clear();
+                if (!onExit){
+                    PropEditorsPool.getInstance().clear();
+                    WidgetUtils.CustomStyle.releaseAll();
+                }
                 app.getDefManager().getAdsVersion().clear();
             }
             if (onExit){
                 traceBuffer.stopCompressing();
-                progressHandleManager.clear();
+                progressHandleManager.clear();                
                 closeRequestProcessor();
             }                        
             return true;
@@ -859,12 +1010,17 @@ class Environment implements IClientEnvironment {
 
     @Override
     public boolean isCustomFiltersAccessible() {
-        return isServerResourceAccessible(EDrcServerResource.EAS_FILTER_CREATION) && app.isExtendedMetaInformationAccessible();
+        return isServerResourceAccessible(EDrcServerResource.EAS_FILTER_CREATION) && app.isSqmlAccessible();
     }
 
     @Override
     public boolean isCustomSortingsAccessible() {
         return isServerResourceAccessible(EDrcServerResource.EAS_SORTING_CREATION);
+    }
+    
+    @Override
+    public boolean isUserFuncDevelopmentAccessible() {
+        return isServerResourceAccessible(EDrcServerResource.USER_FUNC_DEV);
     }
 
     protected boolean isServerResourceAccessible(EDrcServerResource resource) {
@@ -880,7 +1036,7 @@ class Environment implements IClientEnvironment {
             lng = supportedLanguages.get(0);
             country = LocaleManager.getDefaultCountry(lng);
         }
-        if (lng == getLanguage()) {
+        if (lng == getLanguage() && country==getCountry()) {
             return false;
         } else {
             localeManager.changeLocale(lng, country);
@@ -900,11 +1056,11 @@ class Environment implements IClientEnvironment {
     @Override
     public ISqmlDefinitions getSqmlDefinitions() {
         if (sqmlDefinitions == null) {
-            if (!app.isExtendedMetaInformationAccessible()){
-                throw new BranchIsNotAccessibleError();
+            if (!app.isSqmlAccessible()){
+                throw new SqmlIsNotAccessibleError();
             }
             if (sqmlLoadingThread == null) {
-                startSqmlLoadingThread(Thread.NORM_PRIORITY);
+                startSqmlLoadingThread(Thread.NORM_PRIORITY,false);
                 sqmlDefinitions = waitForSqmlDefinitionsLoad();
             } else if (sqmlLoadingThread.isAlive()) {
                 sqmlLoadingThread.setPriority(Thread.NORM_PRIORITY);
@@ -922,16 +1078,19 @@ class Environment implements IClientEnvironment {
         return sqmlDefinitions;
     }
 
-    private SqmlDefinitions waitForSqmlDefinitionsLoad() {
+    private ISqmlDefinitions waitForSqmlDefinitionsLoad() {
         final ITaskWaiter taskWaiter = getApplication().newTaskWaiter();
         try {
             taskWaiter.setMessage(getMessageProvider().translate("Wait Dialog", "Loading SQML"));
-            SqmlDefinitions definitions = taskWaiter.runAndWait(new Callable<SqmlDefinitions>() {
+            ISqmlDefinitions definitions = taskWaiter.runAndWait(new Callable<ISqmlDefinitions>() {
                 @Override
-                public SqmlDefinitions call() throws Exception {
-                    sqmlLoadingThread.join(600000);
+                public ISqmlDefinitions call() throws Exception {
+                    sqmlLoadingThread.join(300000);
                     if (sqmlLoadingThread.isAlive()) {
-                        throw new DefinitionError("Unable to load DDS definitions");
+                        final String dumps = ThreadDumper.dumpSync(sqmlLoadingThread, 10, 5000);
+                        if (dumps!=null){
+                            throw new DefinitionError("Unable to load SQML definitions:\n"+dumps);
+                        }
                     }
                     return sqmlLoadingTask.getSqmlDefinitions();
                 }
@@ -997,7 +1156,9 @@ class Environment implements IClientEnvironment {
                     getProgressHandleManager().unblockProgress();
                 }
                 try {
-                    easSession.renewSslContext(passwordDialog.getPassword().toCharArray());
+                    final char[] keyStorePassword = passwordDialog.getPassword().toCharArray();
+                    easSession.renewSslContext(keyStorePassword);
+                    Arrays.fill(keyStorePassword, '\0');
                     tokenPoller.start();
                     break;
                 } catch (KeystoreControllerException | CertificateUtilsException exception) {
@@ -1060,4 +1221,23 @@ class Environment implements IClientEnvironment {
     public void removeConnectionListener(final ConnectionListener listener) {
         connectionListeners.remove(listener);
     }
+
+    @Override
+    public void writeConnectionParametersToXml(final ConnectionParams xml) {
+        if (connection!=null){
+            xml.setConnectionName(connection.getName());
+            if (connectingUserName!=null && !connectingUserName.isEmpty()){
+                xml.setUserName(connectingUserName);
+            }else{
+                xml.setUserName(connection.getUserName());
+            }
+            xml.setEncSessionKey(pwdStore.getSecret());
+            easSession.writeSessionId(xml);
+        }
+    }
+
+    @Override
+    public ProductInstallationOptions getProductInstallationOptions() {
+        return productInstallationOptions;
+    }        
 }

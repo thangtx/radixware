@@ -13,6 +13,7 @@ package org.radixware.kernel.explorer.widgets.propeditors;
 
 import com.trolltech.qt.gui.QWidget;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.meta.mask.EditMask;
 import org.radixware.kernel.common.client.meta.mask.EditMaskInt;
 import org.radixware.kernel.common.client.meta.mask.EditMaskTimeInterval;
@@ -72,4 +73,9 @@ public class PropIntEditor extends PropEditor {
             return new ValBoolEditorFactoryImpl();
         }
     }
+    
+    @Override
+    public final EWidgetMarker getWidgetMarker() {
+        return EWidgetMarker.INT_PROP_EDITOR;
+    }        
 }

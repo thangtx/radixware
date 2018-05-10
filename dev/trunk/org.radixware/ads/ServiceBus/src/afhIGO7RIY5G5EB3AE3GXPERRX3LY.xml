@@ -10,7 +10,48 @@
     </Bodies>
     <MethodGroup Id="cmgV6ETX4IIWRA7XCFFWO6G27NQRM" Name="Root"/>
     <PropertyGroup Id="cpgWCIDVS3CEFHT5PVFFQ6AEMA42E" Name="Root"/>
-    <Properties/>
+    <Properties>
+      <Property Id="prdBUM3DQ44CNCSLAQXLG6ACECNQI" Name="expDeleteExistentNodes" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsTPCYZGTKKFAP5LGCZTG7KLFGDQ" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prd5VZJWMZH4NG6NDYJGR2CAELPEU" Name="expDeletePipelineParameters" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsFL73JXMGSVAI5BR466HKKOA55M" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prdKNXZT5FCK5HPFKD6TV4Y46CLX4" Name="expOverwriteLocalSettings" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsTH2WJAJHMRC6NA7SZMD57J5W3I" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prdO7HXWWZWPRETZGYLMTZAT3VVQY" Name="expOverwritePipelineParameters" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules Access="2" IsPublished="false"/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsMYG4PATWKNARTE6DDTZRUBVVJ4" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
     <Methods>
       <Method Id="mthQBTJF44B3ZDN7DLPVA4RQQ7OUU" Name="extractExportData" Nature="0" IsOverride="true">
         <AccessRules Access="1"/>
@@ -31,16 +72,28 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY">
+                <xsc:Presentation>Pipeline</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecX6WI554KVVCZPGNLK7CSZLOMTY mthDCYIW34TUBAVBHEZNEE42U2RH4" Invoke="true"/>
+              <xsc:IdReference Path="aecX6WI554KVVCZPGNLK7CSZLOMTY mthDCYIW34TUBAVBHEZNEE42U2RH4" Invoke="true">
+                <xsc:Presentation>exportAll</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(data);
+              <xsc:Java>(data, (java.util.Iterator&lt;</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecX6WI554KVVCZPGNLK7CSZLOMTY">
+                <xsc:Presentation>Pipeline</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>>) cfgContext.iterator());
 </xsc:Java>
             </xsc:Item>
           </Src>
@@ -70,9 +123,64 @@
           </Src>
         </Sources>
       </Method>
+      <Method Id="mthCRH5BBL2GZHOVO73KRJN4MYPMU" Name="getSettingsProvider" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules Access="1"/>
+        <ReturnType TypeId="411" Path="aicIHTJDUE3M5BWJGZTEPBOEFI2WI"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="adc55SNAIGNZFGCDA7OAOQIXPH74E mthBPGFWOROUJBSJOAKGXR3E4I3WM" Invoke="true">
+                <xsc:Presentation>CfgSettingsProviderPipeline</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prdBUM3DQ44CNCSLAQXLG6ACECNQI" Invoke="true">
+                <xsc:Presentation>expDeleteExistentNodes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue(),
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prdKNXZT5FCK5HPFKD6TV4Y46CLX4" Invoke="true">
+                <xsc:Presentation>expOverwriteLocalSettings</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue(),
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prd5VZJWMZH4NG6NDYJGR2CAELPEU" Invoke="true">
+                <xsc:Presentation>expDeletePipelineParameters</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue(),
+        </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prdO7HXWWZWPRETZGYLMTZAT3VVQY" Invoke="true">
+                <xsc:Presentation>expOverwritePipelineParameters</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue());</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
     </Methods>
     <Presentations>
-      <Form InheritanceMask="4114">
+      <Form InheritanceMask="18">
         <Model Id="afmIGO7RIY5G5EB3AE3GXPERRX3LY" Name="CfgExportForm.PipelineGroup:Model" Type="18">
           <AccessRules/>
           <Headers>
@@ -83,9 +191,265 @@
           </Bodies>
           <MethodGroup Id="cmgTSF2UFD7ZRCHPI35AEKKSCNT4Q" Name="Root"/>
           <PropertyGroup Id="cpgCEPKMRZSYJCZJOKABNZRYL2OFM" Name="Root"/>
-          <Properties/>
+          <Properties>
+            <Property Id="prdA6IUDE5WWJENDLUWY2D2K5NGHA" Name="toPacket" Nature="8" IsConst="false" Environment="common-client" IsOverride="true" isDescriptionInherited="true">
+              <AccessRules Access="1"/>
+              <Type TypeId="1"/>
+              <DependentItems/>
+              <SetterSources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>super.setValue(val);
+
+final boolean toPacket = val.booleanValue();
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prdBUM3DQ44CNCSLAQXLG6ACECNQI" Invoke="true">
+                      <xsc:Presentation>expDeleteExistentNodes</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(toPacket);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prd5VZJWMZH4NG6NDYJGR2CAELPEU" Invoke="true">
+                      <xsc:Presentation>expDeletePipelineParameters</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(toPacket);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prdKNXZT5FCK5HPFKD6TV4Y46CLX4" Invoke="true">
+                      <xsc:Presentation>expOverwriteLocalSettings</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(toPacket);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prdO7HXWWZWPRETZGYLMTZAT3VVQY" Invoke="true">
+                      <xsc:Presentation>expOverwritePipelineParameters</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(toPacket);</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </SetterSources>
+            </Property>
+            <Property Id="prdH5MTLP7ERZBHVBJ55N7AERJZEM" Name="toFile" Nature="8" IsConst="false" Environment="common-client" IsOverride="true" isDescriptionInherited="true">
+              <AccessRules Access="1"/>
+              <Type TypeId="1"/>
+              <DependentItems/>
+              <SetterSources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:Java>super.setValue(val);
+
+final boolean toFile = val.booleanValue();
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prdBUM3DQ44CNCSLAQXLG6ACECNQI" Invoke="true">
+                      <xsc:Presentation>expDeleteExistentNodes</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(!toFile);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prd5VZJWMZH4NG6NDYJGR2CAELPEU" Invoke="true">
+                      <xsc:Presentation>expDeletePipelineParameters</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(!toFile);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prdKNXZT5FCK5HPFKD6TV4Y46CLX4" Invoke="true">
+                      <xsc:Presentation>expOverwriteLocalSettings</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(!toFile);
+</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY prdO7HXWWZWPRETZGYLMTZAT3VVQY" Invoke="true">
+                      <xsc:Presentation>expOverwritePipelineParameters</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(!toFile);</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </SetterSources>
+            </Property>
+            <Property Id="prdBUM3DQ44CNCSLAQXLG6ACECNQI" Name="expDeleteExistentNodes" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules Access="2" IsPublished="false"/>
+              <Type TypeId="1"/>
+              <DependentItems/>
+              <SetterSources>
+                <Src>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY afmIGO7RIY5G5EB3AE3GXPERRX3LY prdBUM3DQ44CNCSLAQXLG6ACECNQI" Invoke="true" extStr="#STD_PROP_VALUE#">
+                      <xsc:Presentation>expDeleteExistentNodes</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java> = val;
+if (val.booleanValue()) {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY afmIGO7RIY5G5EB3AE3GXPERRX3LY prdKNXZT5FCK5HPFKD6TV4Y46CLX4" Invoke="true">
+                      <xsc:Presentation>expOverwriteLocalSettings</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setValue(false);
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY afmIGO7RIY5G5EB3AE3GXPERRX3LY prdKNXZT5FCK5HPFKD6TV4Y46CLX4" Invoke="true">
+                      <xsc:Presentation>expOverwriteLocalSettings</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(false);
+} else {
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhIGO7RIY5G5EB3AE3GXPERRX3LY afmIGO7RIY5G5EB3AE3GXPERRX3LY prdKNXZT5FCK5HPFKD6TV4Y46CLX4" Invoke="true">
+                      <xsc:Presentation>expOverwriteLocalSettings</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthXVZBWZBTVRHC5HFQN2EQFQOJ4E" Invoke="true">
+                      <xsc:Presentation>setEnabled</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>(true);
+}</xsc:Java>
+                  </xsc:Item>
+                </Src>
+              </SetterSources>
+            </Property>
+            <Property Id="prdKNXZT5FCK5HPFKD6TV4Y46CLX4" Name="expOverwriteLocalSettings" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+              <AccessRules Access="2" IsPublished="false"/>
+              <Type TypeId="1"/>
+              <DependentItems/>
+            </Property>
+          </Properties>
           <Methods/>
         </Model>
+        <EditorPages>
+          <Page Id="epgDN73CDHRENDEVG4L4YOM44A664" Name="General" Type="1" ClientEnvironment="explorer">
+            <AccessRules IsPublished="false"/>
+            <Properties>
+              <Property Id="prdH5MTLP7ERZBHVBJ55N7AERJZEM" Row="0" Column="0"/>
+              <Property Id="prdA6IUDE5WWJENDLUWY2D2K5NGHA" Row="1" Column="0"/>
+              <Property Id="prdLEQ7NQRA4BGRBBKLFXNXMK5WXU" Row="0" Column="1"/>
+              <Property Id="prdGIRD7QI6DNGFHP6IZTCDDGEAA4" Row="1" Column="1"/>
+              <Property Row="2" Column="0" ColSpan="2">
+                <PropertyGroup Id="ppgSQRQTORUBNAJ5FSPUBITCDJY3A" Name="ExpOpts" TitleId="mlsAGXYYJFROZHRLKZASWQP6E6CMY" ShowFrame="true">
+                  <AccessRules IsPublished="false"/>
+                  <EditorPageItem Id="prdBUM3DQ44CNCSLAQXLG6ACECNQI" Row="0" Column="0"/>
+                  <EditorPageItem Id="prdKNXZT5FCK5HPFKD6TV4Y46CLX4" Row="0" Column="1"/>
+                  <EditorPageItem Id="prd5VZJWMZH4NG6NDYJGR2CAELPEU" Row="1" Column="0"/>
+                  <EditorPageItem Id="prdO7HXWWZWPRETZGYLMTZAT3VVQY" Row="1" Column="1"/>
+                </PropertyGroup>
+              </Property>
+            </Properties>
+          </Page>
+          <PageOrder>
+            <Item PageId="epgDN73CDHRENDEVG4L4YOM44A664" Level="1"/>
+          </PageOrder>
+        </EditorPages>
       </Form>
     </Presentations>
     <Extends TypeId="411" Path="afh762LZFWFDFGPBJ6P33H4XR2OYQ"/>

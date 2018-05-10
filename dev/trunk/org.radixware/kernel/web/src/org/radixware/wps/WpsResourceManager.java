@@ -12,24 +12,22 @@
 package org.radixware.wps;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.radixware.kernel.common.client.eas.resources.IFileDirResource;
 import org.radixware.kernel.common.client.eas.resources.IFileResource;
+import org.radixware.kernel.common.client.eas.resources.IFileTransitResource;
 import org.radixware.kernel.common.client.eas.resources.IMessageDialogResource;
 import org.radixware.kernel.common.client.eas.resources.IProgressDialogResource;
 import org.radixware.kernel.common.client.eas.resources.IResourceManager;
-import org.radixware.kernel.common.client.eas.resources.ITerminalResource;
 import org.radixware.kernel.common.client.exceptions.TerminalResourceException;
 import org.radixware.kernel.common.enums.EFileAccessType;
 import org.radixware.kernel.common.enums.EFileOpenMode;
 import org.radixware.kernel.common.enums.EFileOpenShareMode;
+import org.radixware.kernel.common.enums.EMimeType;
 import org.radixware.schemas.eas.FileSelectRq;
 import org.radixware.schemas.eas.MessageDialogOpenRq;
 import org.radixware.schemas.eas.NextDialogRequest.MessageBox;
 import org.radixware.wps.resources.FileResource;
+import org.radixware.wps.resources.FileTransitResource;
 import org.radixware.wps.resources.MessageDialogResource;
 import org.radixware.wps.resources.ProgressDialogResource;
 import org.radixware.wps.resources.WpsFileDirResource;
@@ -38,7 +36,7 @@ import org.radixware.wps.resources.WpsFileDirResource;
 class WpsResourceManager implements IResourceManager {
 
     private final WpsEnvironment env;
-    private Map<String, ITerminalResource> resources = new HashMap<String, ITerminalResource>();
+    private ProgressDialogResource resource = null;
 
     public WpsResourceManager(WpsEnvironment env) {
         this.env = env;
@@ -47,52 +45,30 @@ class WpsResourceManager implements IResourceManager {
     @Override
     public IMessageDialogResource openMessageDialogResource(MessageDialogOpenRq request) {
         synchronized (this) {
-            MessageDialogResource res = MessageDialogResource.open(env, request);
-            resources.put(res.getId(), res);
-            return res;
+            return MessageDialogResource.open(env, request);
         }
     }
 
     @Override
     public IMessageDialogResource openMessageDialogResource(MessageBox messageBox) {
         synchronized (this) {
-            MessageDialogResource res = MessageDialogResource.open(env, messageBox);
-            resources.put(res.getId(), res);
-            return res;
+            return MessageDialogResource.open(env, messageBox);
         }
     }
 
+    @Override
+    public IFileTransitResource startFileTransit(String fileName, EMimeType mimeType, boolean openAfterTransit) throws IOException, TerminalResourceException {
+        synchronized (this){
+            return new FileTransitResource(fileName, mimeType, openAfterTransit);
+        }
+    }
+        
     @Override
     public IFileResource openFileResource(String fileName, EFileOpenMode openMode, EFileOpenShareMode share) throws IOException, TerminalResourceException {
         synchronized (this) {
-            FileResource res = new FileResource(fileName, openMode, share);
-            resources.put(res.getId(), res);
-            return res;
+            return new FileResource(fileName, openMode, share);
         }
-    }
-
-    @Override
-    public void freeResource(String id) throws TerminalResourceException {
-        synchronized (this) {
-            ITerminalResource resource = resources.get(id);
-            if (resource != null) {
-                resource.free();
-            }
-            resources.remove(id);
-        }
-    }
-
-    @Override
-    public void freeAllResources() throws TerminalResourceException {
-        synchronized (this) {
-            List<ITerminalResource> rss = new ArrayList<ITerminalResource>(resources.values());
-            resources.clear();
-            for (ITerminalResource rs : rss) {
-                rs.free();
-            }
-        }
-    }
-    private ProgressDialogResource resource = null;
+    }  
 
     @Override
     public IProgressDialogResource getProgressDialogResource() {
@@ -139,4 +115,9 @@ class WpsResourceManager implements IResourceManager {
     public void copyFile(String srcFileName, String dstFileName, boolean overwrite) throws IOException, TerminalResourceException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    @Override
+    public boolean isFileExists(String path) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }        
 }

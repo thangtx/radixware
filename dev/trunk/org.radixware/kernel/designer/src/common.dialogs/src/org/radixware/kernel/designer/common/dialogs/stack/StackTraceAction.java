@@ -30,7 +30,7 @@ public class StackTraceAction extends CallableSystemAction {
 
     @Override
     public String getName() {
-        return "Stack trace parser";
+        return "Stack Trace Parser";
     }
 
     @Override

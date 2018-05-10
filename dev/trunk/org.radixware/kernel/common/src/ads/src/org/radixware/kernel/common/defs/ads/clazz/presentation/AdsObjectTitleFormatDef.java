@@ -43,6 +43,7 @@ import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.ETitleNullFormat;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.exceptions.RadixObjectError;
@@ -86,32 +87,34 @@ public class AdsObjectTitleFormatDef extends AdsClassMember implements IJavaSour
 
         @Override
         public void collectUsedMlStringIds(Collection<MultilingualStringInfo> ids) {
-            ids.add(new MultilingualStringInfo(TitleItem.this) {
-                @Override
-                public Id getId() {
-                    return patternId;
-                }
+            if (patternId != null) {
+                ids.add(new MultilingualStringInfo(TitleItem.this) {
+                    @Override
+                    public Id getId() {
+                        return patternId;
+                    }
 
-                @Override
-                public void updateId(Id newId) {
-                    patternId = newId;
-                }
+                    @Override
+                    public void updateId(Id newId) {
+                        patternId = newId;
+                    }
 
-                @Override
-                public EAccess getAccess() {
-                    return TitleItem.this.getOwnerTitleFormat().getAccessMode();
-                }
+                    @Override
+                    public EAccess getAccess() {
+                        return TitleItem.this.getOwnerTitleFormat().getAccessMode();
+                    }
 
-                @Override
-                public String getContextDescription() {
-                    return "Object Title Format";
-                }
+                    @Override
+                    public String getContextDescription() {
+                        return "Object Title Format";
+                    }
 
-                @Override
-                public boolean isPublished() {
-                    return TitleItem.this.getOwnerTitleFormat().isPublished();
-                }
-            });
+                    @Override
+                    public boolean isPublished() {
+                        return TitleItem.this.getOwnerTitleFormat().isPublished();
+                    }
+                });
+            }
         }
 
         @Override
@@ -124,15 +127,38 @@ public class AdsObjectTitleFormatDef extends AdsClassMember implements IJavaSour
             public static final TitleItem newInstance(AdsPropertyDef prop) {
                 return new TitleItem(prop);
             }
+            
+            public static final TitleItem newInstanceCustomNullTitle(AdsPropertyDef prop, TitleItem container) {
+                TitleItem item = new TitleItem(prop, container);
+                item.setContainer(container);
+                return item;
+            }
         }
         private String pattern;
         private Id patternId;
         private Id propertyId;
+        private ETitleNullFormat nullFormat = ETitleNullFormat.SAME_AS_NOT_NULL;
+        private TitleItem customTitle;
 
         private TitleItem(final ObjectTitleFormatDefinition.TitleItem xDef) {
             this.pattern = xDef.getPattern();
             this.patternId = xDef.getPatternId();
             this.propertyId = xDef.getPropId();
+            if (xDef.isSetNullFormat()) {
+                this.nullFormat = xDef.getNullFormat();
+            }
+            if (this.nullFormat == ETitleNullFormat.CUSTOM) {
+                if (xDef.isSetCustomNullFormat()) {
+                    this.customTitle = new TitleItem(xDef.getCustomNullFormat(), propertyId);
+                    
+                }
+            }
+        }
+        
+        private TitleItem(final ObjectTitleFormatDefinition.TitleItem.CustomNullFormat xDef, Id propertyId) {
+            this.propertyId = propertyId;
+            this.pattern = xDef.getPattern();
+            this.patternId = xDef.getPatternId();
         }
 
         private TitleItem(final AdsDefinition owner, final TitleItem source) {
@@ -146,12 +172,16 @@ public class AdsObjectTitleFormatDef extends AdsClassMember implements IJavaSour
                 }
             }
             this.propertyId = source.getPropertyId();
+            this.nullFormat = source.getNullFormat();
+            this.customTitle = source.getCustomTitle();
         }
 
         private TitleItem(final AdsPropertyDef prop) {
             this.pattern = "{0}";
             this.patternId = null;
-            this.propertyId = prop.getId();
+            if (prop != null)  {
+                this.propertyId = prop.getId();
+            }
         }
 
         public boolean isMultilingual() {
@@ -318,6 +348,14 @@ public class AdsObjectTitleFormatDef extends AdsClassMember implements IJavaSour
             xDef.setPattern(pattern);
             xDef.setPatternId(patternId);
             xDef.setPropId(propertyId);
+            if (nullFormat != ETitleNullFormat.SAME_AS_NOT_NULL) {
+                xDef.setNullFormat(nullFormat);
+                if (customTitle != null) {
+                    ObjectTitleFormatDefinition.TitleItem.CustomNullFormat xCustomNullFormat = xDef.addNewCustomNullFormat();
+                    xCustomNullFormat.setPattern(customTitle.getPattern());
+                    xCustomNullFormat.setPatternId(customTitle.getPatternId());
+                }
+            } 
         }
 
         @Override
@@ -356,6 +394,45 @@ public class AdsObjectTitleFormatDef extends AdsClassMember implements IJavaSour
                 }
             };
         }
+
+        public ETitleNullFormat getNullFormat() {
+            return nullFormat;
+        }
+
+        public void setNullFormat(ETitleNullFormat nullFormat) {
+            if (getOwnerTitleFormat() instanceof Unmodifiable) {
+                throw new RadixObjectError("Definition is not modifiable.", this);
+            }
+            if (this.nullFormat != nullFormat) {
+                this.nullFormat = nullFormat;
+                setEditState(EEditState.MODIFIED);
+            }
+        }
+
+        public TitleItem getCustomTitle() {
+            return customTitle;
+        }
+
+        public void setCustomTitle(TitleItem customTitle) {
+            if (getOwnerTitleFormat() instanceof Unmodifiable) {
+                throw new RadixObjectError("Definition is not modifiable.", this);
+            }
+            if (this.customTitle != customTitle) {
+                this.customTitle = customTitle;
+                setEditState(EEditState.MODIFIED);
+            }
+        }
+
+        @Override
+        public void visitChildren(IVisitor visitor, VisitorProvider provider) {
+            super.visitChildren(visitor, provider);
+            if (customTitle != null) {
+                customTitle.visit(visitor, provider);
+            }
+        }
+        
+        
+
     }
 
     private class TitleItems extends RadixObjects<TitleItem> {

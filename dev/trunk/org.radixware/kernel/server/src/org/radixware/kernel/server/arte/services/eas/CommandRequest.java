@@ -22,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.xmlbeans.XmlObject;
+import org.radixware.kernel.common.defs.dds.DdsIndexDef;
 
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.ECommandNature;
@@ -68,7 +69,6 @@ final class CommandRequest extends ObjectRequest {
         //IN
         final CommandRq rqParams = request.getCommandRq();
         final RadClassDef classDef = getClassDef(rqParams);
-        assertNotUserFuncOrUserCanDevUserFunc(classDef);
         final Definition cmdXml = rqParams.getCommand();
         RadCommandDef cmd = null;
         try {
@@ -144,7 +144,7 @@ final class CommandRequest extends ObjectRequest {
         }
         if (cmd.scope == ECommandScope.OBJECT || cmd.scope == ECommandScope.PROPERTY) {
             if (!isFormCommand) {
-                presOptions.assertEdPresIsAccessibile(entity);
+                presOptions.assertEdPresIsAccessible(entity);
             }
         }
 
@@ -160,7 +160,15 @@ final class CommandRequest extends ObjectRequest {
                 newPropValsByIdBak = new PropValHandlersByIdMap();
                 newPropValsByIdBak.putAll(newPropValsById);
                 if (!entity.isInDatabase(false)) {
-                    initNewObject(entity, presOptions.context, presOptions.editorPresentation, null, src, EEntityInitializationPhase.TEMPLATE_EDITING);
+                    final PropValHandlersByIdMap pkValsMap = new PropValHandlersByIdMap();
+                    if (entity.getDdsMeta().getPrimaryKey() != null) {
+                        for (DdsIndexDef.ColumnInfo columnInfo : entity.getDdsMeta().getPrimaryKey().getColumnsInfo()) {
+                            if (newPropValsByIdBak.containsKey(columnInfo.getColumnId())) {
+                                pkValsMap.put(columnInfo.getColumnId(), newPropValsByIdBak.get(columnInfo.getColumnId()));
+                            }
+                        }
+                    }
+                    initNewObject(entity, presOptions.context, presOptions.editorPresentation, pkValsMap, src, EEntityInitializationPhase.TEMPLATE_EDITING);
                     getArte().switchToReadonlyTransaction(); // to prevent commit of new object before it saved from edtitor
                     //entity.setReadonly(true);
                     //getArte().unregisterNewEntityObject(entity);//сносим регистрацию, что бы не создался по окончанию транзакции
@@ -203,7 +211,15 @@ final class CommandRequest extends ObjectRequest {
                     final PresentationEntityAdapter<? extends Entity> presentationAdapter = getArte().getPresentationAdapter(entity);
                     final PresentationContext presContext = getPresentationContext(getArte(), presOptions.context, null);
                     presentationAdapter.setPresentationContext(presContext);
-                    if (r.getIsCommandRestricted(cmd.getId()) || presentationAdapter.isCommandDisabled(cmd.getId())) {                        
+                    presOptions.assertEdPresIsAccessible(presentationAdapter);
+                    final Restrictions additionalRestrictions = presentationAdapter.getAdditionalRestrictions(presOptions.editorPresentation);
+                    final Restrictions totalRestrictions;
+                    if (additionalRestrictions==Restrictions.ZERO){
+                        totalRestrictions = r;
+                    }else{
+                        totalRestrictions = Restrictions.Factory.sum(r, additionalRestrictions);
+                    }
+                    if (totalRestrictions.getIsCommandRestricted(cmd) || presentationAdapter.isCommandDisabled(cmd.getId())) {
                         throw EasFaults.newDefinitionAccessViolationFault(getArte(), 
                                                                           Messages.MLS_ID_INSUF_PRIV_TO_EXECUTE_COMMAND, 
                                                                           "\"" + cmd.getName() + "\" (#" + cmd.getId() + ")",
@@ -254,7 +270,7 @@ final class CommandRequest extends ObjectRequest {
                 }
             } else {
                 final Restrictions r = presOptions.getSelRestrictions(group.entityGroup);
-                if (r.getIsCommandRestricted(cmd.getId()) || group.entityGroup.isCommandDisabled(cmd.getId())) {
+                if (r.getIsCommandRestricted(cmd) || group.entityGroup.isCommandDisabled(cmd.getId())) {
                     throw EasFaults.newDefinitionAccessViolationFault(getArte(), 
                                                                       Messages.MLS_ID_INSUF_PRIV_TO_EXECUTE_COMMAND, 
                                                                       "\"" + cmd.getName() + "\" (#" + cmd.getId() + ")",
@@ -276,7 +292,7 @@ final class CommandRequest extends ObjectRequest {
             throw EasFaults.exception2Fault(getArte(), e, "Can't execute the command");
         }
         //RADIX-4400
-        if (getUsrActionsIsTraced()) {
+        if (getUsrActionsIsTraced() && cmd.getUsrActionsIsTraced()) {
             if (cmd.scope == ECommandScope.OBJECT || cmd.scope == ECommandScope.PROPERTY) {
                 //"User '%1' executed command '%2' for '%3' with PID = '%4'", EAS, Debug
                 if (!isFormCommand) {
@@ -314,13 +330,18 @@ final class CommandRequest extends ObjectRequest {
 
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(((CommandMess) rqXml).getCommandRq());
     }
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final CommandDocument doc = process((CommandMess) rq);
-        postProcess(rq, doc.getCommand().getCommandRs());
+        CommandDocument doc = null;
+        try{
+            doc = process((CommandMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getCommand().getCommandRs());
+        }
         return doc;
     }
 

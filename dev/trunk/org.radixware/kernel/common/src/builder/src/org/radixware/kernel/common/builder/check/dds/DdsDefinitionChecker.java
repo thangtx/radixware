@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.builder.check.dds;
 
 import java.util.HashMap;
@@ -21,7 +20,6 @@ import org.radixware.kernel.common.defs.dds.utils.DbNameUtils;
 import org.radixware.kernel.common.defs.dds.utils.DbNameUtils.CheckResult;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.utils.Utils;
-
 
 public abstract class DdsDefinitionChecker<T extends DdsDefinition> extends DefinitionChecker<T> {
 
@@ -68,9 +66,10 @@ public abstract class DdsDefinitionChecker<T extends DdsDefinition> extends Defi
         }
 
         final String dbName = dbDefinition.getDbName();
+        final String dbNameErr = DbNameUtils.getDbNameErrorText(dbName);
 
-        if (!DbNameUtils.isCorrectDbName(dbName)) {
-            error((Definition) dbDefinition, problemHandler, "Illegal database name: '" + String.valueOf(dbName) + "'");
+        if (dbNameErr != null) {
+            error((Definition) dbDefinition, problemHandler, "Illegal database name '" + String.valueOf(dbName) + "': " + dbNameErr);
         }
 
         if (!(dbDefinition instanceof DdsFunctionDef)
@@ -112,7 +111,7 @@ public abstract class DdsDefinitionChecker<T extends DdsDefinition> extends Defi
             checkDbName(dbDefinition, problemHandler);
         }
         if (definition.getDescriptionId() != null) {
-            CheckUtils.checkMLStringId(definition, definition.getDescriptionId(), problemHandler, "description");
+            CheckUtils.checkMLStringId(definition.getDescriptionLocation(), definition.getDescriptionId(), problemHandler, "description");
         }
     }
 }

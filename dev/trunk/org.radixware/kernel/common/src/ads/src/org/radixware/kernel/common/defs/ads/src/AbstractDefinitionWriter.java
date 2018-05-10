@@ -15,6 +15,7 @@ import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 
 
@@ -41,6 +42,7 @@ public abstract class AbstractDefinitionWriter<T extends Definition & IJavaSourc
 
     @Override
     protected final void writeLocator(CodePrinter printer, String marker) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         printer.print(DEFINITION_LOCATOR_START_MARKER);
         Id[] path = def.getIdPath();
         if (path != null) {
@@ -58,10 +60,11 @@ public abstract class AbstractDefinitionWriter<T extends Definition & IJavaSourc
         }
         printer.print('-');
         printer.println(DEFINITION_LOCATOR_END_MARKER);
+        WriterUtils.leaveHumanUnreadableBlock(printer);
     }
 
     @Override
     public void writeUsage(CodePrinter printer) {
-        printer.print(def.getId().toCharArray());
+        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter));
     }
 }

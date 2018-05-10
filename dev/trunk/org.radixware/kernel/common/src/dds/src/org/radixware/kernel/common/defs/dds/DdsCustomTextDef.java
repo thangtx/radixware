@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.dds;
 
 import org.apache.xmlbeans.XmlObject;
@@ -22,15 +21,16 @@ import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.sqml.Sqml;
 
 /**
- * Метаинформация о произвольном SQML выражении в коде {@link DdsPlSqlObjectDef PL/SQL объекта}.
+ * Метаинформация о произвольном SQML выражении в коде
+ * {@link DdsPlSqlObjectDef PL/SQL объекта}.
  */
 public class DdsCustomTextDef extends DdsPlSqlObjectItemDef {
 
     private final Sqml sqml = new DdsSqml(this);
 
     /**
-     * Получить SQML выражение.
-     * Транслируется и подставляется во время генерации скрипта PL/SQL объекта.
+     * Получить SQML выражение. Транслируется и подставляется во время генерации
+     * скрипта PL/SQL объекта.
      */
     public Sqml getText() {
         return sqml;
@@ -38,6 +38,11 @@ public class DdsCustomTextDef extends DdsPlSqlObjectItemDef {
 
     protected DdsCustomTextDef(final String name) {
         super(EDefinitionIdPrefix.DDS_CUSTOM_TEXT, name);
+    }
+
+    @Override
+    public boolean needsDocumentation() {
+        return false;
     }
 
     public DdsCustomTextDef(org.radixware.schemas.ddsdef.PlSqlCustomText xCustomText) {

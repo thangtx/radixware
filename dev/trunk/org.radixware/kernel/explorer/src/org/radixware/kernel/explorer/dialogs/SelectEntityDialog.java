@@ -91,30 +91,44 @@ public class SelectEntityDialog extends ExplorerDialog implements ISelectEntityD
         initButtonBox(canBeNull);
         setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding);
     }
-    
-    public void openSelector() throws InterruptedException{
-        final IView nearestView = findNearestView(groupModel);
-        if (nearestView!=null){
-            selector.getRestrictions().add(nearestView.getRestrictions());
-        }
-        final ExplorerMenu selectorMenu = new ExplorerMenu(Application.translate("MainMenu", "&Selector"));
-        selector.setMenu(selectorMenu, null);
-        selector.entityActivated.connect(this, "onEntityActivated(EntityModel)");
 
-        beforeOpenSelector(groupModel);
-        try {
-            selector.open(groupModel);
-        } catch (CantOpenSelectorError error) {
-            if (error.getCause() instanceof InterruptedException) {
-                throw (InterruptedException) error.getCause();
-            } else {
-                throw error;
-            }
+    public void openSelector() throws InterruptedException{
+        final String modelTitle = groupModel.getWindowTitle();
+        final long time = System.currentTimeMillis();
+        {
+            final String message = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Start opening modal selector of \'%1$s\'");
+            getEnvironment().getTracer().debug(String.format(message, modelTitle));
         }
-        afterOpenSelector(selector,groupModel);
-        selectorIsOpened = true;
-        refreshUi();
-        selector.setFocus();
+        try{
+            final IView nearestView = findNearestView(groupModel);
+            if (nearestView!=null){
+                selector.getRestrictions().add(nearestView.getRestrictions());
+            }
+            final ExplorerMenu selectorMenu = new ExplorerMenu(Application.translate("MainMenu", "&Selector"));
+            selector.setMenu(selectorMenu, null);
+            selector.entityActivated.connect(this, "onEntityActivated(EntityModel)");
+
+            beforeOpenSelector(groupModel);
+            try {
+                selector.open(groupModel);
+            } catch (CantOpenSelectorError error) {
+                if (error.getCause() instanceof InterruptedException) {
+                    throw (InterruptedException) error.getCause();
+                } else {
+                    throw error;
+                }
+            }
+            afterOpenSelector(selector,groupModel);
+            selectorIsOpened = true;        
+            refreshUi();
+            selector.setFocus();
+        }finally{
+            final long elapsedTime = System.currentTimeMillis()-time;        
+            final String message = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Opening modal selector of  \'%1$s\' finished. Elapsed time: %2$s ms");
+            getEnvironment().getTracer().debug(String.format(message, modelTitle, elapsedTime));            
+        }
     }
 
     private void initButtonBox(final boolean canClean) {
@@ -175,7 +189,9 @@ public class SelectEntityDialog extends ExplorerDialog implements ISelectEntityD
     protected void customEvent(final QEvent event) {
         if (event instanceof UpdateButtonStateEvent){
             event.accept();
-            refreshUi();
+            if (selectorIsOpened){//dialog was not closed
+                refreshUi();
+            }
         }else{
             super.customEvent(event);
         }
@@ -215,7 +231,7 @@ public class SelectEntityDialog extends ExplorerDialog implements ISelectEntityD
         return selectedEntity;
     }
     
-    protected final Selector getSelector(){
+    public final Selector getSelector(){
         return selector;
     }    
     
@@ -253,7 +269,7 @@ public class SelectEntityDialog extends ExplorerDialog implements ISelectEntityD
     protected final void removeMultiselectRestriction(final GroupModel group){
         if (group!=null && needToRestoreMultiSelectRestriction && 
             group.getRestrictions().canBeAllowed(ERestriction.MULTIPLE_SELECTION)){
-            group.getRestrictions().setMultipleDeleteRestricted(false);
+            group.getRestrictions().setMultipleSelectionRestricted(false);
             needToRestoreMultiSelectRestriction = false;
         }        
     }

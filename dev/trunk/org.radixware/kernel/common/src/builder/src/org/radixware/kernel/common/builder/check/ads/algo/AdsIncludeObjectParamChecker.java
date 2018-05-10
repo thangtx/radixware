@@ -32,6 +32,6 @@ public class AdsIncludeObjectParamChecker extends AdsDefinitionChecker<AdsInclud
     @Override
     public void check(AdsIncludeObject.Param param, IProblemHandler problemHandler) {
         super.check(param, problemHandler);
-        param.getType().check(param, problemHandler);
+        param.getType().check(param, problemHandler, getHistory().getMap());
     }
 }

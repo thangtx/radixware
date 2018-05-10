@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.explorer.types.RdxIcon;
 
 
@@ -27,6 +28,7 @@ public class ExplorerAction extends QAction implements Action {
     private List<ActionListener> listeners = null;
     private List<ActionStateListener> stateListeners = null;
     private List<ActionToggleListener> toggleListeners = null;
+    private Object userObject;
     private final ActionListener defaultListener = new ActionListener() {
 
         @Override
@@ -163,6 +165,16 @@ public class ExplorerAction extends QAction implements Action {
     }
 
     @Override
+    public ExplorerMenu getActionMenu() {
+        return (ExplorerMenu)menu();
+    }
+
+    @Override
+    public void setActionMenu(final IMenu menu) {
+        setMenu((ExplorerMenu)menu);
+    }        
+
+    @Override
     public String getToolTip() {
         return toolTip();
     }
@@ -172,6 +184,21 @@ public class ExplorerAction extends QAction implements Action {
         return text();
     }
 
+    @Override
+    public String getObjectName() {
+        return objectName();
+    }        
+
+    @Override
+    public Object getUserObject() {
+        return userObject;
+    }
+
+    @Override
+    public void setUserObject(final Object object) {
+        userObject = object;
+    }    
+    
     @Override
     public void addActionStateListener(ActionStateListener listener) {
         synchronized (defaultStateListener) {

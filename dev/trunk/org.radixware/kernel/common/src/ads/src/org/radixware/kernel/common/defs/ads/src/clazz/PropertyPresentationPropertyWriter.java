@@ -16,6 +16,7 @@ import org.eclipse.jdt.core.compiler.CharOperation;
 import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.IFilter;
 import org.radixware.kernel.common.defs.SearchResult;
+import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.AdsClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.AdsModelClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityClassDef;
@@ -26,6 +27,8 @@ import org.radixware.kernel.common.defs.ads.clazz.form.AdsFormModelClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.*;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPresentationDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsFilterDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsPresentationDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsScopeCommandDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsSelectorPresentationDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.IAdsPresentableProperty;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.editmask.EditMask;
@@ -36,10 +39,13 @@ import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.defs.ads.type.*;
 import org.radixware.kernel.common.enums.EClassType;
+import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.IdPrefixes;
+import org.radixware.kernel.common.utils.RadixObjectsUtils;
 
 
 class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPresentationPropertyDef> {
@@ -147,7 +153,7 @@ class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPr
 //        }
 
         printer.print("public class ");
-        printer.print(propId);
+        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
         printer.print(" extends ");
         Id modelAdapterPresentationId = null;
         AdsClassDef serverClass = null;
@@ -159,7 +165,7 @@ class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPr
             } else {
                 overridenPropertyOwnerTypeWriter.writeCode(printer);
                 printer.print('.');
-                printer.print(overridenProp.getId());
+                printer.print(JavaSourceSupport.getName(overridenProp, printer instanceof IHumanReadablePrinter, true));
             }
         } else {
 
@@ -245,7 +251,7 @@ class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPr
                         writeUsage(printer, serverClass.getType(EValType.USER_CLASS, null));
                         if (modelAdapterPresentationId != null) {
                             printer.print('.');
-                            printer.print(serverClass.getId());
+                            printer.print(JavaSourceSupport.getName(serverClass, printer instanceof IHumanReadablePrinter));
                             printer.print("_DefaultModel.");
                             printer.print(modelAdapterPresentationId);
                             printer.print("_ModelAdapter");
@@ -267,7 +273,7 @@ class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPr
 
         //------------------ generating constructor -----------------------
         printer.print("public ");
-        printer.print(propId);
+        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
         printer.print("(org.radixware.kernel.common.client.models.Model ");
 
 //        if (def.getContainer() instanceof AdsPropertyDef) {//temporary property storage
@@ -325,12 +331,12 @@ class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPr
         writeDependencies(printer);
 
         if (def.isLocal() && def.getValue().getInitial() != null) {
-            printer.print("Value = ");
+            printer.print("setInternalVal(");
             if (!WriterUtils.writeAdsValAsStr(def.getValue().getInitial(), def.getValue().getInitialValueController(), this, printer)) {
                 //if (!WriterUtils.printValAsStrAsJavaInitializerForVariable(def.getValue().getInitial(), def.getValue().getType(), def, this, printer)) {
                 return false;
             }
-            printer.println(";");
+            printer.println(");");
             printer.println("setValEdited(false);");
         }
 
@@ -359,13 +365,13 @@ class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPr
 
                 writeUsage(printer, type3);
                 printer.print('.');
-                printer.print(aec.getId());
+                printer.print(JavaSourceSupport.getName(aec, printer instanceof IHumanReadablePrinter));
                 printer.println("_DefaultModel openEntityModel()  throws org.radixware.kernel.common.exceptions.ServiceClientException, InterruptedException{");
                 printer.print("     return (");
                 writeUsage(printer, type3);
                 //typeWriter.writeUsage(printer);
                 printer.print('.');
-                printer.print(aec.getId());
+                printer.print(JavaSourceSupport.getName(aec, printer instanceof IHumanReadablePrinter));
                 printer.println("_DefaultModel)super.openEntityModel();");
                 printer.println("}");
 
@@ -446,20 +452,51 @@ class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPr
     }
 
     private void writeDependencies(CodePrinter printer) {
-        for (final Id id : def.getDependents().getDependents(ExtendableDefinitions.EScope.LOCAL_AND_OVERWRITE)) {
-            printer.print("this.addDependent(");
-            printer.print(def.getOwnerClass().getId().toString());
-            printer.print(".this.");
-
-            if (IdPrefixes.isCommandId(id)) {
-                printer.print("getCommand(");
+        List<Id> ids = def.getDependents().getDependents(ExtendableDefinitions.EScope.LOCAL_AND_OVERWRITE, AdsPropertyPresentationPropertyDef.COMMAND_FILTER);
+        if (!ids.isEmpty()){
+            for (final Id id : ids) {
+                printer.print("if (");
+                printer.print(def.getOwnerClass().getId().toString());
+                printer.print(".this.getDefinition().isCommandDefExistsById(");
                 WriterUtils.writeIdUsage(printer, id);
-                printer.print(")");
-            } else {
-                printer.print(id.toString());
+                printer.println(")) {");
+                printer.enterBlock();
+                writeDependence(printer, id);
+                printer.leaveBlock();
+                printer.println("}");
             }
-            printer.println(");");
         }
+        
+        ids = def.getDependents().getDependents(ExtendableDefinitions.EScope.LOCAL_AND_OVERWRITE, AdsPropertyPresentationPropertyDef.PROPERTY_FILTER);
+        if (!ids.isEmpty()){
+            for (final Id id : ids) {
+                printer.print("if (");
+                printer.print(def.getOwnerClass().getId().toString());
+                printer.print(".this.getDefinition().isPropertyDefExistsById(");
+                WriterUtils.writeIdUsage(printer, id);
+                printer.println(")) {");
+                printer.enterBlock();
+                writeDependence(printer, id);
+                printer.leaveBlock();
+                printer.println("}");
+            }
+        }
+    }
+    
+    private void writeDependence(CodePrinter printer, Id id) {
+        printer.print("this.addDependent(");
+        printer.print(def.getOwnerClass().getId().toString());
+        printer.print(".this.");
+
+        if (IdPrefixes.isCommandId(id)) {
+            printer.print("getCommand(");
+        } else {
+            printer.print("getProperty(");
+        }
+        
+        WriterUtils.writeIdUsage(printer, id);
+        printer.print(")");
+        printer.println(");");
     }
 
     private boolean isGetEditMaskMethodDefined() {
@@ -560,16 +597,28 @@ class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPr
     }
 
     public static void writePropertyGetterById(CodePrinter printer, Id propId) {
+        writePropertyGetterById(printer, propId, null);
+    }
+    
+    public static void writePropertyGetterById(CodePrinter printer, Id propId, char[] type) {
+        WriterUtils.enterHumanUnreadableBlock(printer);
         writePropertyIdRef(printer, propId);
         printer.print("public ");
+        if (type != null) {
+            printer.print(type).print(".");
+        }
         printer.print(propId);
         printer.print(" get");
         printer.print(propId);
         printer.print("(){return (");
+        if (type != null) {
+            printer.print(type).print(".");
+        }
         printer.print(propId);
         printer.print(")getProperty(");
         WriterUtils.writeAutoVariable(printer, propId.toCharArray());
         printer.println(");}");
+        WriterUtils.leaveHumanUnreadableBlock(printer);
     }
 
     @Override
@@ -595,15 +644,15 @@ class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPr
     private boolean writeObjectGetter(CodePrinter printer) {
         // getAccessWriter().writeCode(printer);
         printer.print("public ");
-        printer.print(propId);
+        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
         printer.print(" get");
-        printer.print(propId);
+        printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
         synchronized (this) {
             if (isAbstractDeclaration) {
                 printer.print("();");
             } else {
                 printer.print("(){return (");
-                printer.print(propId);
+                printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
                 printer.print(")getProperty(");
                 WriterUtils.writeAutoVariable(printer, propId);
                 printer.println(");}");
@@ -620,7 +669,7 @@ class PropertyPresentationPropertyWriter extends AdsPropertyWriter<AdsPropertyPr
     }
 
     @Override
-    protected void writePropertyName(CodePrinter printer) {
+    protected void writePropertyName(CodePrinter printer, boolean capitalize) {
         printer.print("Value");
     }
 

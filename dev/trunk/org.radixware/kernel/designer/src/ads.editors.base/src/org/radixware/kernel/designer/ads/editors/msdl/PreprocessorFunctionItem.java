@@ -8,27 +8,27 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.msdl;
 
+public class PreprocessorFunctionItem {
 
-    public class PreprocessorFunctionItem {
+    private final String identifier;
+    private final String name;
+    boolean isAdvisor = false;
+    final boolean failed;
 
-        private String identifier;
-        private String name;
-        public boolean isAdvisor = false;
-
-        public PreprocessorFunctionItem(String name, String identifier) {
-            this.name = name;
-            this.identifier = identifier;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-
-        public String getId() {
-            return identifier;
-        }
+    public PreprocessorFunctionItem(String name, String identifier) {
+        this.name = name;
+        this.identifier = identifier;
+        this.failed = name == null;
     }
+    
+    @Override
+    public String toString() {
+        return name != null ? name : identifier;
+    }
+
+    public String getId() {
+        return identifier;
+    }
+}

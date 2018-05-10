@@ -12,6 +12,8 @@
 package org.radixware.kernel.explorer.editors.editmask.listeditor;
 
 import com.trolltech.qt.core.QModelIndex;
+import com.trolltech.qt.core.Qt;
+import com.trolltech.qt.gui.QIcon;
 import com.trolltech.qt.gui.QTableWidgetItem;
 import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
@@ -19,17 +21,22 @@ import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.EEditMaskOption;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.explorer.dialogs.SelectImageDialog;
 import org.radixware.kernel.explorer.editors.editmask.IEditMaskEditorSetting;
+import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.schemas.editmask.EditMaskList.Item;
-
 
 final class ListValuesTableSetting extends QWidget implements IEditMaskEditorSetting {
     private final RdxListEditorWidget valuesTable;
-    
+    private final IClientEnvironment environment;
+    private SelectImageDialog selectImgDlg;
     public ListValuesTableSetting(final IClientEnvironment environment, final QWidget parent, final EValType type) {
         super(parent);
+        this.environment = environment;
         valuesTable = new RdxListEditorWidget(environment, this, type);
-                
+        valuesTable.verticalHeader().show();
+        valuesTable.cellDoubleClicked.connect(this, "cellDoubleClickedSlot(Integer, Integer)");
         final QVBoxLayout layout = new QVBoxLayout();
         layout.setMargin(0);
         layout.addWidget(valuesTable);
@@ -42,12 +49,15 @@ final class ListValuesTableSetting extends QWidget implements IEditMaskEditorSet
         final int rowCount = valuesTable.rowCount();
         org.radixware.schemas.editmask.EditMaskList.Item item = null;
         String title, value;
+        Id iconId;
         valuesTable.finishEditing();
         for(int i = 0; i < rowCount; i++) {
             item = editMaskList.addNewItem();
-            value = valuesTable.item(i, 0).text();
+            iconId = (Id)valuesTable.item(i, 0).data(Qt.ItemDataRole.UserRole);
+            item.setIconId(iconId);
+            value = valuesTable.item(i, 1).text();
             item.setValue(value);
-            title = valuesTable.item(i, 1).text();
+            title = valuesTable.item(i, 2).text();
             item.setTitle(title);
         }
     }
@@ -60,13 +70,23 @@ final class ListValuesTableSetting extends QWidget implements IEditMaskEditorSet
         int index = 0;
         for(Item i : items) {
             addNewRow();
+            Id id = i.getIconId();
+            final QIcon icon = id == null ? null : ExplorerIcon.getQIcon(environment.getDefManager().getImage(i.getIconId()));
+            QTableWidgetItem iconedWidgetItem = new QTableWidgetItem(icon, "");
+            iconedWidgetItem.setData(Qt.ItemDataRole.UserRole, i.getIconId());
+            iconedWidgetItem.setFlags(Qt.ItemFlag.ItemIsSelectable, Qt.ItemFlag.ItemIsEnabled);
+            valuesTable.setItem(index, 0, iconedWidgetItem);
             final String value = i.getValue();
-            valuesTable.setItem( index, 0, new QTableWidgetItem(value) );
-            final String title = i.getTitle();
-            valuesTable.setItem( index++, 1, new QTableWidgetItem(title) );
+            valuesTable.setItem(index, 1, new QTableWidgetItem(value));
+            String title = i.getTitle();
+            if (title == null) {
+                Id titleId = i.getTitleId();
+                title = environment.getApplication().getDefManager().getMlStringValue(i.getTitleOwnerId(), titleId);
+            }
+            valuesTable.setItem(index++, 2, new QTableWidgetItem(title));
         }
     }
-
+    
     @Override
     public EEditMaskOption getOption() {
         return EEditMaskOption.LIST_VALUES;
@@ -123,6 +143,10 @@ final class ListValuesTableSetting extends QWidget implements IEditMaskEditorSet
             upperItem = valuesTable.takeItem(index + stepOfSwap, 1);
             valuesTable.setItem(index + stepOfSwap, 1, currentItem);
             valuesTable.setItem(index, 1, upperItem);
+            currentItem = valuesTable.takeItem(index, 2);
+            upperItem = valuesTable.takeItem(index + stepOfSwap, 2);
+            valuesTable.setItem(index + stepOfSwap, 2, currentItem);
+            valuesTable.setItem(index, 2, upperItem);
             valuesTable.setCurrentCell(index + stepOfSwap, columnIndex);
             //update model
             final QModelIndex modelIndex = valuesTable.model().index(index, (columnIndex+1)%2);
@@ -140,6 +164,23 @@ final class ListValuesTableSetting extends QWidget implements IEditMaskEditorSet
     
     public int getSelectedRowIndex() {
         return valuesTable.currentRow();
+    }
+    
+    private void cellDoubleClickedSlot(Integer row, Integer column) {
+        if (column == 0) {
+            selectImgDlg = new SelectImageDialog(environment, null);
+            selectImgDlg.accepted.connect(this, "getSelectedIcon()");
+            selectImgDlg.execDialog();
+        }
+    }
+    
+    @SuppressWarnings("unused")
+        private void getSelectedIcon() {
+            Id iconId = selectImgDlg.getIconId();
+            QTableWidgetItem item = valuesTable.selectedItems().get(0);
+            QIcon icon = iconId == null ? null : ExplorerIcon.getQIcon(environment.getDefManager().getImage(iconId));
+            item.setIcon(icon);
+            item.setData(Qt.ItemDataRole.UserRole, iconId);
     }
     
 }

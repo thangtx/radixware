@@ -19,6 +19,7 @@ import java.util.List;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.dds.DdsDefinition;
 import org.radixware.kernel.common.jml.Jml;
+import org.radixware.kernel.common.mml.Mml;
 import org.radixware.kernel.common.scml.Scml;
 import org.radixware.kernel.common.scml.Scml.Tag;
 import org.radixware.kernel.common.sqml.Sqml;
@@ -87,6 +88,13 @@ public abstract class ScmlInsertTagAction extends ScmlToolBarAction {
 
     public static boolean isJml(Scml scml) {
         if (scml instanceof Jml) {
+            return true;
+        }
+        return false;
+    }
+    
+    public static boolean isMml(Scml scml) {
+        if (scml instanceof Mml) {
             return true;
         }
         return false;

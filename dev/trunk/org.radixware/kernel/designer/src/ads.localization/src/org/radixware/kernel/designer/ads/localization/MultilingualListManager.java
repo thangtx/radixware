@@ -129,11 +129,11 @@ public class MultilingualListManager {
     private void getStringsFromAdsAndDds(final List<Module> modules,List<Module> selectedModules,final Layer layer, final Cancellable cancellable){
         for(Module m:modules){ 
             if(selectedModules==null || selectedModules.isEmpty() || selectedModules.contains(m))
-               m.visitChildren(new IVisitor() {
+                m.visitChildren(new IVisitor() {
                     @Override
                     public void accept(RadixObject radixObject) {
                         ILocalizingBundleDef bundle=((ILocalizingBundleDef)radixObject);
-                        editor.firePropertyChange(MultilingualEditor.LOADING_STRINGS, new Object(), addString(bundle, layer, cancellable));
+                        editor.fireChange(MultilingualEditorUtils.LOADING_STRINGS, new Object(), addString(bundle, layer, cancellable));
                     }
                }, new VisitorProvider() {
                     @Override
@@ -156,7 +156,7 @@ public class MultilingualListManager {
                     if (cancellable.wasCancelled()){
                         return;       
                     }
-                    editor.firePropertyChange(MultilingualEditor.LOADING_STRINGS, new Object(), addString(mlBundle, layer, cancellable));
+                    editor.fireChange(MultilingualEditorUtils.LOADING_STRINGS, new Object(), addString(mlBundle, layer, cancellable));
                 }
             }
         }
@@ -177,7 +177,7 @@ public class MultilingualListManager {
                 if (row.isRowUsed()) {
                     if (!showSelectedDefs()){
                         for (EIsoLanguage lang : sourceLangs) {
-                            if (row.hasCheckedTranslation(translLangs) && (!row.needsCheck(lang)) && (!row.isEmpty(sourceLangs, translLangs))) {
+                            if (row.hasCheckedTranslation(translLangs) && (!row.isNeedsCheck(lang)) && (!row.isEmpty(sourceLangs, translLangs))) {
                                 editor.createPrompt(mlstring);
                             }
                         }
@@ -198,7 +198,7 @@ public class MultilingualListManager {
     
     private void clearStrings(){
         synchronized(this){
-            editor.firePropertyChange(MultilingualEditor.CLEAR_STRINGS, false, true);
+            editor.fireChange(MultilingualEditorUtils.CLEAR_STRINGS);
         }
     }
 

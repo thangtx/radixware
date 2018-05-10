@@ -36,6 +36,7 @@ final class GetPasswordRequirementsRequest extends SessionRequest {
 
     @Override
     void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
+        super.prepare(rqXml);
         prepare(((GetPasswordRequirementsMess) rqXml).getGetPasswordRequirementsRq());
     }
 
@@ -51,8 +52,12 @@ final class GetPasswordRequirementsRequest extends SessionRequest {
 
     @Override
     XmlObject process(final XmlObject rq) throws ServiceProcessFault, InterruptedException {
-        final GetPasswordRequirementsDocument doc = process((GetPasswordRequirementsMess) rq);
-        postProcess(rq, doc.getGetPasswordRequirements().getGetPasswordRequirementsRs());
+        GetPasswordRequirementsDocument doc = null;
+        try{
+            doc = process((GetPasswordRequirementsMess) rq);
+        }finally{
+            postProcess(rq, doc==null ? null : doc.getGetPasswordRequirements().getGetPasswordRequirementsRs());
+        }
         return doc;
     }    
 }

@@ -62,7 +62,9 @@ public class SqmlTagTranslatorFactory extends org.radixware.kernel.common.sqml.t
 			return new ThisTableRefTagTranslator(queryBuilder, transalatorMode);
 		} else if (tag instanceof ParameterTag){
 			return new ParameterTagTranslator(queryBuilder, transalatorMode);
-		} else if (tag instanceof IdTag){
+		} else if (tag instanceof ParamValCountTag){
+                        return new ParamValCountTagTranslator(queryBuilder, transalatorMode);
+                } else if (tag instanceof IdTag){
 			return new IdTagTranslator(queryBuilder, transalatorMode);
 		}  else if (tag instanceof EventCodeTag){
 			return new EventCodeTagTranslator(queryBuilder, transalatorMode);

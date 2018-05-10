@@ -21,7 +21,8 @@ public enum EEncoding {
     CP866("Cp866","Cp866"),
     CP1251("Cp1251","Cp1251"),
     CP1252("Cp1252","Cp1252"),
-    EBCDIC("Ebcdic","EBCDIC"),
+    EBCDIC("Ebcdic","EBCDIC (IBM500)"),
+    EBCDIC_CP1047("Ebcdic_Cp1047", "EBCDIC (Cp1047)"),
     HEXEBCDIC("HexEbcdic","Hex EBCDIC"),
     DECIMAL("Decimal","Decimal"),
     HEX("Hex","Hex"),
@@ -53,18 +54,9 @@ public enum EEncoding {
                 return field;
         return NONE;
     }
-    
-    public static EEncoding getInstanceForHexViewType(String value) {
-        if (value == null)
-            return HEX;
-        if(HEX.value.equals(value)) {
-            return HEX;
-        } else if (ASCII.value.equals(value)) {
-            return ASCII;
-        } else if (EBCDIC.value.equals(value)) {
-            return EBCDIC;
-        }
-        return HEX;
+        
+    public static boolean isElement(EEncoding encoding) {
+        return encoding == BCD;
     }
 
     @Override

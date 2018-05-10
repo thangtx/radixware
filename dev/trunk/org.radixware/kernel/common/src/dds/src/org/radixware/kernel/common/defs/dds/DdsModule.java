@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +25,6 @@ import org.apache.xmlbeans.XmlObject;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-import org.radixware.codegen.DdsRadixDocCodeGenerator;
 import org.radixware.kernel.common.build.directory.DirectoryFileSigner;
 import org.radixware.kernel.common.defs.IVisitor;
 import org.radixware.kernel.common.defs.VisitorProvider;
@@ -37,7 +38,11 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.dds.providers.DdsVisitorProviderFactory;
+import org.radixware.kernel.common.defs.dds.radixdoc.DdsDiagramRadixdocSupport;
+import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
+import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.enums.ERepositorySegmentType;
 import org.radixware.kernel.common.exceptions.DefinitionError;
 import org.radixware.kernel.common.radixdoc.DefaultReferenceResolver;
@@ -469,6 +474,10 @@ public class DdsModule extends Module implements IRadixdocProvider {
             fileEntry.setDigest(digest);
         }
     }
+    
+    public void saveSqmlDefsXml() throws IOException {
+        new SqmlDefinitionsWriter(this).write();
+    }
 
     public void saveDirectoryXml() throws IOException {
         final org.radixware.schemas.product.DirectoryDocument doc = org.radixware.schemas.product.DirectoryDocument.Factory.newInstance();
@@ -488,7 +497,10 @@ public class DdsModule extends Module implements IRadixdocProvider {
 
         final File moduleFile = new File(dir, MODULE_XML_FILE_NAME);
         addFileEntry(fileGrooup, dir, moduleFile);
-
+        
+        final File sqmlDefsFile = new File(dir, FileUtils.SQML_DEFINITIONS_XML_FILE_NAME);
+        addFileEntry(fileGrooup, dir, sqmlDefsFile);
+        
         final File localeDir = new File(dir, "locale");
         if (localeDir.exists()) {
             final File[] locales = localeDir.listFiles(new FileFilter() {
@@ -497,7 +509,14 @@ public class DdsModule extends Module implements IRadixdocProvider {
                     return pathname.isFile() && pathname.getName().endsWith("xml");
                 }
             });
-            if (locales != null) {
+            if (locales != null && locales.length>0) {
+                final Comparator<File> comparator = new Comparator<File>() {
+                    @Override
+                    public int compare(File f1, File f2) {
+                        return f1.getName().compareTo(f2.getName());
+                    }
+                };                
+                Arrays.sort(locales, comparator);
                 for (int i = 0; i < locales.length; i++) {
                     addFileEntry(fileGrooup, dir, locales[i]);
                 }
@@ -506,7 +525,6 @@ public class DdsModule extends Module implements IRadixdocProvider {
 
         final File directoryXmlFile = new File(dir, FileUtils.DIRECTORY_XML_FILE_NAME);
         XmlUtils.saveXmlPretty(doc, directoryXmlFile);
-
     }
 
     @Override
@@ -591,7 +609,7 @@ public class DdsModule extends Module implements IRadixdocProvider {
 
     public String getDiagramHtmlPage() {
         try {
-            return DdsRadixDocCodeGenerator.generateHtml(getMetaData(this.getLayer()));
+            return DdsDiagramRadixdocSupport.generateHtml(getMetaData(this.getLayer()));
         } catch (JSONException ex) {
             return null;
         }
@@ -786,5 +804,31 @@ public class DdsModule extends Module implements IRadixdocProvider {
             default:
                 return "not defined";
         }
+    }
+
+    @Override
+    public ILocalizingBundleDef findLocalizingBundle() {
+        DdsModelDef model = getModelManager().findModel();
+        if (model != null) {
+            return model.getStringBundle();
+        }
+        return null;
+    }
+
+    @Override
+    public ILocalizingBundleDef findExistingLocalizingBundle() {
+        return findLocalizingBundle();
+    }
+    
+    @Override
+    public boolean setDescription(EIsoLanguage language, String description) {
+        if (descriptionId != null) {
+            final IMultilingualStringDef string = findLocalizedString(descriptionId);
+            if (string != null) {
+                string.setValue(language, description);
+            }
+            return true;
+        }
+        return false;
     }
 }

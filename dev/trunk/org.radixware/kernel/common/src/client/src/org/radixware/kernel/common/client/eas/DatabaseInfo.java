@@ -13,6 +13,7 @@
 package org.radixware.kernel.common.client.eas;
 
 import org.radixware.schemas.eas.CreateSessionRs;
+import org.radixware.schemas.eas.GetDatabaseInfoRs;
 
 
 public final class DatabaseInfo {
@@ -23,8 +24,8 @@ public final class DatabaseInfo {
     private final String productVersion;
     private final String driverName;
     private final String driverVersion;
-            
-    DatabaseInfo(final CreateSessionRs.DatabaseInfo dbInfo){
+    
+    DatabaseInfo(final GetDatabaseInfoRs dbInfo){
         if (dbInfo==null){
             productName = null;
             productVersion = null;
@@ -36,7 +37,7 @@ public final class DatabaseInfo {
             driverName = dbInfo.getDriverName();
             driverVersion = dbInfo.getDriverVersion();            
         }
-    }
+    }    
     
     public boolean isEmpty(){
         return (productName==null || productName.isEmpty())

@@ -16,14 +16,20 @@
     <Methods>
       <Method Id="mth265F4XMCQBHL5FJ6GUQAUWSOPE" Name="checkPassword" DescriptionId="mlsL6SRTFJHGRD3DC2AWWRVSAGERY" Nature="0" IsOverride="false">
         <AccessRules IsFinal="true">
-          <Transparence Extendable="false" PublishedName="checkPassword(Ljava.lang.String;)Lorg.radixware.kernel.common.auth.AuthUtils.PwdWeakness;"/>
+          <Transparence Extendable="false" PublishedName="checkPassword(Ljava.lang.String;)Ljava.util.Collection&lt;Lorg.radixware.kernel.common.auth.AuthUtils.PwdWeaknessCheckResult;>;"/>
         </AccessRules>
         <Parameters>
-          <Parameter Name="password" DescriptionId="mlsLZMCLF44RVAZ7AO7JGSQMZEGLU" Id="mpr7PY4UNYMNRBEJJ72FPHOXU2WSY">
+          <Parameter Name="password" Id="mpr27G56HH3KFEO7HJBW3YYDWLGNY">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
-        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.auth.AuthUtils.PwdWeakness"/>
+        <ReturnType TypeId="400" extStr="java.util.Collection">
+          <xsc:GenericArguments>
+            <xsc:Argument Alias="?">
+              <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.auth.AuthUtils.PwdWeaknessCheckResult"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
       </Method>
       <Method Id="mthEON35JH6NZE6VJKJY4ALNBM5VQ" Name="getBlackList" DescriptionId="mls4C2R2Y7JCNBQHAG3JDOMFPX3XY" Nature="0" IsOverride="false">
         <AccessRules>
@@ -101,6 +107,52 @@
             </Type>
           </Parameter>
         </Parameters>
+      </Method>
+      <Method Id="mth2BG3KME6H5H4RN23IZVH6HEVLI" Name="PasswordRequirements" Nature="0" IsConstructor="true" IsOverride="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="&lt;init>(JZZZZLjava.lang.String;Ljava.util.Collection&lt;Ljava.lang.String;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="minLen" Id="mprWZJZRKBE5RBHXEKSTXUZMRSJXQ">
+            <Type TypeId="401" extStr="long"/>
+          </Parameter>
+          <Parameter Name="mustContainAChar" Id="mprBLJB7W2PDBF3BMCWW47ZXVHBRY">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="mustContainACharInMixedCase" Id="mpr5KXDUDKEGFHRJNJOK7Y6XEGSWE">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="mustContainNChar" Id="mprX76HXKB2FNC3ZCZRBIQSXY4P2E">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="mustContainSChar" Id="mprKE2XZ7UL75FHZHNYSZG7CI4KZU">
+            <Type TypeId="401" extStr="boolean"/>
+          </Parameter>
+          <Parameter Name="userName" Id="mpr4YHCHAATFZBT3FF2MKSZFT57GI">
+            <Type TypeId="21"/>
+          </Parameter>
+          <Parameter Name="blackList" Id="mprHKBPIRNCE5CVTIBDVB2TITVYFU">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="21"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+      </Method>
+      <Method Id="mthPC567HBPFVE4XL6N7K2U53GPP4" Name="mustContainLetterInMixedCase" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="mustContainLetterInMixedCase()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthDTWYTKMVCFALVPFD74R4M262TY" Name="mustContainSpecialChar" Nature="0" IsOverride="false">
+        <AccessRules IsFinal="true">
+          <Transparence Extendable="false" PublishedName="mustContainSpecialChar()Z"/>
+        </AccessRules>
+        <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
     </Methods>
   </AdsClassDefinition>

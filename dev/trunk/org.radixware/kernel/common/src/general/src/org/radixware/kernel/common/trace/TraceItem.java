@@ -10,11 +10,13 @@
  */
 package org.radixware.kernel.common.trace;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import org.radixware.kernel.common.defs.utils.MlsProcessor;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +24,6 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
-import org.radixware.kernel.common.utils.SystemPropUtils;
 
 public class TraceItem {
 
@@ -39,12 +40,13 @@ public class TraceItem {
     public final boolean isSensitive;
     public final String context;
     protected final MlsProcessor mlsProcessor;
+    public String stackTrace;
     private static final ThreadLocal<SimpleDateFormat> traceTimeFormat = new ThreadLocal<SimpleDateFormat>() {
         // SimpleDateFormat is not thread safe
 
         @Override
         protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("dd/MM/yy HH:mm:ss.SSS");
+            return new SimpleDateFormat(getTimeFormat());
         }
     };
     private static final ThreadLocal<MessageFormat> traceItemFormat = new ThreadLocal<MessageFormat>() {
@@ -112,39 +114,134 @@ public class TraceItem {
         }
     }
 
+    /**
+     * Returns formatted string of trace item for subsequent writing it to trace file or displaying on screen.
+     * limit - maximum length of string to return. When output exceeds limit function truncates it and appends '...' in the end. Negative or zero limit means no limit.
+     */
+    public static String formatTraceMessageLimited(int limit,
+            final EEventSeverity severity,
+            final long time,
+            final String source,
+            final String context,
+            final String message) {
+        StringWriter sw = new StringWriter();
+        try {
+            formatTraceMessageToWriter(sw, limit, severity, time, source, context, message);
+        }
+        catch(IOException ioex) { /*ignore*/ }
+        return sw.toString();
+    }
+
     public static String formatTraceMessage(final EEventSeverity severity,
             final long time,
             final String source,
             final String context,
             final String message) {
-        final StringBuilder s;
-        if (severity == null) {
-            s = new StringBuilder(traceTimeFormat.get().format(new Date(time)));
-        } else {
-            if (severity == EEventSeverity.DEBUG) {
-                s = new StringBuilder("@ ");
-            } else if (severity == EEventSeverity.EVENT) {
-                s = new StringBuilder("  ");
-            } else if (severity == EEventSeverity.WARNING) {
-                s = new StringBuilder("# ");
-            } else {
-                s = new StringBuilder("! ");
-            }
-            s.append(traceTimeFormat.get().format(new Date(time)));
+        StringWriter sw = new StringWriter();
+        try {
+            formatTraceMessageToWriter(sw, 0/*no limit*/, severity, time, source, context, message);
         }
-        s.append(" : ");
-        if (source != null) {
-            s.append(source);
-            s.append(" : ");
-        }
-        if (context != null) {
-            s.append(context);
-            s.append(" : ");
-        }
-        s.append(message);
-        return s.toString();
+        catch(IOException ioex) { /*ignore*/ }
+        return sw.toString();
+//        final StringBuilder s;
+//        if (severity == null) {
+//            s = new StringBuilder(traceTimeFormat.get().format(new Date(time)));
+//        } else {
+//            if (severity == EEventSeverity.DEBUG) {
+//                s = new StringBuilder("@ ");
+//            } else if (severity == EEventSeverity.EVENT) {
+//                s = new StringBuilder("  ");
+//            } else if (severity == EEventSeverity.WARNING) {
+//                s = new StringBuilder("# ");
+//            } else if (severity == EEventSeverity.ERROR) {
+//                s = new StringBuilder("! ");
+//            } else {
+//                s = new StringBuilder("^ ");
+//            }
+//            s.append(traceTimeFormat.get().format(new Date(time)));
+//        }
+//        s.append(" : ");
+//        if (source != null) {
+//            s.append(source);
+//            s.append(" : ");
+//        }
+//        if (context != null) {
+//            s.append(context);
+//            s.append(" : ");
+//        }
+//        s.append(message);
+//        return s.toString();
     }
 
+    /**
+     * Writes formatted message to writer in a streamed manner.
+     */
+    public static int formatTraceMessageToWriter(final Writer writer,
+            final EEventSeverity severity,
+            final long time,
+            final String source,
+            final String context,
+            final String message) throws IOException {
+        return formatTraceMessageToWriter(writer, 0/*no limit*/, severity, time, source, context, message);
+    }
+    
+    /**
+     * Writes formatted message to writer in a streamed manner.
+     * limit - maximum number of chars to write. When output exceeds limit function truncates it and appends '...' in the end. Negative or zero limit means no limit.
+     */
+    private static int formatTraceMessageToWriter(final Writer writer,
+            final int limit,
+            final EEventSeverity severity,
+            final long time,
+            final String source,
+            final String context,
+            final String message) throws IOException {
+        int nCharsWritten = 0;
+        if (severity == null) {
+            String s = traceTimeFormat.get().format(new Date(time));
+            writer.append(s);
+            nCharsWritten += s.length();
+        } else {
+            if (severity == EEventSeverity.DEBUG) {
+                writer.append("@ ");
+            } else if (severity == EEventSeverity.EVENT) {
+                writer.append("  ");
+            } else if (severity == EEventSeverity.WARNING) {
+                writer.append("# ");
+            } else if (severity == EEventSeverity.ERROR) {
+                writer.append("! ");
+            } else {
+                writer.append("^ ");
+            }
+            nCharsWritten += 2;
+            String s = traceTimeFormat.get().format(new Date(time));
+            writer.append(s);
+            nCharsWritten += s.length();
+        }
+        writer.append(" : ");
+        nCharsWritten += 3;
+        if (source != null) {
+            writer.append(source);
+            writer.append(" : ");
+            nCharsWritten += source.length() + 3;
+        }
+        if (context != null) {
+            writer.append(context);
+            writer.append(" : ");
+            nCharsWritten += context.length() + 3;
+        }
+        if(limit <= 0 || nCharsWritten + message.length() < limit){
+            writer.append(message);
+            nCharsWritten += message.length();
+        }
+        else {
+            writer.write(message, 0, limit - nCharsWritten);
+            writer.write("...");
+            nCharsWritten += limit - nCharsWritten + 3;
+        }
+        return nCharsWritten;
+    }
+    
     private boolean isFormatOptionSet(final EFormat[] options, EFormat target) {
         if (options != null) {
             for (EFormat option : options) {
@@ -181,16 +278,13 @@ public class TraceItem {
         final String mess;
         try {
             mess = mlsProcessor != null ? mlsProcessor.getEventTitleByCode(code, lang) : null;
-            if (mess == null) {
+            if (mess == null || mess.isEmpty()) {
                 return "??? (code=" + code + ", args = " + words + ")";
             }
         } catch (Throwable e) {
             return "??? (code=" + code + ", args = " + words + "), code interpretation exception: " + ExceptionTextFormatter.exceptionStackToString(e);
         }
-        if (words == null || mess == null || mess.isEmpty() && words.isEmpty() || mess.indexOf(PARAM_SYMBOL) < 0) {
-            if (mess == null || mess.isEmpty()) {
-                return null;
-            }
+        if (words == null || !mess.contains(PARAM_SYMBOL)) {
             return mess;
         }
 
@@ -259,5 +353,13 @@ public class TraceItem {
             return false;
         }
         return profile.itemMatch(this);
+    }
+    
+    public void fillInStackTrace() {
+        stackTrace = Thread.currentThread().getName() + "\n" + ExceptionTextFormatter.getCurrentStackAsStr();
+    }
+    
+    public static String getTimeFormat() {
+        return "dd/MM/yy HH:mm:ss.SSS";
     }
 }

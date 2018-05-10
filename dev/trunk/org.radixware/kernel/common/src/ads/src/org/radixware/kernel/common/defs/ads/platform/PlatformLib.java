@@ -25,9 +25,9 @@ public class PlatformLib {
     final PlatformLibs libs;
     final ERuntimeEnvironmentType env;
     private static final Object lock = new Object();
-    private static Map<String, RadixPlatformClass> platformClasses;
-    private AdsWorkspace workspaceInstance;
-    private AdsNameEnvironment nameEnvironmentInstance;
+    private static volatile Map<String, RadixPlatformClass> platformClasses;
+    private volatile AdsWorkspace workspaceInstance;
+    private volatile AdsNameEnvironment nameEnvironmentInstance;
 
     PlatformLib(PlatformLibs libs, ERuntimeEnvironmentType e) {
         this.env = e;

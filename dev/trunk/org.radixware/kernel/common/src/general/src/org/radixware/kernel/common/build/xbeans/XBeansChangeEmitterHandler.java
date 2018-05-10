@@ -139,19 +139,7 @@ public class XBeansChangeEmitterHandler {
                 }
             }
             if (post) {
-                Object newValue = null;
-                if (newXO == null) {
-                    newValue = null;
-                } else if (newXO instanceof SimpleValue) {
-                    try {
-                        newValue = ((SimpleValue) newXO).getObjectValue();
-                    } catch (XmlValueOutOfRangeException e) {
-                        newValue = null;
-                    }
-                } else {
-                    newValue = newXO;
-                }
-                return new ChangeInfo(newValue, action);
+                return new ChangeInfo(newXO, action);
             } else {
                 return new ChangeInfo(null, action);
             }

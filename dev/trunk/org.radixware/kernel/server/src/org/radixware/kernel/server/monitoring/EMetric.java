@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -29,7 +29,9 @@ public enum EMetric {
     INSTANCE_CPU_USAGE(EMetricKind.INST_CPU_USAGE.getValue(), EMetricType.STATISTIC),
     INSTANCE_MEMORY_CODE_CACHE(EMetricKind.INST_MEMORY_CODE_CACHE.getValue(), EMetricType.STATISTIC),
     INSTANCE_MEMORY_PERM_GEN(EMetricKind.INST_MEMORY_PERM_GEN.getValue(), EMetricType.STATISTIC),
+    INSTANCE_MEMORY_META_SPACE(EMetricKind.INST_MEMORY_META_SPACE.getValue(), EMetricType.STATISTIC),
     INSTANCE_MEMORY_HEAP(EMetricKind.INST_MEMORY_HEAP.getValue(), EMetricType.STATISTIC),
+    INSTANCE_AADC_LAG(EMetricKind.INST_AADC_LAG.getValue(), EMetricType.STATISTIC),
     PROFILING_DURATION(EMetricKind.PROFILING_DURATION.getValue(), EMetricType.STATISTIC),
     PROFILING_CNT(EMetricKind.PROFILING_CNT.getValue(), EMetricType.STATISTIC),
     PROFILING_FREQ(EMetricKind.PROFILING_FREQ.getValue(), EMetricType.STATISTIC),
@@ -38,7 +40,25 @@ public enum EMetric {
     PROFILING_PERCENT_EXT(EMetricKind.PROFILING_PERCENT_EXT.getValue(), EMetricType.STATISTIC),
     NET_SERVER_CONNECT(EMetricKind.NET_SERVER_CONNECT.getValue(), EMetricType.STATISTIC),
     NET_CLIENT_CONNECT_TIME_PERCENT(EMetricKind.NET_CLIENT_CONNECT_TIME_PERCENT.getValue(), EMetricType.STATISTIC),
-    NET_CLIENT_CONNECT(EMetricKind.NET_CLIENT_CONNECT.getValue(), EMetricType.EVENT);
+    NET_CLIENT_CONNECT(EMetricKind.NET_CLIENT_CONNECT.getValue(), EMetricType.EVENT),
+    NET_SYNC_BUSY_CONN_CNT(EMetricKind.NET_SYNC_BUSY_CONNECTIONS.getValue(), EMetricType.STATISTIC),
+    NET_AAS_QUEUE_SIZE(EMetricKind.NET_AAS_QUEUE_SIZE.getValue(), EMetricType.STATISTIC),
+    NET_AAS_QUEUE_WAIT_DURATION(EMetricKind.NET_AAS_QUEUE_WAIT_DURATION.getValue(), EMetricType.STATISTIC),
+    NET_AAS_PROC_DURATION_PURE(EMetricKind.NET_AAS_PROC_DURATION_PURE.getValue(), EMetricType.STATISTIC),
+    NET_AAS_PROC_DURATION_TOTAL(EMetricKind.NET_AAS_PROC_DURATION_TOTAL.getValue(), EMetricType.STATISTIC),
+    NET_AAS_INVOCATIONS_PER_SEC(EMetricKind.NET_AAS_INVOCATIONS_PER_SEC.getValue(), EMetricType.STATISTIC),
+    UNIT_MQ_MESSAGE_COUNT(EMetricKind.UNIT_MQ_PROC_MESSAGES_PER_SEC.getValue(), EMetricType.STATISTIC),
+    UNIT_MQ_PROC_DURATION(EMetricKind.UNIT_MQ_PROC_DURATION.getValue(), EMetricType.STATISTIC),
+    UNIT_MQ_AAS_SEANCES_COUNT(EMetricKind.UNIT_MQ_AAS_SEANCES_COUNT.getValue(), EMetricType.STATISTIC),
+    UNIT_PC_OUTGOING_QUEUE_SIZE(EMetricKind.UNIT_PC_OUTGOING_QUEUE_SIZE.getValue(), EMetricType.EVENT),
+    UNIT_PC_MESSAGES_PER_SEC_SENT(EMetricKind.UNIT_PC_MESSAGES_PER_SEC_SENT.getValue(), EMetricType.STATISTIC),
+    UNIT_PC_MESSAGE_SEND_DURATION(EMetricKind.UNIT_PC_MESSAGE_SEND_DURATION.getValue(), EMetricType.STATISTIC),
+    UNIT_PC_MESSAGES_SENT_CNT(EMetricKind.UNIT_PC_MESSAGES_SENT_CNT.getValue(), EMetricType.STATISTIC),
+    UNIT_PC_MESSAGES_NOT_SENT_CNT(EMetricKind.UNIT_PC_MESSAGES_NOT_SENT_CNT.getValue(), EMetricType.STATISTIC),
+    UNIT_PC_MESSAGES_RECEIVED_CNT(EMetricKind.UNIT_PC_MESSAGES_RECEIVED_CNT.getValue(), EMetricType.STATISTIC),
+    UNIT_PC_MESSAGE_RECEIVED_PROC_DURATION(EMetricKind.UNIT_PC_MESSAGE_RECEIVED_PROC_DURATION.getValue(), EMetricType.STATISTIC),
+    ;
+    
     private final String kindName;
     private final EMetricType metricType;
 

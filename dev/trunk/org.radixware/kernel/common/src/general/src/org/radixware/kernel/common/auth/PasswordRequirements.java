@@ -22,20 +22,34 @@ public class PasswordRequirements {
     private final static PasswordRequirements DEFAULT = new PasswordRequirements(7, true, true);
     private final long minLength;
     private final boolean mustContainLetter;
+    private final boolean mustContainLetterInMixedCase;
     private final boolean mustContainDigit;
+    private final boolean mustContainSpecial;
+    private final String userName;
     private final Collection<String> blackList;
 
     public PasswordRequirements(final long minLen, final boolean mustContainAChar, final boolean mustContainNChar) {
-        this(minLen, mustContainAChar, mustContainNChar, null);
+        this(minLen, mustContainAChar, false, mustContainNChar, false, null, null);
     }
-
+    
     public PasswordRequirements(final long minLen, final boolean mustContainAChar, final boolean mustContainNChar, final Collection<String> blackList) {
+        this(minLen, mustContainAChar, false, mustContainNChar, false, null, blackList);
+    }
+    
+    public PasswordRequirements(final long minLen, final boolean mustContainAChar, final boolean mustContainNChar, final String userName, final Collection<String> blackList) {
+        this(minLen, mustContainAChar, false, mustContainNChar, false, userName, blackList);
+    }    
+
+    public PasswordRequirements(final long minLen, final boolean mustContainAChar, final boolean mustContainACharInMixedCase, final boolean mustContainNChar, final boolean mustContainSChar, final String userName, final Collection<String> blackList) {
         minLength = minLen;
         mustContainLetter = mustContainAChar;
+        mustContainLetterInMixedCase = mustContainACharInMixedCase;
         mustContainDigit = mustContainNChar;
+        mustContainSpecial = mustContainSChar;
+        this.userName = userName;
         this.blackList = Collections.unmodifiableList(blackList != null ? new ArrayList<>(blackList) : Collections.<String>emptyList());
     }
-
+    
     public static PasswordRequirements getDefault() {
         return DEFAULT;
     }
@@ -51,12 +65,24 @@ public class PasswordRequirements {
     public final boolean mustContainLetter() {
         return mustContainLetter;
     }
+    
+    public final boolean mustContainLetterInMixedCase() {
+        return mustContainLetter && mustContainLetterInMixedCase;
+    }
+    
+    public final boolean mustContainSpecialChar() {
+        return mustContainSpecial;
+    }    
+    
+    public final String getUserName(){
+        return userName;
+    }
 
     public Collection<String> getBlackList() {
         return blackList;
     }
     
-    public final AuthUtils.PwdWeakness checkPassword(final String password) {
-        return AuthUtils.checkPwdWeakness(password, this);
-    }
+    public final Collection<AuthUtils.PwdWeaknessCheckResult> checkPassword(final String password) {
+        return AuthUtils.collectPwdWeakness(password, this);
+    }        
 }

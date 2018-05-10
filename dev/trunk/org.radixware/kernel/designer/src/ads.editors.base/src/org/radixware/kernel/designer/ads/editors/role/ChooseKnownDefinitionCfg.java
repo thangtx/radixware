@@ -18,9 +18,9 @@ import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.SearchResult;
 import org.radixware.kernel.common.defs.VisitorProvider;
-import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.entity.AdsEntityObjectClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsEditorPresentationDef;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsSelectorPresentationDef;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
@@ -80,12 +80,20 @@ public class ChooseKnownDefinitionCfg extends ChooseDefinitionCfg {
                         if (def instanceof AdsEntityObjectClassDef) {
                             AdsEntityObjectClassDef cl = (AdsEntityObjectClassDef) def;
                             if (isEditor) {
-                                if (!cl.getPresentations().getEditorPresentations().findById(id, ExtendableDefinitions.EScope.LOCAL).isEmpty()) {
-                                    collection.add(def);
+                                final SearchResult<AdsEditorPresentationDef>  presDefinitions = 
+                                        cl.getPresentations().getEditorPresentations().findById(id, ExtendableDefinitions.EScope.LOCAL);
+                                if (!presDefinitions.isEmpty()) {
+                                    collection.clear();                                    
+                                    collection.add(presDefinitions.get());
+                                    return collection;
                                 }
                             } else if (isSelector) {
-                                if (!cl.getPresentations().getSelectorPresentations().findById(id, ExtendableDefinitions.EScope.LOCAL).isEmpty()) {
-                                    collection.add(def);
+                                final SearchResult<AdsSelectorPresentationDef>  presDefinitions = 
+                                        cl.getPresentations().getSelectorPresentations().findById(id, ExtendableDefinitions.EScope.LOCAL);
+                                if (!presDefinitions.isEmpty()) {
+                                    collection.clear();                                    
+                                    collection.add(presDefinitions.get());
+                                    return collection;
                                 }
                             }
                         }

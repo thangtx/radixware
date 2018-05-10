@@ -23,6 +23,7 @@ import org.radixware.kernel.common.defs.ads.clazz.AdsModelClassDef;
 import org.radixware.kernel.common.defs.ads.command.AdsCommandDef;
 import org.radixware.kernel.common.defs.ads.command.AdsCommandModelClassDef;
 import org.radixware.kernel.common.defs.ads.platform.IPlatformClassPublisher;
+import org.radixware.kernel.common.defs.ads.ui.AdsDialogModelClassDef;
 import org.radixware.kernel.common.enums.EClassType;
 import static org.radixware.kernel.common.enums.EClassType.COMMAND_MODEL;
 import static org.radixware.kernel.common.enums.EClassType.DYNAMIC;
@@ -51,7 +52,7 @@ public final class NestedClassCreature extends AdsClassCreature {
                 case EXCEPTION:
                     return new NestedClassCreature(container, classType);
                 case COMMAND_MODEL:
-                    if (container instanceof AdsModelClassDef) {
+                    if (container instanceof AdsModelClassDef && !(container instanceof AdsDialogModelClassDef)) {
                         return new NestedClassCreature(container, classType);
                     } else {
                         return null;

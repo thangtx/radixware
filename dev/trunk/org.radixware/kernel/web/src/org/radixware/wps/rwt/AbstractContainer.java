@@ -63,10 +63,10 @@ public class AbstractContainer extends UIObject {
         if (child instanceof Dialog) {
             RootPanel root = findRoot();
             if (root != null) {
-                root.html.add(child.html);
+                root.getHtml().add(child.getHtml());
             }
         } else {
-            this.html.add(index, child.html);
+            this.getHtml().add(index, child.getHtml());
         }
     }
 
@@ -82,11 +82,11 @@ public class AbstractContainer extends UIObject {
         if (children != null) {
 
             if (children.remove(child)) {
-                this.html.remove(child.html);
+                this.getHtml().remove(child.getHtml());
                 if (child instanceof Dialog) {
                     RootPanel root = findRoot();
                     if (root != null) {
-                        root.html.remove(child.html);
+                        root.getHtml().remove(child.getHtml());
                     }
                 }
                 child.setParent(null);

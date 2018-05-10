@@ -25,27 +25,35 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskDocument">
+                <xsc:Presentation>TaskExportXsd:TaskDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> taskDoc = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskDocument.Factory"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskDocument.Factory">
+                <xsc:Presentation>TaskExportXsd:TaskDocument.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.newInstance();
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="Task"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="Task">
+                <xsc:Presentation>TaskExportXsd:Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> xTask = taskDoc.addNewTask();
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mth4F6UM3YDGFGUJKVQ6I4KVNMSZI" Invoke="true"/>
+              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mth4F6UM3YDGFGUJKVQ6I4KVNMSZI" Invoke="true">
+                <xsc:Presentation>doExportTask</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xTask, task);
@@ -67,48 +75,71 @@ return taskDoc;</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcXGZAWAL2MJEMJCRHKTN2FOS34Q"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcXGZAWAL2MJEMJCRHKTN2FOS34Q">
+                <xsc:Presentation>CfgManagement::ImpExpUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcXGZAWAL2MJEMJCRHKTN2FOS34Q mth3ST4O6LUQJGBZOCMBX4OZ24MI4" Invoke="true"/>
+              <xsc:IdReference Path="adcXGZAWAL2MJEMJCRHKTN2FOS34Q mth3ST4O6LUQJGBZOCMBX4OZ24MI4" Invoke="true">
+                <xsc:Presentation>exportEntity</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xTask, task, true, null);
 xTask.Priority = java.math.BigInteger.valueOf(task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col7JDCGRXMJPOBDCIUAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col7JDCGRXMJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>priority</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value.longValue());
 xTask.PriorityBoostingSpeed = java.math.BigInteger.valueOf(task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col33LE4YHMJPOBDCIUAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col33LE4YHMJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>priorityBoostingSpeed</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.longValue());
 xTask.IsActive = task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colRMH5P2FSTNABBMBNUIXU3AINEQ" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colRMH5P2FSTNABBMBNUIXU3AINEQ" Invoke="true">
+                <xsc:Presentation>isActive</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
 xTask.ExpiredPolicy = java.math.BigInteger.valueOf(task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colYQWRAN7SK5GA3EGFI6TEPHYWL4" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colYQWRAN7SK5GA3EGFI6TEPHYWL4" Invoke="true">
+                <xsc:Presentation>expiredPolicy</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Value.longValue());
 xTask.Seq = task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colWDY2TRTHU5CBNOYBLCQRTQSCZM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colWDY2TRTHU5CBNOYBLCQRTQSCZM" Invoke="true">
+                <xsc:Presentation>seq</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;
+xTask.Rid = task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col7PEOSLRVM5GQLNRYMHH4V7B2JI" Invoke="true">
+                <xsc:Presentation>rid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
@@ -116,32 +147,42 @@ xTask.Seq = task.</xsc:Java>
 if (task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col5D6MV3QAFFGVTMVNH4JQCJUDSI" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col5D6MV3QAFFGVTMVNH4JQCJUDSI" Invoke="true">
+                <xsc:Presentation>execRoleGuids</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null) {
     xTask.ExecRoleGuids = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcRGCAH2OFZVFETKEAS4A2YGFWB4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcRGCAH2OFZVFETKEAS4A2YGFWB4">
+                <xsc:Presentation>Types::ValAsStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcRGCAH2OFZVFETKEAS4A2YGFWB4 mthESYN6NJAKBEV3HV6MRLYZ6NCBM" Invoke="true"/>
+              <xsc:IdReference Path="adcRGCAH2OFZVFETKEAS4A2YGFWB4 mthESYN6NJAKBEV3HV6MRLYZ6NCBM" Invoke="true">
+                <xsc:Presentation>toStr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col5D6MV3QAFFGVTMVNH4JQCJUDSI" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col5D6MV3QAFFGVTMVNH4JQCJUDSI" Invoke="true">
+                <xsc:Presentation>execRoleGuids</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciSZ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true"/>
+              <xsc:IdReference Path="acsEFO5RTQOG7NRDJH2ACQMTAIZT4 aciSZ7UJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                <xsc:Presentation>Meta::ValType:ArrStr</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -149,14 +190,18 @@ if (task.</xsc:Java>
 if (task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colVVAT5W3YSLOBDCKTAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colVVAT5W3YSLOBDCKTAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>title</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null) {
     xTask.Title = task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colVVAT5W3YSLOBDCKTAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colVVAT5W3YSLOBDCKTAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>title</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
@@ -164,7 +209,9 @@ if (task.</xsc:Java>
 if (task instanceof </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U">
+                <xsc:Presentation>Task.AGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) {
@@ -172,33 +219,43 @@ if (task instanceof </xsc:Java>
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U">
+                <xsc:Presentation>Task.AGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> groupTask = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aclAISPQSDGNNF47CEMHOVHTK6G5U">
+                <xsc:Presentation>Task.AGroup</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) task;
     for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> childTask : groupTask.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthCMOZTIRUORE4FDJG67MVTWQCQE" Invoke="true"/>
+              <xsc:IdReference Path="aclAISPQSDGNNF47CEMHOVHTK6G5U mthCMOZTIRUORE4FDJG67MVTWQCQE" Invoke="true">
+                <xsc:Presentation>getChilds</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>()) {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mth4F6UM3YDGFGUJKVQ6I4KVNMSZI" Invoke="true"/>
+              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mth4F6UM3YDGFGUJKVQ6I4KVNMSZI" Invoke="true">
+                <xsc:Presentation>doExportTask</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xTask.ChildTasks.addNewChildTask(), childTask);
@@ -208,20 +265,26 @@ if (task instanceof </xsc:Java>
 if (task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col6DGLMQLQJTOBDCIVAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col6DGLMQLQJTOBDCIVAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>schedule</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != null) {
     xTask.ScheduleGuid = task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col6DGLMQLQJTOBDCIVAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col6DGLMQLQJTOBDCIVAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>schedule</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecLSU45NKDI3OBDCIOAALOMT5GDM colIJ2DSJLSLBE5NN7Z2YAKDKAGYI" Invoke="true"/>
+              <xsc:IdReference Path="aecLSU45NKDI3OBDCIOAALOMT5GDM colIJ2DSJLSLBE5NN7Z2YAKDKAGYI" Invoke="true">
+                <xsc:Presentation>guid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
@@ -230,7 +293,9 @@ if (task.</xsc:Java>
 task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthZR4GWJ7U5ZHMZOZPZSL2IMMGAY" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthZR4GWJ7U5ZHMZOZPZSL2IMMGAY" Invoke="true">
+                <xsc:Presentation>onExport</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xTask);
@@ -253,7 +318,9 @@ task.</xsc:Java>
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthDOIOTMZB3JE27IA4AJLGJXJJWQ" Invoke="true"/>
+              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthDOIOTMZB3JE27IA4AJLGJXJJWQ" Invoke="true">
+                <xsc:Presentation>doImportTask</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xTask, null);</xsc:Java>
@@ -275,47 +342,106 @@ task.</xsc:Java>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> task = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().newObject(xTask.ClassId);
 if (parentTaskId != null) {
-    task.</xsc:Java>
+    final </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colBHMUC3KGIJE3PA6RVXKLXFHP3U" Invoke="true"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> parent = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(parentTaskId, true);
+    if (parent instanceof </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aclM2T33M4WWZC2FKRJVHD4JMYREI">
+                <xsc:Presentation>Task.Dir</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>) {
+        task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colC7IXI3MF4ZHHRJGGR7KVS6LL7Y" Invoke="true">
+                <xsc:Presentation>directoryId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = parentTaskId;
+    } else {
+        task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colBHMUC3KGIJE3PA6RVXKLXFHP3U" Invoke="true">
+                <xsc:Presentation>parentId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = parentTaskId;
+    }
 }
 task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthSA7W2J3SYZGY5FPBMGO3BW627U" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthSA7W2J3SYZGY5FPBMGO3BW627U" Invoke="true">
+                <xsc:Presentation>init</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(null, null, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsFV7PLD4FGVERHCQY634YDPEQQY aciRSS2ETLQYZAZPOON3BCLJBUX5Y" Invoke="true"/>
+              <xsc:IdReference Path="acsFV7PLD4FGVERHCQY634YDPEQQY aciRSS2ETLQYZAZPOON3BCLJBUX5Y" Invoke="true">
+                <xsc:Presentation>Types::EntityInitializationPhase:PROGRAMMED_CREATION</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -323,62 +449,89 @@ task.</xsc:Java>
 task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colRMH5P2FSTNABBMBNUIXU3AINEQ" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colRMH5P2FSTNABBMBNUIXU3AINEQ" Invoke="true">
+                <xsc:Presentation>isActive</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = xTask.IsActive;
 task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col7JDCGRXMJPOBDCIUAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col7JDCGRXMJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>priority</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="2" Path="acsYING7OYUJ3NRDAQSABIFNQAAAE"/>
+              <xsc:TypeDeclaration TypeId="2" Path="acsYING7OYUJ3NRDAQSABIFNQAAAE">
+                <xsc:Presentation>Common::Priority</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.getForValue(xTask.Priority.longValue());
 task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col33LE4YHMJPOBDCIUAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col33LE4YHMJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>priorityBoostingSpeed</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = xTask.PriorityBoostingSpeed.longValue();
 task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colYQWRAN7SK5GA3EGFI6TEPHYWL4" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colYQWRAN7SK5GA3EGFI6TEPHYWL4" Invoke="true">
+                <xsc:Presentation>expiredPolicy</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="2" Path="acsMX5WQ6IW55D5BMVQYQBOPJEMSQ"/>
+              <xsc:TypeDeclaration TypeId="2" Path="acsMX5WQ6IW55D5BMVQYQBOPJEMSQ">
+                <xsc:Presentation>ExpiredTaskExecPolicy</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.getForValue(xTask.ExpiredPolicy.longValue());
 task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colWDY2TRTHU5CBNOYBLCQRTQSCZM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colWDY2TRTHU5CBNOYBLCQRTQSCZM" Invoke="true">
+                <xsc:Presentation>seq</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = xTask.isSetSeq() ? xTask.Seq.longValue() : 0;
+task.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col7PEOSLRVM5GQLNRYMHH4V7B2JI" Invoke="true">
+                <xsc:Presentation>rid</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = xTask.Rid;
 
 if (xTask.ExecRoleGuids != null) {
     task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col5D6MV3QAFFGVTMVNH4JQCJUDSI" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM col5D6MV3QAFFGVTMVNH4JQCJUDSI" Invoke="true">
+                <xsc:Presentation>execRoleGuids</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="221"/>
+              <xsc:TypeDeclaration TypeId="221">
+                <xsc:Presentation>ArrStr</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.fromValAsStr(xTask.ExecRoleGuids);
@@ -387,31 +540,40 @@ if (xTask.Title != null) {
     task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colVVAT5W3YSLOBDCKTAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colVVAT5W3YSLOBDCKTAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>title</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = xTask.Title;
 }
-if (parentTaskId != null) {
-    task.</xsc:Java>
+//Already do this earlear
+//if (parentTaskId != null) {
+//    task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colBHMUC3KGIJE3PA6RVXKLXFHP3U" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colBHMUC3KGIJE3PA6RVXKLXFHP3U" Invoke="true">
+                <xsc:Presentation>parentId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = parentTaskId;
-}
+//}
 
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcXGZAWAL2MJEMJCRHKTN2FOS34Q"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcXGZAWAL2MJEMJCRHKTN2FOS34Q">
+                <xsc:Presentation>CfgManagement::ImpExpUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcXGZAWAL2MJEMJCRHKTN2FOS34Q mth6G6B4OLHCFBXLJU4UUSNQCYADI" Invoke="true"/>
+              <xsc:IdReference Path="adcXGZAWAL2MJEMJCRHKTN2FOS34Q mth6G6B4OLHCFBXLJU4UUSNQCYADI" Invoke="true">
+                <xsc:Presentation>importProps</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xTask, task, null);
@@ -420,7 +582,9 @@ if (xTask.SchedulerUnitId != null) {
     task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colP2PKJLPLJPOBDCIUAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colP2PKJLPLJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>unitId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = xTask.SchedulerUnitId;
@@ -430,7 +594,9 @@ if (xTask.ScheduleId != null) {
     task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colNAPRJRHLJPOBDCIUAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colNAPRJRHLJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>scheduleId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = xTask.ScheduleId;
@@ -438,19 +604,25 @@ if (xTask.ScheduleId != null) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecLSU45NKDI3OBDCIOAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecLSU45NKDI3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>EventSchedule</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> schedule = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecLSU45NKDI3OBDCIOAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecLSU45NKDI3OBDCIOAALOMT5GDM">
+                <xsc:Presentation>EventSchedule</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecLSU45NKDI3OBDCIOAALOMT5GDM mthDBCQMCU2OZEYJIS5Q74DZL6GKY" Invoke="true"/>
+              <xsc:IdReference Path="aecLSU45NKDI3OBDCIOAALOMT5GDM mthDBCQMCU2OZEYJIS5Q74DZL6GKY" Invoke="true">
+                <xsc:Presentation>loadByGuid</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xTask.ScheduleGuid);
@@ -458,13 +630,17 @@ if (xTask.ScheduleId != null) {
         task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colNAPRJRHLJPOBDCIUAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colNAPRJRHLJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>scheduleId</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = schedule.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecLSU45NKDI3OBDCIOAALOMT5GDM colDQQG5QKDI3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecLSU45NKDI3OBDCIOAALOMT5GDM colDQQG5QKDI3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;
@@ -475,7 +651,9 @@ if (xTask.ScheduleId != null) {
 task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth6MXY6NXCG5FENER2I7MAVEY3QI" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth6MXY6NXCG5FENER2I7MAVEY3QI" Invoke="true">
+                <xsc:Presentation>beforeCreateOnImport</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xTask);
@@ -483,7 +661,9 @@ task.</xsc:Java>
 task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mth7X446DFQSTNRDDXBABIFNQAAAE" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mth7X446DFQSTNRDDXBABIFNQAAAE" Invoke="true">
+                <xsc:Presentation>create</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -492,20 +672,26 @@ if (xTask.ChildTasks != null &amp;&amp; xTask.ChildTasks.ChildTaskList != null &
     for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="Task"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="Task">
+                <xsc:Presentation>TaskExportXsd:Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> childTask : xTask.ChildTasks.ChildTaskList) {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthDOIOTMZB3JE27IA4AJLGJXJJWQ" Invoke="true"/>
+              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthDOIOTMZB3JE27IA4AJLGJXJJWQ" Invoke="true">
+                <xsc:Presentation>doImportTask</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(childTask, task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM colPU65PF7LJPOBDCIUAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>);
@@ -515,7 +701,9 @@ if (xTask.ChildTasks != null &amp;&amp; xTask.ChildTasks.ChildTaskList != null &
 task.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthC4YB3FDESBG7ZPHVFVPL7EMHWA" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mthC4YB3FDESBG7ZPHVFVPL7EMHWA" Invoke="true">
+                <xsc:Presentation>afterImport</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xTask);
@@ -543,20 +731,26 @@ if (xTasks.TaskSet != null &amp;&amp; xTasks.TaskSet.TaskList != null) {
     for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="Task"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="Task">
+                <xsc:Presentation>TaskExportXsd:Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> xTask : xTasks.TaskSet.TaskList) {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I">
+                <xsc:Presentation>TaskImpExpUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthHOJOYXJQEJBPLJB36MIQTPR77M" Invoke="true"/>
+              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthHOJOYXJQEJBPLJB36MIQTPR77M" Invoke="true">
+                <xsc:Presentation>importTask</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(xTask);
@@ -583,59 +777,77 @@ if (xTasks.TaskSet != null &amp;&amp; xTasks.TaskSet.TaskList != null) {
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskSetDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskSetDocument">
+                <xsc:Presentation>TaskExportXsd:TaskSetDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> xDoc = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskSetDocument.Factory"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskSetDocument.Factory">
+                <xsc:Presentation>TaskExportXsd:TaskSetDocument.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.newInstance();
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskSet"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="TaskSet">
+                <xsc:Presentation>TaskExportXsd:TaskSet</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> taskSet = xDoc.addNewTaskSet();
 for (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="ExportRequest.ExportItem"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdRBK6FQVUEZG7NDZEERZZ34YGQI" extStr="ExportRequest.ExportItem">
+                <xsc:Presentation>TaskExportXsd:ExportRequest.ExportItem</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> exportItem : exportRq.ExportRequest.ExportItemList) {
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> task = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM">
+                <xsc:Presentation>Task</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth_loadByPK_________________" Invoke="true"/>
+              <xsc:IdReference Path="aecWZB7K4HLJPOBDCIUAALOMT5GDM mth_loadByPK_________________" Invoke="true">
+                <xsc:Presentation>loadByPK</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(exportItem.TaskId, true);
     taskSet.addNewTask().set(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I">
+                <xsc:Presentation>TaskImpExpUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthCW6DQASBGZCGZBYJWEVTMXAULM" Invoke="true"/>
+              <xsc:IdReference Path="adcF3ZQWZ3X55DIPARVWK3T3GMI4I mthCW6DQASBGZCGZBYJWEVTMXAULM" Invoke="true">
+                <xsc:Presentation>exportTask</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(task).Task);

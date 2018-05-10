@@ -13,14 +13,17 @@ package org.radixware.kernel.designer.ads.editors.clazz.report.action;
 
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
 import org.radixware.kernel.designer.ads.editors.clazz.report.GridSettingsDialog;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 
 
 public class GridSettingsEditAction extends AbstractAction {
-
-    public GridSettingsEditAction() {
+    private final AdsReportForm form;
+    
+    public GridSettingsEditAction(final AdsReportForm form) {
         super();
+        this.form = form;
         this.putValue(AbstractAction.SMALL_ICON, RadixWareIcons.REPORT.GRID.getIcon());
         this.putValue(AbstractAction.NAME, "Grid Settings");
         this.putValue(AbstractAction.SHORT_DESCRIPTION, "Grid Settings");
@@ -28,6 +31,7 @@ public class GridSettingsEditAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        GridSettingsDialog.showDialog();
+        final GridSettingsDialog gridSettingsDialog = new GridSettingsDialog();
+        gridSettingsDialog.showDialog(form);
     }
 }

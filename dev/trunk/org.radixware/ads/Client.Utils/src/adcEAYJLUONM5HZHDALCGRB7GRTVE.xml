@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
   <AdsClassDefinition Id="adcEAYJLUONM5HZHDALCGRB7GRTVE" Name="ValueConverter" Type="3" Environment="common-client">
-    <AccessRules IsPublished="false">
+    <AccessRules>
       <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.utils.ValueConverter"/>
     </AccessRules>
     <Headers>
@@ -146,6 +146,34 @@
           </Parameter>
         </Parameters>
         <ReturnType TypeId="400" extStr="java.util.Calendar"/>
+      </Method>
+      <Method Id="mthRYXYCD4Q3ZC63EDWOBJNROM5CU" Name="obj2ValAsStr" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="obj2ValAsStr(Ljava.lang.Object;Lorg.radixware.kernel.common.enums.EValType;)Lorg.radixware.kernel.common.defs.value.ValAsStr;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="obj" Id="mpr7PPL2YQLO5ELHIVWDUQKAZGCGY">
+            <Type TypeId="400" extStr="java.lang.Object"/>
+          </Parameter>
+          <Parameter Name="type" Id="mprBOGTRR6KTBHSJE47WS6HP7GT6I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.defs.value.ValAsStr"/>
+      </Method>
+      <Method Id="mthMVZWWDFKLZB2XBHBEWJFKIFTNY" Name="valAsStr2Obj" Nature="0" IsOverride="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="valAsStr2Obj(Lorg.radixware.kernel.common.defs.value.ValAsStr;Lorg.radixware.kernel.common.enums.EValType;)Ljava.lang.Object;"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="val" Id="mprAESNUL3P7ZA7JEE6QNPGBBKBRQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.defs.value.ValAsStr"/>
+          </Parameter>
+          <Parameter Name="type" Id="mprSXWHW2UIZ5AFJIL2ESYWOINGC4">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EValType"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="400" extStr="java.lang.Object"/>
       </Method>
     </Methods>
   </AdsClassDefinition>

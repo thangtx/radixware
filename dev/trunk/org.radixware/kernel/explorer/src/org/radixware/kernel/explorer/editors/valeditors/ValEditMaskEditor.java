@@ -49,6 +49,7 @@ public final class ValEditMaskEditor extends ValEditor<EditMask> {
         runEditMaskEditorAction.setIcon(ExplorerIcon.getQIcon(ClientIcon.CommonOperations.EDIT));
         runEditMaskEditorAction.triggered.connect(this, "runEditMaskEditor()");
         editBtn = addButton("", runEditMaskEditorAction);
+        editBtn.setObjectName("rx_tbtn_edit");
     }        
 
     public ValEditMaskEditor(final IClientEnvironment environment, final QWidget parent, final RadEnumPresentationDef enumDef) {

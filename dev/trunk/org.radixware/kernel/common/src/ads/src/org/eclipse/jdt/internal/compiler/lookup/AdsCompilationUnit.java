@@ -12,7 +12,6 @@ package org.eclipse.jdt.internal.compiler.lookup;
 
 import org.eclipse.jdt.internal.compiler.env.ICompilationUnit;
 import org.radixware.kernel.common.defs.Definition;
-import org.radixware.kernel.common.defs.ads.ICompilable;
 import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.xml.IXmlDefinition;
@@ -22,6 +21,7 @@ public class AdsCompilationUnit implements ICompilationUnit {
     private Definition source;
     private String extName;
     private JavaSourceSupport.UsagePurpose up;
+    private static final char[] UNIT_CONTENTS = new char[0];
 
     public AdsCompilationUnit(Definition source, JavaSourceSupport.UsagePurpose up) {
         this.source = source;
@@ -41,7 +41,7 @@ public class AdsCompilationUnit implements ICompilationUnit {
 
     @Override
     public char[] getContents() {
-        return null;
+        return UNIT_CONTENTS;
     }
 
     @Override

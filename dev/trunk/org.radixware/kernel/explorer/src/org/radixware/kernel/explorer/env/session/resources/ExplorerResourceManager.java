@@ -12,19 +12,18 @@
 package org.radixware.kernel.explorer.env.session.resources;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.eas.resources.IFileDirResource;
 import org.radixware.kernel.common.client.eas.resources.IFileResource;
+import org.radixware.kernel.common.client.eas.resources.IFileTransitResource;
 import org.radixware.kernel.common.client.eas.resources.IMessageDialogResource;
 import org.radixware.kernel.common.client.eas.resources.IProgressDialogResource;
 import org.radixware.kernel.common.client.eas.resources.IResourceManager;
-import org.radixware.kernel.common.client.eas.resources.ITerminalResource;
 import org.radixware.kernel.common.client.exceptions.TerminalResourceException;
 import org.radixware.kernel.common.enums.EFileAccessType;
 import org.radixware.kernel.common.enums.EFileOpenMode;
 import org.radixware.kernel.common.enums.EFileOpenShareMode;
+import org.radixware.kernel.common.enums.EMimeType;
 import org.radixware.schemas.eas.FileSelectRq;
 import org.radixware.schemas.eas.MessageDialogOpenRq;
 import org.radixware.schemas.eas.NextDialogRequest.MessageBox;
@@ -33,7 +32,6 @@ import org.radixware.schemas.eas.NextDialogRequest.MessageBox;
 public class ExplorerResourceManager implements IResourceManager {
 
     private final IClientEnvironment environment;
-    private final Map<String, ITerminalResource> resources = new HashMap<String, ITerminalResource>();
     private final ProgressDialogResource resource;
 
     public ExplorerResourceManager(IClientEnvironment environment) {
@@ -43,50 +41,27 @@ public class ExplorerResourceManager implements IResourceManager {
 
     @Override
     public IMessageDialogResource openMessageDialogResource(MessageDialogOpenRq request) {
-        MessageDialogResource mdr = MessageDialogResource.open(environment, request);
-        if (mdr != null) {
-            resources.put(mdr.getId(), mdr);
-        }
-        return mdr;
+        return MessageDialogResource.open(environment, request);
     }
 
     @Override
     public IMessageDialogResource openMessageDialogResource(MessageBox messageBox) {
-        MessageDialogResource mdr = MessageDialogResource.open(environment, messageBox);
-        if (mdr != null) {
-            resources.put(mdr.getId(), mdr);
-        }
-        return mdr;
+        return MessageDialogResource.open(environment, messageBox);
     }
 
     @Override
     public IFileResource openFileResource(String fileName, EFileOpenMode openMode, EFileOpenShareMode share) throws IOException, TerminalResourceException {
-        FileResource fr = new FileResource(fileName, openMode, share);
-        if (fr != null) {
-            resources.put(fr.getId(), fr);
-        }
-
-        return fr;
+        return new FileResource(fileName, openMode, share);
     }
 
+    @Override
+    public IFileTransitResource startFileTransit(String fileName, EMimeType mimeType, boolean openAfterTransit) throws IOException, TerminalResourceException {
+        return new FileTransitResource(fileName, mimeType, openAfterTransit);
+    }
+        
     @Override
     public IFileDirResource getFileDirResource() {
         return FileDirResource.getInstance();
-    }
-
-    @Override
-    public void freeResource(String id) throws TerminalResourceException {
-        ITerminalResource r = resources.get(id);
-        if (r != null) {
-            r.free();
-        }
-    }
-
-    @Override
-    public void freeAllResources() throws TerminalResourceException {
-        for (ITerminalResource r : resources.values()) {
-            r.free();
-        }
     }
 
     @Override
@@ -95,7 +70,7 @@ public class ExplorerResourceManager implements IResourceManager {
     }
 
     @Override
-    public String selectFile(FileSelectRq request) throws TerminalResourceException {
+    public String selectFile(final FileSelectRq request) throws TerminalResourceException {
         return FileResource.select(environment, request);
     }
 
@@ -123,4 +98,9 @@ public class ExplorerResourceManager implements IResourceManager {
     public void copyFile(String srcFileName, String dstFileName, boolean overwrite) throws IOException, TerminalResourceException {
         FileResource.copy(srcFileName, dstFileName, overwrite);
     }
+
+    @Override
+    public boolean isFileExists(final String path) {
+        return FileResource.isExists(path);
+    }    
 }

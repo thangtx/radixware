@@ -13,17 +13,15 @@ package org.radixware.kernel.designer.uds.tree.actions;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 import javax.swing.JFileChooser;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.actions.CookieAction;
+import org.radixware.kernel.common.defs.ads.userfunc.xml.UserFuncImportInfo;
 import org.radixware.kernel.common.defs.uds.userfunc.UdsUserFuncDef;
-import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.designer.common.dialogs.utils.DialogUtils;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
-import org.radixware.schemas.udsdef.UserFunctionDefinition;
 
 
 public class ImportBodyAction extends CookieAction {
@@ -37,7 +35,7 @@ public class ImportBodyAction extends CookieAction {
         }
 
         public void exec() {
-            File file = ActionUtil.chooseFile(JFileChooser.OPEN_DIALOG, "Import User Function");
+            File file = ActionUtil.chooseXmlFile(JFileChooser.OPEN_DIALOG, "Import User Function");
             if (file != null) {
                 try {
                     uf.importBody(file, new UdsUserFuncDef.UICallback() {
@@ -48,13 +46,13 @@ public class ImportBodyAction extends CookieAction {
                         }
 
                         @Override
-                        public Id chooseId(Map<Id, UserFunctionDefinition> id2title) {
-                            FuncChooser chooser = new FuncChooser(id2title);
+                        public int chooseId(List<UserFuncImportInfo> ufuncs) {
+                            FuncChooser chooser = new FuncChooser(ufuncs);
                             ModalDisplayer displayer = new ModalDisplayer(chooser);
                             if (displayer.showModal()) {
                                 return chooser.getSelectedId();
                             } else {
-                                return null;
+                                return -1;
                             }
                         }
                     });

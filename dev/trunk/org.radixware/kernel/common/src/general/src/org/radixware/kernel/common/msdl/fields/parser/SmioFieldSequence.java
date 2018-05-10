@@ -24,7 +24,7 @@ import org.radixware.kernel.common.msdl.fields.parser.datasource.IDataSource;
 import org.radixware.kernel.common.msdl.fields.parser.fieldlist.ExtByteBuffer;
 import org.radixware.kernel.common.msdl.fields.parser.fieldlist.IFieldList;
 import org.radixware.kernel.common.msdl.fields.parser.fieldlist.PlainFieldList;
-import org.radixware.kernel.common.msdl.fields.parser.fieldlist.SeparatedFieldList;
+import org.radixware.kernel.common.msdl.fields.parser.fieldlist.SeparatedFieldListEnd;
 import org.radixware.kernel.common.msdl.fields.parser.piece.SmioPiece;
 import org.radixware.schemas.msdl.SequenceField;
 
@@ -56,7 +56,7 @@ public final class SmioFieldSequence extends SmioField {
         if (separator == null) {
             fieldList = new PlainFieldList();
         } else {
-            fieldList = new SeparatedFieldList(separator, shield);
+            fieldList = new SeparatedFieldListEnd(separator, shield);
         }
     }
 
@@ -100,10 +100,10 @@ public final class SmioFieldSequence extends SmioField {
         c.setTextValue("");
         c.dispose();
         
-        while (ids.available() > 0) {
+        while (ids.hasAvailable()) {
             IDataSource ds = fieldList.parseField(ids);
             //added by akrylov. SEE RADIX-5497
-            while (ds.available() > 0) {
+            while (ds.hasAvailable()) {
                 IDataSource itemDataSource = item.getPiece().parse(ds);
                 //npopov(RADIX-10891):
                 //change y.snegirev(RADIX-7147) solution:
@@ -125,7 +125,7 @@ public final class SmioFieldSequence extends SmioField {
 //                        break;
                     //end
                     //*********************************************************
-                } while (itemDataSource.available() > 0 && cantDetermineItemSize);
+                } while (itemDataSource.hasAvailable() && cantDetermineItemSize);
             }
             //end
         }

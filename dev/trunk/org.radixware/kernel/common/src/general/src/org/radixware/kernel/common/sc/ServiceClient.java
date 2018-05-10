@@ -23,6 +23,7 @@ import java.nio.channels.Selector;
 import java.util.*;
 import javax.net.ssl.SSLContext;
 import org.apache.xmlbeans.XmlObject;
+import org.radixware.kernel.common.enums.EAadcMember;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.ESoapMessageType;
 import org.radixware.kernel.common.exceptions.*;
@@ -35,12 +36,9 @@ import org.radixware.kernel.common.trace.LocalTracer;
 import org.radixware.kernel.common.utils.SoapFormatter.ResponseTraceItem;
 import org.radixware.kernel.common.utils.*;
 import org.radixware.kernel.common.utils.net.AioUtils;
+import org.w3c.dom.Node;
+import org.xmlsoap.schemas.soap.envelope.Detail;
 
-/**
- * ;85=B A5@28A>2.  01>B05B 2 A8=E@>==>< @568<8
- *
- *
- */
 public abstract class ServiceClient {
 
     private final int KEEP_SOCKET_FOR_CALLBACK_TIME_MILLIS = 2 * 24 * 60 * 60 * 1000; //2 days
@@ -53,6 +51,7 @@ public abstract class ServiceClient {
     private char[] keyPassword = null;
     private final HashMap<String, Port> ports = new HashMap<>();
     private final ISyncClientSoapEngineFactory soapEngineFactory;
+    private long aadcMemberStickTimeoutMillis = 0;
 
     protected ServiceClient(final LocalTracer tracer, final InetSocketAddress myAddress) {
         this(tracer, myAddress, null, null);
@@ -63,13 +62,24 @@ public abstract class ServiceClient {
         this(tracer, myAddress, keystoreController, keyPassword, null);
     }
 
-    protected ServiceClient(final LocalTracer tracer, final InetSocketAddress myAddress,
-            final KeystoreController keystoreController, final char[] keyPassword, final ISyncClientSoapEngineFactory soapEngineFactory) {
+    protected ServiceClient(final LocalTracer tracer,
+            final InetSocketAddress myAddress,
+            final KeystoreController keystoreController,
+            final char[] keyPassword,
+            final ISyncClientSoapEngineFactory soapEngineFactory) {
         this.tracer = tracer;
         this.myAddress = myAddress;
         this.keystoreController = keystoreController;
         this.keyPassword = keyPassword;
         this.soapEngineFactory = soapEngineFactory;
+    }
+
+    public void setAadcMemberStickTimeoutMillis(long aadcMemberStickTimeoutMillis) {
+        this.aadcMemberStickTimeoutMillis = aadcMemberStickTimeoutMillis;
+    }
+
+    public long getAadcMemberStickTimeoutMillis() {
+        return aadcMemberStickTimeoutMillis;
     }
 
     public void setScpName(final String scpName) throws ServiceCallException {
@@ -87,41 +97,78 @@ public abstract class ServiceClient {
             p.close();
         }
     }
-
+    
+    
+    @Deprecated
     public XmlObject invokeService(final XmlObject rqEnvBody, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, int keepConnectTimeSec, int timeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
         return invokeService(rqEnvBody, null, resultClass, systemId, thisInstanceId, serviceUri, keepConnectTimeSec, timeoutSec);
     }
 
+    @Deprecated
     public XmlObject invokeService(final XmlObject rqEnvBody, final Map<String, String> soapRequestParams, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, int keepConnectTimeSec, int timeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
         return invokeService(rqEnvBody, soapRequestParams, resultClass, systemId, thisInstanceId, serviceUri, null, keepConnectTimeSec, timeoutSec);
     }
 
+    @Deprecated
     public XmlObject invokeService(final XmlObject rqEnvBody, final Map<String, String> soapRequestParams, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, final List<SapClientOptions> additionalSaps, final int keepConnectTimeSec, final int timeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
         return invokeService(rqEnvBody, soapRequestParams, resultClass, systemId, thisInstanceId, serviceUri, additionalSaps, keepConnectTimeSec, timeoutSec, -1);
     }
 
+    @Deprecated
     public XmlObject invokeService(final XmlObject rqEnvBody, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, int keepConnectTimeSec, int receiveTimeoutSec, int connectTimeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
         return invokeService(rqEnvBody, null, resultClass, systemId, thisInstanceId, serviceUri, keepConnectTimeSec, receiveTimeoutSec, connectTimeoutSec);
     }
 
+    @Deprecated
     public XmlObject invokeService(final XmlObject rqEnvBody, final Map<String, String> soapRequestParams, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, int keepConnectTimeSec, int receiveTimoutSec, int connectTimeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
         return invokeService(rqEnvBody, soapRequestParams, resultClass, systemId, thisInstanceId, serviceUri, null, keepConnectTimeSec, receiveTimoutSec, connectTimeoutSec);
     }
 
+    @Deprecated
     public XmlObject invokeService(final XmlObject rqEnvBody, final Map<String, String> soapRequestParams, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, final List<SapClientOptions> additionalSaps, final int keepConnectTimeSec, final int receiveTimeoutSec, final int connectTimeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
         RadixSoapMessage message = new RadixSoapMessage(rqEnvBody, ESoapMessageType.REQUEST, soapRequestParams, resultClass, systemId, thisInstanceId, serviceUri, additionalSaps, null, keepConnectTimeSec, receiveTimeoutSec, connectTimeoutSec);
         return invokeService(message);
     }
 
+    @Deprecated
     public XmlObject invokeService(final RadixSoapMessage message) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
-        return doSend(message);
+        return doSend(message, null);
+    }
+
+    public XmlObject invokeService(final XmlObject rqEnvBody, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, int keepConnectTimeSec, int timeoutSec, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return invokeService(rqEnvBody, null, resultClass, systemId, thisInstanceId, serviceUri, keepConnectTimeSec, timeoutSec, targetAadcMember);
+    }
+
+    public XmlObject invokeService(final XmlObject rqEnvBody, final Map<String, String> soapRequestParams, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, int keepConnectTimeSec, int timeoutSec, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return invokeService(rqEnvBody, soapRequestParams, resultClass, systemId, thisInstanceId, serviceUri, null, keepConnectTimeSec, timeoutSec, targetAadcMember);
+    }
+
+    public XmlObject invokeService(final XmlObject rqEnvBody, final Map<String, String> soapRequestParams, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, final List<SapClientOptions> additionalSaps, final int keepConnectTimeSec, final int timeoutSec, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return invokeService(rqEnvBody, soapRequestParams, resultClass, systemId, thisInstanceId, serviceUri, additionalSaps, keepConnectTimeSec, timeoutSec, -1, targetAadcMember);
+    }
+
+    public XmlObject invokeService(final XmlObject rqEnvBody, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, int keepConnectTimeSec, int receiveTimeoutSec, int connectTimeoutSec, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return invokeService(rqEnvBody, null, resultClass, systemId, thisInstanceId, serviceUri, keepConnectTimeSec, receiveTimeoutSec, connectTimeoutSec, targetAadcMember);
+    }
+
+    public XmlObject invokeService(final XmlObject rqEnvBody, final Map<String, String> soapRequestParams, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, int keepConnectTimeSec, int receiveTimoutSec, int connectTimeoutSec, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return invokeService(rqEnvBody, soapRequestParams, resultClass, systemId, thisInstanceId, serviceUri, null, keepConnectTimeSec, receiveTimoutSec, connectTimeoutSec, targetAadcMember);
+    }
+
+    public XmlObject invokeService(final XmlObject rqEnvBody, final Map<String, String> soapRequestParams, final Class resultClass, Long systemId, final Long thisInstanceId, final String serviceUri, final List<SapClientOptions> additionalSaps, final int keepConnectTimeSec, final int receiveTimeoutSec, final int connectTimeoutSec, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        RadixSoapMessage message = new RadixSoapMessage(rqEnvBody, ESoapMessageType.REQUEST, soapRequestParams, resultClass, systemId, thisInstanceId, serviceUri, additionalSaps, null, keepConnectTimeSec, receiveTimeoutSec, connectTimeoutSec);
+        return invokeService(message, targetAadcMember);
+    }
+
+    public XmlObject invokeService(final RadixSoapMessage message, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+        return doSend(message, targetAadcMember);
     }
 
     private String getDestinationInfo(final RadixSoapMessage message, final SyncClientConnection connection) {
         return String.format("%s for SCP '%s' via SAP '%s' (%s)", generateKey(message.getSystemId(), message.getServiceUri()), scpName, connection.getSapOptions().getName(), connection);
     }
 
-    private XmlObject doSend(final RadixSoapMessage message) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
+    private XmlObject doSend(final RadixSoapMessage message, final EAadcMember targetAadcMember) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
         final String key = generateKey(message.getSystemId(), message.getServiceUri());
         if (tracer != null) {
             tracer.debug("Sending " + message.getType().getValue() + " to " + key, false);
@@ -141,7 +188,9 @@ public abstract class ServiceClient {
         while (true) {
             boolean isCallbackResponce = message.getType() == ESoapMessageType.CALLBACK_RESPONCE || message.getType() == ESoapMessageType.FAULT;
 
-            final KeptConnection keptConnection = port.takeKeptConnection(isCallbackResponce ? KEEP_SOCKET_FOR_CALLBACK_TIME_MILLIS : keepConnectTimeMillis);
+            final Integer targetAadcMemberId = targetAadcMember == null || targetAadcMember == EAadcMember.ANY ? null : targetAadcMember.getValue().intValue();
+
+            final KeptConnection keptConnection = port.takeKeptConnection(isCallbackResponce ? KEEP_SOCKET_FOR_CALLBACK_TIME_MILLIS : keepConnectTimeMillis, targetAadcMemberId);
 
             SyncClientConnection connection = keptConnection != null ? keptConnection.getConnection() : null;
             final boolean keptSocketUsed = connection != null;
@@ -158,7 +207,7 @@ public abstract class ServiceClient {
             }
 
             if (connection == null) {
-                connection = port.connect(connectTimeoutMillis <= 0 ? -1 : startMillis + connectTimeoutMillis - connectAttemptTimeMillis, message.getAdditionalSaps());
+                connection = port.connect(connectTimeoutMillis <= 0 ? -1 : startMillis + connectTimeoutMillis - connectAttemptTimeMillis, message.getAdditionalSaps(), targetAadcMemberId);
             }
 
             final String connectionInfo = connection.toString();
@@ -193,11 +242,11 @@ public abstract class ServiceClient {
                     if (HttpFormatter.getKeepConnectionAlive(responceMessage.getAttrs()) && (message.getType() != ESoapMessageType.REQUEST || message.getKeepConnectTimeSec() > 0)) {
                         toClose = false;
                     }
-                    port.lastUsedSap.setNotBusy();
+                    port.afterResponse();
                     if (tracer != null) {
                         tracer.debug("Received response from " + key, false);
                     }
-                    return responceMessage.getBodyDocument();
+                    return responceMessage.isEnvelopeMess() ? responceMessage.getEnvDocument() : responceMessage.getBodyDocument();
                 } catch (ServiceCallSendException ex) {
                     if (message.getType() == ESoapMessageType.REQUEST && keptSocketUsed) {
                         tracer.debug(String.format("Unable to send %s to %s through kept connection, will retry with new connection. Error: %s", message.getType().getValue(), connectionInfo, ExceptionTextFormatter.throwableToString(ex)), false);
@@ -205,20 +254,19 @@ public abstract class ServiceClient {
                     }
                     throw ex;
                 } catch (ServiceCallFault e) {
+                    RadixSoapHelper.logFaultReceived(e, connectionInfo, tracer);
                     final boolean canRetry = message.getType() == ESoapMessageType.REQUEST && (connectTimeoutMillis <= 0 || System.currentTimeMillis() - startMillis < connectTimeoutMillis);
-                    switch (e.getFaultCode()) {
-                        case ServiceProcessFault.FAULT_CODE_SERVER_BUSY:
-                        case ServiceProcessFault.FAULT_CODE_SERVER_SHUTDOWN:
-                            if (canRetry) {
-                                tracer.debug(String.format("SAP %s is %s, retry", connectionInfo, ServiceProcessFault.FAULT_CODE_SERVER_BUSY.equals(e.getFaultCode()) ? "busy" : "shutting down"), false);
-                                port.lastUsedSap.blockOnBusy(); //short block
-                            } else {
-                                throw new ServiceConnectTimeout(RadixSoapHelper.createCallTimeoutMessage(message));
-                            }
-                            break;
-                        default:
-                            port.lastUsedSap.setNotBusy();
-                            throw e;
+                    if (e.getFaultCode().startsWith(ServiceProcessFault.FAULT_CODE_SERVER_BUSY)
+                            || ServiceProcessFault.FAULT_CODE_SERVER_SHUTDOWN.equals(e.getFaultCode())) {
+                        if (canRetry) {
+                            tracer.debug(String.format("SAP %s is %s, retry", connectionInfo, getReasonFromBusyFault(e.getFaultCode())), false);
+                            port.lastUsedSap.blockOnBusy(e.getFaultCode(), extractAvailableVersion(e.getDetail())); //short block
+                        } else {
+                            throw new ServiceConnectTimeout(RadixSoapHelper.createCallTimeoutMessage(message));
+                        }
+                    } else {
+                        port.afterResponse();
+                        throw e;
                     }
                 }
             } finally {
@@ -234,9 +282,16 @@ public abstract class ServiceClient {
         }
     }
 
+    private String getReasonFromBusyFault(final String faultCode) {
+        if (faultCode.length() <= ServiceProcessClientFault.FAULT_CODE_SERVER_BUSY.length()) {
+            return "busy";
+        }
+        return "busy (" + faultCode.substring(ServiceProcessFault.FAULT_CODE_SERVER_BUSY.length() + 1) + ")";
+    }
+
     public XmlObject sendCallbackResponse(final XmlObject rsEnvBody, final Class invokeResultClass, Long invokedSystemId, final Long thisInstanceId, final String invokedServiceUri, int timeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
         final RadixSoapMessage message = new RadixSoapMessage(rsEnvBody, ESoapMessageType.CALLBACK_RESPONCE, null, invokeResultClass, invokedSystemId, thisInstanceId, invokedServiceUri, null, null, -1, timeoutSec, -1);
-        return doSend(message);
+        return doSend(message, null);
     }
 
     public XmlObject sendCallbackFault(final String faultCode, final String faultString, final String faultMessage, final Throwable cause, final String preprocessedCauseStack, final List<ResponseTraceItem> traceBuffer, final Class invokeResultClass, Long invokedSystemId, final Long thisInstanceId, final String invokedServiceUri, int timeoutSec) throws ServiceCallException, ServiceCallTimeout, ServiceCallFault, InterruptedException {
@@ -245,12 +300,19 @@ public abstract class ServiceClient {
         message.setThisInstanceId(thisInstanceId);
         message.setServiceUri(invokedServiceUri);
         message.setReceiveTimeoutSec(timeoutSec);
-        return doSend(message);
+        return doSend(message, null);
     }
 
-    @SuppressWarnings("unused")
+    protected void onAllSapsBusy(FailedSapsInfo info) throws InterruptedException, ServiceCallException {
+        onAllSapsBusy(info.getBusyCount());
+    }
+
     protected void onAllSapsBusy(int availableButBusyCount) throws InterruptedException, ServiceCallException {
         Thread.sleep(500);
+    }
+
+    protected boolean checkChangeAadcMemberBeforeStickTimeout(final Integer oldMemberId) {
+        return false;
     }
 
     protected SSLContext prepareSslContext(final SapClientOptions sap) throws Exception {
@@ -260,7 +322,7 @@ public abstract class ServiceClient {
     protected boolean isSslPossible() {
         return keystoreController != null;
     }
-    
+
     public void maintenance() {
         for (Port port : ports.values()) {
             if (port != null) {
@@ -292,7 +354,9 @@ public abstract class ServiceClient {
         final String serviceUri;
         private SapClientOptions lastUsedSap;
         private KeptConnection keptConnection = null;
-        private long connectionTimeMillis = 0;
+        private long lastConnectionTimeMillis = 0;
+        private long lastResponseTimeMillis = 0;
+        private Integer lastResponseAadcMemberId = null;
         private long lastWarnOnConnectExMillis = 0;
         private Selector keptSocketSelector = null;
         private SelectionKey keptSocketSelectionKey;
@@ -307,6 +371,12 @@ public abstract class ServiceClient {
             this.serviceUri = serviceUri;
             this.thisInstanceId = thisInstanceId;
             refresh();
+        }
+
+        public void afterResponse() {
+            lastUsedSap.setNotBusy();
+            lastResponseTimeMillis = System.currentTimeMillis();
+            lastResponseAadcMemberId = lastUsedSap.getAadcMemberId();
         }
 
         public void onInvokeStart() {
@@ -374,8 +444,8 @@ public abstract class ServiceClient {
         }
 
         void maintenance() {
-            if (keptConnection != null && requestedKeepConnectTimeSec >= 0 && System.currentTimeMillis() > connectionTimeMillis + requestedKeepConnectTimeSec * 1000) {
-                final KeptConnection expiredKeptConnection = takeKeptConnection(0);
+            if (keptConnection != null && requestedKeepConnectTimeSec >= 0 && System.currentTimeMillis() > lastConnectionTimeMillis + requestedKeepConnectTimeSec * 1000) {
+                final KeptConnection expiredKeptConnection = takeKeptConnection(0, null);
                 if (expiredKeptConnection != null && expiredKeptConnection.getConnection() != null) {
                     try {
                         expiredKeptConnection.getConnection().close();
@@ -384,15 +454,15 @@ public abstract class ServiceClient {
                 }
             }
         }
-        
-        KeptConnection takeKeptConnection(final int lifeTimeMillis) {
+
+        KeptConnection takeKeptConnection(final int lifeTimeMillis, final Integer targetAadcMemberId) {
             if (keptConnection == null) {
                 return null;
             }
             try {
                 KeptConnection s = keptConnection;
                 keptConnection = null;
-                if (lifeTimeMillis >= 0 && System.currentTimeMillis() > connectionTimeMillis + lifeTimeMillis) {
+                if (lifeTimeMillis >= 0 && System.currentTimeMillis() > lastConnectionTimeMillis + lifeTimeMillis && (targetAadcMemberId != null && !Objects.equals(targetAadcMemberId, s.connection.getSapOptions().getAadcMemberId()))) {
                     try {
                         closeConnection(s.connection);
                     } catch (IOException e) {
@@ -433,7 +503,9 @@ public abstract class ServiceClient {
                     if (keptSocketSelectionKey != null) {
                         keptSocketSelectionKey.cancel();
                         keptSocketSelectionKey.channel().configureBlocking(true);
-                        keptSocketSelector.selectNow();//?>G8AB8< >B<5=5==K9 :;NG
+                        if (keptSocketSelector != null) {
+                            keptSocketSelector.selectNow();
+                        }
                         keptSocketSelectionKey = null;
                     }
                 } catch (IOException e) {
@@ -459,15 +531,17 @@ public abstract class ServiceClient {
             }
         }
 
-        SyncClientConnection connect(final long timeOutMillis, final List<SapClientOptions> additionalSaps) throws ServiceCallTimeout,
+        SyncClientConnection connect(final long timeOutMillis, final List<SapClientOptions> additionalSaps, final Integer targetAadcMemberId) throws ServiceCallTimeout,
                 ServiceCallException,
                 InterruptedException {
             final long startTimeMillis = System.currentTimeMillis();
             if (startTimeMillis - lastRefreshTime > REFRESH_PERIOD_MILLIS) {
                 refresh();
             }
+
             lastWarnOnConnectExMillis = System.currentTimeMillis();//do not report warning on the first attempt
             boolean forceUnblockAllowed = lastForcedUnblockMillis == -1;//allow unblock on the first attempt
+            Integer initialStickedAadcMemberId = null;
             while (true) {
                 final long timeSpentMillis = (int) (System.currentTimeMillis() - startTimeMillis);
                 if (timeOutMillis > 0 && timeSpentMillis >= timeOutMillis) {
@@ -480,9 +554,20 @@ public abstract class ServiceClient {
                     forceUnblockAllowed = false;
                 }
 
+                Integer effectiveAadcMemberId = targetAadcMemberId;
+                if (effectiveAadcMemberId == null
+                        && lastResponseAadcMemberId != null
+                        && self.getAadcMemberStickTimeoutMillis() > 0
+                        && System.currentTimeMillis() - lastResponseTimeMillis < self.getAadcMemberStickTimeoutMillis()) {
+                    effectiveAadcMemberId = lastResponseAadcMemberId;
+                    if (initialStickedAadcMemberId == null) {
+                        initialStickedAadcMemberId = effectiveAadcMemberId;
+                    }
+                }
+
                 final List<SapClientOptions> sapsToCheck = getSapsToCheck(additionalSaps);
 
-                final SapClientOptions sap = selectSap(sapsToCheck, forceUnblock);
+                final SapClientOptions sap = selectSap(sapsToCheck, forceUnblock, effectiveAadcMemberId);
 
                 if (sap != null) {
                     final int originalTimeoutMillis = sap.getConnectTimeoutMillis();
@@ -492,7 +577,7 @@ public abstract class ServiceClient {
                         if (connection != null) {
                             sap.unblock();
                             lastUsedSap = sap;
-                            connectionTimeMillis = System.currentTimeMillis();
+                            lastConnectionTimeMillis = System.currentTimeMillis();
                             return connection;
                         }
                     } finally {
@@ -501,14 +586,24 @@ public abstract class ServiceClient {
                 }
 
                 if (sap == null) {
-                    lastRefreshTime = 0;
-                    int availableButBusyCount = 0;
+                    final List<FailedSapInfo> infos = new ArrayList<>();
+                    boolean wasAadcMemberMismatch = false;
                     for (SapClientOptions checkedSap : sapsToCheck) {
-                        if (checkedSap.wasBlockedBecauseBusy()) {
-                            availableButBusyCount++;
-                        }
+                        boolean aadcMemberMismatch = effectiveAadcMemberId != null && !Objects.equals(effectiveAadcMemberId, checkedSap.getAadcMemberId());
+                        wasAadcMemberMismatch |= aadcMemberMismatch;
+                        infos.add(new FailedSapInfo(
+                                checkedSap.getAddress().toString(),
+                                aadcMemberMismatch ? null : !checkedSap.wasBlockedBecauseUnavailable(),
+                                !aadcMemberMismatch && checkedSap.wasBlockedBecauseBusy() ? checkedSap.getBusyFaultCode() : null,
+                                checkedSap.getAvailableVersionOnBusy(),
+                                checkedSap.getAadcMemberId()));
                     }
-                    self.onAllSapsBusy(availableButBusyCount);
+                    if (wasAadcMemberMismatch && self.checkChangeAadcMemberBeforeStickTimeout(effectiveAadcMemberId)) {
+                        lastResponseAadcMemberId = null;
+                        continue;
+                    }
+                    self.onAllSapsBusy(new FailedSapsInfo(infos));
+                    refresh();
                     forceUnblockAllowed = true;
                 }
             }
@@ -545,8 +640,8 @@ public abstract class ServiceClient {
                 final String message = "SAP %s  has been blocked: Cannot resolve host: '%s'";
                 fullErrorMessage = String.format(message, sapInfo, ex.getMessage());
             } catch (IOException ex) {
-                if (Thread.currentThread().isInterrupted()) {
-                    throw new InterruptedException();
+                if (Thread.interrupted()) {
+                    throw new InterruptedException("Unable to connect to SAP " + sapInfo + ": thread is interrupted. IO error message: " + ex.getMessage());
                 }
                 fullErrorMessage = "SAP " + sapInfo + " has been blocked due to exception: " + ExceptionTextFormatter.throwableToString(ex);
             } finally {
@@ -588,7 +683,7 @@ public abstract class ServiceClient {
             return sapsToCheck;
         }
 
-        private SapClientOptions selectSap(final List<SapClientOptions> sapsToCheck, final boolean enableBlockedSaps) throws ServiceCallException, InterruptedException {
+        private SapClientOptions selectSap(final List<SapClientOptions> sapsToCheck, final boolean enableBlockedSaps, final Integer targetAadcMemberId) throws ServiceCallException, InterruptedException {
 
             if (sapsToCheck == null || sapsToCheck.isEmpty()) {
                 throw new NoSapsAvailableException("There are no available SAPs of service " + systemId.toString() + "@" + serviceUri + " for SCP '" + self.scpName + "'");
@@ -603,12 +698,15 @@ public abstract class ServiceClient {
                         continue;
                     }
                 }
-                sumPriority += s.getPriority();
+                if (targetAadcMemberId==null || targetAadcMemberId.equals(s.getAadcMemberId())){
+                    sumPriority += s.getPriority();
+                }
             }
             if (sumPriority > 0) {
                 long p = (long) (Math.random() * sumPriority);
                 for (SapClientOptions s : sapsToCheck) {
-                    if (s.getBlockTime() > 0) {
+                    if (s.getBlockTime() > 0 
+                        || (targetAadcMemberId!=null && !targetAadcMemberId.equals(s.getAadcMemberId()))) {
                         continue;
                     }
                     p -= s.getPriority();
@@ -621,18 +719,22 @@ public abstract class ServiceClient {
                 return null;
             }
             sumPriority = 0;
-            for (SapClientOptions s : sapsToCheck) {
-                s.unblock();
-                sumPriority += s.getPriority();
+            for (SapClientOptions s : sapsToCheck) {                
+                if (targetAadcMemberId==null || targetAadcMemberId.equals(s.getAadcMemberId())){
+                    s.unblock();
+                    sumPriority += s.getPriority();
+                }
             }
             long p = (long) (Math.random() * sumPriority);
             for (SapClientOptions s : sapsToCheck) {
-                p -= s.getPriority();
-                if (p < 0) {
-                    return s;
+                if (targetAadcMemberId==null || targetAadcMemberId.equals(s.getAadcMemberId())){
+                    p -= s.getPriority();
+                    if (p < 0) {
+                        return s;
+                    }
                 }
             }
-            return null; //never	
+            return null;
         }
 
         private ServiceConnectTimeout createConnectTimeoutEx() {
@@ -686,4 +788,23 @@ public abstract class ServiceClient {
             return "";
         }
     }
+
+    public static Long extractAvailableVersion(final Detail detail) {
+        if (detail != null) {
+            try {
+                final Node detNode = detail.getDomNode();
+                for (int i = 0; i < detNode.getChildNodes().getLength(); i++) {
+                    Node childNode = detNode.getChildNodes().item(i);
+                    if (childNode.getNodeType() == Node.ELEMENT_NODE
+                            && childNode.getLocalName().equals(ServiceProcessFault.AVAILABLE_VERSION)) {
+                        return Long.valueOf(childNode.getChildNodes().item(0).getNodeValue().trim());
+                    }
+                }
+            } catch (Exception ex) {
+                return null;
+            }
+        }
+        return null;
+    }
+
 }

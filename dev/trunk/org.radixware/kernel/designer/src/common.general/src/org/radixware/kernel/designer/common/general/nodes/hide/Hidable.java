@@ -17,4 +17,7 @@ import org.openide.nodes.Node;
 public interface Hidable extends Node.Cookie {
 
     public void hide();
+    
+    public void hide(boolean auto);
+    
 }

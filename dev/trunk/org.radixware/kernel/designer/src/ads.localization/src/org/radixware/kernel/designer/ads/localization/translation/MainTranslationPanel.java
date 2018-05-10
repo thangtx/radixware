@@ -16,14 +16,18 @@
  */
 package org.radixware.kernel.designer.ads.localization.translation;
 
+import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.event.MouseWheelListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.List;
 import javax.swing.JScrollPane;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.designer.ads.localization.MultilingualEditor;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils.SelectionInfo;
 import org.radixware.kernel.designer.ads.localization.RowString;
 
 
@@ -31,8 +35,8 @@ public class MainTranslationPanel extends javax.swing.JPanel implements ITransla
 
     private final TranslateArea translationArea;
     private final TranslateArea translationAreaSource;
-    private List<EIsoLanguage> sourceLangs;
-    private List<EIsoLanguage> translLangs;
+    private List<EIsoLanguage> sourceLanguages;
+    private List<EIsoLanguage> translatelLanguages;
     private final MultilingualEditor parent;
 
     /**
@@ -44,34 +48,16 @@ public class MainTranslationPanel extends javax.swing.JPanel implements ITransla
         //mainSourceTextPanel.setBorder(new EmptyBorder(0, 20, 0, 0));
         //createSourcetextPanelUi();
         translationArea = new TranslateArea(this, translationPanel, true);
+        
         translationAreaSource = new TranslateArea(this, mainSourceTextPanel, false);
-        parent.addPropertyChangeListener(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                String propertyName = evt.getPropertyName();
-                switch (propertyName) {
-                    case MultilingualEditor.GO_TO_PREV:
-                        translationArea.goToPreviousTranslation(translationArea.getCurrentLangPanel());
-                        break;
-                    case MultilingualEditor.GO_TO_NEXT:
-                        translationArea.goToNextTranslation(translationArea.getCurrentLangPanel());
-                        break;
-                    case MultilingualEditor.GO_TO_NEXT_UNCHECKED:
-                        translationArea.goToNextUncheckedTranslation(translationArea.getCurrentLangPanel());
-                        break;
-                    case MultilingualEditor.GO_TO_PREV_UNCHECKED:
-                        translationArea.goToPreviousUncheckedTranslation(translationArea.getCurrentLangPanel());
-                        break;
-                }
-            }
-        });
+        parent.addChangeListener(listener);
     }
     
     public void open(){
-        this.sourceLangs = parent.getSourceLags();
-        this.translLangs = parent.getTranslatedLags();
-        translationArea.open(translLangs,sourceLangs);
-        translationAreaSource.open(sourceLangs,sourceLangs);
+        this.sourceLanguages = parent.getSourceLags();
+        this.translatelLanguages = parent.getTranslatedLags();
+        translationArea.open(translatelLanguages,sourceLanguages);
+        translationAreaSource.open(sourceLanguages,sourceLanguages);
     }
     
     public void update() {
@@ -84,13 +70,13 @@ public class MainTranslationPanel extends javax.swing.JPanel implements ITransla
         parent.scroll(rect);
     }
 
-    public void setMlString(final RowString rowString, final boolean setFocusOnTranslation, final int selectUncheckedTranslation) {
+    public void setMlString(final RowString rowString) {
         if (rowString == null) {
             setReadOnly(true);
         } else {
             setReadOnly(false);
-            translationArea.setRowString(rowString, setFocusOnTranslation, selectUncheckedTranslation);
-            translationAreaSource.setRowString(rowString, false, selectUncheckedTranslation);
+            translationArea.setRowString(rowString);
+            translationAreaSource.setRowString(rowString);
         }      
     }
     
@@ -109,22 +95,22 @@ public class MainTranslationPanel extends javax.swing.JPanel implements ITransla
 
     @Override
     public void setNextRowSting() {
-        parent.setNextString();
+        parent.fireChange(MultilingualEditorUtils.GO_TO_NEXT_ROW);
     }
 
     @Override
     public void setPrevRowSting() {
-        parent.setPrevString();
+        parent.fireChange(MultilingualEditorUtils.GO_TO_PREVIOUS_ROW);
     }
 
     @Override
     public void setNextUncheckedRowSting() {
-        parent.setNextUncheckedString();
+        parent.fireChange(MultilingualEditorUtils.GO_TO_NEXT_UNCHECKED_ROW);
     }
 
     @Override
     public void setPrevUncheckedRowSting() {
-        parent.setPrevUncheckedString();
+        parent.fireChange(MultilingualEditorUtils.GO_TO_PREVIOUS_UNCHECKED_ROW);
     }
 
     public void setTranslationFromPraseList(final String translation) {
@@ -267,5 +253,154 @@ public class MainTranslationPanel extends javax.swing.JPanel implements ITransla
     public JScrollPane getTranslationPanelScrollPane() {
         return parent.getTranslationPanelScrollPane();
     }
+
+    @Override
+    public void fireChange(String key) {
+        parent.fireChange(key);
+    }
+
+    private PropertyChangeListener listener = new PropertyChangeListener() {
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+            String propertyName = evt.getPropertyName();
+            switch (propertyName) {
+                case MultilingualEditorUtils.GO_TO_PREV:
+                    if (translationArea.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationArea.goToPreviousTranslation()) {
+                            translationAreaSource.selectLastPanel();
+                        }
+                    } else if (translationAreaSource.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationAreaSource.goToPreviousTranslation()) {
+                            setPrevRowSting();
+                        }
+                    } else {
+                        translationArea.selectLastPanel();
+                    }
+                    break;
+                case MultilingualEditorUtils.GO_TO_NEXT:
+                    if (translationAreaSource.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationAreaSource.goToNextTranslation()) {
+                            translationArea.selectFirstPanel();
+                        }
+                    } else if (translationArea.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationArea.goToNextTranslation()) {
+                            setNextRowSting();
+                        }
+                    } else {
+                        translationAreaSource.selectFirstPanel();
+                    }
+                    break;
+                case MultilingualEditorUtils.GO_TO_NEXT_UNCHECKED:
+                    if (translationAreaSource.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationAreaSource.goToNextUncheckedTranslation()) {
+                            if (!translationArea.selectFirstUncheckedPanel()){
+                                setNextUncheckedRowSting();
+                            }
+                        }
+                    } else if (translationArea.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationArea.goToNextUncheckedTranslation()) {
+                            setNextUncheckedRowSting();
+                        }
+                    } else {
+                        translationAreaSource.selectFirstUncheckedPanel();
+                    }
+                    break;
+                case MultilingualEditorUtils.GO_TO_PREV_UNCHECKED:
+                    if (translationArea.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationArea.goToPreviousUncheckedTranslation()) {
+                            if (!translationAreaSource.selectLastUncheckedPanel()){
+                                setPrevUncheckedRowSting();
+                            }
+                        }
+                    } else if (translationAreaSource.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationAreaSource.goToPreviousUncheckedTranslation()) {
+                            setPrevUncheckedRowSting();
+                        }
+                    } else {
+                        translationArea.selectLastUncheckedPanel();
+                    }
+                    break;
+                case MultilingualEditorUtils.GO_TO_PREV_EDITABLE:
+                    if (translationArea.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationArea.goToPreviousEditableTranslation()) {
+                            if (!translationAreaSource.selectLastEditablePanel()){
+                                parent.fireChange(MultilingualEditorUtils.GO_TO_PREV_EDITABLE_ROW);
+                            }
+                        }
+                    } else if (translationAreaSource.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationAreaSource.goToPreviousEditableTranslation()) {
+                            parent.fireChange(MultilingualEditorUtils.GO_TO_PREV_EDITABLE_ROW);
+                        }
+                    } else {
+                        translationArea.selectLastEditablePanel();
+                    }
+                    break;
+                case MultilingualEditorUtils.GO_TO_NEXT_EDITABLE:        
+                     if (translationAreaSource.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationAreaSource.goToNextEditableTranslation()) {
+                            if (!translationArea.selectFirstEditablePanel()){
+                                parent.fireChange(MultilingualEditorUtils.GO_TO_NEXT_EDITABLE_ROW);
+                            }
+                        }
+                    } else if (translationArea.getCurrentLangPanel().isFocusOwner()) {
+                        if (!translationArea.goToNextEditableTranslation()) {
+                            parent.fireChange(MultilingualEditorUtils.GO_TO_NEXT_EDITABLE_ROW);
+                        }
+                    } else {
+                        translationAreaSource.selectFirstEditablePanel();
+                    }
+                    break;   
+                    
+                case MultilingualEditorUtils.CHECK_ALL_AND_GO:
+                    if (translationAreaSource.checkAll()){
+                        if (translationArea.checkAll()){
+                            setNextRowSting();
+                        } else {
+                            translationArea.selectFirstUncheckedPanel();
+                        }
+                    } else {
+                        translationAreaSource.selectFirstUncheckedPanel();
+                    }
+                    break;
+                    
+                    
+                //FOCUS    
+                case MultilingualEditorUtils.FOCUS_TEXT:
+                    translationAreaSource.setFocus();
+                    break;    
+                case MultilingualEditorUtils.SELECT_LAST_TEXT:
+                    translationArea.selectLastPanel();
+                    break;
+                case MultilingualEditorUtils.SELECT_LAST_UNCHECKED_TEXT:
+                    if (!translationArea.selectLastUncheckedPanel()){
+                        if(!translationAreaSource.selectLastUncheckedPanel()){
+                            translationAreaSource.setFocus();
+                        }
+                    }
+                    break;
+                case MultilingualEditorUtils.SELECT_FIRST_UNCHECKED_TEXT:
+                    if (!translationAreaSource.selectFirstUncheckedPanel()){
+                        if(!translationArea.selectFirstUncheckedPanel()){
+                            translationArea.setFocus();
+                        }
+                    }
+                    break;
+                case MultilingualEditorUtils.SELECT_LAST_EDITABLE_TEXT:
+                    if (!translationArea.selectLastEditablePanel()){
+                        if(!translationAreaSource.selectLastEditablePanel()){
+                            translationAreaSource.setFocus();
+                        }
+                    }
+                    break;
+                case MultilingualEditorUtils.SELECT_FIRST_EDITABLE_TEXT:
+                    if (!translationAreaSource.selectLastEditablePanel()){
+                        if(!translationArea.selectLastEditablePanel()){
+                            translationArea.setFocus();
+                        }
+                    }
+                    break;    
+            }
+        }
+    };
     
 }

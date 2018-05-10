@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.text.Document;
 import javax.swing.text.Element;
+import org.netbeans.api.actions.Openable;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDescriptor;
@@ -661,5 +662,20 @@ public class DialogUtils {
         dialog.setResizable(false);
         dialog.setVisible(true);
         return ret[0];
+    }
+    
+    public static void openFile(File file) {
+        try {
+            final FileObject fileObject = RadixFileUtil.toFileObject(file);
+            NodesManager.selectInFiles(fileObject);
+            //open editor
+            final DataObject dataObject = DataObject.find(fileObject);
+            Openable o = dataObject.getLookup().lookup(Openable.class);
+            if (o != null) {
+                o.open();
+            }
+        } catch (DataObjectNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
 }

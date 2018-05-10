@@ -41,6 +41,7 @@ import org.radixware.kernel.common.defs.ads.src.clazz.presentation.AdsSortingWri
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EOrder;
+import org.radixware.kernel.common.enums.EPaginationMethod;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.sqml.ads.AdsSqmlEnvironment;
 import org.radixware.schemas.adsdef.ClassDefinition.Presentations.Sortings.Sorting;
@@ -172,11 +173,15 @@ public class AdsSortingDef extends AdsPresentationsMember implements IJavaSource
     }
     private final Sqml hint = new Hint();
     private final Order order;
+    private EPaginationMethod paginationMethod;
 
     protected AdsSortingDef(Sorting xSorting) {
         super(xSorting);
         this.hint.loadFrom(xSorting.getHint());
         this.order = new Order(xSorting.getOrderByList());
+        if (xSorting.isSetPaginationMethod()) {
+            paginationMethod = xSorting.getPaginationMethod();
+        }
     }
 
     protected AdsSortingDef() {
@@ -192,11 +197,18 @@ public class AdsSortingDef extends AdsPresentationsMember implements IJavaSource
         return hint;
     }
 
+    public EPaginationMethod getPaginationMethod() {
+        return paginationMethod == null ? EPaginationMethod.ABSOLUTE : paginationMethod;
+    }
+
     public void appendTo(Sorting xDef, ESaveMode saveMode) {
         super.appendTo(xDef, saveMode);
         if (saveMode == ESaveMode.NORMAL) {
             this.order.appendTo(xDef);
             this.hint.appendTo(xDef.addNewHint());
+            if (paginationMethod != null) {
+                xDef.setPaginationMethod(paginationMethod);
+            }
         }
     }
 

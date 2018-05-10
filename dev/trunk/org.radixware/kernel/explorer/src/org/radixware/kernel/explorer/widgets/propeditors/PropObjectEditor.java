@@ -15,13 +15,13 @@ import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QToolButton;
 import org.radixware.kernel.common.client.Clipboard;
 import org.radixware.kernel.common.client.editors.property.PropEditorOptions;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.items.ModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.models.items.properties.PropertyObject;
-import org.radixware.kernel.common.client.models.items.properties.PropertyValue;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 
@@ -72,26 +72,24 @@ public class PropObjectEditor extends PropReferenceEditor {
         }else{
             getEnvironment().getClipboard().addChangeListener(clipboardChangeListener, property.getOwner());
         }        
-    }
-    
-    
+    }        
 
     @Override
     public void refresh(final ModelItem changedItem) {
-        super.refresh(changedItem);        
-        final PropertyObject property = (PropertyObject) getProperty();
-        if (property.getValueObject() == null) {
-            changeReferenceButton.setVisible(!isReadonly() && property.canCreate());
-            deleteObjectButton.setVisible(false);
-            copyObjectButton.setVisible(false);
-        } else { 
-            changeReferenceButton.setVisible(false);
-            deleteObjectButton.setVisible(!isReadonly() && property.canDelete());
-            copyObjectButton.setVisible(!isReadonly()
-                    && ((EntityModel) property.getOwner()).isExists()
-                    && !property.getVal().isBroken());
+        if (getProperty()!=null){
+            super.refresh(changedItem);
+            final PropertyObject property = (PropertyObject) getProperty();
+            if (property.getValueObject() == null) {                
+                changeReferenceButton.setVisible(!isReadonly() && !controller.isInheritedValue() && property.canCreate());
+                deleteObjectButton.setVisible(false);
+                copyObjectButton.setVisible(false);
+            } else { 
+                changeReferenceButton.setVisible(false);
+                deleteObjectButton.setVisible(!isReadonly() && property.canDelete());
+                copyObjectButton.setVisible(!isReadonly() && property.canCopy());
+            }
+            updatePasteObjectButton();
         }
-        updatePasteObjectButton();
     }
     
     private void updatePasteObjectButton(){       
@@ -142,35 +140,19 @@ public class PropObjectEditor extends PropReferenceEditor {
     @SuppressWarnings("unused")
     private void onDeleteObjectClick() {
         final PropertyObject property = (PropertyObject) getProperty();
-        
-        if (property.getValueObject() != null) {
-            if (property.getInheritableValue() != null) {
-                property.setValueObject(null);
-            } else {
-                try {
-                    final EntityModel entity = property.openEntityModel();                    
-                    if (entity.delete(false)) {
-                        final PropertyValue serverValue = new PropertyValue(
-                                property.getDefinition(),
-                                null,//value
-                                false,//isOwn
-                                false,//isDefined
-                                false//isReadonly
-                                );
-                        property.setServerValue(serverValue);
-                        ((EntityModel) property.getOwner()).afterChangePropertyObject(property);
-                    }
-                } catch (InterruptedException ex) {
-                } catch (Exception ex) {
-                    final String msg = getEnvironment().getMessageProvider().translate("ExplorerException", "Can't remove value for \'%s\': \n%s");
-                    final String message = String.format(msg, property.getTitle(), ClientException.getExceptionReason(getEnvironment().getMessageProvider(), ex));
-                    processException(ex, getEnvironment().getMessageProvider().translate("ExplorerException", "Error on Removing Value"), message);
-                }
-            }
+        try{
+            property.delete();
+        } catch (InterruptedException ex) {
+        } catch (Exception ex) {
+            final String msg = getEnvironment().getMessageProvider().translate("ExplorerException", "Can't remove value for \'%s\': \n%s");
+            final String message = String.format(msg, property.getTitle(), ClientException.getExceptionReason(getEnvironment().getMessageProvider(), ex));
+            processException(ex, getEnvironment().getMessageProvider().translate("ExplorerException", "Error on Removing Value"), message);
         }
-        getValEditor().getLineEdit().setText(property.getValueAsString());
-        getValEditor().getLineEdit().selectAll();
-        this.refresh(getProperty());
+        if (getProperty()!=null){
+            getValEditor().getLineEdit().setText(property.getValueAsString());
+            getValEditor().getLineEdit().selectAll();
+            this.refresh(getProperty());
+        }        
     }
 
     @Override
@@ -188,9 +170,11 @@ public class PropObjectEditor extends PropReferenceEditor {
                 processException(ex, getEnvironment().getMessageProvider().translate("ExplorerException", "Error on Creating Object"), message);
             }
         }
-        getValEditor().getLineEdit().setText(property.getValueAsString());
-        getValEditor().getLineEdit().selectAll();
-        this.refresh(getProperty());
+        if (getProperty()!=null){
+            getValEditor().getLineEdit().setText(property.getValueAsString());
+            getValEditor().getLineEdit().selectAll();        
+            this.refresh(getProperty());
+        }
     }
 
     @Override
@@ -219,5 +203,10 @@ public class PropObjectEditor extends PropReferenceEditor {
                 getEnvironment().getClipboard().removeChangeListener(clipboardChangeListener);
             }
         }
+    }
+    
+    @Override
+    public final EWidgetMarker getWidgetMarker() {
+        return EWidgetMarker.OBJECT_PROP_EDITOR;
     }
 }

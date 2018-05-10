@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="accUWR57FZLMFGA3CZFIAJHPQFYVQ" Name="ReportParamCursor" Type="4">
+    <AccessRules Access="4" IsPublished="false"/>
+    <Headers>
+      <Src Name="HeaderaccUWR57FZLMFGA3CZFIAJHPQFYVQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaccUWR57FZLMFGA3CZFIAJHPQFYVQ"/>
+    </Bodies>
+    <MethodGroup Id="cmgNNHRTMPXORGQDEDCURP4WEBC7I" Name="Root"/>
+    <PropertyGroup Id="cpgJLTI6NWMNVEOPHHBYR27GNL3SE" Name="Root"/>
+    <Properties>
+      <Property Id="prmPNKWMWLQLZG3JPGHC5E6DNDBXU" Name="parentId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prfHATFZMMXKBGO5L6P4BP5WQ2QQQ" Name="id" Nature="3" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="prf5HWPYUMKERAB7PE4T3JPKQF2LU" Name="param" Nature="10" IsConst="false" IsOverride="false" isDescriptionInherited="true">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="31" Path="aec72TT5CRGUJEY3L2OOOKZHO3L2M"/>
+        <Presentation InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+        <FieldToColumnMap>
+          <Item ColumnId="colOGWYNEBFO5BNTE6XQLKPFAZ3CY" FieldId="prfHATFZMMXKBGO5L6P4BP5WQ2QQQ"/>
+        </FieldToColumnMap>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="open" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="parentId" Id="mprPNKWMWLQLZG3JPGHC5E6DNDBXU">
+            <Type TypeId="2"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="accUWR57FZLMFGA3CZFIAJHPQFYVQ"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="true">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M" PropId="colOGWYNEBFO5BNTE6XQLKPFAZ3CY" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="accUWR57FZLMFGA3CZFIAJHPQFYVQ" PropId="prfHATFZMMXKBGO5L6P4BP5WQ2QQQ" Owner="THIS"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+where (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmPNKWMWLQLZG3JPGHC5E6DNDBXU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M" PropId="colPAEUQ3ALXFDFLIZDLKK52LKUKA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> is null) or </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M" PropId="colPAEUQ3ALXFDFLIZDLKK52LKUKA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmPNKWMWLQLZG3JPGHC5E6DNDBXU"/>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tbl72TT5CRGUJEY3L2OOOKZHO3L2M"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="411" Path="pdcCursor____________________"/>
+  </AdsClassDefinition>
+</AdsDefinition>

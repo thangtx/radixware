@@ -10,12 +10,18 @@
  */
 package org.radixware.kernel.designer.ads.editors.clazz.report.diagram;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Point;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportAbstractAppearance.Border;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportChartCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportDbImageCell;
@@ -30,16 +36,17 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportWidget;
 import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.ads.module.AdsImageDef;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.enums.EReportCellType;
 import org.radixware.kernel.common.enums.EReportSummaryCellType;
 import org.radixware.kernel.common.types.Id;
 
 public class AdsReportCellWidget extends AdsReportSelectableWidget {
 
     private final AdsImageDef imageDef;
-            
+
     public AdsReportCellWidget(final AdsReportFormDiagram diagram, final AdsReportWidget cell) {
         super(diagram, cell);
-        
+
         if (cell instanceof AdsReportImageCell) {
             final AdsReportImageCell imageCell = (AdsReportImageCell) cell;
             imageDef = imageCell.findImage();
@@ -175,7 +182,7 @@ public class AdsReportCellWidget extends AdsReportSelectableWidget {
      }
      }*/
 
-    private static String getCellDisplayName(final AdsReportCell cell, final EIsoLanguage lng) {
+    static String getCellDisplayName(final AdsReportCell cell, final EIsoLanguage lng) {
         switch (cell.getCellType()) {
             case EXPRESSION:
                 return cell.getName();
@@ -256,6 +263,8 @@ public class AdsReportCellWidget extends AdsReportSelectableWidget {
                 throw new IllegalStateException("Unsupportet cell type: " + cell.getCellType());
         }
     }
+    
+    private HtmlTextPanel htmlTextPanel;
 
     protected void paintName(final Graphics g) {
         if (!(reportWidget instanceof AdsReportCell)) {
@@ -274,7 +283,6 @@ public class AdsReportCellWidget extends AdsReportSelectableWidget {
         final AdsReportAbstractAppearance.Font cellFont = cell.getFont();
         final Font font = getDiagramMode() == AdsReportForm.Mode.GRAPHICS ? AdsReportWidgetUtils.reportFont2JavaFont(cellFont, this) : TxtUtils.getFont();
         g.setFont(font);
-        final FontMetrics fontMetrics = getFontMetrics(font);
 
         final EIsoLanguage lng = getOwnerBandWidget().getOwnerFormDiagram().getLanguage();
         final String name;
@@ -288,33 +296,61 @@ public class AdsReportCellWidget extends AdsReportSelectableWidget {
         } else {
             name = getCellDisplayName(cell, lng);
         }
-        final int textWidth = fontMetrics.stringWidth(name);
 
+        g.setColor(cell.getFgColor());
+        Point targetLocation;
+        Border border = cell.getBorder();
+        boolean borderInsetsExist = border != null && border.isDisplayed();
+        
+        int top = borderInsetsExist && border.isOnTop() ? MmUtils.mm2px(border.getTopThicknessMm()) : 0;
+        int left = borderInsetsExist && border.isOnLeft() ? MmUtils.mm2px(border.getLeftThicknessMm()) : 0;
+        int bottom = borderInsetsExist && border.isOnBottom() ? MmUtils.mm2px(border.getBottomThicknessMm()) : 0;
+        int right = borderInsetsExist && border.isOnRight() ? MmUtils.mm2px(border.getRightThicknessMm()) : 0;
+        
+        final Insets insets = new Insets(top, left, bottom, right);
+        if (getDiagramMode() == AdsReportForm.Mode.GRAPHICS && cell.getCellType() == EReportCellType.TEXT) {
+            if (htmlTextPanel == null){
+                htmlTextPanel = new HtmlTextPanel(cell);
+            }
+            htmlTextPanel.setText(name);
+            int width = getWidth()- insets.left - insets.right;  
+            int height = getHeight()- insets.top;
+            htmlTextPanel.setSize(new Dimension(width, height));
+            SwingUtilities.paintComponent(g, htmlTextPanel, this, insets.left, insets.top, width, height);
+        } else {
+            final FontMetrics fontMetrics = getFontMetrics(font);
+            final int textWidth = fontMetrics.stringWidth(name);
+            targetLocation = getFirstPosition(cell, textWidth, fontMetrics.getAscent(), fontMetrics.getDescent(), insets);
+            g.drawString(name, targetLocation.x, targetLocation.y);
+        }
+    }
+
+    private Point getFirstPosition(AdsReportCell cell, int textWidth, int ascent, int descent, Insets insets) {
         final int left;
 
         final int baseLine;
         if (getDiagramMode() == AdsReportForm.Mode.GRAPHICS) {
             switch (cell.getHAlign()) {
                 case CENTER:
-                    left = (MmUtils.mm2px(cell.getWidthMm() - cell.getMarginTopMm() - cell.getMarginBottomMm()/*reportWidget.getMarginMm() * 2*/) - textWidth) / 2;
+                    left = (MmUtils.mm2px(cell.getWidthMm() - cell.getMarginLeftMm() - cell.getMarginRightMm()/*reportWidget.getMarginMm() * 2*/) - textWidth) / 2;
                     break;
                 case RIGHT:
-                    left = MmUtils.mm2px(cell.getWidthMm() - cell.getMarginRightMm()) - textWidth;
+                    left = MmUtils.mm2px(cell.getWidthMm() - cell.getMarginRightMm()) - textWidth - insets.right;
                     break;
                 default:
-                    left = MmUtils.mm2px(cell.getMarginLeftMm());
+                    left = MmUtils.mm2px(cell.getMarginLeftMm()) + insets.left;
                     break;
             }
             switch (cell.getVAlign()) {
                 case MIDDLE:
-                    baseLine = MmUtils.mm2px(cell.getHeightMm()) / 2
-                            + (fontMetrics.getAscent() + fontMetrics.getDescent()) / 2 - fontMetrics.getDescent();
+                    baseLine = (MmUtils.mm2px(cell.getHeightMm()) - insets.top - insets.bottom) / 2
+                            + (ascent + descent) / 2 - descent;
                     break;
                 case BOTTOM:
-                    baseLine = MmUtils.mm2px(cell.getHeightMm() - cell.getMarginBottomMm()) - fontMetrics.getDescent();
+                    baseLine = MmUtils.mm2px(cell.getHeightMm() - cell.getMarginBottomMm()) - descent - insets.bottom;
                     break;
                 default:
-                    baseLine = MmUtils.mm2px(cell.getMarginTopMm()) + fontMetrics.getAscent();
+                    baseLine = MmUtils.mm2px(cell.getMarginTopMm()) + insets.top + ascent;
                     break;
 
             }
@@ -334,22 +370,19 @@ public class AdsReportCellWidget extends AdsReportSelectableWidget {
             switch (cell.getVAlign()) {
                 case MIDDLE:
                     baseLine = TxtUtils.rows2Px(cell.getHeightRows()) / 2
-                            + (fontMetrics.getAscent() + fontMetrics.getDescent()) / 2 - fontMetrics.getDescent();
+                            + (ascent + descent) / 2 - descent;
                     break;
                 case BOTTOM:
-                    baseLine = TxtUtils.rows2Px(cell.getHeightRows() - cell.getMarginBottomRows()) - fontMetrics.getDescent();
+                    baseLine = TxtUtils.rows2Px(cell.getHeightRows() - cell.getMarginBottomRows()) - descent;
                     break;
                 default:
-                    baseLine = TxtUtils.rows2Px(cell.getMarginTopRows()) + fontMetrics.getAscent();
+                    baseLine = TxtUtils.rows2Px(cell.getMarginTopRows()) + ascent;
                     break;
 
             }
 
         }
-        cell.getHAlign();
-
-        g.setColor(cell.getFgColor());
-        g.drawString(name, left, baseLine);
+        return new Point(left, baseLine);
     }
 
     @Override
@@ -373,7 +406,7 @@ public class AdsReportCellWidget extends AdsReportSelectableWidget {
     @Override
     protected void paintBackground(final Graphics g) {
         if (reportWidget != null) {
-
+            
             final int width = getWidth();
             final int height = getHeight();
 
@@ -381,6 +414,8 @@ public class AdsReportCellWidget extends AdsReportSelectableWidget {
             g.fillRect(0, 0, width, height);
         }
     }
+    
+    
 
     /*public AdsReportBandWidget getOwnerBandWidget() {
      final AdsReportBandSubWidget ownerBandSubWidget = (AdsReportBandSubWidget) getParent();

@@ -378,15 +378,19 @@ public class MsdlFieldEditor<T extends MsdlField> extends RadixObjectEditor<T> i
         setLayout(new java.awt.BorderLayout());
     }// </editor-fold>//GEN-END:initComponents
 
-    void reread() {
+    protected void reread() {
+        SelectParseMergeFunctionPanel selectPanel = createFunctionsPanel();
+        getFieldPanel().open(getField(), this, selectPanel, this);
+    }
+    
+    protected SelectParseMergeFunctionPanel createFunctionsPanel() {
         SelectParseMergeFunctionPanel selectPanel = null;
         if (getMsdlScheme().getRootMsdlScheme().getPreprocessorClassGuid() != null
                 && !getMsdlScheme().getRootMsdlScheme().isDbf()) {
             selectPanel = selectParseMergeFunctionPanel;
             selectPanel.open(getField(), new SupportSelectPreprocessorFunctionList(getField()));
         }
-        getFieldPanel().open(getField(), this, selectPanel, this);
-        fieldPanel.update();
+        return selectPanel;
     }
 
     @Override

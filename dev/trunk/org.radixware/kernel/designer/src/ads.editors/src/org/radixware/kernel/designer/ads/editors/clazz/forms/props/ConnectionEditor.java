@@ -12,11 +12,13 @@ package org.radixware.kernel.designer.ads.editors.clazz.forms.props;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.FeatureDescriptor;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorSupport;
 import javax.swing.*;
@@ -103,7 +105,10 @@ public class ConnectionEditor extends PropertyEditorSupport implements ExPropert
     @Override
     public void attachEnv(PropertyEnv env) {
         this.env = env;
+        FeatureDescriptor desc = env.getFeatureDescriptor();
+//        desc.setValue("canEditAsText", Boolean.FALSE);
         env.registerInplaceEditorFactory(this);
+
     }
 
     @Override
@@ -133,16 +138,15 @@ public class ConnectionEditor extends PropertyEditorSupport implements ExPropert
         return inplaceEditor;
     }
 
-    private class EventInplaceEditor implements InplaceEditor {
+    private class EventInplaceEditor extends JTextField implements InplaceEditor {
 
         private PropertyModel model;
         private PropertyEditor editor;
-        private final JLabel label;
 
         public EventInplaceEditor() {
-            label = new JLabel();
-            label.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 0));
-            label.addMouseListener(new MouseAdapter() {
+            setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 0));
+            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            addMouseListener(new MouseAdapter() {
 
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -159,12 +163,12 @@ public class ConnectionEditor extends PropertyEditorSupport implements ExPropert
         @Override
         public void connect(PropertyEditor pe, PropertyEnv env) {
             editor = pe;
-            label.setText(pe.getAsText());
+            setText(pe.getAsText());
         }
 
         @Override
         public JComponent getComponent() {
-            return label;
+            return this;
         }
 
         @Override
@@ -221,8 +225,14 @@ public class ConnectionEditor extends PropertyEditorSupport implements ExPropert
 
         @Override
         public boolean isKnownComponent(Component c) {
-            return c == label || c == (Object) this;
+            return c == this;
+        }   
+
+        @Override
+        public boolean isEditable() {
+            return false;
         }
+        
     }
 
 }

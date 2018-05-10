@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,25 +28,32 @@ import org.radixware.kernel.common.sqlscript.parser.spi.VariablesProvider;
 
 
 public class SQLPreprocessor {
+    
+    public static enum  EPreprocessorType {PRAGMA, OTHER}
 
+    public static enum PreprocessBehavior {
+        PT_REPLACE_UNUSED_BLOCKS_TO_COMMENT,
+        PT_REMOVE_UNUSED_BLOCKS
+    };
+
+    private static final String START_COMMENT = "/*";
+    private static final String END_COMMENT = "*/";
+    
+    final String script;
+    protected final Map<String, SQLScriptFunctionHandler> functionsHandlers = new HashMap<>();
     protected final Reader reader;
     protected final String fileName;
-    protected final Map<String, SQLScriptFunctionHandler> functionsHandlers;
     protected final VariablesProvider variablesProvider;
 
     protected enum SkipState {
-
         NO, THIS, STATEMENT
-        //NO, THIS, STATEMENT
     };
 
     protected enum BlockType {
-
         SCRIPT, WHILE, IF, ELSE
     };
 
     private enum Lig {
-
         OR, AND
     };
     public static final String FUNC_IS_DEFINED = "isDefined";
@@ -53,35 +62,54 @@ public class SQLPreprocessor {
     void PP_MISPLACED_EXCEPTION(String word, SQLPosition pos) throws SQLScriptException {
         throw new SQLScriptException("Misplaced \"" + word + "\" in SQL preprocessor statement" + " : " + pos.toString());
     }
-    final String script;
 
-    public SQLPreprocessor(String script, String pFileName, final VariablesProvider variablesProvider) {
-        this.script = script;
-        reader = new StringReader(script);
-        fileName = pFileName;
-        this.variablesProvider = variablesProvider;
-        functionsHandlers = new HashMap<>();
-        registerFunction(FUNC_IS_DEFINED, new SQLScriptFunctionHandler() {
-            @Override
-            public SQLScriptValue scriptFunction(Vector<SQLScriptValue> args) throws SQLScriptException {
-                if (args.size() != 1) {
-                    throw new SQLScriptException("Wrong arguments count, passed to SQL script function " + FUNC_IS_DEFINED);
+    public SQLPreprocessor(final String script, final String pFileName, final VariablesProvider variablesProvider) {
+        if (script == null) {
+            throw new IllegalArgumentException("Script content can't be null");
+        }
+        else if (variablesProvider == null) {
+            throw new IllegalArgumentException("Variables provider can't be null");
+        }
+        else {
+            this.script = script;
+            this.reader = new StringReader(script);
+            this.fileName = pFileName;
+            this.variablesProvider = variablesProvider;
+            registerFunction(FUNC_IS_DEFINED, new SQLScriptFunctionHandler() {
+                @Override
+                public SQLScriptValue scriptFunction(Vector<SQLScriptValue> args) throws SQLScriptException {
+                    if (args == null || args.size() != 1) {
+                        throw new SQLScriptException("Wrong arguments count, passed to SQL script function " + FUNC_IS_DEFINED);
+                    }
+                    else {
+                        final SQLScriptValue val = args.get(0);
+                        return new SQLScriptValue(val != null && (variablesProvider.getVariable(val.getString().toUpperCase()) != null || variablesProvider.getVariable(val.getString()) != null));
+                    }
                 }
-                return new SQLScriptValue(variablesProvider.getVariable(args.get(0).getString().toUpperCase()) != null || variablesProvider.getVariable(args.get(0).getString()) != null );
-            }
-        });
-        registerFunction(FUNC_IS_ENABLED, new SQLScriptFunctionHandler() {
-            @Override
-            public SQLScriptValue scriptFunction(Vector<SQLScriptValue> args) throws SQLScriptException {
-                if (args.size() != 1) {
-                    throw new SQLScriptException("Wrong arguments count, passed to SQL script function " + FUNC_IS_ENABLED);
+            });
+            registerFunction(FUNC_IS_ENABLED, new SQLScriptFunctionHandler() {
+                @Override
+                public SQLScriptValue scriptFunction(Vector<SQLScriptValue> args) throws SQLScriptException {
+                    if (args == null || args.size() != 1) {
+                        throw new SQLScriptException("Wrong arguments count, passed to SQL script function " + FUNC_IS_ENABLED);
+                    }
+                    else {
+                        final SQLScriptValue val = args.get(0);
+                        SQLScriptValue varValue;
+                        
+                        if (val != null) {
+                            if ((varValue = variablesProvider.getVariable(val.getString().toUpperCase())) == null) {
+                                varValue = variablesProvider.getVariable(val.getString());
+                            }
+                            return new SQLScriptValue(varValue == null ? false : EOptionMode.ENABLED.getValue().equals(varValue.getString()));
+                        }
+                        else {
+                            return new SQLScriptValue(false);
+                        }
+                    }
                 }
-                SQLScriptValue varValue = variablesProvider.getVariable(args.get(0).getString().toUpperCase());
-                if (varValue == null)
-                    varValue = variablesProvider.getVariable(args.get(0).getString());
-                return new SQLScriptValue(varValue == null ? false : EOptionMode.ENABLED.getValue().equals(varValue.getString()));
-            }
-        });
+            });
+        }
     }
 
     public final void registerFunction(String funcName, SQLScriptFunctionHandler handler) {
@@ -89,18 +117,15 @@ public class SQLPreprocessor {
     }
 
     private enum CommentType {
-
         CT_IF_TRUE, CT_IF_FALSE, CT_ELSE, CT_ELSE_TRUE, CT_ELSE_FALSE, CT_ENDIF
     };
 
-    private static class CommentItem {
-
+    static class CommentItem {
         SQLPosition start;
         SQLPosition finish;
     }
 
-    private static class CommentItemWithBoolean extends CommentItem {
-
+    static class CommentItemWithBoolean extends CommentItem {
         boolean mustCheck;
         int pos;
 
@@ -112,12 +137,11 @@ public class SQLPreprocessor {
 
         @Override
         public String toString() {
-            return "CommentItem{" + "start=" + start + ", filish=" + finish + ", mustCheck=" + mustCheck + '}';
+            return "CommentItem{" + "start=" + start + ", finish=" + finish + ", mustCheck=" + mustCheck + '}';
         }
     }
 
-    private static class CommentTypeItem extends CommentItem {
-
+    static class CommentTypeItem extends CommentItem {
         CommentType type;
 
         public CommentTypeItem(SQLPosition start, SQLPosition finish, CommentType type) {
@@ -128,7 +152,7 @@ public class SQLPreprocessor {
 
         @Override
         public String toString() {
-            return "CommentItem{" + "start=" + start + ", filish=" + finish + ", type=" + type + '}';
+            return "CommentItem{" + "start=" + start + ", finish=" + finish + ", type=" + type + '}';
         }
     }
     private List<CommentTypeItem> commentList;
@@ -136,7 +160,6 @@ public class SQLPreprocessor {
     private List<CommentItemWithBoolean> finalCommentList;
 
     private void pushComment(SQLPosition start, SQLPosition finish, CommentType type) throws SQLScriptException {
-
         CommentTypeItem item = new CommentTypeItem(start.fork(), finish.fork(), type);
 
         commentList.add(item);
@@ -192,7 +215,8 @@ public class SQLPreprocessor {
             } else if (priorItem.type.equals(CommentType.CT_ELSE_FALSE)) {
                 commentLevel--;
                 if (commentLevel == 0) {
-                    finalCommentList.add(new CommentItemWithBoolean(priorItem.start, finish, false));
+                    //finalCommentList.add(new CommentItemWithBoolean(priorItem.start, finish, false));
+                    finalCommentList.add(new CommentItemWithBoolean(priorItem.start, finish, true));//RADIXMANAGER-332
                 }
             } else if (priorItem.type.equals(CommentType.CT_IF_TRUE)) {
                 if (commentLevel == 0) {
@@ -207,63 +231,79 @@ public class SQLPreprocessor {
     }
     private int commentLevel;
 
-    public static enum PreprocessBehavior {
-
-        PT_REPLACE_UNUSED_BLOCKS_TO_COMMENT,
-        PT_REMOVE_UNUSED_BLOCKS
-    };
-
     public String preprocess() throws SQLScriptException, IOException {
-        return preprocess(PreprocessBehavior.PT_REMOVE_UNUSED_BLOCKS);
+        return preprocess(PreprocessBehavior.PT_REMOVE_UNUSED_BLOCKS, null);
     }
 
-    public String preprocess(PreprocessBehavior preprocessType) throws SQLScriptException, IOException {
+    public String preprocess(final PreprocessBehavior preprocessType, final String supersedingSysUser) throws SQLScriptException, IOException {
         SQLParser parser = new SQLParser(reader, fileName, variablesProvider, true);
-        SQLAdditionParserOptions additionParserOptions = new SQLAdditionParserOptions();
+        SQLAdditionParserOptions additionParserOptions = SQLAdditionParserOptions.Factory.create(supersedingSysUser);
         additionParserOptions.hidePassword = true;
         parser.setAdditionOptions(additionParserOptions);
 
         commentLevel = 0;
-
         commentList = new ArrayList<>();
         stackCommentStack = new ArrayList<>();
         finalCommentList = new ArrayList<>();
 
+        preprocessBlock(parser, BlockType.SCRIPT, SkipState.NO);
 
-        {
-
-            preprocessBlock(parser, BlockType.SCRIPT, SkipState.NO);
-
+        //System.err.println("List: "+finalCommentList);
+        if (finalCommentList.isEmpty()) {
+            return script;
+        }
+        else {
+            reduceCommentList(finalCommentList);    // Bug fix: nested comments can't be processed linearly!
+            //System.err.println("Rediced List: "+finalCommentList);
+            final StringBuilder sb = new StringBuilder(script.length() + finalCommentList.size() * 4);
             int lastIndex = 1;
-            StringBuilder sb = new StringBuilder(script.length() + finalCommentList.size() * 4);
-            if (finalCommentList.isEmpty()) {
-                return script;
-            }
-            for (CommentItemWithBoolean item : finalCommentList) {
 
+            for (CommentItemWithBoolean item : finalCommentList) {
                 sb.append(script.substring(lastIndex - 1, item.start.getIndex() - 1));
                 if (PreprocessBehavior.PT_REPLACE_UNUSED_BLOCKS_TO_COMMENT.equals(preprocessType)){
-                    sb.append("/*");
+                    sb.append(START_COMMENT);
                     if (item.mustCheck) {
                         sb.append(crashComments(script.substring(item.start.getIndex() - 1, item.finish.getIndex())));
                     } else {
                         sb.append(script.substring(item.start.getIndex() - 1, item.finish.getIndex()));
                     }
 
-                    sb.append("*/");
+                    sb.append(END_COMMENT);
                 }
                 lastIndex = item.finish.getIndex() + 1;
-
-
             }
             sb.append(script.substring(lastIndex - 1));
             return sb.toString();
         }
-//        throw new SQLScriptException("Incorrect preprocess behavior ");
     }
 
+    static void reduceCommentList(final List<CommentItemWithBoolean> list2Reduce) {
+        // Reduce nested comments from the list
+        final CommentItemWithBoolean[] list = list2Reduce.toArray(new CommentItemWithBoolean[list2Reduce.size()]);
+    
+        Arrays.sort(list,new Comparator<CommentItemWithBoolean>(){
+            @Override
+            public int compare(CommentItemWithBoolean o1, CommentItemWithBoolean o2) {
+                return o1.start.getIndex() - o2.start.getIndex();
+            }
+        });
+        for (int first = 0; first < list.length - 1; first++) {
+            for (int second = first+1; second < list.length; second++) {
+                if (list[first].start.getIndex() != -1 && list[first].start.getIndex() < list[second].start.getIndex() && list[first].finish.getIndex() > list[second].finish.getIndex()) {
+                    list[second].start = new SQLPosition(-1,-1,-1,-1,null);
+                }
+            }
+        }
+        list2Reduce.clear();
+        for (CommentItemWithBoolean item : list) {
+            if (item.start.getIndex() != -1){
+                list2Reduce.add(item);
+            }
+        }
+    }
+    
     private static String crashComments(String text) {//stupid crash
-        return text.replace("/*", "??").replace("*/", "??");
+        return text.replace(START_COMMENT,"??").replace(END_COMMENT,"??");
     }
 
     private String preprocessBlock(SQLParser parser, BlockType blockType, SkipState skipState) throws SQLScriptException {
@@ -288,15 +328,10 @@ public class SQLPreprocessor {
                     SQLToken token = stat.nextToken();
                     SQLPosition firstPos = token.getPosition().fork();
                     firstPos.setColumn(firstPos.getColumn() - 1);
-                    //SQLPosition firstPos = parser.getPosition().fork();
 
 
                     TokenType tokenType = token.getType();
-                    //if (SkipState.STATEMENT!=skipState || mainBlock)
-                    if (TokenType.TK_SCRIPT_IF.equals(tokenType)) {
-                        if (TokenType.TK_SCRIPT_IF.equals(tokenType)) {
-                        }
-                    }
+
 
 
                     {
@@ -361,6 +396,9 @@ public class SQLPreprocessor {
                             }
                             return block.toString();
                         }
+                        case TK_SCRIPT_PP_PRAGMA: {
+                            return block.toString();
+                        }                        
                         default: {
                             if (skipState == SkipState.NO) {
                                 stat.setIndex(stat.getIndex() - 1);

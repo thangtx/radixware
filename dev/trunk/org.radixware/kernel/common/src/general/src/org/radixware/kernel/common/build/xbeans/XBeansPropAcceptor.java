@@ -24,11 +24,21 @@ public interface XBeansPropAcceptor {
      * Called when getter for singleton property is required (getXXX() method)
      */
     void acceptSingletonPropGetter(boolean several) throws IOException;
+    
+    /**
+     * Called when getter for singleton date time property is required (getXXXWithTimezone() method)
+     */
+    void acceptSingletonPropGetterDateTimeWithTimezone(boolean several) throws IOException;
 
     /**
      * Called when setter for singleton property is required (setXXX() method)
      */
     void acceptSingletonPropSetter(boolean several) throws IOException;
+    
+    /**
+     * Called when setter for singleton date time property is required (setXXXWithTimezone() method)
+     */
+    void acceptSingletonPropSetterDateTimeWithTimezone(boolean several) throws IOException;
 
     /**
      * Called when x-getter for singleton property is required (xgetXXX()
@@ -71,7 +81,12 @@ public interface XBeansPropAcceptor {
      * Called when List<wrappedType> getXXX() method is required;
      */
     void acceptSeveralPropListGetter(String wrappedType) throws IOException;
-
+    
+    /**
+     * Called when List<wrappedType> getXXXWithTimezoneList() method is required;
+     */
+    void acceptSeveralPropListGetterDateTimeWithTimezone(String wrappedType) throws IOException;
+    
     /**
      * Called when type[] getXXX() method is required - access of array of
      * elements;

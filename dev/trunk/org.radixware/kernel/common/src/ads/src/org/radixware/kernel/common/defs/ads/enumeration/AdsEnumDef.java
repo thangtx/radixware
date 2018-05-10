@@ -13,6 +13,7 @@ package org.radixware.kernel.common.defs.ads.enumeration;
 
 import java.lang.reflect.Method;
 import java.util.*;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.check.RadixProblem.WarningSuppressionSupport;
 import org.radixware.kernel.common.defs.*;
@@ -21,7 +22,10 @@ import org.radixware.kernel.common.defs.ads.AdsClipboardSupport;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionProblems;
 import org.radixware.kernel.common.defs.ads.AdsDefinitions;
+import org.radixware.kernel.common.defs.ads.AdsDomainDef;
 import org.radixware.kernel.common.defs.ads.AdsTitledDefinition;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
+import org.radixware.kernel.common.defs.ads.module.AdsPath;
 import org.radixware.kernel.common.defs.ads.module.ModuleDefinitions;
 import org.radixware.kernel.common.defs.ads.platform.IPlatformClassPublisher;
 import org.radixware.kernel.common.defs.ads.platform.IPlatformClassPublisher.IPlatformClassPublishingSupport;
@@ -43,6 +47,7 @@ import org.radixware.kernel.common.radixdoc.DocumentOptions;
 import org.radixware.kernel.common.radixdoc.IRadixdocPage;
 import org.radixware.kernel.common.radixdoc.IRadixdocProvider;
 import org.radixware.kernel.common.radixdoc.RadixdocSupport;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.schemas.adsdef.AdsDefinitionElementType;
@@ -737,6 +742,137 @@ public class AdsEnumDef extends AdsTitledDefinition implements IAdsTypeSource,
         sb.append("<br>Base Type:<br>&nbsp;");
         sb.append(getItemType());
     }
+
+    @Override
+    public String getAPIDescription() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("<html>");
+        final String typeTitle = getTypeTitle();
+        final String objectName = getName();
+        sb.append("<b>").append(typeTitle).append(" '").append(objectName).append("'</b>");
+        appendLocationToolTip(sb);
+        sb.append("<br>");
+        final String description = getDescriptionForToolTip(EIsoLanguage.ENGLISH);
+        if (description != null && !description.isEmpty()) {
+            List<String> descriptionLines = new LinkedList<>();
+            String[] words = description.split(" ");
+            StringBuilder currentLine = new StringBuilder();
+            for (int i = 0; i < words.length; i++) {
+                currentLine.append(words[i]);
+                currentLine.append(' ');
+                if (currentLine.length() > 120) {
+                    descriptionLines.add(currentLine.toString());
+                    currentLine.setLength(0);
+                }
+            }
+            if (currentLine.length() > 0) {
+                descriptionLines.add(currentLine.toString());
+            }
+
+            sb.append("Description: ");
+            for (String dl : descriptionLines) {
+                sb.append(StringEscapeUtils.escapeHtml(dl)).append("<br>");
+            }
+        }
+        
+        List<AdsEnumItemDef> itemsList = items.list(EScope.ALL);
+        if (itemsList != null && !itemsList.isEmpty()){
+            sb.append("Values: <br>");
+            sb.append("<table border width='100%'>");
+            sb.append("<tr align='left'>");
+            
+            sb.append("<th>");
+            sb.append("#");
+            sb.append("</th>");
+            
+            sb.append("<th>");
+            sb.append("Name");
+            sb.append("</th>");
+            
+            sb.append("<th>");
+            sb.append("Value");
+            sb.append("</th>");
+            
+            Layer layer = getLayer();
+            
+            List<EIsoLanguage> languages;
+            if (layer != null){
+                languages = layer.getLanguages();
+            } else{
+                languages = new ArrayList<>();
+            }
+            for (EIsoLanguage language : languages){
+                sb.append("<th>");
+                sb.append(language);
+                sb.append(" Title</th>");
+            }
+            sb.append("<th>");
+            sb.append("Domain");
+            sb.append("</th>");
+            
+            sb.append("</tr>");
+            
+            int i = 0;
+            for (AdsEnumItemDef item : itemsList){
+                i++;
+                boolean isDeprecatedItem = item.isDeprecated();
+                sb.append("<tr ");
+                if (isDeprecatedItem){
+                    sb.append("bgcolor='#D8D2D2'");
+                }
+                
+                sb.append(">");
+                sb.append("<td>");
+                sb.append(i);
+                sb.append("</td>");
+                sb.append("<td>");
+                sb.append(item.getName());
+                sb.append("</td>");
+                sb.append("<td>");
+                item.getDomainIds();
+                ValAsStr value  = item.getValue();
+                String preparedValue;
+                if (value == null){
+                    preparedValue = "";
+                } else {
+                    preparedValue = value.toString();
+                }
+
+                if (getItemsViewFormat() == EEnumDefinitionItemViewFormat.HEXADECIMAL && !preparedValue.isEmpty()){
+                    try{
+                        long val = Long.parseLong(preparedValue);
+                        preparedValue = Long.toHexString((Long) val).toUpperCase();
+                    } catch(NumberFormatException e){
+                    }
+                }
+                
+                if (isDeprecatedItem){
+                    sb.append("<strike>");
+                    sb.append(preparedValue);
+                    sb.append("</strike>");
+                } else {
+                    sb.append(preparedValue);
+                }
+                
+                sb.append("</td>");
+                
+                for (EIsoLanguage language : languages){
+                    sb.append("<td>");
+                    sb.append(item.getTitle(language));
+                    sb.append("</td>");
+                }
+                
+                sb.append("<td>");
+                sb.append(item.getDomainsString());
+                sb.append("</td>");
+                
+                sb.append("</tr>");
+            }
+            sb.append("</table>");
+        }
+        sb.append("</html>");
+        return sb.toString();
+    }
     
     public static class Problems extends AdsDefinitionProblems {
 
@@ -771,5 +907,10 @@ public class AdsEnumDef extends AdsTitledDefinition implements IAdsTypeSource,
             }
             return warningsSupport;
         }
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.ENUM;
     }
 }

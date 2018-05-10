@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.views.selector;
 
+import org.radixware.kernel.explorer.dialogs.PresentationInfoDialog;
 import org.radixware.kernel.common.client.exceptions.ModelException;
 import org.radixware.kernel.common.client.models.FilterModel;
 import org.radixware.kernel.common.client.views.IEmbeddedEditor;
@@ -21,7 +22,7 @@ import org.radixware.kernel.common.client.widgets.ISplitter;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.client.widgets.actions.Action;
 import com.trolltech.qt.core.QEvent;
-import com.trolltech.qt.core.QObject;
+import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QFocusEvent;
 import com.trolltech.qt.gui.QResizeEvent;
@@ -36,6 +37,7 @@ import com.trolltech.qt.gui.QToolBar;
 import com.trolltech.qt.gui.QWidget;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QClipboard;
+import com.trolltech.qt.gui.QHideEvent;
 import com.trolltech.qt.gui.QKeyEvent;
 import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QMenuBar;
@@ -44,11 +46,11 @@ import com.trolltech.qt.gui.QStackedLayout;
 import com.trolltech.qt.gui.QVBoxLayout;
 import java.util.LinkedList;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.common.client.localization.MessageProvider;
-import org.radixware.kernel.common.client.models.AbstractBatchOperationResult;
 import org.radixware.kernel.common.client.models.CleanModelController;
 import org.radixware.kernel.common.client.models.BatchDeleteResult;
 import org.radixware.kernel.common.client.models.EntityModel;
@@ -83,7 +85,6 @@ import org.radixware.kernel.explorer.views.ErrorView;
 import org.radixware.kernel.explorer.views.IExplorerView;
 import org.radixware.kernel.explorer.views.Splitter;
 import org.radixware.kernel.explorer.widgets.ExplorerAction;
-import org.radixware.kernel.explorer.widgets.ExplorerMenu;
 import org.radixware.kernel.explorer.widgets.ExplorerToolBar;
 import org.radixware.kernel.explorer.widgets.ExplorerWidget;
 import org.radixware.kernel.explorer.widgets.FilteredMouseEvent;
@@ -113,7 +114,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
             super(QEvent.Type.User);
         }
     }
-    
+
     private static class MoveSplitterEvent extends QEvent{
 
         private final boolean isCollapsed;
@@ -126,14 +127,14 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
         public boolean isCollapsed(){
             return isCollapsed;
         }
-    }    
-    
+    }
+
     private static class InitToolBarsEvent extends QEvent{        
         public InitToolBarsEvent(){
             super(QEvent.Type.User);
-        }        
+        }
     }
-    
+
     private static class RefreshMenuEvent extends QEvent{        
         public RefreshMenuEvent(){
             super(QEvent.Type.User);
@@ -141,34 +142,34 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     }
 
     private class EditorSpace extends QWidget implements IEditorSpace {
-        
-        private boolean eventProcessing = false;        
+
+        private boolean eventProcessing = false;
         private final QStackedLayout stackedLayout;
-        private final ErrorView errorViewer;        
-        
+        private final ErrorView errorViewer;
+
         @SuppressWarnings("LeakingThisInConstructor")
         public EditorSpace(final QWidget parent) {
             super(parent);
-            setObjectName("editorSpace");            
+            setObjectName("editorSpace");
             final QVBoxLayout mainLayout = WidgetUtils.createVBoxLayout(this);
             stackedLayout = new QStackedLayout();
             stackedLayout.setContentsMargins(0, 0, 0, 0);
-            mainLayout.addLayout(stackedLayout);            
-            errorViewer  = new ErrorView(getEnvironment(), this);
+            mainLayout.addLayout(stackedLayout);
+            errorViewer = new ErrorView(getEnvironment(), this);
             errorViewer.setObjectName("errorView");
             stackedLayout.addWidget(errorViewer);
-            stackedLayout.addWidget((EmbeddedEditor)controller.getCurrentEntityEditor());
+            stackedLayout.addWidget((EmbeddedEditor) controller.getCurrentEntityEditor());
             stackedLayout.setCurrentIndex(1);
         }
-        
+
         @Override
         protected void resizeEvent(final QResizeEvent event) {
             if (!eventProcessing && controller.wasShown()) {
-                if (event.size().height() > 0 
+                if (event.size().height() > 0
                     && (!controller.getCurrentEntityEditor().isOpened() || event.oldSize().height()==0)
                     ){
                     QApplication.removePostedEvents(this, QEvent.Type.User.value());
-                    Application.processEventWhenEasSessionReady(this, new MoveSplitterEvent(false));                    
+                    Application.processEventWhenEasSessionReady(this, new MoveSplitterEvent(false));
                 }
                 else if (event.oldSize().height() > 0 && event.size().height() == 0){
                     QApplication.removePostedEvents(this, QEvent.Type.User.value());
@@ -219,7 +220,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
                                     controller.setupToolBars();
                                     QApplication.postEvent(Selector.this, new RefreshMenuEvent());
                                 }
-                                controller.getToolBarsManager().correctToolBarsPosition();                                
+                                controller.getToolBarsManager().correctToolBarsPosition();
                             }
                         }
                     }
@@ -230,8 +231,8 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
             }else{
                 super.customEvent(event);
             }
-        }        
-        
+        }
+
         
         @Override
         public void showException(Throwable exception) {
@@ -244,13 +245,13 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
         public void hideException() {
             stackedLayout.setCurrentIndex(1);
         }
-               
+
         @Override
         public boolean isExceptionShown() {
             return stackedLayout.currentIndex()==0;
-        }        
+        }
     }
-    
+
     public final Actions actions;
     private ComponentModificationRegistrator modificationRegistrator;
     private final Splitter splitter;
@@ -258,7 +259,8 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     protected final ExplorerWidget content;
     private final EditorSpace editorSpace;
     private boolean refreshScheduled;
-    
+    private int widthOnHide;
+
     final public Signal1<QWidget> opened = new Signal1<>();
     final public Signal0 closed = new Signal0();
     final public Signal0 onLeaveCurrentEntity = new Signal0();
@@ -274,13 +276,13 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     final public Signal1<Boolean> modifiedStateChanged = new Signal1<>();
     final public Signal1<Throwable> onShowException = new Signal1<>();
     final public Signal0 onFocusChanged = new Signal0();
-    
+
     private final static String SELECTOR_WINDOW_KEY_NAME = "MainWindow";
     final static String CUSTOM_TOOLBARS_POSITION = "customToolbarsPosition";
     private final static String SPLITTER_KEY_NAME = "splitterRatio";
     private final static String AUTOINSERT_KEY_NAME = "autoInsert";
     private final static String FILTER_AND_ORDER_KEY_NAME = "filterPanelIsVisible";
-    
+
     private final SelectorController controller;
     private final List<SelectorListener> listeners = new LinkedList<>();
 
@@ -343,9 +345,9 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
                 for (SelectorListener l : listeners) {
                     l.onShowException(exception);
                 }
-            }            
+            }
         }
-        
+
 
         @Override
         public void onDeleteAll() {
@@ -365,7 +367,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
                     l.onDeleteSelected(deleteResult);
                 }
             }
-        }        
+        }
 
         @Override
         public void afterReread(Pid pid) {
@@ -383,7 +385,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
             synchronized (listeners){
                 for (SelectorListener l : listeners) {
                     l.opened(content);
-                }                
+                }
             }
         }
 
@@ -415,10 +417,9 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     }
 
     protected Selector(IClientEnvironment environment) {
-                
 
-        super(environment);        
-        
+
+        super(environment);
         final SelectorController.UIController uiController = new SelectorController.UIController() {
 
             @Override
@@ -482,17 +483,10 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
                 QApplication.clipboard().setText(text, QClipboard.Mode.Clipboard);
             }
 
-            @Override
-            protected void showBatchOperationResult(final AbstractBatchOperationResult result, final String message) {
-                final BatchOperationResultDialog dialog = 
-                    new BatchOperationResultDialog(getEnvironment(), result, Selector.this);
-                dialog.setMessage(message);
-                dialog.exec();
-            }
         };
-        
-        this.controller = new SelectorController(this, uiController) {
 
+        this.controller = new SelectorController(this, uiController) {
+            
             @Override
             protected SelectorListener createDefaultListener() {
                 return new DefaultSelectorListener();
@@ -509,7 +503,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
             }
 
             @Override
-            protected void scheduleSelectorRefresh() {                
+            protected void scheduleSelectorRefresh() {
                 if (!refreshScheduled){
                     refreshScheduled = true;
                     Application.processEventWhenEasSessionReady(Selector.this, new RefreshSelectorEvent());//RADIX-5104
@@ -518,13 +512,13 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
 
             @Override
             protected void scheduleRefreshMenu() {
-                QApplication.postEvent(Selector.this, new RefreshMenuEvent());                
-            }                        
+                QApplication.postEvent(Selector.this, new RefreshMenuEvent());
+            }
 
             @Override
             protected void scheduleInitToolBars() {
                 QApplication.postEvent(Selector.this, new InitToolBarsEvent());
-                if (selectorMainWindow.isAnyFilter() 
+                if (selectorMainWindow.isAnyFilter()
                     || getActions().getShowFilterAndOrderToolBarAction().isChecked()){
                     selectorMainWindow.prepareFilterAndOrderToolbar((GroupModel)getModel());
                 }
@@ -569,7 +563,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
                     qtbs.add((QToolBar) tb);
                 }
                 return new ToolBarsManager((SelectorMainWindow) mainWindow, qtbs, configStore, configStoreGroupName);
-            }                        
+            }
 
             @Override
             protected void viewAuditLog() {
@@ -581,55 +575,62 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
             @Override
             protected List<IEmbeddedView> findChildrenViews() {
                 return WidgetUtils.findExplorerViews(Selector.this);
-            }            
+            }
+
+            @Override
+            protected void execPresentationInfoDialog(String title, String classId, String className, String presentationId, String presentationName, String explorerItemId, String pid) {
+                PresentationInfoDialog dlg = new PresentationInfoDialog(getEnvironment(), title, classId, className, presentationId, presentationName, explorerItemId, pid);
+                dlg.execDialog();
+            }
         };
         //progressHandle = environment.getProgressHandleManager().newStandardProgressHandle();
-        
+
         //разделитель между селектором и редактором
         splitter = new Splitter(this, (ExplorerSettings) environment.getConfigStore());
         splitter.setOrientation(Qt.Orientation.Vertical);
-        setWidget(splitter);        
-        
+        setWidget(splitter);
+
         //селектор
         selectorMainWindow = new SelectorMainWindow(this);
         splitter.addWidget(selectorMainWindow);
         content = selectorMainWindow.getSelectorContent();
-        
+
         actions = new Actions(controller) {
 
             @Override
             protected Action createAction(ClientIcon icon, String title) {
                 return new ExplorerAction(icon == null ? null : getEnvironment().getApplication().getImageManager().getIcon(icon), title, Selector.this);
             }
-        };        
-        
+        };
+
         controller.createToolBars();
-        
+
         //редактор
         editorSpace = new EditorSpace(this);
-        
+
         splitter.addWidget(editorSpace);
         splitter.setStretchFactor(0, 1);
         splitter.setCollapsible(0, false);
         splitter.setObjectName("splitter");
     }
-    
+
     //Панели инструментов, команд и меню
-    protected IMenu selectorMenu, editorMenu;    
-    
+    protected IMenu selectorMenu, editorMenu;
+
     @Override
     public ISelector.Actions getActions() {
         return actions;
     }
 
-    public void setMenu(final ExplorerMenu newSelectorMenu, final ExplorerMenu newEditorMenu) {
+    @Override
+    public void setMenu(final IMenu newSelectorMenu, final IMenu newEditorMenu) {
         if (selectorMenu != null) {
-            selectorMenu.removeAllActions();
+            selectorMenu.clear();
             selectorMenu.disconnect(this);
         }
         this.selectorMenu = newSelectorMenu;
         if (editorMenu != null) {
-            editorMenu.removeAllActions();
+            editorMenu.clear();
             editorMenu.disconnect(this);
         }
         this.editorMenu = newEditorMenu;
@@ -649,19 +650,19 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     private void initMenu() {
         if (selectorMenu instanceof QMenu) {
             QMenu asQMenu = (QMenu) selectorMenu;
-            if (asQMenu.parent() == null) {                
+            if (asQMenu.parent() == null) {
                 final QMenuBar menuBar = selectorMainWindow.menuBar();
                 final Qt.WindowFlags menuFlags = asQMenu.windowFlags();
                 asQMenu.setParent(menuBar);
                 asQMenu.setWindowFlags(menuFlags);
-                menuBar.addMenu(asQMenu);                                
+                menuBar.addMenu(asQMenu);
             } else {
                 selectorMainWindow.setMenuWidget(null);
             }
-            selectorMenu.setEnabled(true);            
+            selectorMenu.setEnabled(true);
         }
     }
-    
+
     public void setToolButtonsSize(int size) {
         final QSize buttonSize = new QSize(size, size);
         getToolBar().setIconSize(buttonSize);
@@ -683,7 +684,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     public void setEditorToolBarHidden(boolean hidden) {
         controller.setEditorToolBarHidden(hidden);
     }
-        
+
     @Override
     public void setCommandBarHidden(final boolean hidden) {
         controller.setCommandBarHidden(hidden);
@@ -735,12 +736,19 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
         controller.open(model_, selectorMenu);
         initMenu();
         Application.getInstance().getActions().settingsChanged.connect(this, "applySettings()");
+        getActions().getEntityActivatedAction().addActionListener(new Action.ActionListener() {
+            @Override
+            public void triggered(final Action action) {
+                entityActivated.emit(getCurrentEntity());
+            }
+        });
+        setObjectName("rx_selector_view_#"+model_.getDefinition().getId());
     }
-    
+
     protected final void notifyOpened(){
         controller.notifyOpened(content);
     }
-    
+
     private final List<CurrentEntityHandler> customHandlers = new LinkedList<>();
     private ISelector.CurrentEntityHandler defaultCurrentEntityHandler = new CurrentEntityHandler() {
 
@@ -787,7 +795,9 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     public boolean close(boolean forced) {
         if (controller.close(forced)) {
             customHandlers.clear();
-            super.close();
+            if (nativeId()!=0){//to protect from mistakes in application code                
+                super.close();
+            }
             return true;
         } else {
             return false;
@@ -800,7 +810,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     }
 
     @Override
-    protected void closeEvent(QCloseEvent event) {        
+    protected void closeEvent(QCloseEvent event) {
         controller.closeEvent();
         customHandlers.clear();
     }
@@ -903,7 +913,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
             }
             return false;
         }
-    }    
+    }
 
     protected final void openCurrentEntityEditor() {
         controller.openCurrentEntityEditor();
@@ -942,7 +952,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     public void showException(Throwable exception) {
         controller.showException(exception);
     }
-    
+
     @Override
     public void setCurrentFilter(FilterModel filter, boolean apply) {
         selectorMainWindow.setCurrentFilter(filter, apply);
@@ -956,22 +966,38 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     }
 
     @Override
-    protected void focusOutEvent(QFocusEvent arg__1) {
-        super.focusOutEvent(arg__1);
+    protected void focusOutEvent(final QFocusEvent event) {
+        super.focusOutEvent(event);
         onFocusChanged.emit();
-    } 
-    
+    }
+
     @Override
-    protected void showEvent(QShowEvent event) {
+    protected void showEvent(final QShowEvent event) {
         super.showEvent(event);
-        if (controller.showEvent()) {
+        if (controller.showEvent()) {//first show
             splitter.splitterMoved.connect(this, "saveSplitterSettings()");
             final IToolBarsManager toolBarsManager = controller.getToolBarsManager();
             if (toolBarsManager!=null){
                 toolBarsManager.sheduleCorrectToolBarsPosition();
             }
+        }else if (getModel()!=null && widthOnHide>0 && widthOnHide!=width()){
+            final IToolBarsManager toolBarsManager = controller.getToolBarsManager();
+            if (toolBarsManager!=null){
+                toolBarsManager.correctToolBarsPosition();
+            }
         }
     }
+
+    @Override
+    protected void hideEvent(final QHideEvent event) {
+        super.hideEvent(event);
+        if (getModel()!=null){
+            widthOnHide = width();
+        }
+    }
+
+    
+    
     private boolean resizeEventProcessing = false;
 
     @Override
@@ -979,7 +1005,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
         if (!resizeEventProcessing) {
             resizeEventProcessing = true;
             super.resizeEvent(event);
-            if (controller.wasShown()) {                
+            if (controller.wasShown()) {
                 if (event.oldSize().width() != event.size().width() && controller.isEditorOperationsVisible()) {
                     controller.getToolBarsManager().correctToolBarsPosition();
                 }
@@ -993,10 +1019,10 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     public void entityRemoved(Pid pid) {
         controller.entityRemoved(pid);
     }
-    
+
     public final void notifyEntityObjectsCreated(final List<EntityModel> entities) {
         this.controller.notifyEntityObjectsCreated(entities);
-    }    
+    }
 
     @Override
     public final GroupModel getGroupModel() {
@@ -1016,12 +1042,17 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     //Операции, выполняемые селектором
     @Override
     public ExplorerItemView insertEntity() {
-        return controller.insertEntity();
+        return insertEntity(null);
     }
 
     @Override
     public ExplorerItemView insertEntityWithReplace() {
-        return controller.insertEntityWithReplace();
+        return controller.insertCurrentEntityWithReplace();
+    }
+    
+    @Override
+    public ExplorerItemView insertEntity(final EntityModel entity){
+        return controller.insertEntity(entity);
     }
 
     @Override
@@ -1065,6 +1096,22 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     public EntityModel create() throws ServiceClientException {
         return controller.create();
     }
+    
+    /**
+     * Создание новых объектов сущности.
+     * Метод создает модели новых объектов сущности и по очереди открывает для них
+     * модальные редакторы. После успешного завершения операции создания производится перечитывание всех записей в
+     * селекторе с поиском первого созданного объекта сущности, который становится текущим. После создания объектов
+     * генерируется сигнал {@link #entityCreated}.
+     * @return Возвращает список моделей созданных объектов сущности и пустой список если создание было отменено
+     * @throws ServiceClientException - ошибки при выполнении запросов на сервер
+     * @see {@link #create()}
+     * @see {@link GroupModel#openCreatingEntities(String, EntityModel)}
+     */
+    @Override
+    public List<EntityModel> createMultiple() throws ServiceClientException {
+        return controller.createMultiple();
+    }    
 
     /**
      * Создание копии текущей модели сущности.
@@ -1092,12 +1139,12 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
         catch(InterruptedException exception){
             return false;
         }
-    }        
+    }
 
     @Override
     public void cancelChanges() {
         controller.cancelChanges();
-    }        
+    }
 
     @Override
     public List<EntityModel> paste() {
@@ -1118,7 +1165,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     public BatchDeleteResult deleteSelected() throws ServiceClientException {
         return controller.deleteSelected();
     }
-    
+
     @Override
     public BatchCopyResult duplicateSelected(){
         return controller.duplicateSelected();
@@ -1134,12 +1181,17 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
 
     @Override
     public void refresh() {
-        controller.refresh();
+        controller.refresh();        
     }
 
     @Override
     public boolean disable() {
-        return controller.disable();
+        if (controller.disable()){
+            selectorMainWindow.switchToApplyFilter();
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -1157,8 +1209,14 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
             getActions().getUpdateAction().trigger();
         } else if (event.matches(QKeySequence.StandardKey.New) && getActions().getCreateAction().isEnabled()) {
             getActions().getCreateAction().trigger();
-        } else if (event.matches(QKeySequence.StandardKey.Delete) && getActions().getDeleteAction().isEnabled()) {
-            getActions().getDeleteAction().trigger();
+        } else if (event.matches(QKeySequence.StandardKey.Delete)) {
+            if (getActions().getDeleteAllAction().isEnabled()
+                && controller.getGroupModel()!=null
+                && !controller.getGroupModel().getSelection().isEmpty()){
+                getActions().getDeleteAllAction().trigger();
+            }else if (getActions().getDeleteAction().isEnabled()){
+                getActions().getDeleteAction().trigger();
+             }
         } else {
             super.keyPressEvent(event);
         }
@@ -1176,7 +1234,7 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
                 if (getGroupModel() != null) {
                     refresh();
                 }
-            }                
+            }
         } else if (event instanceof RefreshMenuEvent){
             event.accept();
             controller.refreshMenu();
@@ -1190,10 +1248,15 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
 
     @Override
     protected void filteredMouseEvent(final FilteredMouseEvent event) {
-        if (getSelectorWidget() instanceof QObject){
-            QApplication.sendEvent((QObject)getSelectorWidget(), new FilteredMouseEvent(event.getFilteredEventType()));
-        }        
-    }        
+        if (getSelectorWidget() instanceof QWidget){
+            final QWidget selectorWidget = (QWidget)getSelectorWidget();
+            final QRect rect =  selectorWidget.rect();
+            rect.moveTopLeft(selectorWidget.mapToGlobal(WidgetUtils.ZERO_POINT));
+            if (rect.contains(event.getGlobalPos())){
+                QApplication.sendEvent(selectorWidget, new FilteredMouseEvent(event, selectorWidget));
+            }          
+        }
+    }
 
     @Override
     public QWidget asQWidget() {
@@ -1248,5 +1311,9 @@ public abstract class Selector extends BlockableWidget implements IExplorerView,
     @Override
     public ViewRestrictions getRestrictions() {
         return controller.getViewRestrictions();
-    }         
+    }
+    
+    public final EWidgetMarker getWidgetMarker(){
+        return EWidgetMarker.SELECTOR;
+    }
 }

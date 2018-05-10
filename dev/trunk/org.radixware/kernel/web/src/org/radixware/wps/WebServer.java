@@ -13,6 +13,8 @@ package org.radixware.wps;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +22,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,12 +33,14 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.impl.SimpleLog;
 
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.editors.traceprofile.TraceProfileTreeController;
@@ -51,6 +57,7 @@ import org.radixware.kernel.common.meta.ILanguageContext;
 import org.radixware.kernel.common.ssl.KeystoreController;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.FileUtils;
+import org.radixware.kernel.common.utils.Hex;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.starter.Starter;
 import org.radixware.kernel.starter.log.DelegateLogFactory;
@@ -60,16 +67,20 @@ import org.radixware.kernel.starter.radixloader.RadixClassLoader;
 import org.radixware.kernel.starter.radixloader.RadixLoader;
 import org.radixware.kernel.starter.radixloader.RadixLoaderException;
 import org.radixware.kernel.starter.radixloader.RadixSVNLoader;
+import org.radixware.kernel.starter.radixloader.ReplacementEntry;
+import org.radixware.kernel.starter.radixloader.ReplacementFile;
 import org.radixware.wps.icons.WpsIcon;
 import org.radixware.wps.icons.images.WsIcons;
+import org.radixware.wps.rwt.Banner;
 
 public class WebServer {
 
     private static final String HTTP_SESSION_CONTEXT_ATTR_NAME = "rdxSessionContext";
+    private static final String PARAM_COOKIE_NAME = "paramsId";
     private static final WebServer instance = new WebServer();
     private final Object krbSem = new Object();
     private volatile KerberosCredentials serviceCreds;
-
+    
     public static interface IUploadListener {
 
         void uploadingComplete();
@@ -196,7 +207,7 @@ public class WebServer {
 
         @Override
         public EIsoLanguage getLanguage() {
-            return userSession.getLanguage();
+            return userSession == null ? EIsoLanguage.ENGLISH : userSession.getLanguage();
         }
     }
     final ExecutorService threadPool = Executors.newCachedThreadPool(new ThreadFactory() {
@@ -219,102 +230,134 @@ public class WebServer {
             return null;
         }
     }
-    public static final String VERSION = "1.2.21";
+    public static final String VERSION = "2.1.13";
 
-    public static void main(String[] args) {
-        try {
-            if (args.length != 0 && !WebServerRunParams.processArgs(args)) {
+    public static void main(String[] args) throws Exception {        
+        final WebServerRunParams runParams;
+        if (args.length==0){
+            runParams = WebServerRunParams.EMPTY;
+        }else{
+            runParams = WebServerRunParams.processArgs(args);
+            if (runParams==null){
                 throw new IllegalArgumentException("Wrong Web Presentation Server arguments");
             }
-            final Logger logger = Logger.getLogger(WebServer.class.getName());            
-            printStarterInformation(logger);            
-            printWebServerArguments(logger);
-            printProductVersions(logger);
-            {//check 
-                final String dbPath = WebServerRunParams.getSettingsDatabaseDir();
-                if (dbPath!=null){
-                    checkDbPath(dbPath, logger);
-                }                        
+        }
+        final Logger logger = Logger.getLogger(WebServer.class.getName());
+        printStarterInformation(logger);
+        printWebServerArguments(runParams, logger);
+        printProductVersions(logger);
+        printSystemInformation(logger);
+        {//check 
+            final String dbPath = runParams.getSettingsDatabaseDir();
+            if (dbPath != null) {
+                checkDbPath(dbPath, logger);
             }
-            getStarterClassLoader().loadClass("org.radixware.ws.servlet.WPSBridge").getMethod("register", Object.class).invoke(null, instance);
-            {// set limit for uploading
-                final Integer uploadingLimit = WebServerRunParams.getUploadHardLimitMb();
-                getStarterClassLoader().loadClass("org.radixware.ws.servlet.FileUploader").getMethod("setSizeLimit", Integer.class).invoke(null, uploadingLimit);
+        }
+        getStarterClassLoader().loadClass("org.radixware.ws.servlet.WPSBridge").getMethod("register", Object.class).invoke(null, instance);
+        {// set limit for uploading
+            final Integer uploadingLimit = WebServerRunParams.getUploadHardLimitMb();
+            getStarterClassLoader().loadClass("org.radixware.ws.servlet.FileUploader").getMethod("setSizeLimit", Integer.class).invoke(null, uploadingLimit);
+        }
+
+        StarterLog.setFactory(new DelegateLogFactory() {
+            @Override
+            public org.apache.commons.logging.Log createApacheLog(String name) {
+                return new  SimpleLog("Radix WPS");
             }
+        });
+        LogFactory.releaseAll();
 
-            StarterLog.setFactory(new DelegateLogFactory() {
-                @Override
-                public org.apache.commons.logging.Log createApacheLog(String name) {
-                    return new StarterLog("Radix WPS");
-                }
-            });
-            LogFactory.releaseAll();
-
-            synchronized (shutdownLock) {
-                try {
-                    shutdownLock.wait();
-                    synchronized (imagesDirLock) {
-                        if (imagesDir != null) {
-                            FileUtils.deleteDirectory(imagesDir);
-                        }
+        synchronized (shutdownLock) {
+            try {
+                shutdownLock.wait();
+                synchronized (imagesDirLock) {
+                    if (imagesDir != null) {
+                        FileUtils.deleteDirectory(imagesDir);
                     }
-                } catch (InterruptedException e) {
                 }
+            } catch (InterruptedException e) {
             }
-        } catch (IllegalArgumentException | ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException e) {
         }
     }
     
-    private static void printStarterInformation(final Logger logger){
+    private static void printStarterInformation(final Logger logger) {
         final String arguments = Starter.getArguments().asStrWithoutAppParams().replace(" ", "\n\t");
         logger.log(Level.INFO, "Starter arguments: '{'\n\t{0}\n'}'", arguments);
         final StringBuilder starterParams = new StringBuilder();
         final RadixLoader rxLoader = RadixLoader.getInstance();
         starterParams.append("{\n\tRevision number: ");
-        try{
+        try {
             starterParams.append(String.valueOf(rxLoader.getCurrentRevision()));
-        }catch(RadixLoaderException exception){
+        } catch (RadixLoaderException exception) {
             starterParams.append("Unknown");
         }
-        if (rxLoader instanceof RadixSVNLoader){
+        if (rxLoader instanceof RadixSVNLoader) {
             starterParams.append("\n\tDirectory for cache: ");
             starterParams.append(rxLoader.getRoot());
         }
         starterParams.append("\n\tDirectory for temporary files: ");
         starterParams.append(org.radixware.kernel.starter.utils.SystemTools.getTmpDir());
-        if (rxLoader instanceof RadixSVNLoader){
+        if (rxLoader instanceof RadixSVNLoader) {
             starterParams.append("\n\tSubversion URL list: {");
-            final List<String> urls = ((RadixSVNLoader)rxLoader).getSvnUrls();
-            for (String url: urls){
+            final List<String> urls = ((RadixSVNLoader) rxLoader).getSvnUrls();
+            for (String url : urls) {
                 starterParams.append("\n\t\t");
                 starterParams.append(url);
             }
             starterParams.append("\n\t}");
-        }else{
+        } else {
             starterParams.append("\n\tWorking directory: ");
             starterParams.append(rxLoader.getRepositoryUri());
         }
         starterParams.append("\n}");
         logger.log(Level.INFO, "Starter information: {0}", starterParams.toString());
-        final Map<String,String> replacements = rxLoader.getLocalFiles().getAllReplacements();
-        if (replacements!=null && !replacements.isEmpty()){
+        final List<ReplacementFile> replacements = rxLoader.getLocalFiles().getAllReplacementsEx();
+        if (replacements != null && !replacements.isEmpty()) {
             final StringBuilder fileReplacements = new StringBuilder("{");
-            for (Map.Entry<String,String> replacement: replacements.entrySet()){
-                fileReplacements.append("\n\t");
-                fileReplacements.append(replacement.getKey());
-                fileReplacements.append(" => ");
-                fileReplacements.append(replacement.getValue());
+            for (ReplacementFile repFile : replacements) {
+                for (ReplacementEntry replacement : repFile.getEntries()) {
+                    fileReplacements.append("\n\t");
+                    fileReplacements.append(replacement.getRemote());
+                    fileReplacements.append(" => ");
+                    fileReplacements.append(repFile.getHumanReadableLocal(replacement.getRemote()));
+                }
             }
             fileReplacements.append("\n}");
             logger.log(Level.INFO, "File replacements: {0}", fileReplacements.toString());
         }
-    }        
+    }
     
-    private static void printWebServerArguments(final Logger logger){
-        logger.log(Level.INFO, "Web Presentation Server arguments: {0}", WebServerRunParams.print());
+    private static void printSystemInformation(final Logger logger) {
+        final StringBuilder sysInfoBuilder = new StringBuilder("\nJava version: {0}\n");
+        sysInfoBuilder.append("System information: {1} {2} running on {3}; {4}; {5}_{6}\n");
+        final String osVersion = System.getProperty("os.version").replace("-", "\u2011");
+        String pid;
+        try{
+            pid = String.valueOf(org.radixware.kernel.starter.utils.SystemTools.getCurrentProcessPid());            
+        }catch(IllegalStateException | NumberFormatException exception){
+            logger.log(Level.INFO, "Failed to get PID: {0}", exception.toString());
+            pid = null;
+        }
+        if (pid==null){
+            logger.log(Level.INFO, sysInfoBuilder.toString(), 
+                new Object[]{System.getProperty("java.runtime.version"),System.getProperty("os.name"), 
+                osVersion, System.getProperty("os.arch"),System.getProperty("file.encoding"), 
+                System.getProperty("user.language"), System.getProperty("user.country")});            
+        }else{
+            sysInfoBuilder.append("Process identifier: {7}");
+            logger.log(Level.INFO, sysInfoBuilder.toString(), 
+                new Object[]{System.getProperty("java.runtime.version"),System.getProperty("os.name"), 
+                osVersion, System.getProperty("os.arch"),System.getProperty("file.encoding"), 
+                System.getProperty("user.language"), System.getProperty("user.country"), pid});
+        }
+        
+    }
+
+    private static void printWebServerArguments(final WebServerRunParams runParams, final Logger logger) {
+        logger.log(Level.INFO, "Web Presentation Server arguments: {0}", runParams.print());
         {// init kerberos
-            final WebServerRunParams.KrbWpsOptions krbOptions = WebServerRunParams.getKerberosOptions();
-            if (krbOptions != null) {
+            final WebServerRunParams.KrbWpsOptions krbOptions = runParams.getKerberosOptions();
+            if (krbOptions != null && krbOptions.isKerberosOptionsEnabled()) {
                 final KrbLoginEventsPrinter printer
                         = new KrbLoginEventsPrinter(logger);
                 instance.serviceCreds = KerberosUtils.createCredentials(krbOptions, printer);
@@ -323,56 +366,56 @@ public class WebServer {
                     logger.warning("It is not recommend to use insecure connection and allow transfer of kerberos identification data");
                 }
             }
-        }        
+        }
     }
-    
-    private static void printProductVersions(final Logger logger){
-        final RadixClassLoader loader = (RadixClassLoader)WebServer.class.getClassLoader();
+
+    private static void printProductVersions(final Logger logger) {
+        final RadixClassLoader loader = (RadixClassLoader) WebServer.class.getClassLoader();
         List<LayerMeta> layers = loader.getRevisionMeta().getAllLayersSortedFromBottom();
         String releaseNumber;
         final StringBuilder versions = new StringBuilder("{");
-        
+
         for (LayerMeta layer : layers) {
             releaseNumber = layer.getReleaseNumber();
             versions.append("\n\t");
             versions.append(layer.getUri());
             versions.append(":\t\t\t");
-            versions.append(releaseNumber);            
+            versions.append(releaseNumber);
         }
         versions.append("\n}");
-        logger.log(Level.INFO,"Product versions: {0}", versions.toString());
+        logger.log(Level.INFO, "Product versions: {0}", versions.toString());
     }
 
-    private static void checkDbPath(final String dbPath, final Logger logger){
+    private static void checkDbPath(final String dbPath, final Logger logger) {
         final File dbDir = new File(dbPath);
         final String path = dbDir.getAbsolutePath();
         final String messageTemplate = "Failed to use local settings storage: {0}";
         if (!dbDir.exists()) {
             try {
                 if (!dbDir.mkdirs()) {
-                    final String reason = "failed to create \'"+path+"\'";
-                    logger.log(Level.SEVERE, messageTemplate,reason);
+                    final String reason = "failed to create \'" + path + "\'";
+                    logger.log(Level.SEVERE, messageTemplate, reason);
                     return;
-                }                      
+                }
             } catch (SecurityException ex) {
-                final String reason = "failed to create \'"+path+"\'";
-                logger.log(Level.SEVERE, messageTemplate,reason);
+                final String reason = "failed to create \'" + path + "\'";
+                logger.log(Level.SEVERE, messageTemplate, reason);
                 return;
             }
         }
-        if (!dbDir.isDirectory()){
-            final String reason = "\'"+path+"\' is not a directory";
-            logger.log(Level.SEVERE, messageTemplate,reason);
-            return;            
+        if (!dbDir.isDirectory()) {
+            final String reason = "\'" + path + "\' is not a directory";
+            logger.log(Level.SEVERE, messageTemplate, reason);
+            return;
         }
-        if (!dbDir.canRead()){
-            final String reason = "\'"+path+"\' is not accessible";
-            logger.log(Level.SEVERE, messageTemplate,reason);
-            return;                        
+        if (!dbDir.canRead()) {
+            final String reason = "\'" + path + "\' is not accessible";
+            logger.log(Level.SEVERE, messageTemplate, reason);
+            return;
         }
-        if (!dbDir.canWrite()){
-            final String reason = "\'"+path+"\' is not writable";
-            logger.log(Level.SEVERE, messageTemplate,reason);                        
+        if (!dbDir.canWrite()) {
+            final String reason = "\'" + path + "\' is not writable";
+            logger.log(Level.SEVERE, messageTemplate, reason);
         }
     }
 
@@ -380,8 +423,7 @@ public class WebServer {
         synchronized (krbSem) {
             return serviceCreds;
         }
-    }
-    private boolean stopped = false;
+    }    
 
     public void shutdown() {
         synchronized (shutdownLock) {
@@ -389,8 +431,30 @@ public class WebServer {
             shutdownLock.notify();
         }
     }
+    
+    private boolean stopped = false;    
+    private final List<WpsApplication> applicationCache = new LinkedList<>();
+    private final Map<String, String> urlParamsByCookie = new ConcurrentHashMap<>();
+    private final Random rnd = new SecureRandom();
+    private long lastCreatedVersion;
+    private long lastActualizedVersion;
+    private boolean actualizerThreadStarted = false;    
 
-    private WebServer() {
+    private WebServer() {        
+    }
+    
+    private static File getBannerDir(final WebServerRunParams runParams){
+        Banner.Options bannerOptions = runParams.getBannerOptions();
+        if (bannerOptions == null) {
+            return null;
+        }
+        final String bannerDirPath = bannerOptions.getDirPath();
+        if (bannerDirPath==null || bannerDirPath.isEmpty()){
+            return null;
+        }else{
+            final File banner = new File(bannerDirPath);
+            return banner.isDirectory() ? banner : null;
+        }        
     }
 
     private static ClassLoader getStarterClassLoader() {
@@ -401,7 +465,10 @@ public class WebServer {
         return startersClassLoader;
     }
 
-    private boolean processRequestImpl(WpsApplication application, final HttpServletRequest rq, final HttpServletResponse rs) {
+    private boolean processRequestImpl(final WpsApplication application, 
+                                                           final WebServerRunParams runParams,
+                                                           final HttpServletRequest rq, 
+                                                           final HttpServletResponse rs) {
         String fullUri = rq.getRequestURI();
         String contextPath = rq.getContextPath();
 
@@ -443,29 +510,21 @@ public class WebServer {
                             try {
                                 stream = new FileInputStream(content.file);
                                 if (content.save) {
-                                    String fileName = content.desc;
-                                    if (fileName == null || fileName.isEmpty()) {
-                                        fileName = content.file.getName();
-                                    } else {
-                                        String fileExt = FileUtils.getFileExt(content.file);
-                                        boolean extComputed = false;
-                                        if (fileExt == null || fileExt.isEmpty()) {
-                                            extComputed = true;
-                                            String mt = content.mimeType;
-                                            if (mt != null && !mt.isEmpty()) {
-                                                int index = mt.indexOf("/");
-                                                if (index >= 0 && index + 1 < mt.length()) {
-                                                    fileExt = mt.substring(index + 1);
-                                                } else {
-                                                    fileExt = mt;
-                                                }
-                                            }
-                                        }
-                                        if (extComputed && fileExt != null && !fileExt.isEmpty()) {
-                                            fileName += "." + fileExt;
-                                        }
+                                    final String fileName = content.desc;
+                                    final String encodedFileName = FileNameEncoder.encode(fileName);
+                                    final String userAgent = rq.getHeader("user-agent");
+                                    final boolean isIE8 = userAgent!=null && userAgent.contains("MSIE 8");                                    
+                                    final StringBuilder contentDispositionBuilder = new StringBuilder("attachment; filename=");
+                                    
+                                    if (isIE8){
+                                        contentDispositionBuilder.append(encodedFileName);
+                                    }else{
+                                        contentDispositionBuilder.append('\"');
+                                        contentDispositionBuilder.append(fileName);
+                                        contentDispositionBuilder.append("\"; filename*=UTF-8''");
+                                        contentDispositionBuilder.append(encodedFileName);
                                     }
-                                    rs.addHeader("content-disposition", "attachment;filename=\"" + fileName + "\"");
+                                    rs.addHeader("content-disposition", contentDispositionBuilder.toString());
                                 }
                                 rs.setContentType(content.mimeType);
                                 OutputStream out = rs.getOutputStream();
@@ -488,14 +547,14 @@ public class WebServer {
                             }
                         }
                     } else {
-                        String resourceName = fullUri.substring(8);
-                        InputStream stream = getClass().getClassLoader().getResourceAsStream(resourceName);
-                        if (stream != null) {
-                            if (resourceName.endsWith(".css")) {
-                                rs.setContentType("text/css");
-                            } else {
-                                rs.setContentType("text/javascript");
-                            }
+                        final String resourceName = fullUri.substring(8);
+                        if (resourceName.endsWith(".css")) {
+                            rs.setContentType("text/css");
+                        } else {
+                            rs.setContentType("text/javascript");
+                        }
+                        final InputStream stream = getClass().getClassLoader().getResourceAsStream(resourceName);
+                        if (stream != null){
                             FileUtils.copyStream(stream, rs.getOutputStream());
                         }
                     }
@@ -504,19 +563,74 @@ public class WebServer {
                 }
             }
             return true;
+        } else if (fullUri.startsWith("/bannerDir/")) {
+            final File bannerDir = getBannerDir(runParams);
+            if (bannerDir!=null){
+                final String filePath;
+                try{
+                    filePath = URLDecoder.decode(fullUri.substring(11), "UTF-8");
+                }catch(UnsupportedEncodingException ex){
+                    return true;
+                }
+                final File bannerResource = new File(bannerDir, filePath);
+                if (bannerResource.isFile() && isInSubDirectory(bannerDir, bannerResource)){
+                    if (fullUri.endsWith(".css")){
+                        rs.setContentType("text/css");
+                    }else if (fullUri.endsWith(".js")){
+                        rs.setContentType("text/javascript");
+                    }
+                    try{
+                        final OutputStream out = rs.getOutputStream();
+                        final InputStream in = new FileInputStream(bannerResource);
+                        try{
+                            FileUtils.copyStream(in, out);
+                        }catch(IOException ex){
+                        }finally{
+                            try{
+                                in.close();
+                            }catch(IOException ex){
+
+                            }
+                            try{
+                                out.close();
+                            }catch(IOException ex){
+
+                            }
+                        }
+                    }catch(IOException ex){
+                    }
+                    return true;
+                }
+            }
+            try{
+                if (!rs.isCommitted()){
+                    rs.sendError(404);
+                }
+            }catch(IOException ex){
+            } 
+            return true;
         }
         return false;
     }
-    private final List<WpsApplication> applicationCache = new LinkedList<>();
-    private long lastCreatedVersion;
-    private long lastActualizedVersion;
-    private boolean actualizerThreadStarted = false;
-
-    WpsApplication getLatestAppVersion(final boolean ignoreRadixLoaderException, boolean useLatestExistingApplication, Collection<Id> changedIds) throws RadixLoaderException {
+        
+    private static boolean isInSubDirectory(final File dir, final File file) {
+        for (File parent=file.getParentFile(); parent!=null; parent=parent.getParentFile()){
+            if (parent.equals(dir)){
+                return true;
+            }
+        }
+        return false;
+    }
+                
+    WpsApplication getLatestAppVersion(final boolean ignoreRadixLoaderException, 
+                                                           final boolean useLatestExistingApplication, 
+                                                           final Collection<Id> changedIds,
+                                                           final long targetVersion) throws RadixLoaderException {
         synchronized (applicationCache) {
             if (applicationCache.isEmpty()) {
+                long versionNumber = -1;
                 try {
-                    WpsAdsVersion.actualize(true);
+                    versionNumber = WpsAdsVersion.actualize(true, RadixLoader.getInstance().getCurrentRevision());
                 } catch (RadixLoaderException exception) {
                     if (ignoreRadixLoaderException) {
                         Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, "Unexpected exception on actualizing version", exception);
@@ -524,10 +638,10 @@ public class WebServer {
                         throw exception;
                     }
                 }
-                WpsApplication app = new WpsApplication(this, changedIds);
+                final WpsApplication app = new WpsApplication(this, changedIds, versionNumber);
                 lastActualizedVersion = lastCreatedVersion = app.getAdsVersionNumber();
                 applicationCache.add(app);
-                if (!actualizerThreadStarted) {
+                /*if (!actualizerThreadStarted) {
                     actualizerThreadStarted = true;
                     Thread actualizer = new Thread(new Runnable() {
                         @Override
@@ -554,7 +668,7 @@ public class WebServer {
                     actualizer.setName("RadixWare background version actualizer thread");
                     actualizer.setDaemon(true);
                     actualizer.start();
-                }
+                }*/
                 return app;
             } else {
                 long lastActualVersion = actualizeImpl(false);
@@ -574,23 +688,27 @@ public class WebServer {
                     }
                 }
 
-                long checkAgainsVersion = -1;
-                try {
-                    checkAgainsVersion = actualizeImpl(true);
-                } catch (RadixLoaderException exception) {
-                    if (ignoreRadixLoaderException) {
-                        Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, "Unexpected exception on actualizing version", exception);
-                    } else {
-                        throw exception;
+                long checkAgainstVersion = -1;
+                if (targetVersion<0){
+                    try {
+                        checkAgainstVersion = actualizeImpl(true);
+                    } catch (RadixLoaderException exception) {
+                        if (ignoreRadixLoaderException) {
+                            Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, "Unexpected exception on actualizing version", exception);
+                        } else {
+                            throw exception;
+                        }
                     }
+                }else{
+                    checkAgainstVersion = targetVersion;
                 }
                 for (int i = applicationCache.size() - 1; i >= 0; i--) {
                     WpsApplication app = applicationCache.get(i);
-                    if (app.getAdsVersionNumber() < 0 || app.getAdsVersionNumber() == checkAgainsVersion) {
+                    if (app.getAdsVersionNumber() < 0 || app.getAdsVersionNumber() == checkAgainstVersion) {
                         return app;
                     }
                 }
-                WpsApplication app = new WpsApplication(this, changedIds);
+                WpsApplication app = new WpsApplication(this, changedIds, checkAgainstVersion);
                 lastCreatedVersion = app.getAdsVersionNumber();
                 applicationCache.add(app);
                 return app;
@@ -618,6 +736,7 @@ public class WebServer {
     void destroyApplication(WpsApplication app) {
         synchronized (applicationCache) {
             applicationCache.remove(app);
+            app.closeOwnTracer();
             UserExplorerItemsStorage.clearCache(app);
             Filters.clearCache(app);
             Sortings.clearCache(app);
@@ -634,6 +753,8 @@ public class WebServer {
 
             doProcessRequest(rq, rs);
         } catch (RadixError e) {//NOPMD
+            throw e;
+        } catch (HttpSessionTerminatedError e){
             throw e;
         } catch (Throwable e) {
             RadixError wrapper = new RadixError("Unexpected exception on request processing", e);
@@ -652,17 +773,24 @@ public class WebServer {
         private final HttpServletRequest rq;
         private final HttpServletResponse rs;
 
-        public ContextFinalizer(HttpSessionContext context, HttpQuery query, HttpServletRequest rq, HttpServletResponse rs) {
+        public ContextFinalizer(final HttpSessionContext context, 
+                                           final HttpQuery query, 
+                                           final HttpServletRequest rq, 
+                                           final HttpServletResponse rs) {
             this.context = context;
             this.query = query;
             this.rq = rq;
             this.rs = rs;
         }
 
-        public void finalizeContext() {
+        public void finalizeContext(final boolean processRequest) {
             try {
-                context.processRequest(query, rq, rs);
+                if (processRequest){
+                    context.processRequest(query, rq, rs);
+                }
                 context.dispose();
+            } catch(HttpSessionTerminatedError e){
+                //Already disposed - ignore
             } catch (Throwable e) {
                 Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, "Unexpected exception on session context finalization", e);
             }
@@ -683,6 +811,8 @@ public class WebServer {
                 for (HttpSessionContext context : contexts) {
                     try {
                         context.dispose();
+                    } catch(HttpSessionTerminatedError e){
+                        //Already disposed - ignore
                     } catch (Throwable e) {
                         Logger.getLogger(WebServer.class.getName()).log(Level.SEVERE, "Unexpected exception on session context finalization", e);
                     }
@@ -716,21 +846,19 @@ public class WebServer {
         }
     }
 
-    private void doProcessRequest(HttpServletRequest rq, HttpServletResponse rs) throws RadixLoaderException {
+    private void doProcessRequest(HttpServletRequest rq, HttpServletResponse rs) throws RadixLoaderException, UnsupportedEncodingException {
         final String queryString = rq.getQueryString();
+        final String decodedQueryString = queryString == null ? null : URLDecoder.decode(queryString, "UTF-8");
         final String rqAuthzHeader = rq.getHeader(HttpHeaderConstants.AUTHZ_HEADER);
-        final HttpQuery query = new HttpQuery(queryString, rqAuthzHeader);
+        final HttpQuery query = new HttpQuery(decodedQueryString, rqAuthzHeader);
         final HttpSession session = rq.getSession(true);
-
-        int inactiveInterval = WebServerRunParams.getSessionInactiveInteraval();
-        if (inactiveInterval > 0) {
-            session.setMaxInactiveInterval(inactiveInterval);
-        }
-
+        
+        ContextHolder holder = null;        
         HttpSessionContext context = null;
         boolean requestProcessedByContext = false;
 
         ContextFinalizer contextFinalizer = null;
+        boolean requestWasProcessed = false;
         try {
             synchronized (session) {
 
@@ -740,8 +868,7 @@ public class WebServer {
                 } catch (IllegalStateException e) {
                     throw new RadixError("SESSION_STATE_INVALID", e);
                 }
-
-                ContextHolder holder = null;
+                
                 if (contextObj instanceof ContextHolder) {
                     holder = (ContextHolder) contextObj;
                 }
@@ -754,22 +881,33 @@ public class WebServer {
                     }
                 }
 
-                if (query.isDisposeRequest() || (context != null && context.wasDisposed())) {
+                final boolean isDisposeRequest = query.isDisposeRequest();
+                if (isDisposeRequest || (context != null && context.wasDisposed())) {
                     boolean shouldInvalidate;
                     if (context != null) {
                         requestProcessedByContext = true;
                         if (!context.wasDisposed()) {
+                            if (!checkQueryTocken(context, query, rs)){
+                                return;
+                            }
+                            context.beforeDispose();
                             contextFinalizer = new ContextFinalizer(context, query, rq, rs);
                         }
                         holder.removeContext(context);
-                        shouldInvalidate = holder.isEmpty() && query.isDisposeRequest();
-                        if (!query.isDisposeRequest()) {
+                        shouldInvalidate = holder.isEmpty() && isDisposeRequest;
+                        if (!isDisposeRequest) {
                             context = null;
                         }
                     } else {
                         shouldInvalidate = holder == null || holder.isEmpty();
                     }
                     if (shouldInvalidate) {
+                        rs.setContentType("text/xml;charset=UTF-8");
+                         try (PrintWriter out = rs.getWriter()) {
+                            out.println("<disposed/>");
+                            out.flush();
+                        } catch (IOException ex) {//NOPMD
+                        }
                         session.invalidate();
                         return;
                     }
@@ -788,33 +926,102 @@ public class WebServer {
                     }
                     StringBuilder remoteInfo = new StringBuilder();
                     remoteInfo.append(rq.getRemoteAddr()).append('_').append(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis())));//NOPMD
-                    context = new HttpSessionContext(getLatestAppVersion(true, true, null), new HttpConnectionOptions(rq), remoteInfo.toString());
+                    final WpsApplication application = getLatestAppVersion(true, true, null, -1);
+                    final WebServerRunParams runParams = WebServerRunParams.newInstance();
+                    String cookieKey = null;
+                    Cookie curCookie = null;
+                    Cookie[] cookies = rq.getCookies();
+                    if (cookies != null) {
+                        for (Cookie cookie : cookies) {
+                            if (PARAM_COOKIE_NAME.equals(cookie.getName())) {
+                                cookieKey = cookie.getValue();
+                                curCookie = cookie;
+                                break;
+                            }
+                        }
+                    }
+                    String cookieValueStr = null;
+                    if (cookieKey != null && !urlParamsByCookie.isEmpty() && query.isInitRequest()) {
+                        cookieValueStr = urlParamsByCookie.remove(cookieKey);
+                    }
+                    if (cookieValueStr != null && curCookie != null) {
+                        curCookie.setMaxAge(0);
+                        rs.addCookie(curCookie);
+                    }
+                    final HttpConnectionOptions httpConnectionOptions = 
+                        new HttpConnectionOptions(rq, runParams.getCertAttrForUserName(),cookieValueStr);
+                    context = 
+                        new HttpSessionContext(application, httpConnectionOptions, remoteInfo.toString(), runParams);
                     if (holder == null) {
                         holder = new ContextHolder();
                         session.setAttribute(HTTP_SESSION_CONTEXT_ATTR_NAME, holder);
                     }
                     holder.addContext(context);
-                } /*else {
-                 context.checkVersionIsCurrent();
-                 }*/
-
+                }
             }
+            
+            int inactiveInterval = context.getRunParams().getSessionInactiveInteraval();
+            if (inactiveInterval > 0) {
+                session.setMaxInactiveInterval(inactiveInterval);
+            }            
 
-            //final ClassLoader cl = context.apllication.getDefManager().getAdsVersion().setupCurrentThread();
-            if (processRequestImpl(context.application, rq, rs)) {
+            if (processRequestImpl(context.application, context.getRunParams(), rq, rs)) {
+                requestWasProcessed = true;
                 return;
             }
-            if (!requestProcessedByContext && context.getHttpConnectionOptions().isSecurityOptionsAcceptable(rq)) {
+            if (!requestProcessedByContext 
+                && context.getHttpConnectionOptions().isSecurityOptionsAcceptable(rq)
+                && checkQueryTocken(context, query, rs)) {
+                final String referer = rq.getHeader(HttpHeaderConstants.REFERER);
+                if (!referer.isEmpty() && referer.contains("?")){  
+                    rs.setContentType("text/xml;charset=UTF-8");
+                    final String paramCoockie = generateParamCookie();
+                    urlParamsByCookie.put(paramCoockie, referer);
+                    Cookie cookie = new Cookie(PARAM_COOKIE_NAME, paramCoockie);
+                    cookie.setPath("/");
+                    cookie.setMaxAge(60*2);
+                    cookie.setSecure(false);
+                    rs.addCookie(cookie);
+                    try (PrintWriter out = rs.getWriter()) {
+                        if (holder!=null){
+                            context.beforeDispose();
+                            holder.removeContext(context);
+                            session.invalidate();                         
+                        }
+                        out.println("<redirect/>");
+                        out.flush();
+                        return;
+                    } catch (IOException ex) {//NOPMD
+                    }
+                }
                 context.rqCheckDelay = session.getMaxInactiveInterval() * 1000;
                 context.processRequest(query, rq, rs);
+                requestWasProcessed = true;
             }
 
         } finally {
             if (contextFinalizer != null) {
-                contextFinalizer.finalizeContext();
+                contextFinalizer.finalizeContext(!requestWasProcessed);
             }
             Thread.currentThread().setContextClassLoader(null);
         }
+    }
+    
+    private String generateParamCookie(){
+        final byte[] arrBytes = new byte[16];
+        rnd.nextBytes(arrBytes);
+        return Hex.encode(arrBytes);
+    }
+    
+    private static boolean checkQueryTocken(final HttpSessionContext httpContext, final HttpQuery query, final HttpServletResponse response){
+        if (!httpContext.checkQueryToken(query)){
+            try{
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }catch(IOException ex){                
+            }
+            return false;
+        }
+        return true;
     }
 
     public static WebServer getInstance() {

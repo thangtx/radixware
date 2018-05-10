@@ -19,8 +19,11 @@ public final class RootExplorerItemPresentationContext extends TreePresentationC
     
     private final Id rootParagraphId;
     
-    public RootExplorerItemPresentationContext(final Id rootId, final Id explorerItemId, final EntityGroup group){
-        super(explorerItemId, group);
+    public RootExplorerItemPresentationContext(final Id rootId, 
+                                                                        final Id explorerItemId, 
+                                                                        final EntityGroup group,
+                                                                        final Id selectorPresentationId){
+        super(explorerItemId, group, selectorPresentationId);
         rootParagraphId = rootId;
     }
     

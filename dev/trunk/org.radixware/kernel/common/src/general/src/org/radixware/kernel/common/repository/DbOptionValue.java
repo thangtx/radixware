@@ -11,13 +11,15 @@
  */
 package org.radixware.kernel.common.repository;
 
+import java.io.Serializable;
+import java.util.Objects;
 import org.radixware.kernel.common.enums.EOptionMode;
 
 /**
  *
  * @author dsafonov
  */
-public class DbOptionValue {
+public class DbOptionValue implements Serializable{
 
     private final String optionName;
     private final EOptionMode mode;
@@ -33,6 +35,32 @@ public class DbOptionValue {
 
     public EOptionMode getMode() {
         return mode;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + Objects.hashCode(this.optionName);
+        hash = 79 * hash + Objects.hashCode(this.mode);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final DbOptionValue other = (DbOptionValue) obj;
+        if (!Objects.equals(this.optionName, other.optionName)) {
+            return false;
+        }
+        if (this.mode != other.mode) {
+            return false;
+        }
+        return true;
     }
 
     @Override

@@ -10,12 +10,14 @@
  */
 package org.radixware.kernel.common.builder.check.ads.clazz.presentations;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import org.radixware.kernel.common.builder.check.ads.AdsDefinitionChecker;
 import org.radixware.kernel.common.builder.check.ads.CheckUtils;
+import org.radixware.kernel.common.builder.check.common.CheckHistory;
 import org.radixware.kernel.common.builder.check.common.RadixObjectChecker;
 import static org.radixware.kernel.common.builder.check.common.RadixObjectChecker.error;
 import org.radixware.kernel.common.check.IProblemHandler;
@@ -37,11 +39,13 @@ import org.radixware.kernel.common.defs.ads.clazz.presentation.ParentRefProperty
 import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyEditOptions;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyPresentation;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.editmask.EditMask;
+import org.radixware.kernel.common.defs.ads.clazz.presentation.editmask.EditMaskStr;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.ads.type.ParentRefType;
+import org.radixware.kernel.common.defs.dds.DdsColumnDef;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EEditPossibility;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
@@ -52,11 +56,11 @@ public abstract class EditOptionsChecker<T extends EditOptions> extends RadixObj
 
     public static final class Factory {
 
-        public static EditOptionsChecker newInstance(AdsDefinition owner, AdsTypeDeclaration ownerType, AdsEnumDef enumDef) {
+        public static EditOptionsChecker newInstance(AdsDefinition owner, AdsTypeDeclaration ownerType, AdsEnumDef enumDef, CheckHistory checkHistory) {
             if (owner.getDefinitionType() == EDefType.CLASS_PROPERTY) {
-                return new PropertyEditOptionsChecker(owner, ownerType, enumDef);
+                return new PropertyEditOptionsChecker(owner, ownerType, enumDef, checkHistory);
             } else if (owner.getDefinitionType() == EDefType.FILTER_PARAM) {
-                return new ParamEditOptionsChecker(owner, ownerType, enumDef);
+                return new ParamEditOptionsChecker(owner, ownerType, enumDef, checkHistory);
             } else {
                 throw new IllegalStateException("Unsupported edit options owner: " + owner.getClass().getName());
             }
@@ -80,7 +84,7 @@ public abstract class EditOptionsChecker<T extends EditOptions> extends RadixObj
         EditMask editMask = options.getEditMask();
 
         if (ownerType != null) {
-            ownerType.check(options, problemHandler);
+            ownerType.check(options, problemHandler, getHistory().getMap());
         }
         CheckUtils.checkEditMask(editMask, ownerType.getTypeId(), enumeration, problemHandler, ownerType, ownerName);
         CheckUtils.checkMLStringId(owner, options.getNullValTitleId(), problemHandler, "null display value");
@@ -161,8 +165,9 @@ public abstract class EditOptionsChecker<T extends EditOptions> extends RadixObj
 
     private static class PropertyEditOptionsChecker extends EditOptionsChecker<PropertyEditOptions> {
 
-        public PropertyEditOptionsChecker(AdsDefinition owner, AdsTypeDeclaration ownerType, AdsEnumDef enumeration) {
+        public PropertyEditOptionsChecker(AdsDefinition owner, AdsTypeDeclaration ownerType, AdsEnumDef enumeration, CheckHistory checkHistory) {
             super(owner, ownerType, enumeration, "property");
+            setHistory(checkHistory);
         }
 
         @Override
@@ -175,9 +180,21 @@ public abstract class EditOptionsChecker<T extends EditOptions> extends RadixObj
             super.check(options, problemHandler);
             final AdsPropertyDef prop = (AdsPropertyDef) owner;
             if (prop instanceof ColumnProperty) {
-                if (((ColumnProperty) prop).getColumnInfo().isPrimaryKey()) {
+                ColumnProperty columnProperty = (ColumnProperty) prop;
+                if (columnProperty.getColumnInfo().isPrimaryKey()) {
                     if (options.getEditPossibility() != EEditPossibility.NEVER && options.getEditPossibility() != EEditPossibility.ON_CREATE) {
                         error(prop, problemHandler, "Inadmissible primary key edit possibility. Should be \"Never\" or \"On Create\"");
+                    }
+                }
+                if (options.getEditMask() instanceof EditMaskStr){
+                    EditMaskStr editMaskStr = (EditMaskStr) options.getEditMask();
+                    final DdsColumnDef column = columnProperty.getColumnInfo().findColumn();
+                    if (column != null) {
+                        String type = column.getDbType();
+                        //TODO: RADIX-11689
+//                        if (type != null && type.toUpperCase().startsWith("VARCHAR2") && editMaskStr.getDbMaxLen() != null && editMaskStr.getDbMaxLen() > 1000) {
+//                            warning(prop, problemHandler, "The length of UTF-8 string may exceed 4000 bytes (maximum size of VARCHAR2)");
+//                        }
                     }
                 }
             }
@@ -217,8 +234,9 @@ public abstract class EditOptionsChecker<T extends EditOptions> extends RadixObj
 
     private static class ParamEditOptionsChecker extends EditOptionsChecker<AdsFilterDef.Parameter.ParameterEditOptions> {
 
-        public ParamEditOptionsChecker(AdsDefinition owner, AdsTypeDeclaration ownerType, AdsEnumDef enumeration) {
+        public ParamEditOptionsChecker(AdsDefinition owner, AdsTypeDeclaration ownerType, AdsEnumDef enumeration, CheckHistory checkHistory) {
             super(owner, ownerType, enumeration, "filter parameter");
+            setHistory(checkHistory);
         }
 
         @Override

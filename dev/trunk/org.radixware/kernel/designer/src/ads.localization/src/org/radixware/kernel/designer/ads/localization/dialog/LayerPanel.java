@@ -18,14 +18,18 @@ package org.radixware.kernel.designer.ads.localization.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.swing.border.EmptyBorder;
 import org.openide.util.NbBundle;
 import org.radixware.kernel.common.defs.Module;
+import org.radixware.kernel.common.defs.dds.DdsModule;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.designer.common.dialogs.components.state.StateAbstractDialog;
-
 
 public class LayerPanel extends javax.swing.JPanel {
 
@@ -38,14 +42,50 @@ public class LayerPanel extends javax.swing.JPanel {
     public LayerPanel() {
         initComponents();
     }
-    
-    public void open(final Map<Layer, List<Module>> selectedLayers){
+
+    public void open(final Map<Layer, List<Module>> selectedLayers) {
         isOpened = true;
         this.selectedLayers = selectedLayers;
-        createUi();
+        createUi(true);
+    }
+
+    public void open(final Map<Layer, List<Module>> selectedLayers, boolean showDdsSegment) {
+        isOpened = true;
+        if (selectedLayers != null && !showDdsSegment){
+            Map<Layer, List<Module>> filteredMap = new HashMap<>();
+            for (Layer l : selectedLayers.keySet()){
+                List<Module> result = new ArrayList<>();
+                List<Module> actualList = selectedLayers.get(l);
+                if (actualList != null){
+                    for (Module m : actualList){
+                        if (!(m instanceof DdsModule)){
+                            result.add(m);
+                        }
+                    }
+                }
+                
+                if (!result.isEmpty()){
+                    filteredMap.put(l, result);
+                } else if (actualList == null){
+                    filteredMap.put(l, null);
+                }
+            }
+            if (filteredMap.isEmpty()){
+                this.selectedLayers = null;
+            } else{
+                this.selectedLayers = filteredMap;
+            }
+        } else {
+            this.selectedLayers = selectedLayers;
+        }
+        createUi(showDdsSegment);
     }
 
     private void createUi() {
+        createUi(false);
+    }
+
+    private void createUi(final boolean showDdsSegment) {
         extendableTextField.setEditable(false);
         extendableTextField.addButton("...");
         final String text = getTextFromResult();
@@ -54,7 +94,7 @@ public class LayerPanel extends javax.swing.JPanel {
             @Override
             public void actionPerformed(final ActionEvent event) {
 
-                final ChooseLayersDialog dialog = new ChooseLayersDialog(selectedLayers);
+                final ChooseLayersDialog dialog = new ChooseLayersDialog(selectedLayers, showDdsSegment);
                 dialog.check();
                 dialog.setBorder(new EmptyBorder(10, 10, 10, 10));
                 final StateAbstractDialog mDialog = new StateAbstractDialog(dialog, NbBundle.getMessage(LayerPanel.class, "CHOOSE_LAYERS")) {
@@ -70,14 +110,14 @@ public class LayerPanel extends javax.swing.JPanel {
     }
 
     private String getTextFromResult() {
-        if (!isOpened){
+        if (!isOpened) {
             return "";
         }
-        
+
         if (selectedLayers == null) {
             return NbBundle.getMessage(LayerPanel.class, "ALL_LAYERS");
         }
-        
+
         final StringBuilder sb = new StringBuilder();
         for (Layer node : selectedLayers.keySet()) {
             if (node != null && node.getBranch() != null) {
@@ -117,6 +157,10 @@ public class LayerPanel extends javax.swing.JPanel {
         return selectedLayers;
     }
 
+    public void changeGap(int width) {
+        filler2.changeShape(new java.awt.Dimension(width, 0), new java.awt.Dimension(width, 0), new java.awt.Dimension(width, getMaximumSize().height));
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -126,33 +170,23 @@ public class LayerPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        extendableTextField = new org.radixware.kernel.common.components.ExtendableTextField(true);
         jLabel1 = new javax.swing.JLabel();
+        filler2 = new javax.swing.Box.Filler(new java.awt.Dimension(18, 0), new java.awt.Dimension(18, 0), new java.awt.Dimension(18, 32767));
+        extendableTextField = new org.radixware.kernel.common.components.ExtendableTextField(true);
 
         setMaximumSize(new java.awt.Dimension(32767, 27));
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabel1.setText(org.openide.util.NbBundle.getMessage(LayerPanel.class, "LayerPanel.jLabel1.text")); // NOI18N
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(extendableTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(extendableTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jLabel1))
-        );
-
+        add(jLabel1);
         jLabel1.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(LayerPanel.class, "LayerPanel.jLabel1.AccessibleContext.accessibleName")); // NOI18N
+
+        add(filler2);
+        add(extendableTextField);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.radixware.kernel.common.components.ExtendableTextField extendableTextField;
+    private javax.swing.Box.Filler filler2;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

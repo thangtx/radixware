@@ -25,7 +25,7 @@ import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
 import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
 import org.radixware.kernel.common.msdl.fields.StructureFieldModel;
 import org.radixware.kernel.common.msdl.enums.EEncoding;
-import org.radixware.kernel.common.design.msdleditor.enums.EStructureBitmapFirstBitBehavior;
+import org.radixware.kernel.common.msdl.fields.parser.structure.EStructureBitmapFirstBitBehavior;
 import org.radixware.schemas.msdl.Structure.Bitmap;
 
 
@@ -56,10 +56,13 @@ public class BitmapPanel extends AbstractEditItem {
         model.addElement(EEncoding.BIN);
         model.addElement(EEncoding.HEX);
         model.addElement(EEncoding.EBCDIC);
+        model.addElement(EEncoding.EBCDIC_CP1047);
+        model.addElement(EEncoding.HEXEBCDIC);
         jComboBox1.setModel(model);
         DefaultComboBoxModel model1 = new DefaultComboBoxModel();
-        model1.addElement(EStructureBitmapFirstBitBehavior.CONTINUE);
         model1.addElement(EStructureBitmapFirstBitBehavior.FIELD);
+        model1.addElement(EStructureBitmapFirstBitBehavior.ISO_8583);
+        model1.addElement(EStructureBitmapFirstBitBehavior.BITMAPS_FIRST);
         jComboBox2.setModel(model1);
         update();
     }
@@ -161,7 +164,7 @@ public class BitmapPanel extends AbstractEditItem {
         if (!opened)
             return;
         EEncoding encoding = (EEncoding)jComboBox1.getSelectedItem();
-        field.getStructure().getBitmap().setEncoding(encoding.getName());
+        field.getStructure().getBitmap().setEncoding(encoding.getValue());
         field.setModified();
     }//GEN-LAST:event_jComboBox1ActionPerformed
 

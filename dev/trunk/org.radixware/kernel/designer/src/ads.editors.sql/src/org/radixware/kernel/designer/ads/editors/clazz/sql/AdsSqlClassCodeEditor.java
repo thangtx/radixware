@@ -17,6 +17,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef;
 import org.radixware.kernel.common.scml.Scml.Tag;
 import org.radixware.kernel.common.sqml.tags.IfParamTag;
 import org.radixware.kernel.common.sqml.tags.ParameterTag;
@@ -41,7 +42,7 @@ import org.radixware.kernel.designer.common.editors.sqml.actions.SqmlTopLevelAct
 
 public class AdsSqlClassCodeEditor extends SqmlEditorPanel {
 
-    private AdsSqlClassDef sqlClass;
+    private ISqlDef sqmlSorceDef;
     DocumentListener listener = new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
@@ -83,8 +84,8 @@ public class AdsSqlClassCodeEditor extends SqmlEditorPanel {
         actualize();
     }
 
-    public AdsSqlClassDef getSqlClass() {
-        return sqlClass;
+    public ISqlDef getSqlClass() {
+        return sqmlSorceDef;
     }
 
     @Override
@@ -101,13 +102,13 @@ public class AdsSqlClassCodeEditor extends SqmlEditorPanel {
             new SqmlTopLevelActions.ToggleCheckSqlAction(this)};
     }
 
-    public void open(AdsSqlClassDef sqlClass, EditorOpenInfo info) {
-        AdsSqlClassDef oldValue = this.sqlClass;
-        this.sqlClass = sqlClass;
+    public void open(ISqlDef sqmlSorceDef, EditorOpenInfo info) {
+        ISqlDef oldValue = this.sqmlSorceDef;
+        this.sqmlSorceDef = sqmlSorceDef;
         getPane().getDocument().removeDocumentListener(listener);
-        open(sqlClass.getSource(), info);
+        open(this.sqmlSorceDef.getSqml(), info);
         getPane().getDocument().addDocumentListener(listener);
-        firePropertyChange("sqlClass", oldValue, sqlClass);
+        firePropertyChange("sqlClass", oldValue, this.sqmlSorceDef);
     }
 
     @Override

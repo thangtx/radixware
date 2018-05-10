@@ -43,19 +43,24 @@ import org.radixware.kernel.common.repository.Layer;
     private final IFlowLogger flowLogger;
     private CheckOptions checkOptions = new CheckOptions();
     private long time;
+    private boolean ignoreErrors;
 
     public ConsoleEnvironment(EnumSet<ERuntimeEnvironmentType> env, Connection dbConnection) {
         this(env, dbConnection, null);
     }
-
+    
     public ConsoleEnvironment(EnumSet<ERuntimeEnvironmentType> env, Connection dbConnection, IFlowLogger flowLogger) {
+        this(env, dbConnection, flowLogger, false, false);
+    }
+
+    public ConsoleEnvironment(EnumSet<ERuntimeEnvironmentType> env, Connection dbConnection, IFlowLogger flowLogger, boolean isMultithread, boolean ignoreErrors) {
         buildOptions = BuildOptions.Factory.newInstance();
         if (env == null) {
             env = EnumSet.allOf(ERuntimeEnvironmentType.class);
         }
         this.flowLogger = flowLogger == null ? new ConsoleFlowLogger() : flowLogger;
         buildOptions.setEnvironment(env);
-        buildOptions.setMultythread(false);
+        buildOptions.setMultythread(isMultithread);
         buildOptions.setVerifyClassLinkage(true);
         problemHandler = new ConsoleProblemHandler(this.flowLogger);
         checkOptions.setCheckAllOvrPathes(true);
@@ -63,6 +68,7 @@ import org.radixware.kernel.common.repository.Layer;
         checkOptions.setCheckSqlClassQuerySyntax(true);
         checkOptions.setMaxSqlQueryVariants(16);
         checkOptions.setCheckDocumentation(true);
+        this.ignoreErrors = ignoreErrors;
     }
 
     @Override
@@ -118,8 +124,10 @@ import org.radixware.kernel.common.repository.Layer;
 
     @Override
     public void targetsDetermined(Set<Definition> sucseedCheckDefinititons, List<Definition> failedCheckDefinitions) {
-        if (failedCheckDefinitions != null && !failedCheckDefinitions.isEmpty()) {
-            throw new ConsoleBuilder.BuildException("Check failed");
+        if (!ignoreErrors) {
+            if (failedCheckDefinitions != null && !failedCheckDefinitions.isEmpty()) {
+                throw new ConsoleBuilder.BuildException("Check failed");
+            }
         }
     }
 

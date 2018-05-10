@@ -16,8 +16,6 @@ import org.radixware.kernel.common.msdl.MsdlField;
 import org.radixware.kernel.common.msdl.MsdlStructureField;
 import org.radixware.kernel.common.msdl.MsdlStructureHeaderFields;
 import org.radixware.kernel.common.msdl.MsdlStructureFields;
-import org.radixware.kernel.common.msdl.fields.parser.SmioField;
-import org.radixware.kernel.common.msdl.fields.parser.structure.SmioFieldStructure;
 import org.radixware.schemas.msdl.LenUnitDef;
 import org.radixware.schemas.msdl.Structure;
 import org.radixware.schemas.msdl.StructureField;
@@ -25,7 +23,11 @@ import org.radixware.kernel.common.msdl.EFieldType;
 import org.radixware.kernel.common.msdl.fields.extras.MsdlFieldDescriptor;
 import org.radixware.kernel.common.msdl.fields.extras.MsdlFieldDescriptorsList;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.logging.Logger;
+import org.radixware.kernel.common.exceptions.SmioException;
 import org.radixware.kernel.common.msdl.MsdlUnitContext;
+import org.radixware.kernel.common.msdl.fields.parser.SmioCoder;
 
 
 public class StructureFieldModel extends TemplateInstanceFieldModel {
@@ -196,14 +198,23 @@ public class StructureFieldModel extends TemplateInstanceFieldModel {
     public MsdlStructureFields getFields() {
         return fields;
     }
+    
+    public Iterator<? extends MsdlField> iteratorWithTemplates() {
+        if (isTemplateInstance()) {
+            return getFieldDescriptorList().iteratorFields();
+        }
+        return getFields().iterator();
+    }
 
     @Override
     public MsdlFieldDescriptorsList getFieldDescriptorList() {
-        MsdlFieldDescriptorsList ret = new MsdlFieldDescriptorsList();
+        MsdlFieldDescriptorsList ret = new MsdlFieldDescriptorsList(new ExtIdBytesProvider(this));
         for (MsdlStructureField f : fields) {
             ret.add(new MsdlFieldDescriptor(f));
         }
-        storeTemplaFields(ret);
+        if (isTemplateInstance()) {
+            storeTemplaFields(ret);
+        }
         return ret;
     }
 
@@ -211,23 +222,13 @@ public class StructureFieldModel extends TemplateInstanceFieldModel {
     public EFieldType getType() {
         return EFieldType.STRUCTURE;
     }
-
-    @Override
-    public SmioField getParser() {
-        if (parser == null) {
-            parser = new SmioFieldStructure(this);
-        }
-        return parser;
-    }
     
     @Override
     public String getUnit(boolean inclusive, MsdlUnitContext ctx) {
-        if (ctx.getContextType() == MsdlUnitContext.EContext.FIXED_LEN) {
-            return super.getUnit(inclusive, ctx);
-        } else if (ctx.getContextType() == MsdlUnitContext.EContext.EMBEDDED_LEN) {
+        if (ctx.getContextType() == MsdlUnitContext.EContext.EMBEDDED_LEN) {
             return LenUnitDef.BYTE.toString();
         }
-        return null;
+        return super.getUnit(inclusive, ctx);
     }
 
     @Override
@@ -242,4 +243,26 @@ public class StructureFieldModel extends TemplateInstanceFieldModel {
             cur.getFieldModel().clearParser();
         }
     }
+        
+    public String getExtIdUnit() {
+        if (getStructure().isSetFieldNaming() && getStructure().getFieldNaming().isSetExtIdUnit()) {
+            return getStructure().getFieldNaming().getExtIdUnit();
+        }
+        return LenUnitDef.BYTE.toString();
+    }
+    
+    public Byte getEndSeparator(SmioCoder coder) throws SmioException {
+        Structure struct = getStructure();
+        byte[] res = getValueConsiderUnit(coder, struct.getFieldSeparator(),
+                struct.getFieldSeparatorChar(), struct.getFieldSeparatorUnit());
+        return res == null ? null : res[0];
+    }
+
+    public Byte getStartSeparator(SmioCoder coder) throws SmioException {
+        Structure struct = getStructure();
+        byte[] res = getValueConsiderUnit(coder, struct.getFieldSeparatorStart(),
+                struct.getFieldSeparatorStartChar(), struct.getFieldSeparatorUnit());
+        return res == null ? null : res[0];
+    }
+
 }

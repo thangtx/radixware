@@ -12,9 +12,11 @@
 package org.radixware.kernel.explorer.env.session.resources;
 
 import com.trolltech.qt.core.QDir;
+import com.trolltech.qt.core.QSettings;
 import com.trolltech.qt.gui.QFileDialog;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.eas.resources.AbstractFileDirResource;
+import org.radixware.kernel.common.utils.SystemTools;
 
 
 final class FileDirResource extends AbstractFileDirResource{
@@ -38,4 +40,15 @@ final class FileDirResource extends AbstractFileDirResource{
             environment.getProgressHandleManager().unblockProgress();
         }
     }
+    
+    @Override
+    public String getUserDownloadsDirPath() {
+        if (SystemTools.isWindows){
+            final QSettings registry = new QSettings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",QSettings.Format.NativeFormat);
+            final String path = (String)registry.value("{374DE290-123F-4565-9164-39C4925E467B}");
+            return path==null || path.isEmpty() ? super.getUserDownloadsDirPath() : path;
+        }else{
+            return super.getUserDownloadsDirPath();
+        }
+   }             
 }

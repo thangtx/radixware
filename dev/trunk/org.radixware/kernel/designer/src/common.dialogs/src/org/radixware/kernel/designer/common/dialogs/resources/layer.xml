@@ -271,7 +271,8 @@
                 <file name="org-radixware-kernel-designer-common-dialogs-scmlnb-MarkOccurrencesHighlightsLayerFactory.instance"/>
                 <folder name="Actions">
                     <file name="org-radixware-kernel-designer-common-dialogs-sqlscript-actions-RunSQLScriptAction.instance"/>
-                    <file name="org-radixware-kernel-designer-common-dialogs-sqlscript-actions-ScriptCompatibilitySetupAction.instance"/>                            
+                    <file name="org-radixware-kernel-designer-common-dialogs-sqlscript-actions-ScriptCompatibilitySetupAction.instance"/>
+                    <file name="org-radixware-kernel-designer-dds-editors-scripts-transform-ScriptTrasformSetupAction.instance"/>                           
                 </folder>
                 <folder name="Toolbars">
                     <folder name="Default">
@@ -307,6 +308,7 @@
                     <file name="org-radixware-kernel-designer-common-dialogs-sqlscript-actions-SQLScriptCancelAction.instance"/>
                     <file name="org-radixware-kernel-designer-common-dialogs-sqlscript-actions-PreprocessSQLScriptAction.instance"/>
                     <file name="org-radixware-kernel-designer-common-dialogs-sqlscript-actions-ScriptCompatibilitySetupAction.instance"/>
+                    <file name="org-radixware-kernel-designer-dds-editors-scripts-transform-ScriptTrasformSetupAction.instance"/>  
                 </folder>
                               
                 <folder name="Toolbars">
@@ -338,6 +340,13 @@
                         <file name="org-radixware-kernel-designer-common-dialogs-sqlscript-actions-ScriptCompatibilitySetupAction.instance">
                             <attr name="position" intvalue="66"/>
                         </file>
+                        <file name="sep-after-preprocess.instance">
+                            <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                            <attr name="position" intvalue="67"/>
+                        </file>
+                        <file name="org-radixware-kernel-designer-dds-editors-scripts-transform-ScriptTrasformSetupAction.instance">
+                            <attr name="position" intvalue="68"/>
+                        </file> 
                         
                     </folder>
                 </folder>
@@ -365,6 +374,10 @@
                     <file name="ScriptCompatibilitySetupAction.shadow">
                         <attr name="originalFile" stringvalue="Editors/text/x-sql/Actions/org-radixware-kernel-designer-common-dialogs-sqlscript-actions-ScriptCompatibilitySetupAction.instance"/>
                         <attr name="position" intvalue="60"/>
+                    </file>
+                    <file name="ScriptTrasformSetupAction.shadow">
+                        <attr name="originalFile" stringvalue="Editors/text/x-sql/Actions/org-radixware-kernel-designer-common-dialogs-sqlscript-actions-ScriptTrasformSetupAction.instance"/>
+                        <attr name="position" intvalue="70"/>
                     </file>
                 </folder>
                 <file name="language.instance">
@@ -588,10 +601,6 @@
 
                 <folder name="Toolbars">
                     <folder name="Default">
-                        <!--<file name="InsertInternalPropertyAccessTagAction.instance">
-                            <attr name="actionClass" stringvalue="org.radixware.kernel.designer.common.editors.jml.actions.JmlTopLevelActions$InsertInternalPropertyAccessTagAction"/>
-                            <attr name="instanceCreate" methodvalue="org.radixware.kernel.designer.common.dialogs.scmlnb.library.ScmlToolBarAction.create"/>
-                        </file>-->
                         <file name="Separator-after-bookmarks.instance_hidden"/>
                         <file name="Separator-after-shift-line.instance_hidden"/>
                         <file name="Separator-before-find-previous.instance_hidden"/>
@@ -629,7 +638,139 @@
                     </folder>
                 </folder>
 
-            </folder>
+            </folder>   
+            
+            <folder name="x-mml">
+                
+                <file name="org-radixware-kernel-designer-common-dialogs-scmlnb-MarkOccurrencesHighlightsLayerFactory.instance"/>
+                     
+                <file name="JmlAutoIndenter.instance">
+                    <attr name="instanceOf" stringvalue="org.netbeans.spi.editor.typinghooks.TypedTextInterceptor$Factory"/>
+                    <attr name="instanceCreate" methodvalue="org.netbeans.modules.editor.indent.spi.support.AutomatedIndenting.createHotCharsIndenter"/>
+                    <attr name="regex1" stringvalue="\s*}"/>
+                </file>
+                <file name="ScmlTypeBreakInterceptorFactory.instance">
+                    <attr name="instanceOf" stringvalue="org.netbeans.spi.editor.typinghooks.TypedBreakInterceptor$Factory"/>
+                    <attr name="instanceClass" stringvalue="org.radixware.kernel.designer.common.dialogs.scmlnb.ScmlTypeBreakInterceptor$Factory"/>
+                </file>
+                <folder name="CompletionProviders">
+                    <file name="org-radixware-kernel-designer-common-dialogs-scmlnb-ScmlCompletionProvider.instance"/>
+                </folder>
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.common.dialogs.mmlnb.resources.Bundle"/>
+<!--                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.common.dialogs.jmlnb.resources.Bundle"/>-->
+                <attr name="position" intvalue="-1"/>
+                <folder name="FontsColors">
+                    <folder name="NetBeans">
+                        <folder name="Defaults">
+                            <file name="org-netbeans-modules-editor-java-token-colorings.xml_hidden"/>
+                            <file name="org-radixware-modules-editor-mml-token-colorings.xml" url="/org/radixware/kernel/designer/common/dialogs/mmlnb/resources/fontsColors.xml">
+                                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.common.dialogs.mmlnb.resources.Bundle"/>
+<!--                            <file name="org-radixware-modules-editor-jml-token-colorings.xml" url="/org/radixware/kernel/designer/common/dialogs/jmlnb/resources/fontsColors.xml">
+                                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.radixware.kernel.designer.common.dialogs.jmlnb.resources.Bundle"/>-->
+                            </file>
+                        </folder>
+                    </folder>
+                </folder>
+
+                <folder name="CodeGenerators">
+                    <file name="org-radixware-kernel-designer-common-dialogs-scmlnb-library-InsertTagCodeGeneratorFactory.instance"/>
+                    <file name="org-radixware-kernel-designer-common-dialogs-scmlnb-PopupActionCodeGeneratorFactory.instance"/>
+                </folder>
+
+                <folder name="TagGenerators">
+                    <file name="org-radixware-kernel-designer-common-editors-mml-MmlTagGeneratorFactory.instance"/>
+<!--                    <file name="org-radixware-kernel-designer-common-editors-jml-JmlTagGeneratorFactory.instance"/>-->
+                </folder>
+
+                <folder name="HyperlinkProviders">
+                    <file name="TagHyperlinkProvider.instance" url="/org/radixware/kernel/designer/common/dialogs/scmlnb/library/TagHyperlinkProvider.instance">
+                        <attr name="instanceClass" stringvalue="org.radixware.kernel.designer.common.dialogs.scmlnb.library.TagHyperlinkProvider"/>
+                        <attr name="instanceOf" stringvalue="org.netbeans.lib.editor.hyperlink.spi.HyperlinkProviderExt"/>
+                    </file>
+                    <file name="XmlHyperlinkProvider.instance" url="/org/radixware/kernel/designer/common/dialogs/xml/XmlHyperlinkProvider.instance">
+                        <attr name="instanceClass" stringvalue="org.radixware.kernel.designer.common.dialogs.xml.XmlHyperlinkProvider"/>
+                        <attr name="instanceOf" stringvalue="org.netbeans.lib.editor.hyperlink.spi.HyperlinkProviderExt"/>
+                    </file>
+                </folder>
+
+                <file name="org-radixware-kernel-designer-common-dialogs-scmlnb-library-TagHighlighterFactory.instance"/>
+
+                <file name="language.instance">
+                    <attr name="instanceCreate" methodvalue="org.radixware.kernel.designer.common.dialogs.jmlnb.JmlTokenId.language"/>
+                    <attr name="instanceOf" stringvalue="org.netbeans.api.lexer.Language"/>
+                </file>
+
+                <folder name="Preferences">
+                    <folder name="Defaults">
+                        <file name="org-radixware-modules-editor-mml-preferences.xml" url="/org/radixware/kernel/designer/common/dialogs/mmlnb/resources/DefaultPreferences.xml"/>
+<!--                        <file name="org-radixware-modules-editor-jml-preferences.xml" url="/org/radixware/kernel/designer/common/dialogs/jmlnb/resources/DefaultPreferences.xml"/>-->
+                    </folder>
+                </folder>
+
+                <folder name="Keybindings">
+                    <folder name="NetBeans">
+                        <folder name="Defaults">
+                            <file name="org-radixware-modules-editor-mml-keybindings.xml" url="/org/radixware/kernel/designer/common/dialogs/mmlnb/resources/DefaultKeyBindings.xml"/>
+                            <file name="org-radixware-modules-editor-mml-keybindings-mac.xml" url="/org/radixware/kernel/designer/common/dialogs/mmlnb/resources/DefaultKeyBindings-Mac.xml">
+                                <attr name="nbeditor-settings-targetOS" stringvalue="OS_MAC"/>
+                            </file>
+                        </folder>
+                    </folder>
+                </folder>
+
+                <file name="EditorKit.instance">
+                    <attr name="instanceClass" stringvalue="org.radixware.kernel.designer.common.dialogs.mmlnb.MmlKit"/>
+                </file>
+
+                <folder name="Popup">
+                    <file name="SeparatorAfterPaste.instance">
+                        <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                        <attr name="position" intvalue="4100"/>
+                    </file>
+                </folder>
+
+                <folder name="GlyphGutterActions">
+                    <file name="ToggleBreakpoint.shadow">
+                        <attr name="originalFile" stringvalue="Actions/Debug/org-netbeans-modules-debugger-ui-actions-ToggleBreakpointAction.instance"/>
+                        <attr name="position" intvalue="0"/>
+                    </file>
+                </folder>
+
+                <folder name="Toolbars">
+                    <folder name="Default">
+                        <file name="Separator-after-bookmarks.instance_hidden"/>
+                        <file name="Separator-after-shift-line.instance_hidden"/>
+                        <file name="Separator-before-find-previous.instance_hidden"/>
+                        <file name="bookmark-next.shadow_hidden"/>
+                        <file name="bookmark-previous.shadow_hidden"/>
+                        <file name="bookmark-toggle.shadow_hidden"/>
+                        <file name="jump-list-last-edit_hidden"/>
+                        <file name="jump-list-next_hidden"/>
+                        <file name="jump-list-prev_hidden"/>
+                        <file name="start-macro-recording_hidden"/>
+                        <file name="stop-macro-recording_hidden"/>
+                        <file name="cut-to-clipboard">
+                            <attr name="position" intvalue="10500"/>
+                        </file>
+                        <file name="copy-to-clipboard">
+                            <attr name="position" intvalue="11000"/>
+                        </file>
+                        <file name="paste-from-clipboard">
+                            <attr name="position" intvalue="12000"/>
+                        </file>
+                        <file name="Separator-after-cut-copy-paste.instance">
+                            <attr name="position" intvalue="12500"/>
+                            <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                        </file>
+                        <file name="Separator-before-comment.instance">
+                            <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+                            <attr name="position" intvalue="19100"/>
+                        </file>
+                    </folder>
+                </folder>
+
+            </folder>   
+            
             <folder name="xml">
                 <file name="org-radixware-kernel-designer-common-dialogs-scmlnb-MarkOccurrencesHighlightsLayerFactory.instance"/>
                 <folder name="HyperlinkProviders">

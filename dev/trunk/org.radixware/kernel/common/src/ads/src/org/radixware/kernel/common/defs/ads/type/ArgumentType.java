@@ -30,12 +30,12 @@ public class ArgumentType extends AdsType {
         return new TypeJavaSourceSupport(this) {
 
             @Override
-            public char[][] getPackageNameComponents(UsagePurpose env) {
+            public char[][] getPackageNameComponents(UsagePurpose env, boolean isHumanReadable) {
                 return JavaSourceSupport.DEFAULT_PACKAGE;
             }
 
             @Override
-            public char[] getLocalTypeName(UsagePurpose env) {
+            public char[] getLocalTypeName(UsagePurpose env, boolean isHumanReadable) {
                 return source.getName().toCharArray();
             }
         };

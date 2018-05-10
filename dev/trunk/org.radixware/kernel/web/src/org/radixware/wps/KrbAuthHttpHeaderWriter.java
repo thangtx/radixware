@@ -19,20 +19,18 @@ final class KrbAuthHttpHeaderWriter implements HttpSessionContext.IHttpServletRe
     
     private final String realm;
     private final byte[] gssToken;
-    private final boolean authComplete;
 
-    private KrbAuthHttpHeaderWriter(final String realm, final byte[] gssToken, final boolean authComplete) {
+    private KrbAuthHttpHeaderWriter(final String realm, final byte[] gssToken) {
         this.realm = realm;
         this.gssToken = gssToken;
-        this.authComplete = authComplete;
     }
     
     public KrbAuthHttpHeaderWriter(final String realm){
-        this(realm,null,false);
+        this(realm,null);
     }
     
-    public KrbAuthHttpHeaderWriter(final byte[] token, final boolean authComplete){
-        this(null,token,authComplete);
+    public KrbAuthHttpHeaderWriter(final byte[] token){
+        this(null,token);
     }
 
     @Override
@@ -44,14 +42,17 @@ final class KrbAuthHttpHeaderWriter implements HttpSessionContext.IHttpServletRe
         }else{            
             rs.setHeader(HttpHeaderConstants.AUTHN_HEADER, HttpHeaderConstants.NEGOTIATE_HEADER+" "+ Base64.encode(gssToken));
         }        
-        if (!authComplete){
-            rs.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        }
+        rs.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
 
     @Override
     public boolean isResponseContentAllowed() {
         return true;
     }
+
+    @Override
+    public boolean isAuthDataRequested() {
+        return true;
+    }        
     
 }

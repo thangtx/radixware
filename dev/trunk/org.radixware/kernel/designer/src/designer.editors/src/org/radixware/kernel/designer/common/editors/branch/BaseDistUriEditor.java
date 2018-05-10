@@ -14,8 +14,10 @@ package org.radixware.kernel.designer.common.editors.branch;
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JPanel;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.CheckableNode;
@@ -25,6 +27,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.nodes.Sheet;
 import org.openide.util.NbBundle;
+import org.radixware.kernel.common.repository.Branch.Layers;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.designer.common.dialogs.utils.ModalDisplayer;
 
@@ -37,6 +40,15 @@ final class BaseDistUriEditor extends JPanel implements ExplorerManager.Provider
                 NbBundle.getMessage(BaseDistUriEditor.class, "BaseDistUriEditor.title"));
 
         if (displayer.showModal()) {
+            Set<String> uris = new HashSet<>(baseDistUriEditor.getModel().getBaseDistrUris());
+            if (uris != null) {
+                Layers layers = baseDistUriEditor.getModel().getBranch().getLayers();
+                for (String uri : uris) {
+                    if (layers.findByURI(uri) == null) {
+                        baseDistUriEditor.getModel().setBaseDistrUri(uri, false);
+                    }
+                }
+            }
             manager.setModel(baseDistUriEditor.getModel());
         }
     }

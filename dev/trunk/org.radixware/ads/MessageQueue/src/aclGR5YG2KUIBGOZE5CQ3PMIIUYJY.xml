@@ -1,20 +1,299 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
-  <AdsClassDefinition Id="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY" Name="MessageQueue.Producer.AMQP" DescriptionId="mls2PBCBW57WVBWPETICA4CFNN62E" Type="2">
+  <AdsClassDefinition Id="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY" Name="MessageQueue.Producer.AMQP" DescriptionId="mls2PBCBW57WVBWPETICA4CFNN62E" Type="2" ClientEnvironment="explorer">
     <AccessRules/>
     <Headers>
-      <Src Name="HeaderaclGR5YG2KUIBGOZE5CQ3PMIIUYJY"/>
+      <Src Name="HeaderaclGR5YG2KUIBGOZE5CQ3PMIIUYJY">
+        <xsc:Item>
+          <xsc:Java>import com.rabbitmq.client.AlreadyClosedException;
+import com.rabbitmq.client.AMQP.BasicProperties;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.ReturnListener;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+import org.radixware.schemas.messagequeue.MqMessageBody;
+import org.radixware.schemas.messagequeue.MqMessageMeta;</xsc:Java>
+        </xsc:Item>
+      </Src>
     </Headers>
     <Bodies>
-      <Src Name="BodyaclGR5YG2KUIBGOZE5CQ3PMIIUYJY"/>
+      <Src Name="BodyaclGR5YG2KUIBGOZE5CQ3PMIIUYJY">
+        <xsc:Item>
+          <xsc:Java>private static class MqAMQPProducer implements </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aicLETQUUSVHZCSLOGKIII4M6EDU4">
+            <xsc:Presentation>IMqProducer</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> {
+
+    private final String virtualHost;
+    private final String exchange;
+    private final String routingKey;
+    private final Connection connection;
+    private final Channel channel;
+    private final int sendTimeoutSec;
+    private final String user;
+
+    public MqAMQPProducer(final String server, final String virtualHost, final String exchange, final String routingKey, final String user, final String password, final int timeoutSec) throws IOException {
+        this.routingKey = routingKey;
+        this.exchange = exchange;
+        final ConnectionFactory factory = new ConnectionFactory();
+        final String[] broker = server.split(":");
+        this.user = user;
+
+        factory.setHost(broker[0]);
+        factory.setPort(broker.length > 1 ? Integer.valueOf(broker[1]).intValue() : org.radixware.kernel.server.units.mq.MqAMQPConsumer.DEFAULT_BROKER_PORT);
+        
+        this.virtualHost = virtualHost;
+        if (virtualHost != null) {
+            factory.setVirtualHost(this.virtualHost);
+        }
+
+        if (user != null &amp;&amp; !user.isEmpty()) {
+            factory.setUsername(user);
+            if (password != null &amp;&amp; !password.isEmpty()) {
+                factory.setPassword(password);
+            }
+        }
+
+        //timeout semantic is not exact with AMQP
+        factory.setAutomaticRecoveryEnabled(false);
+        factory.setConnectionTimeout(timeoutSec);
+        factory.setRequestedHeartbeat(timeoutSec == 0 ? 0 : Math.max(timeoutSec / 2, 1));
+        this.sendTimeoutSec = timeoutSec;
+
+        try {
+            connection = factory.newConnection();
+            channel = connection.createChannel();
+            channel.addReturnListener(new ReturnListener(){
+                public void handleReturn(int replyCode,
+                                              String replyText,
+                                              String exchange,
+                                              String routingKey,
+                                              BasicProperties properties,
+                                              byte[] body)
+                throws IOException {
+                    // Throwing this exception will effectively close the channel,
+                    // resulting in RuntimeException (to be more specific
+                    // com.rabbitmq.client.AlreadyClosedException) from basicPublish
+                    throw new IOException(String.format(
+                        "No route found (%s) for exchange '%s', routingKey '%s'",
+                        replyText, exchange, routingKey));
+                }
+            });
+            channel.confirmSelect();
+        } catch (TimeoutException ex) {
+            throw new IOException(ex);
+        }
+    }
+
+    @Override
+    public String </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aicLETQUUSVHZCSLOGKIII4M6EDU4 mthQNCU3KWJG5EXLGIVD6MODPGVSE" Invoke="true">
+            <xsc:Presentation>send</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(MqMessageMeta meta, MqMessageBody body) throws IOException {
+        com.rabbitmq.client.AMQP.BasicProperties.Builder propsBuilder = new com.rabbitmq.client.AMQP.BasicProperties.Builder();
+
+        if (meta.getMessageId() != null) {
+            propsBuilder.messageId(meta.getMessageId());
+        }
+        if (meta.getEncoding() != null) {
+            propsBuilder.contentEncoding(meta.getEncoding());
+        } 
+
+        if (meta.getPriority() != null) {
+            propsBuilder.priority(meta.getPriority().intValue());
+        }
+        if (meta.getProperties() != null) {
+            final java.util.Map headersMap = org.radixware.kernel.common.utils.Maps.fromXml(meta.getProperties());
+            propsBuilder.headers(headersMap);
+        }
+        final MqMessageMeta.AmqpSpecific specific = meta.getAmqpSpecific() == null ? (MqMessageMeta.AmqpSpecific.Factory.newInstance()) : meta.getAmqpSpecific();
+        if (specific.getContentType() != null) {
+            propsBuilder.contentType(specific.getContentType());
+        }
+        if (specific.getAppId() != null) {
+            propsBuilder.appId(specific.getAppId());
+        }
+        if (specific.getClusterId() != null) {
+            propsBuilder.clusterId(specific.getClusterId());
+        }
+        if (specific.getCorrelationId() != null) {
+            propsBuilder.correlationId(specific.getCorrelationId());
+        }
+        if (specific.getExpiration() != null) {
+            propsBuilder.expiration(specific.getExpiration());
+        }
+        if (specific.getTimestamp() != null) {
+            propsBuilder.timestamp(new java.util.Date(specific.getTimestamp().Time));
+        } else {
+            propsBuilder.timestamp(new java.util.Date());
+        }
+        if (specific.getReplyTo() != null) {
+            propsBuilder.replyTo(specific.getReplyTo());
+        }
+        if (specific.getType() != null) {
+            propsBuilder.type(specific.getType());
+        }
+        if (specific.getWriteUserId() != null &amp;&amp; specific.getWriteUserId().booleanValue()) {
+            propsBuilder.userId(user);
+        }
+        if (specific.getDeliveryMode() != null) {
+            propsBuilder.deliveryMode(specific.DeliveryMode.intValue());
+        }
+        final String effectiveExchange = specific.getExchange() == null ? (exchange == null ? "" : exchange) : "";
+        final String effectiveRoutingKey = meta.getQueueName() == null ? routingKey : meta.getQueueName();
+        //publishing to direct excnange (empty name) which will redirect the message to queue with name==routingkey
+        //Per documentation: https://www.rabbitmq.com/confirms.html#publisher-confirms
+        // http://www.rabbitmq.com/blog/2011/02/10/introducing-publisher-confirms/
+        // there are several message types, which could be received after publishing:
+        // basic.ack - confirmation upon successful publication
+        // basic.nack - failures upon any problems in the broker
+        // basic.return - failure upon invalid publication due to not existing queue
+        // ack/nack will be checked in basicPublish by RabbitMQ and IOException
+        channel.basicPublish(effectiveExchange, effectiveRoutingKey, 
+            true, /* mandatory=true is needed to catch basic.return messages */
+            false, /* immediate=true is not supported in RabbitMQ */
+            propsBuilder.build(), </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY mth56WVCYEEBJABFNT7W6EIYN7CCA" Invoke="true">
+            <xsc:Presentation>getSendBytes</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(meta, body));
+        try {
+            channel.waitForConfirmsOrDie(sendTimeoutSec * 1000l);
+        } catch (TimeoutException | InterruptedException | AlreadyClosedException ex) {
+            throw new IOException("Unable to get confirmation of message publishing", ex);
+        }
+        return meta.getMessageId();
+    }
+
+    @Override
+    public boolean </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aicLETQUUSVHZCSLOGKIII4M6EDU4 mthKAFZ2NE2MVHP5OLVFX5KT5APDA" Invoke="true">
+            <xsc:Presentation>isConnected</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>() {
+        return channel.isOpen() &amp;&amp; connection.isOpen();
+    }
+
+    @Override
+    public void close() throws Exception {
+        try {
+            try {
+                channel.close();
+            } finally {
+                connection.close();
+            }
+        } catch (TimeoutException ex) {
+            try {
+                connection.abort();
+            } catch (Exception ex1) {
+                //ignore
+            }
+        }
+    }
+}</xsc:Java>
+        </xsc:Item>
+      </Src>
     </Bodies>
     <MethodGroup Id="cmgBGPZFVKP4VC6PLAWUN54INCJCE" Name="Root"/>
-    <PropertyGroup Id="cpgJVO7ITGYURCWPEQBTBCPWW6HRA" Name="Root"/>
-    <Properties/>
+    <PropertyGroup Id="cpgJVO7ITGYURCWPEQBTBCPWW6HRA" Name="Root">
+      <Group Id="cpgEUROROEDCFCOXI2XBYCUVBLNIE" Name="Detail Properties" Members="colSTRTDVSR7JFKFMM7BPZZ4GVMRQ colESNZSD4Q6BGQZA3LX2TMOK5BX4 colJCGV7PP5IFDYDDTDANIU4TIISU colMF2NUVDYIZCVPNM7IJAFGUPGSU colIXH3CQXMSJB5NLZ2XLMLQA5L64 colK46KYJLOCRBCRPWDP3KARZLQI4 colMMG5V5XTX5DOPC2MHV65YOH24I"/>
+    </PropertyGroup>
+    <Properties>
+      <Property Id="colTRIHVJKCKNDNVESJUPLUFKPVQA" Name="queueName" Nature="0" IsConst="false" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsZTJHYSBEXRB4FIF4WOETYDD2L4" InheritanceMask="62"/>
+      </Property>
+      <Property Id="colB56SD6AHQ5AJFMZJHTWW2XRHQE" Name="partitionName" Nature="0" IsConst="false" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsF4SGAJUG5ZFANFU5M6T6LJ5JLY" InheritanceMask="62"/>
+      </Property>
+      <Property Id="colSTRTDVSR7JFKFMM7BPZZ4GVMRQ" Name="appId" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colCNDXVEYJLVEBFMK32HRX5J6M3M" DetailRefId="refCDQM3KMFARHPXGDSA3LXZBPGAI">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsUUTFSJXDKZDLTJ3GF4SNG6UITQ" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colESNZSD4Q6BGQZA3LX2TMOK5BX4" Name="deliveryMode" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colC3CTIWFH6ZCRDE7SAYYCXW3OPE" DetailRefId="refCDQM3KMFARHPXGDSA3LXZBPGAI">
+        <AccessRules/>
+        <Type TypeId="2" Path="acs5OC64YONMVE3FCEKKX46RPYWTA"/>
+        <InitialValue>
+          <ValAsStr>1</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsB57RP56LBNG4LGRS55VBYTQRYQ" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colJCGV7PP5IFDYDDTDANIU4TIISU" Name="priority" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colQGY6XXICFVDYFNANU2CGO4Q67I" DetailRefId="refCDQM3KMFARHPXGDSA3LXZBPGAI">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsYST27WT4NJCGLECSVSIYUFILQQ" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colMF2NUVDYIZCVPNM7IJAFGUPGSU" Name="replyTo" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colN54FYJJNRVBS5PETGBPOXH5IUI" DetailRefId="refCDQM3KMFARHPXGDSA3LXZBPGAI">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsEMU7JSHLS5FEJEYWQAHIF2CLMU" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colIXH3CQXMSJB5NLZ2XLMLQA5L64" Name="virtualHost" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colAYVNF6SQY5AQBFHZ6JUYHHFW7I" DetailRefId="refCDQM3KMFARHPXGDSA3LXZBPGAI">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsKDI7FAL6TFFRHGON2ZY7WTDJYY" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colK46KYJLOCRBCRPWDP3KARZLQI4" Name="expirationSec" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colLEFMRJIEGRAPDDVMCPS5X4OZFA" DetailRefId="refCDQM3KMFARHPXGDSA3LXZBPGAI">
+        <AccessRules/>
+        <Type TypeId="2"/>
+        <Presentation TitleId="mlsGTXTYCPBQRBONMJOB6BRJ7VVAE" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colMMG5V5XTX5DOPC2MHV65YOH24I" Name="writeUserId" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="col5POSYL5MWFG7DH4TARL6JRXEVM" DetailRefId="refCDQM3KMFARHPXGDSA3LXZBPGAI">
+        <AccessRules/>
+        <Type TypeId="1"/>
+        <InitialValue>
+          <ValAsStr>0</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mlsM2SJMMSQ25CNXGCWO3AUFDMW44" InheritanceMask="4">
+          <Editing NotNull="true" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+    </Properties>
     <Methods>
       <Method Id="mthWXVEL5SYNRBVVP2ICAI7TF6DLI" Name="getSender" DescriptionId="mls3EZ5XDHPBFEFZJMRM3VUTHNAJY" Nature="0" IsOverride="true">
         <AccessRules/>
-        <ReturnType TypeId="411" Path="aicGNS47MFCS5E6LLDQ7E2I42BJCM"/>
+        <Parameters>
+          <Parameter Name="cacheItemId" Id="mprYIKCH7OA4ZFBJEL6VSG4ZA2A3M">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aicLETQUUSVHZCSLOGKIII4M6EDU4"/>
         <ThrownExceptions>
           <Exception TypeId="411" Path="axcT6PDWQP2FRBGJJE4ZJYCMR2CDM"/>
           <Exception TypeId="411" Path="axc7PXEO3TYR5CCFH7362MPE6KFAY"/>
@@ -22,37 +301,63 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>return new </xsc:Java>
+              <xsc:Java>return new MqAMQPProducer(this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcA7LXSCXF5JHCJO2W7AADZMXCW4"/>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colOPGPZBRRSZFCFP6DSBBECKFM74" Invoke="true">
+                <xsc:Presentation>brokerAddress</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(this.</xsc:Java>
+              <xsc:Java>, this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colOPGPZBRRSZFCFP6DSBBECKFM74" Invoke="true"/>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colIXH3CQXMSJB5NLZ2XLMLQA5L64" Invoke="true">
+                <xsc:Presentation>virtualHost</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>,this.</xsc:Java>
+              <xsc:Java>, this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTRIHVJKCKNDNVESJUPLUFKPVQA" Invoke="true"/>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true">
+                <xsc:Presentation>partitionName</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>,this.</xsc:Java>
+              <xsc:Java>, this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colMMPJ3MOF5NEEFB4MEBKFURZTMQ" Invoke="true"/>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTRIHVJKCKNDNVESJUPLUFKPVQA" Invoke="true">
+                <xsc:Presentation>queueName</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>,this.</xsc:Java>
+              <xsc:Java>, this.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colPRWBAX2DZJDFLL5RB6UKQPNJCM" Invoke="true"/>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colMMPJ3MOF5NEEFB4MEBKFURZTMQ" Invoke="true">
+                <xsc:Presentation>login</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>);</xsc:Java>
+              <xsc:Java>, this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colPRWBAX2DZJDFLL5RB6UKQPNJCM" Invoke="true">
+                <xsc:Presentation>password</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>, this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colI3C6OY6R4VCHJNHCYV2ZDL3JEA" Invoke="true">
+                <xsc:Presentation>timeoutSec</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue());</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -68,23 +373,12 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>this.</xsc:Java>
+              <xsc:Java>return super.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ col7PCH7MSGLZFSNNDIFYF6WQLWDI" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> = </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="acsIXEVYI6PORHVNOJ2X4FJ4BGBE4 aci74BQGLJBLNHV5OCWRF2GNTYIBQ" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>;
-return super.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthFMXUFM5J25E4TNM4PR73F6V3E4" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthFMXUFM5J25E4TNM4PR73F6V3E4" Invoke="true">
+                <xsc:Presentation>beforeCreate</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(src);</xsc:Java>
@@ -92,8 +386,292 @@ return super.</xsc:Java>
           </Src>
         </Sources>
       </Method>
+      <Method Id="mthMHUN7KMMONHPNKHBVVHMAKTH4M" Name="prepareMeta" DescriptionId="mlsDG2XNSTUMRHG3N5VUSPO22L2KU" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="meta" Id="mpr4TBCPVI5XBEQJMZA2GHVANBINE">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta"/>
+          </Parameter>
+          <Parameter Name="body" Id="mprNC6KUZZB3FBA7PFPE4V7POVROA">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageBody"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (meta == null) {
+    meta = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta.Factory">
+                <xsc:Presentation>MessageQueueXsd:MqMessageMeta.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+}
+
+if (meta.getQueueName() == null) {
+    meta.setQueueName(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTRIHVJKCKNDNVESJUPLUFKPVQA" Invoke="true">
+                <xsc:Presentation>queueName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true">
+                <xsc:Presentation>partitionName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; (meta.getAmqpSpecific() == null || meta.getAmqpSpecific().getExchange() == null)) {
+    meta.ensureAmqpSpecific().setExchange(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true">
+                <xsc:Presentation>partitionName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+if (meta.getMessageId() == null) {
+    meta.setMessageId(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY mthM4PBBRBTZZELDPJI23LNLXDO5Y" Invoke="true">
+                <xsc:Presentation>calcDefaultMessId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+}
+if (meta.getEncoding() == null &amp;&amp; body.getStrBody() != null) {
+    final java.nio.charset.Charset effectiveEncoding = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY mthHP2SMKJQKRDHVP6F6O3P3AV27U" Invoke="true">
+                <xsc:Presentation>getEffectiveEncoding</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(meta, body);
+    if (effectiveEncoding != null) {
+        meta.setEncoding(effectiveEncoding.name());
+    }
+}
+if (meta.getPriority() == null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colJCGV7PP5IFDYDDTDANIU4TIISU" Invoke="true">
+                <xsc:Presentation>priority</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null) {
+    meta.setPriority(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colJCGV7PP5IFDYDDTDANIU4TIISU" Invoke="true">
+                <xsc:Presentation>priority</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+final MqMessageMeta.AmqpSpecific specific = meta.ensureAmqpSpecific();
+
+if (specific.getTimestamp() == null) {
+    specific.setTimestamp(new </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="12">
+                <xsc:Presentation>DateTime</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(System.currentTimeMillis()));
+}
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colSTRTDVSR7JFKFMM7BPZZ4GVMRQ" Invoke="true">
+                <xsc:Presentation>appId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; specific.getAppId() == null) {
+    specific.setAppId(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colSTRTDVSR7JFKFMM7BPZZ4GVMRQ" Invoke="true">
+                <xsc:Presentation>appId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+if (!specific.isSetWriteUserId() &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colMMG5V5XTX5DOPC2MHV65YOH24I" Invoke="true">
+                <xsc:Presentation>writeUserId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colMMG5V5XTX5DOPC2MHV65YOH24I" Invoke="true">
+                <xsc:Presentation>writeUserId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue()) {
+    specific.setWriteUserId(true);
+}
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colCAHU2GDPARFC7APU2EOVSAW6MA" Invoke="true">
+                <xsc:Presentation>copyIdToCorrId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colCAHU2GDPARFC7APU2EOVSAW6MA" Invoke="true">
+                <xsc:Presentation>copyIdToCorrId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.booleanValue() &amp;&amp; meta.getMessageId() != null &amp;&amp; specific.getCorrelationId() == null) {
+    specific.setCorrelationId(meta.getMessageId());
+}
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colK46KYJLOCRBCRPWDP3KARZLQI4" Invoke="true">
+                <xsc:Presentation>expirationSec</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; specific.getExpiration() == null) {
+    specific.setExpiration(String.valueOf(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colK46KYJLOCRBCRPWDP3KARZLQI4" Invoke="true">
+                <xsc:Presentation>expirationSec</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue() * 1000));
+}
+
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colMF2NUVDYIZCVPNM7IJAFGUPGSU" Invoke="true">
+                <xsc:Presentation>replyTo</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; specific.getReplyTo() == null) {
+    specific.setReplyTo(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colMF2NUVDYIZCVPNM7IJAFGUPGSU" Invoke="true">
+                <xsc:Presentation>replyTo</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+if (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colESNZSD4Q6BGQZA3LX2TMOK5BX4" Invoke="true">
+                <xsc:Presentation>deliveryMode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null &amp;&amp; specific.getDeliveryMode() == null) {
+    specific.setDeliveryMode(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclGR5YG2KUIBGOZE5CQ3PMIIUYJY colESNZSD4Q6BGQZA3LX2TMOK5BX4" Invoke="true">
+                <xsc:Presentation>deliveryMode</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.longValue());
+}
+
+meta.DebugKey = meta.getMessageId();
+
+return meta;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthD77F2HBL2FGSVPJHR3SEAMPWMA" Name="afterInit" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mpr4XHTKISV5BEAHBMCJJAC24FD5M">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="phase" Id="mprWSALYXLDLRALDIU74WI665OTNE">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthD77F2HBL2FGSVPJHR3SEAMPWMA" Invoke="true">
+                <xsc:Presentation>afterInit</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src, phase);
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ col7PCH7MSGLZFSNNDIFYF6WQLWDI" Invoke="true">
+                <xsc:Presentation>queueKind</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsIXEVYI6PORHVNOJ2X4FJ4BGBE4 aci74BQGLJBLNHV5OCWRF2GNTYIBQ" Invoke="true">
+                <xsc:Presentation>MessageQueueKind:AMQP</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
     </Methods>
-    <Entity EntityId="tblQZ2AJHN3PFDWXC5BT6I66OS5PQ"/>
+    <Entity EntityId="tblQZ2AJHN3PFDWXC5BT6I66OS5PQ" AllowedDetailReferences="refCDQM3KMFARHPXGDSA3LXZBPGAI"/>
     <Presentations ObjectTitleId="mls7DUMXT6C6VA2FJGBCIZ2Y5NWYE">
       <ClassCatalogs>
         <ClassCatalog Id="ecc5NBNQ63LAFHETGGWPERIR4Y6GI" Name="Producers">
@@ -101,6 +679,104 @@ return super.</xsc:Java>
           <ClassRef Order="10.0"/>
         </ClassCatalog>
       </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprB7LQN3OZJBEJ5GUIZ435GNLPWA" Name="AmqpEdit" BasePresentationId="epr7JNXRJQ3R5BDBMFTUG72M2JTXE" InheritanceMask="36016" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="epr7JNXRJQ3R5BDBMFTUG72M2JTXE">
+          <AccessRules IsPublished="false"/>
+          <Model Id="aemB7LQN3OZJBEJ5GUIZ435GNLPWA" Name="AmqpEdit:Model" Type="15">
+            <AccessRules IsPublished="false"/>
+            <Headers>
+              <Src Name="HeaderaemB7LQN3OZJBEJ5GUIZ435GNLPWA"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaemB7LQN3OZJBEJ5GUIZ435GNLPWA"/>
+            </Bodies>
+            <MethodGroup Id="cmgLYQJ4XZ6MNHENPFAKMY6LFXG3A" Name="Root"/>
+            <PropertyGroup Id="cpgBHLN77QS65HETB43WCTJGXVCPI" Name="Root"/>
+            <Properties/>
+            <Methods>
+              <Method Id="mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Name="setVisibility" Nature="0" Environment="common-client" IsOverride="true">
+                <AccessRules/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY epr7JNXRJQ3R5BDBMFTUG72M2JTXE aem7JNXRJQ3R5BDBMFTUG72M2JTXE mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Invoke="true">
+                        <xsc:Presentation>setVisibility</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true">
+                        <xsc:Presentation>partitionName</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(true);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colCAHU2GDPARFC7APU2EOVSAW6MA" Invoke="true">
+                        <xsc:Presentation>copyIdToCorrId</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(true);</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epgWEUQWEPPNZCI3NRORXF7DYI2ZQ" Name="Additional" TitleId="mlsZQHZ5P3VA5COTKGVAMDYXBIJ6U" Type="1">
+              <AccessRules IsPublished="false"/>
+              <Properties>
+                <Property Id="colIXH3CQXMSJB5NLZ2XLMLQA5L64" Row="0" Column="0"/>
+                <Property Id="colSTRTDVSR7JFKFMM7BPZZ4GVMRQ" Row="5" Column="0"/>
+                <Property Id="colMF2NUVDYIZCVPNM7IJAFGUPGSU" Row="6" Column="0"/>
+                <Property Id="colJCGV7PP5IFDYDDTDANIU4TIISU" Row="2" Column="0"/>
+                <Property Id="colESNZSD4Q6BGQZA3LX2TMOK5BX4" Row="1" Column="0"/>
+                <Property Id="colK46KYJLOCRBCRPWDP3KARZLQI4" Row="3" Column="0"/>
+                <Property Id="colMMG5V5XTX5DOPC2MHV65YOH24I" Row="4" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgSSMUGGSOLNEENDZTYAGQ7AIZ5I" Level="1"/>
+              <Item PageId="epgWEUQWEPPNZCI3NRORXF7DYI2ZQ" Level="1"/>
+              <Item PageId="epgN2YU55HZT5C5DFTUAJJYAOIW2Q" Level="1"/>
+              <Item PageId="epg6V4MMAXFZBDL5DFMVK7EVVGFUQ" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfNYMN7DOBFNEPRAWJLFZTWWAKHM"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprY2IOB7QBHFHXHLDEEXZC6EHHPY" Name="AmqpCreate" BasePresentationId="eprB7LQN3OZJBEJ5GUIZ435GNLPWA" InheritanceMask="40112" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprJFYEPXEXLFAGXCM3U26EA7AJ4I">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfQVIQJBMKCNBFRGSINXLMSPDFJA"/>
+        </EditorPresentation>
+      </EditorPresentations>
     </Presentations>
     <Extends TypeId="411" Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY"/>
   </AdsClassDefinition>

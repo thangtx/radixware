@@ -11,6 +11,7 @@
 package org.radixware.kernel.designer.common.dialogs.components.valstreditor;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
@@ -90,9 +91,13 @@ public abstract class ValAsStrEditor extends JPanel {
     }
 
     private void updateVisibleEditor() {
+        if (getValueEditor() == null) {
+            return;
+        }
         final JComponent comp = getValue() == null && getValueEditor().getNullEditor() != null
                 ? getValueEditor().getNullEditor()
                 : getValueEditor().getNotNullEditor().getEditor();
+        comp.setForeground(getForeground());
         if (this.getComponentCount() > 0 && this.getComponent(0).equals(comp)) {
             return;
         }
@@ -202,4 +207,12 @@ public abstract class ValAsStrEditor extends JPanel {
         getValueEditor().getNotNullEditor().getEditor().setMinimumSize(minimumSize);
         super.setMinimumSize(minimumSize);
     }
+
+    @Override
+    public void setForeground(Color fg) {
+        super.setForeground(fg);
+        updateVisibleEditor();
+    }
+    
+    
 }

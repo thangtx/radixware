@@ -33,6 +33,10 @@ import org.radixware.kernel.common.defs.ads.localization.AdsLocalizingBundleDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.platform.PlatformLib;
 import org.radixware.kernel.common.defs.uds.UdsDefinition;
+import org.radixware.kernel.common.defs.uds.files.UdsDirectory;
+import org.radixware.kernel.common.defs.uds.files.UdsFile;
+import org.radixware.kernel.common.defs.uds.files.UdsFileRadixObjects;
+import org.radixware.kernel.common.defs.uds.files.UdsXmlFile;
 import org.radixware.kernel.common.defs.uds.module.UdsModule;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.repository.Branch;
@@ -69,7 +73,8 @@ class ContextChecker {
 
     Set<Layer> processedLayers = new HashSet<>();
 
-    ContextInfo determineTargets(BuildActionExecutor.EBuildActionType actionType, RadixObject contexts[], IBuildEnvironment buildEnv) {
+    ContextInfo determineTargets(BuildActionExecutor.EBuildActionType actionType,
+            RadixObject contexts[], IBuildEnvironment buildEnv, final boolean suppressProblemsClear) {
         IBuildDisplayer buildDisplayer = buildEnv.getBuildDisplayer();
         IProgressHandle handle = buildDisplayer.getProgressHandleFactory().createHandle("Check...", buildEnv.getFlowLogger().getCancellable());
         try {
@@ -77,6 +82,7 @@ class ContextChecker {
             handle.start();
 
             ArrayList<Definition> result = new ArrayList<>();
+            final ArrayList<Module> exclude = new ArrayList<>();
 
             for (RadixObject context : contexts) {
                 if (context instanceof AdsDefinition) {
@@ -117,21 +123,47 @@ class ContextChecker {
                     }
 
                     AdsModule module = (AdsModule) context.getModule();
-                    resetModuleChecks(module, module.getSegment());
+                    if (!suppressProblemsClear) {
+                        resetModuleChecks(module, module.getSegment());
+                    }
                     processedModules.add(module);
+                    exclude.add(module);
                 } else if (context instanceof UdsDefinition) {
                     result.add((UdsDefinition) context);
                     UdsModule module = (UdsModule) context.getModule();
-                    resetModuleChecks(module, module.getSegment());
+                    if (!suppressProblemsClear) {
+                        resetModuleChecks(module, module.getSegment());
+                    }
                     processedModules.add(module);
+                    exclude.add(module);
+                } else if (context instanceof UdsFile) {
+                    UdsModule module = (UdsModule) context.getModule();
+                    if (!suppressProblemsClear) {
+                        resetModuleChecks(module, module.getSegment());
+                    }
+                    processedModules.add(module);
+                    exclude.add(module);
+                    processUdsFile(module, (UdsFile) context, result, buildEnv);
+                } if (context instanceof UdsFileRadixObjects) {
+                    Module module = ((UdsFileRadixObjects) context).getModule();
+                    if (!suppressProblemsClear) {
+                        resetModuleChecks(module, module.getSegment());
+                    }
+                    processedModules.add(module);
+                    exclude.add(module);
+                    processUdsFileRadixObjects((UdsFileRadixObjects) context, result, buildEnv);
                 } else if (context instanceof AdsModule) {
                     AdsModule module = (AdsModule) context;
-                    resetModuleChecks(module, module.getSegment());
+                    if (!suppressProblemsClear) {
+                        resetModuleChecks(module, module.getSegment());
+                    }
                     processedModules.add(module);
                     processModule(module, result, buildEnv);
                 } else if (context instanceof UdsModule) {
                     UdsModule module = (UdsModule) context;
-                    resetModuleChecks(module, module.getSegment());
+                    if (!suppressProblemsClear) {
+                        resetModuleChecks(module, module.getSegment());
+                    }
                     processedModules.add(module);
                     processModule(module, result, buildEnv);
                 } else if (context instanceof AdsSegment) {
@@ -139,17 +171,21 @@ class ContextChecker {
                 } else if (context instanceof UdsSegment) {
                     processSegment((UdsSegment) context, result, handle, buildEnv);
                 } else if (context instanceof Layer) {
-                    resetModuleChecks((Layer) context, buildEnv);
+                    if (!suppressProblemsClear) {
+                        resetModuleChecks((Layer) context, buildEnv);
+                    }
                     processLayer((Layer) context, result, handle, buildEnv);
                 } else if (context instanceof Branch) {
                     List<Layer> layers = ((Branch) context).getLayers().getInOrder();
-                    for (Layer l : layers) {
-                        resetModuleChecks(l, buildEnv);
+                    if (!suppressProblemsClear) {
+                        for (Layer l : layers) {
+                            resetModuleChecks(l, buildEnv);
+                        }
                     }
                     for (Layer l : layers) {
                         processLayer(l, result, handle, buildEnv);
                     }
-                }
+                } 
                 if (isCancelled(buildEnv)) {
                     return null;
                 }
@@ -163,9 +199,34 @@ class ContextChecker {
             List<Definition> checkFailedDefinitions = new ArrayList<>();
             if (actionType != BuildActionExecutor.EBuildActionType.CLEAN && !skipCheck) {
                 Checker c = new Checker(buildEnv.getBuildProblemHandler(), buildEnv.getCheckOptions());
-                handle.switchToDeterminate(result.size());
+                int checkSize = result.size() + processedModules.size() + processedLayers.size();
+                handle.switchToDeterminate(checkSize);
                 int count = 0;
-                int stepSize = result.size() > 100 ? result.size() / 100 : 1;
+                int stepSize = checkSize > 100 ? checkSize / 100 : 1;
+                for (Layer l : processedLayers){
+                    if (isCancelled(buildEnv)) {
+                        return null;
+                    }
+                    if (!l.isReadOnly()){
+                        c.checkRadixObject(l);
+                    }
+                    count++;
+                    if (count % stepSize == 0) {
+                        handle.progress("Check", count);
+                    }
+                }
+                for (Module m : processedModules) {
+                    if (isCancelled(buildEnv)) {
+                        return null;
+                    }
+                    if (!result.contains(m) && !exclude.contains(m)) {
+                        c.checkRadixObject(m);
+                    }
+                    count++;
+                    if (count % stepSize == 0) {
+                        handle.progress("Check", count);
+                    }
+                }
                 for (Definition def : result) {
                     if (isCancelled(buildEnv)) {
                         return null;
@@ -245,6 +306,7 @@ class ContextChecker {
                     return;
                 }
             }
+            RadixProblemRegistry.getDefault().clear(Collections.singleton(layer));
         }
     }
 
@@ -267,6 +329,12 @@ class ContextChecker {
             }
             if (!m.isReadOnly()) {
                 if (!isLocaleLayer) {
+                    final AdsLocalizingBundleDef moduleBundle = module.findExistingLocalizingBundle();
+                    if (moduleBundle != null) {
+                        if (!defsIndex.containsKey(moduleBundle.getId())) {
+                            defsIndex.put(moduleBundle.getId(), moduleBundle);
+                        }
+                    }
                     for (AdsDefinition def : m.getDefinitions()) {
                         if (!defsIndex.containsKey(def.getId())) {
                             defsIndex.put(def.getId(), def);
@@ -278,6 +346,12 @@ class ContextChecker {
                                     defsIndex.put(bundle.getId(), bundle);
                                 }
                             }
+                        }
+                    }
+                    if (module instanceof UdsModule) {
+                        UdsModule udsModule = (UdsModule) module;
+                        for (RadixObject udsFile : udsModule.getUdsFiles()) {
+                            processUdsFile(udsModule, udsFile, result, buildEnv);
                         }
                     }
                 }
@@ -303,6 +377,9 @@ class ContextChecker {
                 }
 
             }
+            for (RadixObject udsFile: module.getUdsFiles()){
+                processUdsFile(module, udsFile, result, buildEnv);
+            }
             if (isCancelled(buildEnv)) {
                 return;
             }
@@ -310,9 +387,54 @@ class ContextChecker {
 
         result.addAll(defsIndex.values());
     }
+    
+    private void processUdsFile(UdsModule module, RadixObject file, List<Definition> result, IBuildEnvironment buildEnv) {
+
+        if (isCancelled(buildEnv)) {
+            return;
+        }
+        
+        if (module.isReadOnly()){
+            return;
+        }
+        
+        if (file instanceof Definition){
+            result.add((Definition) file);
+        }
+        
+        if (file instanceof UdsDirectory){
+            UdsDirectory directory = (UdsDirectory) file;
+            for (RadixObject f : directory.getFiles()){
+                processUdsFile(module, f, result, buildEnv);
+            }
+        }
+        if (file instanceof UdsXmlFile) {
+            UdsXmlFile xmlFile = (UdsXmlFile) file;
+            processUdsFileRadixObjects(xmlFile.getUdsDefinitions(), result, buildEnv);
+        }
+        if (file instanceof UdsFileRadixObjects) {
+            processUdsFileRadixObjects((UdsFileRadixObjects) file, result, buildEnv);
+        }
+    }
+    
+    private void processUdsFileRadixObjects(UdsFileRadixObjects objects, List<Definition> result, IBuildEnvironment buildEnv) {
+        if (isCancelled(buildEnv)) {
+            return;
+        }
+        for (RadixObject radixObject : objects) {
+            if (radixObject instanceof Definition) {
+                result.add((Definition) radixObject);
+                if (isCancelled(buildEnv)) {
+                    return;
+                }
+            } else if (radixObject instanceof UdsFileRadixObjects) {
+                processUdsFileRadixObjects((UdsFileRadixObjects) radixObject, result, buildEnv);
+            }
+        }
+    }
 
     private void processLayer(Layer layer, List<Definition> result, IProgressHandle handle, IBuildEnvironment buildEnv) {
-        
+
         modulesIndex.clear();
         if (isCancelled(buildEnv)) {
             return;

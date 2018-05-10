@@ -13,6 +13,7 @@ package org.radixware.kernel.common.svn.client;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -202,7 +203,7 @@ class DAV {
         }
 
         public void setURL(String url) {
-            originalPath = url;
+            originalPath = this.url;
             this.url = url;
         }
 
@@ -288,6 +289,7 @@ class DAV {
         private SvnHttpConnection connection;
         private boolean wasAdded;
         private final PathDataCache cache;
+        private SvnProperties properties;
 
         public Resource(SvnHttpConnection connection, PathDataCache cache, String path, long revision) {
             this(connection, cache, path, revision, false);
@@ -301,9 +303,11 @@ class DAV {
             this.connection = connection;
             this.isCopy = isCopy;
             this.cache = cache;
-            this.wcUrl = cache.getWorkingUrlForPath(path);
+            this.wcUrl = cache.getWorkingUrlForPath(path); 
         }
-
+        
+        
+        
         public void setAdded(boolean added) {
             wasAdded = added;
         }
@@ -365,13 +369,28 @@ class DAV {
         }
 
         public void dispose() {
-
+            properties = null; 
         }
 
         public void setWorkingURL(String location) {
             wcUrl = location;
             cache.putWorkingUrlForPath(path, location);
         }
+        
+        protected Iterator<Map.Entry <String, SvnProperties.Value> > getPropertiesAsIterator(){
+            if (properties == null){
+                return null;
+            }
+            return properties.map().entrySet().iterator();
+        }
+        
+        protected void putProperty(final String name, final SvnProperties.Value val) {
+            if (properties == null){
+                properties = new SvnProperties();
+            }
+            properties.set(name, val);
+        }
+        
     }
 
 }

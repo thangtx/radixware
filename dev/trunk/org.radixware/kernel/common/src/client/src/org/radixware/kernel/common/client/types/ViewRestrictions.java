@@ -111,22 +111,29 @@ public final class ViewRestrictions extends Restrictions{
         final ModelRestrictions modelRestrictions = getModelRestrictions();        
         return modelRestrictions==null ? false : modelRestrictions.isRestrictedInModel(restriction);
     }
-    
-    boolean isCommandRestrictedInView(final Id commandId){
-        return isRestrictedInView(ERestriction.ANY_COMMAND) ||
-               restrictedCommands.contains(commandId) ||
-               (getParentRestrictions()!=null && getParentRestrictions().isCommandRestrictedInView(commandId));
+        
+    boolean isCommandRestrictedInView(final Id commandId, final boolean isReadOnly){
+        return (isRestrictedInView(ERestriction.NOT_READ_ONLY_COMMANDS) && !isReadOnly) ||
+               isRestrictedInView(ERestriction.ANY_COMMAND) ||
+               restrictedCommands.contains(commandId) ||               
+               (getParentRestrictions()!=null && getParentRestrictions().isCommandRestrictedInView(commandId,isReadOnly));
     }
         
-    private boolean isCommandRestrictedInModel(final Id commandId){
+    private boolean isCommandRestrictedInModel(final Id commandId, final boolean isReadOnly){
         final ModelRestrictions modelRestrictions = getModelRestrictions();
-        return modelRestrictions==null ? false : modelRestrictions.isCommandRestrictedInModel(commandId);
+        return modelRestrictions==null ? false : modelRestrictions.isCommandRestrictedInModel(commandId, isReadOnly);
     }
 
     @Override
+    @Deprecated
     public boolean getIsCommandRestricted(final Id cmdId) {
-        return isCommandRestrictedInModel(cmdId) || isCommandRestrictedInView(cmdId);
+        return isCommandRestrictedInModel(cmdId, false) || isCommandRestrictedInView(cmdId, false);
     }
+    
+    @Override
+    public boolean getIsCommandRestricted(final Id cmdId, final boolean isReadOnly) {
+        return isCommandRestrictedInModel(cmdId, isReadOnly) || isCommandRestrictedInView(cmdId, isReadOnly);
+    }    
     
     @Override
     protected boolean isRestricted(final ERestriction restriction){

@@ -13,12 +13,14 @@ package org.radixware.kernel.explorer.widgets.selector;
 
 import com.trolltech.qt.core.QAbstractItemModel;
 import com.trolltech.qt.core.QEvent;
+import com.trolltech.qt.core.QEventFilter;
 import com.trolltech.qt.core.QModelIndex;
 import com.trolltech.qt.core.QObject;
 import com.trolltech.qt.core.QPoint;
 import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.QSize;
 import com.trolltech.qt.core.QTimerEvent;
+import com.trolltech.qt.core.QUrl;
 import com.trolltech.qt.core.Qt;
 import org.radixware.kernel.explorer.widgets.ExplorerAction;
 import com.trolltech.qt.gui.QAbstractButton;
@@ -28,159 +30,82 @@ import com.trolltech.qt.gui.QAbstractItemView.EditTrigger;
 import com.trolltech.qt.gui.QAction;
 import com.trolltech.qt.gui.QApplication;
 import com.trolltech.qt.gui.QCloseEvent;
+import com.trolltech.qt.gui.QDesktopServices;
 import com.trolltech.qt.gui.QDialog;
-import com.trolltech.qt.gui.QFont;
-import com.trolltech.qt.gui.QFontDatabase;
 import com.trolltech.qt.gui.QFontMetrics;
 import com.trolltech.qt.gui.QHeaderView;
 import com.trolltech.qt.gui.QKeyEvent;
 import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QMenu;
 import com.trolltech.qt.gui.QMouseEvent;
-import com.trolltech.qt.gui.QMoveEvent;
 import com.trolltech.qt.gui.QPaintEvent;
 import com.trolltech.qt.gui.QPainter;
 import com.trolltech.qt.gui.QResizeEvent;
 import com.trolltech.qt.gui.QScrollBar;
 import com.trolltech.qt.gui.QStyle;
 import com.trolltech.qt.gui.QStyleOptionHeader;
+import com.trolltech.qt.gui.QStyleOptionViewItem;
 import com.trolltech.qt.gui.QWidget;
 import java.awt.Dimension;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import org.radixware.kernel.common.client.IClientEnvironment;
+import org.radixware.kernel.common.client.enums.EHierarchicalSelectionMode;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
+import org.radixware.kernel.common.client.errors.ActivatingPropertyError;
 import org.radixware.kernel.common.client.exceptions.BrokenEntityObjectException;
-import org.radixware.kernel.common.client.exceptions.FileException;
+import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.models.BrokenEntityModel;
 import org.radixware.kernel.common.client.models.EntityModel;
-import org.radixware.kernel.common.client.models.EntityObjectsSelection;
-import org.radixware.kernel.common.client.models.EntityObjectsWriter;
 import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.GroupModelAsyncReader;
-import org.radixware.kernel.common.client.models.GroupModelReader;
 import org.radixware.kernel.common.client.models.items.ModelItem;
 import org.radixware.kernel.common.client.models.items.SelectorColumnModelItem;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.types.Pid;
-import org.radixware.kernel.common.client.types.PropertyValuesWriteOptions;
 import org.radixware.kernel.common.client.views.IProgressHandle;
 import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.client.widgets.actions.IToolBar;
 import org.radixware.kernel.common.client.widgets.selector.IMultiSelectionWidget;
-import org.radixware.kernel.common.client.widgets.selector.ISelectorWidgetDelegate;
+import org.radixware.kernel.common.client.widgets.selector.ISelectorDataExportOptionsDialog;
+import org.radixware.kernel.common.client.models.GroupModelCsvWriter;
+import org.radixware.kernel.common.client.types.AggregateFunctionCall;
+import org.radixware.kernel.common.client.models.GroupModelXlsxWriter;
+import org.radixware.kernel.common.client.models.HierarchicalSelection;
+import org.radixware.kernel.common.client.types.GroupRestrictions;
+import org.radixware.kernel.common.client.types.SelectorColumnsStatistic;
+import org.radixware.kernel.common.client.widgets.IToolButton;
 import org.radixware.kernel.common.exceptions.ServiceCallException;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
-import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.common.client.widgets.selector.SelectorModelDataLoader;
-import org.radixware.kernel.common.enums.ESelectionMode;
-import org.radixware.kernel.common.utils.SystemTools;
+import org.radixware.kernel.common.enums.EAggregateFunction;
+import org.radixware.kernel.common.enums.EMimeType;
+import org.radixware.kernel.common.enums.ESelectorColumnSizePolicy;
+import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.explorer.dialogs.ExplorerMessageBox;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 
 import org.radixware.kernel.explorer.utils.WidgetUtils;
 import org.radixware.kernel.explorer.views.selector.Selector;
 import org.radixware.kernel.explorer.widgets.AbstractGrid;
+import org.radixware.kernel.explorer.widgets.FilteredMouseEvent;
 import org.radixware.kernel.explorer.widgets.propeditors.PropEditor;
 
-public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidget, IMultiSelectionWidget {
-        
-    private final static class QTableCornerButton extends QAbstractButton {
-
-        private final static String WINDOWS_FONT_FAMILY="Arial Unicode MS";
-        public final static char BUTTON_SYMBOL = '\u2714';
-                
-        private final QStyleOptionHeader styleOptionHeader;        
-        private boolean fixedPos;
-        private int posX, posY;
-        private boolean clickEnabled = true;
-        private final QFontMetrics fontMetrics;
-        private final QFont font;
-        private final QStyle.State state = new QStyle.State(0);
-
-        @SuppressWarnings("LeakingThisInConstructor")
-        public QTableCornerButton() {
-            super();
-            styleOptionHeader = new QStyleOptionHeader();
-            styleOptionHeader.setPosition(QStyleOptionHeader.SectionPosition.OnlyOneSection);
-            styleOptionHeader.initFrom(this);
-            font = new QFont(font());            
-            if (SystemTools.isWindows && (new QFontDatabase().hasFamily(WINDOWS_FONT_FAMILY))){
-                font.setFamily(WINDOWS_FONT_FAMILY);
-            }
-            font.setStyleStrategy(QFont.StyleStrategy.PreferAntialias);
-            fontMetrics = new QFontMetrics(font);            
-        }        
-
-        @Override
-        protected void paintEvent(final QPaintEvent event) {
-            styleOptionHeader.initFrom(this);
-            state.clearAll();
-            if (isEnabled()) {
-                state.set(QStyle.StateFlag.State_Enabled);
-            }
-            if (isActiveWindow()) {
-                state.set(QStyle.StateFlag.State_Active);
-            }
-            state.set(QStyle.StateFlag.State_Raised);
-            styleOptionHeader.setState(state);
-            styleOptionHeader.setRect(rect());
-            if (clickEnabled){
-                styleOptionHeader.setFontMetrics(fontMetrics);                                
-                styleOptionHeader.setText(String.valueOf(BUTTON_SYMBOL));
-            }else{
-                styleOptionHeader.setText("");
-            }
-            styleOptionHeader.setTextAlignment(Qt.AlignmentFlag.AlignCenter);
-            final QPainter painter = new QPainter(this);
-            painter.setFont(font);
-            try {
-                style().drawControl(QStyle.ControlElement.CE_Header, styleOptionHeader, painter, this);                
-            } finally {
-                painter.end();
-            }
-        }
-        
-        public QFontMetrics getSymbolFontMetrics(){
-            return fontMetrics;
-        }
-        
-        public void setFixedPos(final int x, final int y){
-            posX = x;
-            posY = y;
-            fixedPos = true;
-        }
-        
-        @Override
-        protected void moveEvent(final QMoveEvent event) {
-            super.moveEvent(event);
-            final QPoint pos = pos();
-            if (fixedPos){
-                if (pos.x()!=posX && pos.y()!=posY){
-                    move(posX, posY);
-                }
-            }
-        }
-        
-        public void setClickEnabled(final boolean isEnabled){
-            if (isEnabled!=clickEnabled){
-                clickEnabled = isEnabled;
-                repaint();
-            }
-        }
-        
-        public boolean isClickEnabled(){
-            return clickEnabled;
-        }        
-    }
+public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidget, IMultiSelectionWidget {    
     
     private static final class VerticalHeader extends AbstractGrid.GridHeader{                
         
@@ -188,7 +113,7 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         private int width = -1;
         private QFontMetrics symbolFontMetrics;
         private final QStyleOptionHeader option = new QStyleOptionHeader();
-        private final QStyle.State state = new QStyle.State(0);
+        private final QStyle.State state = new QStyle.State(0);        
         
         public VerticalHeader(final AbstractGrid parent){
             super(parent);
@@ -196,6 +121,10 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         
         public void setSymbolFontMetrics(final QFontMetrics fontMetrics){
             symbolFontMetrics = fontMetrics;
+            if (width>-1){
+                width = -1;
+                updateGeometry();
+            }
         }
         
         public void setCurrentRow(int row){
@@ -246,6 +175,12 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         }
 
         @Override
+        protected void mousePressEvent(QMouseEvent mouseEvent) {
+            //super.mousePressEvent(mouseEvent);
+            mouseEvent.accept();
+        }
+                
+        @Override
         public QSize sizeHint() {
             final QSize size = super.sizeHint();
             if (size.width()>0 && symbolFontMetrics!=null){
@@ -260,7 +195,7 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
                 initStyleOption(opt);
                 opt.setSection(0);
                 opt.setFontMetrics(symbolFontMetrics);
-                opt.setText(String.valueOf(QTableCornerButton.BUTTON_SYMBOL));
+                opt.setText(String.valueOf(TableCornerButton.BUTTON_SYMBOL));
                 final QSize size = style().sizeFromContents(QStyle.ContentsType.CT_HeaderSection, opt, new QSize(), this);
                 width = size.width();
             }
@@ -277,10 +212,167 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         
     }
     
-    private static final class FetchMoreEvent extends QEvent{        
-        public FetchMoreEvent(){
+    private static enum EventType{FETCH_MORE, PAINT, REREAD, SELECTION_CHANGED};
+    
+    private static class SelectorGridEvent extends QEvent{
+        
+        private final EventType type;
+        
+        public SelectorGridEvent(final EventType type){
             super(QEvent.Type.User);
+            this.type = type;
+        }
+        
+        public EventType getType(){
+            return type;
+        }
+        
+    }
+    
+    private static final class FetchMoreEvent extends SelectorGridEvent{        
+        
+        private final boolean silently;
+                
+        public FetchMoreEvent(final boolean silently){
+            super(EventType.FETCH_MORE);
+            this.silently = silently;
         }        
+        
+        public boolean silentlyFetch(){
+            return silently;
+        }
+    }
+    
+    private static final class IndexInfo implements PostponedMousePressEvent.IndexInfo<SelectorGrid>{
+        
+        private final int row;
+        private final int column;
+        
+        public IndexInfo(final QModelIndex index){
+            row = index.row();
+            column = index.column();
+        }
+
+        @Override
+        public QModelIndex getIndex(final SelectorGrid view) {
+            return view.controller.model.index(row, column);
+        }
+        
+    }
+        
+    private final static class PointInfo{
+        
+        public static final PointInfo UNKNOWN_POINT = new PointInfo(null, null, null, false);
+        
+        private final int row;
+        private final int column;
+        private final Id propertyId;
+        private final Object propertyValue;
+        private final boolean insideCheckBox;
+        
+        public PointInfo(final QModelIndex index, final Id propertyId, final Object propertyValue, final boolean insideCheckBox){
+            row = index==null ? -1 : index.row();
+            column = index==null ? -1 : index.column();
+            this.propertyId = propertyId;
+            this.propertyValue = propertyValue;
+            this.insideCheckBox = insideCheckBox;
+        }
+        
+        public boolean insideCheckBox(){
+            return insideCheckBox;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 41 * hash + this.row;
+            hash = 41 * hash + this.column;
+            hash = 41 * hash + Objects.hashCode(this.propertyId);
+            hash = 41 * hash + Objects.hashCode(this.propertyValue);
+            hash = 41 * hash + (this.insideCheckBox ? 1 : 0);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final PointInfo other = (PointInfo) obj;
+            if (this.row != other.row) {
+                return false;
+            }
+            if (this.column != other.column) {
+                return false;
+            }
+            if (!Objects.equals(this.propertyId, other.propertyId)) {
+                return false;
+            }
+            if (!Objects.equals(this.propertyValue, other.propertyValue)) {
+                return false;
+            }
+            if (this.insideCheckBox != other.insideCheckBox) {
+                return false;
+            }
+            return true;
+        }                
+    }
+    
+    private class FilteredMouseEventListener extends QEventFilter{
+        
+        public FilteredMouseEventListener(final QObject parent){
+            super(parent);
+            setProcessableEventTypes(EnumSet.of(QEvent.Type.User));
+        }
+        
+        @Override
+        public boolean eventFilter(final QObject target, final QEvent event) {
+            if (event instanceof FilteredMouseEvent) {
+                SelectorGrid.this.processFilteredMouseEvent((FilteredMouseEvent)event);
+                return true;
+            }
+            return false;
+        }
+    }    
+    
+    private class IndexIterator implements Iterator<QModelIndex>{
+                
+        private final int endRow;
+        private QModelIndex currentIndex;    
+        
+        public IndexIterator(final QModelIndex startIndex, final QModelIndex endIndex){            
+            currentIndex = startIndex;
+            endRow = endIndex==null ? -1 : endIndex.row();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return currentIndex!=null;
+        }
+
+        @Override
+        public QModelIndex next() {
+            if (currentIndex==null){
+                throw new NoSuchElementException();
+            }else{
+                final QModelIndex nextIndex = currentIndex;
+                if (nextIndex.row()==endRow){
+                    currentIndex = null;
+                }else{
+                    currentIndex = SelectorGrid.this.model().index(currentIndex.row()+1, currentIndex.column());
+                }
+                return nextIndex;
+            }
+        }
+
+        @Override
+        public void remove() {
+             throw new UnsupportedOperationException();
+        }
+        
     }
 
     private final static class Icons extends ExplorerIcon.CommonOperations {
@@ -292,7 +384,9 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         public static final Icons PREVIOUS = new Icons("classpath:images/prev.svg");
         public static final Icons BEGIN = new Icons("classpath:images/begin.svg");
         public static final Icons END = new Icons("classpath:images/end.svg");
-    }
+    }    
+    
+    private final static int DEFAULT_HEIGHT = 260;
     private final static String ROWS_LIMIT_FOR_NAVIGATION_CONFIG_PATH =
             SettingNames.SYSTEM + "/" + SettingNames.SELECTOR_GROUP + "/" + SettingNames.Selector.COMMON_GROUP + "/" + SettingNames.Selector.Common.ROWS_LIMIT_FOR_NAVIGATION;
     private final static String ROWS_LIMIT_FOR_RESTORING_POSITION_CONFIG_PATH =
@@ -305,28 +399,38 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         public final ExplorerAction prevAction;
         public final ExplorerAction nextAction;
         public final ExplorerAction beginAction;
-        public final ExplorerAction endAction;
         public final ExplorerAction exportAction;
+        public final ExplorerAction endAction;
+        public final ExplorerAction exportCsvAction;
+        public final ExplorerAction exportExcelAction;
+        public final ExplorerAction calcStatisticAction;
 
         public Actions(final IClientEnvironment environment) {
             final MessageProvider mp = environment.getMessageProvider();
-            findAction = createAction(environment, Icons.FIND, mp.translate("Selector", "Find..."), "onFindAction()");
-            findNextAction = createAction(environment, Icons.FIND_NEXT, mp.translate("Selector", "Find Next"), "onFindNextAction()");
-            nextAction = createAction(environment, Icons.NEXT, mp.translate("Selector", "Next"), "selectNextRow()");
-            prevAction = createAction(environment, Icons.PREVIOUS, mp.translate("Selector", "Previous"), "selectPrevRow()");
-            beginAction = createAction(environment, Icons.BEGIN, mp.translate("Selector", "First"), "selectFirstRow()");
-            endAction = createAction(environment, Icons.END, mp.translate("Selector", "Last"), "selectLastRow()");
-            exportAction = createAction(environment, ClientIcon.Selector.EXPORT, mp.translate("Selector", "Export Selector Content"), "export()");
+            findAction = createAction(environment, Icons.FIND, mp.translate("Selector", "Find..."), "onFindAction()", "find");
+            findNextAction = createAction(environment, Icons.FIND_NEXT, mp.translate("Selector", "Find Next"), "onFindNextAction()", "find_next");
+            nextAction = createAction(environment, Icons.NEXT, mp.translate("Selector", "Next"), "selectNextRow()","next");
+            prevAction = createAction(environment, Icons.PREVIOUS, mp.translate("Selector", "Previous"), "selectPrevRow()","previous");
+            beginAction = createAction(environment, Icons.BEGIN, mp.translate("Selector", "First"), "selectFirstRow()","first");
+            endAction = createAction(environment, Icons.END, mp.translate("Selector", "Last"), "selectLastRow()","last");
+            exportAction = createAction(environment, ClientIcon.Selector.EXPORT, mp.translate("Selector", "Export Selector Content"), null, "export");
+            exportCsvAction = createAction(environment, ClientIcon.Selector.EXPORTCSV, mp.translate("Selector", "Export Selector Content in CSV format"), "export()","export_csv");
+            exportExcelAction = createAction(environment, ClientIcon.Selector.EXPORTXLSX, mp.translate("Selector", "Export Selector Content in XLSX format"), "exportExcel()","export_excel");
+            calcStatisticAction = createAction(environment, ClientIcon.Selector.CALC_STATISTIC, mp.translate("Selector", "Statistics"), "calcSelectionStatistic()","statistics");
         }
 
         private ExplorerAction createAction(final IClientEnvironment environment,
                 final ClientIcon icon,
                 final String title,
-                final String slot) {
+                final String slot,
+                final String objectName) {
             final ExplorerAction action =
                     new ExplorerAction(ExplorerIcon.getQIcon(icon), title, SelectorGrid.this);
             WidgetUtils.updateActionToolTip(environment, action);
-            action.triggered.connect(SelectorGrid.this, slot);
+            if (slot!=null){
+                action.triggered.connect(SelectorGrid.this, slot);
+            }
+            action.setObjectName(objectName);
             return action;
         }
 
@@ -348,19 +452,23 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
             }
             findAction.setEnabled(rows > 0 && currentEntityDefined);
             findNextAction.setEnabled(rows > 0 && currentEntityDefined);
-            exportAction.setEnabled(rows > 0);
+            exportAction.setEnabled(rows > 0 && currentEntityDefined);
+            exportCsvAction.setEnabled(rows > 0);
+            exportExcelAction.setEnabled(rows > 0);
+            calcStatisticAction.setEnabled(rows > 0 
+                                                        && !getGroupModel().getRestrictions().getIsCalcStatisticRestricted()
+                                                        && getSelection().isEmpty());
             refreshExportActionToolTip();
         }
         
         private void refreshExportActionToolTip(){
             final MessageProvider mp = controller.selector.getEnvironment().getMessageProvider();
-            final EntityObjectsSelection selection = controller.selector.getGroupModel().getSelection();
-            if (selection.isEmpty()){
-                exportAction.setToolTip(mp.translate("Selector", "Export Selector Content"));
-            }else if (selection.isSingleObjectSelected()){
-                exportAction.setToolTip(mp.translate("Selector", "Export Selected Object"));
+            if (getSelection().isEmpty()){
+                exportCsvAction.setToolTip(mp.translate("Selector", "Export Selector Content in CSV format"));
+            }else if (getSelection().isSingleObjectSelected()){
+                exportCsvAction.setToolTip(mp.translate("Selector", "Export Selected Object in CSV format"));
             }else{
-                exportAction.setToolTip(mp.translate("Selector", "Export Selected Objects"));
+                exportCsvAction.setToolTip(mp.translate("Selector", "Export Selected Objects in CSV format"));
             }
         }
 
@@ -371,6 +479,10 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
             nextAction.close();
             beginAction.close();
             endAction.close();
+            exportCsvAction.close();
+            exportExcelAction.close();
+            exportAction.close();
+            calcStatisticAction.close();
         }
     }
     
@@ -379,25 +491,49 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     public final Actions actions;
     private final Selector selector;
     private final StandardSelectorWidgetController controller;
-    private final SelectorModelDataLoader allDataLoader;
     private final SelectorModelDataLoader objectFinder;
-    private final QTableCornerButton corner = new QTableCornerButton();
+    private final TableCornerButton cornerButton = new TableCornerButton(this);
     private boolean searching, sizeHintCalculating;
     private QEventsScheduler scheduler = new QEventsScheduler();
     private SelectorHorizontalHeader horizontalHeader;
-    private final static int DEFAULT_HEIGHT = 260;
     private boolean blockSelectionListener;
     private boolean geometryRecursionBlock;
-    private boolean fetchMoreScheduled;
     private boolean disableFetchMoreOnInsertRows;
+    private final EnumSet<EventType> postedEvents = EnumSet.noneOf(EventType.class);
+    private FilteredMouseEvent postponedMouseEvent;
+    private PostponedMousePressEvent<SelectorGrid> postponedMousePressEvent;
+    private long postedMousePressEventId;
+    private final FilteredMouseEventListener filteredMouseEventListener = new FilteredMouseEventListener(this);
     
-    private final GroupModel.SelectionListener selectionHandler = new GroupModel.SelectionListener(){
+    private final HierarchicalSelection.ISelectionListener<SelectorNode> selectionHandler = 
+            new HierarchicalSelection.ISelectionListener<SelectorNode>(){
+                @Override
+                public void afterSelectionChanged(final HierarchicalSelection<SelectorNode> selection) {
+                    SelectorGrid.this.postSelectorGridEvent(EventType.SELECTION_CHANGED);
+                }
+            };
+    
+    private final StandardSelectorWidgetController.IndexIteratorFactory indexIteratorFactory = 
+        new StandardSelectorWidgetController.IndexIteratorFactory(){
+            @Override
+            public Iterator<QModelIndex> create(final QModelIndex startIndex, final QModelIndex endIndex) {
+                return new IndexIterator(startIndex, endIndex);
+            }        
+        };
+    
+    private final QEventFilter eventFilter = new QEventFilter(this){
+
         @Override
-        public void afterSelectionChanged(final EntityObjectsSelection selection) {
-            if (!blockSelectionListener)
-                updateHeaderCheckState();
+        public boolean eventFilter(QObject target, QEvent event) {
+            if (target==SelectorGrid.this && event!=null){
+                return SelectorGrid.this.filterQtEvent(event);
+            }else{
+                return super.eventFilter(target, event);
+            }
         }
+        
     };
+    
     private final GroupModelAsyncReader.Listener asyncReaderListener =
             new GroupModelAsyncReader.Listener() {
         @Override
@@ -405,10 +541,10 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
             super.readingWasFinished();
             if (isEnabled()) {
                 finishEdit();
-                QModelIndex currentIndex = currentIndex();
+                final QModelIndex currentIndex = currentIndex();
                 final QModelIndex topIndex = controller.view.indexAt(new QPoint(1, 1));
                 final int difference = currentIndex == null ? 0 : currentIndex.row() - topIndex.row();
-                final int column = currentIndex==null ? controller.getFirstVisibleColumn() : currentIndex.column();
+                final int column = currentIndex==null ? horizontalHeader.getFirstVisibleColumnIndex() : currentIndex.column();
                 lockInput();
                 int idx = -1;
 
@@ -433,9 +569,20 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
                         controller.setItemDelegateCurrentIndex(newIndex);
                         controller.enterEntity(newIndex);
                     }
-                } finally {
-                    unlockInput(false);
-                    fetchMore(true);
+                    
+                    if (model().rowCount(null)==0 && getGroupModel().getEntitiesCount()>0){
+                        disableFetchMoreOnInsertRows = true;
+                        try{
+                            controller.model.fetchMore(null);
+                            controller.model.increaseRowsLimit();
+                        }finally{
+                            disableFetchMoreOnInsertRows = false;
+                        }
+                        return;
+                    }
+                    
+                } finally {                    
+                    unlockInput(false);                    
                     switch (asyncReader.getScrollPosition()) {
                         case CURRENT:
                             if (currentIndex != null) {
@@ -444,7 +591,7 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
                             }
                             break;
                         case TOP:
-                            if (selector.getCurrentEntity() != null) {
+                            if (selector.getCurrentEntity() != null && currentIndex!=null) {
                                 controller.enterEntity(currentIndex);
                             }
                             controller.view.scrollToTop();
@@ -458,13 +605,6 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
             }
         }
     };
-
-    private static class PaintEvent extends QEvent {
-
-        public PaintEvent() {
-            super(QEvent.Type.User);
-        }
-    }
 
     @Override
     public void lockInput() {
@@ -482,10 +622,16 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
 
     @Override
     protected void paintEvent(final QPaintEvent event) {
-        if (controller!=null && controller.isLocked()) {
-            controller.postEventAfterUnlock(new PaintEvent());            
+        if (controller!=null && controller.isLocked() && !ExplorerMessageBox.isSomeMessageBoxActive()) {
+            if (!postedEvents.contains(EventType.PAINT)){
+                postedEvents.add(EventType.PAINT);
+                controller.postEventAfterUnlock(new SelectorGridEvent(EventType.PAINT));
+            }
         }else if (sizeHintCalculating){
-            QApplication.postEvent(this, new PaintEvent());
+            if (!postedEvents.contains(EventType.PAINT)){
+                postedEvents.add(EventType.PAINT);
+                QApplication.postEvent(this, new SelectorGridEvent(EventType.PAINT));
+            }
         } else {
             try {
                 if (itemDelegate() instanceof SelectorWidgetItemDelegate) {
@@ -523,15 +669,13 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         }
         return true;
     }
-
-    @Override
-    public boolean event(final QEvent event) {
-        if (canProcessEvent(event.type())) {
-            return super.event(event);
-        } else if (controller != null && controller.isLocked() && event instanceof QResizeEvent) {
+    
+    public boolean filterQtEvent(final QEvent event){
+        if (canProcessEvent(event.type())){
+            return false;
+        }else if (controller != null && controller.isLocked() && event instanceof QResizeEvent) {
             final QResizeEvent resizeEvent = (QResizeEvent) event;
             controller.postEventAfterUnlock(new QResizeEvent(resizeEvent.size(), resizeEvent.oldSize()));
-            return false;
         } else if (event instanceof QTimerEvent) {
             final int timerId = ((QTimerEvent) event).timerId();
             killTimer(timerId);
@@ -542,64 +686,136 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
             }else if (inSearchState()){
                 scheduler.scheduleEvent(new QTimerEvent(timerId));
             }
-            return false;
-        } else {
-            return false;
         }
-    }        
+        return true;        
+    }
 
     @Override
     protected void customEvent(final QEvent event) {
-        if (event instanceof PaintEvent) {
-            if (controller.isLocked()) {
-                event.ignore();
-                controller.postEventAfterUnlock(new PaintEvent());
-            }else if (sizeHintCalculating){
-                event.ignore();
-                QApplication.postEvent(this, new PaintEvent());
-            } else {
-                event.accept();
-                repaint();
-            }
-        } else if (event instanceof FetchMoreEvent){
+       if (event instanceof FetchMoreEvent){
             event.accept();
-            fetchMore(false);
-        } else {
+            if (postedEvents.contains(EventType.FETCH_MORE)){
+                postedEvents.remove(EventType.FETCH_MORE);
+                if (model()!=null){
+                    fetchMore(((FetchMoreEvent)event).silentlyFetch());
+                }
+            }
+        } else if (event instanceof SelectorGridEvent){
+            event.accept();
+            final EventType type = ((SelectorGridEvent)event).getType();
+            switch(type){
+                case PAINT:{
+                    processPostponedPaintEvent();
+                    break;
+                }
+                case REREAD:{
+                    processRereadEvent();
+                    break;
+                }
+                case SELECTION_CHANGED:{
+                    processSelectionChangedEvent();
+                    break;
+                }
+            }
+        } else if (event instanceof PostponedMousePressEvent){
+            event.accept();
+            processPostponedMouseClickEvent((PostponedMousePressEvent)event);
+        } else if (event instanceof FilteredMouseEvent){
+            event.accept();
+            processFilteredMouseEvent(new FilteredMouseEvent((FilteredMouseEvent)event, viewport()));
+        }  else{
             super.customEvent(event);
+        }
+    }
+    
+    private boolean postSelectorGridEvent(final EventType eventType){
+        if (postedEvents.contains(eventType)){
+            return false;
+        }else{
+            postedEvents.add(eventType);
+            Application.processEventWhenEasSessionReady(this, new SelectorGridEvent(eventType));
+            return true;
+        }
+    }
+    
+    private void processSelectionChangedEvent(){
+        if (postedEvents.contains(EventType.SELECTION_CHANGED)){
+            postedEvents.remove(EventType.SELECTION_CHANGED);
+            updateHeaderCheckState();
+            if (isSelectionAllowed()){
+                updateSelectionMode();
+                final int lastRow = model().rowCount();
+                final int lastColumn = model().columnCount();        
+                dataChanged(controller.model.index(0, 0), controller.model.index(lastRow-1, lastColumn-1));
+            }            
+        }
+    }
+    
+    private void processRereadEvent(){
+        if (postedEvents.contains(EventType.REREAD)){            
+            if (controller.isLocked() || controller.changingCurrentEntity()){                
+                postSelectorGridEvent(EventType.REREAD);
+            }else {
+                executePostponedReread();
+            } 
+        }
+    }
+    
+    private boolean processPostponedPaintEvent(){
+        if (postedEvents.contains(EventType.PAINT)){
+            if (controller.isLocked()) {                
+                controller.postEventAfterUnlock(new SelectorGridEvent(EventType.PAINT));
+                return false;
+            }else if (sizeHintCalculating){                
+                QApplication.postEvent(this, new SelectorGridEvent(EventType.PAINT));
+                return false;
+            } else {
+                postedEvents.remove(EventType.PAINT);
+                repaint();
+                return true;
+            }            
+        }else{
+            return false;
+        }
+    }
+    
+    private void executePostponedReread(){
+        try{
+            rereadAndSetCurrent((Pid)null);
+        }catch(InterruptedException exception){
+            //ignore
+        }catch(ServiceClientException exception){
+            if (ClientException.isSystemFault(exception)) {
+                selector.getEnvironment().processException(exception);
+            } else {
+                final String title = selector.getEnvironment().getMessageProvider().translate("ExplorerException", "Error on receiving data");
+                selector.getEnvironment().getTracer().error(title, exception);
+            }
+        }finally{
+            postedEvents.remove(EventType.REREAD);
         }
     }
 
     @SuppressWarnings("LeakingThisInConstructor")
     public SelectorGrid(final Selector parentView, final SelectorModel model) {
         super(parentView,new VerticalHeaderFactory());
-        this.selector = parentView;
+        this.selector = parentView;        
         final List<QObject> children = new LinkedList<>(children());
         final IClientEnvironment environment = selector.getEnvironment();
-        horizontalHeader = new SelectorHorizontalHeader(this, model);
-        setHorizontalHeader(horizontalHeader);
+        createHorizontalHeader(model);
         controller = new StandardSelectorWidgetController(model, this, selector);
         final MessageProvider messageProvider = environment.getMessageProvider();
-        final String confirmMovingToLastObjectMessage =
-                messageProvider.translate("Selector", "Number of loaded objects is %1s.\nDo you want to load next %2s objects?");
-        allDataLoader = new SelectorModelDataLoader(environment, selector);
         
-        allDataLoader.setConfirmationMessageText(confirmMovingToLastObjectMessage);
-        allDataLoader.setProgressHeader(messageProvider.translate("Selector", "Moving to Last Object"));
-        allDataLoader.setProgressTitleTemplate(messageProvider.translate("Selector", "Moving to Last Object...\nNumber of Loaded Objects: %1s"));
-        allDataLoader.setDontAskButtonText(messageProvider.translate("Selector", "Load All Objects"));
         final String confirmRestoringPositionMessage =
                 messageProvider.translate("Selector", "Number of loaded objects is %1s.\nDo you want to continue restoring position?");
-        objectFinder = new SelectorModelDataLoader(environment, selector);
-        
+        objectFinder = new SelectorModelDataLoader(environment);        
         objectFinder.setConfirmationMessageText(confirmRestoringPositionMessage);
         objectFinder.setProgressHeader(messageProvider.translate("Selector", "Restoring Position"));
         objectFinder.setProgressTitleTemplate(messageProvider.translate("Selector", "Restoring Position...\nNumber of Loaded Objects: %1s"));
         objectFinder.setDontAskButtonText(messageProvider.translate("Selector", "Load All Required Objects"));
         actions = new Actions(environment);
-        verticalHeader().sectionDoubleClicked.connect(this, "onVHeaderClicked()");
         verticalHeader().setHighlightSections(true);
-        ((VerticalHeader)verticalHeader).setSymbolFontMetrics(corner.getSymbolFontMetrics());
-        horizontalHeader().sectionClicked.connect(this, "onHHeaderClicked(int)");
+        ((VerticalHeader)verticalHeader).setSymbolFontMetrics(cornerButton.getSymbolFontMetrics());        
         for (QObject child : children) {
             if (child instanceof QAbstractButton) {
                 ((QWidget) child).setVisible(false);//hide standard corner widget
@@ -607,189 +823,108 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
             }
         }
         
-        setCornerWidget(corner);
-        corner.clicked.connect(this,"cornerClicked()");
+        final QWidget viewport = viewport();
+        if (viewport != null) {
+            viewport.installEventFilter(filteredMouseEventListener);
+        }
+        
+        cornerButton.clicked.connect(this,"onCornerButtonClick()");
         
         final QRect vg = viewport().geometry();
-        corner.setFixedPos( (isRightToLeft() ? vg.right() + 1 : vg.left()), vg.top() );
-        refreshCornerWidgetToolTip();
+        cornerButton.setFixedPos( (isRightToLeft() ? vg.right() + 1 : vg.left()), vg.top() );
         setWordWrap(false);
         setModel(controller.model);
+        eventFilter.setProcessableEventTypes(EnumSet.of(QEvent.Type.MetaCall, QEvent.Type.Timer, QEvent.Type.Resize));
     }
-
+    
+    private SelectorHorizontalHeader createHorizontalHeader(final SelectorModel model){
+        horizontalHeader = new SelectorHorizontalHeader(this, model,  false);
+        setHorizontalHeader(horizontalHeader);
+        return horizontalHeader;
+    }
+    
     @SuppressWarnings("unused")
-    private void onVHeaderClicked() {
-        if (selector.getActions().getInsertAction().isEnabled()) {
-            selector.getActions().getInsertAction().trigger();
-        } else if (currentIndex() != null) {
-            EntityModel entity = controller.model.getEntity(currentIndex());
-            if (entity != null) {
-                selector.entityActivated.emit(entity);
-            }
-        }
+    private void onVHeaderDoubleClicked(final int section) {
+        controller.processRowHeaderDoubleClicked(controller.model.index(section, 0));
     }
 
     @SuppressWarnings("unused")
     private void onHHeaderClicked(final int section) {
-        if (section>0 || !controller.model.isSelectionEnabled()){
-            final int columnIndex = controller.model.isSelectionEnabled() ? section - 1 : section;
-            if (QApplication.keyboardModifiers().isSet(Qt.KeyboardModifier.ControlModifier) && columnIndex >= 0) {
-                resizeColumnToContents(section);
-            } else {
-                controller.processColumnHeaderClicked(columnIndex);
-            }
-        }
-    }
+        controller.processColumnHeaderClicked(section);
+    }    
+
+    @SuppressWarnings("unused")
+    private void onCornerButtonClick(){
+        controller.switchSelectionMode(horizontalHeader);
+    }    
     
     @SuppressWarnings("unused")
     private void onHHeaderCheckBoxClick(){
-        finishEdit();
-        final GroupModel groupModel = getGroupModel();
-        if (horizontalHeader.getSectionCheckState(0)==Qt.CheckState.Checked){
-            if (!selectAllRows()){
-                updateHeaderCheckState();
-            }
-        }else{
-            if (confirmToClearSelection()){
-                groupModel.getSelection().clear();
-            }
-            updateHeaderCheckState();
-        }
+        controller.invertSelection(horizontalHeader, EHierarchicalSelectionMode.EXPLICIT_NESTED_OBJECTS);
     }
     
-    private boolean selectAllRows(){        
-        final GroupModel groupModel = getGroupModel();
-        final boolean hasMoreRows = groupModel.hasMoreRows();
-        if (hasMoreRows){
-            if (groupModel.getRestrictions().getIsSelectAllRestricted()){
-                return false;
-            }else{
-                groupModel.getSelection().selectAllObjectsInGroup();
-            }
-        }else{
-            final EntityObjectsSelection selection = groupModel.getSelection();
-            blockSelectionListener = true;
-            try{
-                if (selection.getSelectionMode()==ESelectionMode.EXCLUSION){
-                    selection.clear();
-                }
-                final GroupModelReader reader = new GroupModelReader(groupModel);
-                for (EntityModel entity: reader){
-                    if (groupModel.getEntitySelectionController().isEntityChoosable(entity)){
-                        selection.selectObject(entity.getPid());
-                    }
-                }
-            }finally{
-                blockSelectionListener = false;
-            }
-            updateHeaderCheckState();
-        }
-        setSelectionEnabled(true);
-        return true;
-    }
-
     @Override
     public void bind() {
         {
             final GroupModelAsyncReader asyncReader = getGroupModel().getAsyncReader();
             asyncReader.addListener(asyncReaderListener);
         }
-        {
+        final List<SelectorColumnModelItem> columns = controller.model.getSelectorColumns();
+        {            
+            horizontalHeader.restoreSettings();
+            if (horizontalHeader.count() != columns.size()) {                
+                createHorizontalHeader(controller.model);
+            }
+            horizontalHeader.checkBoxClicked.connect(this,"onHHeaderCheckBoxClick()");            
+        }
+        controller.setupSelectionColumnDelegate();
+        horizontalHeader.bind();        
+        {//set current row after horizontal header was binded
             if (!selector.isDisabled() && (!getGroupModel().isEmpty() || getGroupModel().hasMoreRows())) {
                 restorePosition();
             } else {
                 selector.refresh();
             }
-        }
-        final List<SelectorColumnModelItem> columns = controller.model.getSelectorColumns();
+        }        
+        updateHeaderCheckState();
         {
-            controller.restoreHorizontalHeaderSettings(horizontalHeader());
-            if (horizontalHeader().count() != columns.size()) {
-                final SelectorHorizontalHeader previousHeader = horizontalHeader;
-                horizontalHeader = new SelectorHorizontalHeader(this, controller.model);
-                setHorizontalHeader(horizontalHeader);
-                previousHeader.close();
-            }
-            controller.setupHorizontalHeader(horizontalHeader,true);
-            horizontalHeader.setSectionUserCheckable(0, true);            
-            horizontalHeader.checkBoxClicked.connect(this,"onHHeaderCheckBoxClick()");
-            updateHeaderCheckState();
-        }
-        {
-            boolean visible = false;
-            for (int i = 0; i < columns.size(); ++i) {
-                if (!visible) {
-                    visible = columns.get(i).isVisible();
-                }
-                setColumnHidden(i+1, !columns.get(i).isVisible());
-            }
-            //
-            if (!visible && !columns.isEmpty()) {
-                final SelectorColumnModelItem firstColumn = columns.get(0);
-                if (firstColumn.isForbidden()) {
-                    firstColumn.setForbidden(false);
-                }
-                if (!firstColumn.isVisible()) {
-                    firstColumn.setVisible(true);
-                }
-                setColumnHidden(1, false);
-            }
-            for (int i = 0; i < columns.size(); ++i) {
-                columns.get(i).subscribe(this);
-            }
-        }
-        {
-            controller.updateColumnsSizePolicy(horizontalHeader());
             updateCurrentColumn();//RADIX-2513
-            controller.updateFirstVisibleColumnIndex(horizontalHeader());
             updateSpan(0, getGroupModel().getEntitiesCount() - 1);
             doubleClicked.connect(controller, "processDoubleClick(QModelIndex)");
             Application.getInstance().getActions().settingsChanged.connect(this, "applySettings()");
-            horizontalHeader().sectionMoved.connect(this, "onSectionMoved(int, int, int)");
-            horizontalHeader().sectionResized.connect(this, "finishEdit()");
-            getGroupModel().addSelectionListener(selectionHandler);
+            horizontalHeader.sectionMoved.connect(this, "onSectionMoved(int, int, int)");
+            horizontalHeader.sectionResized.connect(this, "finishEdit()");
+            horizontalHeader.sectionClicked.connect(this, "onHHeaderClicked(int)");
+            horizontalHeader.sectionVisibilityChanged.connect(this, "onSectionVisibilityChanged(int , boolean)");
+            horizontalHeader.resizeColumnByContent.connect(this,"onResizeColumnByContent(int)");            
             controller.model.increaseRowsLimit();
         }
+        getSelection().addListener(selectionHandler);
+        controller.setSelectionModeListener(new StandardSelectorWidgetController.ISelectionModeListener() {
+            @Override
+            public void afterSwitchSelectionMode(boolean isSelectionEnabled) {
+                SelectorGrid.this.afterSwitchSelectionMode(isSelectionEnabled);
+            }
+        });        
+        verticalHeader.sectionDoubleClicked.connect(this,"onVHeaderDoubleClicked(int)");
         if (selector.isDisabled()) {
             clear();
-        }        
+        }
         
-        corner.setFixedSize(((VerticalHeader)verticalHeader()).getWidth(), getHorizontalHeaderHeight());
+        cornerButton.setFixedSize(((VerticalHeader)verticalHeader()).getWidth(), getHorizontalHeaderHeight());
         
         verticalHeader().blockSignals(false);
+        horizontalScrollBar().setValue(0);
+        controller.model.setDefaultAdditionalSelectionModes(Collections.<EHierarchicalSelectionMode>emptyList());
+        
+        if (!selector.isDisabled()) {
+            updateSelectionMode();
+        }        
     }
 
     @Override
     public void refresh(final ModelItem item) {        
-        if (item instanceof SelectorColumnModelItem) {
-            final SelectorModel model = controller.model;
-            final int idx = model.getSelectorColumns().indexOf(item) + 1;
-            boolean columnVisibleChanged = false;
-            if (idx >= 1) {
-                final QHeaderView header = horizontalHeader();
-                final SelectorColumnModelItem column = model.getSelectorColumns().get(idx-1);
-                if (column.isVisible() == header.isSectionHidden(idx)) {
-                    setColumnHidden(idx, !column.isVisible());
-                    columnVisibleChanged = true;
-                    if (!column.isVisible() && currentIndex() != null && currentIndex().column() == idx) { //RADIX-2513                
-                        updateCurrentColumn();
-                    }
-                    controller.updateFirstVisibleColumnIndex(header);
-                    controller.lockInput();
-                    try {
-                        clearSpans();
-                        updateSpan(0, getGroupModel().getEntitiesCount());
-                    } finally {
-                        controller.unlockInput();
-                    }
-                }
-                if (columnVisibleChanged
-                    || header.resizeMode(idx) != StandardSelectorWidgetController.getResizeMode(column)) {
-                    controller.updateColumnsSizePolicy(header);
-                }
-                update();
-            }
-        } else if (item instanceof Property) {
+        if (item instanceof Property) {
             final Property property = (Property) item;
             controller.refresh(property);
             final QModelIndex index = controller.findIndexForProperty(property);
@@ -799,79 +934,60 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         }
         if (item == null && model() != null) {
             controller.refresh();
-            refreshCornerWidget();
-            refreshHeaderCheckable();
+            controller.refreshCornerWidget(cornerButton, isSelectionEnabled(), isSelectionAllowed());
+            controller.updateHeaderCheckState(horizontalHeader, canSelectAll());
         }
         actions.refresh();
+    }
+    
+    @SuppressWarnings("unused")
+    private void onSectionVisibilityChanged(final int sectionIndex, final boolean isVisible){        
+        if (!isVisible && currentIndex() != null && currentIndex().column() == sectionIndex) { //RADIX-2513                
+            updateCurrentColumn();
+        }
+        horizontalHeader.updateFirstVisibleColumnIndex();
+        controller.lockInput();
+        try {
+            clearSpans();
+            updateSpan(0, getGroupModel().getEntitiesCount());
+        } finally {
+            controller.unlockInput();
+        }        
+    }
+    
+    @SuppressWarnings("unused")
+    private void onResizeColumnByContent(int sectionIndex){        
+        final int width = Math.max(calcSizeHintForColumn(sectionIndex), horizontalHeader.sectionSizeFromContents(sectionIndex).width());
+        if (width>0){
+            horizontalHeader.resizeSection(sectionIndex, width);
+            final SelectorColumnModelItem column = controller.model.getSelectorColumn(sectionIndex);
+            if (column!=null && column.getColumnDef().getSizePolicy()==ESelectorColumnSizePolicy.RESIZE_BY_CONTENT){
+                column.setSizePolicy(ESelectorColumnSizePolicy.RESIZE_BY_CONTENT);
+            }                  
+        }        
     }
     
     private boolean isSelectionAllowed(){
         return !selector.getGroupModel().getRestrictions().getIsMultipleSelectionRestricted() 
             && isEnabled()
             && !selector.getGroupModel().isEmpty();        
-    }
-    
-    private void refreshCornerWidget(){
-        final boolean isSelectionEnabled = isSelectionAllowed();
-        if (isSelectionEnabled && !corner.isClickEnabled()){
-            corner.setClickEnabled(true);            
-            corner.clicked.connect(this,"cornerClicked()");
-            refreshCornerWidgetToolTip();
-        }else if (!isSelectionEnabled){
-            controller.disableSelection();
-            corner.setClickEnabled(false);
-            corner.clicked.disconnect();
-            refreshCornerWidgetToolTip();
-        }
-    }
-
-    public void refreshCornerWidgetToolTip(){
-        final MessageProvider mp = selector.getEnvironment().getMessageProvider();
-        if (corner.isClickEnabled()){
-            if (controller.isSelectionEnabled()){
-                corner.setToolTip(mp.translate("Selector", "Disable Multiple Selection Mode"));
-            }else{
-                corner.setToolTip(mp.translate("Selector", "Enable Multiple Selection Mode"));
-            }            
-        }else{
-            corner.setToolTip("");
-        }
-    }    
-    
-    private void refreshHeaderCheckable(){
-        final boolean canSelectAll = !selector.getGroupModel().getRestrictions().getIsMultipleSelectionRestricted()
-                                    && (!selector.getGroupModel().hasMoreRows() || !selector.getGroupModel().getRestrictions().getIsSelectAllRestricted());
-        if (horizontalHeader.getSectionCheckState(0)==Qt.CheckState.Unchecked){
-            horizontalHeader.setSectionUserCheckable(0, canSelectAll);
-        }else{
-            horizontalHeader.setSectionUserCheckable(0, true);
-        }        
-    }
-    
-    public void updateHeaderCheckState(){
-        final EntityObjectsSelection selection = getGroupModel().getSelection();
-        if (selection.getSelectionMode()==ESelectionMode.NO_SELECTION || selection.isEmpty()){
-            horizontalHeader.setSectionCheckState(0, Qt.CheckState.Unchecked);
-        }else if (selection.isAllObjectsSelected()){
-            horizontalHeader.setSectionCheckState(0, Qt.CheckState.Checked);
-        }else{
-            horizontalHeader.setSectionCheckState(0, Qt.CheckState.PartiallyChecked);
-        }                
-        refreshHeaderCheckable();
-        if (controller.isSelectionEnabled()){
+    } 
+        
+    private void updateHeaderCheckState(){        
+        controller.updateHeaderCheckState(horizontalHeader, canSelectAll());
+        if (isSelectionEnabled()){
             final int rowsCount = model().rowCount();
             if (rowsCount>0){
                 dataChanged(model().index(0, 0), model().index(rowsCount-1, 0));
             }
-        }
-        selector.actions.refreshAfterChangeSelection();
+        }        
         actions.refreshExportActionToolTip();
     } 
     
     private void updateCurrentColumn() {//set current index to first visible column
         final QModelIndex currentIndex = currentIndex();
         if (currentIndex != null) {//update current column index
-            final int column = controller.getFirstVisibleColumn();
+            final int column = horizontalHeader.getFirstVisibleColumnIndex();
             final QModelIndex newIndex = controller.model.index(currentIndex.row(), column, null);
             setCurrentIndex(newIndex);
             controller.setItemDelegateCurrentIndex(newIndex);
@@ -880,11 +996,11 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     
     private int getCurrentColumn(){
         final QModelIndex currentIndex = currentIndex();
-        return currentIndex==null ? controller.getFirstVisibleColumn() : currentIndex.column();
+        return currentIndex==null ? horizontalHeader.getFirstVisibleColumnIndex() : currentIndex.column();
     }
 
     private void updateSpan(final int startRow, final int endRow) {
-        final int columnsCount = horizontalHeader().count();
+        final int columnsCount = horizontalHeader.count();
         for (int row = startRow; row <= endRow; row++) {
             if (controller.model.isBrokenEntity(controller.model.index(row, 0)) && columnsCount > 1) {
                 setSpan(row, controller.model.getFirstVisibleColumnIndex(), 1, columnsCount);
@@ -898,16 +1014,16 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     private void onSectionMoved(final int logicalIndex, final int oldVisualIndex, final int newVisualIndex) {
         finishEdit();
         int firstVisualIndex = 0;
-        for (int col = 0, columnsCount = horizontalHeader().count(); col <= columnsCount; col++) {
-            int idx = horizontalHeader().logicalIndex(col);//logical index of column
-            if (idx >= 0 && !horizontalHeader().isSectionHidden(idx)) {
+        for (int col = 0, columnsCount = horizontalHeader.count(); col <= columnsCount; col++) {
+            int idx = horizontalHeader.logicalIndex(col);//logical index of column
+            if (idx >= 0 && !horizontalHeader.isSectionHidden(idx)) {
                 firstVisualIndex = col;
                 break;
             }
         }
 
         if (oldVisualIndex == firstVisualIndex || newVisualIndex == firstVisualIndex) {
-            controller.updateFirstVisibleColumnIndex(horizontalHeader());
+            horizontalHeader.updateFirstVisibleColumnIndex();            
             controller.lockInput();
             try {
                 clearSpans();
@@ -917,7 +1033,6 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
             }
             update();
         }
-        controller.updateColumnsSizePolicy(horizontalHeader());
     }
 
     @Override
@@ -929,6 +1044,12 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         toolBar.insertAction(createAction, actions.endAction);
         toolBar.insertAction(createAction, actions.findAction);
         toolBar.addAction(actions.exportAction);
+        toolBar.getWidgetForAction(actions.exportAction).setPopupMode(IToolButton.ToolButtonPopupMode.InstantPopup);
+        QMenu exportMenu = new QMenu(this);
+        exportMenu.addAction(actions.exportCsvAction);
+        exportMenu.addAction(actions.exportExcelAction);
+        actions.exportAction.setMenu(exportMenu);
+        toolBar.addAction(actions.calcStatisticAction);
     }
 
     @Override
@@ -946,10 +1067,14 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         final List<QAction> allActions = ((QMenu) menu).actions();
         final int showFilterAndOrderToolBarActionIndex = allActions.indexOf(showFilterAndOrderToolBarAction);
         if (showFilterAndOrderToolBarActionIndex < 1 || showFilterAndOrderToolBarActionIndex == allActions.size() - 1) {
-            menu.addAction(actions.exportAction);
+            menu.addAction(actions.exportCsvAction);
+            menu.addAction(actions.exportExcelAction);
+            menu.addAction(actions.calcStatisticAction);
         } else {
             final QAction beforeAction = allActions.get(showFilterAndOrderToolBarActionIndex + 1);
-            ((QMenu) menu).insertAction(beforeAction, actions.exportAction);
+            ((QMenu) menu).insertAction(beforeAction, actions.exportExcelAction);
+            ((QMenu) menu).insertAction(actions.exportExcelAction, actions.exportCsvAction); 
+            ((QMenu) menu).insertAction(actions.exportCsvAction, actions.calcStatisticAction);
         }
     }
 
@@ -979,7 +1104,7 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
          selectFirstRow();
          }        */
         if (model().rowCount(null)>0){//case when data was loaded into GroupModel before opening selector
-            scheduleFetchMore();
+            scheduleFetchMore(false);
         }
         selectFirstRow();
     }
@@ -1036,165 +1161,162 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
 
     public void selectLastRow() {
         if (!controller.isLocked()) {
-            final SelectorModel model = controller.model;
-            final int rowsLoadingLimit =
-                    selector.getEnvironment().getConfigStore().readInteger(ROWS_LIMIT_FOR_NAVIGATION_CONFIG_PATH, 1000);
-            allDataLoader.setLoadingLimit(rowsLoadingLimit);
-            allDataLoader.resetCounters();
-            int loadedRows = -1;
-            disableFetchMoreOnInsertRows = true;
-            try {
-                controller.lockInput();
-                try {
-                    loadedRows = allDataLoader.loadAll(new SelectorWidgetDelegate(model, null));
-                } catch (InterruptedException exception) {
-                    loadedRows = model.rowCount();
-                } catch (ServiceClientException exception) {
-                    model.showErrorOnReceivingData(exception);
-                    loadedRows = -1;
-                } finally {
-                    controller.unlockInput();
-                }
-                if (loadedRows > 0 && selector.leaveCurrentEntity(false)) {
-                    setCurrentRow(loadedRows - 1);
-                }
-            } finally {
-                if (loadedRows > 0) {
-                    controller.model.increaseRowsLimit();
-                }
-                disableFetchMoreOnInsertRows = false;
+            final MessageProvider messageProvider  = selector.getEnvironment().getMessageProvider();
+            final String loadingDialogTitle =  messageProvider.translate("Selector", "Moving to Last Object");
+            final String loadingDialogMessage =  
+                messageProvider.translate("Selector", "Moving to Last Object...\nNumber of Loaded Objects: %1s");
+            final String dontAskText = messageProvider.translate("Selector", "Load All Objects");            
+            final int loadedRows = loadAllRows(loadingDialogTitle, loadingDialogMessage, dontAskText);
+            if (loadedRows > 0 && selector.leaveCurrentEntity(false)) {
+                setCurrentRow(loadedRows - 1);
             }
         }
+    }
+    
+    private int loadAllRows(final String title, final String message, final String dontAskBtnText){
+        final IClientEnvironment environment = selector.getEnvironment();
+        final SelectorModelDataLoader allDataLoader = new SelectorModelDataLoader(environment);
+        final String confirmMovingToLastObjectMessage =
+            environment.getMessageProvider().translate("Selector", "Number of loaded objects is %1s.\nDo you want to load next %2s objects?");
+        allDataLoader.setConfirmationMessageText(confirmMovingToLastObjectMessage);
+        allDataLoader.setProgressHeader(title);
+        allDataLoader.setProgressTitleTemplate(message);
+        allDataLoader.setDontAskButtonText(dontAskBtnText);
+        final int rowsLoadingLimit =
+            environment.getConfigStore().readInteger(ROWS_LIMIT_FOR_NAVIGATION_CONFIG_PATH, 1000);        
+        allDataLoader.setLoadingLimit(rowsLoadingLimit);
+        allDataLoader.resetCounters();
+        controller.lockInput();
+        disableFetchMoreOnInsertRows = true;
+        int loadedRows = -1;        
+        try {
+            loadedRows = allDataLoader.loadAll(new SelectorWidgetDelegate(controller.model, null));
+        } catch (InterruptedException exception) {
+            loadedRows = controller.model.rowCount();
+        } catch (ServiceClientException exception) {
+            controller.model.showErrorOnReceivingData(exception);
+            loadedRows = -1;
+        } finally {
+            disableFetchMoreOnInsertRows = false;
+            if (loadedRows > 0) {
+                controller.model.increaseRowsLimit();
+            }            
+            controller.unlockInput();
+        }
+        return loadedRows;
     }
 
     @SuppressWarnings("unused")
     private void export() {
-        final SelectorDataExportOptionsDialog dialog =
-                new SelectorDataExportOptionsDialog(getGroupModel(), this);
-        if (dialog.exec() == QDialog.DialogCode.Accepted.value()) {
-            final File csvFile = dialog.getFile();
-            final MessageProvider messageProvider = selector.getEnvironment().getMessageProvider();
-            final String exceptionTitle = messageProvider.translate("Selector", "Failed to Export Objects");
-            final PropertyValuesWriteOptions writeOptions = dialog.getPropertyValuesWriteOptions();
-            final List<SelectorColumnModelItem> columns = new LinkedList<>();
-            if (dialog.exportColumnTitles()) {
-                for (Id columnId : writeOptions.getColumnsToExport()) {
-                    columns.add(getGroupModel().getSelectorColumn(columnId));
-                }
+        final GroupModelCsvWriter writer = new GroupModelCsvWriter(getGroupModel()) {
+            @Override
+            protected ISelectorDataExportOptionsDialog createExportOptionsDialog() {
+                return new SelectorDataExportOptionsDialog(getGroupModel(), SelectorGrid.this, EMimeType.CSV,
+                        EnumSet.of(SelectorDataExportOptionsDialog.Features.ENCODING));
             }
-            final EntityObjectsWriter writer;
-            try {
-                writer =
-                        EntityObjectsWriter.Factory.newCsvWriter(csvFile, writeOptions, dialog.getCsvFormatOptions(), columns);
-            } catch (FileNotFoundException exception) {
-                final FileException exceptionToShow =
-                        new FileException(selector.getEnvironment(), FileException.EExceptionCode.FILE_NOT_FOUND, csvFile.getAbsolutePath());
-                getGroupModel().showException(exceptionTitle, exceptionToShow);
+        };
+        disableFetchMoreOnInsertRows = true;
+        try{
+            writer.write(selector);
+        }finally{
+            disableFetchMoreOnInsertRows = false;
+        }
+    }
+    
+    @SuppressWarnings("unused")
+    private void exportExcel() {
+        final GroupModelXlsxWriter writer = new GroupModelXlsxWriter(getGroupModel()) {
+            @Override
+            protected ISelectorDataExportOptionsDialog createExportOptionsDialog() {
+                return new SelectorDataExportOptionsDialog(getGroupModel(), SelectorGrid.this, EMimeType.APP_MSOFFICE_SPREADSHEET_X,
+                        EnumSet.of(SelectorDataExportOptionsDialog.Features.OPENFILESETTING, SelectorDataExportOptionsDialog.Features.TIMEZONEFORMAT));
+            }
+        };
+        disableFetchMoreOnInsertRows = true;
+        try{
+            File file = writer.write(selector);
+            if (file != null && writer.getOptions().getNeedToOpen()) {
+                QDesktopServices.openUrl(QUrl.fromUserInput(file.getAbsolutePath()));
+            }
+        }finally{
+            disableFetchMoreOnInsertRows = false;
+        }
+    }
+    
+    protected List<AggregateFunctionCall> getSelectionStatisticParams(){
+        final List<Id> visibleColumnsByOrder = getVisibleColumnsOrder();
+        final List<Id> compatibleColumns = 
+            SelectorColumnsStatistic.getCompatibleColumns(getGroupModel(), visibleColumnsByOrder);
+        if (compatibleColumns.isEmpty()){            
+            return Collections.<AggregateFunctionCall>singletonList(new AggregateFunctionCall(null, EAggregateFunction.COUNT));
+        }
+        final SelectionStatisticParamsDialog paramsDialog = 
+            new SelectionStatisticParamsDialog(getGroupModel(), this, compatibleColumns);
+        if (paramsDialog.exec()==QDialog.DialogCode.Accepted.value()){
+            return paramsDialog.getAggregateFunctions();
+        }else{
+            return Collections.emptyList();
+        }
+    }
+    
+    protected boolean confirmToCalcStatistic(final List<AggregateFunctionCall> functionCalls){
+        final IClientEnvironment environment = selector.getEnvironment();
+        final String confirmationTitle =
+                environment.getMessageProvider().translate("Selector", "Confirm to Proceed Operation");
+        final String confirmationMessage =
+                environment.getMessageProvider().translate("Selector", "This operation may take a lot of time.\nDo you really want to proceed the operation?");
+        return environment.messageConfirmation(confirmationTitle, confirmationMessage);        
+    }
+    
+    protected void showSelectionStatistic(final List<AggregateFunctionCall> functionCalls, final SelectorColumnsStatistic statistic){
+        final IClientEnvironment environment = selector.getEnvironment();
+        if (statistic.getAggregateFunctions().isEmpty()){
+            if (statistic.getRowsCount()>-1){
+                final String rowCountText = 
+                    SelectorColumnsStatistic.getAggregationFunctionTitle(EAggregateFunction.COUNT, environment.getMessageProvider())
+                    +": "+String.valueOf(statistic.getRowsCount());
+                final String messageTitle = environment.getMessageProvider().translate("Selector", "Statistics for Selection");
+                environment.messageInformation(messageTitle, rowCountText);
+            }
+        }else{
+            final Map<Id,Integer> precisionByColumnId = new HashMap<>();
+            for (AggregateFunctionCall function: functionCalls){
+                if (function.getPrecision()>-1){
+                    precisionByColumnId.put(function.getColumnId(), function.getPrecision());
+                }
+            }            
+            final SelectionStatisticResultDialog dialog = 
+                new SelectionStatisticResultDialog(getGroupModel(), this, statistic, getVisibleColumnsOrder(), precisionByColumnId, true);
+            dialog.exec();
+        }
+    }
+    
+    protected final List<Id> getVisibleColumnsOrder(){
+        final List<Id> columnIds = new LinkedList<>();
+        for (int i=1; i<horizontalHeader.count(); i++){
+            final int columnIndex = horizontalHeader.logicalIndex(i);
+            final Id columnId = 
+                (Id)controller.model.headerData(columnIndex, Qt.Orientation.Horizontal, Qt.ItemDataRole.UserRole);
+            columnIds.add(columnId);
+        }
+        return columnIds;
+    }
+    
+    public void calcSelectionStatistic(){
+        final List<AggregateFunctionCall> aggregateFunctions = getSelectionStatisticParams();
+        if (aggregateFunctions!=null 
+            && !aggregateFunctions.isEmpty() 
+            && (!getGroupModel().hasMoreRows() || confirmToCalcStatistic(aggregateFunctions))){
+            final SelectorColumnsStatistic statistic;
+            try{
+                statistic = getGroupModel().calcStatistic(aggregateFunctions);
+            }catch(ServiceClientException ex){
+                getGroupModel().showException(ex);
                 return;
-            } catch (UnsupportedEncodingException exception) {
-                getGroupModel().showException(exceptionTitle, exception);
+            }catch(InterruptedException ex){
                 return;
             }
-            final String confirmMovingToExportMessage =
-                    messageProvider.translate("Selector", "Number of loaded objects is %1s.\nDo you want to load next %2s objects?");
-            final SelectorModelDataLoader dataLoader = new SelectorModelDataLoader(selector.getEnvironment(), this.selector);
-            
-            dataLoader.setConfirmationMessageText(confirmMovingToExportMessage);
-            final int rowsLoadingLimit =
-                    selector.getEnvironment().getConfigStore().readInteger(ROWS_LIMIT_FOR_NAVIGATION_CONFIG_PATH, 1000);
-            final int maxRows = dialog.getMaxRows();
-            dataLoader.setLoadingLimit(maxRows > 0 ? -1 : rowsLoadingLimit);
-            dataLoader.resetCounters();
-            final EntityObjectsSelection selection = selector.getGroupModel().getSelection().getNormalized();
-            disableFetchMoreOnInsertRows = true;
-            final IProgressHandle progressHandle =
-                    selector.getEnvironment().getProgressHandleManager().newStandardProgressHandle();            
-            try {
-                progressHandle.setTitle(messageProvider.translate("Selector", "Exporting Objects"));
-                if (selection.isEmpty()){
-                    progressHandle.startProgress(messageProvider.translate("Selector", "Exporting Objects..."), true);
-                }else{
-                    progressHandle.startProgress(messageProvider.translate("Selector", "Exporting Selected Objects..."), true);
-                }
-                final String progressMessageTemplate =
-                        messageProvider.translate("Selector", "Exporting Objects...\nNumber of Exported Objects: %1s");
-                int numberOfExportedObjects = 0;
-                if (selection.getSelectionMode()==ESelectionMode.INCLUSION){
-                    final Collection<Pid> selectedObjects = selection.getSelectedObjects();                    
-                    for (Pid selectedObject: selectedObjects){
-                        final int row = getGroupModel().findEntityByPid(selectedObject);
-                        if (row>-1){
-                            final EntityModel entity;
-                            try{
-                                entity = getGroupModel().getEntity(row);
-                                try{
-                                    writer.writeEntityObject(entity);
-                                    if (numberOfExportedObjects % 30 == 0) {
-                                        writer.flush();
-                                    }                                    
-                                }catch(IOException exception){
-                                    getGroupModel().showException(exceptionTitle, new FileException(selector.getEnvironment(), FileException.EExceptionCode.CANT_WRITE, csvFile.getAbsolutePath()));
-                                    return;                                    
-                                }
-                                numberOfExportedObjects++;
-                                if (numberOfExportedObjects>=maxRows){
-                                    break;
-                                }
-                                progressHandle.setText(String.format(progressMessageTemplate, String.valueOf(numberOfExportedObjects)));
-                            }catch(BrokenEntityObjectException | InterruptedException exception){
-                                continue;
-                            }catch(ServiceClientException exception){
-                                selector.getEnvironment().getTracer().error(exception);
-                                continue;
-                            }
-                        }
-                    }
-                }else{
-                    try {
-                        int row = 0;                        
-                        final ISelectorWidgetDelegate swDelegate = new SelectorWidgetDelegate(controller.model, null);
-                        do {
-                            for (int count = controller.model.rowCount(null); row < count && (row < maxRows || maxRows < 0) && !progressHandle.wasCanceled(); row++) {
-                                final QModelIndex currentIdx = controller.model.index(row, 0);
-                                if (!controller.model.isBrokenEntity(currentIdx)) {
-                                    final EntityModel entity = controller.model.getEntity(currentIdx);
-                                    if (!selection.isEmpty() && !selection.isObjectSelected(entity)){                                    
-                                        continue;
-                                    }
-                                    try {
-                                        writer.writeEntityObject(entity);
-                                        if (row % 30 == 0) {
-                                            writer.flush();
-                                        }
-                                    } catch (IOException exception) {
-                                        getGroupModel().showException(exceptionTitle, new FileException(selector.getEnvironment(), FileException.EExceptionCode.CANT_WRITE, csvFile.getAbsolutePath()));
-                                        return;
-                                    }
-                                    numberOfExportedObjects++;
-                                }
-                            }
-                            progressHandle.setText(String.format(progressMessageTemplate, String.valueOf(row)));
-                            controller.model.increaseRowsLimit();
-                        } while (!progressHandle.wasCanceled() && (row < maxRows || maxRows < 0) && dataLoader.loadMore(swDelegate));
-                    } catch (ServiceClientException exception) {
-                        getGroupModel().showException(exceptionTitle, exception);
-                    } catch (InterruptedException exception) {
-                    } finally {
-                        controller.model.increaseRowsLimit();                        
-                    }
-                }
-                final String title = messageProvider.translate("Selector", "Export Complete");
-                final String messageTemplate = messageProvider.translate("Selector", "%1$s objects were successfully exported");
-                selector.getEnvironment().messageInformation(title, String.format(messageTemplate, String.valueOf(numberOfExportedObjects)));                
-            } finally {                
-                progressHandle.finishProgress();
-                try {
-                    writer.close();
-                } catch (IOException exception) {
-                    getGroupModel().showException(exceptionTitle, new FileException(selector.getEnvironment(), FileException.EExceptionCode.CANT_WRITE, csvFile.getAbsolutePath()));
-                }                
-                disableFetchMoreOnInsertRows = false;
-            }
+            showSelectionStatistic(aggregateFunctions, statistic);
         }
     }
 
@@ -1205,6 +1327,7 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         try {
             clearSpans();
             updateSpan(0, getGroupModel().getEntitiesCount() - 1);
+            updateSelectionMode();
             updateColumnsWidth();
         } finally {
             controller.unlockInput();
@@ -1212,8 +1335,15 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     }
 
     public void setCurrentRow(final int row) {
+        final int column;
+        final QModelIndex currentIndex = currentIndex();
+        if (currentIndex== null){
+            column = horizontalHeader.getFirstVisibleColumnIndex();            
+        }else{
+            column = currentIndex.column();
+        }          
         try {
-            controller.setCurrentRow(row);
+            controller.setCurrentRow(row, column);
         } catch (InterruptedException exception) {
         } catch (ServiceClientException exception) {
             controller.processErrorOnReceivingData(exception);
@@ -1221,35 +1351,219 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     }
 
     @Override
-    protected void mousePressEvent(final QMouseEvent event) {
-        final QModelIndex currentIndex = currentIndex();
-        final int row = currentIndex==null ? -1 : currentIndex.row();
-        if (controller.processMousePressEvent(event)) {            
-            if (row>-1 && isSelectionAllowed()){
-                if (event.modifiers().isSet(Qt.KeyboardModifier.ShiftModifier))
-                    changeSelectionToCurrentRow(row, ESelectAction.SELECT);
-                else if (event.modifiers().isSet(Qt.KeyboardModifier.ControlModifier))
-                    changeSelectionToCurrentRow(row, ESelectAction.UNSELECT);
+    protected void mousePressEvent(final QMouseEvent event) {        
+        if (!processMousePressEvent(event)){
+            processMouseClickEvent(event);
+        }
+    }
+    
+    private boolean processMousePressEvent(final QMouseEvent event){
+        if (postedMousePressEventId!=0){
+            Application.removeScheduledEvent(postedMousePressEventId);
+            postedMousePressEventId = 0;            
+        }
+        final QModelIndex clickIndex = indexAt(event.pos());
+        final GroupRestrictions restrictions = clickIndex==null ? null : getGroupModel().getRestrictions();
+        final boolean canOpenModalEditor = 
+            restrictions!=null && !restrictions.getIsRunEditorRestricted() && restrictions.getIsEditorRestricted();        
+        if (canOpenModalEditor && isMouseClickWithCtrl(event)){
+            final int row = clickIndex.row();
+            final EntityModel clickModel = controller.model.getEntity(clickIndex);
+            final boolean isBrokenModel = clickModel instanceof BrokenEntityModel;
+            final boolean canOpenEntityView = 
+                clickModel!=null && (isBrokenModel || clickModel.canOpenEntityView());            
+            if (canOpenEntityView
+                && (selector.getCurrentEntity()!=clickModel || selector.getActions().getRunEditorDialogAction().isEnabled())){
+                final Pid clickPid = clickModel.getPid();
+                if (postponedMousePressEvent==null){
+                    postponeMouseClick(event, clickIndex, clickPid);
+                }else{
+                    killTimer(postponedMousePressEvent.getClickTimerId());
+                    final QModelIndex postponedClickIndex = postponedMousePressEvent.getIndex(this);
+                    if (postponedClickIndex!=null 
+                        && postponedClickIndex.row()==row 
+                        && Objects.equals(postponedMousePressEvent.getPid(), clickPid)){
+                        postponedMousePressEvent = null;
+                        if (selector.getCurrentEntity()!=clickModel) {
+                            processMouseClickEvent(event);
+                        }
+                        if (isBrokenModel){
+                            final BrokenEntityMessageDialog dialog = 
+                                new BrokenEntityMessageDialog(selector.getEnvironment(), (BrokenEntityModel)clickModel, this);
+                            dialog.exec();
+                        }else if (selector.getActions().getRunEditorDialogAction().isEnabled()){
+                            selector.getActions().getRunEditorDialogAction().trigger();
+                        }
+                    }else{
+                        postponeMouseClick(event, clickIndex, clickPid);
+                    }
+                }
+                return true;
+            }else{
+                return false;
             }
         }else{
-            final QModelIndex index = indexAt(event.pos());            
-            if (controller.isSelectionEnabled() && index!=null && index.column()==0){
-                finishEdit();
-                return;
-            }
-            final boolean changingIndex = index != null && !verticalHeader().rect().contains(event.x(), event.y()) && !index.equals(currentIndex());            
-            final boolean editorOpened = controller.getCurrentPropEditor() != null;
-            super.mousePressEvent(event);
-            if (changingIndex || !editorOpened) {
-                openEditor(index);
-            }            
+            return false;
+        }        
+    }
+    
+    private static boolean isMouseClickWithCtrl(final QEvent event){
+        if (event instanceof QMouseEvent){
+            final QMouseEvent mouseEvent = (QMouseEvent)event;
+            return mouseEvent.button()==Qt.MouseButton.LeftButton
+                       && mouseEvent.modifiers().isSet(Qt.KeyboardModifier.ControlModifier);
+        }else{
+            return false;
         }
     }
 
     @Override
-    protected void mouseMoveEvent(QMouseEvent event) {
-        if (event.buttons().isSet(Qt.MouseButton.RightButton) || event.buttons().isSet(Qt.MouseButton.LeftButton)) //препятствуем перемещению мыши с нажатой кнопкой
-        {
+    protected void mouseDoubleClickEvent(final QMouseEvent event) {
+        if (processMousePressEvent(event)){
+            event.accept();
+        }else{
+            postponedMouseEvent = null;
+            super.mouseDoubleClickEvent(event);
+        }
+    }
+    
+    private void postponeMouseClick(final QMouseEvent clickEvent, final QModelIndex index, final Pid clickModelPid){
+        clickEvent.accept();
+        final int mouseClickTimerId = startTimer(QApplication.doubleClickInterval());
+        postponedMousePressEvent = new PostponedMousePressEvent<>(clickEvent, new IndexInfo(index), clickModelPid, mouseClickTimerId);
+    }           
+    
+    private void processFilteredMouseEvent(final FilteredMouseEvent event){
+        if (model()==null){
+            return;
+        }
+        final QEvent.Type type = event.getFilteredEventType();
+        final QEvent.Type postponedType = 
+            postponedMouseEvent==null ? null : postponedMouseEvent.getFilteredEventType();
+        if ((type == QEvent.Type.MouseButtonPress && postponedType!=QEvent.Type.MouseButtonRelease)
+            || (type == QEvent.Type.MouseButtonDblClick && postponedType!=QEvent.Type.MouseButtonPress)
+            || (type == QEvent.Type.MouseButtonRelease && event.getButton()==Qt.MouseButton.LeftButton)) {            
+            postponedMouseEvent = event;
+        }        
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void processPostponedMouseClickEvent(PostponedMousePressEvent event){
+        if (postedMousePressEventId!=0){
+            postedMousePressEventId = 0;
+            processMouseClickEvent(event.getOriginalEvent());
+            if (event.isEdit()){
+                final QModelIndex clickIndex = event.getIndex(this);
+                if (clickIndex!=null){
+                    editImpl(clickIndex, QAbstractItemView.EditTrigger.NoEditTriggers, event.getEditEvent());
+                }
+            }
+        }
+    }  
+    
+    private void processMouseClickEvent(final QMouseEvent event){        
+        postponedMouseEvent = null;
+        final int verticalScroll = verticalScrollBar().value();
+        final int horizontalScroll = horizontalScrollBar().value();        
+        final PointInfo mousePressPoint = getPointInfo(event.pos());
+        controller.processMousePressEvent(event, 
+                                                             isSelectionAllowed(), 
+                                                             isSelectionEnabled(), 
+                                                             indexIteratorFactory);
+        if (event.isAccepted()) {
+            super.mousePressEvent(event);
+        }
+        
+        if (postedEvents.contains(EventType.REREAD)){
+            executePostponedReread();
+        }
+        if (postponedMouseEvent!=null && model()!=null){
+            final QEvent.Type postponedMouseEventType = postponedMouseEvent.getFilteredEventType();
+            if (postponedMouseEventType==QEvent.Type.MouseButtonDblClick){
+                postponedMouseEvent = null;
+                processPostponedMouseButtonDblClick();
+            }else if (postponedMouseEventType==QEvent.Type.MouseButtonRelease){                
+                final QMouseEvent mouseEvent = postponedMouseEvent.createFilteredEvent();
+                postponedMouseEvent = null;
+                if (verticalScroll<=verticalScrollBar().maximum()){
+                    verticalScrollBar().setValue(verticalScroll);
+                }else{
+                    return;
+                }
+                if (horizontalScroll<=horizontalScrollBar().maximum()){
+                    horizontalScrollBar().setValue(horizontalScroll);
+                }else{
+                    return;
+                }
+                processPostponedMouseButtonRelease(mousePressPoint, mouseEvent);
+            }else{
+                postponedMouseEvent = null;
+            }
+        }        
+    }
+    
+    private void processPostponedMouseButtonDblClick(){        
+        final QModelIndex index = currentIndex();
+        if (index != null) {
+            if (model().flags(index).isSet(Qt.ItemFlag.ItemIsEditable)) {
+                if (!controller.inEditingMode()) {
+                    controller.openEditor(index);
+                }
+            }
+        }  
+    }
+    
+    private void processPostponedMouseButtonRelease(final PointInfo mousePressPoint,
+                                                                                 final QMouseEvent releaseEvent){        
+        if (mousePressPoint.insideCheckBox()){
+            final PointInfo mouseReleasePoint = getPointInfo(releaseEvent.pos());
+            if (mouseReleasePoint.equals(mousePressPoint)){
+                Application.processEventWhenEasSessionReady(viewport(), releaseEvent);
+            }            
+        }
+    }    
+    
+    private PointInfo getPointInfo(final QPoint point){
+        final QModelIndex index = indexAt(point);
+        if (index==null){
+            return PointInfo.UNKNOWN_POINT;
+        }        
+        final Property property = controller.model.getProperty(index);
+        if (property==null){
+            return new PointInfo(index, null, null, false);
+        }
+        Object cellValue;
+        try{
+            cellValue = property.getValueObject();
+        }catch(ActivatingPropertyError ex){
+            cellValue = ex;
+        }
+        final boolean pointInsideCheckBox;
+        if (itemDelegate() instanceof SelectorWidgetItemDelegate){
+            final SelectorWidgetItemDelegate itemDelegate = (SelectorWidgetItemDelegate)itemDelegate();
+            final QStyleOptionViewItem options = viewOptions();
+            options.setRect(visualRect(index));
+            pointInsideCheckBox = itemDelegate.posInsideCheckbox(point, model(), options, index);                
+        }else{
+            pointInsideCheckBox = StandardSelectorWidgetController.getCheckState(model(), index)!=null;
+        }
+        return new PointInfo(index, property.getId(), cellValue, pointInsideCheckBox);
+    }
+
+    @Override
+    protected void timerEvent(final QTimerEvent event) {
+        if (postponedMousePressEvent!=null && event.timerId()==postponedMousePressEvent.getClickTimerId()){
+            killTimer(event.timerId());
+            postedMousePressEventId = postponedMousePressEvent.post(this);
+            postponedMousePressEvent = null;
+        }else{
+            super.timerEvent(event);
+        }
+    }
+
+    @Override
+    protected void mouseMoveEvent(final QMouseEvent event) {
+        if (event.buttons().isSet(Qt.MouseButton.RightButton) || event.buttons().isSet(Qt.MouseButton.LeftButton)){ //препятствуем перемещению мыши с нажатой кнопкой
             event.ignore();
         } else {
             super.mouseMoveEvent(event);
@@ -1257,42 +1571,34 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     }
 
     @Override
-    protected QModelIndex moveCursor(final CursorAction action, final Qt.KeyboardModifiers mod) {
+    protected QModelIndex moveCursor(final CursorAction action, final Qt.KeyboardModifiers modifiers) {
         if (controller.canMoveCursor(action, state())) {
-            final QModelIndex index = super.moveCursor(action, mod);            
-            final QModelIndex actualIndex = controller.afterMoveCursor(index);
-            if (actualIndex!=null && isSelectionAllowed() && mod.isSet(Qt.KeyboardModifier.ShiftModifier)){                
-                if (changeSelection(controller.selector.getGroupModel().getSelection(), actualIndex, ESelectAction.INVERT)){
-                    afterSelectionChanged(actualIndex.row(), actualIndex.row());
-                }
-            }
-            return actualIndex;
+            final QModelIndex index = super.moveCursor(action, modifiers);
+            return controller.afterMoveCursor(index, isSelectionAllowed(), isSelectionEnabled(), indexIteratorFactory, modifiers);
         }
         return null;
     }
 
     @Override
     protected void keyPressEvent(final QKeyEvent event) {
-        if (event.matches(QKeySequence.StandardKey.Find)) {
-            actions.findAction.trigger();
-        } else if (event.matches(QKeySequence.StandardKey.FindNext)) {
-            actions.findNextAction.trigger();
-        } else if (event.matches(QKeySequence.StandardKey.SelectAll) && isSelectionAllowed()){
-            if (selectAllRows()){
-                updateHeaderCheckState();
-            }
-        } else if (event.key()==Qt.Key.Key_Insert.value() 
-                   && event.modifiers().value()==0 
-                   && isSelectionAllowed() && currentIndex()!=null                   
-                   && !inEditingMode()
-                  ){
-            if (changeSelection(controller.selector.getGroupModel().getSelection(), currentIndex(), ESelectAction.INVERT)){
-                afterSelectionChanged(currentIndex().row(), currentIndex().row());
+        final EHierarchicalSelectionMode selectAllMode = 
+                isSelectionAllowed() ? EHierarchicalSelectionMode.EXPLICIT_NESTED_OBJECTS : null;
+        if (!controller.processKeyPressEvent(event, selectAllMode, horizontalHeader)){
+            if (event.matches(QKeySequence.StandardKey.Find)) {
+                actions.findAction.trigger();
+            } else if (event.matches(QKeySequence.StandardKey.FindNext)) {
+                actions.findNextAction.trigger();
+            } else if (event.key()==Qt.Key.Key_Insert.value()
+                       && event.modifiers().value()==0
+                       && isSelectionAllowed()
+                       && currentIndex()!=null
+                       && !controller.inEditingMode()
+                       && controller.invertSelection(currentIndex())
+                      ){
                 moveCursor(CursorAction.MoveDown, new Qt.KeyboardModifiers(0));
+            } else {
+                super.keyPressEvent(event);
             }
-        }
-        else {
-            super.keyPressEvent(event);
         }
     }
 
@@ -1305,7 +1611,7 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     protected void currentChanged(final QModelIndex current, final QModelIndex previous) {
         finishEdit();
         ((VerticalHeader)verticalHeader).setCurrentRow(current==null ? -1 : current.row());
-        controller.processCurrentChanged(current, previous, horizontalHeader());
+        controller.processCurrentChanged(current, previous, horizontalHeader);
         actions.refresh();        
     }
 
@@ -1313,11 +1619,21 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     public void rereadAndSetCurrent(final Pid pid) throws InterruptedException, ServiceClientException {
         if (pid == null && currentIndex() != null) {
             final EntityModel entity = controller.model.getEntity(currentIndex());
-            rereadInternal(entity.getPid());
+            rereadInternal(Collections.singleton(entity.getPid()));
         } else {
-            rereadInternal(pid);
+            rereadInternal(pid==null ? null : Collections.singleton(pid));
         }        
     }
+
+    @Override
+    public void rereadAndSetCurrent(Collection<Pid> pids) throws InterruptedException, ServiceClientException {
+        if (pids == null && currentIndex() != null) {
+            final EntityModel entity = controller.model.getEntity(currentIndex());
+            rereadInternal(Collections.singleton(entity.getPid()));
+        } else {
+            rereadInternal(pids==null ? null : pids);
+        }
+    }    
 
     @Override
     public void reread() throws InterruptedException, ServiceClientException {
@@ -1325,115 +1641,59 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     }
 
     @Override
-    protected boolean edit(final QModelIndex index, final EditTrigger trigger, final QEvent event) {
-        if (controller.getCurrentPropEditor() != null) {
-            if (index.equals(currentIndex())) {
-                return true;                
-            } else {
-                finishEdit();
-            }
-        }
-        final boolean onChangeSelection = controller.isSelectionEnabled() 
-                                          && index!=null 
-                                          && index.column()==0;
-        if (onChangeSelection){
-            finishEdit();
-        }
-        if (onChangeSelection        
-            && event instanceof QMouseEvent
-            && (((QMouseEvent)event).modifiers().isSet(Qt.KeyboardModifier.ShiftModifier)
-                || ((QMouseEvent)event).modifiers().isSet(Qt.KeyboardModifier.ControlModifier))){
-            if (((QMouseEvent)event).modifiers().isSet(Qt.KeyboardModifier.ShiftModifier)){
-                return !changeSelectionToCurrentRow(index.row(), ESelectAction.SELECT);
-            }else{
-                return !changeSelectionToCurrentRow(index.row(), ESelectAction.UNSELECT);
-            }
-        }else{
-            if (super.edit(index, trigger, event)){
-                if (onChangeSelection){
-                    afterSelectionChanged(index.row(), index.row());
-                }else{
-                    update();
-                }
-                return true;
-            }else{
+    protected boolean edit(final QModelIndex index, final EditTrigger trigger, final QEvent event/*can be null*/) {
+        if (isMouseClickWithCtrl(event)){
+            if (postponedMousePressEvent!=null){
+                postponedMousePressEvent.setEdit((QMouseEvent)event);
                 return false;
             }
         }
+        return editImpl(index, trigger, event);
     }
     
-    private boolean changeSelectionToCurrentRow(final int fromRow, final ESelectAction action){
-        if (currentIndex()==null){
-            return false;
-        }else{                        
-            final int currentRow = currentIndex().row();
-            final int endRow = Math.max(currentRow, fromRow);
-            final int startRow = Math.min(currentRow, fromRow);
-            final EntityObjectsSelection selection = controller.selector.getGroupModel().getSelection();
-            boolean selectionChanged = false;
-            for (int row=startRow; row<=endRow; row++){                
-                final QModelIndex rowIndex = controller.model.index(row, 0);
-                if (changeSelection(selection, rowIndex, action)){
-                    selectionChanged = true;
-                }
+    private boolean editImpl(final QModelIndex index, final EditTrigger trigger, final QEvent event){
+        final boolean processed = 
+            controller.processEditEvent(event, 
+                                                     index, 
+                                                     isSelectionEnabled(), 
+                                                     indexIteratorFactory);
+        if ((event==null || event.isAccepted())
+            && super.edit(index, trigger, event)){
+            if (!processed){
+                update();
             }
-            if (selectionChanged){
-                afterSelectionChanged(startRow,endRow);
-            }
-            return selectionChanged;
+            return true;
         }
+        return processed;
     }
     
-    private boolean changeSelection(final EntityObjectsSelection selection, final QModelIndex index, final ESelectAction action){
-        if (!controller.model.isBrokenEntity(index)){
-            final EntityModel entity = controller.model.getEntity(index);
-            final Pid entityPid = entity.getPid();
-            if (selector.getGroupModel().getEntitySelectionController().isEntityChoosable(entity)){
-                switch(action){
-                    case INVERT:
-                        selection.invertSelection(entityPid);
-                        return true;
-                    case SELECT:{
-                        if (!selection.isObjectSelected(entityPid)){
-                            selection.selectObject(entityPid);
-                            return true;
-                        }
-                        break;
-                    }
-                    case UNSELECT:{
-                        if (selection.isObjectSelected(entityPid)){
-                            selection.unselectObject(entityPid);
-                            return true;
-                        }
-                        break;                        
-                    }                        
-                }
-            }
+    private void afterSwitchSelectionMode(final boolean isSelectionEnabled){        
+        update();
+        if (isSelectionEnabled){
+            resizeColumnToContents(0);
         }
-        return false;
-    }
-    
-    private void afterSelectionChanged(final int topRow, final int bottomRow){
-        setSelectionEnabled(true);
-        final int lastColumn = model().columnCount();
-        dataChanged(controller.model.index(topRow, 0), controller.model.index(bottomRow, lastColumn));
-    }
+        controller.refreshCornerWidget(cornerButton, isSelectionEnabled, isSelectionAllowed());
+    }     
         
-
     @Override
     public void afterPrepareCreate(final EntityModel entity) {
     }
 
-    private void rereadInternal(final Pid pid) throws InterruptedException, ServiceClientException {
+    private void rereadInternal(final Collection<Pid> pids) throws InterruptedException, ServiceClientException {
+        if (controller.changingCurrentEntity()){
+            postSelectorGridEvent(EventType.REREAD);
+        }
         finishEdit();
         setEnabled(true);
         final int column = getCurrentColumn();
         lockInput();
         int idx = -1;
-        try {            
+        try {
             clearSpans();            
             verticalScrollBar().setValue(0);//RADIX-9939 reset value to avoid redundant read on setRange call in updateGeometry.
-            if (pid != null) {
+            if (pids == null) {
+                controller.model.reread(null);
+            } else {
                 controller.model.reset(null);
                 final int rowsLoadingLimit =
                         selector.getEnvironment().getConfigStore().readInteger(ROWS_LIMIT_FOR_RESTORING_POSITION_CONFIG_PATH, 300);
@@ -1441,14 +1701,12 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
                 objectFinder.resetCounters();
                 enterSearchState();
                 try {
-                    idx = objectFinder.findObjectByPid(new SelectorWidgetDelegate(controller.model, null), pid);
+                    idx = objectFinder.findObjectByPid(new SelectorWidgetDelegate(controller.model, null), pids);
                 } catch (ServiceCallException exception) {
                     controller.processErrorOnReceivingData(exception);
                 } finally {
                     exitSearchState();
-                }
-            } else {
-                controller.model.reread(null);
+                }                
             }
             if (idx >= 0) {
                 controller.enterEntity(model().index(idx, column));
@@ -1461,11 +1719,12 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
             unlockInput();
         }        
         selector.refresh();
+        updateSelectionMode();
         //RADIX-10273 (need in case of direct call readAndSetCurrent method)
         updateRowsSize();
         updateColumnsWidth();
     }
-    
+        
     private void enterSearchState(){
         searching = true;
     }
@@ -1481,12 +1740,7 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
 
     @Override
     public void clear() {
-        finishEdit();
-        ((SelectorModel) model()).clear();
-        actions.refresh();        
-        setEnabled(false);
-        update();        
-        refreshCornerWidget();
+        controller.clearData(this, cornerButton, horizontalHeader);
     }
 
     @Override
@@ -1494,7 +1748,7 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         final QModelIndex index = controller.findIndexForProperty(property);
         if (index != null) {
             setCurrentIndex(index);
-            openEditor(index);
+            controller.openEditor(index);
             final PropEditor editor = ((WrapModelDelegate) itemDelegate(index)).getActivePropEditor();
             if (editor != null) {
                 editor.setFocus();
@@ -1507,8 +1761,10 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     @Override
     protected void rowsInserted(final QModelIndex parent, final int start, final int end) {        
         if ((!isVisible() || !verticalScrollBar().isVisible())
-            && !disableFetchMoreOnInsertRows && !inSearchState()){
-            scheduleFetchMore();
+            && !controller.loadingRows() 
+            && !disableFetchMoreOnInsertRows 
+            && !inSearchState()){
+            scheduleFetchMore(false);
         }else{
             updateEditorGeometries();
         }
@@ -1517,16 +1773,6 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         if (start > 1) {
             updateRowsSize();
             updateColumnsWidth();
-        }
-    }
-
-    private void updateColumnsWidth() {
-        final QHeaderView header = horizontalHeader();
-        for (int i = 0, count = header.count(); i < count; i++) {
-            if (!header.isSectionHidden(i)
-                    && header.resizeMode(i) == QHeaderView.ResizeMode.ResizeToContents) {
-                resizeColumnToContents(i);
-            }
         }
     }
 
@@ -1550,27 +1796,29 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         }
 
         getGroupModel().getAsyncReader().removeListener(asyncReaderListener);
-        getGroupModel().removeSelectionListener(selectionHandler);
-        controller.model.unsubscribeProperties(this);        
-        
+        if (model()!=null){
+            getSelection().removeListener(selectionHandler);
+        }        
+        controller.model.unsubscribeProperties(this);                
         {//disconnecting signals for GC
-            corner.disconnect();
+            cornerButton.disconnect();
             actions.close();
-            horizontalHeader().disconnect();
+            horizontalHeader.disconnect();
         }
-
+        
+        horizontalHeader.saveSettings();
+        horizontalHeader.close();
         if (model() != null) {
             if (selector.getModel() != null) {                
-                controller.saveHorizontalHeaderSettings(horizontalHeader());
                 savePosition();
             }
-            //setModel(null);
+            //setModel(null);            
+            getSelection().close();
             controller.model.clear();
             controller.model.dispose();
             getGroupModel().getAsyncReader().clean();
         }
-        horizontalHeader.close();
-        controller.close();
+        postedEvents.clear();
         super.closeEvent(event);
     }
 
@@ -1578,7 +1826,7 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     public QSize sizeHint() {
         final QSize size = super.sizeHint();
         size.setHeight(DEFAULT_HEIGHT);        
-        final int width = horizontalHeader.sizeHint().width()+(corner.isVisible() ? corner.width() : 0)+frameWidth()*2;
+        final int width = horizontalHeader.sizeHint().width()+(cornerButton.isVisible() ? cornerButton.width() : 0)+frameWidth()*2;
         if (size.width()<width){
             final Dimension sizeLimit = WidgetUtils.getWndowMaxSize();
             size.setWidth(Math.min(width, (int)sizeLimit.getWidth()));
@@ -1607,12 +1855,22 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
 
     @Override
     public int sizeHintForColumn(final int column) {
-        sizeHintCalculating = true;
-        try {
-            if (horizontalHeader.resizeMode(column) != QHeaderView.ResizeMode.ResizeToContents
-                    || horizontalHeader.isSectionHidden(column)) {
+        if (horizontalHeader.resizeMode(column) != QHeaderView.ResizeMode.ResizeToContents
+                || horizontalHeader.isSectionHidden(column)) {
+            sizeHintCalculating = true;
+            try{
                 return super.sizeHintForColumn(column);
+            }finally{
+                sizeHintCalculating = false;
             }
+        }else{
+            return calcSizeHintForColumn(column);
+        }
+    }
+    
+    private int calcSizeHintForColumn(final int column){
+        sizeHintCalculating = true;
+        try{
             final int rowCount = verticalHeader().count();
             int columnSizeHint = 0;
             for (int row = rowCount - 1; row >= 0; --row) {
@@ -1622,8 +1880,8 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
                             Math.max(columnSizeHint, controller.model.getSizeHint(index, false).width());
                 }
             }
-            return columnSizeHint;
-        } finally {
+            return columnSizeHint;            
+        }finally {
             sizeHintCalculating = false;
         }
     }
@@ -1632,6 +1890,15 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         final int height = Math.max(horizontalHeader.minimumHeight(), horizontalHeader.sizeHint().height());
         return Math.min(height, horizontalHeader.maximumHeight());
     }
+    
+    private void updateColumnsWidth(){        
+        for (int i = 0, count = horizontalHeader.count(); i < count; i++) {
+            if (!horizontalHeader.isSectionHidden(i)
+                    && horizontalHeader.resizeMode(i) == QHeaderView.ResizeMode.ResizeToContents) {
+                resizeColumnToContents(i);                
+            }
+        }        
+    }        
 
     @Override
     protected void updateGeometries() {
@@ -1658,7 +1925,7 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
             verticalHeader.setGeometry(verticalLeft, vg.top(), width, vg.height());
             final int horizontalTop = vg.top() - height;
             horizontalHeader.setGeometry(vg.left(), horizontalTop, vg.width(), height);
-            corner.setVisible(width>0 && height>0);            
+            cornerButton.setVisible(width>0 && height>0);            
         }
 
         QSize vsize;
@@ -1745,49 +2012,6 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         }
         geometryRecursionBlock = false;
     }
-
-    @SuppressWarnings("unused")
-    private void cornerClicked(){
-        if (!isEnabled() || getGroupModel().isEmpty()){
-            return;
-        }
-        finishEdit();
-        final QModelIndex index = currentIndex();
-        final int currentRow = index==null ? -1 : index.row();
-        int currentColumn = index==null ? -1 : getCurrentColumn();
-        if (controller.isSelectionEnabled()){
-            final EntityObjectsSelection selection = getGroupModel().getSelection();
-            if (!selection.isEmpty()){
-                if (confirmToClearSelection()){
-                    selection.clear();
-                    if (!selection.isEmpty()){
-                        return;//cleaning selection was rejected in some handler
-                    }
-                }else{
-                    return;
-                }
-            }
-            setSelectionEnabled(false);            
-        }else{
-            setSelectionEnabled(true);
-        }
-        if (currentColumn>=0){
-            final QModelIndex newIndex = controller.model.index(currentRow, currentColumn);
-            setCurrentIndex(newIndex);
-            controller.setItemDelegateCurrentIndex(newIndex);
-        }else{
-            updateCurrentColumn();
-        }
-        controller.updateFirstVisibleColumnIndex(horizontalHeader);
-        refreshCornerWidgetToolTip();        
-        controller.lockInput();
-        try {
-            clearSpans();
-            updateSpan(0, getGroupModel().getEntitiesCount());
-        } finally {
-            controller.unlockInput();
-        }
-    }
     
     private boolean confirmToClearSelection(){
         final IClientEnvironment environment = selector.getEnvironment();
@@ -1804,42 +2028,36 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
     @Override
     public boolean setMultiSelectionEnabled(final boolean enabled) {
         if (enabled){
-            if (selector.getGroupModel().getRestrictions().getIsMultipleSelectionRestricted()){
+            if (!isSelectionAllowed()){
                 return false;
             }else{
-                setSelectionEnabled(true);
+                return controller.enableSelection(horizontalHeader);
             }
         }else{
-            setSelectionEnabled(false);
-        }
-        return true;
-    }        
-    
-    private void setSelectionEnabled(final boolean isEnabled){
-        if (isEnabled!=controller.isSelectionEnabled()){
-            if (isEnabled){
-                controller.enableSelection();
-            }else{
-                controller.disableSelection();
-            }
-            controller.updateFirstVisibleColumnIndex(horizontalHeader);
+            return controller.disableSelection(horizontalHeader);
         }
     }
     
-    private boolean inEditingMode(){
-        return itemDelegate() instanceof WrapModelDelegate
-            && ((WrapModelDelegate)itemDelegate()).getActivePropEditor()!=null;
+    private boolean canSelectAll(){
+        return !selector.getGroupModel().getRestrictions().getIsMultipleSelectionRestricted();
+    }
+    
+    private boolean isSelectionEnabled(){
+        return controller.isSelectionEnabled(horizontalHeader);
+    }
+    
+    private void updateSelectionMode(){
+        controller.updateSelectionMode(horizontalHeader, isSelectionAllowed());
     }
             
-    private void scheduleFetchMore(){
-        if (!fetchMoreScheduled){
-            fetchMoreScheduled = true;
-            Application.processEventWhenEasSessionReady(this, new FetchMoreEvent());            
+    private void scheduleFetchMore(final boolean silently){
+        if (!postedEvents.contains(EventType.FETCH_MORE)){
+            postedEvents.add(EventType.FETCH_MORE);
+            Application.processEventWhenEasSessionReady(this, new FetchMoreEvent(silently));            
         }
-    }
+    }        
     
     private void fetchMore(final boolean silently) {
-        fetchMoreScheduled = false;        
         final QAbstractItemModel model = model();
         if (!model.canFetchMore(null))
             return;
@@ -1905,4 +2123,14 @@ public class SelectorGrid extends AbstractGrid implements IExplorerSelectorWidge
         model.fetchMore(null);
         updateRowsSize();
     }
+    
+    protected final HierarchicalSelection<SelectorNode> getSelection(){
+        return controller.model.getSelection();
+    }
+    
+    @Override
+    protected void disposed() {
+        controller.disposed();
+        super.disposed();
+    }    
 }

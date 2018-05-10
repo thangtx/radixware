@@ -31,9 +31,9 @@ import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.EChooseDefinitionDisplayMode;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.NameMatcher;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.NameMatcherFactory;
+import org.radixware.kernel.common.utils.namefilter.NameMatcher;
+import org.radixware.kernel.common.utils.namefilter.NameMatcherFactory;
+import org.radixware.kernel.designer.common.dialogs.chooseobject.SearchTypeConverter;
 import org.radixware.kernel.designer.common.general.utils.RadixMutex;
 
 
@@ -133,11 +133,13 @@ public class RadixSymbolProvider implements SymbolProvider {
 
         if (definition instanceof AdsClassTitledMember) {
             final AdsClassTitledMember titledMember = (AdsClassTitledMember) definition;
-            final Layer layer = titledMember.getModule().getSegment().getLayer();
-            for (EIsoLanguage language : layer.getLanguages()) {
-                final String title = titledMember.getTitle(language);
-                if (title != null && !title.isEmpty()) {
-                    symbolTypeTitle2Value.put(language.getName().toLowerCase() + " title", title);
+            final Layer layer = titledMember.getLayer();
+            if (layer != null) {
+                for (EIsoLanguage language : layer.getLanguages()) {
+                    final String title = titledMember.getTitle(language);
+                    if (title != null && !title.isEmpty()) {
+                        symbolTypeTitle2Value.put(language.getName().toLowerCase() + " title", title);
+                    }
                 }
             }
         }
@@ -195,8 +197,7 @@ public class RadixSymbolProvider implements SymbolProvider {
 
     @Override
     public void computeSymbolNames(Context context, Result result) {
-        final NameMatcher matcher = NameMatcherFactory.createNameMatcher(context.getText(), context.getSearchType(), EChooseDefinitionDisplayMode.NAME_AND_LOCATION
-                );
+        final NameMatcher matcher = NameMatcherFactory.createNameMatcher(context.getText(), SearchTypeConverter.convertNb2RdxSearchType(context.getSearchType()));
         if (matcher == null) {
             return;
         }

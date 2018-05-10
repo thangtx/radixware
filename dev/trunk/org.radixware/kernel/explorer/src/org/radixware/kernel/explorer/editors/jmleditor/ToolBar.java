@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import org.radixware.kernel.common.client.RunParams;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.meta.RadClassPresentationDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
@@ -36,8 +37,10 @@ import org.radixware.kernel.common.client.meta.sqml.ISqmlTableIndexDef;
 import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.widgets.actions.Action;
 import org.radixware.kernel.common.defs.Definition;
+import org.radixware.kernel.common.defs.DefinitionPath;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
+import org.radixware.kernel.common.defs.ads.module.AdsPath;
 import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef.Lookup.DefInfo;
 import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
@@ -47,6 +50,7 @@ import org.radixware.kernel.explorer.editors.jmleditor.dialogs.ChooseObjectDialo
 import org.radixware.kernel.explorer.editors.jmleditor.dialogs.InvocateWizard;
 import org.radixware.kernel.explorer.editors.jmleditor.dialogs.LibUserFuncWizard;
 import org.radixware.kernel.explorer.editors.jmleditor.dialogs.LocalizedStr_Dialog;
+import org.radixware.kernel.explorer.editors.jmleditor.dialogs.PreviewExecutableSourceDialog;
 import org.radixware.kernel.explorer.editors.jmleditor.dialogs.TypeWizard;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
@@ -232,7 +236,7 @@ public class ToolBar {
 
     public void setCheckButtonState(boolean isCompiled) {
         boolean isCurrentSourceVersion = editor.getEditingVersionName() == null;
-        QIcon icon = isCompiled && isCurrentSourceVersion ? ExplorerIcon.getQIcon(JmlEditor.JmlEditorIcons.IMG_OK) : ExplorerIcon.getQIcon(JmlEditor.JmlEditorIcons.IMG_VALIDATE);
+        QIcon icon = isCompiled && isCurrentSourceVersion ? ExplorerIcon.getQIcon(JmlEditor.JmlEditorIcons.IMG_OK) : ExplorerIcon.getQIcon(JmlEditor.JmlEditorIcons.IMG_WARNING);
         btnCheck.setIcon(icon);
         String text = "";
         if (isCurrentSourceVersion) {
@@ -340,12 +344,11 @@ public class ToolBar {
 
     @SuppressWarnings("unused")
     private void btnSaveToFile_Clicked() {
-        String title = Application.translate("JmlEditor", "Save to File");
-        String name = QFileDialog.getSaveFileName(editor, title, filename/*QDir.homePath()*/, new com.trolltech.qt.gui.QFileDialog.Filter("XML Files (*.xml)"));//chooseFile(QFileDialog.FileMode.AnyFile, QFileDialog.AcceptMode.AcceptSave, "Export to File");
-        filename = name != null && name.isEmpty() ? name : filename;
-        editor.saveUserFuncToFile(name);
+        if (editor.getActionProvider() != null) {
+            editor.getActionProvider().exportUserFunc();
+        }
     }
-
+        
     @SuppressWarnings("unused")
     private void btnLoadFromFile_Clicked() {
         String title = Application.translate("JmlEditor", "Load from File");
@@ -523,6 +526,14 @@ public class ToolBar {
         editor.compileUserFunc(true, false);
         setCheckButtonState();
     }
+    
+    private void showDefNotFoundMessage(DefInfo info) {
+        String defPath = "<UNDEFINED>";
+        if (info != null && info.getPath() != null) {
+           defPath = DefinitionPath.toString(new AdsPath(info.getPath()));
+        }
+        editor.getEnvironment().messageError("Tag Insertion", String.format("Definition %s not found.", defPath));
+    }
 
     private void showChoceObjectId(EDefType definitionClass, String title, Class<? extends Definition> objTempl) {
         Set<EDefType> templList = EnumSet.noneOf(EDefType.class);
@@ -532,12 +543,20 @@ public class ToolBar {
         if (invocate) {
             InvocateWizard choceObj = new InvocateWizard(editor, /*null,*/ title, objTempl, templList);
             if (choceObj.exec() == 1) {
-                editor.addJmlTagId(choceObj.getSelectedDef());
+                if (choceObj.getSelectedDef() != null) {
+                    editor.addJmlTagId(choceObj.getSelectedDef());
+                } else {
+                    showDefNotFoundMessage(null);
+                }
             }
         } else {
             ChooseObjectDialog choceObj = new ChooseObjectDialog(editor, null, title, templList, false);
             if (choceObj.exec() == 1) {
-                editor.addJmlTagId(choceObj.getSelectedDef());
+                if (choceObj.getSelectedDef() != null) {
+                    editor.addJmlTagId(choceObj.getSelectedDef());
+                } else {
+                    showDefNotFoundMessage(null);
+                }
             }
         }
     }
@@ -555,7 +574,11 @@ public class ToolBar {
         Collection<DefInfo> allowedDefinitions = null;
         InvocateWizard choceObj = new InvocateWizard(editor, /*allowedDefinitions,*/ Application.translate("JmlEditor", "Choose Invocation Wizard"), null, templList);
         if (choceObj.exec() == 1) {
-            editor.addJmlTagInvocate(choceObj.getSelectedDef());
+            if (choceObj.getSelectedDef() != null) {
+                editor.addJmlTagInvocate(choceObj.getSelectedDef());
+            } else {
+                showDefNotFoundMessage(null);
+            }
         }
     }
 

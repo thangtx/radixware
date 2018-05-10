@@ -35,9 +35,10 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.userreport.extrepository.UserExtRepository;
 import org.radixware.kernel.common.userreport.repository.ReportsModule;
 import org.radixware.kernel.common.userreport.repository.UserReport;
+import org.radixware.kernel.common.utils.namefilter.NameMatcher;
+import org.radixware.kernel.common.utils.namefilter.NameMatcherFactory;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.EChooseDefinitionDisplayMode;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.NameMatcher;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.NameMatcherFactory;
+import org.radixware.kernel.designer.common.dialogs.chooseobject.SearchTypeConverter;
 import org.radixware.kernel.designer.common.general.utils.RadixMutex;
 import org.radixware.kernel.reporteditor.common.UserExtensionManager;
 
@@ -47,7 +48,6 @@ public class RadixSymbolProvider implements SymbolProvider {
     private VisitorProvider provider = null;
 
     public RadixSymbolProvider() {
-        System.out.println("done");
     }
 
     @Override
@@ -218,7 +218,7 @@ public class RadixSymbolProvider implements SymbolProvider {
 
     @Override
     public void computeSymbolNames(Context context, Result result) {
-        final NameMatcher matcher = NameMatcherFactory.createNameMatcher(context.getText(), context.getSearchType(), EChooseDefinitionDisplayMode.NAME_AND_LOCATION);
+        final NameMatcher matcher = NameMatcherFactory.createNameMatcher(context.getText(), SearchTypeConverter.convertNb2RdxSearchType(context.getSearchType()));
         if (matcher == null) {
             return;
         }

@@ -25,6 +25,8 @@ import java.awt.event.ActionListener;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.openide.util.ChangeSupport;
@@ -72,6 +74,7 @@ public class TypeEditPanel extends javax.swing.JPanel {
     private JButton openInEditor;
     private JButton selectInTree;
     private JCheckBox usedBox;
+    private Border usedBoxBorder = null;
     private LastUsedTypesPanel lastPanel;
     private TypeEditorModel model;
     private AdsType objectType;
@@ -249,6 +252,17 @@ public class TypeEditPanel extends javax.swing.JPanel {
 
         enableDimensionEditor(enableDimensionEditing);
         enableGenericEditor(enableGenericEditing);
+        
+        Border b = BorderFactory.createEmptyBorder(dimEditor.getPreferredSize().height + 10, 0, 0, 0); //10 - insets between rows
+        if (!enableDimensionEditing && !enableGenericEditing) {
+            if (usedBoxBorder == null) {
+                usedBox.setBorder(b);
+            } else {
+                usedBox.setBorder(BorderFactory.createCompoundBorder(b, usedBoxBorder));
+            }
+        } else {
+            usedBox.setBorder(usedBoxBorder);
+        }
 
         updateLastUsedList();
     }
@@ -535,14 +549,16 @@ public class TypeEditPanel extends javax.swing.JPanel {
         };
 
         usedBox.addActionListener(boxListener);
-        c.gridx = 1;
+        c.gridx = 0;
         c.gridy = 4;
         c.insets = new Insets(10, 10, 0, 10);
         c.weightx = 1.0;
         c.weighty = 0.0;
+        c.gridwidth = 2;
         c.anchor = GridBagConstraints.LINE_START;
 
         innerpane.add(usedBox, c);
+        usedBoxBorder = usedBox.getBorder();
         lastPanel = new LastUsedTypesPanel();
 
         lastPanel.addValueChangeListener(new ValueChangeListener() {

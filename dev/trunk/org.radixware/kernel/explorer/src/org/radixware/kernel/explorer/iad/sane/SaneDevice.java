@@ -28,11 +28,11 @@ import java.util.Map;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
-import org.radixware.kernel.explorer.iad.ImageAcquaringDevice;
+import org.radixware.kernel.explorer.iad.ImageAcquiringDevice;
 import org.radixware.kernel.explorer.iad.sane.options.SaneOptionValueAccessor;
 
 
-public final class SaneDevice extends ImageAcquaringDevice{
+public final class SaneDevice extends ImageAcquiringDevice{
     
     public static interface IOptionsListener{
         void needToRefreshOptions();

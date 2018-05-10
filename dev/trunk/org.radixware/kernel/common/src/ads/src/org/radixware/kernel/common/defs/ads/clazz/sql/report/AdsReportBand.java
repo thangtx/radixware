@@ -11,6 +11,7 @@
 package org.radixware.kernel.common.defs.ads.clazz.sql.report;
 
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.List;
 import org.radixware.kernel.common.defs.ClipboardSupport;
 import org.radixware.kernel.common.defs.IVisitor;
@@ -26,15 +27,15 @@ import org.radixware.kernel.common.enums.EReportBandType;
 import org.radixware.kernel.common.enums.EReportLayout;
 import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.common.utils.XmlColor;
 
-public class AdsReportBand extends AdsReportAbstractAppearance implements IProfileable, IReportWidgetContainer {
-
-    public static final double GRID_SIZE_MM = 2.5;
+public class AdsReportBand extends AdsReportAbstractAppearance implements IProfileable, IReportWidgetContainer, IReportNavigatorObject {
+    public static final int DEFAULT_HEIGHT_ROWS = 3;
     public static final int GRID_SIZE_SYMBOLS = 1;
     private double heightMm = 20.0;
-    private int heightRows = 3;
+    private int heightRows = DEFAULT_HEIGHT_ROWS;
     private boolean startOnNewPage = false;
     private boolean lastOnPage = false;
     private boolean multiPage = false;
@@ -45,6 +46,7 @@ public class AdsReportBand extends AdsReportAbstractAppearance implements IProfi
     private final RadixObjects<AdsSubReport> preReports = new SubReports(this);
     private final RadixObjects<AdsSubReport> postReports = new SubReports(this);
     private Color zebraColor = null;
+    private boolean insideZebraColor = true;
     // for server
     private boolean visible = true;
 
@@ -74,10 +76,21 @@ public class AdsReportBand extends AdsReportAbstractAppearance implements IProfi
         }
 
         @Override
-        protected void onModified() {
+        protected void onRemove(AdsSubReport object) {
+            final AdsReportForm.ChangedEvent changedEvent = new AdsReportForm.ChangedEvent(object, AdsReportForm.ChangedEvent.ChangeEventType.REMOVE);
+            fireEvent(changedEvent);
+        }
+
+        @Override
+        protected void onAdd(AdsSubReport object) {
+            final AdsReportForm.ChangedEvent changedEvent = new AdsReportForm.ChangedEvent(object, AdsReportForm.ChangedEvent.ChangeEventType.ADD);
+            fireEvent(changedEvent);
+        }
+        
+        void fireEvent(AdsReportForm.ChangedEvent changedEvent) {
             final AdsReportBand band = getOwnerBand();
             if (band != null) {
-                band.onModified();
+                band.fireEvent(changedEvent);
             }
         }
     }
@@ -147,6 +160,9 @@ public class AdsReportBand extends AdsReportAbstractAppearance implements IProfi
         }
         if (xBand.isSetZebraColor()) {
             this.zebraColor = XmlColor.parseColor(xBand.getZebraColor());
+        }
+        if (xBand.isSetInsideZebraColor()){
+            this.insideZebraColor = xBand.getInsideZebraColor();
         }
     }
 
@@ -222,6 +238,10 @@ public class AdsReportBand extends AdsReportAbstractAppearance implements IProfi
         if (zebraColor != null) {
             xBand.setZebraColor(XmlColor.mergeColor(zebraColor));
         }
+        
+        if (!insideZebraColor){
+            xBand.setInsideZebraColor(insideZebraColor);
+        }
         /* if (!reportContainer.getCells().isEmpty()) {
          org.radixware.schemas.adsdef.ReportBand.Cells xCells = xBand.addNewCells();
          for (AdsReportCell cell : cells) {
@@ -293,6 +313,11 @@ public class AdsReportBand extends AdsReportAbstractAppearance implements IProfi
     @Override
     public boolean setName(String name) {
         throw new IllegalStateException("Attempt to set report band name");
+    }
+
+    @Override
+    protected void fireNameChange() {
+        super.fireNameChange();
     }
 
     @Override
@@ -582,10 +607,8 @@ public class AdsReportBand extends AdsReportAbstractAppearance implements IProfi
 
     @Override
     protected void onModified() {
-        final AdsReportForm form = this.getOwnerForm();
-        if (form != null) {
-            form.onModified();
-        }
+        final AdsReportForm.ChangedEvent changedEvent = new AdsReportForm.ChangedEvent(this, AdsReportForm.ChangedEvent.ChangeEventType.NONE);
+        fireEvent(changedEvent);
     }
 
     public AdsReportForm.Bands getOwnerBands() {
@@ -625,10 +648,60 @@ public class AdsReportBand extends AdsReportAbstractAppearance implements IProfi
     }
 
     public void convertToTextMode() {
-        final double CONVERSION_Y = 5;
-        this.heightRows = (int) Math.round(this.heightMm / CONVERSION_Y);
+        if (heightRows == DEFAULT_HEIGHT_ROWS) {
+            final double CONVERSION_Y = 5;
+            this.heightRows = (int) Math.round(this.heightMm / CONVERSION_Y);
+        }
         for (AdsReportWidget w : this.getWidgets()) {
             w.convertToTextMode();
         }
+    }
+    
+    void fireEvent(AdsReportForm.ChangedEvent changedEvent) {
+        final AdsReportForm form = this.getOwnerForm();
+        if (form != null) {
+            form.fireEvent(changedEvent);
+        }
+    }
+    
+    @Override
+    public RadixObject getParent() {
+        return getOwnerForm();
+    }
+
+    @Override
+    public List<RadixObject> getChildren() {
+        final List<RadixObject> children = new ArrayList<>();
+        children.addAll(getPreReports().list());
+        children.addAll(getWidgets().list());
+        children.addAll(getPostReports().list());
+        return children;
+    }
+
+    @Override
+    public boolean isDiagramModeSupported(AdsReportForm.Mode mode) {
+        return isModeSupported(mode);
+    }
+
+    @Override
+    public AdsReportWidget findWidgetById(Id widgetId) {
+        return reportContainer.findWidgetById(widgetId);
+    }
+
+    public boolean isInsideAltColor() {
+        return insideZebraColor;
+    }
+
+    public void setInsideAltColor(boolean insideZebraColor) {
+        if (this.insideZebraColor != insideZebraColor) {
+            this.insideZebraColor = insideZebraColor;
+            setEditState(EEditState.MODIFIED);
+        }
+    }
+
+    public static AdsReportBand createNewStyleBand() {
+        AdsReportBand band = new AdsReportBand();
+        band.setNewStyle(true);
+        return band;
     }
 }

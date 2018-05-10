@@ -235,12 +235,14 @@ public final class UserExplorerItemsStorage{
     
     private final UserExplorerItemsCache cache = new UserExplorerItemsCache();
     private final List<Id> loadedExplorerItems = new LinkedList<>();
+    private final List<String> loadedUserExplorerItems = new LinkedList<>();
                 
     private final IClientEnvironment environment;    
     private final IClientEnvironment.ConnectionListener disconnectListener = new IClientEnvironment.ConnectionListener() {
             @Override
             public void afterCloseConnection(boolean forced) {
                 loadedExplorerItems.clear();
+                loadedUserExplorerItems.clear();
                 cache.clear();
             }
         };
@@ -278,6 +280,10 @@ public final class UserExplorerItemsStorage{
         return loadedExplorerItems.contains(ownerDefinitionId);
     }
     
+    private boolean isUserExplorerItemsLoaded(final Id ownerDefinitionId, final String sourceExplorerItemId){
+        return loadedUserExplorerItems.contains(ownerDefinitionId.toString()+"-"+sourceExplorerItemId);
+    }
+    
     private boolean loadUserExplorerItems(final Id ownerDefinitionId, final RadExplorerItems predefinedItems, final UserExplorerItemLoadHandler loadHandler){
         final ClientSettings settings = environment.getConfigStore();        
         settings.beginGroup(CUSTOM_EXPLORER_ITEMS_SETTING_NAME+"/"+ownerDefinitionId.toString()); 
@@ -290,25 +296,33 @@ public final class UserExplorerItemsStorage{
             }else{
                 boolean allItemsLoaded = true;
                 List<RadSelectorUserExplorerItemDef> resultList;
+                final List<String> loadedSourceExplorerItems = new LinkedList<>();
                 for (String IdAsStr: sourceExplorerItemIds){
-                    final Id explorerItemId = Id.Factory.loadFrom(IdAsStr);
-                    final RadExplorerItemDef explorerItem = predefinedItems.findExplorerItem(explorerItemId);
-                    if (explorerItem instanceof RadSelectorExplorerItemDef){
-                        resultList = 
-                            readUserExplorerItems(settings, (RadSelectorExplorerItemDef)explorerItem, loadHandler);
-                        linkUserExplorerItems(resultList, (RadSelectorExplorerItemDef)explorerItem);
-                        cache.putAllUserExplorerItems(ownerDefinitionId, explorerItemId, resultList);
-                    }else {
-                        final List<RadSelectorUserExplorerItemDef> cachedExplorerItems = 
-                            cache.getUserExplorerItems(ownerDefinitionId, explorerItemId);
-                        if (cachedExplorerItems==null || cachedExplorerItems.isEmpty()){
-                            allItemsLoaded = false;
+                    if (!isUserExplorerItemsLoaded(ownerDefinitionId, IdAsStr)){
+                        final Id explorerItemId = Id.Factory.loadFrom(IdAsStr);
+                        final RadExplorerItemDef explorerItem = predefinedItems.findExplorerItem(explorerItemId);
+                        if (explorerItem instanceof RadSelectorExplorerItemDef){
+                            resultList = 
+                                readUserExplorerItems(settings, (RadSelectorExplorerItemDef)explorerItem, loadHandler);                            
+                            linkUserExplorerItems(resultList, (RadSelectorExplorerItemDef)explorerItem);
+                            cache.putAllUserExplorerItems(ownerDefinitionId, explorerItemId, resultList);
+                            loadedSourceExplorerItems.add(IdAsStr);
+                        }else {
+                            final List<RadSelectorUserExplorerItemDef> cachedExplorerItems = 
+                                cache.getUserExplorerItems(ownerDefinitionId, explorerItemId);
+                            if (cachedExplorerItems==null || cachedExplorerItems.isEmpty()){
+                                allItemsLoaded = false;
+                            }
                         }
                     }
                 }
                 if (allItemsLoaded){
                     loadedExplorerItems.add(ownerDefinitionId);
-                }                
+                }else{
+                    for (String IdAsStr: loadedSourceExplorerItems){
+                        loadedUserExplorerItems.add(ownerDefinitionId.toString()+"-"+IdAsStr);
+                    }
+                }
                 return true;
             }
         }finally{

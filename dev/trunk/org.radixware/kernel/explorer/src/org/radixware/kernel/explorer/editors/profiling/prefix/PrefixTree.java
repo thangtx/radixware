@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -93,8 +93,10 @@ public class PrefixTree extends QTreeWidget {
         final RadEnumPresentationDef.Items eventSourceItems = eventSourceDef.getItems();
         eventSourceItems.sort(RadEnumPresentationDef.ItemsOrder.BY_ORDER);
         for (RadEnumPresentationDef.Item item : eventSourceItems) {
-            PrefixTreeItem treeItem = new PrefixTreeItem(item);
-            treeItems.add(treeItem);
+            if (!item.isDeprecated()) {
+                PrefixTreeItem treeItem = new PrefixTreeItem(item);
+                treeItems.add(treeItem);
+            }
         }
         buildTree(treeItems, vals);
         return treeItems;

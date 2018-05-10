@@ -57,12 +57,19 @@ public class CloseViewTest implements ITest {
                 view = (IExplorerView) model.getEntityView();
                 initTestResult(model.getEnvironment(), view);
             }
-
-            boolean res = false;
-            if (view!=null){
-                res = view.close(false);
-                if (!res) {
-                    res = view.close(true);
+            
+            boolean res;
+            if (model!=null && model instanceof EntityModel==false){
+                model.clean();//clean model data and close model view                
+                res = true;
+            }else{
+                if (view!=null){
+                    res = view.close(false);
+                    if (!res) {
+                        res = view.close(true);
+                    }
+                }else{
+                    res = false;
                 }
             }
 

@@ -28,9 +28,8 @@ import com.trolltech.qt.gui.QWidget;
 import java.util.EnumSet;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
-import org.radixware.kernel.common.defs.ads.clazz.presentation.AdsSelectorPresentationDef;
+import org.radixware.kernel.common.client.meta.sqml.ISqmlSelectorPresentationDef;
 import org.radixware.kernel.common.enums.EDialogButtonType;
-import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
@@ -42,10 +41,10 @@ final class ChooseSelectorPresentationDialog extends ExplorerDialog {
     private final ChooseSelectorPresentationModel model;
     private final QSortFilterProxyModel proxyModel = new QSortFilterProxyModel();
 
-    public ChooseSelectorPresentationDialog(final IClientEnvironment environment, final Branch branch, final Id classId, final Id presentationId, final QWidget parent) {
+    public ChooseSelectorPresentationDialog(final IClientEnvironment environment, final Id classId, final Id presentationId, final QWidget parent) {
         super(environment, parent, "ChooseSqmlDefinitionDialog");
 
-        model = new ChooseSelectorPresentationModel(branch);
+        model = new ChooseSelectorPresentationModel(environment);
 
         proxyModel.setSourceModel(model);
         proxyModel.setFilterCaseSensitivity(CaseSensitivity.CaseInsensitive);
@@ -178,7 +177,7 @@ final class ChooseSelectorPresentationDialog extends ExplorerDialog {
         return isAcceptable;
     }
 
-    public AdsSelectorPresentationDef getCurrentItem() {
+    public ISqmlSelectorPresentationDef getCurrentItem() {
         return model.presentation(proxyModel.mapToSource(tree.currentIndex()));
     }
 }

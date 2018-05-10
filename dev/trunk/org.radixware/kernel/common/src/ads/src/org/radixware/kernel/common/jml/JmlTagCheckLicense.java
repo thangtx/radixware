@@ -30,11 +30,13 @@ public class JmlTagCheckLicense extends Jml.Tag {
     private int id = 0;
 
     protected JmlTagCheckLicense(Item.CheckLicense xItem) {
+        super(xItem);
         this.license = xItem.getLicense();
         this.id = xItem.getId().intValue();
     }
 
     public JmlTagCheckLicense() {
+        super(null);
     }
 
     public void setId(int id) {
@@ -56,6 +58,7 @@ public class JmlTagCheckLicense extends Jml.Tag {
     @Override
     public void appendTo(Item item) {
         Item.CheckLicense xCheckLicense = item.addNewCheckLicense();
+        appendTo(xCheckLicense);
         xCheckLicense.setId(BigInteger.valueOf(id));
         xCheckLicense.setLicense(license);
     }

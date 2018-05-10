@@ -18,70 +18,45 @@ import com.trolltech.qt.core.QRect;
 import com.trolltech.qt.core.Qt;
 import com.trolltech.qt.core.Qt.ItemFlags;
 import com.trolltech.qt.core.Qt.KeyboardModifier;
-import com.trolltech.qt.gui.QDialog.DialogCode;
 import com.trolltech.qt.gui.*;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import org.radixware.kernel.common.client.IClientApplication;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
 import org.radixware.kernel.common.client.env.ClientIcon;
-import org.radixware.kernel.common.client.exceptions.BrokenEntityObjectException;
-import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.meta.RadEnumPresentationDef;
 import org.radixware.kernel.common.client.meta.RadPropertyDef;
 import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.*;//NOPMD
 import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
-import org.radixware.kernel.common.client.models.EntityModel;
-import org.radixware.kernel.common.client.models.EntityObjectsSelection;
-import org.radixware.kernel.common.client.models.GroupModel;
-import org.radixware.kernel.common.client.models.IContext;
-import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.items.properties.PropertyArrRef;
-import org.radixware.kernel.common.client.types.ArrRef;
-import org.radixware.kernel.common.client.types.ChoosableEntitiesFilter;
 import org.radixware.kernel.common.client.types.IEditingHistory;
-import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
+import org.radixware.kernel.common.client.utils.ArrFactory;
 import org.radixware.kernel.common.client.views.IPropertyStorePossibility;
 import org.radixware.kernel.common.client.views.IPropertyValueStorage;
-import org.radixware.kernel.common.defs.value.ValAsStr;
-import org.radixware.kernel.common.enums.EEventSeverity;
-import org.radixware.kernel.common.enums.EEventSource;
-import org.radixware.kernel.common.enums.ESelectionMode;
+import org.radixware.kernel.common.client.widgets.IToolButton;
+import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.arreditor.AbstractArrayEditorDelegate;
+import org.radixware.kernel.common.client.widgets.arreditor.ArrayItemEditingOptions;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.exceptions.IllegalArgumentError;
-import org.radixware.kernel.common.exceptions.IllegalUsageError;
-import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Arr;
-import org.radixware.kernel.common.types.ArrBin;
-import org.radixware.kernel.common.types.ArrBool;
-import org.radixware.kernel.common.types.ArrChar;
-import org.radixware.kernel.common.types.ArrDateTime;
-import org.radixware.kernel.common.types.ArrInt;
-import org.radixware.kernel.common.types.ArrNum;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.types.Bin;
 import org.radixware.kernel.common.types.IKernelEnum;
-import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.SystemTools;
-import org.radixware.kernel.explorer.dialogs.SelectEntitiesDialog;
-import org.radixware.kernel.explorer.dialogs.SelectEntityDialog;
 import org.radixware.kernel.explorer.editors.valeditors.*;//NOPMD
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 import org.radixware.kernel.explorer.types.QtUserData;
-import org.radixware.kernel.explorer.utils.WidgetUtils;
 
-public final class ArrayEditor extends AbstractArrayEditor implements IPropertyValueStorage {
+public class ArrayEditor extends AbstractArrayEditor implements IPropertyValueStorage {
     
     private static final int UNACCEPTABLE_INPUT_ROLE = Qt.ItemDataRole.UserRole + 1;
     
@@ -98,15 +73,6 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
             return row;
         }
     }    
-
-    private final EValType arrType;
-    private final Class<?> valClass;
-    private final ArrayTableItem delegate;
-    private QToolButton addNullItemBtn;
-    private EditMask itemEditMask;
-    public final Signal2<Integer, Object> rowEdited = new Signal2<>();
-    private IPropertyStorePossibility storePossibility;
-    private QModelIndex indexModel;
     
     private final static class Icons extends ClientIcon {//yremizov
 
@@ -116,38 +82,17 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
         public static final ClientIcon ADD_EMPTY_ITEM = new Icons("classpath:images/addEmpty.svg");
     }
 
-    private final static class ValRefEditor extends ValEditor<Reference> {
-
-        public ValRefEditor(IClientEnvironment environment, final QWidget parent, final EditMask editMask, final boolean isMandatory, final boolean isReadonly) {
-            super(environment, parent, editMask, isMandatory, isReadonly);
-            getLineEdit().setReadOnly(true);
-        }
-    }
-
     private class ArrayTableItem extends QItemDelegate {            
 
-        private ValEditor currentEditor;
-        private GroupModel group = null;
-        private final PropertyArrRef propertyRef;
-        private final RadSelectorPresentationDef presentation;
+        private ValEditor currentEditor;        
 
         public boolean isActive() {
             return currentEditor != null;
         }
 
         @SuppressWarnings("LeakingThisInConstructor")
-        public ArrayTableItem(final PropertyArrRef property) {
+        public ArrayTableItem() {
             super();
-            propertyRef = property;
-            presentation = null;
-            closeEditor.connect(this, "finishEdit()");
-        }
-
-        @SuppressWarnings("LeakingThisInConstructor")
-        public ArrayTableItem(final RadSelectorPresentationDef pres) {
-            super();
-            propertyRef = null;
-            presentation = pres;
             closeEditor.connect(this, "finishEdit()");
         }
 
@@ -161,100 +106,15 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
             if (isReadonly()) {
                 return null;
             }
-            indexModel = index;
-            final ValEditor editor;
-            if (itemEditMask instanceof EditMaskConstSet) {
-                EditMaskConstSet mask = (EditMaskConstSet) itemEditMask;
-                if (!isDuplicatesEnabled()) {
-                    mask =
-                        excludeExistingItems(getEnvironment().getApplication(), mask, getValues(index.row()));
-                }
-                editor = new ValConstSetEditor(getEnvironment(), parent, mask, isNullItemInadmissible(), isReadonly());
-            } else {
-                switch (arrType) {
-                    case ARR_STR:
-                    case ARR_CHAR:
-                        if (itemEditMask instanceof EditMaskStr) {
-                            if (arrType == EValType.ARR_STR) {
-                                editor = new ValStrEditor(getEnvironment(), parent, (EditMaskStr) itemEditMask, isNullItemInadmissible(), isReadonly());
-                            } else {
-                                editor = new ValCharEditor(getEnvironment(), parent, (EditMaskStr) itemEditMask, isNullItemInadmissible(), isReadonly());
-                            }
-                        } else if (itemEditMask instanceof EditMaskList) {
-                            editor = new ValListEditor(getEnvironment(), parent, (EditMaskList) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else if (itemEditMask instanceof EditMaskBool) {
-                            editor = new AdvancedValBoolEditor(getEnvironment(), parent, (EditMaskBool) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else if (itemEditMask instanceof EditMaskFilePath) {
-                            editor = new ValFilePathEditor(getEnvironment(), parent, (EditMaskFilePath) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else {
-                            throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + arrType.toString() + "\' type");
-                        }
-
-                        break;
-                    case ARR_CLOB:
-                        if (itemEditMask instanceof EditMaskStr) {
-                            editor = new ValStrEditor(getEnvironment(), parent, (EditMaskStr) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else {
-                            throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + arrType.toString() + "\' type");
-                        }
-                        break;
-                    case ARR_BIN:
-                    case ARR_BLOB:
-                        editor = new ValBinEditor(getEnvironment(), parent, (EditMaskNone) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        break;
-                    case ARR_INT:
-                        if (itemEditMask instanceof EditMaskInt) {
-                            editor = new ValIntEditor(getEnvironment(), parent, (EditMaskInt) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else if (itemEditMask instanceof EditMaskList) {
-                            editor = new ValListEditor(getEnvironment(), parent, (EditMaskList) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else if (itemEditMask instanceof EditMaskTimeInterval) {
-                            editor = new ValTimeIntervalEditor(getEnvironment(), parent, (EditMaskTimeInterval) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else if (itemEditMask instanceof EditMaskBool) {
-                            editor = new AdvancedValBoolEditor(getEnvironment(), parent, (EditMaskBool) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else {
-                            throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + arrType.toString() + "\' type");
-                        }
-                        break;
-                    case ARR_DATE_TIME:
-                        if (itemEditMask instanceof EditMaskDateTime) {
-                            editor = new ValDateTimeEditor(getEnvironment(), parent, (EditMaskDateTime) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else if (itemEditMask instanceof EditMaskTimeInterval) {
-                            editor = new ValTimeIntervalEditor(getEnvironment(), parent, (EditMaskTimeInterval) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else {
-                            throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + arrType.toString() + "\' type");
-                        }
-                        break;
-                    case ARR_NUM:
-                        if (itemEditMask instanceof EditMaskNum) {
-                            editor = new ValNumEditor(getEnvironment(), parent, (EditMaskNum) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else if (itemEditMask instanceof EditMaskBool) {
-                            editor = new AdvancedValBoolEditor(getEnvironment(), parent, (EditMaskBool) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else {
-                            throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + arrType.toString() + "\' type");
-                        }
-                        break;
-                    case ARR_BOOL:
-                        if (itemEditMask instanceof EditMaskBool) {
-                            editor = new AdvancedValBoolEditor(getEnvironment(), parent, (EditMaskBool) itemEditMask, isNullItemInadmissible(), isReadonly());
-                        } else {
-                            throw new IllegalUsageError("Edit mask \'" + itemEditMask.getClass().getName() + "\' is not applicable for \'" + arrType.toString() + "\' type");
-                        }
-                        break;
-                    case ARR_REF: {
-                        editor = new ValRefEditor(getEnvironment(), parent, getEditMask(), isNullItemInadmissible(), isReadonly());
-                        final QAction action = new QAction(this);
-                        action.setToolTip(Application.translate("ArrayEditor", "Select Object"));
-                        action.setIcon(ExplorerIcon.getQIcon(ClientIcon.Definitions.SELECTOR));
-                        action.triggered.connect(this, "selectEntity()");
-                        editor.addButton(null, action);
-                        break;
-                    }
-                    default:
-                        throw new IllegalUsageError("type \'" + arrType.toString() + "\' is not supported");
-                }
-            }
+            final AbstractArrayEditorDelegate<ValEditor,QWidget> arrItemDelegete = 
+                ArrayEditor.this.getFinalEditorDelegate();
+            final ValEditor editor = arrItemDelegete.createEditor(parent,                    
+                                                                                            ArrayEditor.this.getEnvironment(),
+                                                                                            ArrayEditor.this.getItemEditingOptions(),
+                                                                                            index.row(),
+                                                                                            ArrayEditor.this.getValues(-1));
             editor.changeStateForGrid();
-            editor.setValue(getValue(index));
+            arrItemDelegete.setValueToEditor(editor, getValue(index));
             if (editor.getLineEdit() != null) {
                 editor.setFocus();
                 editor.getLineEdit().selectAll();
@@ -275,6 +135,14 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
             }
             currentEditor.valueChanged.connect(this, "afterEdit()", Qt.ConnectionType.QueuedConnection);
             return editor;
+        }
+        
+        private Object getCurrentEditorValue(){
+            return ArrayEditor.this.getFinalEditorDelegate().getValueFromEditor(currentEditor);
+        }
+        
+        private void setCurrentEditorValue(final Object value){
+            ArrayEditor.this.getFinalEditorDelegate().setValueToEditor(currentEditor, value);
         }
 
         private void addLoadButton() {
@@ -305,7 +173,7 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
         private void loadPropValue() {
             IPropertyStorePossibility psp = getPropertyStorePossibility();
             if (currentEditor != null && psp != null) {
-                currentEditor.setValue(psp.readPropertyValue(null));
+                setCurrentEditorValue(psp.readPropertyValue(null));
             }
         }
 
@@ -313,7 +181,7 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
         private void savePropValue() {
             IPropertyStorePossibility psp = getPropertyStorePossibility();
             if (currentEditor != null && psp != null) {
-                Object val = currentEditor.getValue();
+                Object val = getCurrentEditorValue();
                 psp.writePropertyValue(val);
             }
         }
@@ -321,90 +189,10 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
         @SuppressWarnings("unused")
         private void afterEdit() {
             if (currentEditor != null
-                    &&/*tool button pressed, but not keyboard input*/ ((currentEditor.getValue() == null && !currentEditor.hasFocus()) || currentEditor.getLineEdit().isReadOnly())) {
+                    &&/*tool button pressed, but not keyboard input*/ ((getCurrentEditorValue()== null && !currentEditor.hasFocus()) || currentEditor.getLineEdit().isReadOnly())) {
                 ArrayEditor.this.closeEditor();
             }
-        }
-
-        @SuppressWarnings("unchecked")
-        public GroupModel getGroupModel(final boolean excludeCurrent) {
-            if (propertyRef == null && presentation == null) {
-                throw new IllegalUsageError("Selector presentation not defined");
-            }
-            if (group == null) {
-                try {
-                    if (propertyRef != null) {
-                        group = propertyRef.openGroupModel();
-                    } else {
-                        final Model holderModel = WidgetUtils.findNearestModel(ArrayEditor.this);
-                        if (holderModel==null){
-                            group = GroupModel.openTableContextlessSelectorModel(getEnvironment(), presentation);                            
-                        }else{
-                            group = GroupModel.openTableContextlessSelectorModel(holderModel, presentation);
-                        }
-                    }
-                } catch (RuntimeException ex) {
-                    processException(ex,false);
-                    return null;
-                }
-            } else if (propertyRef != null) {
-                try {
-                    group.reset();
-                    group.setCondition(propertyRef.getCondition());
-                    final Map<Id, Object> propertyValues = propertyRef.getGroupPropertyValues();
-                    for (Map.Entry<Id, Object> propertyValue : propertyValues.entrySet()) {
-                        group.getProperty(propertyValue.getKey()).setValueObject(propertyValue.getValue());
-                    }
-                } catch (ServiceClientException ex) {//Group is empty - never thrown
-                    processException(ex,false);
-                    return null;
-                } catch (InterruptedException ex) {//Group is empty - never thrown
-                    return null;
-                }
-            }
-
-            if (!isDuplicatesEnabled()) {
-                final List<Object> values = getValues(-1);
-                final ChoosableEntitiesFilter filter = new ChoosableEntitiesFilter();
-                if (currentEditor != null && !excludeCurrent) {
-                    if (getCurrentItem() != null) {
-                        values.remove(getValueForItem(getCurrentItem()));
-                    } else {
-                        values.remove(currentEditor.getValue());
-                    }
-                }
-                for (Object value : values) {
-                    if (value != null) {
-                        filter.add(((Reference) value).getPid());
-                    }
-                }
-                group.setEntitySelectionController(filter);
-            }
-            return group;
-        }
-
-        public boolean canSelectNoEntity() {
-            return !isNullItemInadmissible();
-        }
-
-        public void processException(final Throwable ex, final boolean calcTitle) {
-            final String err_title;
-            final String err_msg;
-            if (calcTitle){
-                err_title = Application.translate("ExplorerException", "Error on set value");
-                err_msg = Application.translate("ExplorerException", "Failed to set value of \'%s\':\n%s");
-            }else{
-                err_title = Application.translate("ExplorerException", "Error on opening selector");
-                err_msg = Application.translate("ExplorerException", "Can't open selector for \'%s\':\n%s");
-            }
-            final String reason = ClientException.getExceptionReason(getEnvironment().getMessageProvider(), ex);
-            final String trace = reason + ":\n" + ClientException.exceptionStackToString(ex);
-            final String title = propertyRef != null ? propertyRef.getTitle() : presentation.getTitle();
-            Application.messageError(err_title, String.format(err_msg, title, reason));
-            getEnvironment().getTracer().error(String.format(err_msg, title, reason));
-            getEnvironment().getTracer().put(EEventSeverity.DEBUG, String.format(err_msg, title, trace),
-                    EEventSource.EXPLORER);
-        }
+        }       
 
         @Override
         protected void drawCheck(QPainter painter, QStyleOptionViewItem option, QRect rect, Qt.CheckState state) {
@@ -437,7 +225,7 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
                 final ValEditor valEditor = (ValEditor)editor;
                 final UnacceptableInput unacceptableInput = getUnacceptableInput(index);
                 if (unacceptableInput==null){
-                    valEditor.setValue(getValue(index));
+                    ArrayEditor.this.getFinalEditorDelegate().setValueToEditor(valEditor, getValue(index));
                 }else{
                     final String invalidText = unacceptableInput.getText();
                     if (invalidText!=null && !invalidText.isEmpty()){
@@ -454,9 +242,12 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
             if (editor instanceof ValEditor) {
                 final ValEditor valEditor = (ValEditor) editor;
                 final UnacceptableInput unacceptableInput = valEditor.getUnacceptableInput();
-                Object value = valEditor.getValue();                
+                final AbstractArrayEditorDelegate<ValEditor,QWidget> delegate = ArrayEditor.this.getFinalEditorDelegate();
+                Object value = delegate.getValueFromEditor(valEditor);
                 if (unacceptableInput==null){
-                    model.setData(index, valEditor.getEditMask().toStr(getEnvironment(), value));
+                    final ArrayItemEditingOptions options = ArrayEditor.this.getItemEditingOptions();
+                    final IClientEnvironment environment = ArrayEditor.this.getEnvironment();
+                    model.setData(index, delegate.getDisplayTextForValue(environment, options, value));
                     model.setData(index, null, Qt.ItemDataRole.ToolTipRole);
                 }else{
                     model.setData(index, unacceptableInput.getText());
@@ -494,53 +285,6 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
             ArrayEditor.this.focusTable();
         }
 
-        @SuppressWarnings("unused")
-        private void selectEntity() {
-            final GroupModel groupModel = delegate.getGroupModel(false);
-            if (groupModel != null) {
-                try {
-
-                    final SelectEntityDialog dialog = new SelectEntityDialog(groupModel, canSelectNoEntity());
-                    if (DialogCode.resolve(dialog.exec()).equals(DialogCode.Rejected)) {
-                        return;
-                    }
-                    final EntityModel entity = dialog.selectedEntity;
-                    Reference newValue = entity == null ? null : new Reference(entity);
-                    if (newValue!=null){
-                        final ArrRef arrRefs;
-                        try{
-                            arrRefs = calcTitles(new ArrRef(newValue));
-                        }catch(InterruptedException exception){
-                            return;
-                        }catch(ServiceClientException exception){
-                            processException(exception,true);
-                            return;
-                        }
-                        if (arrRefs!=null && arrRefs.size()==1){
-                            newValue = arrRefs.get(0);
-                        }else{
-                            return;
-                        }                                
-                    }
-                    
-                    if (currentEditor == null || currentEditor.nativeId() == 0) {
-                        final QTableWidgetItem currentItem = getCurrentItem();
-                        if (currentItem != null) {
-                            currentItem.setText(itemEditMask.toStr(getEnvironment(), newValue));
-                            currentItem.setData(Qt.ItemDataRole.UserRole, newValue);
-                            commit();
-                        }
-                    } else {
-                        ((ValRefEditor) currentEditor).setValue(newValue);
-                    }
-                } catch (RuntimeException ex) {
-                    processException(ex,false);
-                } finally {
-                    groupModel.clean();
-                }
-            }
-        }
-
         public void commit() {
             if (currentEditor != null) {
                 currentEditor.disconnect();
@@ -548,20 +292,21 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
                 this.commitData.emit(currentEditor);
                 finishEdit();
             }
-        }
-        
-        public ArrRef calcTitles(final ArrRef arrRefs) throws InterruptedException, ServiceClientException{
-            if (arrRefs==null 
-                || arrRefs.isEmpty() 
-                || propertyRef==null 
-                || propertyRef.createContext() instanceof IContext.ContextlessSelect){
-                return arrRefs;
-            }
-            return propertyRef.updateTitles(arrRefs);
-        }
+        }        
     }
-    
+        
+    private final EValType arrType;
+    private final Class<?> valClass;
+    private final ArrayTableItem tableItemDelegate;
+    private final PropertyArrRef propertyRef;
+    private final RadSelectorPresentationDef presentation;    
+    private AbstractArrayEditorDelegate<ValEditor,QWidget> arrItemDelegate;
+    private AbstractArrayEditorDelegate<ValEditor,QWidget> defaultItemDelegate;
     private List<Object> predefinedValues;
+    private QToolButton addNullItemBtn;    
+    private EditMask itemEditMask;
+    private IPropertyStorePossibility storePossibility;
+    public final Signal2<Integer, Object> rowEdited = new Signal2<>();
 
     public ArrayEditor(final IClientEnvironment environment, final EValType valType,
             final Class<?> valClass,
@@ -573,12 +318,14 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
             throw new IllegalArgumentError("Can't create array editor for " + valType.getName() + " type");
         }
         this.valClass = valClass;
-        delegate = new ArrayTableItem((PropertyArrRef) null);
-        setDelegate(delegate);
+        tableItemDelegate = new ArrayTableItem();
+        setDelegate(tableItemDelegate);
         setItemMoveMode(EItemMoveMode.DRAG_DROP);
         if (arrType == EValType.ARR_REF) {
             addCreateNullItemBtn();
         }
+        propertyRef = null;
+        presentation = null;
     }
 
     public ArrayEditor(PropertyArrRef property, QWidget parent) {
@@ -591,18 +338,19 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
         arrType = EValType.ARR_REF;
         itemEditMask = EditMask.newCopy(property.getEditMask());
         itemEditMask.setNoValueStr(itemEditMask.getArrayItemNoValueStr(null));
-        delegate = new ArrayTableItem(property);
-        setDelegate(delegate);
+        tableItemDelegate = new ArrayTableItem();
+        setDelegate(tableItemDelegate);
         setItemMoveMode(EItemMoveMode.DRAG_DROP);
         setValue(property.getVal());
         addCreateNullItemBtn();
         setFirstArrayItemIndex(property.getFirstArrayItemIndex());
         setMinArrayItemsCount(property.getMinArrayItemsCount());
         setMaxArrayItemsCount(property.getMaxArrayItemsCount());
+        propertyRef = property;
+        presentation = null;
     }
 
-    public ArrayEditor(final IClientEnvironment environment, final RadSelectorPresentationDef presentation,
-            final QWidget parent) {
+    public ArrayEditor(final IClientEnvironment environment, final RadSelectorPresentationDef presentation, final QWidget parent) {
         super(environment, parent);
         if (presentation == null) {
             throw new NullPointerException();
@@ -611,18 +359,57 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
         valClass = null;
         itemEditMask = EditMask.newInstance(arrType);
         updateItemPrototype();
-        delegate = new ArrayTableItem(presentation);
-        setDelegate(delegate);
+        tableItemDelegate = new ArrayTableItem();
+        setDelegate(tableItemDelegate);
         setItemMoveMode(EItemMoveMode.DRAG_DROP);
         addCreateNullItemBtn();
+        propertyRef = null;
+        this.presentation = presentation;
+    }
+    
+    protected ArrayItemEditingOptions getItemEditingOptions(){
+        if (propertyRef==null){
+            if (presentation==null){
+                return new ArrayItemEditingOptions(arrType.getArrayItemType(), itemEditMask, isNullItemInadmissible(), isDuplicatesEnabled());
+            }else{
+                return new ArrayItemEditingOptions(EValType.PARENT_REF, itemEditMask, isNullItemInadmissible(), isDuplicatesEnabled(), presentation);
+            }
+        }else{
+            return new ArrayItemEditingOptions(EValType.PARENT_REF, itemEditMask, isNullItemInadmissible(), isDuplicatesEnabled(), propertyRef);
+        }
+    }
+    
+    private AbstractArrayEditorDelegate<ValEditor,QWidget> getFinalEditorDelegate(){
+        final AbstractArrayEditorDelegate<ValEditor,QWidget> delegate = getEditorDelegate();
+        if (delegate==null){
+            if (defaultItemDelegate==null){
+                if (arrType==EValType.ARR_REF){
+                    defaultItemDelegate= new ArrayRefEditorDelegate();
+                }else{
+                    defaultItemDelegate= new ArrayEditorDelegate();
+                }                                
+            }
+            return defaultItemDelegate;
+        }else{
+            return delegate;
+        }
+    }
+    
+    public AbstractArrayEditorDelegate<ValEditor, QWidget> getEditorDelegate(){
+        return arrItemDelegate;
+    }
+    
+    public void setEditorDelegate(final AbstractArrayEditorDelegate<ValEditor, QWidget> delegate){
+        arrItemDelegate = delegate;
     }
 
     public int getCurrentIndex() {
-        if (indexModel!=null){
-            return indexModel.row();
-        }
-        return 0;
+        return getCurrentRow();
     }
+    
+    public void setCurrentIndex(final int index) {
+        setCurrentRow(index);
+    }    
 
     private void addCreateNullItemBtn() {
         addNullItemBtn = new QToolButton(this);
@@ -650,15 +437,18 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
     }
 
     public void setEditMask(EditMask editMask) {
-        delegate.commit();
+        tableItemDelegate.commit();
         itemEditMask = EditMask.newCopy(editMask);
         itemEditMask.setNoValueStr(itemEditMask.getArrayItemNoValueStr(null));
         final ArrayList array = getValue();
-        if (array != null && !array.isEmpty()) {
+        if (array != null && !array.isEmpty()) {            
             Object itemValue;
+            final AbstractArrayEditorDelegate<ValEditor,QWidget> delegate = getFinalEditorDelegate();
+            final ArrayItemEditingOptions options = getItemEditingOptions();
+            final IClientEnvironment environment = getEnvironment();                    
             for (int i = 0; i < array.size(); i++) {
                 itemValue = array.get(i);
-                getItem(i).setText(itemEditMask.toStr(getEnvironment(), itemValue));
+                getItem(i).setText(delegate.getDisplayTextForValue(environment, options, itemValue));
             }
         }
         setNoValueStr(editMask.getNoValueStr(null));
@@ -732,38 +522,7 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
     }
 
     public static Arr createEmptyArr(EValType type) {
-        switch (type) {
-            case ARR_BIN:
-            case BIN:
-            case ARR_BLOB:
-            case BLOB:
-                return new ArrBin();
-            case ARR_BOOL:
-            case BOOL:
-                return new ArrBool();
-            case ARR_CHAR:
-            case CHAR:
-                return new ArrChar();
-            case ARR_DATE_TIME:
-            case DATE_TIME:
-                return new ArrDateTime();
-            case ARR_INT:
-            case INT:
-                return new ArrInt();
-            case ARR_NUM:
-            case NUM:
-                return new ArrNum();
-            case ARR_REF:
-            case PARENT_REF:
-                return new ArrRef();
-            case ARR_STR:
-            case STR:
-            case ARR_CLOB:
-            case CLOB:
-                return new ArrStr();
-            default:
-                throw new IllegalUsageError("Can't create array of \'" + type.getName() + "\' type");
-        }
+        return ArrFactory.DEFAULT.createArray(type);
     }
 
     @Override
@@ -783,24 +542,21 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
         if (isAdvancedBooleanEditorUsed()) {
             if (itemValue == null) {
                 item.setCheckState(Qt.CheckState.PartiallyChecked);
-                item.setText(itemEditMask.getArrayItemNoValueStr(Application.getInstance().getMessageProvider()));
             } else {
                 //final boolean checkState = (Boolean) itemValue;
                 Boolean state = null;
                 if (itemValue.equals(((EditMaskBool) itemEditMask).getTrueValue())) {
                     state = true;
-                    item.setText(((EditMaskBool) itemEditMask).getTrueTitle(getEnvironment().getDefManager()));
                 } else if (itemValue.equals(((EditMaskBool) itemEditMask).getFalseValue())) {
                     state = false;
-                    item.setText(((EditMaskBool) itemEditMask).getFalseTitle(getEnvironment().getDefManager()));
                 } else {
                     throw new IllegalArgumentException("Value " + itemValue + " does not match any value in EditMaskBool.");
                 }
                 item.setCheckState(state ? Qt.CheckState.Checked : Qt.CheckState.Unchecked);
             }
-        } else {
-            item.setText(itemEditMask.toStr(getEnvironment(), itemValue));
         }
+        
+        item.setText(getFinalEditorDelegate().getDisplayTextForValue(getEnvironment(), getItemEditingOptions(), itemValue));
 
         if (value instanceof Reference && ((Reference) value).isBroken()) {
             item.setForeground(new QBrush(QColor.red));
@@ -851,21 +607,10 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
         Object value = super.getValueForItem(item);
         boolean useAdvancedEditor = isAdvancedBooleanEditorUsed();
         if (useAdvancedEditor) {
-            if (value != null) {
-                if (value instanceof Boolean) {
-                    Object val = value.equals(Boolean.TRUE) ? ((EditMaskBool) itemEditMask).getTrueValue() : ((EditMaskBool) itemEditMask).getFalseValue();
-                    //item.setText(((EditMaskBool)itemEditMask).toStr(getEnvironment(), val));
-                    if (value.equals(Boolean.TRUE)) {
-                        item.setText(((EditMaskBool) itemEditMask).getTrueTitle(getEnvironment().getDefManager()));
-                    } else {
-                        item.setText(((EditMaskBool) itemEditMask).getFalseTitle(getEnvironment().getDefManager()));
-                    }
-
-                    return val;
-                } else {
-
-                    return value;
-                }
+            if (value instanceof Boolean) {
+                return value.equals(Boolean.TRUE) ? ((EditMaskBool) itemEditMask).getTrueValue() : ((EditMaskBool) itemEditMask).getFalseValue();
+            } else {
+                return value;
             }
         } else if (arrType == EValType.ARR_BIN || arrType == EValType.ARR_BLOB) {
             value = value instanceof String ? new Bin((String) value) : null;
@@ -896,197 +641,27 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
     @Override
     protected List<QTableWidgetItem> createNewItems() {
         final List<QTableWidgetItem> newItems = new ArrayList<>(1);
-        if (arrType == EValType.ARR_REF) {
-            final GroupModel group = delegate.getGroupModel(true);
-            if (group != null) {
-                try {
-                    final SelectEntitiesDialog dialog = new SelectEntitiesDialog(group, delegate.canSelectNoEntity());
-                    if (!DialogCode.resolve(dialog.exec()).equals(DialogCode.Rejected)) {
-                        if (dialog.clearButtonWasClicked()){
-                            newItems.add(createItemForValue(null));
-                        }else{
-                            final List<EntityModel> selection = dialog.getSelectedEntities();
-                            ArrRef arrRefs = new ArrRef();
-                            for (EntityModel selectedObject: selection){
-                                arrRefs.add(new Reference(selectedObject));
-                            }
-                            try{
-                               arrRefs = delegate.calcTitles(arrRefs);
-                            }catch(InterruptedException exception){
-                                return newItems;
-                            }catch(ServiceClientException exception){
-                                delegate.processException(exception,true);
-                                return newItems;
-                            }
-                            for (Reference ref: arrRefs){
-                                if (ref!=null && ref.isValid()){
-                                    newItems.add(createItemForValue(ref));
-                                }
-                            }
-                        }
-                    }
-                } catch (RuntimeException ex) {
-                    delegate.processException(ex,false);
-                    return null;
-                } finally {
-                    group.clean();
-                }
+        final List<Object> newValues = 
+            getFinalEditorDelegate().createNewValues(this, getEnvironment(), getItemEditingOptions(), getValues(-1));
+        if (newValues!=null){
+            for (Object val: newValues){
+                newItems.add(createItemForValue(val));
             }
-        } else {
-            final Object itemValue = isNullItemInadmissible() ? getDefaultItemValue(getEnvironment(), arrType, itemEditMask) : null;
-            newItems.add(createItemForValue(itemValue));
         }
         return newItems;
     }
 
-    private static EditMaskConstSet excludeExistingItems(final IClientApplication application, final EditMaskConstSet sourceMask, final List<Object> itemValues) {
-        final EditMaskConstSet resultMask = (EditMaskConstSet) EditMask.newCopy(sourceMask);
-        final EValType enumType = resultMask.getRadEnumPresentationDef(application).getItemType();
-        final RadEnumPresentationDef.Items excludedItems = resultMask.getExcludedItems(application);
-        ValAsStr valAsStr;
-        RadEnumPresentationDef.Item item;
-        for (Object itemValue : itemValues) {
-            valAsStr = ValAsStr.Factory.newInstance(itemValue, enumType);
-            item = resultMask.getRadEnumPresentationDef(application).getItems().findItemByValue(valAsStr);
-            if (item != null) {
-                excludedItems.addItem(item);
-            }
-        }
-        resultMask.setItems(sourceMask.getItems(application));
-        resultMask.setExcludedItems(excludedItems);
-        return resultMask;
-    }
-
-    @SuppressWarnings("PMD.MissingBreakInSwitch")
-    private Object getDefaultItemValue(IClientEnvironment environment, final EValType type, final EditMask editMask) {
-        switch (type) {
-            case ARR_STR:
-            case ARR_CHAR:
-                if (editMask instanceof EditMaskStr) {
-                    return type == EValType.ARR_STR ? "" : Character.valueOf(' ');
-                } else if (editMask instanceof EditMaskList) {
-                    final EditMaskList mask = (EditMaskList) editMask;
-                    if (mask.getItems().size() > 0) {
-                        return mask.getItems().get(0).getValue();
-                    } else {
-                        return null;
-                    }
-                } else if (editMask instanceof EditMaskConstSet) {
-                    EditMaskConstSet mask = (EditMaskConstSet) editMask;
-                    if (!isDuplicatesEnabled()) {
-                        mask = excludeExistingItems(environment.getApplication(), mask, getValues(-1));
-                    }
-                    if (mask.getItems(environment.getApplication()).size() > 0) {
-                        return mask.getItems(environment.getApplication()).getItem(0).getValue();
-                    } else {
-                        return null;
-                    }
-                } else if (editMask instanceof EditMaskBool) {
-                    return null;
-                } else if (editMask instanceof EditMaskFilePath) {
-                    /*File[] roots = File.listRoots();
-                     return roots[0].getAbsolutePath();*/
-                    return null;
-                } else {
-                    throw new IllegalUsageError("Edit mask \'" + editMask.getClass().getName() + "\' is not applicable for \'" + type.toString() + "\' type");
-                }
-            case ARR_CLOB:
-                if (editMask instanceof EditMaskStr) {
-                    return "";
-                } else {
-                    throw new IllegalUsageError("Edit mask \'" + editMask.getClass().getName() + "\' is not applicable for \'" + type.toString() + "\' type");
-                }
-            case ARR_BIN:
-            case ARR_BLOB:
-                return new Bin(new byte[]{});
-            case ARR_INT:
-                if (editMask instanceof EditMaskInt) {
-                    final Long zero = Long.valueOf(0);
-                    if (editMask.validate(environment, zero) == ValidationResult.ACCEPTABLE) {
-                        return zero;
-                    } else {
-                        final EditMaskInt editMaskInt = (EditMaskInt) editMask;
-                        return Long.valueOf(Math.min(Math.abs(editMaskInt.getMinValue()), Math.abs(editMaskInt.getMaxValue())));
-                    }
-                } else if (editMask instanceof EditMaskList) {
-                    final EditMaskList mask = (EditMaskList) editMask;
-                    if (mask.getItems().size() > 0) {
-                        return mask.getItems().get(0).getValue();
-                    } else {
-                        return null;
-                    }
-                } else if (editMask instanceof EditMaskConstSet) {
-                    EditMaskConstSet mask = (EditMaskConstSet) editMask;
-                    if (!isDuplicatesEnabled()) {
-                        mask = excludeExistingItems(environment.getApplication(), mask, getValues(-1));
-                    }
-                    if (mask.getItems(environment.getApplication()).size() > 0) {
-                        return mask.getItems(environment.getApplication()).getItem(0).getValue();
-                    } else {
-                        return null;
-                    }
-                } else if (editMask instanceof EditMaskBool) {
-                    return null;
-                } else {
-                    throw new IllegalUsageError("Edit mask \'" + editMask.getClass().getName() + "\' is not applicable for \'" + type.toString() + "\' type");
-                }
-            case ARR_DATE_TIME:
-                if (editMask instanceof EditMaskDateTime) {
-                    final Timestamp serverTime = environment.getCurrentServerTime();
-                    if (editMask.validate(environment, serverTime) == ValidationResult.ACCEPTABLE) {
-                        return serverTime;
-                    }
-                    final Timestamp zero = new Timestamp(0);
-                    if (editMask.validate(environment, zero) == ValidationResult.ACCEPTABLE) {
-                        return zero;
-                    }
-                    return ((EditMaskDateTime) editMask).getMaximumTime();
-                } else {
-                    throw new IllegalUsageError("Edit mask \'" + editMask.getClass().getName() + "\' is not applicable for \'" + type.toString() + "\' type");
-                }
-            case ARR_NUM:
-                if (editMask instanceof EditMaskNum) {
-                    if (editMask.validate(environment, BigDecimal.ZERO) == ValidationResult.ACCEPTABLE) {
-                        return BigDecimal.ZERO;
-                    } else {
-                        final EditMaskNum editMaskNum = (EditMaskNum) editMask;
-                        if (editMaskNum.getMinValue().abs().compareTo(editMaskNum.getMaxValue().abs()) < 0) {
-                            return editMaskNum.getMinValue();
-                        } else {
-                            return editMaskNum.getMaxValue();
-                        }
-                    }
-                } else if (editMask instanceof EditMaskBool) {
-                    return null;
-                } else {
-                    throw new IllegalUsageError("Edit mask \'" + editMask.getClass().getName() + "\' is not applicable for \'" + type.toString() + "\' type");
-                }
-            case ARR_BOOL:
-                if (editMask instanceof EditMaskBool) {
-                    return null;
-                } else if (editMask instanceof EditMaskNone) {
-                    return null;
-                } else {
-                    throw new IllegalUsageError("Edit mask \'" + editMask.getClass().getName() + "\' is not applicable for \'" + type.toString() + "\' type");
-                }
-            case ARR_REF:
-                return null;
-            default:
-                throw new IllegalUsageError("Edit mask \'" + editMask.getClass().getName() + "\' is not applicable for \'" + type.toString() + "\' type");
-        }
-    }
-
     @Override
     protected void finishEdit() {
-        if (delegate != null) {
-            delegate.commit();
+        if (tableItemDelegate != null) {
+            tableItemDelegate.commit();
         }
         super.finishEdit();
     }
 
     @Override
     protected boolean inEditState() {
-        return delegate.isActive() || super.inEditState();
+        return tableItemDelegate.isActive() || super.inEditState();
     }
 
     @Override
@@ -1099,8 +674,8 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
             final QTableWidgetItem item = getCurrentItem();
             if (!isNullItemInadmissible() && item != null) {
                 item.setCheckState(Qt.CheckState.PartiallyChecked);
-                item.setText(itemEditMask.getArrayItemNoValueStr(Application.getInstance().getMessageProvider()));
                 item.setData(Qt.ItemDataRole.UserRole, null);
+                item.setText(getFinalEditorDelegate().getDisplayTextForValue(getEnvironment(), getItemEditingOptions(), null));
             }
             return true;
         }
@@ -1127,20 +702,16 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
                 if (previousVal != null && previousVal.equals(((EditMaskBool) itemEditMask).getFalseValue()) && !isNullItemInadmissible()) {
                     item.setCheckState(Qt.CheckState.PartiallyChecked);
                     currentVal = null;                    
-                    item.setText(itemEditMask.getArrayItemNoValueStr(Application.getInstance().getMessageProvider()));
                 } else {
                     currentVal = Boolean.TRUE;
-                    item.setText(((EditMaskBool) itemEditMask).getTrueTitle(getEnvironment().getDefManager()));
                 }
             } else if (item.checkState() == Qt.CheckState.Unchecked) {
                 currentVal = Boolean.FALSE;                
-                item.setText(((EditMaskBool) itemEditMask).getFalseTitle(getEnvironment().getDefManager()));
-
             } else {
                 currentVal = null;                
-                item.setText(itemEditMask.getArrayItemNoValueStr(Application.getInstance().getMessageProvider()));
             }
             item.setData(Qt.ItemDataRole.UserRole, currentVal);
+            item.setText(getFinalEditorDelegate().getDisplayTextForValue(getEnvironment(), getItemEditingOptions(), currentVal));
             validateRow(item.row());
             rowEdited.emit(Integer.valueOf(item.row()), currentVal);            
         }
@@ -1152,6 +723,14 @@ public final class ArrayEditor extends AbstractArrayEditor implements IPropertyV
 
     public void setPredefinedValues(final List<Object> values) {
         predefinedValues = values == null ? Collections.emptyList() : new ArrayList<>(values);
+    }
+    
+    public void addCustomAction(final Action action){        
+        insertCustomAction((QAction)action);
+    }
+    
+    public void removeCustomAction(final Action action){
+        removeCustomAction((QAction)action);
     }
 
     private boolean isAdvancedBooleanEditorUsed() {

@@ -75,7 +75,7 @@
                             <xs:element name="SSLOptions" minOccurs="0">
                                 <xs:complexType>
                                     <xs:attribute name="UseSslAuth" type="xs:boolean" use="required"/>
-                                    <xs:attribute name="KeyStoreType" use="required">
+                                    <xs:attribute name="KeyStoreType" use="optional">
                                         <xs:simpleType>
                                             <xs:annotation>
                                                 <xs:appinfo source="http://schemas.radixware.org/types.xsd">
@@ -90,10 +90,11 @@
                                     <xs:attribute name="Pkcs11Lib" type="xs:string" use="optional"/>
                                     <xs:attribute name="CertAlias" type="xs:string" use="required"/>
                                     <xs:attribute name="TrustStoreFilePath" type="xs:string" use="optional"/>
-                                    <xs:attribute name="TrustStorePathIsRelative" type="xs:boolean" use="optional" default="true"/>
+                                    <xs:attribute name="TrustStorePathIsRelative" type="xs:boolean" use="optional" default="false"/>
                                     <xs:attribute name="TrustStorePassword" type="xs:string" use="optional"/>
                                 </xs:complexType>
                             </xs:element>
+                            <xs:element name="AddressTranslationFilePath" type="xs:string" minOccurs="0"/>
                             <xs:element name="FileReadAccessMask" type="xs:string" default="." minOccurs="0"/>
                             <xs:element name="FileWriteAccessMask" type="xs:string" default="." minOccurs="0"/>
                             <xs:element name="FileReadDenyMask" type="xs:string" minOccurs="0"/>
@@ -101,6 +102,7 @@
                         </xs:all>
                         <xs:attribute name="Name" type="xs:string" use="required"/>
                         <xs:attribute name="Id" type="types:Id" use="required"/>
+                        <xs:attribute name="SapDiscoveryEnabled" type="xs:boolean" use="optional" default="true"/>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>

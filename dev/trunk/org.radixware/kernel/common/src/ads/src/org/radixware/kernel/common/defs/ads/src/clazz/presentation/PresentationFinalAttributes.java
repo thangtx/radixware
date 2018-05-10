@@ -244,6 +244,7 @@ class SelectorPresentationFinalAttributes extends PresentationFinalAttributes<Ad
     public final AdsCondition finalCondition;
     public final RadixObjects<SelectorColumn> finalColumns;
     public final Id finalCreationClassCatalogId;
+    public final boolean isAutoSortClasses;
 
     public SelectorPresentationFinalAttributes(AdsSelectorPresentationDef def) {
         this(def, collectOverwrittenPresentations(def));
@@ -293,6 +294,7 @@ class SelectorPresentationFinalAttributes extends PresentationFinalAttributes<Ad
         }
         finalCondition = condition;
 
+        isAutoSortClasses = def.isAutoSortClasses();
         Id id = null;
         if (def.isCreationClassCatalogInherited()) {
             for (AdsSelectorPresentationDef spr : overwritten) {

@@ -25,33 +25,78 @@ import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.trace.IRadixTrace;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
-import org.radixware.kernel.server.IDbQueries;
+import org.radixware.kernel.server.jdbc.AbstractDbQueries;
 
 /**
  * This class is not thread safe and supposed to be used from main thread of the
  * instance or unit
  *
  */
-public class MonitoringDbQueries implements IDbQueries {
+public class MonitoringDbQueries extends AbstractDbQueries {
 
     private Connection connection;
     private final IRadixTrace trace;
     private final EEventSource eventSource;
-    private PreparedStatement unitMetricQry;
-    private PreparedStatement unitMetricStateIdQry;
-    private PreparedStatement timingSectionMetricStateIdQry;
-    private PreparedStatement instanceMetricQry;
-    private PreparedStatement instanceMetricStateIdQry;
-    private PreparedStatement instServiceMetricStateIdQry;
-    private PreparedStatement netChannelMetricStateIdQry;
-    private PreparedStatement monitoredSectionsQry;
-    private PreparedStatement monitoredServicesQry;
-    private PreparedStatement monitoredSessionUnitsQry;
-    private PreparedStatement monitoredUnitStatusesQry;
-    private PreparedStatement qrySetArteInstCount;
-    private PreparedStatement qryWriteBasicInstanceStats;
-    private PreparedStatement qryGetExistingServices;
+    
+    private PreparedStatement unitMetricQry = null;
+    private static final String unitMetricQrySQL = "select id, period, unitId from RDX_SM_METRICTYPE where kind = ? and ( unitId = ? or unitId is null ) and enabled > 0";
+    
+    private PreparedStatement unitMetricStateIdQry = null;
+    private static final String unitMetricStateIdQrySQL = "select id from RDX_SM_METRICSTATE where typeId = ? and unitId = ?";
+    
+    private PreparedStatement timingSectionMetricStateIdQry = null;
+    private static final String timingSectionMetricStateIdQrySQL = "select RDX_SM_METRICSTATE.id from RDX_SM_METRICSTATE inner join RDX_SM_METRICTYPE "
+                                                                 + "on RDX_SM_METRICSTATE.TYPEID = RDX_SM_METRICTYPE.ID "
+                                                                 + "where RDX_SM_METRICSTATE.typeId = ? "
+                                                                 + "and RDX_SM_METRICSTATE.instanceId = ? "
+                                                                 + "and timingSection = ?";
+    
+    private PreparedStatement instanceMetricQry = null;
+    private static final String instanceMetricQrySQL = "select id, period, instanceId from RDX_SM_METRICTYPE where kind = ? and ( instanceId = ? or instanceId is null ) and enabled > 0";
+    
+    private PreparedStatement instanceMetricStateIdQry = null;
+    private static final String instanceMetricStateIdQrySQL = "select id from RDX_SM_METRICSTATE where typeId = ? and instanceId = ?";
+    
+    private PreparedStatement instServiceMetricStateIdQry = null;
+    private static final String instServiceMetricStateIdQrySQL = "select id from RDX_SM_METRICSTATE where typeId = ? and instanceId = ? and serviceUri = ?";
+    
+    private PreparedStatement netChannelMetricStateIdQry = null;
+    private static final String netChannelMetricStateIdQrySQL = "select id from RDX_SM_METRICSTATE where typeId = ? and netChannelId = ?";
+    
+    private PreparedStatement monitoredSectionsQry = null;
+    private static final String monitoredSectionsQrySQL = "select id, kind, period, timingSection from RDX_SM_METRICTYPE "
+                                                        + "where kind like 'Profiling%' and timingSection is not null "
+                                                        + "and (instanceId is null or instanceId = ?) and enabled > 0";
+    
+    private PreparedStatement monitoredServicesQry = null;
+    private static final String monitoredServicesQrySQL = "select id, serviceUri, period from RDX_SM_METRICTYPE where kind = ? and (instanceId is null or instanceId = ?) and enabled > 0";
+    
+    private PreparedStatement monitoredSessionUnitsQry = null;
+    private static final String monitoredSessionUnitsQrySQL = "select mt.id, mt.kind, mt.period, mt.unitId from RDX_SM_METRICTYPE mt "
+                                                            + "where mt.kind = 'Unit.Arte.SessionCnt' "
+                                                            + "and (mt.unitId is null or mt.unitId in (select rdx_unit.id from rdx_unit where rdx_unit.instanceId = ?))"
+                                                            + "and mt.enabled > 0";
 
+    private PreparedStatement monitoredUnitStatusesQry = null;
+    private static final String monitoredUnitStatusesQrySQL = "select unitId, typeId, stateId, checktime, started, hung, unitIdInType, checkTimeMillis, RDX_UTILS.getUnixEpochMillis() curMillis from "
+                                                            + "(select u.id unitId, u.instanceId instanceId, t.id typeId, s.id stateId, u.started started, u.selfchecktime checkTime, u.selfCheckTimeMillis checkTimeMillis, s.endval hung, t.unitId unitIdInType, t.enabled enabled "
+                                                            + "from RDX_UNIT u left join RDX_SM_METRICTYPE t on t.kind = 'Unit.Hang' and u.id = nvl(t.unitId, u.id) "
+                                                            + "left join RDX_SM_METRICSTATE s on s.typeid = t.id) "
+                                                            + "where typeId is not null and instanceId = ? and enabled > 0";
+    
+    private PreparedStatement qrySetArteInstCount = null;
+    private static final String qrySetArteInstCountSQL = "update rdx_instance set arteInstCount=? where id=?";
+    
+    private PreparedStatement qryWriteBasicInstanceStats = null;
+    private static final String qryWriteBasicInstanceStatsSQL = "update rdx_instance set arteInstCount=?, avgActiveArteCount=? where id=?";
+    
+    private PreparedStatement qryGetExistingServices = null;
+    private static final String qryGetExistingServicesSQL = "select uri from rdx_service where implementedinarte > 0";
+    
+    private MonitoringDbQueries() {
+        this(null,null,"");
+    }
+    
     public MonitoringDbQueries(final Connection connection, final IRadixTrace trace, final String eventSource) {
         this.connection = connection;
         this.trace = trace;
@@ -83,7 +128,7 @@ public class MonitoringDbQueries implements IDbQueries {
     public void setArteInstCount(final long instanceId, final int count) {
         try {
             if (qrySetArteInstCount == null) {
-                qrySetArteInstCount = connection.prepareStatement("update rdx_instance set arteInstCount=? where id=?");
+                qrySetArteInstCount = prepareQuery(qrySetArteInstCountSQL);
                 qrySetArteInstCount.setLong(2, instanceId);
             }
             qrySetArteInstCount.setInt(1, count);
@@ -99,7 +144,7 @@ public class MonitoringDbQueries implements IDbQueries {
     public void writeBasicInstanceStats(final long instanceId, final int arteInstCount, final double averageActiveArteCount) {
         try {
             if (qryWriteBasicInstanceStats == null) {
-                qryWriteBasicInstanceStats = connection.prepareStatement("update rdx_instance set arteInstCount=?, avgActiveArteCount=? where id=?");
+                qryWriteBasicInstanceStats = prepareQuery(qryWriteBasicInstanceStatsSQL);
                 qryWriteBasicInstanceStats.setLong(3, instanceId);
             }
             qryWriteBasicInstanceStats.setInt(1, arteInstCount);
@@ -116,15 +161,12 @@ public class MonitoringDbQueries implements IDbQueries {
 
     private MetricParameters readUnitMetricParams(final MetricDescription metricDescription) throws SQLException {
         if (unitMetricQry == null) {
-            final String sql = "select id, period, unitId from RDX_SM_METRICTYPE where"
-                    + " kind = ? and ( unitId = ? or unitId is null ) and enabled > 0";
-            unitMetricQry = connection.prepareStatement(sql);
+            unitMetricQry = prepareQuery(unitMetricQrySQL);
         }
         unitMetricQry.setString(1, metricDescription.getKindName());
         unitMetricQry.setLong(2, metricDescription.getSensorCoordinates().getUnitId());
 
-        final ResultSet rs = unitMetricQry.executeQuery();
-        try {
+        try(final ResultSet rs = unitMetricQry.executeQuery()) {
             if (rs.next()) {
                 final MetricParameters params = buildUnitParams(rs, metricDescription);
                 rs.getLong(3);
@@ -133,8 +175,6 @@ public class MonitoringDbQueries implements IDbQueries {
                 }
                 return params;
             }
-        } finally {
-            rs.close();
         }
         return null;
     }
@@ -150,15 +190,12 @@ public class MonitoringDbQueries implements IDbQueries {
 
     private MetricParameters readInstanceMetricParams(final MetricDescription metricDescription) throws SQLException {
         if (instanceMetricQry == null) {
-            final String sql = "select id, period, instanceId from RDX_SM_METRICTYPE where"
-                    + " kind = ? and ( instanceId = ? or instanceId is null ) and enabled > 0";
-            instanceMetricQry = connection.prepareStatement(sql);
+            instanceMetricQry = prepareQuery(instanceMetricQrySQL);
         }
         instanceMetricQry.setString(1, metricDescription.getKindName());
         instanceMetricQry.setLong(2, metricDescription.getSensorCoordinates().getInstanceId());
 
-        final ResultSet rs = instanceMetricQry.executeQuery();
-        try {
+        try(final ResultSet rs = instanceMetricQry.executeQuery()) {
             if (rs.next()) {
                 final MetricParameters params = buildInstanceParams(rs, metricDescription);
                 rs.getLong(3);
@@ -167,8 +204,6 @@ public class MonitoringDbQueries implements IDbQueries {
                 }
                 return params;
             }
-        } finally {
-            rs.close();
         }
         return null;
     }
@@ -207,117 +242,85 @@ public class MonitoringDbQueries implements IDbQueries {
 
     private long getNetChannelMetricStateId(final MetricParameters metricParameters) throws SQLException {
         if (netChannelMetricStateIdQry == null) {
-            final String sql = "select id from RDX_SM_METRICSTATE "
-                    + "where typeId = ? and netChannelId = ?";
-            netChannelMetricStateIdQry = connection.prepareStatement(sql);
+            netChannelMetricStateIdQry = prepareQuery(netChannelMetricStateIdQrySQL);
         }
         netChannelMetricStateIdQry.setLong(1, metricParameters.getTypeId());
         netChannelMetricStateIdQry.setLong(2, metricParameters.getDescription().getSensorCoordinates().getNetChannelId());
-        final ResultSet rs = netChannelMetricStateIdQry.executeQuery();
-        try {
+        try(final ResultSet rs = netChannelMetricStateIdQry.executeQuery()) {
             if (rs.next()) {
                 return rs.getLong(1);
             }
-        } finally {
-            rs.close();
         }
         return -1;
     }
 
     private long getUnitMetricStateId(final MetricParameters metricParameters) throws SQLException {
         if (unitMetricStateIdQry == null) {
-            final String sql = "select id from RDX_SM_METRICSTATE "
-                    + "where typeId = ? and unitId = ?";
-            unitMetricStateIdQry = connection.prepareStatement(sql);
+            unitMetricStateIdQry = prepareQuery(unitMetricStateIdQrySQL);
         }
         unitMetricStateIdQry.setLong(1, metricParameters.getTypeId());
         unitMetricStateIdQry.setLong(2, metricParameters.getDescription().getSensorCoordinates().getUnitId());
-        final ResultSet rs = unitMetricStateIdQry.executeQuery();
-        try {
+        try(final ResultSet rs = unitMetricStateIdQry.executeQuery()) {
             if (rs.next()) {
                 return rs.getLong(1);
             }
-        } finally {
-            rs.close();
         }
         return -1;
     }
 
     private long getTimingSectionMetricStateId(final MetricParameters metricParameters) throws SQLException {
         if (timingSectionMetricStateIdQry == null) {
-            final String sql = "select RDX_SM_METRICSTATE.id from RDX_SM_METRICSTATE inner join RDX_SM_METRICTYPE "
-                    + "on RDX_SM_METRICSTATE.TYPEID = RDX_SM_METRICTYPE.ID "
-                    + "where RDX_SM_METRICSTATE.typeId = ? "
-                    + "and RDX_SM_METRICSTATE.instanceId = ? "
-                    + "and timingSection = ?";
-            timingSectionMetricStateIdQry = connection.prepareStatement(sql);
+            timingSectionMetricStateIdQry = prepareQuery(timingSectionMetricStateIdQrySQL);
         }
         timingSectionMetricStateIdQry.setLong(1, metricParameters.getTypeId());
         timingSectionMetricStateIdQry.setLong(2, metricParameters.getDescription().getSensorCoordinates().getInstanceId());
         timingSectionMetricStateIdQry.setString(3, metricParameters.getDescription().getSensorCoordinates().getSectionName());
-        final ResultSet rs = timingSectionMetricStateIdQry.executeQuery();
-        try {
+        try(final ResultSet rs = timingSectionMetricStateIdQry.executeQuery()) {
             if (rs.next()) {
                 return rs.getLong(1);
             }
-        } finally {
-            rs.close();
         }
         return -1;
     }
 
     private long getInstanceMetricStateId(final MetricParameters metricParameters) throws SQLException {
         if (instanceMetricStateIdQry == null) {
-            final String sql = "select id from RDX_SM_METRICSTATE "
-                    + "where typeId = ? and instanceId = ?";
-            instanceMetricStateIdQry = connection.prepareStatement(sql);
+            instanceMetricStateIdQry = prepareQuery(instanceMetricStateIdQrySQL);
         }
         instanceMetricStateIdQry.setLong(1, metricParameters.getTypeId());
         instanceMetricStateIdQry.setLong(2, metricParameters.getDescription().getSensorCoordinates().getInstanceId());
-        final ResultSet rs = instanceMetricStateIdQry.executeQuery();
-        try {
+        try(final ResultSet rs = instanceMetricStateIdQry.executeQuery()) {
             if (rs.next()) {
                 return rs.getLong(1);
             }
-        } finally {
-            rs.close();
         }
         return -1;
     }
 
     private long getInstServiceMetricStateId(final MetricParameters metricParameters) throws SQLException {
         if (instServiceMetricStateIdQry == null) {
-            final String sql = "select id from RDX_SM_METRICSTATE "
-                    + "where typeId = ? and instanceId = ? and serviceUri = ?";
-            instServiceMetricStateIdQry = connection.prepareStatement(sql);
+            instServiceMetricStateIdQry = prepareQuery(instServiceMetricStateIdQrySQL);
         }
         instServiceMetricStateIdQry.setLong(1, metricParameters.getTypeId());
         instServiceMetricStateIdQry.setLong(2, metricParameters.getDescription().getSensorCoordinates().getInstanceId());
         instServiceMetricStateIdQry.setString(3, metricParameters.getDescription().getSensorCoordinates().getServiceUri());
-        final ResultSet rs = instServiceMetricStateIdQry.executeQuery();
-        try {
+        try(final ResultSet rs = instServiceMetricStateIdQry.executeQuery()) {
             if (rs.next()) {
                 return rs.getLong(1);
             }
-        } finally {
-            rs.close();
         }
         return -1;
     }
 
     public Collection<MetricParameters> getMonitoredArteUnits(final long instanceId) throws SQLException {
-        if (monitoredSessionUnitsQry == null) {
-            final String sql = "select mt.id, mt.kind, mt.period, mt.unitId from RDX_SM_METRICTYPE mt "
-                    + "where mt.kind = 'Unit.Arte.SessionCnt' "
-                    + "and (mt.unitId is null or mt.unitId in (select rdx_unit.id from rdx_unit where rdx_unit.instanceId = ?))"
-                    + "and mt.enabled > 0";
-            monitoredSessionUnitsQry = connection.prepareStatement(sql);
-        }
-        monitoredSessionUnitsQry.setLong(1, instanceId);
         final MetricParametersBuilder builder = new MetricParametersBuilder();
         final List<MetricParameters> result = new ArrayList<MetricParameters>();
-        final ResultSet rs = monitoredSessionUnitsQry.executeQuery();
-        try {
+        
+        if (monitoredSessionUnitsQry == null) {
+            monitoredSessionUnitsQry = prepareQuery(monitoredSessionUnitsQrySQL);
+        }
+        monitoredSessionUnitsQry.setLong(1, instanceId);
+        try(final ResultSet rs = monitoredSessionUnitsQry.executeQuery()) {
             while (rs.next()) {
                 builder.setTypeId(rs.getLong(1));
                 builder.setPeriodMillis(rs.getLong(3) * 1000);
@@ -328,24 +331,19 @@ public class MonitoringDbQueries implements IDbQueries {
                 builder.setDescription(new MetricDescription(EMetric.UNIT_ARTE_SESSION_CNT.getKindName(), EMetricType.STATISTIC, SensorCoordinates.forUnit(unitId)));
                 result.add(builder.getMetricParameters());
             }
-        } finally {
-            rs.close();
         }
         return result;
     }
 
     public Collection<MetricParameters> getMonitoredSections(final long instanceId) throws SQLException {
-        if (monitoredSectionsQry == null) {
-            final String sql = "select id, kind, period, timingSection from RDX_SM_METRICTYPE "
-                    + "where kind like 'Profiling%' and timingSection is not null "
-                    + "and (instanceId is null or instanceId = ?) and enabled > 0";
-            monitoredSectionsQry = connection.prepareStatement(sql);
-        }
-        monitoredSectionsQry.setLong(1, instanceId);
-        final ResultSet rs = monitoredSectionsQry.executeQuery();
         final List<MetricParameters> parameters = new ArrayList<MetricParameters>();
         final MetricParametersBuilder builder = new MetricParametersBuilder();
-        try {
+        
+        if (monitoredSectionsQry == null) {
+            monitoredSectionsQry = prepareQuery(monitoredSectionsQrySQL);
+        }
+        monitoredSectionsQry.setLong(1, instanceId);
+        try(final ResultSet rs = monitoredSectionsQry.executeQuery()) {
             while (rs.next()) {
                 final String kind = rs.getString(2);
                 final EMetric metric = EMetric.findForKind(kind);
@@ -358,48 +356,38 @@ public class MonitoringDbQueries implements IDbQueries {
                 builder.setDescription(new MetricDescription(kind, metric.getMetricType(), SensorCoordinates.forInstanceSection(instanceId, rs.getString(4))));
                 parameters.add(builder.getMetricParameters());
             }
-        } finally {
-            rs.close();
         }
         return parameters;
     }
 
     public Collection<MetricParameters> getMonitoredServices(final long instanceId) throws SQLException {
+        final MetricParametersBuilder builder = new MetricParametersBuilder();
+        final List<MetricParameters> parameters = new ArrayList<MetricParameters>();
+        
         if (monitoredServicesQry == null) {
-            final String sql = "select id, serviceUri, period from RDX_SM_METRICTYPE where kind = ? and (instanceId is null or instanceId = ?) and enabled > 0";
-            monitoredServicesQry = connection.prepareStatement(sql);
+            monitoredServicesQry = prepareQuery(monitoredServicesQrySQL);
             monitoredServicesQry.setString(1, EMetric.INSTANCE_SERVICE_ARTE_SESS_CNT.getKindName());
         }
         monitoredServicesQry.setLong(2, instanceId);
-        final ResultSet rs = monitoredServicesQry.executeQuery();
-        final MetricParametersBuilder builder = new MetricParametersBuilder();
-        final List<MetricParameters> parameters = new ArrayList<MetricParameters>();
-        try {
+        try(final ResultSet rs = monitoredServicesQry.executeQuery()) {
             while (rs.next()) {
                 builder.setTypeId(rs.getLong(1));
                 builder.setPeriodMillis(rs.getLong(3) * 1000);
                 builder.setDescription(new MetricDescription(EMetric.INSTANCE_SERVICE_ARTE_SESS_CNT.getKindName(), EMetric.INSTANCE_SERVICE_ARTE_SESS_CNT.getMetricType(), SensorCoordinates.forInstanceService(instanceId, rs.getString(2))));
                 parameters.add(builder.getMetricParameters());
             }
-        } finally {
-            rs.close();
         }
         return parameters;
     }
 
     public Collection<MonitoredUnitStatus> getMonitoredUnitStatuses(final long instanceId) throws SQLException {
+        final Collection<MonitoredUnitStatus> result = new ArrayList<MonitoredUnitStatus>();
+        
         if (monitoredUnitStatusesQry == null) {
-            final String sql = "select unitId, typeId, stateId, checktime, started, hung, unitIdInType from "
-                    + "(select u.id unitId, u.instanceId instanceId, t.id typeId, s.id stateId, u.started started, u.selfchecktime checkTime, s.endval hung, t.unitId unitIdInType, t.enabled enabled "
-                    + "from RDX_UNIT u left join RDX_SM_METRICTYPE t on t.kind = 'Unit.Hang' and u.id = nvl(t.unitId, u.id) "
-                    + "left join RDX_SM_METRICSTATE s on s.typeid = t.id) "
-                    + "where typeId is not null and instanceId = ? and enabled > 0";
-            monitoredUnitStatusesQry = connection.prepareStatement(sql);
+            monitoredUnitStatusesQry = prepareQuery(monitoredUnitStatusesQrySQL);
         }
         monitoredUnitStatusesQry.setLong(1, instanceId);
-        final ResultSet rs = monitoredUnitStatusesQry.executeQuery();
-        final Collection<MonitoredUnitStatus> result = new ArrayList<MonitoredUnitStatus>();
-        try {
+        try(final ResultSet rs = monitoredUnitStatusesQry.executeQuery()) {
             while (rs.next()) {
                 Long stateId = rs.getLong(3);
                 if (rs.wasNull()) {
@@ -415,6 +403,10 @@ public class MonitoringDbQueries implements IDbQueries {
                 }
                 rs.getLong(7);
                 final boolean generic = rs.wasNull();
+                final long checkTimeMillis = rs.getLong("checkTimeMillis");
+                if (!rs.wasNull()) {
+                    checkTime = new Timestamp(checkTimeMillis);
+                }
                 result.add(new MonitoredUnitStatus(
                         rs.getLong(1),
                         rs.getLong(2),
@@ -422,10 +414,10 @@ public class MonitoringDbQueries implements IDbQueries {
                         checkTime,
                         rs.getBoolean(5),
                         hung,
-                        generic));
+                        generic,
+                        rs.getLong("curMillis")
+                ));
             }
-        } finally {
-            rs.close();
         }
         return result;
     }
@@ -433,8 +425,7 @@ public class MonitoringDbQueries implements IDbQueries {
     public Collection<String> getExistingServiceUris() throws SQLException {
         final List<String> result = new ArrayList<>();
         if (qryGetExistingServices == null) {
-            final String sql = "select uri from rdx_service where implementedinarte > 0";
-            qryGetExistingServices = connection.prepareStatement(sql);
+            qryGetExistingServices = prepareQuery(qryGetExistingServicesSQL);
         }
         try (final ResultSet rs = qryGetExistingServices.executeQuery()) {
             while (rs.next()) {
@@ -518,6 +509,15 @@ public class MonitoringDbQueries implements IDbQueries {
         }
     }
 
+    @Override
+    public void prepareAll() throws SQLException {
+        prepareAll(connection);
+    }
+
+    private PreparedStatement prepareQuery(final String query) throws SQLException {
+        return prepareQuery(connection,query);
+    }
+    
     public class MonitoredUnitStatus {
 
         private final long unitId;
@@ -527,6 +527,7 @@ public class MonitoringDbQueries implements IDbQueries {
         private final Boolean started;
         private final Boolean hung;
         private final boolean generic;
+        private final long dbCurMillis;
 
         public MonitoredUnitStatus(final long unitId,
                 final long typeId,
@@ -534,7 +535,8 @@ public class MonitoringDbQueries implements IDbQueries {
                 final Timestamp checkTime,
                 final Boolean started,
                 final Boolean hung,
-                final boolean generic) {
+                final boolean generic,
+                final long dbCurMillis) {
             this.unitId = unitId;
             this.typeId = typeId;
             this.stateId = stateId;
@@ -542,8 +544,13 @@ public class MonitoringDbQueries implements IDbQueries {
             this.started = started;
             this.hung = hung;
             this.generic = generic;
+            this.dbCurMillis = dbCurMillis;
         }
 
+        public long getDbCurMillis() {
+            return dbCurMillis;
+        }
+        
         public Timestamp getCheckTime() {
             return checkTime;
         }

@@ -1,0 +1,46 @@
+<definitions 
+    xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" 
+    xmlns:mess="http://schemas.radixware.org/persocommdelivery.xsd" 
+    xmlns:wsdl="http://schemas.radixware.org/persocommdelivery.wsdl" 
+    targetNamespace="http://schemas.radixware.org/persocommdelivery.wsdl">
+    <types>
+        <xs:schema targetNamespace="http://schemas.radixware.org/persocommdelivery.wsdl">
+            <xs:import namespace="http://schemas.radixware.org/persocommdelivery.xsd" schemaLocation="persocommdelivery.xsd"/>
+            <xs:element name="Delivery" type="mess:DeliveryMess"/>
+        </xs:schema>
+    </types>
+    
+    <message name="DeliveryRq">
+        <part name="DeliveryRq" element="wsdl:Delivery"/>
+    </message>
+    <message name="DeliveryRs">
+        <part name="DeliveryRs" element="wsdl:Delivery"/>
+    </message>
+    
+    <portType name="DeliveryPortType">
+        <operation name="Delivery">
+            <input message="wsdl:DeliveryRq"/>
+            <output message="wsdl:DeliveryRs"/>
+        </operation>
+    </portType>
+    
+    <binding name="DeliveryBinding" type="wsdl:DeliveryPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        
+        <operation name="Invoke">
+            <soap:operation soapAction="http://schemas.radixware.org/persocommdelivery.wsdl#Delivery" style="document"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    
+    <service name="DeliveryService">
+        <port name="DeliveryPort" binding="wsdl:DeliveryBinding">
+            <soap:address location="http://"/>
+        </port>
+    </service>
+</definitions>

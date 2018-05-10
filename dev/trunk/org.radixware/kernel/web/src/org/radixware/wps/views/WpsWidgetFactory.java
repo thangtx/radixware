@@ -22,8 +22,10 @@ import org.radixware.kernel.common.client.widgets.ICommandToolButton;
 import org.radixware.kernel.common.client.widgets.IPushButton;
 import org.radixware.kernel.common.client.widgets.WidgetFactory;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.wps.rwt.PushButton;
+import org.radixware.wps.rwt.RwtMenu;
 import org.radixware.wps.rwt.ToolButton;
 
 
@@ -64,5 +66,10 @@ public class WpsWidgetFactory implements WidgetFactory {
     @Override
     public Action newAction(final Icon icon, final String title) {
         return new RwtAction(icon, title);
+    }        
+
+    @Override
+    public IMenu newMenu() {
+        return new RwtMenu();
     }        
 }

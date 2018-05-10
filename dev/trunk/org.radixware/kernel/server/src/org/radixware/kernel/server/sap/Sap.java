@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2017, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.server.sap;
 
 import java.io.IOException;
@@ -32,34 +31,49 @@ import org.radixware.kernel.server.aio.EventHandler;
 import org.radixware.kernel.server.aio.ServiceServer;
 import org.radixware.kernel.server.aio.ServiceServer.InvocationEvent;
 import org.radixware.kernel.server.exceptions.DatabaseError;
-import org.radixware.kernel.server.instance.ObjectCache;
+import org.radixware.kernel.common.cache.ObjectCache;
+import org.radixware.kernel.server.instance.Instance;
+import org.radixware.kernel.server.instance.aadc.AadcManager;
 import org.radixware.kernel.server.soap.DefaultServerMessageProcessorFactory;
 import org.radixware.schemas.systeminstancecontrol.ExceptionEnum;
 
 /**
  * Базовый класс для классов реализующих service access point.
  *
-
+ *
  */
 public abstract class Sap implements EventHandler {
 
     private final EventDispatcher dispatcher;
     protected final LocalTracer tracer;
-    private final DbQueries dbQueries;
+    private final SapDbQueries dbQueries;
     private SapOptions options = null;
     private ServiceServer service = null;
     private java.sql.Connection dbConnection = null;
     private final int maxSeanceCount;
     private final int rqWaitTimeout;
     private final ObjectCache cache;
+    private final String resourceKeyPefix;
+    private final AadcManager aadcManager;
 
-    public Sap(final EventDispatcher dispatcher, final LocalTracer tracer, final int maxSeanceCount, final int rqWaitTimeout) {
+    public Sap(final EventDispatcher dispatcher, final LocalTracer tracer, final int maxSeanceCount, final int rqWaitTimeout, final String resourceKeyPrefix) {
         this.dispatcher = dispatcher;
         this.tracer = tracer;
-        this.dbQueries = new DbQueries(this);
+        this.dbQueries = new SapDbQueries(this);
         this.maxSeanceCount = maxSeanceCount;
         this.rqWaitTimeout = rqWaitTimeout;
         this.cache = new ObjectCache();
+        this.resourceKeyPefix = resourceKeyPrefix;
+        final Instance curInst = Instance.get();
+        if (curInst != null) {
+            aadcManager = curInst.getAadcManager();
+        } else {
+            aadcManager = null;
+        }
+    }
+
+    public String getResourceKeyPefix() {
+        return resourceKeyPefix;
     }
 
     public boolean start(final java.sql.Connection dbConnection) throws InterruptedException {
@@ -79,7 +93,7 @@ public abstract class Sap implements EventHandler {
         setDbConnection(dbConnection);
         this.options = options;
         SSLContext sslContext = null;
-        if (options.getSecurityProtocol() == EPortSecurityProtocol.SSL) {
+        if (options.getSecurityProtocol().isTls()) {
             try {
                 sslContext = CertificateUtils.prepareServerSslContext(options.getServerKeyAliases(), options.getClientCertAliases());
             } catch (Throwable e) {
@@ -94,9 +108,11 @@ public abstract class Sap implements EventHandler {
                 maxSeanceCount,
                 rqWaitTimeout,
                 sslContext,
+                options.getSecurityProtocol(),
                 options.getCheckClientCert(),
                 options.getCipherSuites(),
-                new DefaultServerMessageProcessorFactory(options, tracer, cache));
+                new DefaultServerMessageProcessorFactory(options, tracer, cache),
+                resourceKeyPefix);
         try {
             service.start();
         } catch (Throwable e) {
@@ -167,6 +183,9 @@ public abstract class Sap implements EventHandler {
         } catch (SQLException e) {
             final String exStack = ExceptionTextFormatter.exceptionStackToString(e);
             tracer.put(EEventSeverity.ERROR, Messages.ERR_IN_DB_QRY + ": " + exStack, Messages.MLS_ID_ERR_IN_DB_QRY, new ArrStr(exStack), false);
+        }
+        if (aadcManager != null) {
+            aadcManager.sapIsAlive(getId(), System.currentTimeMillis());
         }
     }
 

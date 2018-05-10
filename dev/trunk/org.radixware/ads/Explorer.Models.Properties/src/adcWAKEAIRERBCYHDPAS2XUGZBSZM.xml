@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="adcWAKEAIRERBCYHDPAS2XUGZBSZM" Name="PropertyXml" Type="3" Environment="common-client">
     <AccessRules>
       <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.models.items.properties.PropertyXml"/>
@@ -43,6 +43,18 @@
           <Transparence Extendable="false" PublishedName="getSchemaId()Lorg.radixware.kernel.common.types.Id;"/>
         </AccessRules>
         <ReturnType TypeId="400" extStr="org.radixware.kernel.common.types.Id"/>
+      </Method>
+      <Method Id="mth4V4IUZEKOZCFLCGNL4V4Z5GWVQ" Name="getValClass" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getValClass()Ljava.lang.Class&lt;+Lorg.apache.xmlbeans.XmlObject;>;"/>
+        </AccessRules>
+        <ReturnType TypeId="400" extStr="java.lang.Class">
+          <xsc:GenericArguments>
+            <xsc:Argument DerivationRule="extends" Alias="?">
+              <xsc:Type TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+            </xsc:Argument>
+          </xsc:GenericArguments>
+        </ReturnType>
       </Method>
     </Methods>
   </AdsClassDefinition>

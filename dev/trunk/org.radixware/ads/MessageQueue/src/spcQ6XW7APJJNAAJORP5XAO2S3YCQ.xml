@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="7">
+  <AdsClassDefinition Id="spcQ6XW7APJJNAAJORP5XAO2S3YCQ" Name="StoreMqMessageProc" Type="10">
+    <AccessRules IsPublished="false">
+      <Transparence Extendable="true" PublishedName="org.radixware.kernel.server.types.SqlClass"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderspcQ6XW7APJJNAAJORP5XAO2S3YCQ"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyspcQ6XW7APJJNAAJORP5XAO2S3YCQ"/>
+    </Bodies>
+    <MethodGroup Id="cmg7GN25BWWURE5BKJVN5DHYVKGSU" Name="Root"/>
+    <PropertyGroup Id="cpg5MAW3KN2IVBLPALCVAZMK7HIIQ" Name="Root"/>
+    <Properties>
+      <Property Id="prmNRBEBMZQQFHQPMTQ7XXCEH5IN4" Name="pPartId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmDY3NBYIODVFBTLET6YPWVKAOAU" Name="pQueueId" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+      </Property>
+      <Property Id="prmTN3NBR2FPNH2VGE35E3GOPYDVU" Name="pMessageClob" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="27"/>
+      </Property>
+      <Property Id="prmM2ICFW32DNDIDMVXIK2F7TFWBE" Name="pForceSaf" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+      <Property Id="prmRTJBKNRCGFBDFP6YCVUB2TWUUU" Name="oSafModeChanged" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+      <Property Id="prm6GF3AU36TRHFHGFK3EAMQMRKM4" Name="oStored" Nature="11" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="1"/>
+      </Property>
+    </Properties>
+    <Methods>
+      <Method Id="mth_stmt_execute_____________" Name="execute" Nature="15" IsOverride="false">
+        <AccessRules IsPublished="false" IsStatic="true"/>
+        <Parameters>
+          <Parameter Name="pPartId" Id="mprNRBEBMZQQFHQPMTQ7XXCEH5IN4">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="pQueueId" Id="mprDY3NBYIODVFBTLET6YPWVKAOAU">
+            <Type TypeId="2"/>
+          </Parameter>
+          <Parameter Name="pMessageClob" Id="mprTN3NBR2FPNH2VGE35E3GOPYDVU">
+            <Type TypeId="27"/>
+          </Parameter>
+          <Parameter Name="pForceSaf" Id="mprM2ICFW32DNDIDMVXIK2F7TFWBE">
+            <Type TypeId="1"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="spcQ6XW7APJJNAAJORP5XAO2S3YCQ"/>
+      </Method>
+    </Methods>
+    <Sql IsReadOnly="false">
+      <Source>
+        <xsc:Item>
+          <xsc:Sql>declare
+    PRAGMA AUTONOMOUS_TRANSACTION;
+    curSafMode number(1,0);
+    safModeChanged number(1,0);
+    stored number(1,0);
+    needCreate number(1,0) := 0;
+begin
+    begin
+        select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="col6MLXHROSN5DLXPAKXBP6GINPMQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> into curSafMode
+        from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+        where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="colWZVX3THQLND6BB7WPP7ME7V44Y" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmNRBEBMZQQFHQPMTQ7XXCEH5IN4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+        and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="colG55ZCAD6WJEQ5ACW2MXPZZ2ZI4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmDY3NBYIODVFBTLET6YPWVKAOAU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+        for update;
+    exception
+        when NO_DATA_FOUND then
+            needCreate := 1;
+    end;
+    
+    if needCreate > 0 then
+        begin
+            insert into </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+                    (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="colWZVX3THQLND6BB7WPP7ME7V44Y" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="colG55ZCAD6WJEQ5ACW2MXPZZ2ZI4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="col6MLXHROSN5DLXPAKXBP6GINPMQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)
+                    values(</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmNRBEBMZQQFHQPMTQ7XXCEH5IN4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmDY3NBYIODVFBTLET6YPWVKAOAU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, 0);
+            commit;
+        exception 
+            when DUP_VAL_ON_INDEX then null;
+        end;
+        
+        select </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="col6MLXHROSN5DLXPAKXBP6GINPMQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> into curSafMode
+            from </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+            where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="colWZVX3THQLND6BB7WPP7ME7V44Y" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmNRBEBMZQQFHQPMTQ7XXCEH5IN4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+            and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="colG55ZCAD6WJEQ5ACW2MXPZZ2ZI4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmDY3NBYIODVFBTLET6YPWVKAOAU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>
+            for update;
+    end if;
+
+    safModeChanged := 0;
+    stored := 0;
+    
+    if </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmM2ICFW32DNDIDMVXIK2F7TFWBE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> > 0 and curSafMode = 0 then
+        update </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> set </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="col6MLXHROSN5DLXPAKXBP6GINPMQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = 1
+        where </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="colWZVX3THQLND6BB7WPP7ME7V44Y" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmNRBEBMZQQFHQPMTQ7XXCEH5IN4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+        and </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA" PropId="colG55ZCAD6WJEQ5ACW2MXPZZ2ZI4" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> = </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmDY3NBYIODVFBTLET6YPWVKAOAU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>;
+        safModeChanged := 1;
+    end if;
+    
+    if curSafMode > 0 or safModeChanged > 0 then
+        insert into </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TableSqlName TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> 
+            (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4" PropId="colDLITJLCB6ZBLNBTVPZCHRM3BJI" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4" PropId="colYFDVBGNTNBENRBZL4AYTVA6GTQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, 
+                </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4" PropId="colCLCJ6EEIERAG7OQK6AJZ3UESCQ" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4" PropId="colRIWHGQQ4NBAAPBDTB3DPILNHOY" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>,
+                </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:PropSqlName TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4" PropId="colAUH7CUC34FCYFIEAD7BF7FU5FA" Owner="TABLE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>)
+            values (</xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:SequenceDbName SequenceId="sqnLE6L54EGJZBA7EPHRXG7SN7LRI" Postfix="NONE"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>.nextVal, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmDY3NBYIODVFBTLET6YPWVKAOAU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmNRBEBMZQQFHQPMTQ7XXCEH5IN4"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>, sysdate, </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmTN3NBR2FPNH2VGE35E3GOPYDVU"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql>);
+        stored := 1;            
+    end if;            
+    
+    commit;
+        
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prmRTJBKNRCGFBDFP6YCVUB2TWUUU" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := safModeChanged; 
+    </xsc:Sql>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Parameter ParamId="prm6GF3AU36TRHFHGFK3EAMQMRKM4" Direction="1"/>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Sql> := stored;
+end;</xsc:Sql>
+        </xsc:Item>
+      </Source>
+      <UsedTables>
+        <UsedTable TableId="tblDSO722HQIFGQ3MVOQC7ICR2OBA"/>
+        <UsedTable TableId="tblN7WBDE74HJBIRLGG2IU6LEHDR4"/>
+      </UsedTables>
+    </Sql>
+    <Extends TypeId="400" extStr="org.radixware.kernel.server.types.SqlClass"/>
+  </AdsClassDefinition>
+</AdsDefinition>

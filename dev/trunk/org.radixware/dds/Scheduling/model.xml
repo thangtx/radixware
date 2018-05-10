@@ -62,7 +62,7 @@
         <UniqueConstraint Id="unqCRD53OZ5I3OBDCIOAALOMT5GDM" DbName="PK_RDX_JS_CALENDARITEM" Rely="true"/>
       </PrimaryKey>
       <Triggers>
-        <Trigger Id="trgGJGTAGFO5ZBAHDXNOM4FCK5T5E" Name="AuditUpdate" DbName="atuCRD53OZ5I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colKRZR7QR5I3OBDCIOAALOMT5GDM colOCF4R7J5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM colFQ4EXXZ6I3OBDCIOAALOMT5GDM colAZNNMYJ7I3OBDCIOAALOMT5GDM" Disabled="true">
+        <Trigger Id="trgGJGTAGFO5ZBAHDXNOM4FCK5T5E" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuCRD53OZ5I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colKRZR7QR5I3OBDCIOAALOMT5GDM colOCF4R7J5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM colFQ4EXXZ6I3OBDCIOAALOMT5GDM colAZNNMYJ7I3OBDCIOAALOMT5GDM" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -258,7 +258,7 @@
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgUVUQI2C2UJHVJCQY67L4LIBMJQ" Name="AuditInsert" DbName="atiCRD53OZ5I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgUVUQI2C2UJHVJCQY67L4LIBMJQ" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiCRD53OZ5I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -454,7 +454,7 @@
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trg7XL5NOYOQ5FOBHE7UDD34WRKOM" Name="AuditDelete" DbName="atdCRD53OZ5I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trg7XL5NOYOQ5FOBHE7UDD34WRKOM" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdCRD53OZ5I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -469,7 +469,7 @@
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -576,6 +576,7 @@
     <Table Id="tblZBS5MS2BI3OBDCIOAALOMT5GDM" Name="IntervalSchd" DbName="RDX_JS_INTERVALSCHD" AuditMask="7">
       <Columns>
         <Column Id="colDHYHOUSBI3OBDCIOAALOMT5GDM" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnDDYHOUSBI3OBDCIOAALOMT5GDM"/>
+        <Column Id="colNWMQHAB6WVDX7FGU27A6QZ5B2E" Name="rid" DescriptionId="mlsTSWOE5E2Z5HZFLJNOVTVLJMLXU" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="RID"/>
         <Column Id="colLKOV4ATWBFGENJOB6DZNQK3BRA" Name="guid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="GUID"/>
         <Column Id="colMDJZRCCBI3OBDCIOAALOMT5GDM" Name="title" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="false" DbName="TITLE"/>
         <Column Id="colZBVMTD2BI3OBDCIOAALOMT5GDM" Name="notes" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="NOTES"/>
@@ -589,7 +590,7 @@
         <UniqueConstraint Id="unqZBS5MS2BI3OBDCIOAALOMT5GDM" DbName="PK_RDX_JS_INTERVALSCHD" Rely="true"/>
       </PrimaryKey>
       <Triggers>
-        <Trigger Id="trgDGTRLHPHQFF47J7YXFCGPUKT2E" Name="AuditUpdate" DbName="atuZBS5MS2BI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colKCIYPFSBI3OBDCIOAALOMT5GDM" Disabled="true">
+        <Trigger Id="trgDGTRLHPHQFF47J7YXFCGPUKT2E" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuZBS5MS2BI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colKCIYPFSBI3OBDCIOAALOMT5GDM" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -713,7 +714,7 @@
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgSTC7TTTW2JHMZKNZG6GQONR3XE" Name="AuditInsert" DbName="atiZBS5MS2BI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgSTC7TTTW2JHMZKNZG6GQONR3XE" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiZBS5MS2BI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -817,7 +818,7 @@
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgTUOTICPNXFBY7GTHMKYTCZHCPU" Name="AuditDelete" DbName="atdZBS5MS2BI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgTUOTICPNXFBY7GTHMKYTCZHCPU" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdZBS5MS2BI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -832,7 +833,7 @@
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -960,6 +961,7 @@
       <Columns>
         <Column Id="col2BAXRDR4I3OBDCIOAALOMT5GDM" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID" SequenceId="sqnE3T5FJR4I3OBDCIOAALOMT5GDM"/>
         <Column Id="colGREF2QX3WVF3DJNRVMZTPNP2NQ" Name="guid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="GUID"/>
+        <Column Id="colCDHUTBIP2VC75MTHAIDAV7E7L4" Name="rid" DescriptionId="mlsTSWOE5E2Z5HZFLJNOVTVLJMLXU" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="RID"/>
         <Column Id="colHAF43WR4I3OBDCIOAALOMT5GDM" Name="title" ValType="21" Length="200" DbType="VARCHAR2(200 char)" NotNull="false" DbName="TITLE"/>
         <Column Id="colNZP25ZZ4I3OBDCIOAALOMT5GDM" Name="notes" ValType="21" Length="4000" DbType="VARCHAR2(4000 char)" NotNull="false" DbName="NOTES"/>
         <Column Id="colUJIT2SZ5I3OBDCIOAALOMT5GDM" Name="lastUpdateTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="true" DbName="LASTUPDATETIME" AuditMask="6"/>
@@ -972,8 +974,16 @@
         </Columns>
         <UniqueConstraint Id="unqHC6VVBZ4I3OBDCIOAALOMT5GDM" DbName="PK_RDX_JS_CALENDAR" Rely="true"/>
       </PrimaryKey>
+      <Indices>
+        <Index Id="idxQX5AD5UMEVCINB2ZRDTOZFUZTU" Name="RID" DbName="IDX_RDX_JS_CALENDAR_RID">
+          <Columns>
+            <Column ColumnId="colCDHUTBIP2VC75MTHAIDAV7E7L4" Order="Asc"/>
+          </Columns>
+          <UniqueConstraint Id="unqMDTSBYCZNRFERNXT3PLJGYRS44" DbName="UNQ_RDX_JS_CALENDAR_RID" Rely="true"/>
+        </Index>
+      </Indices>
       <Triggers>
-        <Trigger Id="trgKIGUXTFW6FBH7LUJQR2MIF4QTM" Name="AuditUpdate" DbName="atuHC6VVBZ4I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colUJIT2SZ5I3OBDCIOAALOMT5GDM" Disabled="true">
+        <Trigger Id="trgKIGUXTFW6FBH7LUJQR2MIF4QTM" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuHC6VVBZ4I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colUJIT2SZ5I3OBDCIOAALOMT5GDM" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1097,7 +1107,7 @@
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgJRLDJO2DFJDHVFOJDNXWHPXDIQ" Name="AuditInsert" DbName="atiHC6VVBZ4I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgJRLDJO2DFJDHVFOJDNXWHPXDIQ" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiHC6VVBZ4I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1201,7 +1211,7 @@
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgG3FGMLH3SFEMXH32INHBZCRYL4" Name="AuditDelete" DbName="atdHC6VVBZ4I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgG3FGMLH3SFEMXH32INHBZCRYL4" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdHC6VVBZ4I3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1216,7 +1226,7 @@
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -1365,7 +1375,7 @@
         <UniqueConstraint Id="unqARTOV5KBI3OBDCIOAALOMT5GDM" DbName="PK_RDX_JS_INTERVALSCHDITEM" Rely="true"/>
       </PrimaryKey>
       <Triggers>
-        <Trigger Id="trgSTW4MEDCI5HLBNCOVXF5FTB5XE" Name="AuditUpdate" DbName="atuARTOV5KBI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col3J7ROKKCI3OBDCIOAALOMT5GDM colPKW6YWCCI3OBDCIOAALOMT5GDM colFCO7W2SCI3OBDCIOAALOMT5GDM" Disabled="true">
+        <Trigger Id="trgSTW4MEDCI5HLBNCOVXF5FTB5XE" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuARTOV5KBI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col3J7ROKKCI3OBDCIOAALOMT5GDM colPKW6YWCCI3OBDCIOAALOMT5GDM colFCO7W2SCI3OBDCIOAALOMT5GDM" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1513,7 +1523,7 @@
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgCUM7SPH2INAL3H6OFYKQBS2GZY" Name="AuditInsert" DbName="atiARTOV5KBI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgCUM7SPH2INAL3H6OFYKQBS2GZY" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiARTOV5KBI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1661,7 +1671,7 @@
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgQKJJYYMMENEPBPESDDCZFH5LBI" Name="AuditDelete" DbName="atdARTOV5KBI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgQKJJYYMMENEPBPESDDCZFH5LBI" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdARTOV5KBI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -1676,7 +1686,7 @@
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -1889,7 +1899,7 @@ NULL - передавать в качестве параметра job.id
         <UniqueConstraint Id="unq3DD7EMEOIHNRDJIEACQMTAIZT4" DbName="PK_RDX_JS_JOBEXECUTORUNIT" Rely="true"/>
       </PrimaryKey>
       <Triggers>
-        <Trigger Id="trg3GTIFLJXGVBQJF3BJZEWZRSD2A" Name="AuditUpdate" DbName="atu3DD7EMEOIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colPJDE6LVONJB3PPTQ7ZCF6UPQOI colYS346KYNLVBNFJEHV2EA2KPKKM colHBV4J6LEWNCOTM4WHJRSIMLKFM colNJB3FZVNRNGXXMYCHMBRAXJZI4 colUX424WYE3ZGARCSQMV4REKOFK4 colCCFCKQ4OIHNRDJIEACQMTAIZT4" Disabled="true">
+        <Trigger Id="trg3GTIFLJXGVBQJF3BJZEWZRSD2A" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atu3DD7EMEOIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colPJDE6LVONJB3PPTQ7ZCF6UPQOI colYS346KYNLVBNFJEHV2EA2KPKKM colHBV4J6LEWNCOTM4WHJRSIMLKFM colNJB3FZVNRNGXXMYCHMBRAXJZI4 colUX424WYE3ZGARCSQMV4REKOFK4 colCCFCKQ4OIHNRDJIEACQMTAIZT4" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2096,7 +2106,7 @@ NULL - передавать в качестве параметра job.id
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgSRQGKFQEJZAOJNVEHIUSUHIU5I" Name="AuditInsert" DbName="ati3DD7EMEOIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgSRQGKFQEJZAOJNVEHIUSUHIU5I" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="ati3DD7EMEOIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2303,7 +2313,7 @@ NULL - передавать в качестве параметра job.id
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgWVZ7QV2525HVZIP3NVBUG7DZDU" Name="AuditDelete" DbName="atd3DD7EMEOIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgWVZ7QV2525HVZIP3NVBUG7DZDU" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atd3DD7EMEOIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2318,7 +2328,7 @@ NULL - передавать в качестве параметра job.id
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -2492,7 +2502,7 @@ NULL - передавать в качестве параметра job.id
         <UniqueConstraint Id="unqZ3SDCSSEI3OBDCIOAALOMT5GDM" DbName="PK_RDX_JS_EVENTSCHDITEM" Rely="true"/>
       </PrimaryKey>
       <Triggers>
-        <Trigger Id="trgHG3AKAAN4FA73NACEXZVQTRJXQ" Name="AuditUpdate" DbName="atuZ3SDCSSEI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col2Y4Z3HSRI3OBDCIOAALOMT5GDM colIINJLJ2RI3OBDCIOAALOMT5GDM colVZL6POCRI3OBDCIOAALOMT5GDM colQ2O2LSKRI3OBDCIOAALOMT5GDM colR3BKZWCRI3OBDCIOAALOMT5GDM colKDDQ37CRI3OBDCIOAALOMT5GDM" Disabled="true">
+        <Trigger Id="trgHG3AKAAN4FA73NACEXZVQTRJXQ" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuZ3SDCSSEI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col2Y4Z3HSRI3OBDCIOAALOMT5GDM colIINJLJ2RI3OBDCIOAALOMT5GDM colVZL6POCRI3OBDCIOAALOMT5GDM colQ2O2LSKRI3OBDCIOAALOMT5GDM colR3BKZWCRI3OBDCIOAALOMT5GDM colKDDQ37CRI3OBDCIOAALOMT5GDM" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2676,7 +2686,7 @@ NULL - передавать в качестве параметра job.id
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgD6GLKWPJ6NEYPHM7OHHVQH6TTU" Name="AuditInsert" DbName="atiZ3SDCSSEI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgD6GLKWPJ6NEYPHM7OHHVQH6TTU" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiZ3SDCSSEI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2860,7 +2870,7 @@ NULL - передавать в качестве параметра job.id
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgTPUTEYP53VB5FPCWNNNTBLPYMQ" Name="AuditDelete" DbName="atdZ3SDCSSEI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgTPUTEYP53VB5FPCWNNNTBLPYMQ" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdZ3SDCSSEI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -2875,7 +2885,7 @@ NULL - передавать в качестве параметра job.id
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -2987,6 +2997,7 @@ NULL - передавать в качестве параметра job.id
             <Value>2</Value>
           </InitialValues>
         </Column>
+        <Column Id="colDBHUGPSQORF2ZL2ZTMP3Y7NCKI" Name="rid" DescriptionId="mlsTSWOE5E2Z5HZFLJNOVTVLJMLXU" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="RID"/>
         <Column Id="colIJ2DSJLSLBE5NN7Z2YAKDKAGYI" Name="guid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="true" DbName="GUID">
           <InitialValues>
             <Value>ORNZIEXPW5EQPFBHNBHI7FUHJQ</Value>
@@ -3020,7 +3031,7 @@ NULL - передавать в качестве параметра job.id
         <UniqueConstraint Id="unqLSU45NKDI3OBDCIOAALOMT5GDM" DbName="PK_RDX_JS_EVENTSCHD" Rely="true"/>
       </PrimaryKey>
       <Triggers>
-        <Trigger Id="trgNVQVEPLRTNA7XKGMDSUVEVWHSM" Name="AuditUpdate" DbName="atuLSU45NKDI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colYZCK5ZCDI3OBDCIOAALOMT5GDM" Disabled="true">
+        <Trigger Id="trgNVQVEPLRTNA7XKGMDSUVEVWHSM" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuLSU45NKDI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colYZCK5ZCDI3OBDCIOAALOMT5GDM" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -3144,7 +3155,7 @@ NULL - передавать в качестве параметра job.id
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgE33XBFHDWFBZPCIC5FDVRUVHUI" Name="AuditInsert" DbName="atiLSU45NKDI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgE33XBFHDWFBZPCIC5FDVRUVHUI" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiLSU45NKDI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -3248,7 +3259,7 @@ NULL - передавать в качестве параметра job.id
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgPUZYXLRJVFAIXH6EL37YXH7AMA" Name="AuditDelete" DbName="atdLSU45NKDI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgPUZYXLRJVFAIXH6EL37YXH7AMA" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdLSU45NKDI3OBDCIOAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -3263,7 +3274,7 @@ NULL - передавать в качестве параметра job.id
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -3395,6 +3406,8 @@ NULL - передавать в качестве параметра job.id
             <Value>2</Value>
           </InitialValues>
         </Column>
+        <Column Id="col7PEOSLRVM5GQLNRYMHH4V7B2JI" Name="rid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="RID"/>
+        <Column Id="col4W7CE76W7VATBNLH5FLEE3FAVA" Name="aadcMemberId" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="false" DbName="AADCMEMBERID" AuditMask="3"/>
         <Column Id="colRMU7WRHOUZDINIVZWJHT6KSOFM" Name="createTime" ValType="12" Length="0" DbType="DATE" NotNull="true" DbName="CREATETIME">
           <DefaultVal Type="SysDate"/>
         </Column>
@@ -3404,6 +3417,7 @@ NULL - передавать в качестве параметра job.id
           </DefaultVal>
         </Column>
         <Column Id="colBHMUC3KGIJE3PA6RVXKLXFHP3U" Name="parentId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PARENTID"/>
+        <Column Id="colC7IXI3MF4ZHHRJGGR7KVS6LL7Y" Name="directoryId" DescriptionId="mlsCQ66ATLHS5E37P5BZDVEA6EVQE" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="DIRECTORYID"/>
         <Column Id="colVVAT5W3YSLOBDCKTAALOMT5GDM" Name="title" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="TITLE"/>
         <Column Id="colP2PKJLPLJPOBDCIUAALOMT5GDM" Name="unitId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="UNITID">
           <InitialValues>
@@ -3478,6 +3492,7 @@ NULL - передавать в качестве параметра job.id
         </Column>
         <Column Id="colWUT4YIFRL5CALJVFCEHD2GYJPY" Name="expectedDurationSec" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="EXPECTEDDURATIONSEC"/>
         <Column Id="col2ELHAWP2QNCDBNTGVTIBLC65O4" Name="lastSchedulingTime" ValType="12" Length="0" DbType="DATE" NotNull="false" DbName="LASTSCHEDULINGTIME"/>
+        <Column Id="colU3KMHGIYZFFCRGJML6HIXFWZQE" Name="selfCheckTimeMillis" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="false" DbName="SELFCHECKTIMEMILLIS"/>
       </Columns>
       <PrimaryKey Id="idxWZB7K4HLJPOBDCIUAALOMT5GDM" Name="PrimaryKey" DbName="PK_RDX_JS_TASK" Unique="true">
         <Columns>
@@ -3485,8 +3500,16 @@ NULL - передавать в качестве параметра job.id
         </Columns>
         <UniqueConstraint Id="unqWZB7K4HLJPOBDCIUAALOMT5GDM" DbName="PK_RDX_JS_TASK" Rely="true"/>
       </PrimaryKey>
+      <Indices>
+        <Index Id="idxZ27CG5NEABGYLOXYVPG4SD7SYY" Name="RID" DbName="IDX_RDX_JS_TASK_RID" Unique="true">
+          <Columns>
+            <Column ColumnId="col7PEOSLRVM5GQLNRYMHH4V7B2JI" Order="Asc"/>
+          </Columns>
+          <UniqueConstraint Id="unq2GCRYCDXZBB7TMBRVWIPW5KB4A" DbName="UNQ_RDX_JS_TASK_RID" Rely="true"/>
+        </Index>
+      </Indices>
       <Triggers>
-        <Trigger Id="trgL3Z4NQZWLBAEBN5UEOLOSP3D4A" Name="AuditUpdate" DbName="atuWZB7K4HLJPOBDCIUAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="colNAPRJRHLJPOBDCIUAALOMT5GDM colFDCRWKPMJPOBDCIUAALOMT5GDM col7JDCGRXMJPOBDCIUAALOMT5GDM col33LE4YHMJPOBDCIUAALOMT5GDM colYQWRAN7SK5GA3EGFI6TEPHYWL4 colRMH5P2FSTNABBMBNUIXU3AINEQ" Disabled="true">
+        <Trigger Id="trgL3Z4NQZWLBAEBN5UEOLOSP3D4A" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuWZB7K4HLJPOBDCIUAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col4W7CE76W7VATBNLH5FLEE3FAVA colNAPRJRHLJPOBDCIUAALOMT5GDM colFDCRWKPMJPOBDCIUAALOMT5GDM col7JDCGRXMJPOBDCIUAALOMT5GDM col33LE4YHMJPOBDCIUAALOMT5GDM colYQWRAN7SK5GA3EGFI6TEPHYWL4 colRMH5P2FSTNABBMBNUIXU3AINEQ" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -3542,6 +3565,18 @@ NULL - передавать в качестве параметра job.id
             </xsc:Item>
             <xsc:Item>
               <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfn5WOW6KKZRBAC3MFHWD3KNPIZVU">
+                <xsc:Sql>RDX_AUDIT.addChangedValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'col4W7CE76W7VATBNLH5FLEE3FAVA',:old.AADCMEMBERID,:new.AADCMEMBERID);</xsc:Sql>
             </xsc:Item>
             <xsc:Item>
               <xsc:Sql>
@@ -3670,7 +3705,7 @@ NULL - передавать в качестве параметра job.id
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trg6FV3ZLHDKZHI5C7A233ABQKSFA" Name="AuditInsert" DbName="atiWZB7K4HLJPOBDCIUAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trg6FV3ZLHDKZHI5C7A233ABQKSFA" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiWZB7K4HLJPOBDCIUAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -3726,6 +3761,18 @@ NULL - передавать в качестве параметра job.id
             </xsc:Item>
             <xsc:Item>
               <xsc:Sql>   if vSaveData=1 then</xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>
+            </xsc:Sql>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:DbFuncCall FuncId="dfnRAERWTZSX3NBDPLKABQJO5ADDQ">
+                <xsc:Sql>RDX_AUDIT.addValueInt</xsc:Sql>
+              </xsc:DbFuncCall>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Sql>(vChangeData,'new.col4W7CE76W7VATBNLH5FLEE3FAVA',:new.AADCMEMBERID);</xsc:Sql>
             </xsc:Item>
             <xsc:Item>
               <xsc:Sql>
@@ -3854,7 +3901,7 @@ NULL - передавать в качестве параметра job.id
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgYABS22XRTVGSVC4O2V3AI6SVLI" Name="AuditDelete" DbName="atdWZB7K4HLJPOBDCIUAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgYABS22XRTVGSVC4O2V3AI6SVLI" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdWZB7K4HLJPOBDCIUAALOMT5GDM" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -3869,7 +3916,7 @@ NULL - передавать в качестве параметра job.id
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -3980,7 +4027,7 @@ end;</xsc:Sql>
           </Body>
         </Trigger>
       </Triggers>
-      <Placement PosX="903" PosY="527"/>
+      <Placement PosX="903" PosY="526"/>
     </Table>
     <Table Id="tblPCE24TUPIHNRDJIEACQMTAIZT4" Name="JobExecutorUnitBoost" DbName="RDX_JS_JOBEXECUTORUNITBOOST" AuditMask="7">
       <Columns>
@@ -4021,7 +4068,7 @@ end;</xsc:Sql>
         <UniqueConstraint Id="unqPCE24TUPIHNRDJIEACQMTAIZT4" DbName="PK_RDX_JS_JOBEXECUTORUNITBOOST" Rely="true"/>
       </PrimaryKey>
       <Triggers>
-        <Trigger Id="trgVZZCDACM2NGQXNBDUJFPMZTM5E" Name="AuditUpdate" DbName="atuPCE24TUPIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col2SZPQ7UPIHNRDJIEACQMTAIZT4 col33CWYGOTI3NRDJIIACQMTAIZT4" Disabled="true">
+        <Trigger Id="trgVZZCDACM2NGQXNBDUJFPMZTM5E" Name="AuditUpdate" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atuPCE24TUPIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="4" ColumnIds="col2SZPQ7UPIHNRDJIEACQMTAIZT4 col33CWYGOTI3NRDJIIACQMTAIZT4" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -4157,7 +4204,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgXJFEIG75VJGTNHMHOHTLBQ65CI" Name="AuditInsert" DbName="atiPCE24TUPIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
+        <Trigger Id="trgXJFEIG75VJGTNHMHOHTLBQ65CI" Name="AuditInsert" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atiPCE24TUPIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="2" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -4293,7 +4340,7 @@ end;</xsc:Sql>
             </xsc:Item>
           </Body>
         </Trigger>
-        <Trigger Id="trgFIR5MPNXD5H5HJ6K52NFMTCQ5I" Name="AuditDelete" DbName="atdPCE24TUPIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
+        <Trigger Id="trgFIR5MPNXD5H5HJ6K52NFMTCQ5I" Name="AuditDelete" DescriptionId="mlsNDNKDELXRRF5LKEEN4SC35L4GI" DbName="atdPCE24TUPIHNRDJIEACQMTAIZT4" AutoDbName="false" Type="FOR_AUDIT" ActuationTime="AFTER" TriggeringEventMask="1" Disabled="true">
           <Body>
             <xsc:Item>
               <xsc:Sql>declare vStoreDuration integer; vSaveData integer; vPID varchar2(4000); vChangeData clob; vSchemeId varchar2(50); vClassGuid varchar2(50);
@@ -4308,7 +4355,7 @@ end;</xsc:Sql>
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Sql>      vSchemeId := RDX_AUDIT.DEFAULTAUDITSCHEME;
+              <xsc:Sql>      vSchemeId := RDX_AUDIT_VARS.DEFAULTAUDITSCHEME;
 </xsc:Sql>
             </xsc:Item>
             <xsc:Item>
@@ -4415,6 +4462,7 @@ end;</xsc:Sql>
     <Table Id="tblHRWUWEEMIHNRDJIEACQMTAIZT4" Name="JobQueue" DbName="RDX_JS_JOBQUEUE">
       <Columns>
         <Column Id="colAAQIIHUMIHNRDJIEACQMTAIZT4" Name="id" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="true" DbName="ID" SequenceId="sqn5R6C2L4MIHNRDJIEACQMTAIZT4"/>
+        <Column Id="colHQPRKNPYGZFVRPPKUDNLNLD5G4" Name="aadcMemberId" ValType="2" Length="1" DbType="NUMBER(1,0)" NotNull="false" DbName="AADCMEMBERID" AuditMask="3"/>
         <Column Id="colBMKNBRS6MFDOHOCOER7UVUAKY4" Name="taskId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="TASKID"/>
         <Column Id="colPSF7WRUMIHNRDJIEACQMTAIZT4" Name="dueTime" ValType="12" Length="0" Precision="6" DbType="TIMESTAMP(6)" NotNull="false" DbName="DUETIME"/>
         <Column Id="colHCKW54UMIHNRDJIEACQMTAIZT4" Name="className" ValType="21" Length="1000" DbType="VARCHAR2(1000 char)" NotNull="true" DbName="CLASSNAME"/>
@@ -4452,6 +4500,10 @@ end;</xsc:Sql>
             <com:Value>1</com:Value>
           </DefaultVal>
         </Column>
+        <Column Id="colLW73UERCJZDNTAPMRGCASBDVIU" Name="selfCheckTimeMillis" ValType="2" Length="18" DbType="NUMBER(18,0)" NotNull="false" DbName="SELFCHECKTIMEMILLIS"/>
+        <Column Id="colVTHNRM2E6ZHQ3CN4YNPTZZ7VJ4" Name="threadPoolClassGuid" ValType="21" Length="100" DbType="VARCHAR2(100 char)" NotNull="false" DbName="THREADPOOLCLASSGUID"/>
+        <Column Id="colGGVHH5VP2RA3NBSWE6F4COHET4" Name="threadPoolPid" ValType="21" Length="250" DbType="VARCHAR2(250 char)" NotNull="false" DbName="THREADPOOLPID"/>
+        <Column Id="colSQ62QBZJ6NBR5HDABNEIOOTF7U" Name="threadKey" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="THREADKEY"/>
       </Columns>
       <PrimaryKey Id="idxHRWUWEEMIHNRDJIEACQMTAIZT4" Name="PrimaryKey" DbName="PK_RDX_JS_JOBQUEUE" Unique="true">
         <Columns>
@@ -4482,19 +4534,6 @@ end;</xsc:Sql>
       </PrimaryKey>
       <Placement PosX="1352" PosY="801"/>
     </Table>
-    <Table Id="tblYJS3Y5IWARFYRPTIFMUI5YJF3Y" Name="JobSchedulerUnit" DbName="RDX_JS_JOBSCHEDULERUNIT">
-      <Columns>
-        <Column Id="colILKPXYY3VVFZRA272YLTZC6JKM" Name="id" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="true" DbName="ID"/>
-        <Column Id="col5JMQGYEISJHFJFA4DZT5XYN4NE" Name="parentId" ValType="2" Length="9" DbType="NUMBER(9,0)" NotNull="false" DbName="PARENTID"/>
-      </Columns>
-      <PrimaryKey Id="idxP3TWHMJKFFAXRDEYZJVKZPGAAI" Name="PrimaryKey" DbName="PK_RDX_JS_JOBSCHEDULERUNIT" Unique="true">
-        <Columns>
-          <Column ColumnId="colILKPXYY3VVFZRA272YLTZC6JKM" Order="Asc"/>
-        </Columns>
-        <UniqueConstraint Id="unqJUHJ5CKK2FG2LATZD3YE56CGVA" DbName="PK_RDX_JS_JOBSCHEDULERUNIT" Rely="true"/>
-      </PrimaryKey>
-      <Placement PosX="1556" PosY="445"/>
-    </Table>
   </Tables>
   <ExtTables>
     <ExtTable Id="tbe4EKSSX7LJPOBDCIUAALOMT5GDM" TableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E">
@@ -4511,12 +4550,12 @@ end;</xsc:Sql>
     </ExtTable>
   </ExtTables>
   <References>
-    <Reference Id="refP6PKJLPLJPOBDCIUAALOMT5GDM" AutoDbName="false" DbName="FK_RDX_JS_SCHDUNITJOB_UNIT" Type="LINK" ChildTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ParentTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ExtParentTableId="tbe4EKSSX7LJPOBDCIUAALOMT5GDM" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq5HP4XTP3EGWDBRCRAAIT4AGD7E">
+    <Reference Id="refP6PKJLPLJPOBDCIUAALOMT5GDM" AutoDbName="false" DbName="FK_RDX_JS_SCHDUNITJOB_UNIT" Type="LINK" ChildTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ParentTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ExtParentTableId="tbe4EKSSX7LJPOBDCIUAALOMT5GDM" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq5HP4XTP3EGWDBRCRAAIT4AGD7E" SuppressedWarnings="300100">
       <Columns>
         <Item ChildColumnId="colP2PKJLPLJPOBDCIUAALOMT5GDM" ParentColumnId="colEVLUYADHR5VDBNSIAAUMFADAIA"/>
       </Columns>
     </Reference>
-    <Reference Id="refZAAZ347LJPOBDCIUAALOMT5GDM" AutoDbName="false" DbName="FK_RDX_JS_SCHDUNITJOB_EVSCHD" Type="LINK" ChildTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ParentTableId="tblLSU45NKDI3OBDCIOAALOMT5GDM" ConfirmDelete="false" DeleteMode="RESTRICT" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqLSU45NKDI3OBDCIOAALOMT5GDM">
+    <Reference Id="refZAAZ347LJPOBDCIUAALOMT5GDM" AutoDbName="false" DbName="FK_RDX_JS_SCHDUNITJOB_EVSCHD" Type="LINK" ChildTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ParentTableId="tblLSU45NKDI3OBDCIOAALOMT5GDM" ConfirmDelete="false" DeleteMode="RESTRICT" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqLSU45NKDI3OBDCIOAALOMT5GDM" SuppressedWarnings="300100">
       <Columns>
         <Item ChildColumnId="colNAPRJRHLJPOBDCIUAALOMT5GDM" ParentColumnId="colDQQG5QKDI3OBDCIOAALOMT5GDM"/>
       </Columns>
@@ -4576,25 +4615,15 @@ end;</xsc:Sql>
         <Item ChildColumnId="col3XD7EMEOIHNRDJIEACQMTAIZT4" ParentColumnId="colEVLUYADHR5VDBNSIAAUMFADAIA"/>
       </Columns>
     </Reference>
-    <Reference Id="ref2HESFGUAAVG75GNB3WBVAXAMTY" DbName="FK_RDX_JS_TASK_TASK" Type="LINK" ChildTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ParentTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqWZB7K4HLJPOBDCIUAALOMT5GDM">
+    <Reference Id="ref2HESFGUAAVG75GNB3WBVAXAMTY" DbName="FK_RDX_JS_TASK_TASK" Type="LINK" ChildTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ParentTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqWZB7K4HLJPOBDCIUAALOMT5GDM" SuppressedWarnings="300100">
       <Columns>
         <Item ChildColumnId="colBHMUC3KGIJE3PA6RVXKLXFHP3U" ParentColumnId="colPU65PF7LJPOBDCIUAALOMT5GDM"/>
       </Columns>
     </Reference>
-    <Reference Id="refTE4SUWTG5RGNPETFKKYSIT2CS4" DbName="FK_RDX_JS_TASK_SCP" Type="LINK" ChildTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ParentTableId="tblAAU55TOEHJWDRPOYAAYQQ2Y3GB" ExtParentTableId="tbeTEID7IKH55EZVA2VR263H6V5ZI" ConfirmDelete="true" DeleteMode="SET_NULL" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqAAU55TOEHJWDRPOYAAYQQ2Y3GB">
+    <Reference Id="refTE4SUWTG5RGNPETFKKYSIT2CS4" DbName="FK_RDX_JS_TASK_SCP" Type="LINK" ChildTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ParentTableId="tblAAU55TOEHJWDRPOYAAYQQ2Y3GB" ExtParentTableId="tbeTEID7IKH55EZVA2VR263H6V5ZI" ConfirmDelete="true" DeleteMode="SET_NULL" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqAAU55TOEHJWDRPOYAAYQQ2Y3GB" SuppressedWarnings="300100">
       <Columns>
         <Item ChildColumnId="colOUMR2SR6ONCFXNV5Z7HRKETX4U" ParentColumnId="colI4QSJ5PEHJWDRPOYAAYQQ2Y3GB"/>
         <Item ChildColumnId="col3KGCFAFD3BEEDB6F3B5VKDFKMI" ParentColumnId="colWUQ25PISLDNBDJA6ACQMTAIZT4"/>
-      </Columns>
-    </Reference>
-    <Reference Id="refKX62CP72IRESXDOLVPG2SP5OH4" AutoDbName="false" DbName="FK_RDX_JS_JOBSCHDLRUNIT_UNIT" Type="MASTER_DETAIL" ChildTableId="tblYJS3Y5IWARFYRPTIFMUI5YJF3Y" ParentTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ExtParentTableId="tbeJTQCGBUPIHNRDJIEACQMTAIZT4" ConfirmDelete="false" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq5HP4XTP3EGWDBRCRAAIT4AGD7E">
-      <Columns>
-        <Item ChildColumnId="colILKPXYY3VVFZRA272YLTZC6JKM" ParentColumnId="colEVLUYADHR5VDBNSIAAUMFADAIA"/>
-      </Columns>
-    </Reference>
-    <Reference Id="refTSAD3FELR5AYXASNHHHEWZTLOI" AutoDbName="false" DbName="FK_JOBSCHEDULERUNIT_PARENTUNIT" Type="LINK" ChildTableId="tblYJS3Y5IWARFYRPTIFMUI5YJF3Y" ParentTableId="tbl5HP4XTP3EGWDBRCRAAIT4AGD7E" ExtParentTableId="tbeJTQCGBUPIHNRDJIEACQMTAIZT4" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unq5HP4XTP3EGWDBRCRAAIT4AGD7E">
-      <Columns>
-        <Item ChildColumnId="col5JMQGYEISJHFJFA4DZT5XYN4NE" ParentColumnId="colEVLUYADHR5VDBNSIAAUMFADAIA"/>
       </Columns>
     </Reference>
     <Reference Id="refF6XD46FP6FEWDFSXAX42HAQ2RI" DbName="FK_RDX_JS_JOBQUEUE_TASK" Rely="true" Disable="true" Novalidate="true" Type="LINK" ChildTableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" ParentTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ConfirmDelete="false" DeleteMode="NONE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqWZB7K4HLJPOBDCIUAALOMT5GDM">
@@ -4607,6 +4636,11 @@ end;</xsc:Sql>
         <Item ChildColumnId="colOUMGEJUNOFGHFAJ7DVSCUCIP2A" ParentColumnId="colEVLUYADHR5VDBNSIAAUMFADAIA"/>
       </Columns>
     </Reference>
+    <Reference Id="refXHY652GB7RAKNDBMYRW3TMDH2E" AutoDbName="false" DbName="FK_RDX_JS_TASK_DIR" Type="LINK" ChildTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ParentTableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" ConfirmDelete="true" DeleteMode="CASCADE" RestrictCheckMode="ALWAYS" ParentUniqueConstraintId="unqWZB7K4HLJPOBDCIUAALOMT5GDM" SuppressedWarnings="300100">
+      <Columns>
+        <Item ChildColumnId="colC7IXI3MF4ZHHRJGGR7KVS6LL7Y" ParentColumnId="colPU65PF7LJPOBDCIUAALOMT5GDM"/>
+      </Columns>
+    </Reference>
   </References>
   <Sequences>
     <Sequence Id="sqnCE3OBKXMKXOBDCI6AALOMT5GDM" Name="CalendarItemId" DbName="SQN_RDX_JS_CALENDARITEMID" Cycle="false" Order="true" Cache="20">
@@ -4615,19 +4649,19 @@ end;</xsc:Sql>
     <Sequence Id="sqnDDYHOUSBI3OBDCIOAALOMT5GDM" Name="IntervalSchdId" DbName="SQN_RDX_JS_INTERVALSCHDID" Cycle="false" Order="true" Cache="20">
       <Placement PosX="-57" PosY="317"/>
     </Sequence>
-    <Sequence Id="sqnHBHXFR2DI3OBDCIOAALOMT5GDM" Name="EventSchdId" DbName="SQN_RDX_JS_EVENTSCHDID" Cycle="false" MinValue="10" Order="true" Cache="20">
+    <Sequence Id="sqnHBHXFR2DI3OBDCIOAALOMT5GDM" Name="EventSchdId" DbName="SQN_RDX_JS_EVENTSCHDID" StartWith="10" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
       <Placement PosX="716" PosY="514"/>
     </Sequence>
     <Sequence Id="sqnE3T5FJR4I3OBDCIOAALOMT5GDM" Name="CalendarId" DbName="SQN_RDX_JS_CALENDARID" Cycle="false" Order="true" Cache="20">
       <Placement PosX="224" PosY="514"/>
     </Sequence>
-    <Sequence Id="sqnPQ65PF7LJPOBDCIUAALOMT5GDM" Name="SchdUnitJobId" DbName="SQN_RDX_JS_SCHDUNITJOBID" Cycle="false" MinValue="10" Order="true" Cache="20">
-      <Placement PosX="1061" PosY="483"/>
+    <Sequence Id="sqnPQ65PF7LJPOBDCIUAALOMT5GDM" Name="SchdUnitJobId" DbName="SQN_RDX_JS_SCHDUNITJOBID" StartWith="10" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
+      <Placement PosX="1089" PosY="413"/>
     </Sequence>
     <Sequence Id="sqn5R6C2L4MIHNRDJIEACQMTAIZT4" Name="JobId" DbName="SQN_RDX_JS_JOBID" Cycle="false" MinValue="1" Order="true" Cache="20">
       <Placement PosX="1295" PosY="329"/>
     </Sequence>
-    <Sequence Id="sqnMLM5Q2SEI3OBDCIOAALOMT5GDM" Name="EventSchdItemId" DbName="SQN_RDX_JS_EVENTSCHDITEMID" Cycle="false" MinValue="10" Order="true" Cache="20">
+    <Sequence Id="sqnMLM5Q2SEI3OBDCIOAALOMT5GDM" Name="EventSchdItemId" DbName="SQN_RDX_JS_EVENTSCHDITEMID" StartWith="10" IncrementBy="1" Cycle="false" MinValue="1" Order="true" Cache="20">
       <Placement PosX="715" PosY="759"/>
     </Sequence>
     <Sequence Id="sqnNS6EUHKCI3OBDCIOAALOMT5GDM" Name="IntervalSchdItemId" DbName="SQN_RDX_JS_INTERVALSCHDITEMID" Cycle="false" Order="true" Cache="20">
@@ -4637,6 +4671,12 @@ end;</xsc:Sql>
   <Packages>
     <Package Id="pkgXPLP6LU2EZGRNOPNT4KJQNYGJI" Name="RDX_JS_JOB" PurityLevelMask="0">
       <Header>
+        <Item>
+          <Prototype Id="dprB7X2JSXD3ZF27GU3ABRPOXW534" FunctionId="dfnJTODGIFJBZEQNLMVQ5EUYNU5XU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprWEQPI3BS4NAQTGBU6MPGAVIKBQ" FunctionId="dfnLE4U75GSNZDUVPBDT3N3OUWCXE"/>
+        </Item>
         <Item>
           <Prototype Id="dprY65XUFYMZZESVHQWXSJCGB24LE" FunctionId="dfnY65XUFYMZZESVHQWXSJCGB24LE"/>
         </Item>
@@ -4679,18 +4719,34 @@ end;</xsc:Sql>
         <Item>
           <Prototype Id="dprPI2GZQWJMJCP3PAYIK2SN5KZ44" FunctionId="dfnUHZYHDYZRNGDVO27KA3HK55PC4"/>
         </Item>
+        <Item>
+          <Prototype Id="dprRJK6VXO3MJD4LETHZZDKITTYD4" FunctionId="dfnY7NSCGHHGNHGBPOLHWVZA5SWJA"/>
+        </Item>
       </Header>
       <Body>
         <Item>
-          <CustomText Id="dtxQHFSPZCBWVBBZBSWD5BXZK24KA" Name="constants">
-            <Text>
+          <Function Id="dfnJTODGIFJBZEQNLMVQ5EUYNU5XU" Name="constTaskExecutorClassName" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:Sql>TASK_EXECUTOR_CLASS_NAME constant varchar2(200) := 'org.radixware.ads.mdlOWL3XYSM2ZDNHOW7W7XKT54GRE.server.adc2YO4JA7JKJGGBLTARIEQHUSHGI';
-TASK_EXECUTOR_METHOD_NAME constant varchar2(200) := 'mthA4SZ4ODO4NFL3A5KMYIJ54MTZA';
-</xsc:Sql>
+                <xsc:Sql>is
+begin
+    return 'org.radixware.ads.mdlOWL3XYSM2ZDNHOW7W7XKT54GRE.server.adc2YO4JA7JKJGGBLTARIEQHUSHGI';
+end;</xsc:Sql>
               </xsc:Item>
-            </Text>
-          </CustomText>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnLE4U75GSNZDUVPBDT3N3OUWCXE" Name="constTaskExecutorMethodName" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    return 'mthA4SZ4ODO4NFL3A5KMYIJ54MTZA';
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
         </Item>
         <Item>
           <Function Id="dfn6MVF2B3JANANXPFYCKE574TFME" Name="calcPriority" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
@@ -4820,7 +4876,7 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbFuncCall FuncId="dfnSUT2P5CEAFCWFCGZAXLTZ2HOGU">
-                  <xsc:Sql>RDX_JS_JOB.schedule(iAllowRerun => pAllowRerun, tJobTime => systimestamp+numtodsinterval(iDelayMillis/1000, 'SECOND'), sJobClass => sJobClass, sJobMethod => sJobMethod, iJobPriority => iJobPriority, iJobBoosting => iJobBoosting, sExecRequesterId => sExecRequesterId, sCreatorEntityGuid => sCreatorEntityGuid, sCreatorPid => sCreatorPid, sTitle => sTitle, sScpName => sScpName, iTaskId => iTaskId)</xsc:Sql>
+                  <xsc:Sql>RDX_JS_JOB.schedule(iAllowRerun => pAllowRerun, tJobTime => systimestamp+numtodsinterval(iDelayMillis/1000, 'SECOND'), sJobClass => sJobClass, sJobMethod => sJobMethod, iJobPriority => iJobPriority, iJobBoosting => iJobBoosting, sExecRequesterId => sExecRequesterId, sCreatorEntityGuid => sCreatorEntityGuid, sCreatorPid => sCreatorPid, sTitle => sTitle, sScpName => sScpName, iTaskId => iTaskId, pAadcMemberId => aadcMemberId, threadPoolClassGuid => threadPoolClassGuid, threadPoolPid => threadPoolPid, threadKey => threadKey)</xsc:Sql>
                   <xsc:Params>
                     <xsc:Param ParamId="dfpPHFBG2J2RJDH5B3NY3QFWPF7GU">
                       <xsc:Value>pAllowRerun</xsc:Value>
@@ -4858,6 +4914,18 @@ begin
                     <xsc:Param ParamId="dfpRT6NUJR6JNCKLIGA75Y3HJJYSM">
                       <xsc:Value>iTaskId</xsc:Value>
                     </xsc:Param>
+                    <xsc:Param ParamId="dfpETFKRDGM3JA77GCJPGKTS5UISM">
+                      <xsc:Value>aadcMemberId</xsc:Value>
+                    </xsc:Param>
+                    <xsc:Param ParamId="dfpJGAL6BVBY5A7TOU3NNWTKWHLIU">
+                      <xsc:Value>threadPoolClassGuid</xsc:Value>
+                    </xsc:Param>
+                    <xsc:Param ParamId="dfpPCRJ5HXU2BGQVPURAMWAWCSMPE">
+                      <xsc:Value>threadPoolPid</xsc:Value>
+                    </xsc:Param>
+                    <xsc:Param ParamId="dfpNQP52GFXDNE7PKICEWOZEADPUY">
+                      <xsc:Value>threadKey</xsc:Value>
+                    </xsc:Param>
                   </xsc:Params>
                 </xsc:DbFuncCall>
               </xsc:Item>
@@ -4889,6 +4957,18 @@ end;</xsc:Sql>
               <Param Id="dfpPZGEP2DS2JHAVK5AXDTPHUNCFU" Name="iTaskId" DbType="integer" Direction="0" ValType="2">
                 <DefaultVal>null</DefaultVal>
               </Param>
+              <Param Id="dfpN5TFGO34MFC2ZHKYINDNR7OC4Y" Name="aadcMemberId" DbType="integer" Direction="0" ValType="2">
+                <DefaultVal>null</DefaultVal>
+              </Param>
+              <Param Id="dfpZCCZAYQLTBCU5BVM32XPG47MPM" Name="threadPoolClassGuid" DbType="varchar2" Direction="0" ValType="21">
+                <DefaultVal>null</DefaultVal>
+              </Param>
+              <Param Id="dfpEEWQ64ER5JBXNFT5OE6ZGOZZNI" Name="threadPoolPid" DbType="varchar2" Direction="0" ValType="21">
+                <DefaultVal>null</DefaultVal>
+              </Param>
+              <Param Id="dfp5D5HFF3N2NBUFEZT4S3ENVAY5M" Name="threadKey" DbType="integer" Direction="0" ValType="2">
+                <DefaultVal>null</DefaultVal>
+              </Param>
             </Params>
           </Function>
         </Item>
@@ -4898,7 +4978,7 @@ end;</xsc:Sql>
               <xsc:Item>
                 <xsc:Sql>is
    iJobNewID number(18);
-   
+   vAadcMemberId integer;
 begin
    select </xsc:Sql>
               </xsc:Item>
@@ -4909,7 +4989,35 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>.NextVal into iJobNewID from dual;
-               
+   if pAadcMemberId is null then
+      select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="colM2PT6HH34FHXRHWAOZLL6HQATU" Owner="NONE">
+                  <xsc:Sql>AADCMEMBERID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> into vAadcMemberId from </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E">
+                  <xsc:Sql>RDX_SYSTEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblX5TD7JDVVHWDBROXAAIT4AGD7E" PropId="col27EXNSNZRHWDBRCXAAIT4AGD7E" Owner="NONE">
+                  <xsc:Sql>ID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> = 1;
+   else
+      vAadcMemberId := pAadcMemberId;
+   end if;               
    insert into </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -5006,7 +5114,8 @@ begin
                 </xsc:PropSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>, </xsc:Sql>
+                <xsc:Sql>, 
+        </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colI5ZY2POKPRDRVK3IC2OJNUZNZU" Owner="NONE">
@@ -5038,8 +5147,41 @@ begin
                 </xsc:PropSqlName>
               </xsc:Item>
               <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colHQPRKNPYGZFVRPPKUDNLNLD5G4" Owner="NONE">
+                  <xsc:Sql>AADCMEMBERID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colVTHNRM2E6ZHQ3CN4YNPTZZ7VJ4" Owner="NONE">
+                  <xsc:Sql>THREADPOOLCLASSGUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colGGVHH5VP2RA3NBSWE6F4COHET4" Owner="NONE">
+                  <xsc:Sql>THREADPOOLPID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colSQ62QBZJ6NBR5HDABNEIOOTF7U" Owner="NONE">
+                  <xsc:Sql>THREADKEY</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
                 <xsc:Sql>)
-   values (iJobNewID, sCreatorEntityGuid, sCreatorPid,tJobTime, sJobClass, sJobMethod, nvl(iJobPriority,5), nvl(iJobPriority,5), iJobBoosting, sExecRequesterId, sTitle, sScpName, iTaskId, </xsc:Sql>
+   values (iJobNewID, sCreatorEntityGuid, sCreatorPid,tJobTime, sJobClass, sJobMethod, nvl(iJobPriority,5), nvl(iJobPriority,5), iJobBoosting, sExecRequesterId, sTitle, 
+        sScpName, iTaskId, </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbFuncCall FuncId="dfnC5VJNTGFHNELBBYQ5JA36XUXB4">
@@ -5047,8 +5189,7 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(), iAllowRerun);
-   
+                <xsc:Sql>(), iAllowRerun, vAadcMemberId, threadPoolClassGuid, threadPoolPid, threadKey);
   return iJobNewID;
 end;</xsc:Sql>
               </xsc:Item>
@@ -5074,6 +5215,18 @@ end;</xsc:Sql>
                 <DefaultVal>null</DefaultVal>
               </Param>
               <Param Id="dfpRT6NUJR6JNCKLIGA75Y3HJJYSM" Name="iTaskId" DbType="integer" Direction="0" ValType="2">
+                <DefaultVal>null</DefaultVal>
+              </Param>
+              <Param Id="dfpETFKRDGM3JA77GCJPGKTS5UISM" Name="pAadcMemberId" DbType="integer" Direction="0" ValType="2">
+                <DefaultVal>null</DefaultVal>
+              </Param>
+              <Param Id="dfpJGAL6BVBY5A7TOU3NNWTKWHLIU" Name="threadPoolClassGuid" DbType="varchar2" Direction="0" ValType="21">
+                <DefaultVal>null</DefaultVal>
+              </Param>
+              <Param Id="dfpPCRJ5HXU2BGQVPURAMWAWCSMPE" Name="threadPoolPid" DbType="varchar2" Direction="0" ValType="21">
+                <DefaultVal>null</DefaultVal>
+              </Param>
+              <Param Id="dfpNQP52GFXDNE7PKICEWOZEADPUY" Name="threadKey" DbType="integer" Direction="0" ValType="2">
                 <DefaultVal>null</DefaultVal>
               </Param>
             </Params>
@@ -5736,7 +5889,15 @@ begin
                 </xsc:PropSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>) || ' "' || job_rec.</xsc:Sql></xsc:Item><xsc:Item><xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colGYABEOPPRBD53G55ZT4ZW24ZIQ" Owner="NONE"><xsc:Sql>TITLE</xsc:Sql></xsc:PropSqlName></xsc:Item><xsc:Item><xsc:Sql> || '"' || ' is already executing by ' || job_rec.</xsc:Sql>
+                <xsc:Sql>) || ' "' || job_rec.</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="colGYABEOPPRBD53G55ZT4ZW24ZIQ" Owner="NONE">
+                  <xsc:Sql>TITLE</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> || '"' || ' is already executing by ' || job_rec.</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblHRWUWEEMIHNRDJIEACQMTAIZT4" PropId="col2RDV26FFFVAQFKMPGQ2BHZT36Y" Owner="NONE">
@@ -5850,6 +6011,7 @@ end;</xsc:Sql>
   taskTitle varchar2(500);
   curStatus varchar2(100);
   actualExecTime date;
+  vAadcMemberId integer;
 begin
   select           
     t.</xsc:Sql>
@@ -5952,8 +6114,17 @@ begin
                 </xsc:PropSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> is null) 
-    into priority, priorityBoostingSpeed, curStatus, taskTitle, scpName
+                <xsc:Sql> is null),
+    t.</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblWZB7K4HLJPOBDCIUAALOMT5GDM" PropId="col4W7CE76W7VATBNLH5FLEE3FAVA" Owner="NONE">
+                  <xsc:Sql>AADCMEMBERID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> 
+    into priority, priorityBoostingSpeed, curStatus, taskTitle, scpName, vAadcMemberId
   from </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -6016,49 +6187,27 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbFuncCall FuncId="dfnSUT2P5CEAFCWFCGZAXLTZ2HOGU">
-                  <xsc:Sql>RDX_JS_JOB.schedule(iAllowRerun => 0, tJobTime => actualExecTime, sJobClass => TASK_EXECUTOR_CLASS_NAME, sJobMethod => TASK_EXECUTOR_METHOD_NAME, iJobPriority => priority, iJobBoosting => priorityBoostingSpeed, sExecRequesterId => 'ScheduledTask-'|| taskId, sCreatorEntityGuid => 'tblWZB7K4HLJPOBDCIUAALOMT5GDM', sCreatorPid => taskId, sTitle => jobTitle, sScpName => scpName, iTaskId => taskId)</xsc:Sql>
-                  <xsc:Params>
-                    <xsc:Param ParamId="dfpPHFBG2J2RJDH5B3NY3QFWPF7GU">
-                      <xsc:Value>0</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfpKSZYM3X45FDABJPXRLAJZ4LTXU">
-                      <xsc:Value>actualExecTime</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfpVP2ODRQGONDBPC6N7KJPTR4GWQ">
-                      <xsc:Value>TASK_EXECUTOR_CLASS_NAME</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfpGBVCQA5DPNBLFBORTRDDWJR3BE">
-                      <xsc:Value>TASK_EXECUTOR_METHOD_NAME</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfpWY2QU7EVZ5B27C4IFO3Q3Y5FTA">
-                      <xsc:Value>priority</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfp3EUMC36V3RACNG44J6D7HVGVWU">
-                      <xsc:Value>priorityBoostingSpeed</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfpLTFOV6MBHBFILAAPR5J6MYSZQY">
-                      <xsc:Value>'ScheduledTask-'|| taskId</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfpJLHEVZIDUBFFRMEANWZBGXINCY">
-                      <xsc:Value>'tblWZB7K4HLJPOBDCIUAALOMT5GDM'</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfpK4KPZG2STBFYHBWYMKH6YUKXRY">
-                      <xsc:Value>taskId</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfpZJWMADOAW5GWTJVMHRIMHD3TVM">
-                      <xsc:Value>jobTitle</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfpJIBCIRHJ7BABFICAYSWTNBURSA">
-                      <xsc:Value>scpName</xsc:Value>
-                    </xsc:Param>
-                    <xsc:Param ParamId="dfpRT6NUJR6JNCKLIGA75Y3HJJYSM">
-                      <xsc:Value>taskId</xsc:Value>
-                    </xsc:Param>
-                  </xsc:Params>
+                  <xsc:Sql>RDX_JS_JOB.schedule</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>;
+                <xsc:Sql>(iAllowRerun => 0, tJobTime => actualExecTime, sJobClass => </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnJTODGIFJBZEQNLMVQ5EUYNU5XU">
+                  <xsc:Sql>RDX_JS_JOB.constTaskExecutorClassName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, sJobMethod => </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnLE4U75GSNZDUVPBDT3N3OUWCXE">
+                  <xsc:Sql>RDX_JS_JOB.constTaskExecutorMethodName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, iJobPriority => priority, iJobBoosting => priorityBoostingSpeed, sExecRequesterId => 'ScheduledTask-'|| taskId, sCreatorEntityGuid => 'tblWZB7K4HLJPOBDCIUAALOMT5GDM', sCreatorPid => taskId, sTitle => jobTitle, sScpName => scpName, iTaskId => taskId, pAadcMemberId => vAadcMemberId);
     
   insert into </xsc:Sql>
               </xsc:Item>
@@ -6418,7 +6567,23 @@ end;
                 <xsc:Sql>is
 begin
     
-    if pClassName = TASK_EXECUTOR_CLASS_NAME and pMethodName = TASK_EXECUTOR_METHOD_NAME then
+    if pClassName = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnJTODGIFJBZEQNLMVQ5EUYNU5XU">
+                  <xsc:Sql>RDX_JS_JOB.constTaskExecutorClassName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> and pMethodName = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnLE4U75GSNZDUVPBDT3N3OUWCXE">
+                  <xsc:Sql>RDX_JS_JOB.constTaskExecutorMethodName</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> then
         return 1;
     end if;
     return 0;
@@ -6431,10 +6596,54 @@ end;</xsc:Sql>
             </Params>
           </Function>
         </Item>
+        <Item>
+          <Function Id="dfnY7NSCGHHGNHGBPOLHWVZA5SWJA" Name="adjustToNearest10Sec" ResultDbType="timestamp" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="50">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    tempTimestamp timestamp;
+begin
+    tempTimestamp := iTimestamp + interval '5' second;
+    return tempTimestamp - NUMTODSINTERVAL(mod(extract (second from tempTimestamp), 10), 'SECOND');
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpDH7HHG2L3FBKXMMIQMLFSIWBPY" Name="iTimestamp" DbType="timestamp" Direction="0" ValType="50"/>
+            </Params>
+          </Function>
+        </Item>
       </Body>
     </Package>
     <Package Id="pkgVYNJ4H375FFY7LF3EAKG4TZYF4" Name="RDX_JS_CalendarSchedule" PurityLevelMask="0">
       <Header>
+        <Item>
+          <Prototype Id="dprFMSQILN355DLBPVN7X3PPRLLII" FunctionId="dfn5RARDUHJ3NGOJOPUH6V22LCT24"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprRKXIIOY2T5BSPPR5UZARY5DCF4" FunctionId="dfnUPYTRH33BBCY7BKF5JIOTXKBKU"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprPKDBVQPNYBHRFMTNODGKOVIKFM" FunctionId="dfnVB6QX4E66NCRVLALABKUKGUB24"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprDL53JQSEHVA2HBDMPX56LXSO6U" FunctionId="dfnCLTK5VHNGJAP3IDXS6IPD3QL3Y"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprP4E7YQEBSRHZZBXXMI4JT7UFW4" FunctionId="dfnYOBRQF5RJ5AJPOYP76C5LMMRD4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dpr3ZRLFOQN35BMVHHZI4NQLCBQKY" FunctionId="dfnZYQYOKEN65D7PI6Q4ZWMMUULLY"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprXRN5I2NIPBFB5BT4ZVEVXP7N4A" FunctionId="dfnKMLM57Y24VCGTOPXUWMJCSZ4A4"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprCKBJEEKIEVFGTGUHNMMJAIPRBQ" FunctionId="dfnRDVJG6E5AFEGDKRMWUFDC5ZKNE"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprHFN34AQEXNFTZNAXCK2F3M5V64" FunctionId="dfnHGFMWQM7KJHQ5B33OY6ZOIZWTU"/>
+        </Item>
         <Item>
           <Prototype Id="dprDQOUMTDH4BAENJ6QXDPQGN7KXI" FunctionId="dfnMU7ICIDRQZFCVHJZPCFW2HWNR4"/>
         </Item>
@@ -6457,107 +6666,118 @@ end;</xsc:Sql>
             <Text>
               <xsc:Item>
                 <xsc:Sql>--constants
-class_guid_abs_calendar CONSTANT VARCHAR(29) := 'aclVV67ZO4QF5GJ7KY7J2AW6UMQUI';
-class_guid_day_of_week CONSTANT VARCHAR(29) := 'aclHUCM56OUWZDBXCTBJLJ2S6QQ7E';
-class_guid_day_of_month CONSTANT VARCHAR(29) := 'aclPJITOKTE6ZDY5OXI7Z53SB222I';
-class_guid_abs_date CONSTANT VARCHAR(29) := 'aclRFJRGJ5REZDHDDTBB5R34QG4GQ';
-class_guid_inc_calendar CONSTANT VARCHAR(29) := 'aclDWOG2C7CWVCWBFOEMH62ET56HI';
-foreread_size CONSTANT INTEGER := 100; --days</xsc:Sql>
+foreread_size CONSTANT INTEGER := 400; --days</xsc:Sql>
               </xsc:Item>
             </Text>
           </CustomText>
         </Item>
         <Item>
-          <CustomText Id="dtxAERQPPKRKJFL7OXVMOBEH3NIQ4" Name="variables">
-            <Text>
+          <Function Id="dfn5RARDUHJ3NGOJOPUH6V22LCT24" Name="constClassGuidAbsCalendar" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:Sql>/*
-  ЭЛЕМЕНТЫ КАЛЕНДАРЯ
-*/
---элемент со свойствами
-TYPE TCalendarItem IS RECORD (
-  classGuid </xsc:Sql>
+                <xsc:Sql>is
+begin
+    return 'aclVV67ZO4QF5GJ7KY7J2AW6UMQUI';
+end;</xsc:Sql>
               </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnUPYTRH33BBCY7BKF5JIOTXKBKU" Name="constClassGuidDayOfWeek" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colNQYSFERBHRCIJA4XABBUNWKGEM" Owner="TABLE">
-                  <xsc:Sql>RDX_JS_CALENDARITEM.CLASSGUID</xsc:Sql>
-                </xsc:PropSqlName>
+                <xsc:Sql>is
+begin
+    return 'aclHUCM56OUWZDBXCTBJLJ2S6QQ7E';
+end;</xsc:Sql>
               </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnVB6QX4E66NCRVLALABKUKGUB24" Name="constClassGuidDayOfMonth" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:Sql>%Type,
-  oper </xsc:Sql>
+                <xsc:Sql>is
+begin
+    return 'aclPJITOKTE6ZDY5OXI7Z53SB222I';
+end;</xsc:Sql>
               </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnCLTK5VHNGJAP3IDXS6IPD3QL3Y" Name="constClassGuidAbsDate" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colFDW6KVZ6I3OBDCIOAALOMT5GDM" Owner="TABLE">
-                  <xsc:Sql>RDX_JS_CALENDARITEM.OPER</xsc:Sql>
-                </xsc:PropSqlName>
+                <xsc:Sql>is
+begin
+    return 'aclRFJRGJ5REZDHDDTBB5R34QG4GQ';
+end;</xsc:Sql>
               </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnYOBRQF5RJ5AJPOYP76C5LMMRD4" Name="constClassGuidIncCalendar" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:Sql>%Type,
-  offsetDir </xsc:Sql>
+                <xsc:Sql>is
+begin
+    return 'aclDWOG2C7CWVCWBFOEMH62ET56HI';
+end;</xsc:Sql>
               </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnZYQYOKEN65D7PI6Q4ZWMMUULLY" Name="constClassGuidDaily" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colDKQ7RUH5YZGIZMYREMQUYMV4OM" Owner="TABLE">
-                  <xsc:Sql>RDX_JS_CALENDARITEM.OFFSETDIR</xsc:Sql>
-                </xsc:PropSqlName>
+                <xsc:Sql>is
+begin
+    return 'aclWCDMIFJ755C37LMG7MTQA4DEZQ';
+end;</xsc:Sql>
               </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnKMLM57Y24VCGTOPXUWMJCSZ4A4" Name="constClassGuidDayOfQuarter" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:Sql>%Type,
-  offset </xsc:Sql>
+                <xsc:Sql>is
+begin
+    return 'aclZMU6F5DMMZCHPPRW4E4ISFQZ4U';
+end;</xsc:Sql>
               </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnRDVJG6E5AFEGDKRMWUFDC5ZKNE" Name="constClassGuidDayOfYear" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colYTXRDPZ6I3OBDCIOAALOMT5GDM" Owner="TABLE">
-                  <xsc:Sql>RDX_JS_CALENDARITEM.OFFSET</xsc:Sql>
-                </xsc:PropSqlName>
+                <xsc:Sql>is
+begin
+    return 'acl3A5HLW7W7ZFE3E6QYCXAC5CYE4';
+end;</xsc:Sql>
               </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnHGFMWQM7KJHQ5B33OY6ZOIZWTU" Name="constKeyFormat" ResultDbType="varchar2" Deterministic="false" CacheResult="false" PurityLevelMask="15" ResultValType="21">
+            <Body>
               <xsc:Item>
-                <xsc:Sql>%Type,
-  absDate </xsc:Sql>
+                <xsc:Sql>is
+begin
+    return 'YYYY-MM-DD';
+end;</xsc:Sql>
               </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colAZNNMYJ7I3OBDCIOAALOMT5GDM" Owner="TABLE">
-                  <xsc:Sql>RDX_JS_CALENDARITEM.ABSDATE</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>%Type,
-  incCalendarId </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colFQ4EXXZ6I3OBDCIOAALOMT5GDM" Owner="TABLE">
-                  <xsc:Sql>RDX_JS_CALENDARITEM.INCCALENDARID</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>%Type,
-  dayOfWeek int);
-
---nested table элементов календаря
-TYPE TItemsNestedTable IS TABLE OF TCalendarItem;
-TYPE TItemsByCalendar IS TABLE OF TItemsNestedTable INDEX BY binary_integer;
-cachedItems TItemsByCalendar;
-
-/*
-  ЗАКЭШИРОВАННЫЙ ПЕРОИД ДАТ КАЛЕНДАРЯ
-*/
-TYPE TDateById IS TABLE OF DATE INDEX BY binary_integer;
-cachedPeriodsBegin TDateById;
-cachedPeriodsEnd TDateById;
-
-/*
-  ЗАКЭШИРОВАННЫЕ ДАТЫ КАЛЕНДАРЯ
-*/
---входит или нет такая дата в календарь (кэш дат)
-TYPE TDateMap is TABLE of BOOLEAN INDEX BY VARCHAR2(10);         -- key='YYYY-MM-DD'
-key_format CONSTANT varchar2(10) := 'YYYY-MM-DD';
-TYPE TDateMapById IS TABLE OF TDateMap INDEX BY binary_integer;
-cachedDates TDateMapById;
-
---время последнего обновления таблицы календарей
-lastUpdateTime date;</xsc:Sql>
-              </xsc:Item>
-            </Text>
-          </CustomText>
+            </Body>
+          </Function>
         </Item>
         <Item>
           <Prototype Id="dprYVBNU3PXGNA4FNJAHJMWMNTIP4" FunctionId="dfnGN6KUPGETVDY7MWDELWHYWMPQI"/>
@@ -6620,7 +6840,15 @@ end;</xsc:Sql>
               <xsc:Item>
                 <xsc:Sql>is
 begin
-    return TO_CHAR(pDate, key_format);
+    return TO_CHAR(pDate, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnHGFMWQM7KJHQ5B33OY6ZOIZWTU">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constKeyFormat</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
 end;</xsc:Sql>
               </xsc:Item>
             </Body>
@@ -6635,12 +6863,76 @@ end;</xsc:Sql>
               <xsc:Item>
                 <xsc:Sql>is
 begin
-    return TO_DATE(pKey, key_format);
+    return TO_DATE(pKey, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnHGFMWQM7KJHQ5B33OY6ZOIZWTU">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constKeyFormat</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>);
 end;</xsc:Sql>
               </xsc:Item>
             </Body>
             <Params>
               <Param Id="dfpPE2SJ7ZTZRCCXI6YYEYUVQXVK4" Name="pKey" DbType="varchar2" Direction="0" ValType="21"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnPQJXDPMSVZDYZHT644Z5DFRDNY" Name="isDayInQuarter" ResultDbType="integer" Deterministic="true" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+ outDate date;
+begin
+  if pFromOffset>0 then
+    select trunc(pDate,'q')+pOffset-1 into outDate from dual;
+  else 
+    select trunc(add_months(pDate, 3),'q') -pOffset into outDate from dual;
+  end if;
+  
+  if outDate = pDate then
+   return 1;
+  else 
+   return 0;
+  end if; 
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpCBVBLSXKYRECZLV7ESH75ZGX6U" Name="pFromOffset" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpEZALQ3IR4FCYVEWDP7UE5E5YM4" Name="pOffset" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfp43SQSYHKAFHWLG3A6UQVDG7U5I" Name="pDate" DbType="date" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnAMURIFW76VCNXDWWLAXSDIMBVA" Name="isDayInYear" ResultDbType="integer" Deterministic="true" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+outDate date;
+begin
+ if pFromOffset>0 then
+   select trunc(pDate,'YEAR')+pOffset-1 into outDate from dual;
+ else 
+   select trunc(add_months(pDate, 12),'YEAR') -pOffset into outDate from dual;
+ end if;
+
+ if outDate = pDate then
+  return 1;
+ else 
+  return 0;
+ end if; 
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpFJJ5IRD3O5B4NJC3NQFDYPQHYI" Name="pFromOffset" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpMPICKKDW5RCMFFCX2LRGNRAMHU" Name="pOffset" DbType="integer" Direction="0" ValType="2"/>
+              <Param Id="dfpZA25QDWGWRC7FGH2E6YT5FVDTA" Name="pDate" DbType="date" Direction="0" ValType="12"/>
             </Params>
           </Function>
         </Item>
@@ -6735,8 +7027,32 @@ end;</xsc:Sql>
               <xsc:Item>
                 <xsc:Sql>;   
     sCur varchar2(10);
-    items TItemsNestedTable := TItemsNestedTable();
-    curItem TCalendarItem;
+    items </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.TItemsNestedTable := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.TItemsNestedTable();
+    curItem </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.TCalendarItem;
     vCalendarClassGuid varchar2(30);
 begin
     select </xsc:Sql>
@@ -6765,7 +7081,15 @@ begin
               <xsc:Item>
                 <xsc:Sql> = pId;
     
-    IF vCalendarClassGuid != class_guid_abs_calendar THEN
+    IF vCalendarClassGuid != </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfn5RARDUHJ3NGOJOPUH6V22LCT24">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constClassGuidAbsCalendar</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
         raise_application_error(-20001, 'Wrong calendar type');
     END IF;
 
@@ -6825,7 +7149,15 @@ begin
               <xsc:Item>
                 <xsc:Sql>;
 
-        IF curItem.classGuid = class_guid_day_of_week THEN
+        IF curItem.classGuid = </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnUPYTRH33BBCY7BKF5JIOTXKBKU">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constClassGuidDayOfWeek</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
             IF curItem.OffsetDir &lt; 0 THEN
                 curItem.dayOfWeek :=  curItem.offset + 8;
             ELSE
@@ -6837,7 +7169,15 @@ begin
         items(items.LAST) := curItem;
     END LOOP;
 
-    cachedItems(pId) := items;
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedItems(pId) := items;
 end;</xsc:Sql>
               </xsc:Item>
             </Body>
@@ -6875,16 +7215,88 @@ BEGIN
               <xsc:Item>
                 <xsc:Sql>;
     
-    IF lastUpdateTime is null or vLastUp != lastUpdateTime THEN
-        cachedItems.DELETE();
-        cachedPeriodsBegin.DELETE();
-        cachedItems.DELETE();
-        cachedPeriodsEnd.DELETE();
-        cachedDates.DELETE();
-        lastUpdateTime := vLastUp;
+    IF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRONV6WQNBVBJXHUKHMPE6DMIMI">
+                  <xsc:Sql>RDX_JS_Vars.getLastUpdateTime</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> is null or vLastUp != </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRONV6WQNBVBJXHUKHMPE6DMIMI">
+                  <xsc:Sql>RDX_JS_Vars.getLastUpdateTime</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedItems.DELETE();
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedPeriodsBegin.DELETE();
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedItems.DELETE();
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedPeriodsEnd.DELETE();
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates.DELETE();
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnGT3V5VRN45CINCOUQAJP2WQOEU">
+                  <xsc:Sql>RDX_JS_Vars.setLastUpdateTime</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vLastUp);
     END IF;
 
-    IF not cachedItems.EXISTS(pId) THEN
+    IF not </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedItems.EXISTS(pId) THEN
         </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -6913,18 +7325,68 @@ end;</xsc:Sql>
             <Body>
               <xsc:Item>
                 <xsc:Sql>is
-    vItems CONSTANT TItemsNestedTable := cachedItems(pId);
+    vItems CONSTANT </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.TItemsNestedTable := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedItems(pId);
     vCurDate DATE := pBegin;
-    vDates TDateMap;          
-    vCurItem TCalendarItem;
+    vDates </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.TDateMap;          
+    vCurItem </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.TCalendarItem;
     vCounter INT;
     vResult BOOLEAN;
     vDayMatches BOOLEAN;
     vIsInIncCalendar BOOLEAN;
 begin
-    IF cachedDates.EXISTS(pId) THEN
-        vDates := cachedDates(pId);
+    IF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates.EXISTS(pId) THEN
+        vDates := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates(pId);
     END IF;
+    
+    
     
     --dates loop
     WHILE vCurDate &lt;= pEnd LOOP
@@ -6935,9 +7397,56 @@ begin
         vCounter := vItems.FIRST;
         WHILE vCounter IS NOT NULL LOOP
             vCurItem := vItems(vCounter);
+            
             CASE vCurItem.classGuid
-                WHEN class_guid_day_of_week THEN
-                    IF </xsc:Sql>
+                WHEN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnRDVJG6E5AFEGDKRMWUFDC5ZKNE">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constClassGuidDayOfYear</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
+                    vDayMatches := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnAMURIFW76VCNXDWWLAXSDIMBVA">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.isDayInYear</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vCurItem.OffsetDir, vCurItem.Offset, vCurDate)=1;
+            
+                WHEN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnKMLM57Y24VCGTOPXUWMJCSZ4A4">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constClassGuidDayOfQuarter</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
+                    vDayMatches := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnPQJXDPMSVZDYZHT644Z5DFRDNY">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.isDayInQuarter</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(vCurItem.OffsetDir, vCurItem.Offset, vCurDate)=1;            
+            
+                WHEN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnUPYTRH33BBCY7BKF5JIOTXKBKU">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constClassGuidDayOfWeek</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
+                    vDayMatches := </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbFuncCall FuncId="dfnFFNJ6LNZBRH67L2PMGMKQF5SIA">
@@ -6950,11 +7459,16 @@ begin
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql> = vCurItem.dayOfWeek THEN
-                        vDayMatches := true;
-                    END IF;
-
-                WHEN class_guid_day_of_month THEN
+                <xsc:Sql> = vCurItem.dayOfWeek;
+                WHEN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnVB6QX4E66NCRVLALABKUKGUB24">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constClassGuidDayOfMonth</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
                     IF vCurItem.OffsetDir > 0 THEN
                         vDayMatches := </xsc:Sql>
               </xsc:Item>
@@ -7000,10 +7514,37 @@ begin
                 <xsc:Sql> + 1);
                     END IF;
 
-                WHEN class_guid_abs_date THEN
+                WHEN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnCLTK5VHNGJAP3IDXS6IPD3QL3Y">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constClassGuidAbsDate</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
                     vDayMatches := vCurDate = vCurItem.AbsDate;
+                   
+                WHEN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnZYQYOKEN65D7PI6Q4ZWMMUULLY">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constClassGuidDaily</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
+                    vDayMatches := true;
 
-                WHEN class_guid_inc_calendar THEN
+                WHEN </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYOBRQF5RJ5AJPOYP76C5LMMRD4">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constClassGuidIncCalendar</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> THEN
                     vIsInIncCalendar := </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -7022,17 +7563,28 @@ begin
               <xsc:Item>
                 <xsc:Sql>;
                     IF vIsInIncCalendar is not null THEN
-                         vResult := (vCurItem.oper = '+' and vIsInIncCalendar = true) or (vCurItem.oper = '-' and vIsInIncCalendar = false); 
+                         vResult := (vCurItem.oper = '+' and vIsInIncCalendar = true) or 
+                         (vCurItem.oper = '-' and 
+                         vIsInIncCalendar = true -- change in RADIX-12059 from 'false' to 'true'
+                         ); 
                     END IF;
             END CASE;
 
-            if vCurItem.classGuid != class_guid_inc_calendar and vDayMatches THEN
+            if vCurItem.classGuid != </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYOBRQF5RJ5AJPOYP76C5LMMRD4">
+                  <xsc:Sql>RDX_JS_CalendarSchedule.constClassGuidIncCalendar</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> and vDayMatches THEN
                 vResult := vCurItem.Oper = '+';
             END IF;
-
+            
             vCounter := vItems.NEXT(vCounter);
         END LOOP; --items loop
-
+        
         IF vResult IS NOT NULL THEN
             vDates(</xsc:Sql>
               </xsc:Item>
@@ -7054,7 +7606,15 @@ begin
 
     END LOOP; --dates loop
 
-    cachedDates(pId) := vDates;
+    </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates(pId) := vDates;
 end;
 </xsc:Sql>
               </xsc:Item>
@@ -7093,17 +7653,41 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>;
-
-    if not cachedPeriodsBegin.EXISTS(pId) THEN
+    
+    if not </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedPeriodsBegin.EXISTS(pId) THEN
         vNeedExtension := true;
     else
-        vBegin := cachedPeriodsBegin(pId);
-        vEnd := cachedPeriodsEnd(pId);
+        vBegin := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedPeriodsBegin(pId);
+        vEnd := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedPeriodsEnd(pId);
         if (ABS(vBegin - pDate) &lt; foreread_size) or (ABS(vEnd - pDate) &lt; foreread_size) THEN
             vNeedExtension := true;
         end if; 
     end if;
-
+    
     if vNeedExtension THEN
         vNewBegin := pDate - foreread_size;
         if (vBegin is null) or (vNewBegin &lt; vBegin) THEN
@@ -7164,8 +7748,24 @@ begin
                 <xsc:Sql>;
             vEnd := vNewEnd;
         end if;
-        cachedPeriodsBegin(pId) := vBegin;
-        cachedPeriodsEnd(pId) := vEnd;
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedPeriodsBegin(pId) := vBegin;
+        </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedPeriodsEnd(pId) := vEnd;
     end if;
 end;</xsc:Sql>
               </xsc:Item>
@@ -7185,7 +7785,7 @@ begin
     IF pDate IS NULL THEN
         return NULL;
     END IF;
-
+    
     </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -7204,8 +7804,24 @@ begin
               <xsc:Item>
                 <xsc:Sql>;
 
-    IF cachedDates.EXISTS(pId)
-            and cachedDates(pId).EXISTS(</xsc:Sql>
+    IF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates.EXISTS(pId)
+            and </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates(pId).EXISTS(</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbFuncCall FuncId="dfnO6TZXZ3V5FDRVFUWMQQSFJIYRI">
@@ -7219,7 +7835,15 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>) THEN
-        return cachedDates(pId)(</xsc:Sql>
+        return </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates(pId)(</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:DbFuncCall FuncId="dfnO6TZXZ3V5FDRVFUWMQQSFJIYRI">
@@ -7311,7 +7935,15 @@ begin
               <xsc:Item>
                 <xsc:Sql>;
 
-    IF cachedDates.EXISTS(pId) THEN
+    IF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates.EXISTS(pId) THEN
         vIndex := </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -7327,10 +7959,26 @@ begin
               <xsc:Item>
                 <xsc:Sql>;
         FOR i in 1..1000 LOOP
-            vIndex := cachedDates(pId).NEXT(vIndex);      
+            vIndex := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates(pId).NEXT(vIndex);      
             IF vIndex is null THEN 
                 return null;
-            ELSIF cachedDates(pId)(vIndex) = true THEN
+            ELSIF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates(pId)(vIndex) = true THEN
                 return </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -7452,7 +8100,15 @@ begin
               <xsc:Item>
                 <xsc:Sql>;
 
-    IF cachedDates.EXISTS(pId) THEN
+    IF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates.EXISTS(pId) THEN
         FOR i in 1..1000 LOOP
             vCurDate := vCurDate + 1;
             IF </xsc:Sql>
@@ -7583,7 +8239,15 @@ begin
               <xsc:Item>
                 <xsc:Sql>;
 
-    IF cachedDates.EXISTS(pId) THEN
+    IF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates.EXISTS(pId) THEN
         vIndex := </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -7599,10 +8263,26 @@ begin
               <xsc:Item>
                 <xsc:Sql>; 
         FOR i in 1..1000 LOOP
-            vIndex := cachedDates(pId).PRIOR(vIndex);      
+            vIndex := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates(pId).PRIOR(vIndex);      
             IF vIndex is null THEN 
                 return null;
-            ELSIF cachedDates(pId)(vIndex) = true THEN
+            ELSIF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates(pId)(vIndex) = true THEN
                 return </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
@@ -7724,7 +8404,15 @@ begin
               <xsc:Item>
                 <xsc:Sql>;
 
-    IF cachedDates.EXISTS(pId) THEN
+    IF </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbName Path="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE">
+                  <xsc:Sql>RDX_JS_Vars</xsc:Sql>
+                </xsc:DbName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>.cachedDates.EXISTS(pId) THEN
         FOR i in 1..1000 LOOP
             vCurDate := vCurDate - 1;
             
@@ -7839,100 +8527,6 @@ end;</xsc:Sql>
       </Header>
       <Body>
         <Item>
-          <CustomText Id="dtxRITI72EZEFHALGVFSE3VTYVEOI" Name="helpers">
-            <Text>
-              <xsc:Item>
-                <xsc:Sql>CURSOR cEventScheduleItems (SchId </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colJZOMAUCEI3OBDCIOAALOMT5GDM" Owner="TABLE">
-                  <xsc:Sql>RDX_JS_EVENTSCHDITEM.SCHEDULEID</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>%TYPE)  is
-                          Select </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="col2Y4Z3HSRI3OBDCIOAALOMT5GDM" Owner="NONE">
-                  <xsc:Sql>CALENDARID</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> calendarId, </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colQ2O2LSKRI3OBDCIOAALOMT5GDM" Owner="NONE">
-                  <xsc:Sql>ENDTIME</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> endTime, </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colKDDQ37CRI3OBDCIOAALOMT5GDM" Owner="NONE">
-                  <xsc:Sql>EVENTTIME</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> eventTime, </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colR3BKZWCRI3OBDCIOAALOMT5GDM" Owner="NONE">
-                  <xsc:Sql>PERIOD</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> period,
-                          </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colIINJLJ2RI3OBDCIOAALOMT5GDM" Owner="NONE">
-                  <xsc:Sql>REPEATABLE</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> repeatable, </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colVZL6POCRI3OBDCIOAALOMT5GDM" Owner="NONE">
-                  <xsc:Sql>STARTTIME</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> startTime, </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colDZAPXPBYLNCCTL6KOAPGWDUSYE" Owner="NONE">
-                  <xsc:Sql>TIMEZONEREGION</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql> timeZoneRegion
-                          From </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:TableSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM">
-                  <xsc:Sql>RDX_JS_EVENTSCHDITEM</xsc:Sql>
-                </xsc:TableSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>
-                          Where </xsc:Sql>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colJZOMAUCEI3OBDCIOAALOMT5GDM" Owner="NONE">
-                  <xsc:Sql>SCHEDULEID</xsc:Sql>
-                </xsc:PropSqlName>
-              </xsc:Item>
-              <xsc:Item>
-                <xsc:Sql>=SchId;
-</xsc:Sql>
-              </xsc:Item>
-            </Text>
-          </CustomText>
-        </Item>
-        <Item>
           <Function Id="dfnG7ZTYBQX3FFSXHBMXJVEKTHOS4" Name="getDaySeconds" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
             <Body>
               <xsc:Item>
@@ -7948,6 +8542,68 @@ end;</xsc:Sql>
           </Function>
         </Item>
         <Item>
+          <Function Id="dfnTRS4AF36XBBZJBELNIXSRHI6EA" Name="getDaySecondsTz" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    res integer;
+    diff interval day to second;
+begin
+    diff := pTimestamp - from_tz(trunc(pTimestamp), extract(TIMEZONE_REGION from pTimestamp));
+    return round(extract(hour from diff) * 3600 + extract(minute from diff) * 60 + extract(second from diff));
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpP4XLUDWNTFEEJOOGDQSALXS2RE" Name="pTimestamp" DbType="timestamp with time zone" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnYOT33UBIHVGVNENZ4E2LDMW4WY" Name="toTimestampWithTzSafe" ResultDbType="timestamp with time zone" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="12">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+    res1 timestamp with time zone := null;
+    res2 timestamp with time zone := null;
+    FIELD_NOT_FOUND_IN_DATETIME EXCEPTION; PRAGMA EXCEPTION_INIT(FIELD_NOT_FOUND_IN_DATETIME, -01878);
+begin
+    begin
+        res1 := from_tz(pTimestamp, nvl(pTzRegion, sessiontimezone));
+    exception when FIELD_NOT_FOUND_IN_DATETIME then
+        null;
+    end;
+    res2 := from_tz(trunc(pTimestamp), nvl(pTzRegion, sessiontimezone)) + NumToDSInterval(</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnG7ZTYBQX3FFSXHBMXJVEKTHOS4">
+                  <xsc:Sql>RDX_JS_EventSchedule.getDaySeconds</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pTimestamp), 'second');
+    if 
+        res1 is null or 
+        (res1 is not null 
+        and res2 is not null 
+        and to_char(res1, 'HH24:MI') = to_char(res2, 'HH24:MI'))
+    then
+        return res2;
+    else 
+        return res1;
+    end if;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpQHFP2CVHN5AVTB63E2OTFI52AM" Name="pTimestamp" DbType="timestamp" Direction="0" ValType="12"/>
+              <Param Id="dfp6L6WXORHYFEWLJYBZQG4TIWGHQ" Name="pTzRegion" DbType="varchar2" Direction="0" ValType="21">
+                <DefaultVal>null</DefaultVal>
+              </Param>
+            </Params>
+          </Function>
+        </Item>
+        <Item>
           <Function Id="dfnMUK27QAXZFCUPE5EBBAAWMJSIA" Name="prevTime" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
             <Body>
               <xsc:Item>
@@ -7957,8 +8613,9 @@ begin
     if pNow &lt;= pStartTime THEN
         return null;
     end if;
-    if pNow > pEndTime THEN
-        return (TRUNC((pEndTime-pStartTime)/pPeriod))*pPeriod + pStartTime;
+    
+    if pNow >= pEndTime THEN
+        return (TRUNC((pEndTime-1-pStartTime)/pPeriod))*pPeriod + pStartTime;
     end if;
 
     res := (TRUNC((pNow-pStartTime)/pPeriod))*pPeriod + pStartTime;
@@ -8022,6 +8679,7 @@ end;
     tmpDaySeconds integer;
     
     tmpFrom timestamp;
+    tmpFromWithTz timestamp with time zone;
     tmpToday date;
     tmpTomorrow date;
     tmpFromDaySeconds integer; 
@@ -8030,6 +8688,92 @@ end;
     todayDefault date;
     tomorrowDefault date;
     fromDaySecondsDefault integer;
+    
+    CURSOR cEventScheduleItems (SchId </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colJZOMAUCEI3OBDCIOAALOMT5GDM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_EVENTSCHDITEM.SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%TYPE)  is
+                                Select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="col2Y4Z3HSRI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>CALENDARID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> calendarId, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colQ2O2LSKRI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>ENDTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> endTime, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colKDDQ37CRI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>EVENTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> eventTime, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colR3BKZWCRI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>PERIOD</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> period,
+                                </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colIINJLJ2RI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>REPEATABLE</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> repeatable, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colVZL6POCRI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>STARTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> startTime, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colDZAPXPBYLNCCTL6KOAPGWDUSYE" Owner="NONE">
+                  <xsc:Sql>TIMEZONEREGION</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> timeZoneRegion
+                                From </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM">
+                  <xsc:Sql>RDX_JS_EVENTSCHDITEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+                                Where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colJZOMAUCEI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=SchId;
 begin
     if pDateTime IS NULL THEN
         return NULL;
@@ -8047,30 +8791,35 @@ begin
               <xsc:Item>
                 <xsc:Sql>(pDateTime);
     
-    
-
     for schedItem in cEventScheduleItems(pId) LOOP
         
         if schedItem.timeZoneRegion is not null then
-            select from_tz(pDateTime, sessiontimezone) at time zone (schedItem.timeZoneRegion) into tmpFrom from dual;            
-            tmpToday := Trunc(tmpFrom);
+            tmpFromWithTz := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYOT33UBIHVGVNENZ4E2LDMW4WY">
+                  <xsc:Sql>RDX_JS_EventSchedule.toTimestampWithTzSafe</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pDateTime) at time zone (schedItem.timeZoneRegion);            
+            tmpToday := Trunc(tmpFromWithTz);
             tmpTomorrow := tmpToday + interval '1' day;
             tmpFromDaySeconds := </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnG7ZTYBQX3FFSXHBMXJVEKTHOS4">
-                  <xsc:Sql>RDX_JS_EventSchedule.getDaySeconds</xsc:Sql>
+                <xsc:DbFuncCall FuncId="dfnTRS4AF36XBBZJBELNIXSRHI6EA">
+                  <xsc:Sql>RDX_JS_EventSchedule.getDaySecondsTz</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(tmpFrom);
+                <xsc:Sql>(tmpFromWithTz);
         else
             tmpFrom := pDateTime;
             tmpToday := todayDefault;
             tmpTomorrow := tomorrowDefault;
             tmpFromDaySeconds := fromDaySecondsDefault;
         end if;
-    
     
         if schedItem.REPEATABLE > 0 THEN
             tmpDaySeconds := </xsc:Sql>
@@ -8105,7 +8854,7 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql> > 0);
-
+            
         IF inToday THEN
             tmpDate := tmpToday;
         ELSE       
@@ -8139,7 +8888,15 @@ begin
             tmpTimestamp := cast(tmpDate as timestamp) + NumToDSInterval(tmpDaySeconds, 'second');
  
             if schedItem.timeZoneRegion is not null then
-                select (from_tz(tmpTimestamp, schedItem.timeZoneRegion)) at time zone sessiontimezone into tmpTimestamp from dual;                     
+                tmpTimestamp := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYOT33UBIHVGVNENZ4E2LDMW4WY">
+                  <xsc:Sql>RDX_JS_EventSchedule.toTimestampWithTzSafe</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(tmpTimestamp, schedItem.timeZoneRegion) at time zone sessiontimezone;
             end if;
             
             if minTimestamp is null or minTimestamp > tmpTimestamp then
@@ -8169,6 +8926,7 @@ end;</xsc:Sql>
     tmpDaySeconds integer;
 
     tmpFrom timestamp;
+    tmpFromWithTz timestamp with time zone;
     tmpToday date;
     tmpYesterday date;
     tmpFromDaySeconds integer; 
@@ -8177,6 +8935,92 @@ end;</xsc:Sql>
     todayDefault date;
     yesterdayDefault date;
     fromDaySecondsDefault integer;
+    
+    CURSOR cEventScheduleItems (SchId </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colJZOMAUCEI3OBDCIOAALOMT5GDM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_EVENTSCHDITEM.SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%TYPE)  is
+                                Select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="col2Y4Z3HSRI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>CALENDARID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> calendarId, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colQ2O2LSKRI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>ENDTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> endTime, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colKDDQ37CRI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>EVENTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> eventTime, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colR3BKZWCRI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>PERIOD</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> period,
+                                </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colIINJLJ2RI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>REPEATABLE</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> repeatable, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colVZL6POCRI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>STARTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> startTime, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colDZAPXPBYLNCCTL6KOAPGWDUSYE" Owner="NONE">
+                  <xsc:Sql>TIMEZONEREGION</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql> timeZoneRegion
+                                From </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM">
+                  <xsc:Sql>RDX_JS_EVENTSCHDITEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+                                Where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblZ3SDCSSEI3OBDCIOAALOMT5GDM" PropId="colJZOMAUCEI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=SchId;
 begin
     if pDateTime IS NULL THEN
         return NULL;
@@ -8197,18 +9041,26 @@ begin
     for schedItem in cEventScheduleItems(pId) LOOP
     
         if schedItem.timeZoneRegion is not null then
-            select from_tz(pDateTime, sessiontimezone) at time zone (schedItem.timeZoneRegion) into tmpFrom from dual;            
-            tmpToday := Trunc(tmpFrom);
+            tmpFromWithTz := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYOT33UBIHVGVNENZ4E2LDMW4WY">
+                  <xsc:Sql>RDX_JS_EventSchedule.toTimestampWithTzSafe</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(pDateTime) at time zone (schedItem.timeZoneRegion);            
+            tmpToday := Trunc(tmpFromWithTz);
             tmpYesterday := tmpToday - interval '1' day;
             tmpFromDaySeconds := </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
-                <xsc:DbFuncCall FuncId="dfnG7ZTYBQX3FFSXHBMXJVEKTHOS4">
-                  <xsc:Sql>RDX_JS_EventSchedule.getDaySeconds</xsc:Sql>
+                <xsc:DbFuncCall FuncId="dfnTRS4AF36XBBZJBELNIXSRHI6EA">
+                  <xsc:Sql>RDX_JS_EventSchedule.getDaySecondsTz</xsc:Sql>
                 </xsc:DbFuncCall>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>(tmpFrom);
+                <xsc:Sql>(tmpFromWithTz);
         else
             tmpFrom := pDateTime;
             tmpToday := todayDefault;
@@ -8240,7 +9092,7 @@ begin
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>(schedItem.calendarId, tmpToday) > 0);
-
+                
         IF inToday THEN
             tmpDate := tmpToday;
         ELSE       
@@ -8274,7 +9126,15 @@ begin
             tmpTimestamp := cast(tmpDate as timestamp) + NumToDSInterval(tmpDaySeconds, 'second');
  
             if schedItem.timeZoneRegion is not null then
-                select (from_tz(tmpTimestamp, schedItem.timeZoneRegion)) at time zone sessiontimezone into tmpTimestamp from dual;                     
+                tmpTimestamp := </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:DbFuncCall FuncId="dfnYOT33UBIHVGVNENZ4E2LDMW4WY">
+                  <xsc:Sql>RDX_JS_EventSchedule.toTimestampWithTzSafe</xsc:Sql>
+                </xsc:DbFuncCall>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>(tmpTimestamp, schedItem.timeZoneRegion) at time zone sessiontimezone;                     
             end if;
             
             if maxTimestamp is null or maxTimestamp &lt; tmpTimestamp then
@@ -8315,10 +9175,14 @@ end;</xsc:Sql>
       </Header>
       <Body>
         <Item>
-          <CustomText Id="dtxFSSZGAKIVFCMXIQRIUUMGPJ6CY" Name="types">
-            <Text>
+          <Function Id="dfnZDUXHEVBBVD7VCTNBNXUAARFDY" Name="isIn" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
+            <Body>
               <xsc:Item>
-                <xsc:Sql>CURSOR cIntervalSchedule (SchId </xsc:Sql>
+                <xsc:Sql>is
+    ts timestamp;
+    minutes int;
+    
+    CURSOR cIntervalSchedule (SchId </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colAZTOV5KBI3OBDCIOAALOMT5GDM" Owner="TABLE">
@@ -8327,7 +9191,7 @@ end;</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>%TYPE)  is
-                          Select </xsc:Sql>
+                            Select </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="col3J7ROKKCI3OBDCIOAALOMT5GDM" Owner="NONE">
@@ -8352,7 +9216,7 @@ end;</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>
-                          From </xsc:Sql>
+                            From </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:TableSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM">
@@ -8361,7 +9225,7 @@ end;</xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:Sql>
-                          Where </xsc:Sql>
+                            Where </xsc:Sql>
               </xsc:Item>
               <xsc:Item>
                 <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colAZTOV5KBI3OBDCIOAALOMT5GDM" Owner="NONE">
@@ -8369,18 +9233,7 @@ end;</xsc:Sql>
                 </xsc:PropSqlName>
               </xsc:Item>
               <xsc:Item>
-                <xsc:Sql>=SchId;</xsc:Sql>
-              </xsc:Item>
-            </Text>
-          </CustomText>
-        </Item>
-        <Item>
-          <Function Id="dfnZDUXHEVBBVD7VCTNBNXUAARFDY" Name="isIn" ResultDbType="integer" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="2">
-            <Body>
-              <xsc:Item>
-                <xsc:Sql>is
-    ts timestamp;
-    minutes int;
+                <xsc:Sql>=SchId;
 begin
     if pDateTime IS NULL THEN
         return 0;                       
@@ -8438,6 +9291,59 @@ end;</xsc:Sql>
     tDate Date;
     minDate Date;
     minMinutes integer;
+    
+    CURSOR cIntervalSchedule (SchId </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colAZTOV5KBI3OBDCIOAALOMT5GDM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_INTERVALSCHDITEM.SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%TYPE)  is
+                          Select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="col3J7ROKKCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>CALENDARID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colFCO7W2SCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>ENDTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colPKW6YWCCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>STARTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+                          From </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM">
+                  <xsc:Sql>RDX_JS_INTERVALSCHDITEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+                          Where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colAZTOV5KBI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=SchId;
 begin
     if pDateTime IS NULL THEN
         return NULL;
@@ -8527,6 +9433,59 @@ end;</xsc:Sql>
     tDate Date;
     minDate Date;
     minMinutes integer;
+    
+    CURSOR cIntervalSchedule (SchId </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colAZTOV5KBI3OBDCIOAALOMT5GDM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_INTERVALSCHDITEM.SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%TYPE)  is
+                          Select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="col3J7ROKKCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>CALENDARID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colFCO7W2SCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>ENDTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colPKW6YWCCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>STARTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+                          From </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM">
+                  <xsc:Sql>RDX_JS_INTERVALSCHDITEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+                          Where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colAZTOV5KBI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=SchId;
 begin
     if pDateTime IS NULL THEN
         return NULL;
@@ -8615,6 +9574,59 @@ end;</xsc:Sql>
     tDate Date;
     maxDate Date;                                 
     maxMinutes integer;
+    
+    CURSOR cIntervalSchedule (SchId </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colAZTOV5KBI3OBDCIOAALOMT5GDM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_INTERVALSCHDITEM.SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%TYPE)  is
+                          Select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="col3J7ROKKCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>CALENDARID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colFCO7W2SCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>ENDTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colPKW6YWCCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>STARTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+                          From </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM">
+                  <xsc:Sql>RDX_JS_INTERVALSCHDITEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+                          Where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colAZTOV5KBI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=SchId;
 begin
     if pDateTime IS NULL THEN
         return NULL;
@@ -8703,6 +9715,59 @@ end;</xsc:Sql>
     tDate Date;
     maxDate Date;                                             
     maxMinutes integer;
+    
+    CURSOR cIntervalSchedule (SchId </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colAZTOV5KBI3OBDCIOAALOMT5GDM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_INTERVALSCHDITEM.SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%TYPE)  is
+                          Select </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="col3J7ROKKCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>CALENDARID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colFCO7W2SCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>ENDTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>, </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colPKW6YWCCI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>STARTTIME</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+                          From </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:TableSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM">
+                  <xsc:Sql>RDX_JS_INTERVALSCHDITEM</xsc:Sql>
+                </xsc:TableSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>
+                          Where </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblARTOV5KBI3OBDCIOAALOMT5GDM" PropId="colAZTOV5KBI3OBDCIOAALOMT5GDM" Owner="NONE">
+                  <xsc:Sql>SCHEDULEID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>=SchId;
 begin
     if pDateTime IS NULL THEN
         return NULL;
@@ -8775,6 +9840,134 @@ end;</xsc:Sql>
             <Params>
               <Param Id="dfpSJRDZ5EP3VGSVM277KVBGWNVIY" Name="pId" DbType="integer" Direction="0" ValType="2"/>
               <Param Id="dfpZ7UV2GGOWJHCROQ6LXCXW7EFDA" Name="pDateTime" DbType="date" Direction="0" ValType="12"/>
+            </Params>
+          </Function>
+        </Item>
+      </Body>
+    </Package>
+    <Package Id="pkg5PDTSHWRBJHYNIVFMQYBBDWQHE" Name="RDX_JS_Vars" PurityLevelMask="1">
+      <Header>
+        <Item>
+          <CustomText Id="dtxVHQ4B7JYU5CSRBH5QLZ3OC7PRY" Name="calendar_schedule_variables">
+            <Text>
+              <xsc:Item>
+                <xsc:Sql>TYPE TCalendarItem IS RECORD (
+  classGuid varchar2(29), -- </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colNQYSFERBHRCIJA4XABBUNWKGEM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_CALENDARITEM.CLASSGUID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%Type,
+  oper char(1), -- </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colFDW6KVZ6I3OBDCIOAALOMT5GDM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_CALENDARITEM.OPER</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%Type,
+  offsetDir int, -- </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colDKQ7RUH5YZGIZMYREMQUYMV4OM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_CALENDARITEM.OFFSETDIR</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%Type,
+  offset int, -- </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colYTXRDPZ6I3OBDCIOAALOMT5GDM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_CALENDARITEM.OFFSET</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%Type,
+  absDate date, -- </xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colAZNNMYJ7I3OBDCIOAALOMT5GDM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_CALENDARITEM.ABSDATE</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%Type,
+  incCalendarId int, --</xsc:Sql>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:PropSqlName TableId="tblCRD53OZ5I3OBDCIOAALOMT5GDM" PropId="colFQ4EXXZ6I3OBDCIOAALOMT5GDM" Owner="TABLE">
+                  <xsc:Sql>RDX_JS_CALENDARITEM.INCCALENDARID</xsc:Sql>
+                </xsc:PropSqlName>
+              </xsc:Item>
+              <xsc:Item>
+                <xsc:Sql>%Type,
+  dayOfWeek int);
+
+TYPE TItemsNestedTable IS TABLE OF TCalendarItem;
+TYPE TItemsByCalendar IS TABLE OF TItemsNestedTable INDEX BY binary_integer;
+cachedItems TItemsByCalendar;
+
+-- cached period of calendar dates
+TYPE TDateById IS TABLE OF DATE INDEX BY binary_integer;
+cachedPeriodsBegin TDateById;
+cachedPeriodsEnd TDateById;
+
+-- cached calendar dates
+-- whether such date is included in calendate (date cache)
+TYPE TDateMap is TABLE of BOOLEAN INDEX BY VARCHAR2(10);         -- key='YYYY-MM-DD'
+TYPE TDateMapById IS TABLE OF TDateMap INDEX BY binary_integer;
+cachedDates TDateMapById;
+</xsc:Sql>
+              </xsc:Item>
+            </Text>
+          </CustomText>
+        </Item>
+        <Item>
+          <Prototype Id="dprN5LN6CLUYJF4TEDKDFKNSBWQME" FunctionId="dfnRONV6WQNBVBJXHUKHMPE6DMIMI"/>
+        </Item>
+        <Item>
+          <Prototype Id="dprTTK7R5BWDVCZVE5NKZL35DTTEM" FunctionId="dfnGT3V5VRN45CINCOUQAJP2WQOEU"/>
+        </Item>
+      </Header>
+      <Body>
+        <Item>
+          <CustomText Id="dtxWCD326IMTNHQXCERY7FSF4SINU" Name="last update time of calendars table">
+            <Text>
+              <xsc:Item>
+                <xsc:Sql>lastUpdateTime date;</xsc:Sql>
+              </xsc:Item>
+            </Text>
+          </CustomText>
+        </Item>
+        <Item>
+          <Function Id="dfnRONV6WQNBVBJXHUKHMPE6DMIMI" Name="getLastUpdateTime" ResultDbType="date" Deterministic="false" CacheResult="false" PurityLevelMask="0" ResultValType="12">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    return lastUpdateTime;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+          </Function>
+        </Item>
+        <Item>
+          <Function Id="dfnGT3V5VRN45CINCOUQAJP2WQOEU" Name="setLastUpdateTime" Deterministic="false" CacheResult="false" PurityLevelMask="0">
+            <Body>
+              <xsc:Item>
+                <xsc:Sql>is
+begin
+    lastUpdateTime := pLastUpdateTime;
+end;</xsc:Sql>
+              </xsc:Item>
+            </Body>
+            <Params>
+              <Param Id="dfpSJEPAZOIP5HQNHRDWHUYEXZXT4" Name="pLastUpdateTime" DbType="date" Direction="0" ValType="12"/>
             </Params>
           </Function>
         </Item>

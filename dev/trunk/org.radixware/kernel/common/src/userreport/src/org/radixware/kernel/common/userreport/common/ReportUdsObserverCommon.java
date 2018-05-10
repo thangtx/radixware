@@ -12,6 +12,7 @@
 package org.radixware.kernel.common.userreport.common;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
@@ -20,6 +21,7 @@ import org.radixware.kernel.common.enums.EDefType;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
+import org.radixware.kernel.common.types.Pid;
 import org.radixware.kernel.common.utils.XmlObjectProcessor;
 import org.radixware.schemas.adsdef.AdsUserFuncDefinitionDocument;
 import org.radixware.schemas.adsdef.ClassDefinition;
@@ -32,7 +34,7 @@ public class ReportUdsObserverCommon extends UdsObserver{
     
     protected final static Id CMD_LIB_USER_FUNCS=Id.Factory.loadFrom("clc2IUSW2KMURCC3ESXW3RGDFSCTY");
     protected final static Id CMD_LIB_USER_FUNC_XML=Id.Factory.loadFrom("clcXL6E3PQJVJDCFKK5665TCOCPN4");
-   
+
     public class UserReportReceiver implements IUserDefReceiver {
 
         public final IUserDefRequestor requestor;
@@ -117,5 +119,10 @@ public class ReportUdsObserverCommon extends UdsObserver{
     public void addUserDefInfo(final Set<EDefType> defTypes, List<AdsUserFuncDef.Lookup.DefInfo> infos) {
         UserReportReceiver recv = new UserReportReceiver(getReportRequestor());
         recv.listUserDefs(defTypes, infos);
+    }
+    
+    @Override
+    public Map<Pid, Boolean> checkEntitiesExistance(Set<Pid> pidsToCheck) {
+        throw new UnsupportedOperationException("Not supported in ReportEditor Environment");
     }
 }

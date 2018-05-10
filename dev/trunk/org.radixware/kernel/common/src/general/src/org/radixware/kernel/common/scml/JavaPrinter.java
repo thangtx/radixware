@@ -12,23 +12,19 @@
 package org.radixware.kernel.common.scml;
 
 
-class JavaPrinter extends BufferedCodePrinter {
+class JavaPrinter extends BufferedCodePrinter implements IJavaCodePrinter {
 
     protected JavaPrinter() {
         super();
     }
 
     @Override
-    public final void printStringLiteral(String text) {
-        print('"');
-        print(LiteralWriter.str2Literal(text));
-        print('"');
+    public CodePrinter printStringLiteral(String text) {
+        return print('"').print(LiteralWriter.str2Literal(text)).print('"');
     }
 
     @Override
-    public void printCommandSeparator() {
-        print(";\n");
+    public CodePrinter printCommandSeparator() {
+        return print(";\n");
     }
-    
-    
 }

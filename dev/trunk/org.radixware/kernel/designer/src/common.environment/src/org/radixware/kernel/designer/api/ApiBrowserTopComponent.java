@@ -12,6 +12,7 @@
 package org.radixware.kernel.designer.api;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,23 +22,38 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.jdesktop.swingx.JXSearchField;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.enums.EAccess;
+import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 import org.radixware.kernel.designer.api.editors.OpenMode;
+import org.radixware.kernel.designer.api.filters.AccessModel;
+import org.radixware.kernel.designer.api.filters.RadixObjectNameFilter;
+import org.radixware.kernel.designer.api.filters.AccessView;
+import org.radixware.kernel.designer.api.filters.DescriptionMode;
+import org.radixware.kernel.designer.api.filters.DescriptionModeModel;
+import org.radixware.kernel.designer.api.filters.DescriptionModeView;
 import org.radixware.kernel.designer.common.dialogs.RadixWareDesignerIcon;
 import org.radixware.kernel.designer.common.dialogs.components.GenericComboBox;
+import org.radixware.kernel.designer.common.dialogs.components.selector.EmptyTextFilter;
 import org.radixware.kernel.designer.common.general.nodes.NodesManager;
 
 
@@ -48,7 +64,6 @@ import org.radixware.kernel.designer.common.general.nodes.NodesManager;
 @TopComponent.Registration(mode = "editor", openAtStartup = false)
 @NbBundle.Messages({
     "ApiBrowserTopComponent_DisplayName=API Browser",
-    "ApiBrowserTopComponent_ApiFilterPanel=Access level",
     "ApiBrowserTopComponent_SelectInProjects=Select in projects",
     "ApiBrowserTopComponent_Refresh=Refresh"
 })
@@ -67,157 +82,14 @@ final class ApiBrowserTopComponent extends TopComponent {
         }
     }
 
-    private final static class Model extends GenericComboBox.Model {
-
-        List<EAccess> accessLevel = new ArrayList<>();
-        boolean onlyPublished = true;
-
-        public Model() {
-            accessLevel.add(EAccess.PUBLIC);
-            accessLevel.add(EAccess.PROTECTED);
-        }
-
-        @Override
-        public String getName() {
-            return Bundle.ApiBrowserTopComponent_ApiFilterPanel();
-        }
-
-        public String getToolTip() {
-            StringBuilder sb = new StringBuilder();
-
-            boolean first = true;
-
-            for (EAccess access : accessLevel) {
-                if (first) {
-                    first = false;
-                } else {
-                    sb.append(", ");
-                }
-
-                sb.append(access.getName());
-            }
-
-            if (sb.length() > 0 && onlyPublished) {
-                sb.append(", only published");
-            }
-
-            return sb.toString();
-        }
-    }
-
-    private final static class View extends GenericComboBox.PopupView {
-
-        private final JPanel panel = new JPanel();
-        private final JCheckBox chbPublic = new JCheckBox("public");
-        private final JCheckBox chbProtected = new JCheckBox("protected");
-        private final JCheckBox chbDefault = new JCheckBox("default");
-        private final JCheckBox chbPrivate = new JCheckBox("private");
-        private final JCheckBox chbPublished = new JCheckBox("only published");
-        private final ItemListener listener = new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-
-                if (inUpdate) {
-                    return;
-                }
-
-                EAccess access = null;
-                if (e.getSource() == chbPublic) {
-                    access = EAccess.PUBLIC;
-                } else if (e.getSource() == chbProtected) {
-                    access = EAccess.PROTECTED;
-                } else if (e.getSource() == chbDefault) {
-                    access = EAccess.DEFAULT;
-                } else if (e.getSource() == chbPrivate) {
-                    access = EAccess.PRIVATE;
-                } else if (e.getSource() == chbPublished) {
-                    model.onlyPublished = chbPublished.isSelected();
-                }
-
-                if (access != null) {
-
-                    if (access.isLess(EAccess.PROTECTED)) {
-                        final boolean bool = chbPrivate.isSelected() || chbDefault.isSelected();
-
-                        SwingUtilities.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (bool) {
-                                    chbPublished.setSelected(false);
-                                }
-                                chbPublished.setEnabled(!bool);
-                            }
-                        });
-                    }
-                    if (((JCheckBox) e.getItem()).isSelected()) {
-                        model.accessLevel.add(access);
-                    } else {
-                        model.accessLevel.remove(access);
-                    }
-                }
-
-                changes = true;
-            }
-        };
-        private Model model;
-        private boolean changes = false;
-        private boolean inUpdate = false;
-
-        public View() {
-            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
-            panel.add(chbPublished);
-            panel.add(chbPublic);
-            panel.add(chbProtected);
-            panel.add(chbDefault);
-            panel.add(chbPrivate);
-
-            model = new Model();
-
-            update();
-
-            chbPublic.addItemListener(listener);
-            chbProtected.addItemListener(listener);
-            chbDefault.addItemListener(listener);
-            chbPrivate.addItemListener(listener);
-            chbPublished.addItemListener(listener);
-        }
-
-        @Override
-        public final void update() {
-            inUpdate = true;
-
-            chbPublic.setSelected(model.accessLevel.contains(EAccess.PUBLIC));
-            chbProtected.setSelected(model.accessLevel.contains(EAccess.PROTECTED));
-            chbDefault.setSelected(model.accessLevel.contains(EAccess.DEFAULT));
-            chbPrivate.setSelected(model.accessLevel.contains(EAccess.PRIVATE));
-            chbPublished.setSelected(model.onlyPublished);
-
-            changes = false;
-            inUpdate = false;
-        }
-
-        @Override
-        public JComponent getComponent() {
-            return panel;
-        }
-
-        @Override
-        public GenericComboBox.Model getModel() {
-            return model;
-        }
-
-        boolean isChanged() {
-            return changes;
-        }
-    }
-
     private class ApiFilterPanel extends JPanel {
 
         private final GenericComboBox apiLevel;
+        private final JLabel searchLabel = new JLabel("Search:");
+        private final GenericComboBox descriptionMode;
         public ApiFilterPanel() {
             setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-            final View view = new View();
+            final GenericComboBox.PopupView view = new AccessView();
             apiLevel = new GenericComboBox(view) {
                 @Override
                 public Dimension getMaximumSize() {
@@ -228,12 +100,12 @@ final class ApiBrowserTopComponent extends TopComponent {
             apiLevel.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    final Model model = (Model) view.getModel();
+                    final AccessModel model = (AccessModel) view.getModel();
 
                     if (view.isChanged()) {
                         final ApiFilter apiFilter = getApiFilter();
-                        apiFilter.setAccessLevel(model.accessLevel.toArray(new EAccess[0]));
-                        apiFilter.setShowNotPublished(!model.onlyPublished);
+                        apiFilter.setAccessLevel(model.getAccessLevel().toArray(new EAccess[0]));
+                        apiFilter.setShowNotPublished(!model.isOnlyPublished());
 
                         ApiBrowserTopComponent.this.updateEditor();
 
@@ -241,15 +113,71 @@ final class ApiBrowserTopComponent extends TopComponent {
                     }
                 }
             });
+            
+            final DescriptionModeView descriptionModeView = new DescriptionModeView();
+            descriptionMode = new GenericComboBox(descriptionModeView);
+            descriptionMode.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateDescriptionMode();
+                }
+            });
+            RadixObjectNameFilter textFilter = getApiFilter().getTextFilter();
+            final JXSearchField field = textFilter.getSearchField();
+            textFilter.addChangeListener(new ChangeListener() {
 
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    ApiBrowserTopComponent.this.updateEditor();
+                    field.requestFocus();
+                }
+            });
+            
             updateToolTip();
 
             add(apiLevel);
+            add(new Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767)));
+            add(descriptionMode);
+            add(new Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767)));
+            add(searchLabel);
+            add(new Box.Filler(new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 0), new java.awt.Dimension(5, 32767)));
+            add(field);
+            add(new Box.Filler(new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 0), new java.awt.Dimension(10, 32767)));
+
+        }
+        
+        private void updateDescriptionMode() {
+            final DescriptionModeView descriptionModeView = (DescriptionModeView) descriptionMode.getView();
+           if (descriptionModeView.isChanged()) { 
+               final DescriptionModeModel model = (DescriptionModeModel) descriptionModeView.getModel();
+                final ApiFilter apiFilter = getApiFilter();
+                List<DescriptionMode> modes = model.getCurrentModes();
+                apiFilter.setDescriptionModes(modes == null ? null : model.getCurrentModes().toArray(new DescriptionMode[0]));
+
+                ApiBrowserTopComponent.this.updateEditor();
+
+                updateToolTip();
+            }
         }
 
         private void updateToolTip() {
-            ApiBrowserTopComponent.Model model = (ApiBrowserTopComponent.Model) apiLevel.getView().getModel();
+            AccessModel model = (AccessModel) apiLevel.getView().getModel();
             apiLevel.setToolTipText(model.getToolTip());
+            
+            DescriptionModeModel descriptionModeModel = (DescriptionModeModel) descriptionMode.getView().getModel();
+            descriptionMode.setToolTipText(descriptionModeModel.getToolTip());
+        }
+        
+        public void open(RadixObject target){
+            Layer layer = target.getLayer();
+            if (layer != null){
+                descriptionMode.setVisible(true);
+                DescriptionModeView view  = (DescriptionModeView) descriptionMode.getView();
+                view.open(layer);
+                updateDescriptionMode();
+            } else {
+                descriptionMode.setVisible(false);
+            }
         }
     }
 
@@ -257,6 +185,7 @@ final class ApiBrowserTopComponent extends TopComponent {
     private Action next, prev;
     private JScrollPane scrollPane = new JScrollPane();
     private ApiFilter apiFilter = new ApiFilter();
+    final ApiFilterPanel filterPanel;
 
     private ApiBrowserTopComponent() {
         setLayout(new BorderLayout());
@@ -307,7 +236,7 @@ final class ApiBrowserTopComponent extends TopComponent {
 
         toolBar.addSeparator();
 
-        final ApiFilterPanel filterPanel = new ApiFilterPanel();
+        filterPanel = new ApiFilterPanel();
         toolBar.add(filterPanel);
 
         add(toolBar, BorderLayout.PAGE_START);
@@ -330,7 +259,7 @@ final class ApiBrowserTopComponent extends TopComponent {
         updateEditor();
     }
 
-    private void updateEditor() {
+    void updateEditor() {
         if (this.editor != null) {
             editor.update();
         }
@@ -359,7 +288,8 @@ final class ApiBrowserTopComponent extends TopComponent {
         editor.open(OpenMode.DEFAULT, getApiFilter());
         editor.setEditorState(state);
         editor.select(target);
-        
+        filterPanel.open(target);
+        editor.setEditorState(state);
         updateActiveNode();
 
         revalidate();

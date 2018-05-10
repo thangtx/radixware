@@ -20,20 +20,31 @@ public class StringReader extends Reader {
     private final int length;
     private int index;
 
-    public StringReader(String str) {
-        this.str = str;
-        length = str.length();
-        index = 0;
+    public StringReader(final String str) {
+        if (str == null) {
+            throw new IllegalArgumentException("String to read can't be null");
+        }
+        else {
+            this.str = str;
+            length = str.length();
+            index = 0;
+        }
     }
 
     @Override
     public int read(char[] cbuf, int off, int len) throws IOException {
-        if (index >= length)
+        if (cbuf == null) {
+            throw new IllegalArgumentException("Target char array can't be null");
+        }
+        else if (index >= length) {
             return -1;
-        int n = Math.min(length - index, len);
-        str.getChars(index, index + n, cbuf, off);
-        index += n;
-        return n;
+        }
+        else {
+            final int n = Math.min(length - index, len);
+
+            str.getChars(index, index + n, cbuf, off);
+            return index += n;
+        }
     }
 
     @Override
@@ -50,5 +61,10 @@ public class StringReader extends Reader {
 
     public boolean isEof() {
         return index >= length;
+    }
+
+    @Override
+    public String toString() {
+        return "StringReader{" + "str=" + str + ", length=" + length + ", index=" + index + '}';
     }
 }

@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.common.defs.dds;
 
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,6 +29,7 @@ import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.VisitorProviderFactory;
 import org.radixware.kernel.common.enums.EDdsViewWithOption;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.resources.icons.RadixIcon;
 import org.radixware.kernel.common.sqml.Sqml;
 import org.radixware.kernel.common.types.Id;
@@ -39,17 +41,14 @@ import org.radixware.kernel.common.utils.Utils;
  * метаинформацию о своих колонках и т.д.
  *
  */
-public class DdsViewDef extends DdsTableDef {
+public class DdsViewDef extends DdsTableDef implements ISqlDef{
 
     private boolean distinct;
-    private List<Id> usedTableIds;
 
-    public class UsedTableRef {
-
-        private Id tableId;
+    public class UsedTableRef extends IUsedTable{
 
         public UsedTableRef(Id tableId) {
-            this.tableId = tableId;
+            super(tableId);
         }
 
         public DdsTableDef findTable() {
@@ -81,10 +80,40 @@ public class DdsViewDef extends DdsTableDef {
         public boolean isValid() {
             return findTable() != null;
         }
+
+        @Override
+        public String getAlias() {
+            return null;
+        }
+
+        @Override
+        public void setAlias(String alias) {
+        }
+        
+        @Override
+        public boolean useAlias() {
+            return false;
+        }
+
+        @Override
+        public DdsTableDef getTable() {
+            return findTable();
+        }
+        
+        @Override
+        public void collectDependences(final List<Definition> list) {
+            super.collectDependences(list);
+            final DdsTableDef table = findTable();
+            if (table != null) {
+                list.add(table);
+            }
+        }
     }
 
-    public class UsedTables {
-
+    public class UsedTables extends IUsedTables<UsedTableRef>{
+        public UsedTables() {
+        }
+        
         private DdsTableDef getTable(RadixObject radixObject) {
             for (RadixObject obj = radixObject; obj != null; obj = obj.getContainer()) {
                 if (radixObject instanceof DdsTableDef) {
@@ -95,66 +124,41 @@ public class DdsViewDef extends DdsTableDef {
         }
 
         public List<Id> getUsedTableIds() {
-            final List<Id> ids;
+            final List<Id> ids = new ArrayList<>();
             synchronized (this) {
-                makeIds();
-                ids = new ArrayList<>(usedTableIds);
+                for (UsedTableRef tableRef : this){
+                    Id id = tableRef.getTableId();
+                    if (!ids.contains(id)) {
+                        ids.add(id);
+                    }
+                }
             }
             return ids;
         }
 
-        private void makeIds() {
-            if (usedTableIds == null) {
-
-                final Set<Id> tableIds = new HashSet<>();
-                final List<Definition> dependences = new ArrayList<>();
-                query.visit(new IVisitor() {
-                    @Override
-                    public void accept(RadixObject radixObject) {
-                        dependences.clear();
-                        radixObject.collectDependences(dependences);
-                        for (Definition def : dependences) {
-                            DdsTableDef table = getTable(def);
-                            if (table != null) {
-                                tableIds.add(table.getId());
-                            }
-                        }
-                    }
-                }, VisitorProviderFactory.createDefaultVisitorProvider());
-
-                usedTableIds = new ArrayList<>(tableIds);
-            }
+        @Override
+        public IUsedTable add(Id tableId, String alias) {
+            final UsedTableRef usedTable = new UsedTableRef(tableId);
+            add(usedTable);
+            return usedTable;
         }
 
-        public List<UsedTableRef> getUsedTables() {
-            synchronized (this) {
-                makeIds();
-                List<UsedTableRef> references = new ArrayList<>(usedTableIds.size());
-                for (Id id : usedTableIds) {
-                    references.add(new UsedTableRef(id));
-                }
-                return references;
-            }
-        }
+        
 
-        public void addTableId(Id id) {
-            synchronized (this) {
-                makeIds();
-                if (!usedTableIds.contains(id)) {
-                    usedTableIds.add(id);
-                    setEditState(EEditState.MODIFIED);
-                }
-            }
+        @Override
+        public boolean useAlias() {
+            return false;
         }
+        
+        protected void loadFrom(List<Id> usedTableIds) {
+            clear();
 
-        public void removeTableId(Id id) {
-            synchronized (this) {
-                makeIds();
-                if (usedTableIds.remove(id)) {
-                    setEditState(EEditState.MODIFIED);
-                }
+            for (Id  id : usedTableIds){
+                add(new UsedTableRef(id));
             }
+            
         }
+        
     }
 
     /**
@@ -172,7 +176,7 @@ public class DdsViewDef extends DdsTableDef {
 
     private boolean isDependsFromOtherView(Id viewId, Definition root, Set<Id> path) {
         path.add(this.getId());
-        final List<UsedTableRef> refs = getUsedTables().getUsedTables();
+        final List<UsedTableRef> refs = getUsedTables().list();
         final List<DdsViewDef> referencedViews = new LinkedList<>();
         for (UsedTableRef ref : refs) {
             if (ref.getTableId() == viewId) {
@@ -229,7 +233,7 @@ public class DdsViewDef extends DdsTableDef {
      * Получить SQML выражение, по которому строится запрос DdsViewDef в базе
      * данных.
      */
-    public Sqml getQuery() {
+    public Sqml getSqml() {
         return query;
     }
 
@@ -244,9 +248,7 @@ public class DdsViewDef extends DdsTableDef {
 
         if (xView.isSetUsedTables()) {
             if (xView.getUsedTables().getTableList() != null) {
-                this.usedTableIds = new ArrayList<>(xView.getUsedTables().getTableList());
-            } else {
-                this.usedTableIds = new ArrayList<>(3);
+                getUsedTables().loadFrom(xView.getUsedTables().getTableList());
             }
         }
 
@@ -286,6 +288,7 @@ public class DdsViewDef extends DdsTableDef {
     @Override
     public void visitChildren(IVisitor visitor, VisitorProvider provider) {
         super.visitChildren(visitor, provider);
+        getUsedTables().visit(visitor, provider);
         query.visit(visitor, provider);
     }
 
@@ -358,5 +361,10 @@ public class DdsViewDef extends DdsTableDef {
     @Override
     public String getTypesTitle() {
         return VIEW_TYPES_TITLE;
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.VIEW;
     }
 }

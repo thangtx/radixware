@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import org.radixware.kernel.common.client.IClientEnvironment;
@@ -337,6 +339,10 @@ public class RadFormDef extends TitledDefinition implements IModelDefinition, IE
 
         return getBaseFormDef() != null && getBaseFormDef().isPropertyDefExistsByName(propertyName);
     }
+    
+    public Collection<RadPropertyDef> getProperties(){
+        return properties==null || properties.length==0 ? Collections.<RadPropertyDef>emptyList() : Arrays.<RadPropertyDef>asList(properties);
+    }
 
     private void fillPropertiesByName() {
         if (properties != null && properties.length > 0) {
@@ -360,6 +366,7 @@ public class RadFormDef extends TitledDefinition implements IModelDefinition, IE
      */
     protected Id[] commandOrder = null;
     private List<RadCommandDef> enabledCommands = null;
+    private final Object commandsSemaphore = new Object();
 
     private RadCommandDef findCommandDef(final Id commandId) {
         if (commands != null && commands.length > 0) {
@@ -384,7 +391,9 @@ public class RadFormDef extends TitledDefinition implements IModelDefinition, IE
             RadCommandDef command;
             for (Id commandId : commandOrder) {
                 command = findCommandDef(commandId);
-                enabledCommands.add(command);
+                if (command!=null){
+                    enabledCommands.add(command);
+                }
             }
         }
         for (RadFormDef formDef = this; formDef != null; formDef = formDef.getBaseFormDef()) {
@@ -405,10 +414,12 @@ public class RadFormDef extends TitledDefinition implements IModelDefinition, IE
      */
     @Override
     public final List<RadCommandDef> getEnabledCommands() {
-        if (enabledCommands == null) {
-            linkCommands();
-        }
-        return Collections.unmodifiableList(enabledCommands);
+        synchronized(commandsSemaphore){
+            if (enabledCommands == null) {
+                linkCommands();
+            }
+            return Collections.unmodifiableList(enabledCommands);
+        }        
     }
 
     /**

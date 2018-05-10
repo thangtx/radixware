@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.jml;
 
 import java.text.MessageFormat;
@@ -24,7 +23,6 @@ import org.radixware.kernel.common.enums.ETaskTagType;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.scml.ITaskTag;
 import org.radixware.kernel.common.scml.TaskTagUtils;
-
 
 public class JmlTagTask extends Jml.Tag implements ITaskTag {
 
@@ -58,6 +56,7 @@ public class JmlTagTask extends Jml.Tag implements ITaskTag {
     private String notes;
 
     private JmlTagTask(ETaskTagType type) {
+        super(null);
         this.type = type;
         this.behavior = ETaskTagBehavior.DO_NOTHING;
         this.priority = ETaskTagPriority.LOW;
@@ -106,6 +105,7 @@ public class JmlTagTask extends Jml.Tag implements ITaskTag {
     }
 
     JmlTagTask(org.radixware.schemas.xscml.TaskTagType xTask) {
+        super(null);
         TaskTagUtils.loadFrom(this, xTask);
     }
 
@@ -187,10 +187,12 @@ public class JmlTagTask extends Jml.Tag implements ITaskTag {
 
             @Override
             public CodeWriter getCodeWriter(UsagePurpose purpose) {
-                return new CodeWriter(this, purpose) {
+                return new JmlTagWriter(this, purpose, JmlTagTask.this) {
 
                     @Override
                     public boolean writeCode(CodePrinter printer) {
+                        super.writeCode(printer);
+                        WriterUtils.enterHumanUnreadableBlock(printer);
                         switch (getBehavior()) {
                             case DO_NOTHING:
                                 printer.print("/**/");
@@ -212,6 +214,7 @@ public class JmlTagTask extends Jml.Tag implements ITaskTag {
                                 printer.print(CODE_EXCEPTION_TAIL);
                                 break;
                         }
+                        WriterUtils.leaveHumanUnreadableBlock(printer);
                         return true;
                     }
 
@@ -264,7 +267,7 @@ public class JmlTagTask extends Jml.Tag implements ITaskTag {
 //        }
 //    }
     @Override
-    public void check(IProblemHandler problemHandler,Jml.IHistory h) {
+    public void check(IProblemHandler problemHandler, Jml.IHistory h) {
 // TODO: move in task window
 //        Date today = new Date(System.currentTimeMillis());
 //

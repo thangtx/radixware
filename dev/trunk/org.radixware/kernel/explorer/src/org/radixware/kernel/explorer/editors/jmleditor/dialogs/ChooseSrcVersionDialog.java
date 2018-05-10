@@ -26,19 +26,28 @@ import com.trolltech.qt.gui.QAbstractItemView.SelectionMode;
 import com.trolltech.qt.gui.QHBoxLayout;
 import com.trolltech.qt.gui.QHeaderView.ResizeMode;
 import com.trolltech.qt.gui.QItemDelegate;
+import com.trolltech.qt.gui.QKeySequence;
 import com.trolltech.qt.gui.QPushButton;
 import com.trolltech.qt.gui.QTableWidget;
 import com.trolltech.qt.gui.QTableWidgetItem;
 import com.trolltech.qt.gui.QWidget;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 import org.radixware.kernel.common.client.meta.mask.EditMaskStr;
 import org.radixware.kernel.common.defs.ads.userfunc.AdsUserFuncDef;
 import org.radixware.kernel.common.enums.EDialogButtonType;
 import org.radixware.kernel.common.jml.Jml;
 import org.radixware.kernel.explorer.dialogs.ExplorerDialog;
 import org.radixware.kernel.explorer.editors.jmleditor.JmlEditor;
+import org.radixware.kernel.explorer.editors.jmleditor.JmlProcessor;
 import org.radixware.kernel.explorer.editors.valeditors.ValStrEditor;
+import org.radixware.kernel.explorer.editors.xscmleditor.Highlighter;
+import org.radixware.kernel.explorer.editors.xscmleditor.XscmlEditor;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.env.ExplorerIcon;
 
@@ -57,6 +66,7 @@ public class ChooseSrcVersionDialog extends ExplorerDialog{
     private final List<String>  oldSrcVersions;
     private final AdsUserFuncDef userFunc;       
    
+    private final XscmlEditor previewWidget;
     private final QPushButton btnDelete=new QPushButton();
     private boolean editVersionList=false;
     private boolean loadAsCurrentSource=false;
@@ -69,6 +79,7 @@ public class ChooseSrcVersionDialog extends ExplorerDialog{
         this.userFunc=userFunc;
         this.curSrcVersionName=editor.getEditingVersionName();
         this.setWindowTitle(Application.translate("JmlEditor", "Versions"));
+        previewWidget = createPreviewWidget(editor);
         createUI(isReadOnlyMode);        
     }
     
@@ -83,13 +94,16 @@ public class ChooseSrcVersionDialog extends ExplorerDialog{
         btnDelete.setIconSize(new QSize(22,22));
         btnDelete.clicked.connect(this, "deleteSourceVersion()");
         btnDelete.setEnabled(!isReadOnlyMode);
+        btnDelete.setShortcut(QKeySequence.StandardKey.Delete);
               
         createTable();
         
         tableLayout.addWidget(tableWidget);
         tableLayout.addWidget(btnDelete,0,AlignmentFlag.AlignTop);
-
         dialogLayout().addLayout(tableLayout);
+        
+        dialogLayout().addWidget(previewWidget);
+        
         final QAbstractButton btnLoadAsCurrent = (QAbstractButton)addButton(EDialogButtonType.OK);                
         btnLoadAsCurrent.setObjectName("btnLoadAsCurrent");        
         btnLoadAsCurrent.clicked.connect(this, "loadAsCurrent()");
@@ -103,6 +117,21 @@ public class ChooseSrcVersionDialog extends ExplorerDialog{
         tableCellChanged();
         
         //this.setWindowModality(WindowModality.WindowModal);
+    }
+    
+    private XscmlEditor createPreviewWidget(JmlEditor editor) {
+        final JmlProcessor converter=new JmlProcessor(editor);
+        final XscmlEditor xscmlEditor=new XscmlEditor( getEnvironment(),  converter,  this);
+        new Highlighter(getEnvironment(), xscmlEditor, converter, "org.radixware.explorer/S_E/SYNTAX_JML/");        
+        xscmlEditor.setReadOnly(true);
+        return xscmlEditor;
+    }
+        
+    private void openJmlPreview(Jml jml) {
+        final Jml jmlCopy = Jml.Factory.newCopy(userFunc, jml);
+        previewWidget.getTagConverter().open(jmlCopy);
+        previewWidget.open(userFunc);        
+        jmlCopy.delete();
     }
     
     @SuppressWarnings("unused")
@@ -142,13 +171,20 @@ public class ChooseSrcVersionDialog extends ExplorerDialog{
     
     @SuppressWarnings("unused")
     private void tableCellChanged(){        
-        final boolean enabled= tableWidget.currentItem()!=null &&  
+        final boolean notCurrentSelected= tableWidget.currentItem()!=null &&  
                 !CURRENT_SOURCE.equals(tableWidget.item(tableWidget.currentRow(), VERSION_NAME_COLUMN).text());
         if (getButton(EDialogButtonType.OPEN)!=null){
             getButton(EDialogButtonType.OPEN).setEnabled(tableWidget.currentItem()!=null);
-            getButton(EDialogButtonType.OK).setEnabled(enabled);
+            getButton(EDialogButtonType.OK).setEnabled(notCurrentSelected);
         }
-        btnDelete.setEnabled(enabled);
+        btnDelete.setEnabled(notCurrentSelected);
+        
+        if (notCurrentSelected) {
+            openJmlPreview(srcVersions.get(tableWidget.item(tableWidget.currentRow(), VERSION_NAME_COLUMN).text()));
+        } else if (tableWidget.currentItem() != null) {
+            openJmlPreview(userFunc.getSource());
+        }
+        tableWidget.setFocus();
     }
     
     protected  void createTable(){        

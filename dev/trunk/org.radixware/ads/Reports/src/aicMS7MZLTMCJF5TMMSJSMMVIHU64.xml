@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+  <AdsClassDefinition Id="aicMS7MZLTMCJF5TMMSJSMMVIHU64" Name="IResultSetLobProvider" Type="5" Environment="server">
+    <AccessRules IsPublished="false" IsAbstract="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.utils.IResultSetLobProvider"/>
+    </AccessRules>
+    <Headers>
+      <Src Name="HeaderaicMS7MZLTMCJF5TMMSJSMMVIHU64"/>
+    </Headers>
+    <Bodies>
+      <Src Name="BodyaicMS7MZLTMCJF5TMMSJSMMVIHU64"/>
+    </Bodies>
+    <MethodGroup Id="cmg3L7NWU3ZSFABNNE4BO6KEO4PWA" Name="Root"/>
+    <PropertyGroup Id="cpgNXPVFZPOU5BQFKX4NWNO4YV2KU" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthWXNA6U7G5BBLZAUMKKZIQ3CHOQ" Name="canGetBlobContent" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="canGetBlobContent(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mpr4YWFJIQ2DBAPTGJC3GARFXY4O4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthVRAEMTHN5NEU7PPSPE5BZFI36U" Name="canGetClobContent" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="canGetClobContent(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprDURSYHJZEZGANGU677GORKTCTA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthLN3KD5DIR5HXVOBOCX3I5WGM3Y" Name="getBlobContent" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getBlobContent(Ljava.lang.String;)[B"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprSOBH7RPUJBEK5LZY4ZNQZYWKFY">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="byte" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.sql.SQLException"/>
+        </ThrownExceptions>
+      </Method>
+      <Method Id="mthCDS72QE4T5G7RECEZYPN5OBE6Q" Name="getClobContent" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="getClobContent(Ljava.lang.String;)[C"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="arg0" Id="mprRRNJVOOA75DXHK7G5ZYF3DENLA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="char" Dimension="1"/>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.sql.SQLException"/>
+        </ThrownExceptions>
+      </Method>
+    </Methods>
+  </AdsClassDefinition>
+</AdsDefinition>

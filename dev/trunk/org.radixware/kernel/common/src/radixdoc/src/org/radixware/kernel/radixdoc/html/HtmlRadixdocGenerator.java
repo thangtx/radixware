@@ -10,19 +10,14 @@
  */
 package org.radixware.kernel.radixdoc.html;
 
+import org.radixware.kernel.common.exceptions.RadixdocStopParseException;
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -36,14 +31,15 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.xmlbeans.XmlException;
 import org.apache.xmlbeans.XmlOptions;
 import org.radixware.kernel.common.components.ICancellable;
 import org.radixware.kernel.common.components.IProgressHandle;
+import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
 import org.radixware.kernel.common.enums.EIsoLanguage;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.Base64;
 import org.radixware.kernel.common.utils.FileUtils;
 import org.radixware.schemas.radixdoc.DiagramRefItem;
@@ -70,7 +66,7 @@ public class HtmlRadixdocGenerator {
      * @param progressHandle обработчик хода выполнения (может быть null)
      * @param cancellable возможность остановить генерауию
      */
-    public static void generate(RadixdocOptions options, IProgressHandle progressHandle, ICancellable cancellable) {
+    public static void generate(IRadixdocOptions options, IProgressHandle progressHandle, ICancellable cancellable) {
         if (options.isCompressToZip()) {
             final HtmlRadixdocGenerator htmlGenerator = new ZipGenerator(options, progressHandle, cancellable);
             htmlGenerator.generate();
@@ -80,6 +76,10 @@ public class HtmlRadixdocGenerator {
         }
     }
 
+//    public static boolean generateDitaHtml(List<List<DefinitionDocInfo>> definitions, IRadixdocOptions options, IProgressHandle progressHandle, String dir) {
+//        final HtmlRadixdocGenerator htmlGenerator = new HtmlRadixdocGenerator(options, progressHandle, null);
+//        return htmlGenerator.generateDita(definitions, dir);
+//    }
     /**
      * Проверяет совместимость версий генератора и документации.
      *
@@ -110,17 +110,17 @@ public class HtmlRadixdocGenerator {
                 for (final String page : pages) {
                     reslover.add(root + "/" + page);
                 }
-                throw new StopParseException();
+                throw new RadixdocStopParseException();
             }
         }
     }
     private final ProcessHandle processHandle;
-    private final RadixdocOptions options;
+    private final IRadixdocOptions options;
     private Transformer transformer;
     private Set<String> resources;
     private ReferenceReslover reslover;
 
-    HtmlRadixdocGenerator(RadixdocOptions options, IProgressHandle progressHandle, ICancellable cancellable) {
+    HtmlRadixdocGenerator(IRadixdocOptions options, IProgressHandle progressHandle, ICancellable cancellable) {
         this.options = options;
         this.processHandle = new ProcessHandle(progressHandle, cancellable);
     }
@@ -146,7 +146,6 @@ public class HtmlRadixdocGenerator {
             finish();
         }
     }
-    private String transformerFactory = "";
 
     protected boolean prepare() {
         reslover = new ReferenceReslover(getOptions());
@@ -155,13 +154,8 @@ public class HtmlRadixdocGenerator {
             return false;
         }
 
-        // keep prev factory if set
-        transformerFactory = System.getProperty(TRANSFORMER_FACTORY);
-
-        // enable xalan
-        System.setProperty(TRANSFORMER_FACTORY, "org.apache.xalan.processor.TransformerFactoryImpl");
         try {
-            transformer = TransformerFactory.newInstance().newTransformer(new StreamSource(getFileProvider().getXsltSchemeStream()));
+            transformer = (new org.apache.xalan.processor.TransformerFactoryImpl()).newTransformer(new StreamSource(getFileProvider().getXsltSchemeStream()));
             if (transformer == null) {
                 return false;
             }
@@ -175,8 +169,7 @@ public class HtmlRadixdocGenerator {
     }
 
     protected void finish() {
-        System.clearProperty(TRANSFORMER_FACTORY);
-//        System.setProperty(TRANSFORMER_FACTORY, transformerFactory != null ? transformerFactory : "");
+        getFileProvider().clearCache();
         processHandle.finish();
     }
 
@@ -198,7 +191,7 @@ public class HtmlRadixdocGenerator {
                     if (inputStream != null) {
                         parser.parse(inputStream, new HeadHandler(reslover, module.getOutputPath()));
                     }
-                } catch (StopParseException e) {
+                } catch (RadixdocStopParseException e) {
                     continue;
                 } catch (SAXException | IOException ex) {
                     Logger.getLogger(HtmlRadixdocGenerator.class.getName()).log(Level.SEVERE, null, ex);
@@ -215,13 +208,13 @@ public class HtmlRadixdocGenerator {
         final IndexUnit index = indexDocument.addNewIndexUnit();
 
         for (final FileProvider.LayerEntry layer : getFileProvider().getLayers()) {
-            final IndexUnit idexLayer = index.addNewSubUnit();
-            idexLayer.setTitle(layer.getIdentifier());
-            idexLayer.setSubPath(layer.getSubPath());
+            final IndexUnit indexLayer = index.addNewSubUnit();
+            indexLayer.setTitle(layer.getIdentifier());
+            indexLayer.setSubPath(layer.getSubPath());
 
             modules_loop:
             for (final FileProvider.ModuleEntry module : layer.getModules()) {
-                final IndexUnit idexUnit = idexLayer.addNewSubUnit();
+                final IndexUnit indexUnit = indexLayer.addNewSubUnit();
 
                 processUnit();
 
@@ -235,14 +228,31 @@ public class HtmlRadixdocGenerator {
                         transformer.setParameter("lang", lang);
                         processUnitEntry(document, module.getRootPath(), module.getOutputPath(), lang);
                     }
+
+                    Map<EDefinitionIdPrefix, IndexUnit> typeUnits = new HashMap();
                     for (final Page page : document.getRadixdocUnit().getPageList()) {
                         if (page.isSetType() && page.getType().equals("Module")) {
-                            idexUnit.setReference(page.getName());
-                            idexUnit.setTitle(page.getTitle());
-                            idexUnit.setSubPath(module.getSubPath());
-                            idexUnit.setIcon(page.getIcon());
+                            indexUnit.setReference(page.getName());
+                            indexUnit.setTitle(page.getTitle());
+                            indexUnit.setSubPath(module.getSubPath());
+                            indexUnit.setIcon(page.getIcon());
                         } else if (page.isSetTopLevel() && page.getTopLevel()) {
-                            final IndexUnit indexPage = idexUnit.addNewSubUnit();
+                            final IndexUnit parentIndexElement;
+                            if (module.getSubPath().startsWith("dds/")) {
+                                EDefinitionIdPrefix prefix = Id.Factory.loadFrom(page.getName()).getPrefix();
+
+                                if (typeUnits.containsKey(prefix)) {
+                                    parentIndexElement = typeUnits.get(prefix);
+                                } else {
+                                    parentIndexElement = indexUnit.addNewSubUnit();
+                                    parentIndexElement.setTitle(getPrefixTitle(prefix));
+                                    typeUnits.put(prefix, parentIndexElement);
+                                }
+                            } else {
+                                parentIndexElement = indexUnit;
+                            }
+
+                            final IndexUnit indexPage = parentIndexElement.addNewSubUnit();
                             indexPage.setReference(page.getName());
                             indexPage.setTitle(page.getTitle());
                             indexPage.setIcon(page.getIcon());
@@ -255,11 +265,13 @@ public class HtmlRadixdocGenerator {
                             processHandle.incProgress(page.getTitle());
                             if (processHandle.wasCancelled()) {
                                 return;
+
                             }
                         }
                     }
                 } catch (XmlException | IOException ex) {
-                    Logger.getLogger(HtmlRadixdocGenerator.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(HtmlRadixdocGenerator.class
+                            .getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
@@ -270,6 +282,27 @@ public class HtmlRadixdocGenerator {
         }
 
         processCopyFileEntries();
+    }
+
+    private String getPrefixTitle(EDefinitionIdPrefix prefix) {
+        switch (prefix) {
+            case DDS_TABLE:
+                return "Tables";
+            case DDS_REFERENCE:
+                return "References";
+            case DDS_SEQUENCE:
+                return "Sequences";
+            case DDS_PACKAGE:
+                return "Packages";
+            case DDS_TYPE:
+                return "Types";
+            case DDS_COLUMN_TEMPLATE:
+                return "Column Templates";
+            case DDS_ACCESS_PARTITION_FAMILY:
+                return "Access Partition Families";
+            default:
+                return prefix.toString();
+        }
     }
 
     protected void generateUnitsIndex(IndexUnitDocument indexDocument, String path) {
@@ -306,9 +339,11 @@ public class HtmlRadixdocGenerator {
                     try {
                         try (final StreamWraper<OutputStream> streamWraper = getOutputStreamWraper(filePath)) {
                             streamWraper.getStream().write(diagramHtml.getBytes("utf-8"));
+
                         }
                     } catch (IOException ex) {
-                        Logger.getLogger(HtmlRadixdocGenerator.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(HtmlRadixdocGenerator.class
+                                .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -337,7 +372,8 @@ public class HtmlRadixdocGenerator {
                 transform(streamWraper.getStream(), buffInputStream);
             }
         } catch (TransformerException | IOException ex) {
-            Logger.getLogger(HtmlRadixdocGenerator.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(HtmlRadixdocGenerator.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -360,6 +396,7 @@ public class HtmlRadixdocGenerator {
 
         try (final StreamWraper<OutputStream> streamWraper = getOutputStreamWraper(outFileName)) {
             FileUtils.copyStream(inputStream, streamWraper.getStream());
+
         }
     }
 
@@ -386,9 +423,11 @@ public class HtmlRadixdocGenerator {
             try (final InputStream inputStream = getFileProvider().getInputStream(entry.source, entry.inFileName)) {
                 if (inputStream != null) {
                     createFile(inputStream, entry.outFileName);
+
                 }
             } catch (IOException ex) {
-                Logger.getLogger(ZipGenerator.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ZipGenerator.class
+                        .getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -396,9 +435,12 @@ public class HtmlRadixdocGenerator {
     protected StreamWraper<OutputStream> getOutputStreamWraper(String path) {
         try {
             return new FileOutputStreamWraper(new FileOutputStream(getFileProvider().getOutput().getAbsolutePath() + "/" + path));
+
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(HtmlRadixdocGenerator.class.getName()).log(Level.SEVERE, getFileProvider().getOutput().getAbsolutePath(), ex);
-            return null;
+            Logger.getLogger(HtmlRadixdocGenerator.class
+                    .getName()).log(Level.SEVERE, getFileProvider().getOutput().getAbsolutePath(), ex);
+
+            throw new RuntimeException(ex);
         }
     }
 
@@ -406,7 +448,7 @@ public class HtmlRadixdocGenerator {
         return options.getFileProvider();
     }
 
-    public RadixdocOptions getOptions() {
+    public IRadixdocOptions getOptions() {
         return options;
     }
 

@@ -29,6 +29,11 @@ public final class MqMessages {
     }
 
     static volatile String UNIT_TYPE_TITLE;
+    static volatile String CONNECTED_TO_QUEUE;
+    static volatile String ASSIGNED_PARTITIONS_CHANGED;
 
     static final MultiLangStringWrapper W_MLS_ID_START_OPTIONS = new MultiLangStringWrapper(Messages.MLS_ID_START_OPTIONS);
+    static final MultiLangStringWrapper W_MLS_ID_CONNECTED_TO_QUEUE = new MultiLangStringWrapper("mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsWNA3FEVJQ5CPBEBLPIAR64EWRY");//eventCode["Connected to message queue '%1'"] Event Server.MqHandlerUnit
+    static final MultiLangStringWrapper W_MLS_ID_ASSIGNED_PARTITIONS_CHANGED = new MultiLangStringWrapper("mlbadcXCB5KK6HMJH7NP6E642OHPOMXY-mlsABYQ6AQTLVCLDEXMONXMWO7Y7Y");//eventCode["Assigned partitions have been changed: %1"] Event Server.MqHandlerUnit
+    
 }

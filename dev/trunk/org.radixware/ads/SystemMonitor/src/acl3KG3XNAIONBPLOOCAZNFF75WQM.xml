@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
+  <AdsClassDefinition Id="acl3KG3XNAIONBPLOOCAZNFF75WQM" Name="MetricType.Unit.PersoComm.MessagesReceivedCnt" Type="2" ClientEnvironment="explorer">
+    <AccessRules IsPublished="false"/>
+    <Headers>
+      <Src Name="Headeracl3KG3XNAIONBPLOOCAZNFF75WQM"/>
+    </Headers>
+    <Bodies>
+      <Src Name="Bodyacl3KG3XNAIONBPLOOCAZNFF75WQM"/>
+    </Bodies>
+    <MethodGroup Id="cmgWKAP6HQEZBHMFFVTNVU2LNIPPM" Name="Root"/>
+    <PropertyGroup Id="cpg2UQPXXZWCZCWZPDNAWRDSN3PRY" Name="Root"/>
+    <Properties/>
+    <Methods>
+      <Method Id="mthSK64PGWTZNFZFAJVJ5NHXBAC6M" Name="getKind" Nature="0" IsOverride="true" isDescriptionInherited="true">
+        <AccessRules/>
+        <ReturnType TypeId="21" Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>return </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="acsF47GG6XUPJH5ZKZFOWDK7GI7LE aciZMNJV6VFS5HC5KJRCJUNM2EUJ4" Invoke="true">
+                <xsc:Presentation>MetricKind:Unit.PersoComm.MessagesReceivedCnt</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+    </Methods>
+    <Entity EntityId="tbl2H6SULJHXJGFVIS6UVHRWQS4AM"/>
+    <Presentations ObjectTitleId="mlsV2L4OGXNYVHDDHME2KYRXW45TI">
+      <ClassCatalogs>
+        <ClassCatalog Id="eccXISAEUV6HRA7JNQ453IS2OBSFI" Name="Common">
+          <ClassRef TopicId="cctDROZAAWX25DKPC4RCACXPIGZCA" Order="150.0"/>
+        </ClassCatalog>
+      </ClassCatalogs>
+    </Presentations>
+    <Extends TypeId="411" Path="aclJ4GIK4EGWNCBFPC4F6UUCLXLP4"/>
+  </AdsClassDefinition>
+</AdsDefinition>

@@ -18,6 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import org.radixware.kernel.common.client.widgets.IButton;
 import org.radixware.kernel.common.html.Div;
+import org.radixware.wps.HttpQuery;
+import static org.radixware.wps.rwt.UIObject.colorFromStr;
+import org.radixware.wps.text.WpsTextOptions;
 
 
 public class ListBox extends UIObject {
@@ -32,10 +35,14 @@ public class ListBox extends UIObject {
         public void itemDoubleClick(ListBoxItem item);
     }
 
+    private Color selectedBackground = colorFromStr("#6495ED");//cornflowerblue
+    
     public static class ListBoxItem extends ButtonBase {
 
         private Object userData;
-
+        private boolean isSelectable = true;
+        private Color background = null;
+        private WpsTextOptions textOptions;
         public ListBoxItem() {
             super(new Div());
             html.setCss("padding-left", "5px");
@@ -66,19 +73,23 @@ public class ListBox extends UIObject {
             return new ListBoxItem(this);
         }
 
-        private void markCurrent() {
-            html.addClass("rwt-ui-selected-item");
+        private void markCurrent(Color selectedBackground) {
+            background = getBackground();
+            setBackground(selectedBackground);
+            html.removeChoosableMarker();
         }
 
         private void unmarkCurrent() {
             html.removeClass("rwt-ui-selected-item");
+            html.markAsChoosable();
+            setBackground(background);
         }
-
+        
         public Object getUserData() {
             return userData;
         }
 
-        public void setUserData(Object userData) {
+        public void setUserData(final Object userData) {
             this.userData = userData;
         }
 
@@ -94,10 +105,20 @@ public class ListBox extends UIObject {
         }
 
         @Override
-        public void processAction(String actionName, String actionParam) {
+        public void setTextOptions(WpsTextOptions options) {
+            super.setTextOptions(options);
+            this.textOptions = options;
+        }
+
+        public WpsTextOptions getTextOptions() {
+            return textOptions;
+        }
+        
+        @Override
+        public void processAction(final String actionName, final String actionParam) {
             if (Events.EVENT_NAME_ONDBLCLICK.equals(actionName) && isEnabled()) {
-                ListBox box = findParentLisbox();
-                if (box != null) {
+                final ListBox box = findParentLisbox();
+                if (box != null && isSelectable()) {
                     box.itemDoubleClick(this);
                 }
                 return;
@@ -106,7 +127,7 @@ public class ListBox extends UIObject {
         }
 
         @Override
-        public void setEnabled(boolean isEnabled) {
+        public void setEnabled(final boolean isEnabled) {
             if (isEnabled) {
                 html.markAsChoosable();
             } else {
@@ -114,8 +135,23 @@ public class ListBox extends UIObject {
             }
             super.setEnabled(isEnabled);
         }
-    }
 
+        public final void setSelectable(final boolean isSelectable){
+            if (isSelectable!=this.isSelectable){
+                if (isSelectable){
+                    html.markAsChoosable();
+                }else{
+                    html.removeChoosableMarker();
+                }
+                this.isSelectable = isSelectable;
+            }
+        }
+
+        public final boolean isSelectable(){
+            return isSelectable;
+        }
+    }
+    
     private class ItemHolder extends UIObject {
 
         private ListBoxItem item;
@@ -171,18 +207,19 @@ public class ListBox extends UIObject {
     {
         container.html.removeClass("rwt-ui-background");
     }
-    private IButton.ClickHandler itemClickHandler = new IButton.ClickHandler() {
+    private final IButton.ClickHandler itemClickHandler = new IButton.ClickHandler() {
         @Override
-        public void onClick(IButton source) {
+        public void onClick(final IButton source) {
 
             if (source instanceof ListBoxItem) {
-                ListBoxItem item = (ListBoxItem) source;
-                UIObject parent = item.getParent();
+                final ListBoxItem item = (ListBoxItem) source;
+                if (item.isSelectable()){
+                    final UIObject parent = item.getParent();
 
-                if (parent instanceof ItemHolder && ((ItemHolder) parent).getListBox() == ListBox.this) {
-                    setCurrent((ListBoxItem) source);
+                    if (parent instanceof ItemHolder && ((ItemHolder) parent).getListBox() == ListBox.this) {
+                        setCurrent(item);
+                    }
                 }
-
             }
         }
     };
@@ -263,7 +300,9 @@ public class ListBox extends UIObject {
         container.getHtml().setCss("list-style-type", "none");
         container.getHtml().setCss("margin", "0px");
         container.getHtml().setCss("padding", "0px");
+        getHtml().setAttr("onscroll", "$RWT.listBox.syncScroll");
         html.layout("$RWT.listBox.layout");
+        checkHasMoreData();
     }
 
     public void add(ListBoxItem item) {
@@ -278,7 +317,7 @@ public class ListBox extends UIObject {
         item.addClickHandler(itemClickHandler);
     }
 
-    private void itemDoubleClick(ListBoxItem item) {
+    private void itemDoubleClick(final ListBoxItem item) {
         if (item != null) {
             setCurrent(item);
             defaultDoubleClickListener.itemDoubleClick(item);
@@ -293,7 +332,7 @@ public class ListBox extends UIObject {
         container.clear();
     }
 
-    private ItemHolder findHolder(ListBoxItem item) {
+    private ItemHolder findHolder(final ListBoxItem item) {
         for (UIObject obj : container.getChildren()) {
             if (((ItemHolder) obj).item == item) {
                 return (ItemHolder) obj;
@@ -302,7 +341,7 @@ public class ListBox extends UIObject {
         return null;
     }
 
-    public void remove(ListBoxItem item) {
+    public void remove(final ListBoxItem item) {
         ItemHolder holder = findHolder(item);
         if (holder != null) {
             container.remove(holder);
@@ -321,17 +360,21 @@ public class ListBox extends UIObject {
         defaultCurrentItemListener.currentItemChanged(currentItem);
     }
 
-    public void setCurrent(ListBoxItem item) {
-        ItemHolder holder = findHolder(item);
+    public void setCurrent(final ListBoxItem item) {
+        final ItemHolder holder = findHolder(item);
         if (holder != null) {
             if (currentItem != null) {
                 currentItem.unmarkCurrent();
             }
             currentItem = item;
             if (currentItem != null) {
-                currentItem.markCurrent();
+                currentItem.markCurrent(selectedBackground);
             }
             fireCurrentItemChange();
+        } else if (item == null) {
+            if (currentItem != null) {
+                currentItem.unmarkCurrent();
+            }
         }
     }
 
@@ -386,10 +429,10 @@ public class ListBox extends UIObject {
         holder2.changeItem(newItem1);
 
         if (ListBox.this.currentItem == item1) {
-            newItem1.markCurrent();
+            newItem1.markCurrent(selectedBackground);
             ListBox.this.currentItem = newItem1;
         } else if (ListBox.this.currentItem == item2) {
-            newItem2.markCurrent();
+            newItem2.markCurrent(selectedBackground);
             ListBox.this.currentItem = newItem2;
         }
     }
@@ -402,6 +445,18 @@ public class ListBox extends UIObject {
         return container.getChildren().size();
     }
 
+     public void setSelectedItemBackground(Color c) {
+            if (c != null) {
+                selectedBackground = c;
+            } else {
+                c = colorFromStr("#6495ED");//cornflowerblue
+            }
+        }
+        
+        public Color getSelectedItemBackground() {
+            return selectedBackground;
+        }
+    
     public void removeCurrentItemListener(CurrentItemListener l) {
         defaultCurrentItemListener.removeCurrentItemListener(l);
     }
@@ -432,5 +487,43 @@ public class ListBox extends UIObject {
 
     public void addDoubleClickListener(DoubleClickListener l) {
         defaultDoubleClickListener.addDoubleClickListener(l);
+    }
+
+    protected boolean hasMoreData() {
+        return false;
+    }
+
+    protected List<ListBoxItem> loadMore(){
+        return Collections.<ListBoxItem>emptyList();
+    }
+
+    @Override
+    protected final Runnable componentRendered(final HttpQuery query) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                if ("m".equals(query.get(html.getId()))) {
+                    if (hasMoreData()){
+                        final List<ListBoxItem> newItems = loadMore();
+                        if (newItems!=null){
+                            for (ListBoxItem item: newItems){
+                                add(item);
+                            }
+                        }
+                        checkHasMoreData();
+                    }else{
+                        html.setAttr("more-rows", null);
+                    }
+                }
+            }
+        };
+    }
+
+    protected final void checkHasMoreData() {
+        if (hasMoreData()) {
+            html.setAttr("more-rows", "true");
+        } else {
+            html.setAttr("more-rows", null);
+        }
     }
 }

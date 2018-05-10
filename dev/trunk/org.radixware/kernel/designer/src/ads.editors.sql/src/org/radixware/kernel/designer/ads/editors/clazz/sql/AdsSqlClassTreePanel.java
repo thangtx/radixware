@@ -37,6 +37,7 @@ import org.radixware.kernel.common.defs.ads.clazz.sql.AdsProcedureClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsStatementClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef;
 import org.radixware.kernel.designer.ads.editors.clazz.sql.AdsSqlClassTree.PopupMenuAction;
 import org.radixware.kernel.designer.common.dialogs.scmlnb.library.PopupButton;
 import org.radixware.kernel.designer.common.general.editors.OpenInfo;
@@ -49,7 +50,7 @@ public class AdsSqlClassTreePanel extends JPanel {
     private AdsSqlClassCodeEditor editor;
     private AdsSqlClassTree tree;
     private JToolBar toolbar = new JToolBar();
-    private AdsSqlClassDef sqlClass;
+    private ISqlDef sqlClass;
     public static final String ADD_OBJECT_TO_TREE_POPUP = "add-object-to-tree-popup";
 
     public void update() {
@@ -57,8 +58,8 @@ public class AdsSqlClassTreePanel extends JPanel {
         setReadOnly(sqlClass.isReadOnly());
     }
 
-    public void open(AdsSqlClassDef sqlClass, OpenInfo info) {
-        AdsSqlClassDef oldValue = this.sqlClass;
+    public void open(ISqlDef sqlClass, OpenInfo info) {
+        ISqlDef oldValue = this.sqlClass;
         this.sqlClass = sqlClass;
         tree.open(sqlClass, info);
         firePropertyChange("sqlClass", oldValue, sqlClass);
@@ -91,7 +92,8 @@ public class AdsSqlClassTreePanel extends JPanel {
 
         final JPopupMenu menu = new JPopupMenu();
         menu.add(new AdsSqlClassTreeActions.AddUsedTableToTree().getPopupPresenter());
-        menu.add(new AdsSqlClassTreeActions.AddCustomParameter().getPopupPresenter());
+        final JMenuItem customParameterPresenter = new AdsSqlClassTreeActions.AddCustomParameter().getPopupPresenter();
+        menu.add(customParameterPresenter);
         final JMenuItem newFieldActionPresenter = new AdsSqlClassTreeActions.AddNewFieldAction().getPopupPresenter();
         menu.add(newFieldActionPresenter);
 
@@ -99,13 +101,18 @@ public class AdsSqlClassTreePanel extends JPanel {
 
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if (tree.getSqlClass() instanceof AdsReportClassDef && menu.getSubElements().length < 5) {
-                    menu.add(new AdsSqlClassTreeActions.AddDynamicProperty().getPopupPresenter());
-                }
-                if (tree.getSqlClass() instanceof AdsStatementClassDef || tree.getSqlClass() instanceof AdsProcedureClassDef) {
-                    newFieldActionPresenter.setVisible(false);
+                if (tree.getSqlDef() instanceof AdsSqlClassDef) {
+                    if (tree.getSqlDef() instanceof AdsReportClassDef && menu.getSubElements().length < 5) {
+                        menu.add(new AdsSqlClassTreeActions.AddDynamicProperty().getPopupPresenter());
+                    }
+                    if (tree.getSqlDef() instanceof AdsStatementClassDef || tree.getSqlDef() instanceof AdsProcedureClassDef) {
+                        newFieldActionPresenter.setVisible(false);
+                    } else {
+                        newFieldActionPresenter.setVisible(true);
+                    }
                 } else {
-                    newFieldActionPresenter.setVisible(true);
+                    newFieldActionPresenter.setVisible(false);
+                    customParameterPresenter.setVisible(false);
                 }
             }
         });

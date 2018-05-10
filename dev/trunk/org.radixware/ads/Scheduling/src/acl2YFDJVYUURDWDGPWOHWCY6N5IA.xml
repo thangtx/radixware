@@ -32,7 +32,7 @@ import java.util.GregorianCalendar;</xsc:Java>
         <Presentation InheritanceMask="1">
           <Editing NotNull="true" IsDuplicatesEnabled="true">
             <EditMask>
-              <edit:Int MaxValue="31" MinLength="0" MinValue="1" NumberBase="10" PadChar="0" StepSize="1"/>
+              <edit:Int MaxValue="92" MinLength="0" MinValue="1" NumberBase="10" PadChar="0" StepSize="1"/>
             </EditMask>
           </Editing>
         </Presentation>
@@ -56,19 +56,25 @@ import java.util.GregorianCalendar;</xsc:Java>
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthX2DV6VS53RFDFJQLL45YVLVNIY" Invoke="true"/>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthX2DV6VS53RFDFJQLL45YVLVNIY" Invoke="true">
+                <xsc:Presentation>dayMatches</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(startDateCalendar, dateCalendar) &amp;&amp; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>oper</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true"/>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true">
+                <xsc:Presentation>CalendarOper:Plus</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;</xsc:Java>
@@ -224,14 +230,18 @@ return cal;</xsc:Java>
               <xsc:Java>super.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 mthOYESDQBEI7OBDCIPAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aclVF3WHTJTZFFGBB3ZT426H6KZ24 mthOYESDQBEI7OBDCIPAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>check</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mthKQ6M3EO7LFD4LFMIEWKYBICRRI" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM mth66JBT4643VCQFMKDWTCYHZWLOQ" Invoke="true">
+                <xsc:Presentation>checkDayOfQuarter</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();</xsc:Java>
@@ -260,7 +270,9 @@ cal.setTime(dateCalendar.getTime());
 int offset = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colYTXRDPZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>offset</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue() - 1;
@@ -272,7 +284,9 @@ int offset = </xsc:Java>
 Calendar nearestStartDate = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthAIUKQYDTZVBBJCLDCOBFRZITYE" Invoke="true"/>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthAIUKQYDTZVBBJCLDCOBFRZITYE" Invoke="true">
+                <xsc:Presentation>calcNearest</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(startDateCalendar, dateCalendar);
@@ -283,13 +297,17 @@ cal.setTime(nearestStartDate.getTime());
 if(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colDKQ7RUH5YZGIZMYREMQUYMV4OM" Invoke="true">
+                <xsc:Presentation>offsetDir</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> == </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsDVW367ITGZA5RFDEOKSNUSKAFI aciNESOBQSS5BCZRFUR7I57ZTHY5M" Invoke="true"/>
+              <xsc:IdReference Path="acsDVW367ITGZA5RFDEOKSNUSKAFI aciNESOBQSS5BCZRFUR7I57ZTHY5M" Invoke="true">
+                <xsc:Presentation>Common::OffsetDir:FromStart</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>)
@@ -299,7 +317,9 @@ if(</xsc:Java>
 	Calendar anotherStartDate = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthAIUKQYDTZVBBJCLDCOBFRZITYE" Invoke="true"/>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthAIUKQYDTZVBBJCLDCOBFRZITYE" Invoke="true">
+                <xsc:Presentation>calcNearest</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(startDateCalendar, cal);
@@ -317,7 +337,9 @@ else
 	Calendar anotherStartDate = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthAIUKQYDTZVBBJCLDCOBFRZITYE" Invoke="true"/>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthAIUKQYDTZVBBJCLDCOBFRZITYE" Invoke="true">
+                <xsc:Presentation>calcNearest</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(startDateCalendar, cal);
@@ -388,19 +410,25 @@ return cal.equals(dateCalendar);</xsc:Java>
               <xsc:Java>return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthX2DV6VS53RFDFJQLL45YVLVNIY" Invoke="true"/>
+              <xsc:IdReference Path="acl2YFDJVYUURDWDGPWOHWCY6N5IA mthX2DV6VS53RFDFJQLL45YVLVNIY" Invoke="true">
+                <xsc:Presentation>dayMatches</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(startDateCalendar, dateCalendar) &amp;&amp; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true"/>
+              <xsc:IdReference Path="aecCRD53OZ5I3OBDCIOAALOMT5GDM colFDW6KVZ6I3OBDCIOAALOMT5GDM" Invoke="true">
+                <xsc:Presentation>oper</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> != </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true"/>
+              <xsc:IdReference Path="acsVA7VVTUNEBFXLNKSXHQ4A75NVY aci4OZPPEOE3ZDENMBBT6543IFBSA" Invoke="true">
+                <xsc:Presentation>CalendarOper:Plus</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>;

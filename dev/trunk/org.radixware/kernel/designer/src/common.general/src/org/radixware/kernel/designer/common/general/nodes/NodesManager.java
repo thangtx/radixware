@@ -12,20 +12,34 @@ package org.radixware.kernel.designer.common.general.nodes;
 
 import java.awt.Component;
 import java.beans.PropertyVetoException;
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import org.netbeans.api.actions.*;
+import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
+import org.netbeans.spi.project.ui.PathFinder;
 import org.openide.ErrorManager;
 import org.openide.explorer.ExplorerManager;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
+import org.openide.loaders.DataObject;
+import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.Node;
+import org.openide.nodes.NodeNotFoundException;
+import org.openide.nodes.NodeOp;
+import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 import org.radixware.kernel.common.defs.RadixObject;
@@ -36,6 +50,7 @@ import org.radixware.kernel.common.defs.ads.ui.AdsWidgetDef;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtWidgetDef;
 import org.radixware.kernel.common.exceptions.RadixObjectError;
 import org.radixware.kernel.designer.common.general.editors.IRadixObjectEditor;
+import org.radixware.kernel.designer.common.general.filesystem.RadixFileUtil;
 
 public class NodesManager {
 
@@ -164,6 +179,10 @@ public class NodesManager {
         }
         return tc;
     }
+    
+    public static TopComponent findFilesTab() {
+        return WindowManager.getDefault().findTopComponent("projectTab_tc"); // from org.netbeans.modules.project.ui.ProjectTab.ID_PHYSICAL;
+    }
 
     /**
      * Find JTree recursively in AWT Container
@@ -260,7 +279,82 @@ public class NodesManager {
         }
 
     }
+    
+    public static void selectInFiles(File file) {
+        final FileObject fileObject = RadixFileUtil.toFileObject(file);
+        selectInFiles(fileObject);
+    }
+    
+    public static void selectInFiles(FileObject fileObject) {
+        try {
+            if (fileObject == null) {
+                return;
+            }
+            TopComponent tc = NodesManager.findFilesTab();
+            tc.open();
+            tc.requestActive();
+            final ExplorerManager.Provider explorerManagerProvider = (ExplorerManager.Provider) tc;
+            final ExplorerManager explorerManager = explorerManagerProvider.getExplorerManager();
+            Node node = explorerManager.getRootContext();
+            node = findInFiles(node, fileObject);
+            if (node != null) {
+                explorerManager.setSelectedNodes(new Node[]{node});
+            }
+            
+        } catch (PropertyVetoException ex) {
+            ErrorManager.getDefault().notify(ex);
+        }
+    }
+    
+    private static Node findInFiles(final Node root, FileObject fo) { //from  org.netbeans.modules.project.ui.PhysicalView.PathFinder.findPath
+        if (root == null || fo == null) {
+            return null;
+        }
+        Project project = FileOwnerQuery.getOwner(fo);
+        if (project == null) {
+            return null;
+        }
+        FileObject projectFO = project.getProjectDirectory();
+        String relPath = FileUtil.getRelativePath(projectFO, fo);
+        ArrayList<String> path = new ArrayList<>();
+        StringTokenizer strtok = new StringTokenizer(relPath, "/");
+        while (strtok.hasMoreTokens()) {
+            path.add(strtok.nextToken());
+        }
 
+        if (path.size() > 0) {
+            path.remove(path.size() - 1);
+        } else {
+            return null;
+        }
+        try {
+            Node projectNode = NodeOp.findChild(root, projectFO.getName());
+            if (projectNode == null) {
+                return null;
+            }
+            Node parent = NodeOp.findPath(projectNode, Collections.enumeration(path));
+            if (parent != null) {
+                Node[] nds = parent.getChildren().getNodes(true);
+                for (Node nd : nds) {
+                    FileObject dobj = nd.getLookup().lookup(FileObject.class);
+                    if (dobj != null && fo.equals(dobj)) {
+                        return nd;
+                    }
+                }
+                String name = fo.getName();
+                try {
+                    DataObject dobj = DataObject.find(fo);
+                    name = dobj.getNodeDelegate().getName();
+                } catch (DataObjectNotFoundException ex) {
+                }
+                return parent.getChildren().findChild(name);
+            }
+        } catch (NodeNotFoundException e) {
+            return null;
+        }
+        return null;
+    }
+    
     public static void updateOpenedEditors() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override

@@ -48,34 +48,96 @@ import com.trolltech.qt.gui.QVBoxLayout;
 import com.trolltech.qt.gui.QWidget;
 import com.trolltech.qt.gui.QIcon.Mode;
 import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QLine;
 import com.trolltech.qt.gui.QLineEdit;
 import com.trolltech.qt.gui.QSizePolicy.Policy;
 import com.trolltech.qt.gui.QStyle.PrimitiveElement;
 import com.trolltech.qt.gui.QTableWidgetItem;
+import com.trolltech.qt.gui.QToolBar;
 import com.trolltech.qt.gui.QTreeWidgetItem;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.RunParams;
 import org.radixware.kernel.common.client.enums.ETextOptionsMarker;
+import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.models.GroupModel;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.views.IEmbeddedView;
+import org.radixware.kernel.common.client.views.ISelector;
 import org.radixware.kernel.common.client.views.IView;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
+import org.radixware.kernel.common.enums.EMimeType;
 import org.radixware.kernel.explorer.env.Application;
 import org.radixware.kernel.explorer.text.ExplorerTextOptions;
 import org.radixware.kernel.explorer.widgets.EmbeddedView;
 
 public class WidgetUtils {
+    
+    private final static EnumSet<Qt.AlignmentFlag> HORIZONTAL_ALIGNMENTS = 
+        EnumSet.of(Qt.AlignmentFlag.AlignLeft, Qt.AlignmentFlag.AlignRight, Qt.AlignmentFlag.AlignHCenter, Qt.AlignmentFlag.AlignJustify, Qt.AlignmentFlag.AlignAbsolute);
+    private final static EnumSet<Qt.AlignmentFlag> VERTICAL_ALIGNMENTS = 
+        EnumSet.of(Qt.AlignmentFlag.AlignTop, Qt.AlignmentFlag.AlignBottom, Qt.AlignmentFlag.AlignVCenter);    
+    private final static Qt.Alignment TMP__ALIGNMENT = new Qt.Alignment(Qt.AlignmentFlag.AlignCenter);
+    
+    public final static QPoint ZERO_POINT = new QPoint(0,0);
 
     public final static WindowType MODAL_DIALOG_WINDOW_TYPE = getModalDailogWindowType();
     public final static WindowFlags WINDOW_FLAGS_FOR_DIALOG = calcWindowFlags();
+    public final static int MODEL_ITEM_ROW_NAME_DATA_ROLE = Qt.ItemDataRole.UserRole*3 + 2;
+    public final static int MODEL_ITEM_CELL_NAME_DATA_ROLE = Qt.ItemDataRole.UserRole*3 + 3;
+    public final static int MODEL_ITEM_CELL_VALUE_DATA_ROLE = Qt.ItemDataRole.UserRole*3 + 4;
+    public final static int MODEL_ITEM_CELL_VALUE_IS_NULL_DATA_ROLE = Qt.ItemDataRole.UserRole*3 + 5;
     public final static int MAXIMUM_SIZE = 16777215;
+    
+    private final static QSize shrinkedDialogSize = new QSize();
+    
+    public static final class UpArrow{
+        
+        private final int topX;
+        private final int topY;
+        private final List<QLine> lines = new ArrayList<>();
+        
+        public UpArrow(final int centerX, final int top, final int height){
+            topX = centerX;
+            topY = top;
+            for (int i=1; i<height; i++){
+                lines.add(new QLine(centerX - i, top + i, centerX + i, top + i));
+            }
+        }
+        
+        public void draw(final QPainter painter){
+            painter.drawPoint(topX, topY);
+            painter.drawLines(lines);
+        }
+    }
+    
+    public static final class DownArrow{
+        
+        private final int downX;
+        private final int downY;
+        private final List<QLine> lines = new ArrayList<>();
+        
+        public DownArrow(final int centerX, final int top, final int height){
+            downX = centerX;
+            downY = top+height;
+            for (int y=1, x=height-1; y<height; y++, x--){
+                lines.add(new QLine(centerX - x, top + y, centerX + x, top + y));
+            }
+        }
+        
+        public void draw(final QPainter painter){
+            painter.drawLines(lines);
+            painter.drawPoint(downX, downY);
+        }
+    }    
     
     private static WindowType getModalDailogWindowType(){
         final String windowTypeParam = RunParams.getForceDialogWindowType();
@@ -123,6 +185,9 @@ public class WidgetUtils {
         button.setFixedWidth(20);
         button.setSizePolicy(new QSizePolicy(Policy.Expanding, Policy.Expanding));
         button.setAttribute(WidgetAttribute.WA_DeleteOnClose);
+        if (action!=null && action.objectName()!=null && !action.objectName().isEmpty()){
+            button.setObjectName("rx_tbtn_"+action.objectName());
+        }
         return button;
     }
 
@@ -441,6 +506,10 @@ public class WidgetUtils {
         if (options.getQFont()!=null){
             item.setFont(options.getQFont());
         }
+        final Qt.AlignmentFlag alignment = options.getQAlignment();
+        if (alignment!=null){
+            item.setTextAlignment(alignment.value());
+        }
         if (item.flags().isSet(Qt.ItemFlag.ItemIsEnabled)){
             if (options.getBackgroundBrush()!=null){
                 item.setBackground(options.getBackgroundBrush());
@@ -448,7 +517,7 @@ public class WidgetUtils {
             if (options.getForegroundBrush()!=null){
                 item.setForeground(options.getForegroundBrush());
             }
-        }
+        }        
     }
     
     public static void applyTextOptions(final QWidget widget, final ETextOptionsMarker...markers){
@@ -484,23 +553,8 @@ public class WidgetUtils {
     }
     
     public static Dimension getWndowMaxSize(){
-        final QSize screenSize = QApplication.desktop().availableGeometry(QCursor.pos()).size();
-
-        final int horizontalLimit; // can never get bigger than this
-        // on small screens allows the messagebox be the same size as the screen
-        if (screenSize.width() <= 1024) {
-            horizontalLimit = screenSize.width();
-        } else {
-            horizontalLimit = screenSize.width()*2/3;
-        }
-        final int verticalLimit;
-        if (screenSize.height() <= 800) {
-            verticalLimit = screenSize.height() - 50;
-        } else {
-            verticalLimit = screenSize.height()*2/3;
-        }
-        
-        return new Dimension(horizontalLimit, verticalLimit);
+        final QSize maxSize = shrinkWindowSize(MAXIMUM_SIZE, MAXIMUM_SIZE);
+        return new Dimension(maxSize.width(), maxSize.height());
     }
     
     public static Model findNearestModel(final QWidget widget){
@@ -541,4 +595,191 @@ public class WidgetUtils {
         }
         return false;
     }    
+    
+    public static String getQtFileDialogFilter(final EnumSet<EMimeType> types){
+        return getQtFileDialogFilter(types, null);
+    }
+    
+    public static String getQtFileDialogFilter(final EnumSet<EMimeType> types, final MessageProvider messageProvider){
+        if (types==null || types.isEmpty()){
+            return null;
+        }else{
+            final StringBuilder filterBuilder = new StringBuilder();            
+            for (EMimeType type: types){
+                final String qtFilter;
+                if (type==EMimeType.ALL_SUPPORTED){
+                    final String allFormats = getAllSupportedFormatsFilter(types);
+                    if (allFormats!=null && !allFormats.isEmpty()){
+                        qtFilter = "("+allFormats+")";
+                    }else{
+                        continue;
+                    }
+                }else{
+                    qtFilter = type.getQtFilter();
+                }
+                
+                if (filterBuilder.length()>0){
+                    filterBuilder.append(";;");
+                }
+                if (messageProvider==null){
+                    filterBuilder.append(type.getTitle());
+                }else{
+                    filterBuilder.append(getLocalizedQtFileFilter(type, messageProvider));
+                }
+                filterBuilder.append(' ');
+                filterBuilder.append(qtFilter);
+            }
+            return filterBuilder.toString();
+        }
+    }
+    
+    private static String getLocalizedQtFileFilter(final EMimeType type, final MessageProvider provider){
+        /*switch(type){
+            case ALL_SUPPORTED:
+                return provider.translate("ExplorerDialog", "All Supported Formats");
+            case ALL_FILES:
+                return provider.translate("ExplorerDialog", "All Files");
+            default:
+                return type.getTitle();
+        }*/
+        return type.getTitle();
+    }
+    
+    private static String getAllSupportedFormatsFilter(final EnumSet<EMimeType> types){
+        final StringBuilder qtFilterBuilder = new StringBuilder();
+        String filter;
+        for (EMimeType type: types){
+            if (type!=EMimeType.ALL_SUPPORTED && type!=EMimeType.ALL_FILES){
+                filter = type.getQtFilter();
+                if (filter!=null && !filter.isEmpty()){
+                    if (qtFilterBuilder.length()>0){
+                        qtFilterBuilder.append(' ');
+                    }
+                    qtFilterBuilder.append(filter.replace("(", "").replace(")", ""));
+                }
+            }
+        }
+        return qtFilterBuilder.toString();
+    }
+    
+    public static void pauseAsyncGroupModelReadersBeforeShowDropDownList(final QWidget component){
+        for (QWidget widget=component; widget!=null && !widget.isWindow(); widget=widget.parentWidget()){
+            if (widget instanceof ISelector){
+                final GroupModel groupModel = (GroupModel)((ISelector)widget).getModel();
+                if (groupModel!=null){
+                    groupModel.getAsyncReader().block();
+                }
+            }
+        }
+    }
+    
+    public static void resumeAsyncGroupModelReadersAfterHideDropDownList(final QWidget component){
+        for (QWidget widget=component; widget!=null && !widget.isWindow(); widget=widget.parentWidget()){
+            if (widget instanceof ISelector){
+                final GroupModel groupModel = (GroupModel)((ISelector)widget).getModel();
+                if (groupModel!=null){
+                    groupModel.getAsyncReader().unblock();
+                }
+            }
+        }        
+    }
+    
+    public static boolean isSetHorizontalAlignmentFlag(final Qt.Alignment alignment){
+        for (Qt.AlignmentFlag alignmentFlag: HORIZONTAL_ALIGNMENTS){
+            if (alignment.isSet(alignmentFlag)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public static boolean isSetVerticalAlignmentFlag(final Qt.Alignment alignment){
+        for (Qt.AlignmentFlag alignmentFlag: VERTICAL_ALIGNMENTS){
+            if (alignment.isSet(alignmentFlag)){
+                return true;
+            }
+        }
+        return false;
+    }    
+    
+    public static int calcWindowHeaderWidth(final QDialog dialog){
+        return dialog.fontMetrics().width(dialog.windowTitle()) + 200;
+    }
+    
+    public static QSize shrinkWindowSize(final int width, final int height){
+        final QSize screenSize = QApplication.desktop().availableGeometry(QCursor.pos()).size();        
+        final int screenWidth = screenSize.width();
+        if (screenWidth<=1024){
+            shrinkedDialogSize.setWidth(Math.min(width, screenWidth));
+        }else{
+            shrinkedDialogSize.setWidth(Math.min(width, screenWidth*3/4));
+        }
+        final int screenHeight = screenSize.height();
+        if (screenHeight<=800){
+            shrinkedDialogSize.setWidth(Math.min(width, screenHeight - 50));
+        }else{
+            shrinkedDialogSize.setHeight(Math.min(height, screenHeight*3/4));
+        }
+        return shrinkedDialogSize;
+    }
+    
+    public static String calcWidgetXPath(final QWidget widget){
+        final StringBuilder xpathBuilder = new StringBuilder();
+        String part;
+        for (QWidget w=widget; w!=null; w=w.parentWidget()){
+            xpathBuilder.insert(0, getWidgetIndex(w));
+            xpathBuilder.insert(0,'/');
+        }
+        return xpathBuilder.toString();
+    }
+    
+    public static void updateToolButtonObjectName(final QToolBar toolBar, final QAction action){
+        final QWidget button = toolBar.widgetForAction(action);
+        if (button!=null){
+            final String buttonName = button.objectName();
+            final String actionName = action.objectName();
+            if ((buttonName==null || buttonName.isEmpty())
+                && actionName!=null && !actionName.isEmpty()){
+                button.setObjectName("rx_tbtn_" + actionName);
+            }
+        }
+    }
+    
+    public static int getQtAlignmentValue(Qt.AlignmentFlag... flags){
+        TMP__ALIGNMENT.clearAll();
+        TMP__ALIGNMENT.set(flags);
+        return TMP__ALIGNMENT.value();
+    }
+    
+    private static String getWidgetIndex(final QWidget widget){
+        final QWidget parentWidget = widget.parentWidget();
+        final String tagName = widget.getClass().getSimpleName();
+        if (parentWidget==null){
+            return tagName;
+        }else{            
+            final String objectName = widget.objectName();
+            int index = 0;
+            boolean byIndex = objectName==null || objectName.isEmpty();
+            final List<QObject> children = parentWidget.children();            
+            for (QObject child: children){
+                if (widget==child){
+                    break;
+                }
+                if (child.nativeId()==0){
+                    continue;
+                }
+                if (tagName.equals(child.getClass().getSimpleName())){
+                    index++;
+                    if (Objects.equals(objectName, child.objectName())){
+                        byIndex = true;
+                    }
+                }
+            }
+            if (byIndex){
+                return tagName+"["+String.valueOf(index+1)+"]";
+            }else{
+                return tagName+"[@objectName=\'"+objectName+"\']";
+            }
+        }
+    }
 }

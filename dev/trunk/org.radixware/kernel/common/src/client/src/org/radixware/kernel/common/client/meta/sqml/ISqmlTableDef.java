@@ -25,6 +25,8 @@ public interface ISqmlTableDef extends ISqmlDefinition {
     ISqmlTableReferences getReferences();
 
     ISqmlTableIndices getIndices();
+    
+    ISqmlSelectorPresentations getSelectorPresentations();
 
     ISqmlTableDef createCopyWithAlias(String alias);
 

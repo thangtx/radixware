@@ -1,0 +1,29 @@
+
+class Test {
+
+    public Test() {;}
+
+    public Boolean getProperty() {
+	return null;
+    }
+
+    public void setProperty(Boolean x) throws Exception {
+	throw new Exception();
+    }
+
+    public void f() {
+	int x = 3;
+	try {
+	    switch (x) {
+		case 1:
+		    Property = true;
+		    break;
+		case 3:
+		    Property = false;
+	    }
+	} catch(Exception ex) {
+	    System.out.print("setProperty invocked");
+	}
+    }
+
+}

@@ -13,6 +13,7 @@ package org.radixware.kernel.server.meta.presentations;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.radixware.kernel.common.enums.ETitleNullFormat;
 
 import org.radixware.kernel.common.environment.IRadixEnvironment;
 import org.radixware.kernel.common.types.Id;
@@ -63,26 +64,81 @@ public final class RadEntityTitleFormatDef {
     public List<TitleItem> getFormat() {
         return format;
     }
+    
+    public static class TitleFormatItem {
+        protected final Object formatIdOrValue;
 
-    public final static class TitleItem {
+        public TitleFormatItem(Id formatId) {
+            this.formatIdOrValue = formatId;
+        }
+        
+        public TitleFormatItem(String formatStr) {
+            this.formatIdOrValue = formatStr;
+        }
+    }
+
+    public final static class TitleItem extends TitleFormatItem{
 
         private final Id propId;
-        private final Object formatIdOrValue;
+        private final ETitleNullFormat nullFormat; 
+        private final TitleFormatItem nullFormatItem;
         private final Id ownerEntityId;
-
+        
         public TitleItem(final Id ownerEntityId, final Id propId, final Id formatId) {
+            super(formatId);
             this.propId = propId;
-            this.formatIdOrValue = formatId;
             this.ownerEntityId = ownerEntityId;
+            this.nullFormat = ETitleNullFormat.SAME_AS_NOT_NULL;
+            this.nullFormatItem = null;
+        }
+        
+        public TitleItem(final Id ownerEntityId, final Id propId, final Id formatId, ETitleNullFormat format, TitleFormatItem item) {
+            super(formatId);
+            this.propId = propId;
+            this.ownerEntityId = ownerEntityId;
+            this.nullFormat = format;
+            this.nullFormatItem = item;
+        }
+
+        public TitleItem(final Id ownerEntityId, final Id propId, final String formatStr, ETitleNullFormat format, TitleFormatItem item) {
+            super(formatStr);
+            this.propId = propId;
+            this.ownerEntityId = ownerEntityId;
+            this.nullFormat = format;
+            this.nullFormatItem = item;
         }
 
         public TitleItem(final Id propId, final String formatStr) {
+            super(formatStr);
             this.propId = propId;
-            this.formatIdOrValue = formatStr;
             this.ownerEntityId = null;
+            this.nullFormat = ETitleNullFormat.SAME_AS_NOT_NULL;
+            this.nullFormatItem = null;
         }
 
         public String getFormat(final IRadixEnvironment arte) {
+            return getFormat(arte, false);
+        }
+        
+        public String getFormat(final IRadixEnvironment arte, boolean isNull) {
+            if (isNull) {
+                switch (nullFormat) {
+                    case CUSTOM:
+                        if (nullFormatItem != null) {
+                            Object format = nullFormatItem.formatIdOrValue;
+                            if (format instanceof String) {
+                                return (String) format;
+                            } else {
+                                return MultilingualString.get(arte, getOwnerEntityId(), (Id) format);
+                            }
+                        }
+                    case PROPERTY_NULL_TITLE:
+                        return "{0}";
+                    case EMPTY:
+                        return "";
+                    
+                }
+            }
             if (formatIdOrValue instanceof String) {
                 return (String) formatIdOrValue;
             } else {
@@ -105,7 +161,27 @@ public final class RadEntityTitleFormatDef {
         }
 
         public final String format(final IRadixEnvironment env, Object itemVal) {
-            final String pattern = getFormat(env);
+            return format(env, itemVal, "");
+        }
+        
+        public final String format(final IRadixEnvironment env, Object itemVal, String defaultValue) {
+            boolean isNull = itemVal == null;
+            final String pattern = getFormat(env, isNull);
+            if (isNull) {
+                switch (nullFormat) {
+                    case PROPERTY_NULL_TITLE:
+                          if (nullFormatItem != null) {
+                            Object format = nullFormatItem.formatIdOrValue;
+                            if (format instanceof Id) {
+                                return MultilingualString.get(env, getOwnerEntityId(), (Id) format);
+                            }
+                        }
+                    case EMPTY:
+                        return TitleItemFormatter.format(pattern, "");
+                    case SAME_AS_NOT_NULL:
+                        return TitleItemFormatter.format(pattern, defaultValue);
+                }
+            }
             return TitleItemFormatter.format(pattern, itemVal);
         }
     }

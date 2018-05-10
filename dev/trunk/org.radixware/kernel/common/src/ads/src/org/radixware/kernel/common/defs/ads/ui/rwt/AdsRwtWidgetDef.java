@@ -423,7 +423,7 @@ public class AdsRwtWidgetDef extends AdsUIItemDef implements IJavaSource {
 
     @Override
     public String getName() {
-        AdsUIProperty.StringProperty objectName = (AdsUIProperty.StringProperty) AdsUIUtil.getUiProperty(this, "objectName");
+        AdsUIProperty.StringProperty objectName = (AdsUIProperty.StringProperty) AdsUIUtil.getUiProperty(this, AdsWidgetProperties.OBJECT_NAME);
         if (objectName != null) {
             return objectName.value;
         }
@@ -432,7 +432,7 @@ public class AdsRwtWidgetDef extends AdsUIItemDef implements IJavaSource {
 
     @Override
     public boolean setName(String name) {
-        AdsUIProperty.StringProperty objectName = (AdsUIProperty.StringProperty) AdsUIUtil.getUiProperty(this, "objectName");
+        AdsUIProperty.StringProperty objectName = (AdsUIProperty.StringProperty) AdsUIUtil.getUiProperty(this, AdsWidgetProperties.OBJECT_NAME);
         if (objectName != null) {
             if (objectName.getContainer() == null) {
                 properties.add(objectName);

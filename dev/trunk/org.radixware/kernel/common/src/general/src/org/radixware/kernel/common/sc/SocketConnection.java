@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2017, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.sc;
 
 import java.io.IOException;
@@ -27,11 +26,13 @@ import org.radixware.kernel.common.enums.EPortSecurityProtocol;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.ssl.KeystoreController;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
+import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.common.utils.net.SapAddress;
 import org.radixware.kernel.common.utils.net.SslUtils;
 
-
 class SocketConnection implements SyncClientConnection {
+
+    private static final boolean REUSE_ADDRESS_ON_SERVICE_CLIENT_SOCKETS = SystemPropUtils.getBooleanSystemProp("rdx.service.client.reuse.client.socket", false);
 
     private Socket socket;
     final ServiceClient.Port port;
@@ -56,7 +57,7 @@ class SocketConnection implements SyncClientConnection {
             sap.setAddress(new SapAddress(new InetSocketAddress(addr, sap.getAddress().getRemoteInetAddress().getPort()), sap.getAddress().getLocalInetAddress()));
         }
         socket.connect(new InetSocketAddress(sap.getAddress().getRemoteInetAddress().getAddress(), sap.getAddress().getRemoteInetAddress().getPort()), sap.getConnectTimeoutMillis());
-        if (sap.getSecurityProtocol() == EPortSecurityProtocol.SSL) {
+        if (sap.getSecurityProtocol().isTls()) {
             if (!port.self.isSslPossible()) {
                 throw new IOException("Unable to use ssl connection");
             }
@@ -73,7 +74,7 @@ class SocketConnection implements SyncClientConnection {
                 throw new IOException("Cannot create SSLContext: " + exceptionMessage);
             }
             socket = sslContext.getSocketFactory().createSocket(socket, socket.getInetAddress().getHostAddress(), socket.getPort(), true);
-            SslUtils.excludeSslV3(socket, true);
+            SslUtils.ensureTlsVersion(sap.getSecurityProtocol(), socket, true);
         }
     }
 
@@ -93,6 +94,9 @@ class SocketConnection implements SyncClientConnection {
                 newSocket.setKeepAlive(true);
             } catch (IOException e) {
                 //Vista bug
+            }
+            if (REUSE_ADDRESS_ON_SERVICE_CLIENT_SOCKETS) {
+                newSocket.setReuseAddress(true);
             }
         } catch (IOException e) {
             if (channel != null) {

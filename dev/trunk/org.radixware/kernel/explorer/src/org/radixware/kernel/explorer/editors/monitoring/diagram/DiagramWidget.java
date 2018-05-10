@@ -8,12 +8,16 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.explorer.editors.monitoring.diagram;
 
 import com.trolltech.qt.core.QEvent;
 import com.trolltech.qt.core.Qt.AlignmentFlag;
 import com.trolltech.qt.gui.QApplication;
+import com.trolltech.qt.gui.QColor;
+import com.trolltech.qt.gui.QFont;
+import com.trolltech.qt.gui.QHBoxLayout;
+import com.trolltech.qt.gui.QLabel;
+import com.trolltech.qt.gui.QPalette;
 import com.trolltech.qt.gui.QResizeEvent;
 import com.trolltech.qt.gui.QSizePolicy.Policy;
 import com.trolltech.qt.gui.QVBoxLayout;
@@ -21,6 +25,7 @@ import com.trolltech.qt.gui.QWidget;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,12 +33,15 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.plot.Marker;
 import org.jfree.chart.plot.XYPlot;
+import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.dashboard.DiagramSettings;
+import org.radixware.kernel.common.client.meta.mask.EditMaskDateTime;
+import org.radixware.kernel.common.enums.EDateTimeStyle;
 import org.radixware.schemas.monitoringcommand.DiagramRs;
-
 
 public abstract class DiagramWidget extends QWidget {
 
+    private QWidget axisWidget;
     protected ImageWidget image;
     protected final QWidget parent;
     protected JFreeChart chart;
@@ -44,16 +52,26 @@ public abstract class DiagramWidget extends QWidget {
     protected ExecutorService asyncUpdateExec;
     private volatile boolean isUpdateProcessing = false;
     private JFreeChart lastNotProcessedChart;
+    private QLabel begTimeLabel;
+    private QLabel endTimeLabel;
+    private QLabel timeLabel;
 
-    protected DiagramWidget(final QWidget parent/*,final String title*/) {
+    protected Timestamp begTime;
+    protected Timestamp endTime;
+    private final IClientEnvironment env;
+
+    protected DiagramWidget(final IClientEnvironment env, final QWidget parent) {
         super(parent);
         this.parent = parent;
         //this.setMinimumHeight(minheight);
         this.setSizePolicy(Policy.Expanding, Policy.Expanding);
         final QVBoxLayout mainlayout = new QVBoxLayout();
+        mainlayout.setSpacing(0);
         mainlayout.setMargin(0);
         mainlayout.setContentsMargins(0, 0, 0, 0);
+        //setStyleSheet("* {border: 1px solid red; }");
         this.setLayout(mainlayout);
+        this.env = env; 
     }
 
     public void setAsyncExecutor(final ExecutorService exec) {
@@ -105,7 +123,7 @@ public abstract class DiagramWidget extends QWidget {
     @Override
     protected void resizeEvent(final QResizeEvent qre) {
         super.resizeEvent(qre);
-        if (this.width() > 0 && this.height() > 0) {
+        if (this.width() > 0 && this.height() > 0 && begTime != null && endTime != null) {
             setDiagram(this.width(), this.height());
         }
     }
@@ -153,10 +171,11 @@ public abstract class DiagramWidget extends QWidget {
     protected void setDiagram(final int width, final int height) {
         if (this.width() > 0 && this.height() > 0) {
             if (image != null) {
+                final int axisWidgetHeight = axisWidget != null ? axisWidget.height() : 0;
                 if (asyncUpdateExec != null) {
                     if (!isUpdateProcessing) {
                         try {
-                            final Runnable createImageTask = new CreateImageTask((JFreeChart) chart.clone(), this.width(), this.height());
+                            final Runnable createImageTask = new CreateImageTask((JFreeChart) chart.clone(), this.width(), this.height() - axisWidgetHeight);
                             if (!asyncUpdateExec.isShutdown() && !asyncUpdateExec.isTerminated()) {
                                 asyncUpdateExec.submit(createImageTask);
                             }
@@ -168,8 +187,9 @@ public abstract class DiagramWidget extends QWidget {
                     }
                 } else { //Non-async update
                     try {
-                        final BufferedImage bufimage = chart.createBufferedImage(this.width(), this.height());
+                        final BufferedImage bufimage = chart.createBufferedImage(this.width(), this.height() - axisWidgetHeight);
                         image.setImage(bufimage);
+                        createHorizontalAxisWidget(image.getAxisXCoordInPixels(), image.getBackgroundColor());
                     } catch (IOException ex) {
                         Logger.getLogger(DiagramWidget.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -178,15 +198,76 @@ public abstract class DiagramWidget extends QWidget {
                 final BufferedImage bufimage = chart.createBufferedImage(this.width(), this.height());
                 try {
                     image = new ImageWidget(this, bufimage);
-                    image.setSizePolicy(Policy.Ignored, Policy.Ignored);
+                    image.setSizePolicy(Policy.Expanding, Policy.Expanding);
                     image.setContentsMargins(0, 0, 0, 0);
                     image.setAlignment(AlignmentFlag.AlignRight);
                     layout().addWidget(image);
+                    createHorizontalAxisWidget(image.getAxisXCoordInPixels(), image.getBackgroundColor());
                 } catch (IOException ex) {
                     Logger.getLogger(DiagramWidget.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
+    }
+
+    protected void createHorizontalAxisWidget(int posAxisX, QColor colorBackground) {
+        if (axisWidget == null) {
+            axisWidget = new QWidget(this);
+           
+            axisWidget.setContentsMargins(0, 0, 0, 5); 
+            axisWidget.setSizePolicy(Policy.Expanding, Policy.Minimum); 
+            
+            axisWidget.setAutoFillBackground(true);
+            
+            begTimeLabel = new QLabel(axisWidget);
+            endTimeLabel = new QLabel(axisWidget);
+            timeLabel = new QLabel(axisWidget);
+            timeLabel.setMargin(posAxisX);
+            timeLabel.setText("Time");
+
+            begTimeLabel.setAlignment(AlignmentFlag.AlignLeft);
+            endTimeLabel.setAlignment(AlignmentFlag.AlignRight);
+            timeLabel.setAlignment(AlignmentFlag.AlignCenter);
+
+            begTimeLabel.setSizePolicy(Policy.Minimum, Policy.Minimum);
+            endTimeLabel.setSizePolicy(Policy.Minimum, Policy.Minimum);
+            timeLabel.setSizePolicy(Policy.Expanding, Policy.Minimum);
+
+            endTimeLabel.setContentsMargins(0, 0, 7, 0);
+            timeLabel.setContentsMargins(0, 0, 0, 0);
+            
+            QHBoxLayout timeLayout = new QHBoxLayout();
+            timeLayout.setContentsMargins(0, 0, 0, 0);
+            axisWidget.setLayout(timeLayout);
+
+            timeLayout.addWidget(begTimeLabel);
+            timeLayout.addWidget(timeLabel);
+            timeLayout.addWidget(endTimeLabel);
+            layout().addWidget(axisWidget);
+            
+            QFont font = axisWidget.font().clone(); 
+            font.setFamily(org.jfree.chart.axis.Axis.DEFAULT_TICK_LABEL_FONT.getFamily()); 
+            
+            begTimeLabel.setFont(font);
+            timeLabel.setFont(font);
+            endTimeLabel.setFont(font);
+        }
+        timeLabel.setAutoFillBackground(true);
+        begTimeLabel.setAutoFillBackground(true);
+        endTimeLabel.setAutoFillBackground(true);
+        
+        QPalette palette = new QPalette();
+        palette.setColor(begTimeLabel.backgroundRole(), colorBackground);
+        
+        begTimeLabel.setPalette(palette);
+        endTimeLabel.setPalette(palette);
+        timeLabel.setPalette(palette);
+        axisWidget.setPalette(palette);
+        
+        begTimeLabel.setText(new EditMaskDateTime(EDateTimeStyle.LONG, EDateTimeStyle.NONE, null, null).toStr(env, begTime));
+        endTimeLabel.setText(new EditMaskDateTime(EDateTimeStyle.LONG, EDateTimeStyle.NONE, null, null).toStr(env, endTime));
+      
+        begTimeLabel.setContentsMargins(posAxisX, 0, 0, 0);
     }
 
     public static class AsyncImageUpdateEvent extends QEvent {
@@ -232,6 +313,7 @@ public abstract class DiagramWidget extends QWidget {
             qevent.accept();
             try {
                 image.setImage(((AsyncImageUpdateEvent) qevent).getAwtImage());
+                createHorizontalAxisWidget(image.getAxisXCoordInPixels(), image.getBackgroundColor());
             } catch (IOException ex) {
                 Logger.getLogger(DiagramWidget.class.getName()).log(Level.SEVERE, "Can't load pixmap for diagram", ex);
             }

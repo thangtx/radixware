@@ -8,56 +8,68 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.explorer.editors.jmleditor.completer;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.radixware.kernel.common.client.trace.ClientTracer;
 
+class CompleterWaiter {
 
-public class CompleterWaiter{
-        
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor(new ThreadFactory() {
-        @Override
-        public Thread newThread(final Runnable r) {
-            Thread t = new Thread(r, "JML Editor CompleterWaiter Thread");
-            t.setDaemon(true);
-            return t;
-        }
-    });
-
+    private final ExecutorService executor;
+    private final ClientTracer tracer;
     private Future currentFuture = null;
-    private final Object currentFutureSem = new Object();
 
-    public <T> void submitTask(final Callable<T> task) throws InterruptedException, ExecutionException {
-        try {
-            synchronized (currentFutureSem) {
-                if (currentFuture != null && !currentFuture.isDone()) {
-                    return;
-                }
-                currentFuture = executor.submit(task);
+    public CompleterWaiter(final ClientTracer tracer) {
+        this.tracer = tracer;
+        this.executor = Executors.newSingleThreadExecutor(new ThreadFactory() {
+            @Override
+            public Thread newThread(final Runnable r) {
+                Thread t = new Thread(r, "JML Editor CompleterWaiter Thread");
+                t.setDaemon(true);
+                return t;
             }
-
+        });
+    }
+    
+    public <T> void submitTask(final Callable<T> task) {
+        try {
+            if (currentFuture != null && !currentFuture.isDone()) {
+                return;
+            }
+            final Callable<T> wrapperToHandleExceptions = new Callable<T>() {
+                @Override
+                public T call() throws Exception {
+                    try {
+                        return task.call();
+                    } catch (InterruptedException th) {
+                        throw th;
+                    } catch (Throwable th) {
+                        tracer.error("JmlEditor. Error on calculate completion", th);
+                        throw th;
+                    }
+                }
+            };
+            currentFuture = executor.submit(wrapperToHandleExceptions);
         } catch (CancellationException ex) {
-            throw new InterruptedException("Execution of task was interrupted");
+            Logger.getLogger(CompleterWaiter.class.getName()).log(Level.SEVERE, "Task was cancelled", ex);
         }
     }
 
-    public boolean cancel(){
-        synchronized(currentFutureSem) {
-            if(currentFuture != null) {
-                return currentFuture.cancel(true);
-            }
+    public boolean cancel() {
+        if (currentFuture != null) {
+            return currentFuture.cancel(true);
         }
         return false;
     }
 
-    public void close(){
-        executor.shutdownNow();
+    public void close() {
+        executor.shutdown();
     }
 }

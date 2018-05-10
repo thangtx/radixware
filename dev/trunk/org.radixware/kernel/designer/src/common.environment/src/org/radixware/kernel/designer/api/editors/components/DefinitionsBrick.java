@@ -24,6 +24,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.ads.ITransparency;
+import org.radixware.kernel.common.defs.ads.type.AdsTransparence;
 import org.radixware.kernel.designer.api.ApiFilter;
 import org.radixware.kernel.designer.api.EditorState;
 import org.radixware.kernel.designer.api.editors.Brick;
@@ -95,9 +97,17 @@ public class DefinitionsBrick<T extends RadixObject> extends Brick<T> {
         };
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append(NamingService.getDefault().getHtmlName(member).replace("</body>", "").replace("</html>", ""));
+        if (member instanceof ITransparency){
+            ITransparency transparency = (ITransparency) member;
+            if (AdsTransparence.isTransparent(transparency)){
+                sb.append("<i> wrapper </i></html>");
+            }
+        }
         final RefLabel ref = new RefLabel(member,
-                NamingService.getDefault().getHtmlName(member),
+                sb.toString(),
                 member.getToolTip(), member.getIcon());
 
         ref.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));

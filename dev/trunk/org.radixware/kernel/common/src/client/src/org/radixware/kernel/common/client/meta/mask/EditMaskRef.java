@@ -13,6 +13,7 @@ package org.radixware.kernel.common.client.meta.mask;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,6 +22,9 @@ import java.util.Map;
 import java.util.Objects;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.meta.RadParentRefPropertyDef;
+import org.radixware.kernel.common.client.meta.RadPresentationDef;
+import org.radixware.kernel.common.client.meta.RadPropertyDef;
+import org.radixware.kernel.common.client.meta.RadSelectorPresentationDef;
 import org.radixware.kernel.common.client.meta.mask.validators.InvalidValueReason;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.models.items.properties.PropertyArrRef;
@@ -44,6 +48,7 @@ public class EditMaskRef extends EditMask {
     private Id defaultFilterId;
     private boolean defaultFilterDefined = false;
     private Map<Id, Id> defaultSortingIdByFilterId;
+    private boolean useDropDownList;
 
     public EditMaskRef() {
         super();
@@ -67,6 +72,17 @@ public class EditMaskRef extends EditMask {
             setEditorPresentationIds(new ArrayList<>(Arrays.asList(editorPresentationIds)));
         }
     }
+    
+    public EditMaskRef(final Id selectorPresentationId, 
+                       final Id[] editorPresentationIds,
+                       final boolean useDropDownList) {
+        super();
+        this.selectorPresentationId = selectorPresentationId;
+        this.useDropDownList = useDropDownList;
+        if (editorPresentationIds != null) {
+            setEditorPresentationIds(new ArrayList<>(Arrays.asList(editorPresentationIds)));
+        }
+    }    
 
     public EditMaskRef(final EditMaskRef copy) {
         super();
@@ -76,6 +92,7 @@ public class EditMaskRef extends EditMask {
         this.defaultSortingIdByFilterId = copy.defaultSortingIdByFilterId;
         this.editorPresentationIds = copy.editorPresentationIds;
         this.selectorPresentationId = copy.selectorPresentationId;
+        this.useDropDownList = copy.useDropDownList;
     }
 
     protected EditMaskRef(final org.radixware.schemas.editmask.EditMaskRef editMask) {
@@ -86,6 +103,7 @@ public class EditMaskRef extends EditMask {
         this.editorPresentationIds = editMask.getEditorPresentationIds();
         this.selectorPresentationId = editMask.getSelectorPresentationId();
         this.defaultSortingIdByFilterId = getDefaultSortingIdByFilterIdFromMask(editMask);
+        this.useDropDownList = editMask.getUseDropDownList();
     }
 
     private Map<Id, Id> getDefaultSortingIdByFilterIdFromMask(final org.radixware.schemas.editmask.EditMaskRef editMask) {
@@ -116,7 +134,9 @@ public class EditMaskRef extends EditMask {
         if (owner instanceof PropertyRef) {
             return ((PropertyRef) owner).getParentSelectorPresentation().getId();
         } else if (owner instanceof PropertyArrRef) {
-            return ((PropertyArrRef) owner).getDefinition().getParentSelectorPresentation().getId();
+            final RadSelectorPresentationDef presentation = 
+                ((PropertyArrRef) owner).getParentSelectorPresentation();
+            return presentation==null ? null : presentation.getId();
         } else {
             return selectorPresentationId;
         }
@@ -134,7 +154,12 @@ public class EditMaskRef extends EditMask {
         if (owner instanceof PropertyRef) {
             return ((RadParentRefPropertyDef) ((PropertyRef) owner).getDefinition()).getObjectEditorPresentationIds();
         } else if (owner instanceof PropertyArrRef) {
-            return ((PropertyArrRef) owner).getDefinition().getObjectEditorPresentationIds();
+            final RadPropertyDef propertyDef = ((PropertyArrRef) owner).getDefinition();
+            if (propertyDef instanceof RadParentRefPropertyDef){
+                return ((RadParentRefPropertyDef)propertyDef).getObjectEditorPresentationIds();
+            }else{
+                return Collections.<Id>emptyList();
+            }
         }
         if (editorPresentationIds == null) {
             return new ArrayList<>();
@@ -279,13 +304,39 @@ public class EditMaskRef extends EditMask {
                 defaultSortingIdByFilterId = new HashMap<>();
             }
             if (sortingId != null && filterId != null) {
-                defaultSortingIdByFilterId.put(sortingId, filterId);
+                defaultSortingIdByFilterId.put(filterId, sortingId);
             }
         }
     }
 
     public Map<Id, Id> getDefaultSortingIdByFilterId() {
         return defaultSortingIdByFilterId;
+    }
+
+    public boolean isUseDropDownList() {
+        return useDropDownList;
+    }
+
+    public void setUseDropDownList(boolean useDropDownList) {
+        this.useDropDownList = useDropDownList;
+        afterModify();
+    }
+    
+    public Id getReferencedTableId(final IClientEnvironment environment){
+        final RadPresentationDef presentation;
+        if (getSelectorPresentationId()==null){
+            if (getEditorPresentationIds().isEmpty()){
+                return null;
+            }else{
+                final Id presentationId = getEditorPresentationIds().get(0);
+                presentation = 
+                        environment.getDefManager().getEditorPresentationDef(presentationId);                                
+            }
+        }else{
+            presentation = 
+                environment.getDefManager().getSelectorPresentationDef(getSelectorPresentationId());            
+        }
+        return presentation.getTableId();
     }
 
     @Override
@@ -341,20 +392,24 @@ public class EditMaskRef extends EditMask {
             MapStrStr sortingOnFilter = editMaskRef.addNewDefaultSortingIdByFilterId();//how to clear old one?
             for (Map.Entry<Id, Id> entry : defaultSortingIdByFilterId.entrySet()) {
                 MapStrStr.Entry e = sortingOnFilter.addNewEntry();
-                if (entry.getKey() != null && entry.getValue() != null) {
-                    e.setKey(entry.getKey().toString());
+                if (entry.getValue() != null) {
+                    if (entry.getKey()!=null){
+                        e.setKey(entry.getKey().toString());
+                    }
                     e.setValue(entry.getValue().toString());
                 }
             }
-            editMaskRef.setDefaultSortingIdByFilterId(sortingOnFilter);
         }
         if (editorPresentationIds != null) {
             editMaskRef.setEditorPresentationIds(editorPresentationIds);
         }
         if (selectorPresentationId != null) {
             editMaskRef.setSelectorPresentationId(selectorPresentationId);
-        }
+        }        
         editMaskRef.setDefaultFilterDefined(defaultFilterDefined);
+        if (useDropDownList){
+            editMaskRef.setUseDropDownList(true);
+        }
     }
 
     @Override
@@ -366,6 +421,7 @@ public class EditMaskRef extends EditMask {
         hash = 22 * hash + Objects.hashCode(this.defaultSortingIdByFilterId);
         hash = 22 * hash + Objects.hashCode(this.editorPresentationIds);
         hash = 22 * hash + Objects.hashCode(this.selectorPresentationId);
+        hash = 22 * hash + Objects.hashCode(this.useDropDownList);
         return hash;
     }
 
@@ -400,6 +456,32 @@ public class EditMaskRef extends EditMask {
         if (!Objects.equals(this.selectorPresentationId, other.selectorPresentationId)) {
             return false;
         }
+        if (!Objects.equals(this.useDropDownList, other.useDropDownList)) {
+            return false;
+        }        
         return super.equals(obj);
+    }
+    
+    public boolean sameSelection(final EditMaskRef otherMask){
+        if (this.equals(otherMask)){
+            return true;
+        }
+        if (otherMask==null){
+            return false;
+        }
+        if (!Objects.equals(getSelectorPresentationId(), otherMask.getSelectorPresentationId())){
+            return false;
+        }
+        if (!Objects.equals(getCondition(), otherMask.getCondition())){
+            return false;
+        }
+        if (!Objects.equals(getDefaultFilterId(), otherMask.getDefaultFilterId())){
+            return false;
+        }
+        final Id defaultFilterId = getDefaultFilterId();
+        if (!Objects.equals(getDefaultSortingId(defaultFilterId), otherMask.getDefaultSortingId(defaultFilterId))){
+            return false;
+        }
+        return true;        
     }
 }

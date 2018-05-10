@@ -1,0 +1,17 @@
+
+class TestPublicProperty {
+
+    public Long getProp() {
+	return null;
+    }
+}
+
+class Test {
+
+    static public void main(String[] args) {
+	TestPublicProperty t = new TestPublicProperty();
+	if (t.Prop != Long.valueOf(1)) {
+	    System.out.println("eq");
+	}
+    }
+}

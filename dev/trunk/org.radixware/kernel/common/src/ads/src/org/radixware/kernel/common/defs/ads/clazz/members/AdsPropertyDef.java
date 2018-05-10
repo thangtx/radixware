@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs.ads.clazz.members;
 
 import java.lang.reflect.Method;
@@ -33,9 +32,6 @@ import org.radixware.kernel.common.defs.ads.clazz.presentation.IAdsPresentablePr
 import org.radixware.kernel.common.defs.ads.clazz.presentation.PropertyPresentation;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
 import org.radixware.kernel.common.defs.ads.common.JavaSignatures;
-import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
-import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumItemDef;
-import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.ads.module.AdsPath;
 import org.radixware.kernel.common.defs.ads.profiling.AdsProfileSupport;
@@ -46,7 +42,8 @@ import org.radixware.kernel.common.defs.ads.src.clazz.AdsPropertyWriter;
 import org.radixware.kernel.common.defs.ads.type.*;
 import org.radixware.kernel.common.defs.ads.type.AdsClassType.EntityObjectType;
 import org.radixware.kernel.common.defs.localization.ILocalizedDescribable;
-import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
+import org.radixware.kernel.common.defs.localization.ILocalizingBundleDef;
+import org.radixware.kernel.common.defs.localization.LocalizedDescribableRef;
 import org.radixware.kernel.common.enums.*;
 import org.radixware.kernel.common.exceptions.NoConstItemWithSuchValueError;
 import org.radixware.kernel.common.jml.IJmlSource;
@@ -65,8 +62,7 @@ import org.radixware.schemas.commondef.CbInfo;
 import org.radixware.schemas.commondef.ProfileInfo;
 import org.radixware.schemas.xscml.JmlType;
 
-
-public abstract class AdsPropertyDef extends AdsClassMember implements IOverridable<AdsPropertyDef>, IOverwritable<AdsPropertyDef>, IJavaSource, IJmlSource, IModelPublishableProperty, ITransparency, IAccessible,ILocalizedDescribable.Inheritable {
+public abstract class AdsPropertyDef extends AdsClassMember implements IDeprecatedInheritable, IOverridable<AdsPropertyDef>, IOverwritable<AdsPropertyDef>, IJavaSource, IJmlSource, IModelPublishableProperty, ITransparency, IAccessible, ILocalizedDescribable.Inheritable {
 
     public static final class Problems extends AdsDefinitionProblems {
 
@@ -100,7 +96,7 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
                 case NO_TITLE_FOR_AUDIT_PROPERTY:
                     return true;
                 default:
-                    return false;
+                    return super.canSuppressWarning(code);
             }
         }
 
@@ -381,6 +377,7 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
     private EAccess writeAccess;
     private boolean isDescriptionInherited;
     private boolean isSetIsDescriptionInherited = true;
+    protected LocalizedDescribableRef describableRef;
 
     protected AdsPropertyDef(final AdsPropertyDef source, final boolean forOverride) {
         super(source.getId(), source.getName());
@@ -388,7 +385,7 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
         this.accessFlags = AdsAccessFlags.Factory.newCopy(this, source.accessFlags);
         this.isConst = source.isConst;
         this.isOverride = true;
-        this.isDescriptionInherited = source.isDescriptionInherited;
+        this.isDescriptionInherited = source.isDescriptionInherited ? source.isDescriptionInherited : isDescriptionInheritable();
 
         if (forOverride) {
             this.getter = null;
@@ -406,8 +403,8 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
     public boolean isSetWriteAccess() {
         return writeAccess != null;
     }
-    
-    public boolean isSetIsDescriptionInherited(){
+
+    public boolean isSetIsDescriptionInherited() {
         return isSetIsDescriptionInherited;
     }
 
@@ -420,19 +417,23 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
     public EAccess getReadAccess() {
         return (EAccess) Utils.nvl(readAccess, getAccessMode());
     }
-    
+
     @Override
     public boolean isDescriptionInheritable() {
-        if (getDescriptionId() == null && getDescription() != null && !getDescription().isEmpty()) return false;
-        
-        return (isOverride() || getHierarchy().findOverridden().get() != null) || 
-                (isOverwrite() || getHierarchy().findOverwritten().get() != null);
+        if (getDescriptionId() == null && getDescription() != null && !getDescription().isEmpty()) {
+            return false;
+        }
+
+        return (isOverride() || getHierarchy().findOverridden().get() != null)
+                || (isOverwrite() || getHierarchy().findOverwritten().get() != null);
     }
-    
+
     @Override
     public void setDescriptionInherited(boolean inherit) {
-        if (!isDescriptionInheritable()) return;
-        
+        if (!isDescriptionInheritable()) {
+            return;
+        }
+
         boolean isInherit = isDescriptionInherited();
         if (inherit != isInherit) {
             isDescriptionInherited = inherit;
@@ -440,7 +441,7 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
             setEditState(EEditState.MODIFIED);
         }
     }
-    
+
     @Override
     public boolean isDescriptionInherited() {
         return isDescriptionInherited;
@@ -448,20 +449,24 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
 
     @Override
     public void setDescriptionId(Id id) {
-        if (isDescriptionInherited()) return;
-        
+        if (isDescriptionInherited()) {
+            return;
+        }
+
         super.setDescriptionId(id);
     }
-    
-    
 
     @Override
     public Id getDescriptionId() {
-        if (isDescriptionInherited()){
-           Definition owner = getDescriptionLocation();
-            if (owner == this){
-               return null;
-            }else {
+        return getDescriptionId(isDescriptionInherited());
+    }
+
+    public Id getDescriptionId(boolean inherited) {
+        if (inherited) {
+            Definition owner = getDescriptionLocation(inherited);
+            if (owner == this) {
+                return null;
+            } else {
                 return owner.getDescriptionId();
             }
         }
@@ -470,20 +475,37 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
 
     @Override
     public Definition getDescriptionLocation() {
+        return getDescriptionLocation(isDescriptionInherited());
+    }
+
+    @Override
+    public Definition getDescriptionLocation(boolean inherit) {
         Definition owner = super.getDescriptionLocation();
-        if (owner == this && isDescriptionInherited()){
+        if (owner == this && inherit) {
+            if (describableRef != null) {
+                if (describableRef.getVersion() == ILocalizingBundleDef.version.get()) {
+                    ILocalizedDescribable def = describableRef.get();
+                    if (def instanceof Definition) {
+                        return (Definition) def;
+                    }
+                }
+            }
+            if (getOwnerClass() == null) {
+                return owner;
+            }
             MemberHierarchyIterator<AdsPropertyDef> iter = getHierarchyIterator(EScope.ALL, HierarchyIterator.Mode.FIND_ALL);
 
             while (iter.hasNext()) {
                 AdsPropertyDef ovr = iter.next().first();
                 if (!ovr.isDescriptionInherited()) {
+                    describableRef = new LocalizedDescribableRef(ovr);
                     return ovr;
                 }
             }
         }
         return owner;
     }
-    
+
     /**
      * Gets write access mode of current property.
      *
@@ -536,12 +558,22 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
         if (isOverwrite()) {
             setOverwrite(!getHierarchy().findOverwritten().isEmpty());
         }
+
+        setDescriptionInherited(true);
+        if (isDescriptionInherited() && super.getDescriptionId() != null) {
+            super.setDescriptionId(null);
+        } 
     }
 
     @Override
     public void afterOverwrite() {
         cleanupGetters();
         setOverwrite(true);
+
+        setDescriptionInherited(true);
+        if (isDescriptionInherited() && super.getDescriptionId() != null) {
+            super.setDescriptionId(null);
+        }
     }
 
     @Override
@@ -579,7 +611,7 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
             PropertyDefinition xProp = (PropertyDefinition) xDef;
 
             this.isOverride = xProp.getIsOverride();
-            
+
             if (xProp.isSetGetterSource()) {//old style definition
                 this.getter = new Getter(xProp.getGetterSource(), xProp.getGetterProfileInfo());
             } else {
@@ -609,10 +641,12 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
                     this.warningsSupport = new Problems(this, list);
                 }
             }
-            if (xProp.isSetIsDescriptionInherited()){
-                this.isDescriptionInherited = xProp.getIsDescriptionInherited();   
+            if (xProp.isSetIsDescriptionInherited()) {
+                this.isDescriptionInherited = xProp.getIsDescriptionInherited();
             } else {
-                this.isDescriptionInherited = false;
+                this.isDescriptionInherited = isDescriptionInheritable()
+                        ? xDef.isSetDescriptionId() ? xDef.getDescriptionId() == null : true
+                        : false;
                 isSetIsDescriptionInherited = false;
             }
             this.valueInheritanceRules = ValueInheritanceRules.Factory.loadFrom(this, xProp.getValInheritance(), xProp.getInitializationPolicy());
@@ -632,7 +666,7 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
         this.getter = null;
         this.setter = null;
         this.profile = new Profile(this);
-        this.isDescriptionInherited = false;
+        this.isDescriptionInherited = isDescriptionInheritable();
     }
 
     protected abstract AdsPropertyDef createOvr(boolean forOverride);
@@ -711,14 +745,12 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
                                 if (support != null) {
                                     propPresentation = support.getPresentation();
                                     if (propPresentation != null) {
-                                        if (!propPresentation.isTitleInherited()) {
-                                            if (propPresentation.getEditOptions().getEditPossibility() == EEditPossibility.NEVER) {
+                                        if (propPresentation.getEditOptions().getEditPossibility() == EEditPossibility.NEVER) {
+                                            match = true;
+                                        } else {
+                                            ERuntimeEnvironmentType editEnv = propPresentation.getEditOptions().getEditEnvironment();
+                                            if (editEnv != ERuntimeEnvironmentType.COMMON_CLIENT && editEnv != env) {
                                                 match = true;
-                                            } else {
-                                                ERuntimeEnvironmentType editEnv = propPresentation.getEditOptions().getEditEnvironment();
-                                                if (editEnv != ERuntimeEnvironmentType.COMMON_CLIENT && editEnv != env) {
-                                                    match = true;
-                                                }
                                             }
                                         }
                                     }
@@ -792,12 +824,11 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
 
         valueInheritanceRules.appendTo(xDef);
         xDef.setIsOverride(isOverride());
-        if (isSetIsDescriptionInherited()){
+        if (isSetIsDescriptionInherited()) {
             xDef.setIsDescriptionInherited(isDescriptionInherited);
         }
 
         //----------------------------GETTER-------------------------------
-
         if (getter != null && saveMode == ESaveMode.NORMAL) {
             final PropAccessorSources getterSources = xDef.addNewGetterSources();
             getter.sources.appendTo(getterSources, saveMode);
@@ -811,7 +842,6 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
         }
 
         //-----------------------------SETTER------------------------------
-
         if (setter != null && saveMode == ESaveMode.NORMAL) {
             final PropAccessorSources setterSources = xDef.addNewSetterSources();
             setter.sources.appendTo(setterSources, saveMode);
@@ -882,6 +912,16 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
         if (value != null) {
             value.visit(visitor, provider);
         }
+    }
+
+    @Override
+    public ERuntimeEnvironmentType getDocEnvironment() {
+        return getOwnerDef().getDocEnvironment();
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.PROPERTY;
     }
 
     public boolean isGetterDefined(EScope scope) {
@@ -1783,11 +1823,11 @@ public abstract class AdsPropertyDef extends AdsClassMember implements IOverrida
     public String getTypesTitle() {
         return "Properties";
     }
-    
+
     @Override
     public boolean needsDocumentation() {
         AdsPropertyDef ovr = getHierarchy().findOverridden().get();
-        
+
         if (ovr == null) {
             ovr = getHierarchy().findOverwritten().get();
         }

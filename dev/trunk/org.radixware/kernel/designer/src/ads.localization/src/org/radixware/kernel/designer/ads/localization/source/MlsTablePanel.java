@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import javax.swing.Action;
 import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.Definitions;
 import org.radixware.kernel.common.defs.ExtendableDefinitions.EScope;
@@ -36,6 +37,8 @@ import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.enums.EIsoLanguage;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.designer.ads.localization.MultilingualEditor;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils;
+import org.radixware.kernel.designer.ads.localization.MultilingualEditorUtils.SelectionInfo;
 import org.radixware.kernel.designer.ads.localization.RowString;
 
 
@@ -45,10 +48,7 @@ public class MlsTablePanel extends AbstractTablePanel {
     private List<EIsoLanguage> translLangs;
     private ToolBarUi toolBarUi;
     private final MultilingualEditor parent;
-    public static final int NONE = 0;
-    public static final int UNCHECK_PREV = 1;
-    public static final int UNCHECK_NEXT = 2;
-    private int selectUncheckedTranslation = NONE;
+    private SelectionInfo selectionInfo = SelectionInfo.NONE;
     private final FilterSettings filterSettings = new FilterSettings();
 
     /**
@@ -91,32 +91,48 @@ public class MlsTablePanel extends AbstractTablePanel {
     }
     private void createUi() {
         toolBarUi = new ToolBarUi(this);
-        parent.addPropertyChangeListener(new PropertyChangeListener() {
+        parent.addChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e) {
                 String propertyName = e.getPropertyName();
                 switch(propertyName){
-                    case MultilingualEditor.LOADING_STRINGS:
+                    case MultilingualEditorUtils.LOADING_STRINGS:
                         List<RowString> rows = (List<RowString>) e.getNewValue();
                         if (!rows.isEmpty()) {
                             tableUi.addAllRow(rows, filterSettings);
                         }
                         break; 
-                    case MultilingualEditor.CLEAR_STRINGS:
+                    case MultilingualEditorUtils.CLEAR_STRINGS:
                         tableUi.clear();
                         break;
-                    case MultilingualEditor.FILTER_REFRESH:
+                    case MultilingualEditorUtils.FILTER_REFRESH:
                         toolBarUi.update();
                         break;
-                    case MultilingualEditor.STRINGS_UP_TO_DATE:
+                    case MultilingualEditorUtils.STRINGS_UP_TO_DATE:
                         tableUi.refreshTableModel();
                         toolBarUi.update();
                         break;
-                    case MultilingualEditor.PROGRESS_HANDLE:
+                    case MultilingualEditorUtils.PROGRESS_HANDLE:
                         Boolean serching = (Boolean) e.getNewValue();
                         toolBarUi.setStatisticEnabled(!serching && getTable().getRowCount() > 0);
                        break;
-                        
+                    case MultilingualEditorUtils.GO_TO_NEXT_ROW:
+                        setNextString();
+                        break;
+                    case MultilingualEditorUtils.GO_TO_PREVIOUS_ROW:
+                        setPrevString();
+                        break;
+                    case MultilingualEditorUtils.GO_TO_PREVIOUS_UNCHECKED_ROW:
+                        setPrevUncheckedString();
+                        break;
+                    case MultilingualEditorUtils.GO_TO_NEXT_UNCHECKED_ROW:
+                        setNextUncheckedString();
+                        break;
+                    case MultilingualEditorUtils.GO_TO_PREV_EDITABLE_ROW:
+                        setPrevEditableString();
+                        break;
+                    case MultilingualEditorUtils.GO_TO_NEXT_EDITABLE_ROW:
+                        setNextEditableString();
                 }
             }
         });
@@ -135,7 +151,7 @@ public class MlsTablePanel extends AbstractTablePanel {
             getTable().getSelectionModel().setSelectionInterval(0, 0);
         } else {
             toolBarUi.setReadOnly(true);
-            parent.setRowString(null, false, NONE);
+            parent.setRowString(null, false, SelectionInfo.NONE);
         }
     }
 
@@ -150,7 +166,7 @@ public class MlsTablePanel extends AbstractTablePanel {
             showMsg(msg);
             return;
         }
-        final boolean status = row.needsCheck(translLangs);
+        final boolean status = row.isNeedsCheck(translLangs);
         for (EIsoLanguage lang : translLangs) {
             final String str = row.getValue(lang);
             if ((str != null) && (!str.equals(""))) {
@@ -176,18 +192,24 @@ public class MlsTablePanel extends AbstractTablePanel {
         final int row = getTable().getSelectedRow();
         if ((row > -1) && (row < getTable().getRowCount())) {
             toolBarUi.setReadOnly(false);
-            parent.setRowString(tableUi.getRowString(row), setFocusOnTranslation, selectUncheckedTranslation);
+            if (selectionInfo == SelectionInfo.NONE && setFocusOnTranslation){
+                selectionInfo = SelectionInfo.FOCUS;
+            }
+            parent.setRowString(tableUi.getRowString(row), selectionInfo);
             curMlString = tableUi.getRowString(row);
             toolBarUi.canViewHtml(tableUi.isHtml(row));
         } else {
             toolBarUi.setReadOnly(true);
-            parent.setRowString(null, false, NONE);
+            parent.setRowString(null);
             toolBarUi.canViewHtml(false);
         }
-        selectUncheckedTranslation = NONE;
+        selectionInfo = SelectionInfo.NONE;
     }
 
     public void setPrevString() {
+        if (getTable().getRowCount() == 0){
+            return;
+        }
         int row = getTable().getSelectedRow();
         if (row - 1 >= 0) {
             row = row - 1;
@@ -197,9 +219,13 @@ public class MlsTablePanel extends AbstractTablePanel {
 
         getTable().getSelectionModel().setSelectionInterval(row, row);
         tableUi.fireTableCellUpdated(row, 0);
+        selectionInfo = SelectionInfo.PREV;
     }
-
+    
     public void setNextUncheckedString() {
+        if (getTable().getRowCount() == 0){
+            return;
+        }
         int row = getTable().getSelectedRow();
         do {
             if (row + 1 < getTable().getRowCount()) {
@@ -207,16 +233,20 @@ public class MlsTablePanel extends AbstractTablePanel {
             } else {
                 row = 0;
             }
-        } while ((!tableUi.getRowString(row).needsCheck(translLangs)) && (row != getTable().getSelectedRow()));
+        } while ((!tableUi.getRowString(row).isNeedsCheck(getAllLanguages())) && (row != getTable().getSelectedRow()));
 
         if (row != getTable().getSelectedRow()) {
-            selectUncheckedTranslation = UNCHECK_NEXT;
+            selectionInfo = SelectionInfo.UNCHECK_NEXT;
             getTable().getSelectionModel().setSelectionInterval(row, row);
             tableUi.fireTableCellUpdated(row, 0);
         }
     }
-
+    
     public void setPrevUncheckedString() {
+        if (getTable().getRowCount() == 0){
+            return;
+        }
+        
         int row = getTable().getSelectedRow();
         do {
             if (row - 1 >= 0) {
@@ -224,14 +254,58 @@ public class MlsTablePanel extends AbstractTablePanel {
             } else {
                 row = getTable().getRowCount() - 1;
             }
-        } while ((!tableUi.getRowString(row).needsCheck(translLangs)) && (row != getTable().getSelectedRow()));
+        } while ((!tableUi.getRowString(row).isNeedsCheck(getAllLanguages())) && (row != getTable().getSelectedRow()));
 
         if (row != getTable().getSelectedRow()) {
-            selectUncheckedTranslation = UNCHECK_PREV;
+            selectionInfo = SelectionInfo.UNCHECK_PREV;
             getTable().getSelectionModel().setSelectionInterval(row, row);
             tableUi.fireTableCellUpdated(row, 0);
         }
     }
+    
+
+    public void setPrevEditableString() {
+        if (getTable().getRowCount() == 0) {
+            return;
+        }
+        
+        int row = getTable().getSelectedRow();
+        do {
+            if (row - 1 >= 0) {
+                row = row - 1;
+            } else {
+                row = getTable().getRowCount() - 1;
+            }
+        } while ((!tableUi.getRowString(row).isNeedTranslate(getAllLanguages())) && (row != getTable().getSelectedRow()));
+
+        if (row != getTable().getSelectedRow()) {
+            selectionInfo = SelectionInfo.EDITABLE_PREV;
+            getTable().getSelectionModel().setSelectionInterval(row, row);
+            tableUi.fireTableCellUpdated(row, 0);
+        }
+    }
+
+    public void setNextEditableString() {
+        if (getTable().getRowCount() == 0) {
+            return;
+        }
+
+        int row = getTable().getSelectedRow();
+        do {
+            if (row + 1 < getTable().getRowCount()) {
+                row = row + 1;
+            } else {
+                row = 0;
+            }
+        } while ((!tableUi.getRowString(row).isNeedTranslate(getAllLanguages())) && (row != getTable().getSelectedRow()));
+
+        if (row != getTable().getSelectedRow()) {
+            selectionInfo = SelectionInfo.EDITABLE_NEXT;
+            getTable().getSelectionModel().setSelectionInterval(row, row);
+            tableUi.fireTableCellUpdated(row, 0);
+        }
+    }
+
 
     @Override
     public List<EIsoLanguage> getTranslatedLags() {
@@ -281,20 +355,12 @@ public class MlsTablePanel extends AbstractTablePanel {
         }
     }
 
-    public void goToNextTranslation() {
-        parent.firePropertyChange(MultilingualEditor.GO_TO_NEXT, false, true);
-    }
-
-    public void goToPreviousTranslation() {
-        parent.firePropertyChange(MultilingualEditor.GO_TO_PREV, false, true);
+    public void firePropertyChange(String propertyName) {
+        parent.fireChange(propertyName, false, true);
     }
 
     public void goToNextUncheckedTranslation() {
-        parent.firePropertyChange(MultilingualEditor.GO_TO_NEXT_UNCHECKED, false, true);
-    }
-
-    public void goToPreviousUncheckedTranslation() {
-        parent.firePropertyChange(MultilingualEditor.GO_TO_PREV_UNCHECKED, false, true);
+        parent.fireChange(MultilingualEditorUtils.GO_TO_NEXT_UNCHECKED, false, true);
     }
 
     public List<AdsPhraseBookDef> getOpenedPhraseBook() {
@@ -343,6 +409,21 @@ public class MlsTablePanel extends AbstractTablePanel {
         return filterSettings;
     }
     
+    private List<EIsoLanguage> getAllLanguages(){
+        List<EIsoLanguage> languages = new ArrayList<>();
+        if (sourceLangs != null){
+            languages.addAll(sourceLangs);
+        }
+        if (translLangs != null){
+            languages.addAll(translLangs);
+        }
+        
+        return languages;
+    }
+
+    public Action getActionByKey(String key){
+        return parent.getActionMap().get(key);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

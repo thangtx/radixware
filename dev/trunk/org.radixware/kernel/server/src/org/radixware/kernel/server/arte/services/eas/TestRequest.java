@@ -36,11 +36,6 @@ final class TestRequest extends SessionRequest {
     }
 
     @Override
-    void prepare(final XmlObject rqXml) throws ServiceProcessServerFault, ServiceProcessClientFault {
-        return;
-    }
-
-    @Override
     protected String getUsrDbTraceProfile() {
         return null;
     }

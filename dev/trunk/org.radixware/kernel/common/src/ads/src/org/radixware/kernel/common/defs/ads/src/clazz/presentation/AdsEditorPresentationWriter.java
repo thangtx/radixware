@@ -26,6 +26,7 @@ import org.radixware.kernel.common.enums.EPresentationAttrInheritance;
 import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.CharOperations;
 
@@ -48,7 +49,7 @@ public class AdsEditorPresentationWriter extends AbstractDefinitionWriter<AdsEdi
                 WriterUtils.writePackageDeclaration(printer, def, usagePurpose);
                 printer.print("public final class ");
                 //writeUsage(printer);
-                printer.print(def.getId());
+                printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
                 printer.print(JavaSourceSupport.META_CLASS_SUFFIX);
                 printer.enterBlock(1);
                 printer.println("{");
@@ -60,12 +61,12 @@ public class AdsEditorPresentationWriter extends AbstractDefinitionWriter<AdsEdi
                 //RADIX-RADIX-8369
                 if (def.isUseDefaultModel()/* && !isOverwrite*/) {
                     printer.print("private static final class ");
-                    printer.print(def.getId());
+                    printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
                     printer.print("_DEF extends ");
                     printer.print(EDITOR_PRESENTATION_META_EXPLORER_CLASS_NAME);
                     printer.enterBlock();
                     printer.println('{');
-                    printer.print(def.getId());
+                    printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
                     printer.enterBlock();
                     printer.println("_DEF(){");
                     printer.print("super(");
@@ -89,7 +90,7 @@ public class AdsEditorPresentationWriter extends AbstractDefinitionWriter<AdsEdi
                     writeCode(printer, modelInfo.clazz.getType(EValType.USER_CLASS, null));
                     if (modelInfo.useDefaultModel) {
                         printer.print(".");
-                        printer.print(modelInfo.clazz.getId());
+                        printer.print(JavaSourceSupport.getName(modelInfo.clazz, printer instanceof IHumanReadablePrinter));
                         printer.print("_DefaultModel");
                         if (modelInfo.basePresentationId != null) {
                             printer.print('.');
@@ -104,7 +105,7 @@ public class AdsEditorPresentationWriter extends AbstractDefinitionWriter<AdsEdi
                     printer.print("public static final ");
                     printer.print(EDITOR_PRESENTATION_META_EXPLORER_CLASS_NAME);
                     printer.print(" rdxMeta = new ");
-                    printer.print(def.getId());
+                    printer.print(JavaSourceSupport.getName(def, printer instanceof IHumanReadablePrinter, true));
                     printer.println("_DEF(); ");
                 } else {
                     printer.print("public static final ");

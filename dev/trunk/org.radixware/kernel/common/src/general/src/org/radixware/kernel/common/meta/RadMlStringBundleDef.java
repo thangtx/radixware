@@ -120,6 +120,10 @@ public class RadMlStringBundleDef extends RadDefinition implements IMlStringBund
         public String getValue(EIsoLanguage language) {
             return stringsByLang.get(language);
         }
+        
+        public Map<EIsoLanguage, String> getAllValues() {
+            return Collections.unmodifiableMap(stringsByLang);
+        }
 
         public void addValue(String value, EIsoLanguage language) {
             stringsByLang.put(language, value);
@@ -210,9 +214,9 @@ public class RadMlStringBundleDef extends RadDefinition implements IMlStringBund
         return this.context.getClassLoader().getResources(getXmlResourcePath());
     }
 
-    private String getInAnotherLanguages(EIsoLanguage srcLang, MultilingualString mlString) {
+        
+    private String getInAnotherLanguages(List<EIsoLanguage> anotherLangs, EIsoLanguage srcLang, MultilingualString mlString){
         String res;
-        List<EIsoLanguage> anotherLangs = getAnotherLanguages();
         boolean look = false;
         for (EIsoLanguage l : anotherLangs) {
             if (l == srcLang) {
@@ -237,6 +241,16 @@ public class RadMlStringBundleDef extends RadDefinition implements IMlStringBund
             }
         }
         return "";
+    }
+
+    private String getInAnotherLanguages(EIsoLanguage srcLang, MultilingualString mlString) {
+        //List<EIsoLanguage> anotherLangs = getAnotherLanguages();
+        List<EIsoLanguage> anotherLangs = new ArrayList<>();
+        anotherLangs.add(srcLang);
+        if (srcLang != EIsoLanguage.ENGLISH){
+            anotherLangs.add(EIsoLanguage.ENGLISH);
+        }
+        return getInAnotherLanguages(anotherLangs, srcLang, mlString);
     }
 
     private List<EIsoLanguage> getAnotherLanguages() {
@@ -299,8 +313,10 @@ public class RadMlStringBundleDef extends RadDefinition implements IMlStringBund
         } catch (IOException e) {
             getEnv().getTrace().put(EEventSeverity.DEBUG, "Unable to obtain localization resources for string bundle " + getId().toString() + ":"
                     + ExceptionTextFormatter.exceptionStackToString(e), EEventSource.DEF_MANAGER);
+        } finally {
             loadedLangs.add(lang);
         }
+        
     }
 
     @Override

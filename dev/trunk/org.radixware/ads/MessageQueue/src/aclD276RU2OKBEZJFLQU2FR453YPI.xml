@@ -1,65 +1,418 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="6">
-  <AdsClassDefinition Id="aclD276RU2OKBEZJFLQU2FR453YPI" Name="MessageQueue.Producer.Kafka" DescriptionId="mlsMDVHAJWJWNDD5MMNNCCIS6BT4M" Type="2">
+  <AdsClassDefinition Id="aclD276RU2OKBEZJFLQU2FR453YPI" Name="MessageQueue.Producer.Kafka" DescriptionId="mlsMDVHAJWJWNDD5MMNNCCIS6BT4M" Type="2" ClientEnvironment="explorer">
     <AccessRules/>
     <Headers>
-      <Src Name="HeaderaclD276RU2OKBEZJFLQU2FR453YPI"/>
+      <Src Name="HeaderaclD276RU2OKBEZJFLQU2FR453YPI">
+        <xsc:Item>
+          <xsc:Java>import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import org.apache.commons.lang.StringUtils;
+import org.apache.kafka.clients.CommonClientConfigs;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.config.SaslConfigs;
+import org.apache.kafka.common.config.SslConfigs;
+import org.apache.kafka.common.protocol.SecurityProtocol;
+import org.radixware.kernel.common.exceptions.KeystoreControllerException;
+import org.radixware.kernel.common.ssl.KeystoreController;
+import org.radixware.kernel.server.crypto.ProxyCryptoProvider;
+import org.radixware.kernel.starter.radixloader.RadixLoader;
+import org.radixware.schemas.messagequeue.MqMessageBody;
+import org.radixware.schemas.messagequeue.MqMessageMeta;
+</xsc:Java>
+        </xsc:Item>
+      </Src>
     </Headers>
     <Bodies>
-      <Src Name="BodyaclD276RU2OKBEZJFLQU2FR453YPI"/>
+      <Src Name="BodyaclD276RU2OKBEZJFLQU2FR453YPI">
+        <xsc:Item>
+          <xsc:Java>private static class MqKafkaProducer implements </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aicLETQUUSVHZCSLOGKIII4M6EDU4">
+            <xsc:Presentation>IMqProducer</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> {
+
+    
+    private final Producer&lt;String, byte[]> producer;
+    private static final String KAFKA_PRODUCER_PROP_PREFIX = "rdx.mq.kafka.producer.prop.";
+
+    public MqKafkaProducer(final </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="aclD276RU2OKBEZJFLQU2FR453YPI">
+            <xsc:Presentation>MessageQueue.Producer.Kafka</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> entity) throws </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="axc7PXEO3TYR5CCFH7362MPE6KFAY">
+            <xsc:Presentation>MessageQueueException</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> {
+        
+        final String server = entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colOPGPZBRRSZFCFP6DSBBECKFM74" Invoke="true">
+            <xsc:Presentation>brokerAddress</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+        final int sendTimeoutSec = entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colI3C6OY6R4VCHJNHCYV2ZDL3JEA" Invoke="true">
+            <xsc:Presentation>timeoutSec</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.intValue();
+        final String brokerKerberosName = entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aclD276RU2OKBEZJFLQU2FR453YPI colIGP6LI72OVAWRH4PUMHZ35UWQM" Invoke="true">
+            <xsc:Presentation>brokerKerberosName</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java><![CDATA[;
+        
+        final Properties props = new Properties();
+
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, server);
+        props.put(ProducerConfig.ACKS_CONFIG, "all");
+        props.put(ProducerConfig.RETRIES_CONFIG, 0);
+        props.put(ProducerConfig.LINGER_MS_CONFIG, 0);
+        props.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, 1000l * sendTimeoutSec);
+        props.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 1000 * sendTimeoutSec);
+        props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 30 * (1 << 20));
+        props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, 10 * (1 << 20));
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.ByteArraySerializer");
+
+        if (brokerKerberosName != null) {
+            props.put(SaslConfigs.SASL_KERBEROS_SERVICE_NAME, brokerKerberosName);
+            props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, SecurityProtocol.SASL_PLAINTEXT.name);
+        }
+        
+        
+        if (brokerKerberosName == null && entity.]]></xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTTNAG76GNNHGFLD7J2IHJSMUSA" Invoke="true">
+            <xsc:Presentation>securityProtocol</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> != </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsOQBHNCGYX7NRDB6TAALOMT5GDM aciF6BEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+            <xsc:Presentation>System::PortSecurityProtocol:None</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) {
+            KeystoreController controller = null;
+            try {
+                controller = KeystoreController.getServerKeystoreController();
+            } catch (KeystoreControllerException ex) {
+                throw new </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="axc7PXEO3TYR5CCFH7362MPE6KFAY mthRNDG5BMZZNBGNJFGCI4Z73RS5E" Invoke="true">
+            <xsc:Presentation>MessageQueueException</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>("Invalid Instance Key Store Controller state", ex);
+            }
+            
+            final String ksName = controller.getKeyStoreName();
+            if (ksName.isEmpty()) {
+                throw new </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="axc7PXEO3TYR5CCFH7362MPE6KFAY mthRNDG5BMZZNBGNJFGCI4Z73RS5E" Invoke="true">
+            <xsc:Presentation>MessageQueueException</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>("Instance Key Store not iniitialized", null);
+            }
+            
+            File fakeKeyStoreFile = RadixLoader.getInstance().createTempFile("KafkaFakeKeyStoreFile");
+            try {
+                fakeKeyStoreFile.createNewFile();
+            } catch (IOException ex) {
+                throw new </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="axc7PXEO3TYR5CCFH7362MPE6KFAY mthRNDG5BMZZNBGNJFGCI4Z73RS5E" Invoke="true">
+            <xsc:Presentation>MessageQueueException</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>("Fake Key Store file creation failure", ex);
+            }
+            
+            final String RADIX_CRYPTO = ProxyCryptoProvider.getProxyCryptoProviderId();
+            final String fakeKeyStorePath = fakeKeyStoreFile.getAbsolutePath();
+            
+            final String serverCertAliases = entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colL6K3EEEXRBG4BEGHD54YVL5VVE" Invoke="true">
+            <xsc:Presentation>serverCertAliases</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> != null
+                    ? entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colL6K3EEEXRBG4BEGHD54YVL5VVE" Invoke="true">
+            <xsc:Presentation>serverCertAliases</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.toString() : "null";
+            final String clientKeyAliases = entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ col24OZ2N37RNEQPPFU36C2MKSK2A" Invoke="true">
+            <xsc:Presentation>clientKeyAliases</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> != null
+                    ? entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ col24OZ2N37RNEQPPFU36C2MKSK2A" Invoke="true">
+            <xsc:Presentation>clientKeyAliases</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.toString() : "null";
+
+            props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG, "SSL");
+            if (entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTTNAG76GNNHGFLD7J2IHJSMUSA" Invoke="true">
+            <xsc:Presentation>securityProtocol</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> == </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="acsOQBHNCGYX7NRDB6TAALOMT5GDM aciUZO24T2XBFEVNKHU7QIMRVTH5Y" Invoke="true">
+            <xsc:Presentation>System::PortSecurityProtocol:TLSv1_2</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>) {
+                props.put(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, "TLSv1.2");
+            }
+
+            props.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, RADIX_CRYPTO);
+            props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, fakeKeyStorePath);
+            props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, serverCertAliases);
+
+            props.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, RADIX_CRYPTO);
+            props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, fakeKeyStorePath);
+            props.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, clientKeyAliases);
+
+
+            final List&lt;String> cipherSuitesList = entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colU44WLH4LFZFR5M4IQMPS5TIT7I" Invoke="true">
+            <xsc:Presentation>cipherSuites</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java> == null
+                    ? </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:TypeDeclaration TypeId="411" Path="adc5CRTETV6DFCIHD76IPMNU6KO2E">
+            <xsc:Presentation>System::SslUtils</xsc:Presentation>
+          </xsc:TypeDeclaration>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="adc5CRTETV6DFCIHD76IPMNU6KO2E mthBZF4PRED4NA5LMXLH3TQK5YDIA" Invoke="true">
+            <xsc:Presentation>getStrongCipherSuitesAsStrList</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTTNAG76GNNHGFLD7J2IHJSMUSA" Invoke="true">
+            <xsc:Presentation>securityProtocol</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>)
+                    : entity.</xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colU44WLH4LFZFR5M4IQMPS5TIT7I" Invoke="true">
+            <xsc:Presentation>cipherSuites</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>;
+            if (!cipherSuitesList.isEmpty()) {
+                final String cipherSuites = StringUtils.join(cipherSuitesList, ",");
+                props.put(SslConfigs.SSL_CIPHER_SUITES_CONFIG, cipherSuites);
+            }
+
+            props.put(SslConfigs.SSL_TRUSTMANAGER_ALGORITHM_CONFIG, RADIX_CRYPTO);
+            props.put(SslConfigs.SSL_KEYMANAGER_ALGORITHM_CONFIG, RADIX_CRYPTO);
+        }
+
+        final String addPropPrefix = KAFKA_PRODUCER_PROP_PREFIX + serverAddressToPropPart(server) + ".";
+
+        for (java.util.Map.Entry entry : System.getProperties().entrySet()) {
+            final String keyStr = String.valueOf(entry.getKey());
+            if (keyStr.startsWith(addPropPrefix)) {
+                props.put(keyStr.substring(addPropPrefix.length()), String.valueOf(entry.getValue()));
+
+            }
+        }
+
+        producer = new KafkaProducer&lt;String, byte[]>(props);
+    }
+
+    private final String serverAddressToPropPart(final String serverAddress) {
+        if (serverAddress == null) {
+            return null;
+        }
+        return serverAddress.replace(".", "_").replace(":", "_");
+    }
+
+    @Override
+    public String </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aicLETQUUSVHZCSLOGKIII4M6EDU4 mthQNCU3KWJG5EXLGIVD6MODPGVSE" Invoke="true">
+            <xsc:Presentation>send</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(MqMessageMeta meta, MqMessageBody body) throws IOException {
+        final Future&lt;RecordMetadata> future = producer.send(new ProducerRecord&lt;>(
+                meta.getQueueName(),
+                meta.getKafkaSpecific().getPartition().intValue(),
+                meta.getMessageId(),
+                </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY mth56WVCYEEBJABFNT7W6EIYN7CCA" Invoke="true">
+            <xsc:Presentation>getSendBytes</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>(meta, body)));
+        try {
+            producer.flush();
+            future.get();
+        } catch (InterruptedException ex) {
+            throw new IOException("Interrupted while sending message to queue", ex);
+        } catch (ExecutionException ex) {
+            if (ex.getCause() instanceof IOException) {
+                throw (IOException) ex.getCause();
+            } else {
+                throw new IOException("Error while sending message to queue", ex.getCause());
+            }
+        }
+        return meta.getMessageId();
+    }
+
+    @Override
+    public void close() throws Exception {
+        producer.close();
+    }
+
+    @Override
+    public boolean </xsc:Java>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:IdReference Path="aicLETQUUSVHZCSLOGKIII4M6EDU4 mthKAFZ2NE2MVHP5OLVFX5KT5APDA" Invoke="true">
+            <xsc:Presentation>isConnected</xsc:Presentation>
+          </xsc:IdReference>
+        </xsc:Item>
+        <xsc:Item>
+          <xsc:Java>() {
+        return true;//???
+    }
+}</xsc:Java>
+        </xsc:Item>
+      </Src>
     </Bodies>
     <MethodGroup Id="cmg5N22OTEIERCKRLAQXSLK5Z5BA4" Name="Root"/>
     <PropertyGroup Id="cpg34BNJ2SOVZGWPL6GXXDQLASVNY" Name="Root"/>
     <Properties>
       <Property Id="colY7OU5KA6ZVDFRHHVFV4JGWL3DQ" Name="queueId" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="false" OriginalPropertyId="colMJ5LYEVHWVDXTLFODE43T7SO7A" DetailRefId="ref4UQQFX76UVA7HCT442UGW52U2A">
-        <AccessRules IsPublished="false"/>
+        <AccessRules/>
         <Type TypeId="2"/>
         <Presentation InheritanceMask="4">
           <Editing NotNull="true" EditPossibility="2" IsDuplicatesEnabled="true"/>
+        </Presentation>
+      </Property>
+      <Property Id="colTRIHVJKCKNDNVESJUPLUFKPVQA" Name="queueName" Nature="0" IsConst="false" IsOverride="true" isDescriptionInherited="false">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsXA4FSNBSDNHT7PB3A52326OHZI" InheritanceMask="62"/>
+      </Property>
+      <Property Id="colIGP6LI72OVAWRH4PUMHZ35UWQM" Name="brokerKerberosName" Nature="5" IsConst="false" IsOverride="false" isDescriptionInherited="true" OriginalPropertyId="colY53XWFDHLBDCXOKZVXJ4Q22HUY" DetailRefId="ref4UQQFX76UVA7HCT442UGW52U2A">
+        <AccessRules/>
+        <Type TypeId="21"/>
+        <Presentation TitleId="mlsGJLI3K2LNNG2LLVL7VPALV3X2E" InheritanceMask="4">
+          <Editing NullValTitleId="mlsKO3JPFOEY5E4HGJER4OD2AZ3LQ" IsDuplicatesEnabled="true"/>
         </Presentation>
       </Property>
     </Properties>
     <Methods>
       <Method Id="mthWXVEL5SYNRBVVP2ICAI7TF6DLI" Name="getSender" DescriptionId="mlsVG5PBXDSNVDOXHNXZYW6VPYYT4" Nature="0" IsOverride="true">
         <AccessRules/>
-        <ReturnType TypeId="411" Path="aicGNS47MFCS5E6LLDQ7E2I42BJCM"/>
+        <Parameters>
+          <Parameter Name="cacheItemId" Id="mprVFDL6ELMEBGZFOI53OTH7YXZMI">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="411" Path="aicLETQUUSVHZCSLOGKIII4M6EDU4"/>
         <ThrownExceptions>
           <Exception TypeId="411" Path="axc7PXEO3TYR5CCFH7362MPE6KFAY"/>
         </ThrownExceptions>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>return new </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcGTXE3ZFEXBHSTK6HZRVNWEZMGE"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(this.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colOPGPZBRRSZFCFP6DSBBECKFM74" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>,this.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTRIHVJKCKNDNVESJUPLUFKPVQA" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>,this.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> != null ? Integer.valueOf(this.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>).intValue() : 0);</xsc:Java>
+              <xsc:Java>return new MqKafkaProducer(this);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -75,26 +428,170 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>this.</xsc:Java>
+              <xsc:Java>return super.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ col7PCH7MSGLZFSNNDIFYF6WQLWDI" Invoke="true"/>
+              <xsc:IdReference Path="pdcEntity____________________ mthFMXUFM5J25E4TNM4PR73F6V3E4" Invoke="true">
+                <xsc:Presentation>beforeCreate</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src);</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthMHUN7KMMONHPNKHBVVHMAKTH4M" Name="prepareMeta" DescriptionId="mlsDUQGQ6AJZ5FGZA6S3NKKHKIUCA" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="meta" Id="mprA6BXU7G23RCYZGXG4CSLSXSBWI">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta"/>
+          </Parameter>
+          <Parameter Name="body" Id="mpr5ROHOPA27JF55BPAYVDGQ7PUHE">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageBody"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (meta == null) {
+    meta = </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta.Factory">
+                <xsc:Presentation>MessageQueueXsd:MqMessageMeta.Factory</xsc:Presentation>
+              </xsc:TypeDeclaration>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.newInstance();
+}
+
+if (meta.getEncoding() == null) {
+    meta.setEncoding("UTF-8");
+}
+
+if (meta.getQueueName() == null) {
+    meta.setQueueName(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colTRIHVJKCKNDNVESJUPLUFKPVQA" Invoke="true">
+                <xsc:Presentation>queueName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>);
+}
+
+meta.ensureKafkaSpecific();
+if (meta.getKafkaSpecific().getPartition() == null) {
+    meta.getKafkaSpecific().setPartition(this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true">
+                <xsc:Presentation>partitionName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null ? Long.valueOf(0) : Long.valueOf(this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colB56SD6AHQ5AJFMZJHTWW2XRHQE" Invoke="true">
+                <xsc:Presentation>partitionName</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>));
+}
+
+if (meta.getMessageId() == null) {
+    meta.setMessageId(</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY mthM4PBBRBTZZELDPJI23LNLXDO5Y" Invoke="true">
+                <xsc:Presentation>calcDefaultMessId</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>());
+}
+
+meta.setDebugKey(meta.getMessageId() + ":p" + meta.getKafkaSpecific().getPartition());
+
+return meta;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthD77F2HBL2FGSVPJHR3SEAMPWMA" Name="afterInit" Nature="0" IsOverride="true">
+        <AccessRules Access="1"/>
+        <Parameters>
+          <Parameter Name="src" Id="mpr45U5B3TTGND25IPRN3SWMUE7G4">
+            <Type TypeId="400" extStr="org.radixware.kernel.server.types.Entity"/>
+          </Parameter>
+          <Parameter Name="phase" Id="mprPQ6S4HGO2JCJ3G4DN6BSGRTZPQ">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.enums.EEntityInitializationPhase"/>
+          </Parameter>
+        </Parameters>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>super.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="pdcEntity____________________ mthD77F2HBL2FGSVPJHR3SEAMPWMA" Invoke="true">
+                <xsc:Presentation>afterInit</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>(src, phase);
+this.</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ col7PCH7MSGLZFSNNDIFYF6WQLWDI" Invoke="true">
+                <xsc:Presentation>queueKind</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsIXEVYI6PORHVNOJ2X4FJ4BGBE4 aciYJEC46EQGBHNRCIG4W7U2FKPCY" Invoke="true"/>
+              <xsc:IdReference Path="acsIXEVYI6PORHVNOJ2X4FJ4BGBE4 aciYJEC46EQGBHNRCIG4W7U2FKPCY" Invoke="true">
+                <xsc:Presentation>MessageQueueKind:KAFKA</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>;
+              <xsc:Java>;</xsc:Java>
+            </xsc:Item>
+          </Src>
+        </Sources>
+      </Method>
+      <Method Id="mthBGYR2KUAUNERPM2M3LOHS4Z3UA" Name="getPartition" Nature="0" IsOverride="true">
+        <AccessRules/>
+        <Parameters>
+          <Parameter Name="meta" Id="mprNCOIEIM44ZFGXDYI235V45E2NQ">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageMeta"/>
+          </Parameter>
+          <Parameter Name="body" Id="mprTNWQ6KNAYREVVGGDYDBX6ODZTI">
+            <Type TypeId="451" Path="xsdQN5ZI6MAN5E7PAGWAOW77WV2YM" extStr="MqMessageBody"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="2"/>
+        <Sources>
+          <Src>
+            <xsc:Item>
+              <xsc:Java>if (meta != null &amp;&amp; meta.getKafkaSpecific() != null &amp;&amp; meta.getKafkaSpecific().getPartition() != null) {
+    return meta.getKafkaSpecific().getPartition();
+}
 return super.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcEntity____________________ mthFMXUFM5J25E4TNM4PR73F6V3E4" Invoke="true"/>
+              <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY mthBGYR2KUAUNERPM2M3LOHS4Z3UA" Invoke="true">
+                <xsc:Presentation>getSafPartition</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>(src);</xsc:Java>
+              <xsc:Java>(meta, body);</xsc:Java>
             </xsc:Item>
           </Src>
         </Sources>
@@ -108,6 +605,187 @@ return super.</xsc:Java>
           <ClassRef Order="20.0"/>
         </ClassCatalog>
       </ClassCatalogs>
+      <EditorPresentations>
+        <EditorPresentation Id="eprMNWHACKEIFBJ3HSYKBFKBUKVNM" Name="Edit" BasePresentationId="epr7JNXRJQ3R5BDBMFTUG72M2JTXE" InheritanceMask="101552" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="epr7JNXRJQ3R5BDBMFTUG72M2JTXE">
+          <AccessRules IsPublished="false"/>
+          <Model Id="aemMNWHACKEIFBJ3HSYKBFKBUKVNM" Name="Edit:Model" Type="15">
+            <AccessRules IsPublished="false"/>
+            <Headers>
+              <Src Name="HeaderaemMNWHACKEIFBJ3HSYKBFKBUKVNM"/>
+            </Headers>
+            <Bodies>
+              <Src Name="BodyaemMNWHACKEIFBJ3HSYKBFKBUKVNM"/>
+            </Bodies>
+            <MethodGroup Id="cmgSQY25WR3LRFA7NGDMSBJLWZRSU" Name="Root"/>
+            <PropertyGroup Id="cpgTYCQCCKLQZFVXFW3VUKU5FMRVE" Name="Root"/>
+            <Properties>
+              <Property Id="colIGP6LI72OVAWRH4PUMHZ35UWQM" Name="brokerKerberosName" Nature="8" IsConst="false" IsOverride="false" isDescriptionInherited="false">
+                <AccessRules IsPublished="false"/>
+                <Type TypeId="21"/>
+                <DependentItems/>
+                <SetterSources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclD276RU2OKBEZJFLQU2FR453YPI eprMNWHACKEIFBJ3HSYKBFKBUKVNM aemMNWHACKEIFBJ3HSYKBFKBUKVNM colIGP6LI72OVAWRH4PUMHZ35UWQM" Invoke="true" extStr="#STD_PROP_VALUE#">
+                        <xsc:Presentation>brokerKerberosName</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java> = val;
+if (val != null &amp;&amp; !val.isEmpty() &amp;&amp; </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 colTTNAG76GNNHGFLD7J2IHJSMUSA" Invoke="true">
+                        <xsc:Presentation>securityProtocol</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value != </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="acsOQBHNCGYX7NRDB6TAALOMT5GDM aciF6BEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                        <xsc:Presentation>System::PortSecurityProtocol:None</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>) {
+    </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 colTTNAG76GNNHGFLD7J2IHJSMUSA" Invoke="true">
+                        <xsc:Presentation>securityProtocol</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value = </xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="acsOQBHNCGYX7NRDB6TAALOMT5GDM aciF6BEJTYZVPORDJHCAANE2UAFXA" Invoke="true">
+                        <xsc:Presentation>System::PortSecurityProtocol:None</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>;
+}</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </SetterSources>
+              </Property>
+            </Properties>
+            <Methods>
+              <Method Id="mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Name="setVisibility" Nature="0" Environment="common-client" IsOverride="true">
+                <AccessRules/>
+                <Sources>
+                  <Src>
+                    <xsc:Item>
+                      <xsc:Java>super.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY epr7JNXRJQ3R5BDBMFTUG72M2JTXE aem7JNXRJQ3R5BDBMFTUG72M2JTXE mth6ICIIE6PUVC6JKT36Y4PSMBYTU" Invoke="true">
+                        <xsc:Presentation>setVisibility</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>();
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colPRWBAX2DZJDFLL5RB6UKQPNJCM" Invoke="true">
+                        <xsc:Presentation>password</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(false);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ colMMPJ3MOF5NEEFB4MEBKFURZTMQ" Invoke="true">
+                        <xsc:Presentation>login</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYNQQVLTKWJAHZB6DDCMLJSOHAI" Invoke="true">
+                        <xsc:Presentation>setVisible</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(false);
+</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aecQZ2AJHN3PFDWXC5BT6I66OS5PQ eprWEEVKI2IT5DQJAS5RJFI4FFDS4 aemWEEVKI2IT5DQJAS5RJFI4FFDS4 colTTNAG76GNNHGFLD7J2IHJSMUSA" Invoke="true">
+                        <xsc:Presentation>securityProtocol</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="adcYPRT23KRRVAX7AN3727VBD5VI4 mthYMZDXTF2N5BMRCHSYLIM42UGTQ" Invoke="true">
+                        <xsc:Presentation>setReadonly</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>(</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclD276RU2OKBEZJFLQU2FR453YPI eprMNWHACKEIFBJ3HSYKBFKBUKVNM aemMNWHACKEIFBJ3HSYKBFKBUKVNM colIGP6LI72OVAWRH4PUMHZ35UWQM" Invoke="true">
+                        <xsc:Presentation>brokerKerberosName</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value != null &amp;&amp; !</xsc:Java>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:IdReference Path="aclD276RU2OKBEZJFLQU2FR453YPI eprMNWHACKEIFBJ3HSYKBFKBUKVNM aemMNWHACKEIFBJ3HSYKBFKBUKVNM colIGP6LI72OVAWRH4PUMHZ35UWQM" Invoke="true">
+                        <xsc:Presentation>brokerKerberosName</xsc:Presentation>
+                      </xsc:IdReference>
+                    </xsc:Item>
+                    <xsc:Item>
+                      <xsc:Java>.Value.isEmpty());</xsc:Java>
+                    </xsc:Item>
+                  </Src>
+                </Sources>
+              </Method>
+            </Methods>
+          </Model>
+          <ChildExplorerItems/>
+          <EditorPages>
+            <Page Id="epg7YNNBOYOO5FXHDZQVRBOOMR3HY" Name="Additional" TitleId="mlsWRTA4VA2W5A3PAXK5MZBGWY3IU" Type="1">
+              <Properties>
+                <Property Id="colIGP6LI72OVAWRH4PUMHZ35UWQM" Row="0" Column="0"/>
+                <Property Id="colTTNAG76GNNHGFLD7J2IHJSMUSA" Row="1" Column="0"/>
+                <Property Id="colL6K3EEEXRBG4BEGHD54YVL5VVE" Row="2" Column="0"/>
+                <Property Id="col24OZ2N37RNEQPPFU36C2MKSK2A" Row="3" Column="0"/>
+                <Property Id="colU44WLH4LFZFR5M4IQMPS5TIT7I" Row="4" Column="0"/>
+              </Properties>
+            </Page>
+            <PageOrder>
+              <Item PageId="epgSSMUGGSOLNEENDZTYAGQ7AIZ5I" Level="1"/>
+              <Item PageId="epg7YNNBOYOO5FXHDZQVRBOOMR3HY" Level="1"/>
+              <Item PageId="epgN2YU55HZT5C5DFTUAJJYAOIW2Q" Level="1"/>
+              <Item PageId="epg6V4MMAXFZBDL5DFMVK7EVVGFUQ" Level="1"/>
+            </PageOrder>
+          </EditorPages>
+          <ObjectTitleFormat Id="etfE7PSDO6FJJHUJCWPIBMWJGPDZY"/>
+        </EditorPresentation>
+        <EditorPresentation Id="eprJXTBAH6UOVHDTO2VIIOJZ6AONU" Name="Create" BasePresentationId="eprMNWHACKEIFBJ3HSYKBFKBUKVNM" InheritanceMask="105648" Restrictions="0" EnabledCommandIds="" ReplacedPresentationId="eprJFYEPXEXLFAGXCM3U26EA7AJ4I">
+          <AccessRules IsPublished="false"/>
+          <ChildExplorerItems/>
+          <ObjectTitleFormat Id="etfAZ3EE374AZAIHMZKGBEGCSC7Q4"/>
+        </EditorPresentation>
+      </EditorPresentations>
     </Presentations>
     <Extends TypeId="411" Path="aclIJMFWGNFU5AV3PP4PS3SDW3NKY"/>
   </AdsClassDefinition>

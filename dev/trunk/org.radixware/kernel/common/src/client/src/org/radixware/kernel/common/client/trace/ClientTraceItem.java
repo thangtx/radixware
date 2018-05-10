@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.common.client.trace;
 
+import java.io.IOException;
+import java.io.Writer;
 import org.radixware.kernel.common.client.RunParams;
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
@@ -20,13 +22,14 @@ import org.radixware.kernel.common.trace.TraceItem;
 public class ClientTraceItem implements IClientTraceItem{
     
     private final static int MAX_DISPLAY_TEXT_LENGTH = 1000;
+    private final static boolean TRACE_DUMP_ENABLED = System.getProperty("org.radixware.kernel.explorer.call-stack-in-trace-message")!=null;
     
     private final String text;
     private String displayText;
     private final long time;
     private final String source;
     private final EEventSeverity severity;
-    private final String stackTrace;    
+    private final String stackTrace;
     
     protected ClientTraceItem(final String messageText, final EEventSeverity severity, final String source, final String stack) {
         text = messageText;
@@ -97,7 +100,8 @@ public class ClientTraceItem implements IClientTraceItem{
     @Override
     public String getDisplayText() {
         if (displayText==null){
-            final String formattedString = TraceItem.formatTraceMessage(null, time, source, null, getMessageText());
+            //final String formattedString = TraceItem.formatTraceMessage(null, time, source, null, getMessageText());
+            final String formattedString = TraceItem.formatTraceMessageLimited(MAX_DISPLAY_TEXT_LENGTH, null, time, source, null, getMessageText());
             final int pos = formattedString.indexOf('\n');
             if (pos>0){
                 displayText = formattedString.substring(0, Math.min(pos, MAX_DISPLAY_TEXT_LENGTH))+"...";
@@ -135,12 +139,17 @@ public class ClientTraceItem implements IClientTraceItem{
         return getFormattedMessage();
     }            
     
+    @Override
+    public int toWriter(Writer writer) throws IOException {
+        return TraceItem.formatTraceMessageToWriter(writer, getSeverity(), getTime(), getSource(), null, getMessageText());
+    }
+    
     private static String calcStackTrace(final String source){
         return calcStackTrace(source, 6);
     }
     
     protected static String calcStackTrace(final String source, final int startFrom){
-        if (RunParams.isDevelopmentMode()
+        if ((RunParams.isDevelopmentMode() || TRACE_DUMP_ENABLED)
             && ( source==null || source.startsWith(EEventSource.CLIENT.getValue()) ) 
            ){
             final StringBuilder stackTraceBuilder = new StringBuilder();        
@@ -156,6 +165,8 @@ public class ClientTraceItem implements IClientTraceItem{
         }else{
             return null;
         }
-    }    
+    }
+    
+    
 }
  

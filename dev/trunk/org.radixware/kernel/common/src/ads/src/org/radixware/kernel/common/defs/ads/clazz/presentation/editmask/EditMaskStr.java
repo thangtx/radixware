@@ -492,7 +492,7 @@ public class EditMaskStr extends EditMask {
         Integer dbMaxLen = getDbMaxLen();
 
         if (dbMaxLen != null) {
-            this.setMaxLen(dbMaxLen);
+            this.setMaxLen(dbMaxLen > 1000 ? 1000 : dbMaxLen);
         }
 
         this.setAllowEmptyString(isDbAllowEmptyString());

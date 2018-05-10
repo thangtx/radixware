@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.starter.utils;
 
 import java.io.File;
@@ -18,7 +17,7 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 import org.radixware.kernel.starter.Starter;
-
+import org.radixware.kernel.starter.StarterArguments;
 
 public class SystemTools {
 
@@ -78,7 +77,17 @@ public class SystemTools {
     }
 
     public static File getTmpDir() {
-        final File tmp = new File(getApplicationDataPath(Starter.STARTER_APP_DATA_ROOT) + "/tmp");
+        final File tmp;
+        String explicitTempDir = System.getProperty("rdx.starter.temp.dir");
+        if (explicitTempDir == null && Starter.getArguments() != null && Starter.getArguments().getStarterParameters() != null) {
+            explicitTempDir = Starter.getArguments().getStarterParameters().get(StarterArguments.TMP_DIR);
+        }
+        if (explicitTempDir != null && !explicitTempDir.isEmpty()) {
+            tmp = new File(explicitTempDir);
+        } else {
+            tmp = new File(getApplicationDataPath(Starter.STARTER_APP_DATA_ROOT) + "/tmp");
+        }
+
         if (!tmp.exists()) {
             tmp.mkdirs();
         }

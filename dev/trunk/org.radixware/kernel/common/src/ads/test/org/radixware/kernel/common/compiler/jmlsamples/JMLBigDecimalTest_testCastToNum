@@ -1,0 +1,11 @@
+class Test {
+
+    public static void test(Object b) {
+	try{
+	    Num a = (Num) b;
+	    System.err.print("ok");
+	} catch(ClassCastException e) {	
+	    System.err.print("cast err");
+	}
+    }
+}

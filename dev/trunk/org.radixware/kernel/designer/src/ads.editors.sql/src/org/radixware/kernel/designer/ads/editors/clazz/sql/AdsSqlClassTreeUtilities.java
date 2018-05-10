@@ -12,7 +12,7 @@
 package org.radixware.kernel.designer.ads.editors.clazz.sql;
 
 import javax.swing.tree.TreeNode;
-import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef.UsedTable;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef.IUsedTable;
 import org.radixware.kernel.designer.ads.editors.clazz.sql.AdsSqlClassTree.Node;
 
 
@@ -22,7 +22,7 @@ public class AdsSqlClassTreeUtilities {
         while (treeNode != null) {
             if (treeNode instanceof Node) {
                 Node node = (Node) treeNode;
-                if (node.getNodeInfo() != null && node.getNodeInfo().getObject() instanceof UsedTable) {
+                if (node.getNodeInfo() != null && node.getNodeInfo().getObject() instanceof IUsedTable) {
                     return node;
                 }
             }

@@ -17,10 +17,11 @@ import org.radixware.kernel.common.client.meta.mask.validators.EValidatorState;
 import org.radixware.kernel.common.client.meta.mask.validators.ValidationResult;
 import org.radixware.kernel.common.client.editors.xmleditor.model.XmlValueConverter;
 import org.radixware.kernel.common.client.editors.xmleditor.model.XmlValueValidator;
+import org.radixware.wps.views.editors.valeditors.AdvancedValBoolEditorController;
 import org.radixware.wps.views.editors.valeditors.ValBoolEditorController;
 
 
-final class XmlValBoolEditorController extends ValBoolEditorController {
+final class XmlValBoolEditorController extends AdvancedValBoolEditorController<Boolean> {
 
     private final SchemaType schemaType;
     private boolean validationEnabled;

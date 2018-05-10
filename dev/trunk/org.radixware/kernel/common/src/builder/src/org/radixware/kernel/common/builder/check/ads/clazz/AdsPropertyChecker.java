@@ -101,7 +101,7 @@ public class AdsPropertyChecker<T extends AdsPropertyDef> extends AdsDefinitionC
         if (resolvedTypeRef == null) {
             error(prop, problemHandler, "Property type can not be resoved");
         } else {
-            resolvedTypeRef.check(prop, problemHandler);
+            resolvedTypeRef.check(prop, problemHandler, getHistory().getMap());
             if (resolvedTypeRef instanceof AdsDefinitionType) {
                 final Definition src = ((AdsDefinitionType) resolvedTypeRef).getSource();
                 if (src instanceof AdsDefinition) {
@@ -205,6 +205,16 @@ public class AdsPropertyChecker<T extends AdsPropertyDef> extends AdsDefinitionC
                     }
                     if (!valInhRules.getInheritable() && valInhRules.getInitializationPolicy() == EPropInitializationPolicy.DEFINE_IF_NOT_INHERITED) {
                         warning(prop, problemHandler, "Initialization policy \"Define If Not Inherited\" is meaningless for properties with non-inheritable value");
+                    }
+                }
+                
+                if (prop instanceof AdsInnateColumnPropertyDef && valInhRules.getInheritable()) {
+                    final DdsColumnDef column = ((AdsInnateColumnPropertyDef) prop).getColumnInfo().findColumn();
+                    if (column != null && column.isNotNull()) {
+                        ValAsStr valAsStr = valInhRules.getInheritanceMark();
+                        if (valAsStr == null) {
+                            warning(valInhRules, problemHandler, "Triggering inheritance value is null for mandatory column-based property");
+                        }
                     }
                 }
 
@@ -327,7 +337,7 @@ public class AdsPropertyChecker<T extends AdsPropertyDef> extends AdsDefinitionC
                         } else {
                             PropertyEditOptions options = presentation.getEditOptions();
                             if (options != null) {
-                                EditOptionsChecker.Factory.newInstance(prop, prop.getValue().getType(), referencedEnum).check(options, problemHandler);
+                                EditOptionsChecker.Factory.newInstance(prop, prop.getValue().getType(), referencedEnum, getHistory()).check(options, problemHandler);
                             }
                         }
 
@@ -874,16 +884,21 @@ public class AdsPropertyChecker<T extends AdsPropertyDef> extends AdsDefinitionC
     }
 
     private void checkUserProp(final AdsUserPropertyDef prop, AdsPropertyDef ovr, AdsPropertyDef ovrt, final IProblemHandler problemHandler) {
+        final AdsClassDef classDef = prop.getOwnerClass();
+        final AdsEntityObjectClassDef clazz = classDef instanceof AdsEntityObjectClassDef? (AdsEntityObjectClassDef) classDef: null;
+        DdsTableDef table = null;
+        if (clazz != null) {
+            table = clazz.findTable(prop);
+            if (table != null && !table.getExtOptions().contains(EDdsTableExtOption.SUPPORT_USER_PROPERTIES)) {
+                error(prop, problemHandler, "User properties are not supported for table " + table.getQualifiedName() + ". Delete this property or enable the '" + EDdsTableExtOption.SUPPORT_USER_PROPERTIES.getAsStr() + "' option for the table");
+            }
+        }
         if (prop.isAuditUpdate()) {
             boolean isTableAudited = false;
-            final AdsEntityObjectClassDef clazz = (AdsEntityObjectClassDef) prop.getOwnerClass();
             String tableName = "base table";
-            if (clazz != null) {
-                final DdsTableDef table = clazz.findTable(prop);
-                if (table != null) {
-                    isTableAudited = table.getAuditInfo().isEnabledForUpdate();
-                    tableName = table.getQualifiedName();
-                }
+            if (table != null) {
+                isTableAudited = table.getAuditInfo().isEnabledForUpdate();
+                tableName = table.getQualifiedName();
             }
             if (!isTableAudited) {
                 error(prop, problemHandler, "Audit update is not enabled for table " + tableName);

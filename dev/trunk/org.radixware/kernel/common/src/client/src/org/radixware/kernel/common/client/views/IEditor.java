@@ -21,9 +21,9 @@ import org.radixware.kernel.common.client.enums.EEntityCreationResult;
 import org.radixware.kernel.common.client.env.ClientIcon;
 import org.radixware.kernel.common.client.env.ClientSettings;
 import org.radixware.kernel.common.client.env.SettingNames;
-import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.exceptions.ModelException;
 import org.radixware.kernel.common.client.localization.MessageProvider;
+import org.radixware.kernel.common.client.meta.RadEditorPresentationDef;
 import org.radixware.kernel.common.client.models.CleanModelController;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.Model;
@@ -34,11 +34,10 @@ import org.radixware.kernel.common.client.widgets.ICommandToolBar;
 import org.radixware.kernel.common.client.widgets.IModifableComponent;
 import org.radixware.kernel.common.client.widgets.IModificationListener;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.client.widgets.actions.IToolBar;
-import org.radixware.kernel.common.exceptions.ServiceCallFault;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
-import org.radixware.schemas.eas.ExceptionEnum;
 
 public interface IEditor extends IView {
 
@@ -93,42 +92,43 @@ public interface IEditor extends IView {
 
         private void initializeActions() {
             final IClientEnvironment environment = controller.environment;
-            rereadAction = createActionImpl(ClientIcon.Editor.REREAD, environment.getMessageProvider().translate("Editor", "Refresh"));
+            rereadAction = createActionImpl(ClientIcon.Editor.REREAD, environment.getMessageProvider().translate("Editor", "Refresh"),"reread");
             rereadAction.setToolTip(environment.getMessageProvider().translate("Editor", "Refresh"));
             rereadAction.addActionListener(actionListener);
-            deleteAction = createActionImpl(ClientIcon.Editor.DELETE, environment.getMessageProvider().translate("Editor", "Delete"));
+            deleteAction = createActionImpl(ClientIcon.Editor.DELETE, environment.getMessageProvider().translate("Editor", "Delete"),"delete");
             deleteAction.setToolTip(environment.getMessageProvider().translate("Editor", "Delete Object"));
             deleteAction.addActionListener(actionListener);
 
             updateAction = createActionImpl(ClientIcon.Editor.SAVE,
-                    environment.getMessageProvider().translate("Editor", "Apply"));
+                    environment.getMessageProvider().translate("Editor", "Apply"),"apply_changes");
             updateAction.setEnabled(false);
             updateAction.setToolTip(environment.getMessageProvider().translate("Editor", "Apply Changes"));
             updateAction.addActionListener(actionListener);
 
-            cancelChangesAction = createActionImpl(ClientIcon.Editor.CANCEL, environment.getMessageProvider().translate("Editor", "Cancel Changes"));
+            cancelChangesAction = createActionImpl(ClientIcon.Editor.CANCEL, environment.getMessageProvider().translate("Editor", "Cancel Changes"),"cancel_changes");
             cancelChangesAction.setEnabled(false);
             cancelChangesAction.setToolTip(environment.getMessageProvider().translate("Editor", "Cancel Changes"));
             cancelChangesAction.addActionListener(actionListener);
 
-            copyAction = createActionImpl(ClientIcon.Editor.COPY, environment.getMessageProvider().translate("Editor", "Copy"));
+            copyAction = createActionImpl(ClientIcon.Editor.COPY, environment.getMessageProvider().translate("Editor", "Copy"),"copy");
             copyAction.setToolTip(environment.getMessageProvider().translate("Editor", "Copy"));
             copyAction.addActionListener(actionListener);
 
-            viewAuditLogAction = createActionImpl(ClientIcon.Editor.AUDIT, environment.getMessageProvider().translate("Editor", "Audit Log"));
+            viewAuditLogAction = createActionImpl(ClientIcon.Editor.AUDIT, environment.getMessageProvider().translate("Editor", "Audit Log"),"show_audit_log");
             viewAuditLogAction.setToolTip(environment.getMessageProvider().translate("Editor", "Audit Log"));
             viewAuditLogAction.addActionListener(actionListener);
 
             copyEditorPresIdAction = createActionImpl(ClientIcon.Definitions.EDITOR_ID,
-                    environment.getMessageProvider().translate("Editor", "Copy Editor Presentation Id"));
-            copyEditorPresIdAction.setToolTip(environment.getMessageProvider().translate("Editor", "Copy Editor Presentation Identifier to Clipboard"));
+                    environment.getMessageProvider().translate("Editor", "Show Editor Presentation Info"),"show_editor_pres_info");
+            copyEditorPresIdAction.setToolTip(environment.getMessageProvider().translate("Editor", "Show Editor Presentation Info"));
             copyEditorPresIdAction.addActionListener(actionListener);
         }
 
         protected abstract Action createAction(ClientIcon icon, String title);
 
-        private Action createActionImpl(final ClientIcon icon, final String title) {
+        private Action createActionImpl(final ClientIcon icon, final String title, final String objectName) {
             final Action action = createAction(icon, title);
+            action.setObjectName(objectName);
             allActions.add(action);
             return action;
         }
@@ -540,9 +540,26 @@ public interface IEditor extends IView {
         }
 
         private void copyEditorPresId() {
-            final Id presId = getEntity().getEditorPresentationDef().getId();
-            editor.getController().uiController.putTextToSystemClipboard(presId.toString());
+            final EntityModel currentEntity = getEntity();
+            if (currentEntity != null) {
+                RadEditorPresentationDef radEditorPresentationDef = currentEntity.getEditorPresentationDef();
+                String presentationId = radEditorPresentationDef.getId().toString();
+                String presentationName = radEditorPresentationDef.getClassPresentation().getName() + "::" + radEditorPresentationDef.getName();
+                String explorerItemIdAsStr = null;
+                IExplorerItemView explorerItemView = currentEntity.getExplorerItemView();
+                if (explorerItemView != null) {
+                    Id explorerItemId = explorerItemView.getExplorerItemId();
+                    if (explorerItemId != null) {
+                        explorerItemIdAsStr = explorerItemId.toString();
+                    }
+                }
+                Pid pid = currentEntity.getPid();
+                Id classId = currentEntity.getClassId();
+                String className = currentEntity.getClassPresentationDef().getName();
+                execPresentationInfoDialog(environment.getMessageProvider().translate("Editor", "Editor Presentation Info"), classId == null ? null : classId.toString(), className, presentationId, presentationName, explorerItemIdAsStr, pid == null ? null : pid.toString());
+            }
         }
+        protected abstract void execPresentationInfoDialog(String title, String classId, String className, String presentationId, String presentationName, String explorerItemId, String pid);
     }
 
     public abstract class EditorUIController {
@@ -644,4 +661,6 @@ public interface IEditor extends IView {
     public void setMenuHidden(boolean hidden);
 
     public void setCommandBarHidden(final boolean hidden);
+    
+    public void setMenu(final IMenu menu);
 }

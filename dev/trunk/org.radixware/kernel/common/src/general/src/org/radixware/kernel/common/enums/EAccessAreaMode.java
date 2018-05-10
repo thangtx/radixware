@@ -19,13 +19,16 @@ import org.radixware.kernel.common.types.Id;
 public enum EAccessAreaMode implements IKernelIntEnum {
 
     //constant values for compiling
-    BOUNDED(new Long(1)),
-    PROHIBITED(new Long(2)),
-    UNBOUNDED(new Long(0));
+    UNBOUNDED(0L),
+    BOUNDED_BY_PART(1L),
+    PROHIBITED(2L),
+    BOUNDED_BY_GROUP(3L),
+    BOUNDED_BY_USER(4L),
+    ;
     //constructors
     private final Long value;
 
-    private EAccessAreaMode(Long x) {
+    private EAccessAreaMode(final Long x) {
         value = x;
     }
 
@@ -50,12 +53,12 @@ public enum EAccessAreaMode implements IKernelIntEnum {
     }
 
     @Override
-    public boolean isInDomain(Id id) {
+    public boolean isInDomain(final Id id) {
         return false;
     }
 
     @Override
-    public boolean isInDomains(List<Id> ids) {
+    public boolean isInDomains(final List<Id> ids) {
         return false;
     }
 }

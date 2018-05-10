@@ -33,7 +33,7 @@ public class Sortings extends GroupSettings<RadSortingDef>{
         
     private final GroupModel group; 
     
-    private final Map<Id,Id> defaultSortingIdByFilterId = new HashMap<>();
+    private final Map<Id,Id> defaultSortingIdByFilterId = new HashMap<>();    
     
     public Sortings(final GroupModel group){
         super(new SortingsSource(group));
@@ -58,10 +58,19 @@ public class Sortings extends GroupSettings<RadSortingDef>{
     }
     
     public RadSortingDef getDefaultSorting(final FilterModel filter){
+        return getDefaultSorting(filter, null);
+    }
+    
+    public RadSortingDef getDefaultSorting(final FilterModel filter, final Id suggestedSortingId){
         if (defaultSortingIdByFilterId.containsKey(filter==null ? null : filter.getId())){
             final Id sortingId = defaultSortingIdByFilterId.get(filter==null ? null : filter.getId());
             return sortingId==null ? null : findById(sortingId);
         }
+        final RadSortingDef sorting = suggestedSortingId==null ? null : findById(suggestedSortingId);
+        if (sorting!=null && sorting.isValid() && isAcceptable(sorting, filter)){
+            return sorting;
+        }
+        
         if (filter==null){
             return group.getSelectorPresentationDef().getDefaultSortingDef();
         }
@@ -114,7 +123,7 @@ public class Sortings extends GroupSettings<RadSortingDef>{
         if (sorting!=null && findById(sorting.getId())==null){
             add(sorting, null, getSettingsCount());
         }
-        defaultSortingIdByFilterId.put(sorting==null ? null : sorting.getId(), filter==null ? null : filter.getId());
+        defaultSortingIdByFilterId.put(filter==null ? null : filter.getId(), sorting==null ? null : sorting.getId());
     }
     
     public boolean canCreateNew(final FilterModel filter){        

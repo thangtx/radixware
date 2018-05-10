@@ -12,7 +12,6 @@ package org.radixware.kernel.designer.ads.editors.clazz.report;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -27,7 +26,7 @@ import org.radixware.kernel.designer.common.dialogs.components.ComponentTitledBo
 public class FormattedCellPanel extends javax.swing.JPanel {
 
     private JCheckBox cbDefaultFormat;
-    private JPanel formattedPanel;
+    private AbstractFormatPanel formattedPanel;
     private final JPanel emptyPanel = new JPanel();
     private final boolean isReadOnly;
     private AdsReportFormat format;
@@ -64,7 +63,7 @@ public class FormattedCellPanel extends javax.swing.JPanel {
     @SuppressWarnings("deprecation")
     public FormattedCellPanel(final boolean isReadOnly) {
         initComponents();
-        final String cbLabel = NbBundle.getMessage(AdsReportCsvExportPanel.class, "FormattedCellPanel-CheckBox-Label");
+        final String cbLabel = NbBundle.getMessage(AdsReportColumnsExportPanel.class, "FormattedCellPanel-CheckBox-Label");
         cbDefaultFormat = new JCheckBox(cbLabel);
         this.isReadOnly = isReadOnly;
         cbDefaultFormat.setBorder(null);
@@ -81,34 +80,27 @@ public class FormattedCellPanel extends javax.swing.JPanel {
         this.setBorder(new ComponentTitledBorder(cbDefaultFormat, this, new TitledBorder("")));
     }
 
+    private EValType panelType = null;
+
     public final void open(final AdsReportFormat format, final EValType type) {
         this.format = format;
-        if (type != null) {
-            cbDefaultFormat.setEnabled(true);
-            if (type == EValType.DATE_TIME) {
-                if (formattedPanel == null || !(formattedPanel instanceof DateTimeFormatPanel)) {
-                    formattedPanel = new DateTimeFormatPanel(format);
-                }
-            } else if (type == EValType.NUM) {
-                if (formattedPanel == null || !(formattedPanel instanceof NumFormatPanel)) {
-                    final JPanel numPanel = new NumFormatPanel(format, isReadOnly);
-                    final JPanel intPanel = new IntFormatPanel(format, isReadOnly);
-                    formattedPanel = new JPanel();
 
-                    final BoxLayout layout = new BoxLayout(formattedPanel, BoxLayout.Y_AXIS);
-                    formattedPanel.setLayout(layout);
-                    formattedPanel.add(numPanel);
-                    formattedPanel.add(intPanel);
-                }
-            } else if (type == EValType.INT) {
-                if (formattedPanel == null || !(formattedPanel instanceof IntFormatPanel)) {
-                    formattedPanel = new IntFormatPanel(format, isReadOnly);
-                }
-            } else {
-                cbDefaultFormat.setEnabled(false);
-            }
+        boolean isDefault = format == null ? true : format.getUseDefaultFormat();
+        cbDefaultFormat.setSelected(isDefault);
+        cbDefaultFormat.setEnabled(true);
+
+        if (formattedPanel == null || type != panelType) {
+            formattedPanel = AbstractFormatPanel.Factory.newInstance(format, type, isReadOnly);
+            panelType = type;
+        } else {
+            formattedPanel.update(format);
         }
-        cbDefaultFormat.setSelected(format.getUseDefaultFormat());
+
+        if (formattedPanel instanceof AbstractFormatPanel.EmptyFormatPanel) {
+            cbDefaultFormat.setEnabled(false);
+            cbDefaultFormat.setSelected(true);
+        }
+
         processCheckBox();
     }
 
@@ -117,19 +109,18 @@ public class FormattedCellPanel extends javax.swing.JPanel {
         if (!userDefaultFormat && formattedPanel != null) {
             removeAll();
             this.add(formattedPanel);
-
         } else {
             removeAll();
             this.add(emptyPanel);
-
         }
+
         setSize(getWidth(), getPreferredSize().height);
 
         SwingUtilities.invokeLater(new Runnable() {
 
             @Override
             public void run() {
-                getParent().revalidate();                
+                getParent().revalidate();
             }
         });
         changeSupport.fireChange();

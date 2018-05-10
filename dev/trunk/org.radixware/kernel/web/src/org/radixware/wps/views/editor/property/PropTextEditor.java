@@ -236,6 +236,7 @@ public class PropTextEditor extends AbstractPropEditor {
     private TableLayout.Row row = table.addRow();
     private Object value;
     private TableLayout.Row.Cell editorCell;
+    private TableLayout.Row.Cell buttonsCell;
     private final VerticalBox vbox = new VerticalBox();
     private WpsTextOptions textOptions;
     private ITextOptionsProvider provider;
@@ -296,8 +297,7 @@ public class PropTextEditor extends AbstractPropEditor {
         container.add(table);
         setEditorWidget(container);
 
-        TableLayout.Row.Cell buttonsCell = row.addCell();
-
+        buttonsCell = row.addCell();
         buttonsCell.getHtml().setCss("background-color", "#f5f7f9");
         buttonsCell.getHtml().setCss("border", "none");
         buttonsCell.getHtml().setCss("width", "23px");
@@ -435,6 +435,7 @@ public class PropTextEditor extends AbstractPropEditor {
         }
         editor.setToolTip(options.getTooltip());
         editor.setReadOnly(options.isReadOnly());
+        buttonsCell.setVisible(options.isEnabled());
         editor.setFocused(false);
     }
 

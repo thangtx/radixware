@@ -42,6 +42,12 @@ public abstract class AbstractSvnObserver {
         List<String> layers = new LinkedList<>();
         for (String entry : candidates) {
             String entryPath = SvnPath.append(SvnPath.append(branchPath, entry), "layer.xml");
+            
+            //relative path !!!
+            while (entryPath.startsWith("/")){
+                entryPath = entryPath.substring(1);
+            }
+            
             if (SVN.getKind(repository, entryPath, revision) == SvnEntry.Kind.FILE) {
                 layers.add(entry);
             }
@@ -52,15 +58,17 @@ public abstract class AbstractSvnObserver {
     protected List<String> listAdsModules(final String layerPath) throws RadixSvnException {
         final List<String> candidates = new LinkedList<>();
         final String adsPath = SvnPath.append(layerPath, "ads");
-        repository.getDir(adsPath, revision, new SVNRepositoryAdapter.EntryHandler() {
+        if (SVN.getKind(repository, adsPath, revision) == SvnEntry.Kind.DIRECTORY) {//RADIXMANAGER-305
+            repository.getDir(adsPath, revision, new SVNRepositoryAdapter.EntryHandler() {
 
-            @Override
-            public void accept(SvnEntry entry) throws RadixSvnException {
-                if (entry.getKind() == SvnEntry.Kind.DIRECTORY) {
-                    candidates.add(SvnPath.append(adsPath, entry.getName()));
+                @Override
+                public void accept(SvnEntry entry) throws RadixSvnException {
+                    if (entry.getKind() == SvnEntry.Kind.DIRECTORY) {
+                        candidates.add(SvnPath.append(adsPath, entry.getName()));
+                    }
                 }
-            }
-        });
+            });
+        }
         List<String> modules = new LinkedList<>();
         for (String entry : candidates) {
             String entryPath = SvnPath.append(entry, "module.xml");

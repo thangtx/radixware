@@ -11,6 +11,8 @@
 
 package org.radixware.kernel.designer.dds.script.defs;
 
+import org.radixware.kernel.common.scml.ScmlCodePrinter;
+import org.radixware.kernel.designer.dds.script.DdsScriptGeneratorUtils;
 import org.radixware.kernel.common.defs.dds.DdsCustomTextDef;
 import org.radixware.kernel.common.scml.CodePrinter;
 import org.radixware.kernel.common.sqml.Sqml;

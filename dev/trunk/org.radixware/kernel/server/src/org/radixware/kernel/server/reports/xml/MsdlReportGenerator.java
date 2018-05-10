@@ -38,7 +38,7 @@ import org.radixware.kernel.server.reports.DefaultReportFileController;
 import org.radixware.kernel.server.reports.IReportFileController;
 import org.radixware.kernel.server.reports.ReportGenerationException;
 import org.radixware.kernel.server.reports.ReportStateInfo;
-import org.radixware.kernel.server.reports.fo.AdjustedCell;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.html.AdjustedCell;
 import org.radixware.kernel.server.types.Report;
 import org.radixware.schemas.msdl.MessageElementDocument;
 import org.radixware.schemas.reports.ReportMsdlType;
@@ -115,7 +115,7 @@ public class MsdlReportGenerator extends AbstractReportGenerator {
     }
 
     @Override
-    protected void viewBand(final List<ReportGenData> genDataList, AdsReportBand band, Map<AdsReportCell, AdjustedCell> adjustedCellContents) throws ReportGenerationException {
+    protected void viewBand(final List<ReportGenData> genDataList, AdsReportBand band, Map<AdsReportCell, AdjustedCell> adjustedCellContents, ReportGenData currentGenData) throws ReportGenerationException {
 
         final ReportMsdlType.Band xReportMsdlBand = findReportMsdlBand(band);
         if (xReportMsdlBand == null) {

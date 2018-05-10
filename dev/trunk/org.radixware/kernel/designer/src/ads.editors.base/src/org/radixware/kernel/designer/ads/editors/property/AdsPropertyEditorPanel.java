@@ -1068,6 +1068,7 @@ final class AdsPropertyEditorPanel extends JPanel {
             jchbInheritPath.setEnabled(!isReadOnly);
             jchbInheritPath.setSelected(prop.getValueInheritanceRules().getInheritable());
         }
+        updateColor();
 
         if (prop instanceof AdsExpressionPropertyDef) {
             AdsExpressionPropertyDef expr = (AdsExpressionPropertyDef) prop;
@@ -1075,6 +1076,47 @@ final class AdsPropertyEditorPanel extends JPanel {
         }
 
         isMayModify = true;
+    }
+    
+    private void updateColor(){
+        if (jIsPresentableCheckBox != null) {
+            int index = tabbedPane.indexOfComponent(presentationTabPanel);
+            if (index > 0) {
+                if (!jIsPresentableCheckBox.isSelected()){
+                    tabbedPane.setForegroundAt(index, Color.GRAY);
+                } else {
+                    tabbedPane.setForegroundAt(index, tabbedPane.getForeground());
+                }
+            }
+        }
+        if (jchbInheritPath != null) {
+            int index = tabbedPane.indexOfComponent(jValueInheritancePanel);
+            if (index > 0) {
+                if (!jchbInheritPath.isSelected()){
+                    tabbedPane.setForegroundAt(index, Color.GRAY);
+                } else {
+                    tabbedPane.setForegroundAt(index, tabbedPane.getForeground());
+                }
+            }
+        }
+//        Sqml sqml = presentation.getCondition().getFrom();
+//        if (sqml == null || sqml.getItems().isEmpty()){
+//            tabs.setForegroundAt(1, Color.GRAY);
+//        } else {
+//            tabs.setForegroundAt(1, tabs.getForeground());
+//        }
+//        sqml = presentation.getCondition().getWhere();
+//        if (sqml == null || sqml.getItems().isEmpty()){
+//            tabs.setForegroundAt(0, Color.GRAY);
+//        } else {
+//            tabs.setForegroundAt(0, tabs.getForeground());
+//        }
+//        Prop2ValueMap prop2ValueMap = presentation.getCondition().getProp2ValueMap();
+//        if (prop2ValueMap == null || prop2ValueMap.getItems().isEmpty()){
+//            tabs.setForegroundAt(2, Color.GRAY);
+//        } else {
+//            tabs.setForegroundAt(2, tabs.getForeground());
+//        }
     }
 
     private void updateEditingPanel() {
@@ -1163,6 +1205,7 @@ final class AdsPropertyEditorPanel extends JPanel {
                 }
             }
         }
+        updateColor();
 
     }
 

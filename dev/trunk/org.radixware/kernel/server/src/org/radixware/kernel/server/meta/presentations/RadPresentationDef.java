@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.radixware.kernel.common.enums.EDrcServerResource;
 import org.radixware.kernel.common.enums.EEditPossibility;
 
 import org.radixware.kernel.common.types.Id;
@@ -87,7 +86,7 @@ public abstract class RadPresentationDef extends RadDefinition {
     /**
      * @return the basePresentationId
      */
-    protected Id getBasePresentationId() {
+    public Id getBasePresentationId() {
         return basePresentationId;
     }
 
@@ -248,11 +247,6 @@ public abstract class RadPresentationDef extends RadDefinition {
         Restrictions r = Restrictions.FULL;
         for (Id roleId : roleIds) {
             r = Restrictions.Factory.and(r, getRoleRestrictions(roleId));
-        }
-        final Arte contextArte = Arte.get();
-        if (USER_FUNC_TAB_ID.equals(getClassPresentation().getClassDef().getEntityId())
-                && contextArte != null && !contextArte.getRights().getCurUserCanAccess(EDrcServerResource.USER_FUNC_DEV)) {//RADIX-1340
-            r = Restrictions.Factory.sum(r, USER_FUNC_DEV_RESTR);
         }
         return r;
     }

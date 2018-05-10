@@ -39,6 +39,20 @@
           </Editing>
         </Presentation>
       </Property>
+      <Property Id="prdPA56CFMNFZHVBHH6LAKOMXRMQA" Name="instanceStateHistoryPeriodMinutes" Nature="2" IsConst="false" IsOverride="false">
+        <AccessRules IsPublished="false"/>
+        <Type TypeId="2"/>
+        <InitialValue>
+          <ValAsStr>5</ValAsStr>
+        </InitialValue>
+        <Presentation TitleId="mls7CIOQSSRORAWDJYDGBFSXFNULA" InheritanceMask="4">
+          <Editing IsDuplicatesEnabled="true">
+            <EditMask>
+              <edit:Int MaxValue="1440" MinValue="1" NumberBase="10" StepSize="5"/>
+            </EditMask>
+          </Editing>
+        </Presentation>
+      </Property>
     </Properties>
     <Methods>
       <Method Id="mthTYWXJRLODNAT7LXOISEO5SFPZU" Name="onSubmit" Nature="0" IsOverride="true">
@@ -52,13 +66,54 @@
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+              <xsc:Java>final boolean instanceStateHistoryRequired = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true">
+                <xsc:Presentation>snapshotCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true">
+                <xsc:Presentation>snapshotCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue() == 1) &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdPA56CFMNFZHVBHH6LAKOMXRMQA" Invoke="true">
+                <xsc:Presentation>instanceStateHistoryPeriodMinutes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null;
+final long instanceStateHistoryStartTimeMillis = instanceStateHistoryRequired ? System.currentTimeMillis() - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdPA56CFMNFZHVBHH6LAKOMXRMQA" Invoke="true">
+                <xsc:Presentation>instanceStateHistoryPeriodMinutes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue() * 60000 : 0;
+</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> inst = (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E"/>
+              <xsc:TypeDeclaration TypeId="411" Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E">
+                <xsc:Presentation>Instance</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) context.entity;
@@ -66,26 +121,34 @@
 if (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+                <xsc:Presentation>getInstance</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>().Instance.Id == inst.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true"/>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>) {
     return </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA mthFBP7BV3FZNFH7DRTONLQQM7WLQ" Invoke="true"/>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA mthFBP7BV3FZNFH7DRTONLQQM7WLQ" Invoke="true">
+                <xsc:Presentation>getDiagnosticInfo</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
@@ -93,140 +156,181 @@ if (</xsc:Java>
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument">
+                <xsc:Presentation>InstanceControlServiceWsdl:GetDiagnosticInfoDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> doc = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument">
+                <xsc:Presentation>InstanceControlServiceWsdl:GetDiagnosticInfoDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.Factory.newInstance();
     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="GetDiagnosticInfoRq"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsd3VKTVP4UOXOBDCJRAALOMT5GDM" extStr="GetDiagnosticInfoRq">
+                <xsc:Presentation>InstanceControlServiceXsd:GetDiagnosticInfoRq</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> rq = doc.addNewGetDiagnosticInfo().addNewGetDiagnosticInfoRq();
     rq.User = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthJQUPUAH4RPNRDCISABIFNQAABA" Invoke="true">
+                <xsc:Presentation>getUserName</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>();
-
+    rq.InstanceStateHistoryRequired = instanceStateHistoryRequired;
+    rq.InstanceStateHistoryStartTimeMillis = instanceStateHistoryStartTimeMillis;
     StringBuilder diagInfo = new StringBuilder();
     try {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="400" extStr="org.apache.xmlbeans.XmlObject"/>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.apache.xmlbeans.XmlObject">
+                <xsc:Presentation>org.apache.xmlbeans.XmlObject</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> rs = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthAEWBPU7ZXTNRDISQAAAAAAAAAA" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthAEWBPU7ZXTNRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>invokeInternalService</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(doc, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument">
+                <xsc:Presentation>InstanceControlServiceWsdl:GetDiagnosticInfoDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.class,
                 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsB7GRKCE5LPOBDCJEAALOMT5GDM aciZ5SIYGTRCJBAHC46LOVKGKIJCA" Invoke="true"/>
+              <xsc:IdReference Path="acsB7GRKCE5LPOBDCJEAALOMT5GDM aciZ5SIYGTRCJBAHC46LOVKGKIJCA" Invoke="true">
+                <xsc:Presentation>ServiceUri:InstanceControlWsdl</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.getValue() + "#" + inst.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true"/>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>,
-                0, 120);
+                0, 120, null);
         doc.set(rs);
         diagInfo.append(doc.GetDiagnosticInfo.GetDiagnosticInfoRs.DiagnosticInfoStr);
 
         for (int snapshotNum = 1; snapshotNum &lt; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true"/>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true">
+                <xsc:Presentation>snapshotCount</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue(); snapshotNum++) {
             </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ">
+                <xsc:Presentation>Java.Lang::Thread</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ mthS3PAMYUBRVFV7ASZNT7UE2S7OY" Invoke="true"/>
+              <xsc:IdReference Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ mthS3PAMYUBRVFV7ASZNT7UE2S7OY" Invoke="true">
+                <xsc:Presentation>sleep</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true"/>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true">
+                <xsc:Presentation>snapshotPeriodMillis</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue());
             rs = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________"/>
+              <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+                <xsc:Presentation>Arte::Arte</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="pdcArte______________________ mthAEWBPU7ZXTNRDISQAAAAAAAAAA" Invoke="true"/>
+              <xsc:IdReference Path="pdcArte______________________ mthAEWBPU7ZXTNRDISQAAAAAAAAAA" Invoke="true">
+                <xsc:Presentation>invokeInternalService</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(doc, </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument"/>
+              <xsc:TypeDeclaration TypeId="451" Path="xsdLXYL5SRHO7OBDCJTAALOMT5GDM" extStr="GetDiagnosticInfoDocument">
+                <xsc:Presentation>InstanceControlServiceWsdl:GetDiagnosticInfoDocument</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.class,
                     </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="acsB7GRKCE5LPOBDCJEAALOMT5GDM aciZ5SIYGTRCJBAHC46LOVKGKIJCA" Invoke="true"/>
+              <xsc:IdReference Path="acsB7GRKCE5LPOBDCJEAALOMT5GDM aciZ5SIYGTRCJBAHC46LOVKGKIJCA" Invoke="true">
+                <xsc:Presentation>ServiceUri:InstanceControlWsdl</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.getValue() + "#" + inst.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true"/>
+              <xsc:IdReference Path="aec52CHFNO3EGWDBRCRAAIT4AGD7E col3VINP666G5VDBFSUAAUMFADAIA" Invoke="true">
+                <xsc:Presentation>id</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>,
-                    0, 120);
+                    0, 120, null);
             doc.set(rs);
             diagInfo.append(doc.GetDiagnosticInfo.GetDiagnosticInfoRs.DiagnosticInfoStr);
         }
@@ -234,20 +338,26 @@ if (</xsc:Java>
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY">
+                <xsc:Presentation>DiagnosticInfoOutputForm</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> form = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY">
+                <xsc:Presentation>DiagnosticInfoOutputForm</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(this);
         form.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdNCEN5MD6LBGONN6SJ6OPRE6THM" Invoke="true"/>
+              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdNCEN5MD6LBGONN6SJ6OPRE6THM" Invoke="true">
+                <xsc:Presentation>formTitle</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
@@ -260,19 +370,25 @@ if (</xsc:Java>
         form.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdW2TL44QHURDCVM7GJP2NUGF5DY" Invoke="true"/>
+              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdW2TL44QHURDCVM7GJP2NUGF5DY" Invoke="true">
+                <xsc:Presentation>threadDumpHtml</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils"/>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils">
+                <xsc:Presentation>org.radixware.kernel.server.instance.DiagnosticInfoUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.formatDiagnosticInfoAsHtmlPage(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true"/>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true">
+                <xsc:Presentation>snapshotCount</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue(), diagInfo.toString());
@@ -280,63 +396,81 @@ if (</xsc:Java>
         return new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true"/>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(null, form);
     } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcNCHTB2WP2BCVFLRT36WXFJFDTU"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcNCHTB2WP2BCVFLRT36WXFJFDTU">
+                <xsc:Presentation>Exceptions::ServiceCallFault</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e) {
         throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(e.getMessage());
     } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcKOGTAG2B25GNZELYJJFXHBJTC4">
+                <xsc:Presentation>Exceptions::ServiceCallException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e) {
         throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(e.getMessage());
     } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM">
+                <xsc:Presentation>Exceptions::InterruptedException</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e) {
         throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(e.getMessage());
     } catch (</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="axcFRK2HRXXBFARBEEIPQK4PX3RNE"/>
+              <xsc:TypeDeclaration TypeId="411" Path="axcFRK2HRXXBFARBEEIPQK4PX3RNE">
+                <xsc:Presentation>Exceptions::ServiceCallTimeout</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> e) {
         throw new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true"/>
+              <xsc:IdReference Path="axcTNXCEKEORVFRFDUEZO3MB5REHQ mthZMCVM47GJJDGBORSJDKFXASDVU" Invoke="true">
+                <xsc:Presentation>AppError</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(e.getMessage());
@@ -347,54 +481,100 @@ if (</xsc:Java>
         </Sources>
       </Method>
       <Method Id="mthFBP7BV3FZNFH7DRTONLQQM7WLQ" Name="getDiagnosticInfo" Nature="0" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+        <AccessRules Access="2" IsFinal="true" IsPublished="false"/>
         <ReturnType TypeId="411" Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA"/>
         <Sources>
           <Src>
             <xsc:Item>
-              <xsc:Java>StringBuilder diagInfo = new StringBuilder();
+              <xsc:Java>final boolean threadStateHistoryRequired = (</xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true">
+                <xsc:Presentation>snapshotCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> == null || </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true">
+                <xsc:Presentation>snapshotCount</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue() == 1) &amp;&amp; </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdPA56CFMNFZHVBHH6LAKOMXRMQA" Invoke="true">
+                <xsc:Presentation>instanceStateHistoryPeriodMinutes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java> != null;
+final long threadStateHistoryStartTimeMillis = threadStateHistoryRequired ? System.currentTimeMillis() - </xsc:Java>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdPA56CFMNFZHVBHH6LAKOMXRMQA" Invoke="true">
+                <xsc:Presentation>instanceStateHistoryPeriodMinutes</xsc:Presentation>
+              </xsc:IdReference>
+            </xsc:Item>
+            <xsc:Item>
+              <xsc:Java>.intValue() * 60000 : 0;
+StringBuilder diagInfo = new StringBuilder();
 diagInfo.append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils"/>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils">
+                <xsc:Presentation>org.radixware.kernel.server.instance.DiagnosticInfoUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.DiagnosticSnapshot);
+              <xsc:Java>.getDiagnosticSnapshot(threadStateHistoryRequired, threadStateHistoryStartTimeMillis));
 
 try {
     for (int snapshotNum = 1; snapshotNum &lt; </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true"/>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true">
+                <xsc:Presentation>snapshotCount</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue(); snapshotNum++) {
         </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ"/>
+              <xsc:TypeDeclaration TypeId="411" Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ">
+                <xsc:Presentation>Java.Lang::Thread</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ mthS3PAMYUBRVFV7ASZNT7UE2S7OY" Invoke="true"/>
+              <xsc:IdReference Path="adcSFS2J5EHTFE65GWPGK6JFR7DFQ mthS3PAMYUBRVFV7ASZNT7UE2S7OY" Invoke="true">
+                <xsc:Presentation>sleep</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true"/>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true">
+                <xsc:Presentation>snapshotPeriodMillis</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue());
         diagInfo.append(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils"/>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils">
+                <xsc:Presentation>org.radixware.kernel.server.instance.DiagnosticInfoUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
-              <xsc:Java>.DiagnosticSnapshot);
+              <xsc:Java>.getDiagnosticSnapshot(false, 0));
     }
 } catch (InterruptedException ex) {
     //ignore
@@ -403,20 +583,26 @@ try {
 </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY">
+                <xsc:Presentation>DiagnosticInfoOutputForm</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> form = new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY"/>
+              <xsc:TypeDeclaration TypeId="411" Path="afhI2FCQJQURZHGRARZPEAVUSKNTY">
+                <xsc:Presentation>DiagnosticInfoOutputForm</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(this);
 form.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdNCEN5MD6LBGONN6SJ6OPRE6THM" Invoke="true"/>
+              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdNCEN5MD6LBGONN6SJ6OPRE6THM" Invoke="true">
+                <xsc:Presentation>formTitle</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
@@ -429,19 +615,25 @@ form.</xsc:Java>
 form.</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdW2TL44QHURDCVM7GJP2NUGF5DY" Invoke="true"/>
+              <xsc:IdReference Path="afhI2FCQJQURZHGRARZPEAVUSKNTY prdW2TL44QHURDCVM7GJP2NUGF5DY" Invoke="true">
+                <xsc:Presentation>threadDumpHtml</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java> = </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils"/>
+              <xsc:TypeDeclaration TypeId="400" extStr="org.radixware.kernel.server.instance.DiagnosticInfoUtils">
+                <xsc:Presentation>org.radixware.kernel.server.instance.DiagnosticInfoUtils</xsc:Presentation>
+              </xsc:TypeDeclaration>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.formatDiagnosticInfoAsHtmlPage(</xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true"/>
+              <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdWKGSD4MXXVAF5HDBN6KG3LHV4U" Invoke="true">
+                <xsc:Presentation>snapshotCount</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>.intValue(), diagInfo.toString());
@@ -449,7 +641,9 @@ form.</xsc:Java>
 return new </xsc:Java>
             </xsc:Item>
             <xsc:Item>
-              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true"/>
+              <xsc:IdReference Path="adcLK6F6YWZHFHXFBOCHN7F3YTZPA mthWX4RH72LYZFKBHU3I76PFR6XPM" Invoke="true">
+                <xsc:Presentation>FormHandlerNextDialogsRequest</xsc:Presentation>
+              </xsc:IdReference>
             </xsc:Item>
             <xsc:Item>
               <xsc:Java>(null, form);</xsc:Java>
@@ -482,13 +676,17 @@ return new </xsc:Java>
               <Sources>
                 <Src>
                   <xsc:Item>
-                    <xsc:TypeDeclaration TypeId="2"/>
+                    <xsc:TypeDeclaration TypeId="2">
+                      <xsc:Presentation>Int</xsc:Presentation>
+                    </xsc:TypeDeclaration>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java> snapshotCnt = (</xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:TypeDeclaration TypeId="2"/>
+                    <xsc:TypeDeclaration TypeId="2">
+                      <xsc:Presentation>Int</xsc:Presentation>
+                    </xsc:TypeDeclaration>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>) value;
@@ -496,18 +694,40 @@ if(snapshotCnt != null &amp;&amp; snapshotCnt.intValue() > 1) {
     </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true"/>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true">
+                      <xsc:Presentation>snapshotPeriodMillis</xsc:Presentation>
+                    </xsc:IdReference>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:Java>.setVisible(true);
+                    <xsc:Java>.setEnabled(true);
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdPA56CFMNFZHVBHH6LAKOMXRMQA" Invoke="true">
+                      <xsc:Presentation>instanceStateHistoryPeriodMinutes</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setEnabled(false);
 } else {
     </xsc:Java>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true"/>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true">
+                      <xsc:Presentation>snapshotPeriodMillis</xsc:Presentation>
+                    </xsc:IdReference>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:Java>.setVisible(false);
+                    <xsc:Java>.setEnabled(false);
+    </xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdPA56CFMNFZHVBHH6LAKOMXRMQA" Invoke="true">
+                      <xsc:Presentation>instanceStateHistoryPeriodMinutes</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setEnabled(true);
 }</xsc:Java>
                   </xsc:Item>
                 </Src>
@@ -523,10 +743,21 @@ if(snapshotCnt != null &amp;&amp; snapshotCnt.intValue() > 1) {
               <Sources>
                 <Src>
                   <xsc:Item>
-                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true"/>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdFNOMHFVRONBSHCNX2JYORKHV2E" Invoke="true">
+                      <xsc:Presentation>snapshotPeriodMillis</xsc:Presentation>
+                    </xsc:IdReference>
                   </xsc:Item>
                   <xsc:Item>
-                    <xsc:Java>.setVisible(false);</xsc:Java>
+                    <xsc:Java>.setEnabled(false);
+//</xsc:Java>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA prdPA56CFMNFZHVBHH6LAKOMXRMQA" Invoke="true">
+                      <xsc:Presentation>instanceStateHistoryPeriodMinutes</xsc:Presentation>
+                    </xsc:IdReference>
+                  </xsc:Item>
+                  <xsc:Item>
+                    <xsc:Java>.setEnabled(false);</xsc:Java>
                   </xsc:Item>
                 </Src>
               </Sources>
@@ -536,7 +767,9 @@ if(snapshotCnt != null &amp;&amp; snapshotCnt.intValue() > 1) {
               <Sources>
                 <Src>
                   <xsc:Item>
-                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA cfdZZLBCUDKYVCBRKV45VFQTFZGVM wdgMUR5XHQZARBQVGKGC4RY4WFXOI" Invoke="true"/>
+                    <xsc:IdReference Path="afhSZZQMAM5WZFIJD5ZI5NPJK4XIA cfdZZLBCUDKYVCBRKV45VFQTFZGVM wdgMUR5XHQZARBQVGKGC4RY4WFXOI" Invoke="true">
+                      <xsc:Presentation>ExportDiagnosticInfoForm:View:Form</xsc:Presentation>
+                    </xsc:IdReference>
                   </xsc:Item>
                   <xsc:Item>
                     <xsc:Java>.submit();</xsc:Java>
@@ -553,6 +786,14 @@ if(snapshotCnt != null &amp;&amp; snapshotCnt.intValue() > 1) {
           <AccessRules IsPublished="false"/>
           <ui:ui>
             <ui:widget name="Form" id="wdgMUR5XHQZARBQVGKGC4RY4WFXOI" class="cfdZZLBCUDKYVCBRKV45VFQTFZGVM" weight="0.0">
+              <ui:property name="geometry">
+                <ui:rect>
+                  <ui:x>0</ui:x>
+                  <ui:y>0</ui:y>
+                  <ui:width>527</ui:width>
+                  <ui:height>300</ui:height>
+                </ui:rect>
+              </ui:property>
               <ui:layout class="QGridLayout" name="gridLayout">
                 <ui:item column="1" row="0" colSpan="1" rowSpan="1">
                   <ui:widget name="snapshotCountPropEditor" id="wdgVNRDMBITEZEZVNFHEOHJG6ZR3U" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
@@ -569,24 +810,6 @@ if(snapshotCnt != null &amp;&amp; snapshotCnt.intValue() > 1) {
                     </ui:property>
                     <ui:property name="objectName">
                       <ui:string>snapshotCountPropEditor</ui:string>
-                    </ui:property>
-                  </ui:widget>
-                </ui:item>
-                <ui:item column="1" row="1" colSpan="1" rowSpan="1">
-                  <ui:widget name="snapshotPeriodMillisPropEditor" id="wdgK4NVDYBBEJBV7KSKRQJ4FDNQ6M" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
-                    <ui:property name="geometry">
-                      <ui:rect>
-                        <ui:x>293</ui:x>
-                        <ui:y>201</ui:y>
-                        <ui:width>100</ui:width>
-                        <ui:height>25</ui:height>
-                      </ui:rect>
-                    </ui:property>
-                    <ui:property name="property">
-                      <ui:propertyRef>prdFNOMHFVRONBSHCNX2JYORKHV2E</ui:propertyRef>
-                    </ui:property>
-                    <ui:property name="objectName">
-                      <ui:string>snapshotPeriodMillisPropEditor</ui:string>
                     </ui:property>
                   </ui:widget>
                 </ui:item>
@@ -610,7 +833,7 @@ if(snapshotCnt != null &amp;&amp; snapshotCnt.intValue() > 1) {
                     </ui:property>
                   </ui:widget>
                 </ui:item>
-                <ui:item column="0" row="3" colSpan="2" rowSpan="1">
+                <ui:item column="0" row="4" colSpan="2" rowSpan="1">
                   <ui:widget name="buttonBox" id="wdgS3D3F5IKQNA4LD5KWLDIJ6NANU" class="QDialogButtonBox" weight="0.0">
                     <ui:property name="standardButtons">
                       <ui:set>org.radixware.kernel.common.enums.EDialogButtonType.OK | org.radixware.kernel.common.enums.EDialogButtonType.CANCEL</ui:set>
@@ -631,7 +854,7 @@ if(snapshotCnt != null &amp;&amp; snapshotCnt.intValue() > 1) {
                     </ui:property>
                   </ui:widget>
                 </ui:item>
-                <ui:item column="1" row="2" colSpan="1" rowSpan="1">
+                <ui:item column="1" row="3" colSpan="1" rowSpan="1">
                   <ui:spacer name="spacer">
                     <ui:property name="orientation">
                       <ui:enum>com.trolltech.qt.core.Qt.Orientation.Vertical</ui:enum>
@@ -643,6 +866,44 @@ if(snapshotCnt != null &amp;&amp; snapshotCnt.intValue() > 1) {
                       </ui:size>
                     </ui:property>
                   </ui:spacer>
+                </ui:item>
+                <ui:item column="0" row="2" colSpan="1" rowSpan="1">
+                  <ui:widget name="threadStateHistoryPeriodMinutesPropTitle" id="wdgP2C4MINQM5BL7NFR6OQES4772U" class="org.radixware.kernel.explorer.widgets.PropLabel" weight="0.0">
+                    <ui:property name="objectName">
+                      <ui:string>threadStateHistoryPeriodMinutesPropTitle</ui:string>
+                    </ui:property>
+                    <ui:property name="property">
+                      <ui:propertyRef>prdPA56CFMNFZHVBHH6LAKOMXRMQA</ui:propertyRef>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="1" row="1" colSpan="1" rowSpan="1">
+                  <ui:widget name="snapshotPeriodMillisPropEditor" id="wdgK4NVDYBBEJBV7KSKRQJ4FDNQ6M" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                    <ui:property name="property">
+                      <ui:propertyRef>prdFNOMHFVRONBSHCNX2JYORKHV2E</ui:propertyRef>
+                    </ui:property>
+                    <ui:property name="objectName">
+                      <ui:string>snapshotPeriodMillisPropEditor</ui:string>
+                    </ui:property>
+                    <ui:property name="geometry">
+                      <ui:rect>
+                        <ui:x>206</ui:x>
+                        <ui:y>34</ui:y>
+                        <ui:width>188</ui:width>
+                        <ui:height>25</ui:height>
+                      </ui:rect>
+                    </ui:property>
+                  </ui:widget>
+                </ui:item>
+                <ui:item column="1" row="2" colSpan="1" rowSpan="1">
+                  <ui:widget name="threadStateHistoryPeriodMinutesPropEditor" id="wdgJ7IM6Y6XGZDMBEHQFXKELFTJEA" class="org.radixware.kernel.explorer.widgets.propeditors.PropEditor" weight="0.0">
+                    <ui:property name="objectName">
+                      <ui:string>threadStateHistoryPeriodMinutesPropEditor</ui:string>
+                    </ui:property>
+                    <ui:property name="property">
+                      <ui:propertyRef>prdPA56CFMNFZHVBHH6LAKOMXRMQA</ui:propertyRef>
+                    </ui:property>
+                  </ui:widget>
                 </ui:item>
               </ui:layout>
             </ui:widget>

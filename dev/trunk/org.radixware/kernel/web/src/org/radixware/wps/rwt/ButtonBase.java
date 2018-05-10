@@ -60,6 +60,7 @@ public abstract class ButtonBase extends UIObject implements IButton {
         } else {
             if (labelElement == null) {
                 labelElement = createLabelElement();
+                labelElement.addClass("rwt-button-label");
                 if (textColor != null) {
                     labelElement.setCss("color", textColor == null ? null : color2Str(textColor));
                 }
@@ -315,6 +316,7 @@ public abstract class ButtonBase extends UIObject implements IButton {
         html.setCss("white-space", disable ? "nowrap" : null);
     }
 
+    @Override
     public void setForeground(final Color c) {
         if (labelElement != null) {
             labelElement.setCss("color", c == null ? null : color2Str(c));
@@ -322,6 +324,7 @@ public abstract class ButtonBase extends UIObject implements IButton {
         textColor = c;
     }
 
+    @Override
     public Color getForeground() {
         return textColor;
     }

@@ -75,6 +75,8 @@ public interface ISvnFSClient {
         boolean isReplaced();
 
         boolean isNone();
+        
+        boolean isUnversioned();
 
         public boolean isNormal();
     }

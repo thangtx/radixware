@@ -27,6 +27,7 @@ import org.radixware.kernel.common.client.exceptions.PropertyIsMandatoryExceptio
 import org.radixware.kernel.common.client.localization.MessageProvider;
 import org.radixware.kernel.common.client.meta.RadSortingDef;
 import org.radixware.kernel.common.client.models.BatchDeleteResult;
+import org.radixware.kernel.common.client.models.BrokenEntityModel;
 import org.radixware.kernel.common.client.models.EntityModel;
 import org.radixware.kernel.common.client.models.EntityObjectsSelection;
 import org.radixware.kernel.common.client.models.FilterModel;
@@ -40,6 +41,7 @@ import org.radixware.kernel.common.client.types.Pid;
 import org.radixware.kernel.common.client.utils.ClientValueFormatter;
 import org.radixware.kernel.common.client.widgets.IWidget;
 import org.radixware.kernel.common.client.widgets.actions.Action;
+import org.radixware.kernel.common.client.widgets.actions.IMenu;
 import org.radixware.kernel.common.client.widgets.actions.IToolBar;
 
 import org.radixware.kernel.common.client.widgets.selector.ISelectorWidget;
@@ -72,6 +74,7 @@ public interface ISelector extends IView {
         private final Action showFilterAndOrderToolbar;
         private final Action copySelectorPresId;
         private final Action copyEditorPresId;
+        private final Action entityActivated;
         
         private final List<Action> allActions = new LinkedList<>();
                 
@@ -163,13 +166,18 @@ public interface ISelector extends IView {
             return copyEditorPresId;
         }
         
+        public Action getEntityActivatedAction(){
+            return entityActivated;
+        }
+        
         private final IClientEnvironment environment;
         private final SelectorController controller;
 
         protected abstract Action createAction(ClientIcon icon, String title);
 
-        private Action createActionImpl(ClientIcon icon, String title) {
+        private Action createActionImpl(ClientIcon icon, String title, String objectName) {
             final Action action = createAction(icon, title);
+            action.setObjectName(objectName);
             allActions.add(action);
             return action;
         }
@@ -187,7 +195,7 @@ public interface ISelector extends IView {
             updateActionError = environment.getMessageProvider().translate("Selector", "Failed to apply changes");
             rereadActionError = environment.getMessageProvider().translate("Selector", "Error on Receiving Data");
 
-            insertAction = createActionImpl(ClientIcon.Selector.INSERT_INTO_TREE, environment.getMessageProvider().translate("Selector", "Open in Tree"));
+            insertAction = createActionImpl(ClientIcon.Selector.INSERT_INTO_TREE, environment.getMessageProvider().translate("Selector", "Open in Tree"), "open_in_tree");
             insertAction.setToolTip(environment.getMessageProvider().translate("Selector", "Open Object in Tree"));
             insertAction.addActionListener(new Action.ActionListener() {
 
@@ -198,7 +206,7 @@ public interface ISelector extends IView {
             });
 
             insertAndEditAction = createActionImpl(ClientIcon.Selector.INSERT_INTO_TREE_AND_EDIT,
-                    environment.getMessageProvider().translate("Selector", "Open in Tree and Edit"));
+                    environment.getMessageProvider().translate("Selector", "Open in Tree and Edit"), "open_in_tree_and_edit");
             insertAndEditAction.setToolTip(environment.getMessageProvider().translate("Selector", "Open Object in Tree"));
             insertAndEditAction.addActionListener(new Action.ActionListener() {
 
@@ -209,7 +217,7 @@ public interface ISelector extends IView {
             });
 
             insertWithReplaceAction = createActionImpl(ClientIcon.Selector.REPLACE_IN_TREE,
-                    environment.getMessageProvider().translate("Selector", "Replace"));
+                    environment.getMessageProvider().translate("Selector", "Replace"),"replace_in_tree");
             insertWithReplaceAction.setToolTip(environment.getMessageProvider().translate("Selector", "Open Object in Tree"));
             insertWithReplaceAction.addActionListener(new Action.ActionListener() {
 
@@ -222,7 +230,7 @@ public interface ISelector extends IView {
 
 
             autoinsertAction = createActionImpl(ClientIcon.Selector.AUTOINSERT_INTO_TREE,
-                    environment.getMessageProvider().translate("Selector", "Auto Open in Tree"));
+                    environment.getMessageProvider().translate("Selector", "Auto Open in Tree"),"auto_open_in_tree");
             autoinsertAction.setToolTip(environment.getMessageProvider().translate("Selector", "Automatically Open Current Object in Tree"));
             autoinsertAction.setCheckable(true);
             autoinsertAction.setChecked(false);
@@ -236,7 +244,7 @@ public interface ISelector extends IView {
 
 
             runEditorDialogAction = createActionImpl(ClientIcon.Selector.OPEN_IN_EDITOR,
-                    environment.getMessageProvider().translate("Selector", "Edit"));
+                    environment.getMessageProvider().translate("Selector", "Edit"),"open_in_modal_editor");
             runEditorDialogAction.setToolTip(environment.getMessageProvider().translate("Selector", "Edit"));
             runEditorDialogAction.addActionListener(new Action.ActionListener() {
 
@@ -249,7 +257,7 @@ public interface ISelector extends IView {
             runEditorDialogAction.setEnabled(false);
 
             rereadAction = createActionImpl(ClientIcon.CommonOperations.REREAD,
-                    environment.getMessageProvider().translate("Selector", "Refresh"));
+                    environment.getMessageProvider().translate("Selector", "Refresh"),"reread");
             rereadAction.setToolTip(environment.getMessageProvider().translate("Selector", "Refresh"));
             rereadAction.addActionListener(new Action.ActionListener() {
 
@@ -260,7 +268,7 @@ public interface ISelector extends IView {
             });
 
             createAction = createActionImpl(ClientIcon.CommonOperations.CREATE,
-                    environment.getMessageProvider().translate("Selector", "Create Object..."));
+                    environment.getMessageProvider().translate("Selector", "Create Object..."),"create");
             createAction.setToolTip(environment.getMessageProvider().translate("Selector", "Create Object"));
             createAction.addActionListener(new Action.ActionListener() {
 
@@ -271,7 +279,7 @@ public interface ISelector extends IView {
             });
 
             pasteAction = createActionImpl(ClientIcon.CommonOperations.PASTE,
-                    environment.getMessageProvider().translate("Selector", "Paste..."));
+                    environment.getMessageProvider().translate("Selector", "Paste..."),"paste");
             pasteAction.setToolTip(environment.getMessageProvider().translate("Selector", "Paste"));
             pasteAction.addActionListener(new Action.ActionListener() {
 
@@ -282,7 +290,7 @@ public interface ISelector extends IView {
             });
 
             copyAction = createActionImpl(ClientIcon.CommonOperations.COPY,
-                    environment.getMessageProvider().translate("Editor", "Copy"));
+                    environment.getMessageProvider().translate("Editor", "Copy"),"copy");
             copyAction.setToolTip(environment.getMessageProvider().translate("Editor", "Copy"));
             copyAction.addActionListener(new Action.ActionListener() {
 
@@ -294,7 +302,7 @@ public interface ISelector extends IView {
 
 
             copyAllAction = createActionImpl(ClientIcon.Selector.COPY_ALL,
-                    environment.getMessageProvider().translate("Selector", "Copy All"));
+                    environment.getMessageProvider().translate("Selector", "Copy All"),"copy_all");
             copyAllAction.setToolTip(environment.getMessageProvider().translate("Selector", "Copy All"));
             copyAllAction.addActionListener(new Action.ActionListener() {
 
@@ -306,7 +314,7 @@ public interface ISelector extends IView {
 
 
             duplicateAction = createActionImpl(ClientIcon.Selector.CLONE,
-                    environment.getMessageProvider().translate("Selector", "Duplicate"));
+                    environment.getMessageProvider().translate("Selector", "Duplicate"),"duplicate");
             duplicateAction.setToolTip(environment.getMessageProvider().translate("Selector", "Duplicate"));
             duplicateAction.addActionListener(new Action.ActionListener() {
 
@@ -318,7 +326,7 @@ public interface ISelector extends IView {
 
 
             deleteAction = createActionImpl(ClientIcon.CommonOperations.DELETE,
-                    environment.getMessageProvider().translate("Editor", "Delete"));
+                    environment.getMessageProvider().translate("Editor", "Delete"),"delete");
             deleteAction.setToolTip(environment.getMessageProvider().translate("Editor", "Delete Object"));
             deleteAction.addActionListener(new Action.ActionListener() {
 
@@ -329,7 +337,7 @@ public interface ISelector extends IView {
             });
 
             deleteAllAction = createActionImpl(ClientIcon.CommonOperations.DELETE_ALL,
-                    environment.getMessageProvider().translate("Selector", "Delete All"));
+                    environment.getMessageProvider().translate("Selector", "Delete All"),"delete_all");
             deleteAllAction.setToolTip(environment.getMessageProvider().translate("Selector", "Delete All Objects"));
             deleteAllAction.addActionListener(new Action.ActionListener() {
 
@@ -340,7 +348,7 @@ public interface ISelector extends IView {
             });
 
             updateAction = createActionImpl(ClientIcon.CommonOperations.SAVE,
-                    environment.getMessageProvider().translate("Editor", "Apply"));
+                    environment.getMessageProvider().translate("Editor", "Apply"),"apply_changes");
             updateAction.setEnabled(false);
             updateAction.setToolTip(environment.getMessageProvider().translate("Editor", "Apply Changes"));
             updateAction.addActionListener(new Action.ActionListener() {
@@ -352,7 +360,7 @@ public interface ISelector extends IView {
             });
 
             cancelChangesAction = createActionImpl(ClientIcon.CommonOperations.CANCEL,
-                    environment.getMessageProvider().translate("Editor", "Cancel Changes"));
+                    environment.getMessageProvider().translate("Editor", "Cancel Changes"),"cancel_changes");
             cancelChangesAction.setEnabled(false);
             cancelChangesAction.setToolTip(environment.getMessageProvider().translate("Editor", "Cancel Changes"));
             cancelChangesAction.addActionListener(new Action.ActionListener() {
@@ -363,7 +371,7 @@ public interface ISelector extends IView {
                 }
             });
 
-            hideEditorAction = createActionImpl(null, "");
+            hideEditorAction = createActionImpl(null, "", "hide_editor");
             hideEditorAction.addActionListener(new Action.ActionListener() {
 
                 @Override
@@ -373,7 +381,7 @@ public interface ISelector extends IView {
             });
 
             viewAuditLogAction = createActionImpl(ClientIcon.Selector.AUDIT,
-                    environment.getMessageProvider().translate("Editor", "Audit Log"));
+                    environment.getMessageProvider().translate("Editor", "Audit Log"),"show_audit_log");
             viewAuditLogAction.setToolTip(environment.getMessageProvider().translate("Editor", "Audit Log"));
             viewAuditLogAction.addActionListener(new Action.ActionListener() {
 
@@ -384,7 +392,7 @@ public interface ISelector extends IView {
             });
 
             showFilterAndOrderToolbar = createActionImpl(ClientIcon.Selector.FILTER_AND_SORTING,
-                                            environment.getMessageProvider().translate("Selector", "Filter and Sorting Panel"));
+                                            environment.getMessageProvider().translate("Selector", "Filter and Sorting Panel"),"switch_filter_and_sorting_panel");
             showFilterAndOrderToolbar.setToolTip(environment.getMessageProvider().translate("Selector", "Show Filter and Sorting Panel"));
             showFilterAndOrderToolbar.setCheckable(true);
             showFilterAndOrderToolbar.addActionListener(new Action.ActionListener() {
@@ -397,8 +405,8 @@ public interface ISelector extends IView {
             });
 
             copySelectorPresId = createActionImpl(ClientIcon.Definitions.SELECTOR_ID, 
-                                    environment.getMessageProvider().translate("Selector", "Copy Selector Presentation Id"));
-            copySelectorPresId.setToolTip(environment.getMessageProvider().translate("Selector", "Copy Selector Presentation Identifier to Clipboard"));
+                                    environment.getMessageProvider().translate("Selector", "Show Selector Presentation Info"),"show_selector_pres_info");
+            copySelectorPresId.setToolTip(environment.getMessageProvider().translate("Selector", "Show Selector Presentation Info"));
             copySelectorPresId.addActionListener(new Action.ActionListener() {
                 @Override
                 public void triggered(final Action action) {
@@ -407,8 +415,8 @@ public interface ISelector extends IView {
             });
             
             copyEditorPresId = createActionImpl(ClientIcon.Definitions.EDITOR_ID, 
-                                environment.getMessageProvider().translate("Editor", "Copy Editor Presentation Id"));
-            copyEditorPresId.setToolTip(environment.getMessageProvider().translate("Editor", "Copy Editor Presentation Identifier to Clipboard"));
+                                environment.getMessageProvider().translate("Editor", "Show Editor Presentation Info"),"show_editor_pres_info");
+            copyEditorPresId.setToolTip(environment.getMessageProvider().translate("Editor", "Show Editor Presentation Info"));
             copyEditorPresId.addActionListener(new Action.ActionListener() {
                 @Override
                 public void triggered(Action action) {
@@ -416,6 +424,7 @@ public interface ISelector extends IView {
                 }
             });
             
+            entityActivated = createActionImpl(null, "","entity_activated");
         }
 
         @Override
@@ -433,7 +442,7 @@ public interface ISelector extends IView {
             if (group == null) {
                 return;//not opened
             }
-            final GroupRestrictions groupRestrictions = group.getRestrictions();
+            final GroupRestrictions groupRestrictions = group.getRestrictions();            
             //rereadAction.setEnabled(!controller.isDisabled());
             final boolean isCreateEnabled = !groupRestrictions.getIsCreateRestricted();
             createAction.setEnabled(isCreateEnabled);
@@ -449,7 +458,7 @@ public interface ISelector extends IView {
                     createAction.setText(mp.translate("Selector", "Create Object..."));
                     createAction.setToolTip(mp.translate("Selector", "Create Object"));
                 }
-            }
+            }            
             if (isCreateEnabled
                     && environment.getClipboard().size() > 0
                     && environment.getClipboard().isCompatibleWith(group)) {
@@ -467,7 +476,7 @@ public interface ISelector extends IView {
                 pasteAction.setToolTip(environment.getMessageProvider().translate("Selector", "Paste"));
             }
 
-            refreshEntityModifiedState();
+            refreshEntityModifiedState();            
             final EntityModel currentEntity = controller.getCurrentEntity();
             final EntityRestrictions currentEntityRestrictions;
             if (group.isEmpty() || currentEntity == null || !currentEntity.canOpenEntityView()) {
@@ -478,57 +487,35 @@ public interface ISelector extends IView {
                 runEditorDialogAction.setEnabled(false);
                 deleteAction.setEnabled(false);
                 copyAction.setEnabled(false);
-                copyEditorPresId.setEnabled(false);
                 currentEntityRestrictions = null;
             } else {
+                final boolean someObjectSelected = !group.getSelection().isEmpty();
                 currentEntityRestrictions = currentEntity.getRestrictions();
-                boolean insertionRestricted = 
-                    groupRestrictions.getIsInsertIntoTreeRestricted() || !currentEntity.canInsertIntoTreeFromSelector();                
-                final List<GroupModel> parentGroups = controller.parentModels.getParentGroups();
-                for (int i = parentGroups.size() - 1; i >= 0 && !insertionRestricted; i--) {
-                    insertionRestricted = parentGroups.get(i).getRestrictions().getIsInsertIntoTreeRestricted();
-                }
-                final boolean canInsert;
-                if (insertionRestricted){
-                    canInsert = false;
-                }else{
-                    final IExplorerItemView nearestExplorerItemView = group.findNearestExplorerItemView();
-                    if (nearestExplorerItemView==null){
-                        canInsert = false;
-                    }else if (nearestExplorerItemView.isChoosenObject()){//RADIX-7253
-                        canInsert = 
-                            !currentEntity.getPid().equals(nearestExplorerItemView.getChoosenEntityInfo().pid);
-                    }else{
-                        canInsert = true;
-                    }
-                }
+                final boolean canInsert = controller.canInsertEntity(currentEntity);
                 insertAction.setEnabled(canInsert);
                 insertAndEditAction.setEnabled(canInsert);
                 if (canInsert) {
-                    final Id tableId = group.getSelectorPresentationDef().getTableId();
-                    List<IExplorerItemView> inserted = group.findNearestExplorerItemView().getChoosenEntities(tableId);
-                    insertWithReplaceAction.setEnabled(!(inserted.isEmpty()
-                            || inserted.get(0).getChoosenEntityInfo().pid.equals(currentEntity.getPid())
-                            || controller.isAutoInsertEnabled()
-                            || //Если есть промежуточные группы, то вставлять с заменой нельзя
-                            !controller.parentModels.getParentGroups().isEmpty()));
+                    insertWithReplaceAction.setEnabled(controller.canInsertEntityWithReplace(currentEntity));
                 } else {
                     insertWithReplaceAction.setEnabled(false);
                 }
-                autoinsertAction.setEnabled(canInsert && 
-                        //Если есть промежуточные группы, то автовставка запрещена
-                        controller.parentModels.getParentGroups().isEmpty());
+                autoinsertAction.setEnabled(canInsert && controller.canAutoInsertEntity(currentEntity));
                 runEditorDialogAction.setEnabled(!groupRestrictions.getIsRunEditorRestricted());
-                deleteAction.setEnabled(!currentEntityRestrictions.getIsDeleteRestricted());
+                deleteAction.setEnabled(!currentEntityRestrictions.getIsDeleteRestricted() && !someObjectSelected);
                 if (!currentEntityRestrictions.getIsCopyRestricted()
+                        && !someObjectSelected
                         && currentEntity.isExists()) {
                     copyAction.setEnabled(true);
                 } else {
                     copyAction.setEnabled(false);
-                }      
-                refreshCopyAllActionState(group);
-                copyEditorPresId.setEnabled(true);
+                }
+                final IToolBar editorCommandBar = controller.getEditorCommandBar();
+                if (editorCommandBar!=null){
+                    editorCommandBar.setEnabled(!someObjectSelected);
+                }                
             }
+            copyEditorPresId.setEnabled(currentEntity != null && !(currentEntity instanceof BrokenEntityModel));
+            refreshCopyAllActionState(group);
             //delete all operation always applies to root group
             refreshDeleteAllActionState(group);
             refreshDuplicateActionState(group,groupRestrictions,currentEntity,currentEntityRestrictions);
@@ -561,17 +548,6 @@ public interface ISelector extends IView {
             }
             refreshSelectionToolTips(group.getSelection(),filtered);
             firstRefresh = false;
-        }
-        
-        public void refreshAfterChangeSelection(){
-            final GroupModel group = controller.getGroupModel();            
-            refreshCopyAllActionState(group);
-            refreshDeleteAllActionState(group);            
-            final boolean filtered = controller.state == SelectorController.SelectorState.NORMAL && group.getCurrentFilter()!=null;            
-            refreshSelectionToolTips(group.getSelection(),filtered);
-            final EntityModel currentEntity = controller.getCurrentEntity();
-            final EntityRestrictions currentEntityRestrictions = currentEntity==null || currentEntity.getRestrictions().getIsViewRestricted() ? null : currentEntity.getRestrictions();            
-            refreshDuplicateActionState(group, group.getRestrictions(), currentEntity, currentEntityRestrictions);
         }
         
         private void refreshSelectionToolTips(final EntityObjectsSelection selection, final boolean filtered){
@@ -649,7 +625,7 @@ public interface ISelector extends IView {
         private void refreshDuplicateActionState(final GroupModel group, final GroupRestrictions groupRestrictions, final EntityModel currentEntity, final EntityRestrictions currentEntityRestrictions) {
             if (group.getSelection().isSingleObjectSelected()){
                 //duplicate single object                
-                final EntityModel sourceEntity = controller.getSindleSelectedObject();
+                final EntityModel sourceEntity = controller.getSingleSelectedObject();
                 if (sourceEntity==null){
                     duplicateAction.setEnabled(false);
                     duplicateAction.setToolTip(environment.getMessageProvider().translate("Selector", "Duplicate"));
@@ -709,7 +685,7 @@ public interface ISelector extends IView {
         private void insertEntityAction() {
             try {
                 controller.getModel().finishEdit();
-                controller.insertEntity();
+                controller.insertEntity(null);
             } catch (Exception ex) {
                 controller.getModel().showException(insertActionError, ex);
             }
@@ -718,7 +694,7 @@ public interface ISelector extends IView {
         private void insertEntityWithReplaceAction() {
             try {
                 controller.getModel().finishEdit();
-                controller.insertEntityWithReplace();
+                controller.insertCurrentEntityWithReplace();
             } catch (Exception ex) {
                 controller.getModel().showException(insertActionError, ex);
             }
@@ -727,7 +703,7 @@ public interface ISelector extends IView {
         private void insertEntityAndEditAction() {
             try {
                 controller.getModel().finishEdit();
-                IExplorerItemView item = controller.insertEntityImpl(false, false, false);
+                IExplorerItemView item = controller.insertCurrentEntityImpl(false, false, false);
                 if (item != null) {
                     item.setCurrent();
                 }
@@ -779,7 +755,7 @@ public interface ISelector extends IView {
         private void createAction() {
             try {
                 controller.getModel().finishEdit();
-                controller.create();
+                controller.createMultiple();
             } catch (NoInstantiatableClassesException ex) {
                 controller.getEnvironment().getTracer().error(ex.getMessage()
                         + " (" + controller.getGroupModel().getSelectorPresentationDef().getDescription() + ")");
@@ -875,7 +851,7 @@ public interface ISelector extends IView {
                 try {                    
                     final RadSortingDef choosedSorting = controller.group.getCurrentSorting(), newSorting;
                     if (choosedSorting!=null && !controller.group.getSortings().isAcceptable(choosedSorting, null)){
-                        newSorting = controller.group.getSortings().getDefaultSorting(null);
+                        newSorting = controller.group.getSortings().getDefaultSorting(null,null);
                     }else{
                         newSorting = choosedSorting;//keep current sorting
                     }                    
@@ -910,7 +886,7 @@ public interface ISelector extends IView {
                 action.close();
             }
             allActions.clear();
-        }
+        }        
     }
 
     public interface IEditorSpace {
@@ -954,6 +930,10 @@ public interface ISelector extends IView {
 
         void setUpdatesEnabled(boolean enabled);
 
+        void switchToSelectorContent();
+        
+        void switchToApplyFilter();
+        
         void clear();
     }
 
@@ -1026,6 +1006,7 @@ public interface ISelector extends IView {
     public void setEditorToolBarHidden(boolean hidden);
     public void setCommandBarHidden(boolean hidden);
     public void setEditorCommandBarHidden(boolean hidden);
+    public void setMenu(final IMenu newSelectorMenu, final IMenu newEditorMenu);
 
     public void setSelectorWidget(ISelectorWidget widget);
 
@@ -1053,6 +1034,10 @@ public interface ISelector extends IView {
     public ExplorerItemView insertEntity();
 
     public ExplorerItemView insertEntityWithReplace();
+    
+    public ExplorerItemView insertEntity(final EntityModel entity);
+
+    public List<EntityModel> createMultiple() throws ServiceClientException;
 
     public EntityModel create() throws ServiceClientException;
 

@@ -42,7 +42,7 @@ public class UDSLayer extends Layer {
         synchronized (this) {
 
             if (languages == null) {
-                languages = Arrays.asList(EIsoLanguage.ENGLISH, EIsoLanguage.RUSSIAN);
+                languages = loader != null ? loader.getUdsLanguages() : Arrays.asList(EIsoLanguage.ENGLISH, EIsoLanguage.RUSSIAN);
             }
             return languages;
         }

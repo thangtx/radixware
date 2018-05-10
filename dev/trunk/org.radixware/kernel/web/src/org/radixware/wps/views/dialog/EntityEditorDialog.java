@@ -26,6 +26,7 @@ import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.ModifiedEntityModelFinder;
 import org.radixware.kernel.common.client.models.RawEntityModelData;
 import org.radixware.kernel.common.client.models.items.properties.Property;
+import org.radixware.kernel.common.client.models.items.properties.PropertyObject;
 import org.radixware.kernel.common.client.views.IEditor.EditorListener;
 import org.radixware.kernel.common.client.views.IEntityEditorDialog;
 import org.radixware.kernel.common.client.views.IView;
@@ -37,6 +38,7 @@ import org.radixware.kernel.common.types.Id;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.rwt.Dialog;
 import org.radixware.wps.rwt.PushButton;
+import org.radixware.wps.rwt.RwtMenu;
 import org.radixware.wps.views.editor.Editor;
 import org.radixware.wps.views.editor.ErrorView;
 
@@ -46,6 +48,8 @@ public final class EntityEditorDialog extends Dialog implements IPresentationCha
     private org.radixware.wps.views.editor.Editor editor;
     private boolean closing, editorIsOpened, toolBarIsHidden, allowUpdateOnClosing;
     private boolean wasChanged;
+    private boolean forceClose;
+    private RwtMenu editorMenu;
     private IPresentationChangedHandler oldPCH;
     private final WpsEnvironment environment;
 
@@ -96,29 +100,34 @@ public final class EntityEditorDialog extends Dialog implements IPresentationCha
     }
     
     public void openEditor() throws ServiceClientException, InterruptedException{
-        oldPCH = ((IContext.Entity) model.getContext()).getPresentationChangedHandler();
-        ((IContext.Entity) model.getContext()).setPresentationChangedHandler(this);
-        if (model.isExists() && !model.wasRead()) {
-            if (model.isEdited()){//TWRBS-2060
-                model.activateAllProperties();
+        final String modelTitle = model.getTitle();
+        final long time = System.currentTimeMillis();
+        {
+            final String message = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Start opening modal editor of \'%1$s\'");
+            getEnvironment().getTracer().debug(String.format(message, modelTitle));
+        }
+        try{
+            setupPCH();
+            if (model.isExists() && !model.wasRead()) {
+                if (model.isEdited()){//TWRBS-2060
+                    model.activateAllProperties();
+                }
+                else{
+                    model.read();
+                }
+            }    
+            beforeOpenEditor();
+            //model.read invoke may cause editor presentation change and call of setupUi from 
+            //onChangePresentation handler, so we need check this
+            if (!editorIsOpened){
+                setupUi();
             }
-            else{
-                model.read();
-            }
-        }    
-        if (model.isExists() && 
-            !model.getRestrictions().getIsUpdateRestricted() &&
-            detectReenterableModification()//RADIX-425
-           ){
-            model.getRestrictions().setUpdateRestricted(true);
-            allowUpdateOnClosing = true;
-        }else{
-            allowUpdateOnClosing = false;
-        }        
-        //model.read invoke may cause editor presentation change and call of setupUi from 
-        //onChangePresentation handler, so we need check this
-        if (!editorIsOpened){
-            setupUi();
+        }finally{
+            final long elapsedTime = System.currentTimeMillis()-time;        
+            final String message = 
+                getEnvironment().getMessageProvider().translate("TraceMessage", "Opening modal editor of \'%1$s\' finished. Elapsed time: %2$s ms");
+            getEnvironment().getTracer().debug(String.format(message, modelTitle, elapsedTime));            
         }
     }
     
@@ -149,7 +158,16 @@ public final class EntityEditorDialog extends Dialog implements IPresentationCha
         final IView nearestView = findNearestView(entityModel);
         if (nearestView!=null){
             result.getRestrictions().add(nearestView.getRestrictions());
-        }        
+        } 
+        if (!entityModel.isNew()) {
+            if (editorMenu==null){
+                editorMenu = (RwtMenu) this.getMenuBar().addSubMenu(getEnvironment().getMessageProvider().translate("MainMenu", "Editor"));
+            }else{
+                editorMenu.clear();
+            }
+            result.setMenu(editorMenu);
+            this.setMenuBarVisible(true);
+        }
         result.open(entityModel);
         result.getActions().getDeleteAction().setVisible(false);
         if (entityModel.isNew() || toolBarIsHidden) {
@@ -185,11 +203,21 @@ public final class EntityEditorDialog extends Dialog implements IPresentationCha
             if (model.isNew()) {
                 if (model.getContext() instanceof IContext.ObjectPropCreating) {
                     final IContext.ObjectPropCreating context = (IContext.ObjectPropCreating) model.getContext();
-                    final Property property = context.propOwner.getProperty(context.propId);
+                    final EntityModel objectPropOwner = context.propOwner;
+                    if (objectPropOwner.isNew()){
+                        if (model.validatePropertyValues() && model.canSafelyClean(CleanModelController.DEFAULT_INSTANCE)){
+                            final PropertyObject property = (PropertyObject)objectPropOwner.getProperty(context.propId);
+                            property.applyChangesInPreparedForCreateModel();
+                            acceptDialog();
+                        }
+                        return;
+                    }
+                    final Property property = objectPropOwner.getProperty(context.propId);
                     if (property.getValueObject() != null && property.hasOwnValue()) {
                         final String caption = environment.getMessageProvider().translate("EntityEditorDialog", "Confirm to Change Value of Property");
                         final String message = environment.getMessageProvider().translate("EntityEditorDialog", "Old value of property \'%s\'\n will be lost. Do you really want to continue?");
-                        if (!environment.messageConfirmation(caption, String.format(message, property.getDefinition().getTitle()))) {
+                        final String propertyTitle = property.getDefinition().getTitle(environment);
+                        if (!environment.messageConfirmation(caption, String.format(message, propertyTitle))) {
                             return;
                         }
                     }
@@ -232,7 +260,7 @@ public final class EntityEditorDialog extends Dialog implements IPresentationCha
     }
 
     @Override
-    public DialogResult execDialog(IWidget parentWidget) {
+    public DialogResult execDialog(final IWidget parentWidget) {
         if (!editorIsOpened){
             try{
                 openEditor();
@@ -268,53 +296,121 @@ public final class EntityEditorDialog extends Dialog implements IPresentationCha
         closing = true;
         try {
             if (editor != null) {
-                if (actionResult == DialogResult.REJECTED) {
-                    model.finishEdit();
-                    final ModificationsList modifications;
-                    final boolean isModified;
-                    if (model.isNew()){                  
-                        modifications = ModificationsList.EMPTY_LIST;
-                        isModified = !model.getEditedProperties().isEmpty();
-                    }else{
-                        modifications = new ModificationsList(editor);
-                        isModified = !modifications.isEmpty();
-                    }
-                    if (isModified){
-                        final String message = getEnvironment().getMessageProvider().translate("EntityEditorDialog", "Do you really want to close editor without saving your changes?");
-                        final String title = getEnvironment().getMessageProvider().translate("EntityEditorDialog", "Confirm to Close Editor");
-                        if (!getEnvironment().messageConfirmation(title, message)) {
-                            return null;
-                        } else if (!model.isNew()) {
-                            modifications.cancelChanges();
-                        }
-                    }
-                    if (!model.isNew() && !model.canSafelyClean(CleanModelController.DEFAULT_INSTANCE)) {
-                        return null;
-                    }
+                if (actionResult != DialogResult.REJECTED || beforeCloseEditor(forceClose)){
+                    forceCloseEditor();
+                }else{
+                    return null;
                 }
-                final Editor closingEditor = editor;
-                editor = null;
-                closingEditor.close(true);
-                remove(editor);
-                editorIsOpened = false;                
             }
+        } catch (Exception exception){
+            getEnvironment().getTracer().error(exception);
         } finally {
             closing = false;
         }
-
-        if (model != null) {
-            ((IContext.Entity) model.getContext()).setPresentationChangedHandler(oldPCH);
-            if (allowUpdateOnClosing){
-                model.getRestrictions().setUpdateRestricted(false);
-            }            
-        }
+        afterCloseEditor();
         return super.onClose(action, actionResult == DialogResult.NONE ? DialogResult.REJECTED : actionResult);
     }
+    
+    private boolean beforeCloseEditor(final boolean forced){
+        if (editor==null || forced){
+            return true;
+        }else{
+            model.finishEdit();
+            final ModificationsList modifications;
+            final boolean isModified;
+            if (model.isNew()){                  
+                modifications = ModificationsList.EMPTY_LIST;
+                isModified = !model.getEditedProperties().isEmpty();
+            }else{
+                modifications = new ModificationsList(editor);
+                isModified = !modifications.isEmpty();
+            }
+            if (isModified){
+                final String message = getEnvironment().getMessageProvider().translate("EntityEditorDialog", "Do you really want to close editor without saving your changes?");
+                final String title = getEnvironment().getMessageProvider().translate("EntityEditorDialog", "Confirm to Close Editor");
+                if (!getEnvironment().messageConfirmation(title, message)) {
+                    return false;
+                } else if (!model.isNew()) {
+                    modifications.cancelChangesCascade();
+                }else if (model.getContext() instanceof IContext.ObjectPropCreating) {
+                    final IContext.ObjectPropCreating context = (IContext.ObjectPropCreating) model.getContext();
+                    final EntityModel objectPropOwner = context.propOwner;
+                    if (objectPropOwner.isNew()){
+                        modifications.cancelChangesCascade();
+                        model.cancelChanges();
+                    }
+                }
+            }
+            if (!model.isNew() && !model.canSafelyClean(CleanModelController.DEFAULT_INSTANCE)) {
+                return false;
+            }  
+            return true;
+        }      
+    }        
+    
+    private void forceCloseEditor(){
+        if (editor!=null){
+            final Editor closingEditor = editor;
+            editor = null;            
+            closingEditor.close(true);
+            remove(closingEditor);
+            editorIsOpened = false;
+            clearCloseActions(); 
+        }
+    }
+    
+    private void afterCloseEditor(){
+        if (model != null) {
+            if (oldPCH!=null){
+                ((IContext.Entity) model.getContext()).setPresentationChangedHandler(oldPCH);
+                oldPCH = null;
+            }
+            if (allowUpdateOnClosing){
+                model.getRestrictions().setUpdateRestricted(false);
+                allowUpdateOnClosing = false;
+            }
+        }        
+    }    
 
     @Override
     public EntityModel getEntityModel() {
         return model;
     }
+    
+    private void setupPCH(){
+        oldPCH = ((IContext.Entity) model.getContext()).getPresentationChangedHandler();
+        ((IContext.Entity) model.getContext()).setPresentationChangedHandler(this);        
+    }
+    
+    private void beforeOpenEditor(){
+        if (model.isExists() && 
+            !model.getRestrictions().getIsUpdateRestricted() &&
+            detectReenterableModification()//RADIX-425
+           ){
+            model.getRestrictions().setUpdateRestricted(true);
+            allowUpdateOnClosing = true;
+        }else{
+            allowUpdateOnClosing = false;
+        }        
+    }    
+    
+    @Override
+    public boolean reopen(final EntityModel entityModel, final boolean forced){
+        if (entityModel!=null && (forced || beforeCloseEditor(forced))){
+            forceCloseEditor();
+            afterCloseEditor();
+            if (model!=null){
+                model.clean();
+            }
+            model = entityModel;
+            setupPCH();
+            beforeOpenEditor();            
+            setupUi();
+            return true;
+        }else{
+            return false;
+        }        
+    }  
     
     private void respawnModel(final Id presentationId, final IContext.Entity context){
         final RadEditorPresentationDef presentation = 
@@ -349,8 +445,10 @@ public final class EntityEditorDialog extends Dialog implements IPresentationCha
         } else {
             respawnModel(newPresentationId, context);
         }
+        setupPCH();
         model.activate(rawData);
         if (editor != null) {
+            beforeOpenEditor();
             setupUi();
         }
         return model;
@@ -371,9 +469,11 @@ public final class EntityEditorDialog extends Dialog implements IPresentationCha
         return closing;
     }
 
+    @Override
     public void forceClose() {
         if (editor != null && model.isExists()) {
-            new ModificationsList(editor).cancelChanges();
+            forceClose = true;
+            new ModificationsList(editor).cancelChangesCascade();
         }
     }
 }

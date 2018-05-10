@@ -19,6 +19,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.radixware.kernel.common.svn.RadixSvnException;
 import org.radixware.kernel.common.svn.client.auth.SvnAuthentication;
@@ -44,9 +46,24 @@ public class SvnRAConnection extends SvnConnection {
     private static final String MERGE_INFO = "mergeinfo";
     private static final String DEPTH = "depth";
     private static final String LOG_REVPROPS = "log-revprops";
+    private static final Timer pinger = new Timer("SvnConnectionPinger",true);
+    private TimerTask pingTask;
 
     public SvnRAConnection(SvnConnector connector) {
         this.connector = connector;
+        pinger.scheduleAtFixedRate(pingTask = new TimerTask() {
+
+            @Override
+            public void run() {
+                try {
+                    if (!isAlive()) {
+                        pingTask.cancel();
+                    }
+                } catch (Throwable ex) {
+                    //ignore
+                }
+            }
+        }, 30000, 30000);
     }
 
     @Override
@@ -61,7 +78,7 @@ public class SvnRAConnection extends SvnConnection {
     public boolean isAlive() {
         return !connector.isStale();
     }
-
+    
     public InputStream getInputStream() throws IOException {
         return connector.getInputStream();
     }
@@ -164,6 +181,7 @@ public class SvnRAConnection extends SvnConnection {
             throw new RadixSvnException(ex);
         }
     }
+
     public void writeWithoutEnvelope(RAMessage.MessageItem... items) throws RadixSvnException {
         RAMessage message = new RAMessage();
         try {
@@ -229,10 +247,10 @@ public class SvnRAConnection extends SvnConnection {
                 if (repository.activeCredentials != null) {
                     if (repository.activeCredentials.getAuthType() == SvnAuthType.SVN_PASSWORD) {
                         auths.add(new SvnPasswordAuthentication(
-                                repository.activeCredentials.getUserName(), 
-                                repository.activeCredentials.getPassword(repository.getLocation().toString()), 
-                                true, 
-                                uri, 
+                                repository.activeCredentials.getUserName(),
+                                repository.activeCredentials.getPassword(repository.getLocation().toString()),
+                                true,
+                                uri,
                                 true));
                     }
                 }
@@ -322,6 +340,9 @@ public class SvnRAConnection extends SvnConnection {
             } finally {
                 connector = null;
             }
+        }
+        if (pingTask != null) {
+            pingTask.cancel();
         }
     }
 

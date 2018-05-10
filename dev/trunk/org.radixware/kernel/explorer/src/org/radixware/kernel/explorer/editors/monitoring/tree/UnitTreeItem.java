@@ -33,7 +33,7 @@ public class UnitTreeItem extends TreeItem {
     private volatile Long orderHint = Long.MAX_VALUE;
     private EUnitState state;
     private Boolean isInstanceStarted;
-
+   
     @Override
     public EEventContextType getContextType() {
         return EEventContextType.SYSTEM_UNIT;
@@ -44,30 +44,27 @@ public class UnitTreeItem extends TreeItem {
         private Factory() {
         }
 
-        public static UnitTreeItem newInstance(UnitsWidget.IdsGetter idsGetter, final MetricInfoGetter.UnitInfo metricInfo, final boolean isInstanceStarted, final Model groupModel) {
+        public static UnitTreeItem newInstance(UnitsWidget.IdsGetter idsGetter, final MetricInfoGetter.UnitInfo metricInfo, final boolean isInstanceStarted, final Model groupModel, QTreeWidgetItem parent) {
 
             if (metricInfo.getUnitType().equals(EUnitType.ARTE.getValue())) {
-                return new UnitArteTreeItem(idsGetter, metricInfo, isInstanceStarted, groupModel);
+                return new UnitArteTreeItem(idsGetter, metricInfo, isInstanceStarted, groupModel, parent);
             }
             if (metricInfo.getUnitType().equals(EUnitType.JOB_EXECUTOR.getValue())) {
-                return new UnitJobExecTreeItem(idsGetter, metricInfo, isInstanceStarted, groupModel);
+                return new UnitJobExecTreeItem(idsGetter, metricInfo, isInstanceStarted, groupModel, parent);
             }
             if (metricInfo.getUnitType().equals(EUnitType.NET_PORT_HANDLER.getValue())) {
-                return new UnitNetPortHandlerTreeItem(idsGetter, metricInfo, isInstanceStarted, groupModel);
+                return new UnitNetPortHandlerTreeItem(idsGetter, metricInfo, isInstanceStarted, groupModel, parent);
             }
-            return new UnitTreeItem(idsGetter, metricInfo, isInstanceStarted, groupModel);
+            return new UnitTreeItem(idsGetter, metricInfo, isInstanceStarted, groupModel, parent);
         }
     }
 
-    @Override
+   @Override
     public boolean operator_less(QTreeWidgetItem qtwi) {
         if (qtwi instanceof UnitTreeItem) {
             UnitTreeItem unitTreeItem = (UnitTreeItem) qtwi;
             if (itemType != null && unitTreeItem.getType() != null) {
                 int res = itemType.compareTo(unitTreeItem.getType());
-                //if(res==0){
-                //    return getId() > unitTreeItem.getId();
-                //}
                 return res == 0 ? getId() > unitTreeItem.getId() : res > 0;
             }
         }
@@ -79,8 +76,8 @@ public class UnitTreeItem extends TreeItem {
         NOT_USED, STARTED, STOPPED, INSTANCE_NOT_STARTED, HANG
     }
 
-    protected UnitTreeItem(UnitsWidget.IdsGetter idsGetter, final MetricInfoGetter.UnitInfo metricInfo, Boolean isInstanceStarted, final Model groupModel) {
-        super(idsGetter, metricInfo, groupModel);
+    protected UnitTreeItem(UnitsWidget.IdsGetter idsGetter, final MetricInfoGetter.UnitInfo metricInfo, Boolean isInstanceStarted, final Model groupModel, QTreeWidgetItem parent) {
+        super(idsGetter, metricInfo, groupModel, parent);
         this.itemType = metricInfo.getUnitType();
         this.isInstanceStarted = isInstanceStarted;
     }

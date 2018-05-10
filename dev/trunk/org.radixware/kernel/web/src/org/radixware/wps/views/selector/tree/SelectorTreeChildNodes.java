@@ -520,7 +520,9 @@ public class SelectorTreeChildNodes extends Node.Children{
     public final void reset() {        
         if (childGroups!=null){
             for (GroupModel childGroup: childGroups){
-                changeChildGroupContext(childGroup, null);
+                if (!ownerNodeIsRoot()){
+                    changeChildGroupContext(childGroup, null);
+                }
                 childGroup.reset();
                 if (!ownerNodeIsRoot()){
                     childGroup.setView(null);

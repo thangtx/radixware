@@ -12,10 +12,12 @@ package org.radixware.kernel.designer.environment.navigation;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.swing.Icon;
+import org.netbeans.spi.jumpto.type.SearchType;
 import org.netbeans.spi.jumpto.type.TypeDescriptor;
 import org.netbeans.spi.jumpto.type.TypeProvider;
 import org.openide.filesystems.FileObject;
@@ -26,9 +28,9 @@ import org.radixware.kernel.common.defs.VisitorProvider;
 import org.radixware.kernel.common.defs.VisitorProviderFactory;
 import org.radixware.kernel.common.defs.ads.type.IAdsTypeSource;
 import org.radixware.kernel.common.repository.Branch;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.EChooseDefinitionDisplayMode;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.NameMatcher;
-import org.radixware.kernel.designer.common.dialogs.chooseobject.NameMatcherFactory;
+import org.radixware.kernel.common.utils.namefilter.NameMatcher;
+import org.radixware.kernel.common.utils.namefilter.NameMatcherFactory;
+import org.radixware.kernel.designer.common.dialogs.chooseobject.SearchTypeConverter;
 import org.radixware.kernel.designer.common.general.filesystem.RadixFileUtil;
 
 public class RadixTypeProvider implements TypeProvider {
@@ -37,8 +39,7 @@ public class RadixTypeProvider implements TypeProvider {
     }
     private VisitorProvider provider = null;
     private static Lock runLock = new ReentrantLock();
-    private String lastText = null;
-    private Set<RadixObject> addedObjects = new HashSet<>();
+    //GoToTypeAction is called several times with different context
 
     @Override
     public void cancel() {
@@ -52,8 +53,6 @@ public class RadixTypeProvider implements TypeProvider {
     @Override
     public void cleanup() {
         // NOTHING - no cashing
-        addedObjects.clear();
-        lastText = null;
     }
 
     private static class RadixObjectTypeDescriptor extends TypeDescriptor {
@@ -113,6 +112,24 @@ public class RadixTypeProvider implements TypeProvider {
         public String getContextName() {
             return adapter.getContextName();
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof RadixObjectTypeDescriptor) {
+                if (((RadixObjectTypeDescriptor) obj).adapter.equals(adapter)) {
+                    return true;
+                }
+            }
+            return super.equals(obj);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 59 * hash + Objects.hashCode(this.adapter);
+            return hash;
+        }       
+        
     }
 
     private class Collector implements IVisitor {
@@ -129,10 +146,9 @@ public class RadixTypeProvider implements TypeProvider {
         public void accept(RadixObject radixObject) {
             if (radixObject instanceof IAdsTypeSource) {
                 final String name = radixObject.getName();
-                if (matcher.accept(name) && !addedObjects.contains(radixObject)) {
+                if (matcher.accept(name) ) {
                     final TypeDescriptor typeDescriptor = new RadixObjectTypeDescriptor(radixObject);
                     result.addResult(typeDescriptor);
-                    addedObjects.add(radixObject);
                 }
             }
         }
@@ -142,11 +158,7 @@ public class RadixTypeProvider implements TypeProvider {
     public void computeTypeNames(final Context context, final Result result) {
         if (runLock.tryLock()) {
             try {
-                if (lastText == null || !lastText.equals(context.getText())) {
-                    addedObjects.clear();
-                    lastText = context.getText();
-                }
-                final NameMatcher matcher = NameMatcherFactory.createNameMatcher(context.getText(), context.getSearchType(), EChooseDefinitionDisplayMode.NAME_AND_LOCATION);
+                final NameMatcher matcher = NameMatcherFactory.createNameMatcher(context.getText(), SearchTypeConverter.convertNb2RdxSearchType(context.getSearchType()));
                 if (matcher == null) {
                     return;
                 }

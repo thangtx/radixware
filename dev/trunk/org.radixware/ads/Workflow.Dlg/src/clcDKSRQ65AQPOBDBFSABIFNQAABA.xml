@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
-  <AdsContextlessCommandDefinition Id="clcDKSRQ65AQPOBDBFSABIFNQAABA" Name="GetSuitableReceiversCmd" Nature="2" IsVisible="false" IsConfirmationRequired="false">
+  <AdsContextlessCommandDefinition Id="clcDKSRQ65AQPOBDBFSABIFNQAABA" Name="GetSuitableReceiversCmd" Nature="2" IsReadOnlyCommand="true" IsVisible="false" IsConfirmationRequired="false">
+    <AccessRules IsFinal="true"/>
     <InType TypeId="451" Path="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" extStr="GetSuitableReceiversRqDocument"/>
     <OutType TypeId="451" Path="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" extStr="GetSuitableReceiversRsDocument"/>
     <Source>
@@ -11,40 +12,52 @@ java.util.Vector&lt;String> userNames = new java.util.Vector&lt;String>();
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="accDLJ5VXPXQLOBDBFRAALOYD3UKE"/>
+        <xsc:TypeDeclaration TypeId="411" Path="accDLJ5VXPXQLOBDBFRAALOYD3UKE">
+          <xsc:Presentation>Workflow.Db::GetSuitableReceiversCursor</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> cursor = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="accDLJ5VXPXQLOBDBFRAALOYD3UKE"/>
+        <xsc:TypeDeclaration TypeId="411" Path="accDLJ5VXPXQLOBDBFRAALOYD3UKE">
+          <xsc:Presentation>Workflow.Db::GetSuitableReceiversCursor</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accDLJ5VXPXQLOBDBFRAALOYD3UKE mth_stmt_execute_____________" Invoke="true"/>
+        <xsc:IdReference Path="accDLJ5VXPXQLOBDBFRAALOYD3UKE mth_stmt_execute_____________" Invoke="true">
+          <xsc:Presentation>open</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>(formId);
 while(cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+          <xsc:Presentation>next</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>())
    userNames.add(cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accDLJ5VXPXQLOBDBFRAALOYD3UKE prf3WWJQONHVRCPTI56YPLJZ5H2CI" Invoke="true"/>
+        <xsc:IdReference Path="accDLJ5VXPXQLOBDBFRAALOYD3UKE prf3WWJQONHVRCPTI56YPLJZ5H2CI" Invoke="true">
+          <xsc:Presentation>name</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>);
 cursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true">
+          <xsc:Presentation>close</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
@@ -52,14 +65,18 @@ cursor.</xsc:Java>
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" extStr="GetSuitableReceiversRsDocument"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" extStr="GetSuitableReceiversRsDocument">
+          <xsc:Presentation>Workflow::CommandsXsd:GetSuitableReceiversRsDocument</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> output =
    </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" extStr="GetSuitableReceiversRsDocument.Factory"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" extStr="GetSuitableReceiversRsDocument.Factory">
+          <xsc:Presentation>Workflow::CommandsXsd:GetSuitableReceiversRsDocument.Factory</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.newInstance();
@@ -70,7 +87,9 @@ for(String userName : userNames)
    </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" extStr="GetSuitableReceiversRsDocument.GetSuitableReceiversRs.Item"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdAVNC5OMH2DNRDISQAAAAAAAAAA" extStr="GetSuitableReceiversRsDocument.GetSuitableReceiversRs.Item">
+          <xsc:Presentation>Workflow::CommandsXsd:GetSuitableReceiversRsDocument.GetSuitableReceiversRs.Item</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> item =
@@ -88,13 +107,17 @@ for(String userName : userNames)
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="adcOBDE3D7DK3OBDBEJABIFNQAABA"/>
+        <xsc:TypeDeclaration TypeId="411" Path="adcOBDE3D7DK3OBDBEJABIFNQAABA">
+          <xsc:Presentation>Workflow::ServerUtil</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="adcOBDE3D7DK3OBDBEJABIFNQAABA mthXFMU27BOE7ORDBKCABIFNQAABA" Invoke="true"/>
+        <xsc:IdReference Path="adcOBDE3D7DK3OBDBEJABIFNQAABA mthXFMU27BOE7ORDBKCABIFNQAABA" Invoke="true">
+          <xsc:Presentation>debug</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>

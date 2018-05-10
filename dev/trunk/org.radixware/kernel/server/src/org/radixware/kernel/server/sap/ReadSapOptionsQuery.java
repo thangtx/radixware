@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -34,50 +35,60 @@ import org.radixware.kernel.common.utils.io.pipe.PipeAddress;
 import org.radixware.kernel.common.utils.net.JmsUtils;
 import org.radixware.kernel.common.utils.net.SapAddress;
 import org.radixware.kernel.common.utils.net.SocketServerChannel;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 
 
 public class ReadSapOptionsQuery {
 
+    private static final String readOptsQryStmtSQL = "select "
+                                                    + "ap.address, "
+                                                    + "ap.uri, "
+                                                    + "ap.systemId, "
+                                                    + "ap.securityprotocol, "
+                                                    + "ap.serverkeyaliases, "
+                                                    + "ap.clientcertaliases, "
+                                                    + "ap.checkclientcert, "
+                                                    + "ap.channelType, "
+                                                    + "ap.cipherSuites, "
+                                                    + "ap.easKrbAuth,"
+                                                    + "ap.serverAttrs, "
+                                                    + "ap.useWsSecurity, "
+                                                    + "ap.serviceQName, "
+                                                    + "ap.portQName, "
+                                                    + "ap.serviceLastUpdateTime, "
+                                                    + "nvl2(ap.serviceWsdl, 1, 0) wsdlPresent, "
+                                                    + "dsm.uri dsmWsdlUri, "
+                                                    + "dsm.lastUpdateTime dsmWsdlLastUpdateTime "
+                                                    + "from "
+                                                    + "rdx_sap ap, "
+                                                    + "rdx_service svc left join rdx_sb_datascheme dsm on dsm.uri = svc.wsdlUri "
+                                                    + "where ap.id = ? "
+                                                    + "and svc.systemId = ap.systemId "
+                                                    + "and svc.uri = ap.uri";
+    private static final Stmt readOptsQryStmt = new Stmt(readOptsQryStmtSQL,Types.BIGINT);
     private PreparedStatement readOptsQry = null;
+    
     private final Connection connection;
+    private final IDbQueries delegate = new DelegateDbQueries(this, null);
 
+    private ReadSapOptionsQuery() {
+        this.connection = null;
+    }
+    
     public ReadSapOptionsQuery(final Connection connection) {
         this.connection = connection;
     }
 
     public SapOptions readOptions(final long sapId) throws SQLException {
         if (readOptsQry == null) {
-            readOptsQry = connection.prepareStatement(
-                    "select "
-                    + "ap.address, "
-                    + "ap.uri, "
-                    + "ap.systemId, "
-                    + "ap.securityprotocol, "
-                    + "ap.serverkeyaliases, "
-                    + "ap.clientcertaliases, "
-                    + "ap.checkclientcert, "
-                    + "ap.channelType, "
-                    + "ap.cipherSuites, "
-                    + "ap.easKrbAuth,"
-                    + "ap.serverAttrs, "
-                    + "ap.useWsSecurity, "
-                    + "ap.serviceQName, "
-                    + "ap.portQName, "
-                    + "ap.serviceLastUpdateTime, "
-                    + "nvl2(ap.serviceWsdl, 1, 0) wsdlPresent, "
-                    + "dsm.uri dsmWsdlUri, "
-                    + "dsm.lastUpdateTime dsmWsdlLastUpdateTime "
-                    + "from "
-                    + "rdx_sap ap, "
-                    + "rdx_service svc left join rdx_sb_datascheme dsm on dsm.uri = svc.wsdlUri "
-                    + "where ap.id = ? "
-                    + "and svc.systemId = ap.systemId "
-                    + "and svc.uri = ap.uri");
+            readOptsQry = ((RadixConnection)connection).prepareStatement(readOptsQryStmt);
             readOptsQry.setFetchSize(1);
         }
         readOptsQry.setLong(1, sapId);
-        final ResultSet rs = readOptsQry.executeQuery();
-        try {
+        try(final ResultSet rs = readOptsQry.executeQuery()) {
             if (rs.next()) {
                 final EChannelType channelType = EChannelType.getForValue(rs.getString("channelType"));
                 final SapAddress sapAddress;
@@ -155,8 +166,6 @@ public class ReadSapOptionsQuery {
             } else {
                 throw new IllegalUsageError("There is no sap with id #" + sapId);
             }
-        } finally {
-            rs.close();
         }
     }
 

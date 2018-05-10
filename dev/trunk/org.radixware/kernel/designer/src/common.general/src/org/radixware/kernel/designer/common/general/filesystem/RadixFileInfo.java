@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.common.general.filesystem;
 
 import java.io.File;
@@ -24,7 +23,6 @@ import org.radixware.kernel.common.repository.Branch;
 import org.radixware.kernel.common.repository.Layer;
 import org.radixware.kernel.common.repository.dds.DdsScripts;
 import org.radixware.kernel.common.utils.FileUtils;
-
 
 public final class RadixFileInfo {
 
@@ -140,6 +138,39 @@ public final class RadixFileInfo {
         return "locale".equals(file.getName()) && parent != null && isDdsModuleDir(parent);
     }
 
+    private static boolean isDocDir(File file) {
+        if (file == null) {
+            return false;
+        }
+        final File parent = file.getParentFile();
+        if (parent != null && isAdsSourcesDir(parent)) {
+            return AdsModule.DOCUMENTATION_DIR_NAME.equals(file.getName()) && file.isDirectory();
+        } else {
+            return false;
+        }
+    }
+
+    private static boolean isDocLangDir(File file) {
+        try {
+            final File parent = file.getParentFile();
+            return parent != null && isDocDir(parent) && EIsoLanguage.getForValue(file.getName()) != null;
+        } catch (NoConstItemWithSuchValueError ex) {
+            return false;
+        }
+    }
+
+    private static boolean isDocResourceDir(File file) {
+        if (file == null) {
+            return false;
+        }
+        final File parent = file.getParentFile();
+        if (parent != null && isDocLangDir(parent)) {
+            return AdsModule.DOCUMENTATION_RESOURCE_DIR_NAME.equals(file.getName()) && file.isDirectory();
+        } else {
+            return false;
+        }
+    }
+
     private static boolean isDirectoryShareable(File dir) {
         return isBranchDir(dir)
                 || isLayerDir(dir)
@@ -162,7 +193,11 @@ public final class RadixFileInfo {
                 || isUdsDictionaryDir(dir)
                 || isUdsLocaleDir(dir)
                 || isUdsLangDir(dir)
-                || isDdsLocaleDir(dir);
+                || isDdsLocaleDir(dir)
+                || isPreviewDir(dir)
+                || isDocDir(dir)
+                || isDocLangDir(dir)
+                || isDocResourceDir(dir);
     }
 
     private static boolean isDdsLangFile(File file) {
@@ -191,7 +226,6 @@ public final class RadixFileInfo {
             final String ext = FileUtils.getFileExt(file);
             return "xml".equals(ext);
         }
-
 
         if (isAdsImagesDir(parent)) {
             final String ext = FileUtils.getFileExt(file);
@@ -232,6 +266,7 @@ public final class RadixFileInfo {
                     || DdsModelManager.FIXED_MODEL_XML_FILE_NAME.equals(name)
                     || DdsModelManager.MODIFIED_MODEL_XML_FILE_NAME.equals(name)
                     || FileUtils.DIRECTORY_XML_FILE_NAME.equals(name)
+                    || FileUtils.SQML_DEFINITIONS_XML_FILE_NAME.equals(name)
                     || FileUtils.LICENSE_TXT_FILE_NAME.equals(name);
         }
 
@@ -247,7 +282,8 @@ public final class RadixFileInfo {
 
         if (isAdsModuleDir(parent)) {
             final String name = file.getName();
-            return Module.MODULE_XML_FILE_NAME.equals(name) || FileUtils.LICENSE_TXT_FILE_NAME.equals(name);
+            return Module.MODULE_XML_FILE_NAME.equals(name)
+                    || FileUtils.LICENSE_TXT_FILE_NAME.equals(name);
         }
         if (isUdsModuleDir(parent)) {
             final String name = file.getName();
@@ -268,6 +304,20 @@ public final class RadixFileInfo {
                 }
             }
         }
+
+        if (isPreviewDir(parent)) {
+            final String ext = FileUtils.getFileExt(file);
+            return "java".equals(ext);
+        }
+
+        if (isDocDir(parent) || isDocLangDir(parent)) {
+            final String ext = FileUtils.getFileExt(file);
+            return "xml".equals(ext);
+        }
+        
+        if (isDocResourceDir(parent)) {
+            return true;
+        }
         return false;
     }
 
@@ -278,6 +328,18 @@ public final class RadixFileInfo {
         final File parent = file.getParentFile();
         if (parent != null && isUdsModuleDir(parent)) {
             return UdsModule.ETC_DIR_NAME.equals(file.getName()) && file.isDirectory();
+        } else {
+            return false;
+        }
+    }
+
+    private static boolean isPreviewDir(File file) {
+        if (file == null) {
+            return false;
+        }
+        final File parent = file.getParentFile();
+        if (parent != null && isAdsSourcesDir(parent)) {
+            return Module.PREVIEW_DIR_NAME.equals(file.getName()) && file.isDirectory();
         } else {
             return false;
         }

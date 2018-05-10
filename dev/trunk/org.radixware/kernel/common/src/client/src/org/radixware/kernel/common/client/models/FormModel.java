@@ -18,6 +18,7 @@ import java.util.List;
 import org.apache.xmlbeans.XmlObject;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.ClientIcon;
+import org.radixware.kernel.common.client.exceptions.ClientException;
 import org.radixware.kernel.common.client.exceptions.ModelException;
 import org.radixware.kernel.common.client.meta.RadEnumPresentationDef;
 import org.radixware.kernel.common.client.meta.RadFormDef;
@@ -26,9 +27,12 @@ import org.radixware.kernel.common.client.meta.RadPresentationCommandDef;
 import org.radixware.kernel.common.client.meta.RadPropertyDef;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.common.client.models.items.properties.PropertyRef;
+import org.radixware.kernel.common.client.models.items.properties.PropertyReference;
 import org.radixware.kernel.common.client.models.items.properties.PropertyValue;
 import org.radixware.kernel.common.client.models.items.properties.PropertyXml;
+import org.radixware.kernel.common.client.models.items.properties.SimpleProperty;
 import org.radixware.kernel.common.client.types.Icon;
+import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.utils.ValueConverter;
 import org.radixware.kernel.common.client.views.IDialog;
 import org.radixware.kernel.common.client.views.IDialog.DialogResult;
@@ -127,11 +131,21 @@ public abstract class FormModel extends ModelWithPages {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected Property activateProperty(Id id) {
         final Property p = super.activateProperty(id);
         if (p != null) {
             final RadPropertyDef propertyDef = p.getDefinition();
-            p.setServerValue(new PropertyValue(propertyDef, ValAsStr.fromStr(propertyDef.getInitialVal(), propertyDef.getType())));
+            final Object value = ValAsStr.fromStr(propertyDef.getInitialVal(), propertyDef.getType());
+            if (p.isLocal()){
+                if (p instanceof SimpleProperty){
+                    ((SimpleProperty)p).setInitialValue(value);
+                }else if (p instanceof PropertyReference){
+                    ((PropertyReference)p).setInitialValue((Reference)value);
+                }
+            }else{
+                p.setServerValue(new PropertyValue(propertyDef, value));
+            }
         }
         return p;
     }
@@ -152,6 +166,7 @@ public abstract class FormModel extends ModelWithPages {
         if (getFormView() != null) {
             getFormView().getEventSupport().removeResultListener(DialogResult.REJECTED, rejectListener);
         }
+        reopen = false;
         closed = true;
         super.clean();
     }
@@ -165,10 +180,33 @@ public abstract class FormModel extends ModelWithPages {
         }
         return result;
     }
+    
+    private final void setInitialValues(){
+        final Collection<RadPropertyDef> propDefs = getFormDef().getProperties();
+        for (RadPropertyDef propDef: propDefs){
+            final ValAsStr valAsStr = propDef.getInitialVal();
+            if (valAsStr!=null){
+                try{
+                    final Object val = valAsStr.toObject(propDef.getType());
+                    if (val!=null){
+                        getProperty(propDef.getId()).setServerValue(new PropertyValue(propDef, val));
+                    }
+                }catch(RuntimeException exception){
+                    final String messageTemplate = 
+                        getEnvironment().getMessageProvider().translate("TraceMessage", "Failed to set initial value '%1$s' to property %2$s:\n%3$s");
+                    final String exceptionStack = ClientException.exceptionStackToString(exception);
+                    final String message = 
+                        String.format(messageTemplate, valAsStr.toString(), propDef.toString(), exceptionStack);
+                    getEnvironment().getTracer().warning(message);
+                }
+            }
+        }
+    }
 
     public static FormModel create(final Id formId, final IContext.Form ctx) {
         final RadFormDef def = ctx.getEnvironment().getDefManager().getFormDef(formId);
         final FormModel form = def.createModel(ctx);
+        form.setInitialValues();
         form.afterInit();
         form.afterRead();
         return !form.closed ? form : null;
@@ -215,7 +253,7 @@ public abstract class FormModel extends ModelWithPages {
                             valTableId = null;
                         }                        
                         value = ValueConverter.easPropXmlVal2ObjVal(item, property.getDefinition().getType(),
-                                valTableId);                        
+                                valTableId, getEnvironment().getDefManager());
                     }
                     property.setValueObject(value);
                     property.setServerValue(new PropertyValue(property.getDefinition(),value));
@@ -250,11 +288,19 @@ public abstract class FormModel extends ModelWithPages {
             return true;
         }
 
-        if (nextForm != null) {
+        if (nextForm == null) {
+            final FormResult result = FormResult.CANCEL;
+            if (getFormView()!=null){
+                getFormView().done(result);
+            }else{
+                saveResult = result;
+            }
+            clean();
+        } else {
             try {
                 final FormResult result = nextForm.exec(getFormView());
-                reopen = (result == FormResult.PREVIOUS) && (getFormView() != null);
-                if (reopen) {
+                if (result == FormResult.PREVIOUS && getFormView() != null){
+                    reopen = !getFormView().isVisible();
                     return false;
                 } else {
                     if (getFormView() != null) {
@@ -265,8 +311,6 @@ public abstract class FormModel extends ModelWithPages {
             } finally {
                 nextForm.clean();
             }
-        } else {
-            clean();
         }
         return true;
     }
@@ -274,6 +318,7 @@ public abstract class FormModel extends ModelWithPages {
     public FormResult exec(IFormView previous) {
         do {
             cleanPages();
+            cleanPropertiesGroups();
             setView(null);
             IFormView view = (IFormView) createView();
             reopen = false;
@@ -288,7 +333,7 @@ public abstract class FormModel extends ModelWithPages {
 
                 saveResult = view.formResult();
             }
-        } while (reopen);
+        } while (reopen && !closed);
 
         if (getFormView() != null) {
             setView(null);
@@ -307,6 +352,7 @@ public abstract class FormModel extends ModelWithPages {
                 if (getFormView()!=null){
                     getFormView().close();
                     cleanPages();
+                    cleanPropertiesGroups();
                     setView(null);
                 }
             }
@@ -463,9 +509,14 @@ public abstract class FormModel extends ModelWithPages {
         return null;
     }
 
-    public void close() {
+    public void close() {        
         clean();
     }
+    
+    public final void cancel(){
+        saveResult = FormResult.CANCEL;
+        close();
+    }    
     
     public boolean beforeCloseDialog(final IDialog.DialogResult result){
         return true;

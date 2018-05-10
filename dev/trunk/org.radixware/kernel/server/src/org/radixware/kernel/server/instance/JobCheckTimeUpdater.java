@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,16 +24,25 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.common.utils.ExceptionTextFormatter;
 import org.radixware.kernel.server.arte.Arte;
+import org.radixware.kernel.server.jdbc.DelegateDbQueries;
+import org.radixware.kernel.server.jdbc.Stmt;
+import org.radixware.kernel.server.jdbc.IDbQueries;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 
 public class JobCheckTimeUpdater {
 
     private static final String THREAD_NAME = "JobCheckTimeUpdater";
     public static final int UPDATE_INTERVAL_SECONDS = 5;
-    private static final long DB_PING_INTERVAL = 60000;
+    private static final long DB_PING_INTERVAL = 30000;
     private final Map<Arte, JobInfo> arte2job = new WeakHashMap<>();
     private final Instance instance;
     private volatile UpdaterThread updaterThread;
 
+    private JobCheckTimeUpdater() { // Only for IDbQuery testing purposes!
+        this.instance = null;
+        this.updaterThread = new UpdaterThread();
+    }
+    
     public JobCheckTimeUpdater(Instance instance) {
         this.instance = instance;
     }
@@ -87,14 +97,29 @@ public class JobCheckTimeUpdater {
         }
     }
 
-    private class UpdaterThread extends Thread {
-
+    private class UpdaterThread extends Thread implements IDbQueries {
+        
         private volatile boolean stopping = false;
         private volatile Connection dbConnection;
-        private volatile PreparedStatement qryUpdateJob;
-        private volatile PreparedStatement qryUpdateTask;
-        private volatile PreparedStatement qryLockJob;
-        private volatile PreparedStatement qryLockTask;
+        
+        private static final String qryLockJobStmtSQL = "select id from rdx_js_jobqueue where id = ? for update skip locked";
+        private volatile Stmt qryLockJobStmt = new Stmt(qryLockJobStmtSQL,Types.BIGINT);
+        private volatile PreparedStatement qryLockJob = null;
+        
+        private static final String qryLockTaskStmtSQL = "select id from rdx_js_task where id = ? for update skip locked";
+        private volatile Stmt qryLockTaskStmt = new Stmt(qryLockTaskStmtSQL,Types.BIGINT);
+        private volatile PreparedStatement qryLockTask = null;
+
+        private static final String qryUpdateJobStmtSQL = "update rdx_js_jobqueue set selfchecktime=sysdate, selfCheckTimeMillis=RDX_UTILS.getUnixEpochMillis() where id = ?";
+        private volatile Stmt qryUpdateJobStmt = new Stmt(qryUpdateJobStmtSQL,Types.BIGINT);
+        private volatile PreparedStatement qryUpdateJob = null;
+
+        private static final String qryUpdateTaskStmtSQL = "update rdx_js_task set selfchecktime=sysdate, selfCheckTimeMillis=RDX_UTILS.getUnixEpochMillis() where id = ?";        
+        private volatile Stmt qryUpdateTaskStmt = new Stmt(qryUpdateTaskStmtSQL,Types.BIGINT);
+        private volatile PreparedStatement qryUpdateTask = null;
+        
+        private final IDbQueries delegate = new DelegateDbQueries(this, null);
+        
         private long lastDbActivityTimeMillis = 0;
 
         public UpdaterThread() {
@@ -149,16 +174,16 @@ public class JobCheckTimeUpdater {
                 Connection connection = getDbConnection();
                 if (connection != null) {
                     if (qryLockJob == null) {
-                        qryLockJob = connection.prepareStatement("select id from rdx_js_jobqueue where id = ? for update skip locked");
+                        qryLockJob = ((RadixConnection)connection).prepareStatement(qryLockJobStmt);
                     }
                     if (qryLockTask == null) {
-                        qryLockTask = connection.prepareStatement("select id from rdx_js_task where id = ? for update skip locked");
+                        qryLockTask = ((RadixConnection)connection).prepareStatement(qryLockTaskStmt);
                     }
                     if (qryUpdateJob == null) {
-                        qryUpdateJob = connection.prepareStatement("update rdx_js_jobqueue set selfchecktime=sysdate where id = ?");
+                        qryUpdateJob = ((RadixConnection)connection).prepareStatement(qryUpdateJobStmt);
                     }
                     if (qryUpdateTask == null) {
-                        qryUpdateTask = connection.prepareStatement("update rdx_js_task set selfchecktime=sysdate where id = ?");
+                        qryUpdateTask = ((RadixConnection)connection).prepareStatement(qryUpdateTaskStmt);
                     }
                     final List<JobInfo> toUpdate = new ArrayList<>();
                     synchronized (arte2job) {
@@ -228,6 +253,14 @@ public class JobCheckTimeUpdater {
                 }
             }
         }
+        
+        @Override public Iterable<PreparedStatement> getPreparedStatements() {return delegate.getPreparedStatements();}
+        @Override public Iterable<String> getPeparedStatementsSourceSQL() {return delegate.getPeparedStatementsSourceSQL();}
+        @Override public int getPreparedStatementsCount() {return delegate.getPreparedStatementsCount();}
+        @Override public int getTotalPreparedStatementsCount() {return delegate.getTotalPreparedStatementsCount();}
+        @Override public void prepareAll() throws SQLException {delegate.prepareAll();}
+        @Override public void prepareAll(Connection conn) throws SQLException {delegate.prepareAll(conn);}
+        @Override public void closeAll() {delegate.closeAll();}
     }
 
     private static class JobInfo {

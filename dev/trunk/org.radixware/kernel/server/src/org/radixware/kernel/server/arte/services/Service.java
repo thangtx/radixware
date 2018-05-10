@@ -18,7 +18,6 @@ import org.radixware.kernel.common.enums.EEventContextType;
 
 import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
-import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.RadixError;
 import org.radixware.kernel.common.types.ArrStr;
 import org.radixware.kernel.common.utils.SoapFormatter;
@@ -32,12 +31,12 @@ import org.radixware.kernel.common.trace.TraceProfile;
 import org.radixware.kernel.common.utils.SystemPropUtils;
 import org.radixware.kernel.server.SrvRunParams;
 import org.radixware.kernel.server.instance.arte.ArteProcessor;
+import org.radixware.kernel.server.jdbc.RadixConnection;
 import org.radixware.kernel.server.trace.ServerTrace;
 import org.radixware.kernel.server.trace.TraceContext;
 import org.radixware.kernel.server.trace.TraceProfiles;
 import org.radixware.kernel.server.units.Unit;
 import org.xmlsoap.schemas.soap.envelope.Body;
-import org.xmlsoap.schemas.soap.envelope.Envelope;
 
 /**
  * Сервис предоставляемый в рамках ARTE.
@@ -46,10 +45,14 @@ import org.xmlsoap.schemas.soap.envelope.Envelope;
  *
  */
 public abstract class Service {
-
     final private int recvTimeout;
     protected final Arte arte;
 
+    protected Service() {
+        this.recvTimeout = 0;
+        this.arte = null;
+    }
+    
     protected Service(final Arte arte, final int recvTimeout) {
         this.recvTimeout = recvTimeout;
         this.arte = arte;
@@ -83,7 +86,7 @@ public abstract class Service {
         Object clientTraceTarget = null;
         Object unitTraceTarget = null;
         if (port.getUnit() != null) {
-            unitTraceTarget = arte.getTrace().addTargetBuffer(EEventSeverity.DEBUG.getName(), new CopyToUnitTraceBuffer(port.getUnit(), arte));
+            unitTraceTarget = arte.getTrace().addTargetBuffer(EEventSeverity.DEBUG.getName(), new CopyToUnitTraceBuffer(port.getUnit(), arte), true);
         }
         try {
             if (port.getUnit() != null) {
@@ -99,7 +102,7 @@ public abstract class Service {
                 }
                 arte.serviceRqProcessingStarted(request);
                 String traceProfile = getTraceProfile(request);
-                clientTraceTarget = arte.getTrace().addTargetBuffer(traceProfile, traceBuffer);
+                clientTraceTarget = arte.getTrace().addTargetBuffer(traceProfile, traceBuffer, "client_buffer");
 
                 prepare(port, request, headerAttrs);
                 boolean commit = false;
@@ -215,11 +218,11 @@ public abstract class Service {
         try {
             arte.endTransaction(false);
         } catch (Throwable arteEx) {
-            if (arte.getDbConnection() == null || arte.getDbConnection().getRadixConnection() == null || !arte.getDbConnection().getRadixConnection().isForciblyClosed()) {
+            if (arte.getDbConnection() == null || ((RadixConnection)arte.getDbConnection().get()) == null || !((RadixConnection)arte.getDbConnection().get()).isForciblyClosed()) {
                 arte.getTrace().put(EEventSeverity.ALARM, "Can't do rollback and end transaction: " + arte.getTrace().exceptionStackToString(arteEx), EEventSource.ARTE);
             } else {
-                final String reason = arte.getDbConnection().getRadixConnection().getForcedCloseReason();
-                arte.getTrace().put(EEventSeverity.ERROR, "Arte database connection was forcibly closed" + (reason == null ? "" : " (" + reason + ")"), EEventSource.ARTE);
+                final String reason = ((RadixConnection)arte.getDbConnection().get()).getForcedCloseReason();
+                arte.getTrace().put(arte.suppressDbForciblyCloseErrors() ? EEventSeverity.DEBUG : EEventSeverity.ERROR, "Arte database connection was forcibly closed" + (reason == null ? "" : " (" + reason + ")"), EEventSource.ARTE);
             }
         }
     }
@@ -334,7 +337,7 @@ public abstract class Service {
             } else {
                 arteGuiTraceProfile = new TraceProfile(EEventSeverity.NONE.getName());
             }
-            final TraceProfiles unitProfiles = unit.getTraceProfiles();
+            final TraceProfiles unitProfiles = unit.getTrace() != null ? unit.getTrace().getProfiles() : TraceProfiles.NONE;
             unitGuiTraceProfile = unitProfiles != null && unitProfiles.getGuiTraceProfileObj() != null ? unitProfiles.getGuiTraceProfileObj() : new TraceProfile(EEventSeverity.NONE.getName());
             unitFileTraceProfile = unitProfiles != null && unitProfiles.getFileTraceProfileObj() != null ? unitProfiles.getFileTraceProfileObj() : new TraceProfile(EEventSeverity.NONE.getName());
         }
@@ -355,6 +358,7 @@ public abstract class Service {
                         item.code,
                         item.words,
                         item.source,
+                        item.context,
                         item.time,
                         item.isSensitive,
                         destinations);

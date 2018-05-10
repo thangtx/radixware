@@ -12,46 +12,58 @@
 package org.radixware.kernel.explorer.dialogs.settings;
 
 import com.trolltech.qt.gui.QWidget;
-import java.util.Map;
-import java.util.WeakHashMap;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.kernel.explorer.env.ExplorerSettings;
+import org.radixware.kernel.explorer.env.IExplorerSettings;
 import org.radixware.kernel.explorer.widgets.ExplorerWidget;
 
-public abstract class SettingsWidget extends ExplorerWidget {
+abstract class SettingsWidget extends ExplorerWidget {
 
-     public final String group, subGroup, name;
-    protected final static Map<IClientEnvironment, ExplorerSettings> defaultSettings = new WeakHashMap<IClientEnvironment, ExplorerSettings>(1);	
+    protected final String group, subGroup, name;
+    private final String settingCfgName;    
 
-    public SettingsWidget(IClientEnvironment environment, final QWidget parent, final String gr, final String sub, final String n) {
-        super(environment, parent);
+    public SettingsWidget(final IClientEnvironment environment, 
+                                     final QWidget parent, 
+                                     final String gr, 
+                                     final String sub, 
+                                     final String n) {
+        super(environment, parent);        
         group = gr;
         subGroup = sub;
         name = n;
+        final StringBuilder keyBuilder = new StringBuilder(SettingNames.SYSTEM);        
+        if (group!=null && !group.isEmpty()){
+            keyBuilder.append('/');
+            keyBuilder.append(group);            
+        }
+        if (subGroup!=null && !subGroup.isEmpty()){
+            keyBuilder.append('/');
+            keyBuilder.append(subGroup);            
+        }
+        if (name!=null && !name.isEmpty()){
+            keyBuilder.append('/');
+            keyBuilder.append(name);
+        }
+        settingCfgName = keyBuilder.toString();
     }
 
-    protected final ExplorerSettings getDefaultSettings() {
-        ExplorerSettings s = defaultSettings.get(getEnvironment());
-        if (s == null) {
-            s = new ExplorerSettings(getEnvironment());
-            defaultSettings.put(getEnvironment(), s);
-        }
-        return s;
+    protected final IExplorerSettings getDefaultSettings() {
+        return ((ExplorerSettings)getEnvironment().getConfigStore()).getDefaultSettings();
     }
 
     @SuppressWarnings("unchecked")
-    public abstract void readSettings(ExplorerSettings src);
+    public abstract void readSettings(IExplorerSettings src);
 
-    public abstract void writeSettings(ExplorerSettings dst);
+    public abstract void writeSettings(IExplorerSettings dst);
 
-    public String getSettingCfgName() {
-        if (subGroup == null || subGroup.isEmpty()) {
-            return SettingNames.SYSTEM + "/" + group + "/" + name;
-        } else {
-            return SettingNames.SYSTEM + "/" + group + "/" + subGroup + "/" + name;
-        }
+    public final String getSettingCfgName() {
+        return settingCfgName;
     }
 
     public abstract void restoreDefaults();
+    
+    public boolean validate() {
+        return true;
+    }
 }

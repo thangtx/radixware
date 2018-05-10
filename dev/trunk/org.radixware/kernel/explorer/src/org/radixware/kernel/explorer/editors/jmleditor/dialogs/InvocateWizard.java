@@ -93,7 +93,10 @@ public class InvocateWizard extends BaseWizard implements IChooseDefFromList {
             if (modelIndex.model() instanceof ListModel) {
                 final DefInfo di = ((ListModel) modelIndex.model()).getDefList().get(modelIndex.row());
                 if (di != null) {
-                    curItem = di.getDefinition();//Lookup.findTopLevelDefinition(editor.getUserFunc(), di.getId());
+                    curItem = di.getDefinition();
+                    if (curItem == null) {
+                        curItem = Lookup.findTopLevelDefinition(editor.getUserFunc(), di.getPath()[0]);
+                    }
                     if ((curItem instanceof AdsEnumDef) || (curItem instanceof AdsClassDef) || (curItem instanceof AdsDomainDef)) {
                         curDef = curItem;
                         return false;

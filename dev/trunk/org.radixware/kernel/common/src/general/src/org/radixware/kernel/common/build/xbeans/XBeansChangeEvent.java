@@ -8,11 +8,11 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.build.xbeans;
 
 import javax.xml.namespace.QName;
-
+import org.apache.xmlbeans.SimpleValue;
+import org.apache.xmlbeans.impl.values.XmlValueOutOfRangeException;
 
 public class XBeansChangeEvent {
 
@@ -58,6 +58,13 @@ public class XBeansChangeEvent {
     }
 
     public Object getNewValue() {
+        if (newValue instanceof SimpleValue) {
+            try {
+                return ((SimpleValue) newValue).getObjectValue();
+            } catch (XmlValueOutOfRangeException e) {
+                return null;
+            }
+        }
         return newValue;
     }
 

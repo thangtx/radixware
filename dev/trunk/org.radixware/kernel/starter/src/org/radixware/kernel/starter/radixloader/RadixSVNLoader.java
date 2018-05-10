@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-2015, Compass Plus Limited. All rights reserved.
+ * Copyright (c) 2008-2018, Compass Plus Limited. All rights reserved.
  *
  * This Source Code Form is subject to the terms of the Mozilla Public License,
  * v. 2.0. If a copy of the MPL was not distributed with this file, You can
@@ -27,9 +27,16 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.jar.JarFile;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -46,6 +53,8 @@ import org.radixware.kernel.starter.config.ConfigFileParser;
 import org.radixware.kernel.starter.filecache.CacheEntry;
 import org.radixware.kernel.starter.filecache.FileCacheEntry;
 import org.radixware.kernel.starter.filecache.JarCacheEntry;
+import org.radixware.kernel.starter.log.SafeLogger;
+import org.radixware.kernel.starter.log.StarterLog;
 import org.radixware.kernel.starter.meta.FileMeta;
 import org.radixware.kernel.starter.meta.LayerMeta;
 import org.radixware.kernel.starter.meta.RevisionMeta;
@@ -71,12 +80,14 @@ import org.w3c.dom.Node;
  */
 public class RadixSVNLoader extends RadixLoader {
 
+    private static final boolean NULL_DIGEST_IS_ALWAYS_GOOD = Boolean.getBoolean("rdx.starter.null.digest.is.always.good");
     private static final String REPLICATIONS_FILE = "config/replication.xml";
     private static final DateFormat REVISION_DATE_FORMAT_OLD = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss:SSS");
     private static final DateFormat REVISION_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
     private static final String MASTER_SVN_URL_ATTR = "MasterSvnUrl";
     private static final String SVN_HOME_URL_ATTR = "SvnHomeUrl";
     private static final int SLEEP_BETWEEN_SVN_PINGS_MILLIS = 60000;
+    private static final int PRELOAD_THREADS = Integer.getInteger("rdx.starter.preload.threads", 1);
     //
     private final String primarySvnUrl;
     private final List<String> additionalSvnUrls = new ArrayList<>();
@@ -89,6 +100,7 @@ public class RadixSVNLoader extends RadixLoader {
     private PendingRevisionInfo pendingRevision;
     private final Object actualizeLock = new Object();
     private final SvnPingerThread svnPingerThread;
+    private final File localSvnBackupDir;
 
     public RadixSVNLoader(final String primarySvnUrl, final List<String> additionalSvnUrls, final List<String> topLayerUris, final String authUser, final String authPassword, final String sshKeyFile, final String sshKeyPassword, final String svnServerCertFile, final boolean svnLog, final File fileCacheDir, final LocalFiles localFiles) throws RadixSvnException, RadixLoaderException {
         super(topLayerUris, localFiles);
@@ -105,14 +117,14 @@ public class RadixSVNLoader extends RadixLoader {
         if (additionalSvnUrls != null) {
             svnUrls.addAll(additionalSvnUrls);
             this.additionalSvnUrls.addAll(additionalSvnUrls);
-        }
+            }
         final SVNAuthData authData = new SVNAuthData(
                 authUser,
                 authPassword == null ? null : authPassword.toCharArray(),
                 sshKeyFile,
                 sshKeyPassword == null ? null : sshKeyPassword.toCharArray(),
                 svnServerCertFile);
-        dataSupplier = new BinaryDataSupplier(svnUrls, svnLog, authData);
+        dataSupplier = new BinaryDataSupplier(svnUrls, authData);
         if (Starter.isRoot() || (Starter.getArguments() != null && Starter.getArguments().getStarterParameters() != null && Starter.getArguments().getStarterParameters().containsKey(StarterArguments.DISABLE_SVN_PING))) {
             svnPingerThread = null;
         } else {
@@ -120,6 +132,16 @@ public class RadixSVNLoader extends RadixLoader {
                 svnPingerThread = new SvnPingerThread(this);
                 svnPingerThread.start();
             }
+        }
+        final String svnBackupDirPath = Starter.getArguments().getStarterParameters().get(StarterArguments.LOCAL_SVN_BACKUP_DIR);
+        if (svnBackupDirPath != null && !svnBackupDirPath.isEmpty()) {
+            final File f = new File(svnBackupDirPath);
+            if (!f.exists()) {
+                traceEvent("WARNING: Local SVN backup dir '" + svnBackupDirPath + "' does not exist");
+            }
+            localSvnBackupDir = f;
+        } else {
+            localSvnBackupDir = null;
         }
     }
 
@@ -135,6 +157,20 @@ public class RadixSVNLoader extends RadixLoader {
     @Override
     public String getRepositoryUri() { // by BAO
         return primarySvnUrl;
+    }
+
+    @Override
+    public long getLatestRevision() {
+        if (dataSupplier != null) {
+            synchronized (dataSupplier.getSynchronizationObject()) {
+                try {
+                    return dataSupplier.getLatestRevision();
+                } catch (RadixSvnException ex) {
+                    return -1;
+                }
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -195,18 +231,18 @@ public class RadixSVNLoader extends RadixLoader {
     }
 
     @Override
-    public RevisionMeta createRevisionMetaImpl(final long revisionNum) throws IOException, XMLStreamException {
-        return new RevisionMeta(new DefaultAccessor(this), revisionNum, HowGetFile.fromSvn());
+    protected RevisionMeta createRevisionMetaImpl(final long revisionNum, ERevisionMetaType metaType) throws IOException, XMLStreamException {
+        return new RevisionMeta(new DefaultAccessor(this), revisionNum, HowGetFile.fromSvn(), metaType);
     }
 
     private RevisionMeta loadCachedRevision(final CacheMeta meta) throws IOException, XMLStreamException {
-        final RevisionMeta revMeta = readRevisionMeta(meta.getRevNum(), HowGetFile.fromDir(meta.getRoot()), new HashSet<String>(), new HashSet<String>(), new HashSet<String>());
+        final RevisionMeta revMeta = readRevisionMeta(meta.getRevNum(), HowGetFile.fromDir(meta.getRoot()), new HashSet<String>(), new HashSet<String>(), new HashSet<String>(), meta.getKernelVersion(), meta.getAppVersion(), meta.getKernelRevisionsString(), meta.getCompatibleKernelRevisionsString());
         revMeta.setTimestampMillis(meta.getRevDate().getTime());
         return revMeta;
     }
 
     @Override
-    protected Set<String> actualizeImpl(final Collection<RevisionMeta> oldRevisionMeta, final Set<String> modifiedFiles, final Set<String> removedFiles, Set<String> preloadGroupSuffixes) throws RadixLoaderException {
+    protected Set<String> actualizeImpl(final long targetRevNum, final Collection<RevisionMeta> oldRevisionMeta, final Set<String> modifiedFiles, final Set<String> removedFiles, Set<String> preloadGroupSuffixes) throws RadixLoaderException {
         traceDebug("Checking for new version...");
         //make a copy to prevent issues with unmodifiable collection
         preloadGroupSuffixes = new HashSet<>(preloadGroupSuffixes == null ? Collections.<String>emptySet() : preloadGroupSuffixes);
@@ -232,11 +268,15 @@ public class RadixSVNLoader extends RadixLoader {
             }
             dataSupplier.ensureConnected();
             try {
-                final long svnLatestRevNum = dataSupplier.getLatestRevision();
-                final long svnLatestRevTimestamp = dataSupplier.getRevisionCreationTime(svnLatestRevNum).getTime();
+                final long actualTargetRevNum = targetRevNum == -1 ? dataSupplier.getLatestRevision() : targetRevNum;
+                final long actualTargetRevTimestamp = dataSupplier.getRevisionCreationTime(actualTargetRevNum).getTime();
+                boolean skipUpdate = targetRevNum == -1 && (currentRevisionMeta != null && currentRevisionMeta.getNum() > actualTargetRevNum && !currentRevisionMeta.isOlderThen(actualTargetRevNum, actualTargetRevTimestamp));
                 RevisionMeta old_revision_meta;
-                if (currentRevisionMeta == null || currentRevisionMeta.isOlderThen(svnLatestRevNum, svnLatestRevTimestamp)) {
-                    if (pendingRevision == null || pendingRevision.isOlderThen(svnLatestRevNum, svnLatestRevTimestamp)) {
+                if (currentRevisionMeta == null
+                        || (!skipUpdate && actualTargetRevNum != currentRevisionMeta.getNum())) {
+                    if (pendingRevision == null
+                            || pendingRevision.revMeta.getNum() != actualTargetRevNum
+                            || pendingRevision.revMeta.getTimestampMillis() != actualTargetRevTimestamp) {
                         if (pendingRevision == null && cacheMeta.getPrecacheDir().exists()) {
                             internalEvent("Try to load pending revision from existing precache dir");
                             try {
@@ -246,7 +286,7 @@ public class RadixSVNLoader extends RadixLoader {
                                     final RevisionMeta revMetaFromPrecache = loadCachedRevision(precacheMeta);
                                     if (revMetaFromPrecache != null) {
                                         internalEvent("Rev #" + revMetaFromPrecache.getNum() + " [" + REVISION_DATE_FORMAT.format(new Date(revMetaFromPrecache.getTimestampMillis())) + "] has been loaded from precache");
-                                        if (!revMetaFromPrecache.isOlderThen(svnLatestRevNum, svnLatestRevTimestamp)) {
+                                        if (revMetaFromPrecache.getNum() == actualTargetRevNum && revMetaFromPrecache.getTimestampMillis() == actualTargetRevTimestamp) {
                                             final Set<String> actually_changed_groups = new HashSet<>();
                                             final Set<String> actually_modified_files = new HashSet<>();
                                             final Set<String> actually_removed_files = new HashSet<>();
@@ -255,7 +295,7 @@ public class RadixSVNLoader extends RadixLoader {
                                             internalEvent("Changed groups: " + actually_changed_groups + ", modified files: " + actually_modified_files + ", removed files: " + actually_removed_files);
                                             internalEvent("Using new revision meta loaded from precache");
                                         } else {
-                                            internalEvent("Revision meta in the precache directory is outdated.");
+                                            internalEvent("Revision meta in the precache directory is has wrong version");
                                         }
                                     } else {
                                         internalEvent("No revision meta in precache");
@@ -268,15 +308,18 @@ public class RadixSVNLoader extends RadixLoader {
                             }
                         }
                         boolean needClearPrecache = pendingRevision == null;
-                        if (pendingRevision != null && pendingRevision.isOlderThen(svnLatestRevNum, svnLatestRevTimestamp)) {
+                        if (pendingRevision != null
+                                && pendingRevision.revMeta.getNum() != actualTargetRevNum
+                                && pendingRevision.revMeta.getTimestampMillis() != actualTargetRevTimestamp) {
                             internalEvent("Previously loaded pending revision is outdated");
                             needClearPrecache = true;
+                            pendingRevision = null;
                         }
                         if (needClearPrecache) {
                             clearPrecacheDir();
                         }
                         if (pendingRevision == null) {
-                            internalEvent("Loading meta for revision #" + svnLatestRevNum + " from svn to precache");
+                            internalEvent("Loading meta for revision #" + actualTargetRevNum + " from svn to precache");
                             cacheMeta.getPrecacheDir().mkdirs();
                             CacheMeta precacheMeta = new CacheMeta();
                             precacheMeta.capture(cacheMeta.getPrecacheDir());
@@ -284,8 +327,8 @@ public class RadixSVNLoader extends RadixLoader {
                                 final Set<String> actually_changed_groups = new HashSet<>();
                                 final Set<String> actually_modified_files = new HashSet<>();
                                 final Set<String> actually_removed_files = new HashSet<>();
-                                final RevisionMeta newRevMeta = readRevisionMeta(svnLatestRevNum, HowGetFile.fromSvnToDir(cacheMeta.getPrecacheDir()), actually_changed_groups, actually_modified_files, actually_removed_files);
-                                newRevMeta.setTimestampMillis(svnLatestRevTimestamp);
+                                final RevisionMeta newRevMeta = readRevisionMeta(actualTargetRevNum, HowGetFile.fromSvnToDir(cacheMeta.getPrecacheDir()), actually_changed_groups, actually_modified_files, actually_removed_files);
+                                newRevMeta.setTimestampMillis(actualTargetRevTimestamp);
                                 precacheMeta.setCurrentRevisionMeta(newRevMeta);
                                 precacheMeta.release();
                                 pendingRevision = new PendingRevisionInfo(newRevMeta, actually_changed_groups, actually_modified_files, actually_removed_files);
@@ -312,10 +355,10 @@ public class RadixSVNLoader extends RadixLoader {
                     }
 
                     if (!pendingRevision.isSuffixesPreloaded(preloadGroupSuffixes)) {
-                        internalEvent("Prloading to precache: " + preloadGroupSuffixes);
+                        internalEvent("Preloading to precache: " + preloadGroupSuffixes);
                         preloadFilesToPrecache(pendingRevision, preloadGroupSuffixes);
                         pendingRevision.rememberPreloadedSuffixes(preloadGroupSuffixes);
-                        internalEvent("Preloading compeleted");
+                        internalEvent("Preloading to precache compeleted");
                     } else {
                         internalEvent("Necessary groups are already prelaoded");
                     }
@@ -402,7 +445,6 @@ public class RadixSVNLoader extends RadixLoader {
                         internalEvent("Groups " + preloadGroupSuffixes + " are already preloaded");
                     }
                 }
-                actualizeReplicaInformation();
                 return null;
             } catch (RadixLoaderException e) {
                 throw e;
@@ -413,15 +455,77 @@ public class RadixSVNLoader extends RadixLoader {
     }
 
     @Override
-    public byte[] export(String file, long revNum) throws RadixLoaderException {
+    protected void actualizeAuxInfoImpl() {
+        synchronized (actualizeLock) {
+            //actualizeReplicaInformation();
+        }
+    }
+
+    @Override
+    public IRepositoryEntry exportFile(final String file, long revNum) throws RadixLoaderException {
         try {
             dataSupplier.ensureConnected();
-            return dataSupplier.getFileThrice(file, revNum);
+            if (revNum == -1) {
+                revNum = dataSupplier.getLatestRevision();
+            }
+            final int slashIdx = file.lastIndexOf("/");
+            String fileName;
+            if (slashIdx > 0) {
+                fileName = file.substring(slashIdx + 1);
+            } else {
+                fileName = file;
+            }
+            final SvnEntry entry = dataSupplier.getEntryInfo(file, revNum);
+            if (entry == null || entry.getKind() == SvnEntry.Kind.DIRECTORY) {
+                throw new RadixLoaderException("'" + file + "' is not a file");
+            }
+            return new FileRepositoryEntry(file, fileName, downloadFileIfSizeIsOk(entry, revNum), revNum, dataSupplier.getRevisionCreationTime(revNum).getTime());
         } catch (RadixSvnException ex) {
             throw new RadixLoaderException("Error on export", ex);
         }
     }
-    
+
+    @Override
+    public Collection<IRepositoryEntry> listDir(final String path, long revNum, boolean downloadFileData) throws RadixLoaderException {
+        readLock();
+        try {
+            dataSupplier.ensureConnected();
+            if (revNum == -1) {
+                revNum = dataSupplier.getLatestRevision();
+            }
+            final List<IRepositoryEntry> result = new ArrayList<>();
+
+            final List<SvnEntry> entries = dataSupplier.listDirectory(path, revNum);
+            if (entries != null && !entries.isEmpty()) {
+                final long revMillis = dataSupplier.getRevisionCreationTime(revNum).getTime();
+                for (SvnEntry entry : entries) {
+                    final String relativePath = getRelativePath(entry);
+                    if (entry.getKind() == SvnEntry.Kind.DIRECTORY) {
+                        result.add(new DirRepositoryEntry(relativePath, entry.getName(), revNum, revMillis));
+                    } else {
+                        result.add(new FileRepositoryEntry(relativePath, entry.getName(), downloadFileData ? downloadFileIfSizeIsOk(entry, revNum) : null, revNum, revMillis));
+                    }
+                }
+            }
+            return result;
+        } catch (RadixSvnException ex) {
+            throw new RadixLoaderException("Error on export", ex);
+        } finally {
+            readUnlock();
+        }
+    }
+
+    private String getRelativePath(final SvnEntry entry) {
+        return entry.getUrl().substring(dataSupplier.getCurrentSvnUrl().length() + 1);
+    }
+
+    private byte[] downloadFileIfSizeIsOk(final SvnEntry entry, final long revision) throws RadixSvnException {
+        if (entry.getSize() > MAX_EXPORTED_FILE_BYTES) {
+            throw new RadixSvnException("File " + entry.getPath() + " is too large: " + entry.getSize() + " bytes");
+        }
+        return dataSupplier.getFileThrice(getRelativePath(entry), revision);
+    }
+
     @Override
     protected void afterSetCurrentRevisionMeta(RevisionMeta meta) throws RadixLoaderException {
         cacheMeta.setCurrentRevisionMeta(meta);
@@ -629,6 +733,7 @@ public class RadixSVNLoader extends RadixLoader {
         if (preloadGroupSuffixes.contains(RadixLoader.SERVER_GROUP_SUFFIX)) {//RADIX-5087
             actualizeReplicaInformation();
         }
+        final List<String> allFilesToPreload = new ArrayList<String>();
         if (!preloadGroupSuffixes.isEmpty()) {
             for (FileMeta f : revMeta.getFileMetas()) {
                 boolean bFileNeedPreload = false;
@@ -644,10 +749,109 @@ public class RadixSVNLoader extends RadixLoader {
                 final File fileInCache = new File(getRoot(), f.getStore());
                 final boolean bForcedPreload = filesForForcedPreload != null && filesForForcedPreload.contains(f.getStore());
                 if (bFileNeedPreload && (bForcedPreload || !fileInCache.exists())) {
-                    preloadFile(f.getStore(), revMeta, preloadDestDir);
+//                    preloadFile(f.getStore(), revMeta.getNum(), preloadDestDir);
+                    allFilesToPreload.add(f.getStore());
                 }
             }
         }
+        if (allFilesToPreload.isEmpty()) {
+            return;
+        }
+        final AtomicInteger preloadThreadNameCounter = new AtomicInteger();
+        final String dateStr = (new Date()).toString();
+        final int actualPreloadThreads;
+        if (Starter.getArguments().getStarterParameters().containsKey(StarterArguments.PRELOAD_THREADS)) {
+            actualPreloadThreads = Integer.parseInt(Starter.getArguments().getStarterParameters().get(StarterArguments.PRELOAD_THREADS));
+        } else {
+            actualPreloadThreads = PRELOAD_THREADS;
+        }
+        final ExecutorService executor = Executors.newFixedThreadPool(actualPreloadThreads, new ThreadFactory() {
+
+            @Override
+            public Thread newThread(Runnable r) {
+                final Thread t = new Thread(r, "Starter Preloader Thread #" + preloadThreadNameCounter.incrementAndGet() + "(" + dateStr + ")");
+                t.setDaemon(true);
+                return t;
+            }
+        });
+        try {
+            final ArrayBlockingQueue<String> preloadQueue = new ArrayBlockingQueue<>(allFilesToPreload.size());
+            preloadQueue.addAll(allFilesToPreload);
+            final List<Callable<Object>> preloadTasks = new ArrayList<>();
+            traceEvent("Preloading " + allFilesToPreload.size() + " file(s) in " + actualPreloadThreads + " thread(s)...");
+            final AtomicBoolean cancel = new AtomicBoolean();
+            final Runnable cancelOnShutdownHook = new Runnable() {
+
+                @Override
+                public void run() {
+                    System.out.println("Caught shutdown signal during preloading");
+                    cancel.set(true);
+                }
+            };
+            Starter.addAppShutdownHook(cancelOnShutdownHook);
+            try {
+                for (int i = 0; i < actualPreloadThreads; i++) {
+                    preloadTasks.add(new Callable() {
+
+                        @Override
+                        public Object call() throws Exception {
+                            StarterLog.setSafeModeForCurrentThread(true);
+                            SafeLogger.setSafeLogSuppressedForCurrentThread(true);
+                            String file = preloadQueue.poll();
+                            if (file == null) {
+                                return null;
+                            }
+                            final BinaryDataSupplier preloaderSupplier = new BinaryDataSupplier(dataSupplier.svnUrls, dataSupplier.authData);
+                            preloaderSupplier.ensureConnected();
+                            try {
+                                while (file != null) {
+                                    if (cancel.get()) {
+                                        return null;
+                                    }
+                                    preloadFile(file, revMeta.getNum(), preloadDestDir, preloaderSupplier);
+                                    file = preloadQueue.poll();
+                                }
+                                return null;
+                            } catch (Throwable t) {
+                                cancel.set(true);
+                                throw t;
+                            } finally {
+                                preloaderSupplier.close();
+                            }
+                        }
+                    });
+                }
+                try {
+                    final List<Future<Object>> futures = executor.invokeAll(preloadTasks);
+                    for (Future<Object> future : futures) {
+                        try {
+                            future.get();
+                        } catch (ExecutionException ex) {
+                            throw new RadixLoaderPreloadException("Unable to preload latest version", ex);
+                        }
+                    }
+                    if (cancel.get()) {
+                        throw new RadixLoaderPreloadException("Preloading was interrupted by a signal");
+                    }
+                    traceEvent("Preloading finished");
+                } catch (InterruptedException ex) {
+                    throw new RadixLoaderPreloadException("Preloading has been interrupted");
+                }
+            } finally {
+                try {
+                    Starter.removeAppShutdownHook(cancelOnShutdownHook);
+                } catch (Throwable t) {
+                    //ignore
+                }
+            }
+        } finally {
+            try {
+                executor.shutdown();
+            } catch (Throwable t) {
+                traceError("Unable to shutdown preload executor", t);
+            }
+        }
+
     }
 
     private void clearBackupDir() throws RadixLoaderException {
@@ -670,7 +874,7 @@ public class RadixSVNLoader extends RadixLoader {
     protected CacheEntry getFileImpl(final String file, final long revisionNum) throws RadixLoaderException {
         readLock();
         try {
-            final CacheEntry localFile = getLocalFile(file);
+            final CacheEntry localFile = getLocalFile(file, revisionNum);
             if (localFile != null) {
                 return localFile;
             }
@@ -695,22 +899,41 @@ public class RadixSVNLoader extends RadixLoader {
                             final CacheEntry entry = getFileImpl(file, revisionNum, how_get);
                             final CheckDigestResult checkResult = checkDigest(fileMeta, entry);
                             if (!checkResult.isOk()) {
-                                if (how_get.mode == HowGetFile.Mode.GET_FROM_DIR) {
-                                    traceError("Wrong digest of the cached file '" + file + "', expected '" + checkResult.getExpectedAsStr() + "', actual: '" + checkResult.getActualAsStr() + "', trying to reload file from svn");
-                                    final File existingFile = new File(getRoot(), file);
-                                    try {
-                                        entry.close();
-                                    } catch (IOException ex) {
-                                        throw new RadixLoaderException("Unable to close cache entry for '" + file + "'");
+                                disposeCacheEntryAndFile(entry, file);
+                                if (how_get.mode == HowGetFile.Mode.GET_FROM_DIR || (how_get.mode == HowGetFile.Mode.GET_FROM_SVN_TO_DIR && !how_get.skipLocalSvnCache && (getExistingLocalSvnBackupFile(file, revisionNum) != null))) {
+                                    boolean fromCacheDir = how_get.mode == HowGetFile.Mode.GET_FROM_DIR;
+                                    boolean tryLocalBackup = fromCacheDir && getExistingLocalSvnBackupFile(file, revisionNum) != null;
+                                    traceError("Wrong digest of the " + (fromCacheDir ? "cached" : "local svn backup") + " file '" + file + "', expected '" + checkResult.getExpectedAsStr() + "', actual: '" + checkResult.getActualAsStr() + "', trying to reload file from " + (tryLocalBackup ? "local svn backup" : "svn"));
+                                    disposeCacheEntryAndFile(entry, file);
+
+                                    if (tryLocalBackup) {
+                                        final HowGetFile getFromSvnBackup = HowGetFile.fromSvnToDir(how_get.directory);
+                                        CacheEntry entryFromBackup = getFileImpl(file, revisionNum, getFromSvnBackup);
+                                        final CheckDigestResult checkFromBackupResult = checkDigest(fileMeta, entryFromBackup);
+                                        if (!checkFromBackupResult.isOk()) {
+                                            traceError("Wrong digest of the local svn backup file '" + file + "', expected '" + checkResult.getExpectedAsStr() + "', actual: '" + checkResult.getActualAsStr() + "', trying to reload file from svn");
+                                            disposeCacheEntryAndFile(entry, file);
+                                        } else {
+                                            return entryFromBackup;
+                                        }
                                     }
-                                    if (!FileUtils.deleteFile(existingFile)) {
-                                        throw new RadixLoaderException("Unable to delete " + existingFile.getAbsolutePath());
+
+                                    final HowGetFile getFromSvn = HowGetFile.fromSvnToDirSkipLocalCache(how_get.directory);
+                                    final CacheEntry entryFromSvn = getFileImpl(file, revisionNum, getFromSvn);
+                                    final CheckDigestResult checkFromSvnResult = checkDigest(fileMeta, entryFromSvn);
+                                    if (!checkFromSvnResult.isOk()) {
+                                        disposeCacheEntryAndFile(entry, file);
+                                        final String msg = getWrongDigestMessage(file, checkFromSvnResult);
+                                        traceError(msg);
+                                        throw new RadixLoaderException(msg);
+                                    } else {
+                                        traceEvent("File  '" + file + "' was reloaded from SVN");
+                                        return entryFromSvn;
                                     }
-                                    final CacheEntry reloadedEntry = getFileImpl(file, revisionNum);
-                                    traceEvent("File  '" + file + "' was reloaded from SVN");
-                                    return reloadedEntry;
                                 } else {
-                                    throw new RadixLoaderException("Wrong digest of the file '" + file + "', expected '" + checkResult.getExpectedAsStr() + "', actual: '" + checkResult.getActualAsStr() + "'");
+                                    final String msg = getWrongDigestMessage(file, checkResult);
+                                    traceError(msg);
+                                    throw new RadixLoaderException(msg);
                                 }
                             } else {
                                 return entry;
@@ -727,6 +950,32 @@ public class RadixSVNLoader extends RadixLoader {
         }
     }
 
+    private final String getWrongDigestMessage(final String file, final CheckDigestResult checkResult) {
+        return "Wrong digest of the file '" + file + "' in SVN, expected '" + checkResult.getExpectedAsStr() + "', actual: '" + checkResult.getActualAsStr() + "'";
+    }
+
+    private File getExistingLocalSvnBackupFile(final String file, final long revision) {
+        if (localSvnBackupDir != null) {
+            final File localFile = new File(localSvnBackupDir, revision + "/" + file);
+            if (localFile.exists()) {
+                return localFile;
+            }
+        }
+        return null;
+    }
+
+    private void disposeCacheEntryAndFile(CacheEntry entry, String file) throws RadixLoaderException {
+        final File existingFile = new File(getRoot(), file);
+        try {
+            entry.close();
+        } catch (IOException ex) {
+            throw new RadixLoaderException("Unable to close cache entry for '" + file + "'");
+        }
+        if (!FileUtils.deleteFile(existingFile)) {
+            throw new RadixLoaderException("Unable to delete " + existingFile.getAbsolutePath());
+        }
+    }
+
     private CheckDigestResult checkDigest(final FileMeta fileMeta, final CacheEntry entry) throws RadixLoaderException {
         if (fileMeta != null && fileMeta.getDigest() != null) {
             byte[] actualDigest;
@@ -736,6 +985,9 @@ public class RadixSVNLoader extends RadixLoader {
                     actualDigest = FileUtils.calcFileDigest(entry.getData(null), ignoreCr);
                 } else {
                     actualDigest = FileUtils.readJarDigest(((JarCacheEntry) entry).getJarFile());
+                    if (actualDigest == null && NULL_DIGEST_IS_ALWAYS_GOOD) {
+                        actualDigest = fileMeta.getDigest();
+                    }
                 }
             } catch (IOException | NoSuchAlgorithmException ex) {
                 throw new RadixLoaderException("Unable to check digest", ex);
@@ -748,37 +1000,48 @@ public class RadixSVNLoader extends RadixLoader {
     @Override
     protected CacheEntry getFileImpl(final String file, final long revisionNum, final HowGetFile howGet) throws RadixLoaderException {
         try {
-            final CacheEntry localFile = getLocalFile(file);
+            final CacheEntry localFile = getLocalFile(file, revisionNum);
             if (localFile != null) {
                 return localFile;
             }
-            byte[] bytes;
+            byte[] bytes = null;
+            File localSource = null;
             if (howGet.mode == HowGetFile.Mode.GET_FROM_SVN || howGet.mode == HowGetFile.Mode.GET_FROM_SVN_TO_DIR) {
-                RadixSvnException initialEx = null;
-                try {
-                    bytes = dataSupplier.getFileThrice(file, revisionNum);
-                } catch (RadixSvnException ex) {
-                    initialEx = ex;
+                if (!howGet.skipLocalSvnCache) {
+                    localSource = getExistingLocalSvnBackupFile(file, revisionNum);
+                }
+                if (localSource == null) {
                     try {
-                        dataSupplier.ensureConnected();
                         bytes = dataSupplier.getFileThrice(file, revisionNum);
-                    } catch (Exception otherEx) {
-                        throw initialEx;
+                    } catch (RadixSvnException firstEx) {
+                        try {
+                            dataSupplier.ensureConnected();
+                            bytes = dataSupplier.getFileThrice(file, revisionNum);
+                        } catch (Exception ex) {
+                            if (ex instanceof RadixLoaderException) {
+                                throw (RadixLoaderException) ex;
+                            }
+                            throw new RadixLoaderException("Unable to load file '" + file + "' from SVN", ex);
+                        }
                     }
                 }
                 if (howGet.mode == HowGetFile.Mode.GET_FROM_SVN_TO_DIR) {
                     readLock();
                     try {
                         synchronized (howGet.directory) {
-                            return writeFileToDir(file, howGet.directory, bytes, false);
+                            return writeFileToDir(file, howGet.directory, bytes, localSource, false);
                         }
                     } finally {
                         readUnlock();
                     }
                 } else if (file.endsWith(JAR_FILE_SUFFIX)) {
                     final File tmp_file = createTempFile("radix-starter-jarlib-");
-                    try (FileOutputStream out = new FileOutputStream(tmp_file)) {
-                        out.write(bytes);
+                    if (localSource != null) {
+                        copyMaybeHardlink(tmp_file, localSource);
+                    } else {
+                        try (FileOutputStream out = new FileOutputStream(tmp_file)) {
+                            out.write(bytes);
+                        }
                     }
                     return new JarCacheEntry(new JarFile(tmp_file), true);
                 }
@@ -798,8 +1061,8 @@ public class RadixSVNLoader extends RadixLoader {
             } else {
                 throw new IllegalStateException("Unsupported howGet.mode: " + howGet.mode);
             }
-        } catch (RadixSvnException | IOException e) {
-            throw new RadixLoaderException("Exception on RadixSvnLoader.getFile()", e);
+        } catch (IOException e) {
+            throw new RadixLoaderException("Exception on loading file '" + file + "' from rev" + revisionNum, e);
         }
     }
 
@@ -832,24 +1095,29 @@ public class RadixSVNLoader extends RadixLoader {
         return sb.toString();
     }
 
-    private CacheEntry writeFileToDir(final String file, final File dir, final byte[] bytes, boolean overwrite) throws IOException {
+    private CacheEntry writeFileToDir(final String file, final File dir, final byte[] bytes, final File localSource, boolean overwrite) throws IOException {
         final File f = new File(dir, file);
         if (overwrite || !f.exists()) {
             f.getParentFile().mkdirs();
-            try {
-                try (FileOutputStream out = new FileOutputStream(f)) {
-                    out.write(bytes);
-                    internalDebug(file + " has been written to " + dir.getAbsolutePath());
+            if (localSource != null) {
+                copyMaybeHardlink(f, localSource);
+                internalDebug(localSource.getAbsolutePath() + " has been copied to " + f.getAbsolutePath());
+            } else {
+                try {
+                    try (FileOutputStream out = new FileOutputStream(f)) {
+                        out.write(bytes);
+                        internalDebug(file + " has been written to " + dir.getAbsolutePath());
+                    }
+                } catch (IOException ex) {
+                    FileUtils.deleteFile(f);
+                    throw ex;
                 }
-            } catch (IOException ex) {
-                FileUtils.deleteFile(f);
-                throw ex;
             }
         }
         if (file.endsWith(JAR_FILE_SUFFIX)) {
             return new JarCacheEntry(new JarFile(f), false);
         } else {
-            return new FileCacheEntry(bytes);
+            return new FileCacheEntry(bytes == null ? Files.readAllBytes(f.toPath()) : bytes);
         }
     }
 
@@ -882,11 +1150,11 @@ public class RadixSVNLoader extends RadixLoader {
         return super.actualize(null, null, null, toPreloadGroupSuffixes);
     }
 
-    private void preloadFile(final String file, final RevisionMeta rev, final File preloadDestDir) throws RadixLoaderException {
+    private void preloadFile(final String file, final long revNum, final File preloadDestDir, final BinaryDataSupplier supplier) throws RadixLoaderException {
         try {
             final File preloadedFile = new File(preloadDestDir, file);
             if (!preloadedFile.exists()) {
-                final byte[] bytes = dataSupplier.getFileThrice(file, rev.getNum());
+                final byte[] bytes = supplier.getFileThrice(file, revNum);
                 preloadedFile.getParentFile().mkdirs();
                 try (FileOutputStream out = new FileOutputStream(preloadedFile)) {
                     out.write(bytes);
@@ -925,11 +1193,21 @@ public class RadixSVNLoader extends RadixLoader {
         private int curSvnIndex;
         private final List<String> svnUrls;
         private final SVNAuthData authData;
+        private volatile String curSvnUrl;
 
-        public BinaryDataSupplier(List<String> svnUrls, final boolean svnLog, final SVNAuthData authData) {
+        public BinaryDataSupplier(List<String> svnUrls, final SVNAuthData authData) {
             this.svnUrls = new ArrayList<>(svnUrls);
             this.authData = authData;
             curSvnIndex = -1;
+        }
+        
+        private void setCurSvnIndex(final int idx) {
+            curSvnIndex = idx;
+            if (idx >= 0 && idx < svnUrls.size()) {
+                curSvnUrl = svnUrls.get(idx);
+            } else {
+                curSvnUrl = null;
+            }
         }
 
         public Object getSynchronizationObject() {
@@ -947,20 +1225,20 @@ public class RadixSVNLoader extends RadixLoader {
                     errorMessages.add(svnUrls.get(curSvnIndex) + ": " + ex.getMessage());
                     lastException = ex;
                     traceError("Disconnected from SVN repositry " + svnUrls.get(curSvnIndex) + ": " + ex.getMessage());
-                    curSvnIndex = -1;
+                    setCurSvnIndex(-1);
                 }
             }
             close();
             for (int i = 0; i < svnUrls.size(); i++) {
                 try {
                     connect(svnUrls.get(i));
-                    curSvnIndex = i;
+                    setCurSvnIndex(i);
                     if (SVNRepositoryAdapter.Factory.isUseRadixClient()) {
                         traceEvent("Radix client connected to SVN repository " + svnUrls.get(i));
                     } else {
                         traceEvent("Connected to SVN repository " + svnUrls.get(i));
                     }
-                    
+
                     return;
                 } catch (RadixSvnException | RadixLoaderException ex) {
                     errorMessages.add(svnUrls.get(i) + ": " + ex.getMessage());
@@ -983,11 +1261,8 @@ public class RadixSVNLoader extends RadixLoader {
             return svnUrls;
         }
 
-        private synchronized String getCurrentSvnUrl() {
-            if (curSvnIndex == -1) {
-                return null;
-            }
-            return svnUrls.get(curSvnIndex);
+        private String getCurrentSvnUrl() {
+            return curSvnUrl;
         }
 
         private synchronized void connect(final String svnUrlString) throws RadixSvnException, RadixLoaderException {
@@ -1002,7 +1277,9 @@ public class RadixSVNLoader extends RadixLoader {
             if (authData.user != null) {
                 if (authData.password != null) {
                     builder.addUserName(authData.user, authData.password);
-                    builder.addSSH(authData.user, authData.password);
+                    if (svnUrlString.startsWith("svn+")) {
+                        builder.addSSH(authData.user, authData.password);
+                    }
                 } else {
                     builder.addUserName(authData.user);
                 }
@@ -1016,17 +1293,31 @@ public class RadixSVNLoader extends RadixLoader {
                 builder.addSSH(authData.user, authData.privateKeyPath, authData.privateKeyPassword);
             }
             builder.setTrustManager(authData.createTrustManager());
-            SVNRepositoryAdapter adapter = builder.build(URI.create(svnUrlString));
-            adapter.getLatestRevision();//basic check
+            SVNRepositoryAdapter adapter = builder.build(URI.create(trimLastSlash(svnUrlString)));
+            if (adapter.getDir("", adapter.getLatestRevision()) == null) {
+                throw new RadixSvnException("Unable to read directory '" + svnUrlString + "'");
+            }
             return adapter;
+        }
+        
+        private String trimLastSlash(final String url) {
+            if (url == null || !url.endsWith("/")) {
+                return url;
+            }
+            return url.substring(0, url.length() - 1);
         }
 
         private synchronized void check(SVNRepositoryAdapter svn) throws RadixLoaderException, RadixSvnException {
-            final SvnEntry.Kind nodeKind = svn.checkPath("", -1);
-            if (nodeKind == SvnEntry.Kind.NONE) {
-                throw new RadixLoaderException("RadixSvnLoader(): no entry at URL: " + svn.getLocation());
-            } else if (nodeKind == SvnEntry.Kind.FILE) {
-                throw new RadixLoaderException("RadixSvnLoader(): entry at URL " + svn.getLocation() + " is a file while directory was expected");
+            final boolean prevSafeMode = StarterLog.setSafeModeForCurrentThread(true);
+            try {
+                final SvnEntry.Kind nodeKind = svn.checkPath("", -1);
+                if (nodeKind == SvnEntry.Kind.NONE) {
+                    throw new RadixLoaderException("RadixSvnLoader(): no entry at URL: " + svn.getLocation());
+                } else if (nodeKind == SvnEntry.Kind.FILE) {
+                    throw new RadixLoaderException("RadixSvnLoader(): entry at URL " + svn.getLocation() + " is a file while directory was expected");
+                }
+            } finally {
+                StarterLog.setSafeModeForCurrentThread(prevSafeMode);
             }
         }
 
@@ -1069,37 +1360,61 @@ public class RadixSVNLoader extends RadixLoader {
         }
 
         private synchronized long getLatestRevision(final SVNRepositoryAdapter svn) throws RadixSvnException {
-            final long latestRevision = svn.getLatestRevision();
-            final SvnEntry launchSvnDir = svn.getDir("", latestRevision);
-            if (launchSvnDir == null) {
-                return latestRevision;
-            } else {
-                return launchSvnDir.getRevision();
+            final boolean prevSafeMode = StarterLog.setSafeModeForCurrentThread(true);
+            try {
+                final long latestRevision = svn.getLatestRevision();
+                final SvnEntry launchSvnDir = svn.getDir("", latestRevision);
+                if (launchSvnDir == null) {
+                    return latestRevision;
+                } else {
+                    return launchSvnDir.getRevision();
+                }
+            } finally {
+                StarterLog.setSafeModeForCurrentThread(prevSafeMode);
             }
         }
 
         private synchronized Date getRevisionCreationTime(final SVNRepositoryAdapter svn, final long revision) throws RadixSvnException {
-            final SvnEntry e = svn.getDir("", revision);
-            if (e == null) {
-                return null;
-            } else {
-                Calendar result = new GregorianCalendar();
-                result.setTime(e.getLastModified());
-                result.set(Calendar.MILLISECOND, 0);
-                return result.getTime();
+            final boolean prevSafeMode = StarterLog.setSafeModeForCurrentThread(true);
+            try {
+                final SvnEntry e = svn.getDir("", revision);
+                if (e == null) {
+                    return null;
+                } else {
+                    Calendar result = new GregorianCalendar();
+                    result.setTime(e.getLastModified());
+                    result.set(Calendar.MILLISECOND, 0);
+                    return result.getTime();
+                }
+            } finally {
+                StarterLog.setSafeModeForCurrentThread(prevSafeMode);
             }
         }
 
         public List<SvnEntry> listDirectory(final String dirPath, long revision) throws RadixSvnException {
             final List<SvnEntry> result = new ArrayList<>();
-            svn.getDir(dirPath, revision, new SVNRepositoryAdapter.EntryHandler() {
+            final boolean prevSafeMode = StarterLog.setSafeModeForCurrentThread(true);
+            try {
+                svn.getDir(dirPath, revision, new SVNRepositoryAdapter.EntryHandler() {
 
-                @Override
-                public void accept(SvnEntry entry) throws RadixSvnException {
-                    result.add(entry);
-                }
-            });
+                    @Override
+                    public void accept(SvnEntry entry) throws RadixSvnException {
+                        result.add(entry);
+                    }
+                });
+            } finally {
+                StarterLog.setSafeModeForCurrentThread(prevSafeMode);
+            }
             return result;
+        }
+
+        public SvnEntry getEntryInfo(final String dirPath, long revision) throws RadixSvnException {
+            final boolean prevSafeMode = StarterLog.setSafeModeForCurrentThread(true);
+            try {
+                return svn.info(dirPath, revision);
+            } finally {
+                StarterLog.setSafeModeForCurrentThread(prevSafeMode);
+            }
         }
 
         public synchronized byte[] getFileThrice(String file, long revision) throws RadixSvnException {
@@ -1121,7 +1436,12 @@ public class RadixSVNLoader extends RadixLoader {
                     try {
                         traceDebug("SVN getFile " + file + " from " + svn.getLocation() + ", revision " + Long.toString(revision));
                         final ByteArrayOutputStream buf = new ByteArrayOutputStream();
-                        svn.getFile(file, revision, null, buf);
+                        final boolean prevSafeMode = StarterLog.setSafeModeForCurrentThread(true);
+                        try {
+                            svn.getFile(file, revision, null, buf);
+                        } finally {
+                            StarterLog.setSafeModeForCurrentThread(prevSafeMode);
+                        }
                         return buf.toByteArray();
                     } catch (RadixSvnException ex) {
                         if (!ex.isIOError() && !ex.isMalformedDataError()) {
@@ -1158,25 +1478,30 @@ public class RadixSVNLoader extends RadixLoader {
         }
 
         public synchronized void close() {
+            final boolean prevSafeMode = StarterLog.setSafeModeForCurrentThread(true);
             try {
-                if (svn != null) {
-                    try {
-                        svn.close();
-                    } catch (Exception ex) {
-                        //ignore
+                try {
+                    if (svn != null) {
+                        try {
+                            svn.close();
+                        } catch (Exception ex) {
+                            //ignore
+                        }
                     }
-                }
-                if (rootSvn != null) {
-                    try {
-                        rootSvn.close();
-                    } catch (Exception ex) {
-                        //ignore
+                    if (rootSvn != null) {
+                        try {
+                            rootSvn.close();
+                        } catch (Exception ex) {
+                            //ignore
+                        }
                     }
+                } finally {
+                    setCurSvnIndex(-1);
+                    svn = null;
+                    rootSvn = null;
                 }
             } finally {
-                curSvnIndex = -1;
-                svn = null;
-                rootSvn = null;
+                StarterLog.setSafeModeForCurrentThread(prevSafeMode);
             }
         }
     }
@@ -1194,6 +1519,10 @@ public class RadixSVNLoader extends RadixLoader {
         private static final String REVISION_KEY = "revision";
         private static final String REVISION_DATE_KEY = "revisionDate";
         private static final String REPLICATIONS_SECTION = "Replications";
+        private static final String APP_VER = "AppVersion";
+        private static final String KERNEL_VERSION = "KernelVersion";
+        private static final String KERNEL_REVISIONS = "KernelRevisions";
+        private static final String PREV_COMPATIBLE_KERNEL_REVISIONS = "PrevCompatibleKernelRevisions";
         //
         private final List<String> replications = new ArrayList<>();
         private final Set<String> preloadedSuffixes = new HashSet<>();
@@ -1206,6 +1535,10 @@ public class RadixSVNLoader extends RadixLoader {
         private volatile Date rootRevDate;
         private volatile File precacheDir;
         private volatile File backupDir;
+        private volatile String appVersion;
+        private volatile String kernelVersion;
+        private volatile String kernRevisions;
+        private volatile String compatibleKernRevisions;
 
         public CacheMeta() {
             reset();
@@ -1287,7 +1620,9 @@ public class RadixSVNLoader extends RadixLoader {
             }
             final File dir = new File(cacheDir, cacheName);
             dir.mkdirs();
-            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            int maxAttempts = 10000;
+            Exception lastException = null;
+            for (int i = 0; i < maxAttempts; i++) {
                 try {
                     final File index_dir = new File(dir, Integer.toString(i));
                     index_dir.mkdir();
@@ -1295,9 +1630,10 @@ public class RadixSVNLoader extends RadixLoader {
                     return;
                 } catch (Exception ex) {
                     //continue
+                    lastException = ex;
                 }
             }
-            throw new RadixLoaderException("RadixSvnLoader(): can't capture free cache directory");
+            throw new RadixLoaderException("RadixSvnLoader(): can't capture free cache directory, last exception message: " + lastException.getMessage(), lastException);
         }
 
         public void capture(final File dir) throws FileNotFoundException, IOException {
@@ -1362,6 +1698,22 @@ public class RadixSVNLoader extends RadixLoader {
             return backupDir;
         }
 
+        public String getAppVersion() {
+            return appVersion;
+        }
+
+        public String getKernelVersion() {
+            return kernelVersion;
+        }
+
+        public String getKernelRevisionsString() {
+            return kernRevisions;
+        }
+
+        public String getCompatibleKernelRevisionsString() {
+            return compatibleKernRevisions;
+        }
+
         private byte[] readLockFileContent() throws IOException {
             cacheDirLock.channel().position(0);
             final int maxBufSize = 1024 * 1024;
@@ -1381,7 +1733,7 @@ public class RadixSVNLoader extends RadixLoader {
             reset();
             boolean valid = true;
             byte[] bytes = readLockFileContent();
-            if (bytes == null) {
+            if (bytes == null || bytes.length == 0) {
                 valid = false;
             }
             if (valid) {
@@ -1390,7 +1742,7 @@ public class RadixSVNLoader extends RadixLoader {
                     String s = sc.nextLine();
                     if (s != null) {
                         if (("[" + STATE_SECTION + "]").equals(s.trim())) {
-                            loadNewFormat(bytes);
+                            valid = loadNewFormat(bytes);
                         } else {
                             loadOldFormat(bytes);
                         }
@@ -1438,9 +1790,13 @@ public class RadixSVNLoader extends RadixLoader {
             rootRevDate = null;
             replications.clear();
             preloadedSuffixes.clear();
+            appVersion = null;
+            kernelVersion = null;
+            kernRevisions = null;
+            compatibleKernRevisions = null;
         }
 
-        private void loadNewFormat(byte[] data) throws ConfigFileParseException, ParseException, RadixLoaderException {
+        private boolean loadNewFormat(byte[] data) throws ConfigFileParseException, ParseException, RadixLoaderException {
             final ConfigFileAccessor stateAccessor = ConfigFileAccessor.get(data, STATE_SECTION);
             for (ConfigEntry entry : stateAccessor.getEntries()) {
                 switch (entry.getKey()) {
@@ -1459,10 +1815,23 @@ public class RadixSVNLoader extends RadixLoader {
                     case PRELOADED_SUFFIXES_KEY:
                         loadPreloadedSuffixesFromString(entry.getValue());
                         break;
+                    case APP_VER:
+                        appVersion = entry.getValue();
+                        break;
+                    case KERNEL_VERSION:
+                        kernelVersion = entry.getValue();
+                        break;
+                    case KERNEL_REVISIONS:
+                        kernRevisions = entry.getValue();
+                        break;
+                    case PREV_COMPATIBLE_KERNEL_REVISIONS:
+                        compatibleKernRevisions = entry.getValue();
+                        break;
                 }
             }
             if (revNum == -1 || revDate == null) {
-                throw new RadixLoaderException("revision and revisionDate should be defined, but revision=" + revNum + " and revisionDate=" + revDate);
+                traceDebug("Cache is invalid: revNum=" + revNum + ", revDate=" + revDate);
+                return false;
             }
 
             try {
@@ -1473,6 +1842,7 @@ public class RadixSVNLoader extends RadixLoader {
             } catch (Exception ex) {
                 //sad, but we can live with it
             }
+            return true;
         }
 
         private void loadOldFormat(byte[] data) throws RadixLoaderException {
@@ -1490,6 +1860,10 @@ public class RadixSVNLoader extends RadixLoader {
                 revNum = meta == null ? -1 : meta.getNum();
                 revDate = meta == null ? null : new Date(meta.getTimestampMillis());
                 preloadedSuffixes.clear();
+                appVersion = meta == null ? null : meta.getAppLayerVersionsString();
+                kernelVersion = meta == null ? null : meta.getKernelLayerVersionsString();
+                kernRevisions = meta == null ? null : meta.getKernelRevisionsString();
+                compatibleKernRevisions = meta == null ? null : meta.getCompatibleKernelRevisionsString();
                 save();
             }
         }
@@ -1524,6 +1898,14 @@ public class RadixSVNLoader extends RadixLoader {
                         cursor.insertAfter(new ConfigEntry(ROOT_REVISION_DATE_KEY, REVISION_DATE_FORMAT.format(rootRevDate)));
                     }
                     cursor.insertAfter(new ConfigEntry(PRELOADED_SUFFIXES_KEY, preloadedSuffixesToString()));
+                    if (kernelVersion != null) {
+                        cursor.insertAfter(new ConfigEntry(KERNEL_VERSION, kernelVersion));
+                        cursor.insertAfter(new ConfigEntry(KERNEL_REVISIONS, kernRevisions));
+                        cursor.insertAfter(new ConfigEntry(PREV_COMPATIBLE_KERNEL_REVISIONS, compatibleKernRevisions));
+                    }
+                    if (appVersion != null) {
+                        cursor.insertAfter(new ConfigEntry(APP_VER, appVersion));
+                    }
                     cursor.nextSection();
                     int i = 1;
                     for (String rep : replications) {
@@ -1731,8 +2113,12 @@ public class RadixSVNLoader extends RadixLoader {
                         try {
                             f = new FileInputStream(trustedServerCertPath);
                             final CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-                            final Certificate cer = certificateFactory.generateCertificate(f);
-                            if (Arrays.asList(xcs).contains(cer)) {
+                            final Collection<? extends Certificate> certs = certificateFactory.generateCertificates(f);
+                            if (certs.isEmpty()) {
+                                throw new CertificateException("SVN server trusted certificate file is empty");
+                            }
+                            certs.retainAll(Arrays.asList(xcs));
+                            if (!certs.isEmpty()) {
                                 return;
                             }
                         } catch (FileNotFoundException e) {

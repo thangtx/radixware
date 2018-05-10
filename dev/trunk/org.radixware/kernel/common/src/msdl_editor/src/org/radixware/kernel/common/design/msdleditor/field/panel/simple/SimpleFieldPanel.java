@@ -23,13 +23,17 @@ import java.util.ArrayList;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import org.radixware.kernel.common.design.msdleditor.AbstractEditItem;
+import org.radixware.kernel.common.design.msdleditor.AbstractMsdlPanel;
 import org.radixware.kernel.common.design.msdleditor.DefaultLayout;
+import org.radixware.kernel.common.design.msdleditor.enums.EUnit;
+import org.radixware.kernel.common.msdl.MsdlUnitContext;
 import org.radixware.kernel.common.msdl.enums.EEncoding;
+import org.radixware.kernel.common.msdl.fields.AbstractFieldModel;
 import org.radixware.kernel.common.msdl.fields.SimpleFieldModel;
+import org.radixware.schemas.msdl.SimpleField;
 
 
-public class SimpleFieldPanel extends AbstractEditItem implements ActionListener {
+public class SimpleFieldPanel extends AbstractMsdlPanel implements ActionListener, AbstractMsdlPanel.IEncodingField {
 
     private SimpleFieldModel field;
     private EEncoding parentEncoding;
@@ -41,21 +45,27 @@ public class SimpleFieldPanel extends AbstractEditItem implements ActionListener
         ArrayList<JLabel> l = new ArrayList<JLabel>();
         l.add(jLabel1);
         l.add(jLabel2);
+        l.add(nullIndicatorLabel);
         ArrayList<JComponent> e = new ArrayList<JComponent>();
         e.add(encodingPanel1);
         e.add(nullIndicatorPanel1);
+        e.add(nullIndicatorUnitPanel);
         DefaultLayout.doLayout(this, l, e,true);
     }
 
     public void open(SimpleFieldModel field, EEncoding parentEncoding) {
-        super.open(field.getMsdlField());
+        super.open(field, field.getMsdlField());
         opened = false;
         this.parentEncoding = parentEncoding;
         this.field = field;
+        nullIndicatorPanel1.open(new SimpleFieldStruct(field.getField(), field, nullIndicatorUnitPanel));
         encodingPanel1.addActionListener(this);
         encodingPanel1.getSetParentPanel().addActionListener(this);
         nullIndicatorPanel1.addActionListener(this);
         update();
+        nullIndicatorPanel1.addActionListener(this);
+        nullIndicatorUnitPanel.addActionListener(nullIndicatorPanel1);
+        nullIndicatorUnitPanel.getSetParentPanel().addActionListener(nullIndicatorPanel1);
         opened = true;
     }
 
@@ -67,26 +77,31 @@ public class SimpleFieldPanel extends AbstractEditItem implements ActionListener
     public void update() {
         opened = false;
         encodingPanel1.setEncoding(EEncoding.getInstance(field.getField().getEncoding()),parentEncoding);
-        nullIndicatorPanel1.setValue(field.getField().getNullIndicator(), field.getNullIndicator(false), 
-                EEncoding.getInstanceForHexViewType(field.getField().getNullIndicatorViewType()),
-                EEncoding.getInstanceForHexViewType(field.getNullIndicatorViewType(false)));
+        final EUnit nullIndicatorUnit = EUnit.getInstance(field.getField().getNullIndicatorUnit());
+        EUnit parentValue = EUnit.getInstance(field.getUnit(true, new MsdlUnitContext(MsdlUnitContext.EContext.NULL_INDICATOR)));
+        parentValue = parentValue == null || parentValue == EUnit.NOTDEFINED ? EUnit.BYTE : parentValue;
+        nullIndicatorUnitPanel.setUnit(nullIndicatorUnit, parentValue);
+        nullIndicatorPanel1.fillWidgets();
         opened = true;
         super.update();
     }
 
-    public void save() {
+    @Override
+    public EEncoding getEncoding() {
+        return encodingPanel1.getEncoding();
+    }
+
+    @Override
+    protected void doSave() {
         EEncoding encoding = encodingPanel1.getEncoding();
         if (encoding != EEncoding.NONE) {
-            field.getField().setEncoding(encoding.getName());
+            field.getField().setEncoding(encoding.getValue());
         }
         else {
             field.getField().setEncoding(null);
         }
-        byte[] nullIndicator = null;
-        nullIndicator = nullIndicatorPanel1.getValue();
-        field.getField().setNullIndicator(nullIndicator);
-        field.getField().setNullIndicatorViewType(nullIndicatorPanel1.getViewEncodingAsStr());
-        field.setModified();
+        field.getField().setNullIndicatorUnit(nullIndicatorUnitPanel.getUnit().getValue());
+        nullIndicatorPanel1.fillDefinition();
     }
 
     /** This method is called from within the constructor to
@@ -99,9 +114,11 @@ public class SimpleFieldPanel extends AbstractEditItem implements ActionListener
     private void initComponents() {
 
         encodingPanel1 = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.EncodingPanel();
-        nullIndicatorPanel1 = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        nullIndicatorUnitPanel = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel();
+        nullIndicatorLabel = new javax.swing.JLabel();
+        nullIndicatorPanel1 = new org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitValuePanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("org/radixware/kernel/common/design/msdleditor/field/panel/Bundle"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SIMPLEFIELD"))); // NOI18N
@@ -113,31 +130,38 @@ public class SimpleFieldPanel extends AbstractEditItem implements ActionListener
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel2.setText(bundle1.getString("SimpleFieldPanel.jLabel2.text")); // NOI18N
 
+        nullIndicatorLabel.setText(bundle1.getString("SimpleFieldPanel.nullIndicatorLabel.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nullIndicatorLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nullIndicatorPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
-                    .addComponent(encodingPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)))
+                    .addComponent(encodingPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
+                    .addComponent(nullIndicatorUnitPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(nullIndicatorPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(encodingPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(encodingPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(nullIndicatorPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(nullIndicatorPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(nullIndicatorUnitPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(nullIndicatorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -146,7 +170,9 @@ public class SimpleFieldPanel extends AbstractEditItem implements ActionListener
     private org.radixware.kernel.common.design.msdleditor.field.panel.simple.EncodingPanel encodingPanel1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.ExtHexPanel nullIndicatorPanel1;
+    private javax.swing.JLabel nullIndicatorLabel;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitValuePanel nullIndicatorPanel1;
+    private org.radixware.kernel.common.design.msdleditor.field.panel.simple.UnitPanel nullIndicatorUnitPanel;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -154,5 +180,54 @@ public class SimpleFieldPanel extends AbstractEditItem implements ActionListener
         if (!opened)
             return;
         save();
+    }
+    
+    private class SimpleFieldStruct implements IUnitValueStructure {
+        
+        private final SimpleField xDef;
+        private final AbstractFieldModel model;
+        private final UnitPanel unitPanel;
+        
+        public SimpleFieldStruct(SimpleField xDef, AbstractFieldModel model, UnitPanel unitPanel) {
+            this.xDef = xDef;
+            this.model = model;
+            this.unitPanel = unitPanel;
+        }
+
+        @Override
+        public String getPadChar() {
+            return xDef.getNullIndicatorChar();
+        }
+
+        @Override
+        public String getExtPadChar() {
+            return model.getNullIndicatorChar(false);
+        }
+
+        @Override
+        public void setPadChar(String chars) {
+            xDef.setNullIndicatorChar(chars);
+        }
+
+        @Override
+        public byte[] getPadBin() {
+            return xDef.getNullIndicator();
+        }
+
+        @Override
+        public byte[] getExtPadBin() {
+            return model.getNullIndicator(false);
+        }
+
+        @Override
+        public void setPadBin(byte[] bytes) {
+            xDef.setNullIndicator(bytes);
+        }
+
+        @Override
+        public EUnit getViewedUnit() {
+            return unitPanel.getViewedUnit();
+        }
+        
     }
 }

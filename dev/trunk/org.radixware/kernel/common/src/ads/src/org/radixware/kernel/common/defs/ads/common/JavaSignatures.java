@@ -200,7 +200,7 @@ public class JavaSignatures {
             return NO_SIGN;
         } else if (type != null) {
             AdsType.TypeJavaSourceSupport support = type.getJavaSourceSupport();
-            char[] typeName = support.getQualifiedTypeName(UsagePurpose.getPurpose(referenceContext.getUsageEnvironment(), CodeType.EXCUTABLE));
+            char[] typeName = support.getQualifiedTypeName(UsagePurpose.getPurpose(referenceContext.getUsageEnvironment(), CodeType.EXCUTABLE), false);
             char[] result = new char[typeName.length + 2];
             System.arraycopy(typeName, 0, result, 1, typeName.length);
             result[0] = type instanceof ArgumentType ? 'T' : 'L';

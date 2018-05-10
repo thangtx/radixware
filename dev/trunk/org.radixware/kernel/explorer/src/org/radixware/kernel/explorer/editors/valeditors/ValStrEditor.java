@@ -22,6 +22,7 @@ import org.radixware.kernel.common.utils.Utils;
 
 
 import org.radixware.kernel.explorer.utils.WidgetUtils;
+import org.radixware.kernel.explorer.widgets.ExplorerPlainTextEdit;
 
 /**
  * ValStrEditor - редактор для значений типа String.
@@ -222,7 +223,7 @@ public class ValStrEditor extends ValEditor<String> {
         }
     }
 
-   @SuppressWarnings("unused")
+    @SuppressWarnings("unused")
     private void onTextChanged() {
         final String currentValue = getValue();
         final String valueInMemo = memo.getText();
@@ -236,7 +237,9 @@ public class ValStrEditor extends ValEditor<String> {
     private void showMemo() {
         memo = new Memo(getLineEdit());
         memo.setText(memoController == null ? getValue() : memoController.prepareTextForMemo(getValue()));
-
+        final EditMaskStr mask = (EditMaskStr) getEditMask();
+        memo.setMaxTextLength( mask.isMaxLengthDefined() ? mask.getMaxLength() : -1 );
+        
         if (isReadOnly()) {
             memo.setReadOnly(true);
         } else {
@@ -290,21 +293,19 @@ public class ValStrEditor extends ValEditor<String> {
         final private static int HEIGHT = 200;
         
         final public Signal0 textChanged = new Signal0();
-        final private QPlainTextEdit textEdit;
+        final private ExplorerPlainTextEdit textEdit = new ExplorerPlainTextEdit(this);
         final private QVBoxLayout layout;
         
-
         @SuppressWarnings("LeakingThisInConstructor")
         Memo(final QWidget parent) {
             super(parent);
             this.setWindowFlags(new Qt.WindowFlags(Qt.WindowType.Popup));
             layout = WidgetUtils.createVBoxLayout(this);
-            textEdit = new QPlainTextEdit(this);
             textEdit.setObjectName("memoEditor");
             textEdit.setFont(parent.font());
             textEdit.setPalette(parent.palette());
             textEdit.moveCursor(MoveOperation.End);
-            textEdit.textChanged.connect(textChanged);
+            textEdit.textChanged.connect(textChanged);            
             layout.addWidget(textEdit);
             if (!parent.visibleRegion().isEmpty()) {
                 setGeometry(WidgetUtils.calcPopupGeometry(parent, HEIGHT));
@@ -327,6 +328,14 @@ public class ValStrEditor extends ValEditor<String> {
         
         public void setText(final String text){
             textEdit.setPlainText(text);
+        }
+        
+        public void setMaxTextLength(final int length){
+            textEdit.setMaxLength(length);
+        }
+        
+        public int getMaxTextLength(){
+            return textEdit.getMaxLength();
         }
     }
     

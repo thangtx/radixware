@@ -19,6 +19,7 @@ import javax.swing.JCheckBox;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
 import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.dialogs.db.DdsScriptUtils;
 import org.radixware.kernel.common.repository.dds.DdsScript;
 import org.radixware.kernel.common.repository.dds.DdsScripts;
 import org.radixware.kernel.common.repository.dds.DdsUpdateInfo;
@@ -72,10 +73,10 @@ public class ScriptCompatibilitySetupAction extends AbstractRadixContextAwareAct
                 this.presenter.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (presenter.isSelected()) {
-                            script.setBackwardCompatible(true);
+                        if (DdsScriptUtils.showCompatibleWarning()) {
+                            script.setBackwardCompatible(presenter.isSelected());
                         } else {
-                            script.setBackwardCompatible(false);
+                            presenter.setSelected(script.isBackwardCompatible());
                         }
                     }
                 });

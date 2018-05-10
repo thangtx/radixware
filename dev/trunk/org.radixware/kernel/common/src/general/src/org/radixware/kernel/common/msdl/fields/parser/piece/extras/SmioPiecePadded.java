@@ -20,6 +20,9 @@ import org.radixware.kernel.common.msdl.fields.parser.SmioCoder;
 import java.nio.charset.CharacterCodingException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
+import org.radixware.kernel.common.check.IProblemHandler;
+import org.radixware.kernel.common.check.RadixProblem;
+import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.msdl.fields.parser.piece.SmioPiece;
 import org.radixware.kernel.common.msdl.fields.parser.piece.SmioPieceFixedLen;
 
@@ -28,9 +31,9 @@ public abstract class SmioPiecePadded extends SmioPiece {
 
     abstract public AlignDef.Enum getAlign();
 
-    abstract protected Character getPadChar() throws SmioException;
+    abstract protected Character getPadChar();
 
-    abstract protected Byte getPadByte() throws SmioException;
+    abstract protected Byte getPadByte();
 
     abstract protected SmioCoder getCoder();
 
@@ -67,9 +70,7 @@ public abstract class SmioPiecePadded extends SmioPiece {
             }
         }
         if (getAlign() == AlignDef.NONE) {
-            if (data.length() < length) {
-                throw new SmioException("NONE-aligned piece contains LESS characters, than specified in its size");
-            }
+            
         } else {
             final StringBuilder sb = new StringBuilder();
             if (getAlign() == AlignDef.LEFT) {
@@ -83,6 +84,7 @@ public abstract class SmioPiecePadded extends SmioPiece {
             }
             data = sb.toString();
         }
+        checkResultLength(length, data.length());
         return ByteBuffer.wrap(cs.encode(data));
     }
     
@@ -122,6 +124,38 @@ public abstract class SmioPiecePadded extends SmioPiece {
             }
         }
         res.flip();
+        checkResultLength(length, res.remaining());
         return res;
+    }
+    
+    protected boolean isPadSymbolCorrect(LenUnitDef.Enum unit) {
+        if (unit == null) {
+            return false;
+        }
+        if (unit == LenUnitDef.BYTE || unit == LenUnitDef.ELEMENT) {
+            return getPadByte() != null;
+        } else if (unit == LenUnitDef.CHAR) {
+            return getPadChar() != null;
+        }
+        return false;
+    }
+    
+    private void checkResultLength(int expectedLen, int actualLen) throws SmioException {
+        if (actualLen < expectedLen) {
+            throw new SmioException(String.format(
+                    "Piece contains LESS characters (%d), than specified in its size (%d)",
+                    actualLen, expectedLen));
+        }
+    }
+
+    @Override
+    public void check(RadixObject source, IProblemHandler handler) {
+        super.check(source, handler);
+        final String msgSource = "MSDL Field '" + source.getQualifiedName();
+        
+        final LenUnitDef.Enum unit_ = getUnit();
+        if (unit_ == null) {
+            handler.accept(RadixProblem.Factory.newError(source, msgSource + "' formating error: 'Unit not defined'"));
+        }
     }
 }

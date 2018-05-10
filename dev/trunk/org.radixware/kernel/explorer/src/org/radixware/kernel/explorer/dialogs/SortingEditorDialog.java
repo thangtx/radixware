@@ -165,7 +165,9 @@ public final class SortingEditorDialog extends ExplorerDialog implements ISortin
                 //column 0
                 QTableWidgetItem item = new QTableWidgetItem();
                 item.setFlags(Qt.ItemFlag.ItemIsSelectable, Qt.ItemFlag.ItemIsEnabled);
-                final String capitalizedColTitle = ClientValueFormatter.capitalizeIfNecessary(environment, classPresentation.getPropertyDefById(sortingItem.propId).getTitle());
+                final RadPropertyDef propertyDef = classPresentation.getPropertyDefById(sortingItem.propId);
+                final String propertyTitle = propertyDef.getTitle(null);
+                final String capitalizedColTitle = ClientValueFormatter.capitalizeIfNecessary(environment, propertyTitle);
                 item.setText(capitalizedColTitle);
                 item.setData(Qt.ItemDataRole.UserRole, sortingItem.propId);
                 setItem(row, COL_TITLE, item);
@@ -288,10 +290,10 @@ public final class SortingEditorDialog extends ExplorerDialog implements ISortin
             super.focusInEvent(event);
         }
         
-        public void add(final RadPropertyDef prop) {
+        public void add(final RadPropertyDef prop, final IClientEnvironment environment) {
             if(prop != null) {
                 final QListWidgetItem item = new QListWidgetItem(this);
-                item.setText(prop.getTitle());
+                item.setText(prop.getTitle(environment));
                 item.setData(Qt.ItemDataRole.UserRole, prop);
                 addItem(item);
             }
@@ -397,7 +399,7 @@ public final class SortingEditorDialog extends ExplorerDialog implements ISortin
         final List<RadPropertyDef> properties = classPresentation.getProperties();
         for(RadPropertyDef i : properties) {
             if(i.canBeUsedInSorting() && i.hasTitle() && !isPropertyUsed(i)) {
-                listAvailableItems.add(i);
+                listAvailableItems.add(i, environment);
             }
         }
         return layout;
@@ -491,7 +493,7 @@ public final class SortingEditorDialog extends ExplorerDialog implements ISortin
             final RadSortingDef.SortingItem sortingItem = new SortingItem(data.getId(), SortingItem.SortOrder.ASC);
             tableSelectedItems.add(sortingItem);
         } else {
-            listAvailableItems.add(data);
+            listAvailableItems.add(data, environment);
         }
         watchButtons();
     }
@@ -509,7 +511,7 @@ public final class SortingEditorDialog extends ExplorerDialog implements ISortin
                         .getDefManager()
                         .getClassPresentationDef(sorting.getOwnerClassId())
                         .getPropertyDefById(id);
-                listAvailableItems.add(property);
+                listAvailableItems.add(property, environment);
             }
             tableSelectedItems.selectRow(currentRow == rowCount - 1 ? currentRow - 1 : currentRow);
         }

@@ -24,6 +24,9 @@ import java.util.*;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.openide.util.Lookup;
+import org.radixware.kernel.common.defs.RadixObject;
+import org.radixware.kernel.common.defs.ads.IEnvDependent;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsSources;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.jml.Jml;
@@ -122,7 +125,20 @@ public class AdsSourceCodePanel extends javax.swing.JPanel {
                             editors.put(env, editor);
                             tabs.add(env.getName(), editor);
                         }
-                        editor.open(src, info);
+                        RadixObject target = null;
+                        if (info != null) {
+                            target = info.getTarget();
+                        }
+                        if (target instanceof IEnvDependent){
+                            ERuntimeEnvironmentType environmentType = ((IEnvDependent)target).getUsageEnvironment();
+                            if (ERuntimeEnvironmentType.compatibility(env, environmentType)){
+                                editor.open(src, info);
+                            } else {
+                                editor.open(src, new OpenInfo(target));
+                            }
+                        } else {
+                            editor.open(src, info);
+                        }
                         if (info != null) {
                             if (src == info.getTarget() || src.isParentOf(info.getTarget())) {
                                 tabs.setSelectedComponent(editor);

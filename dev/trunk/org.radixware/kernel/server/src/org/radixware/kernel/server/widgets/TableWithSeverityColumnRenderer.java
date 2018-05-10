@@ -25,11 +25,11 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 
 public class TableWithSeverityColumnRenderer implements TableCellRenderer {
 
+    public static final Color bgColor1 = new Color(236, 233, 216);
+    public static final Color bgColor2 = new Color(220, 220, 220);
+    public static final Color bgSelColor = Color.BLUE;
     private final JLabel label;
     private final Font arteFont = new Font("Tahoma", Font.PLAIN, 11);
-    private final Color bgColor1 = new Color(236, 233, 216);
-    private final Color bgColor2 = new Color(220, 220, 220);
-    private final Color bgSelColor = Color.BLUE;
     private final Color arteFontColor = Color.BLUE;
     private final Color selFontColor = Color.WHITE;
     private final Icon debugIcon;

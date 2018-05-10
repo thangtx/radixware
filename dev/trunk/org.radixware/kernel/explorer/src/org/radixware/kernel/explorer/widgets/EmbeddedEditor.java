@@ -21,6 +21,7 @@ import com.trolltech.qt.gui.QCloseEvent;
 import com.trolltech.qt.gui.QWidget;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Objects;
 import javax.swing.text.View;
 import org.radixware.kernel.common.client.IClientEnvironment;
 import org.radixware.kernel.common.client.eas.RequestHandle;
@@ -98,7 +99,7 @@ import org.radixware.schemas.eas.ReadRs;
  * (если текущая сущность не задана открытия не произойдет).
  * @see EmbeddedView
  */
-public final class EmbeddedEditor extends EmbeddedView implements IPresentationChangedHandler, org.radixware.kernel.common.client.eas.IResponseListener,IEmbeddedEditor {
+public class EmbeddedEditor extends EmbeddedView implements IPresentationChangedHandler, org.radixware.kernel.common.client.eas.IResponseListener,IEmbeddedEditor {
         
     private final static class EntityModelFactory{
         
@@ -129,6 +130,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
     private List<Id> presentations = null;
     private Id ownerClassId = null;
     private Id entityClassId = null;
+    private boolean doingRefresh;
     private String pid = null;
     private EntityModelFactory entityFactory;
     
@@ -229,7 +231,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
      *  @see #setClassOfNewEntity(String)
      */
     @Override
-    public void setPresentation(final Id ownerClassId, final Id editorPresentationId) {
+    public final void setPresentation(final Id ownerClassId, final Id editorPresentationId) {
         if (model != null && !close(false)) {
             return;
         }
@@ -244,7 +246,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
     }
 
     @Override
-    public void setPresentations(final Id ownerClassId, final List<Id> editorPresentationIds) {
+    public final void setPresentations(final Id ownerClassId, final List<Id> editorPresentationIds) {
         if (model != null && !close(false)) {
             return;
         }
@@ -267,7 +269,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
      * @param propertyRef свойство-ссылка на объект сущности.
      */    
     @Override
-    public void setPropertyRef(final PropertyRef propertyRef){
+    public final void setPropertyRef(final PropertyReference propertyRef){
         if (model!=null && !close(false)){
             return;
         }
@@ -279,9 +281,9 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
         entityClassId = null;
         pid = null;
         childItemId = null;        
-    }
+    }        
 
-    public List<Id> getPresentations() {
+    public final List<Id> getPresentations() {
         if (presentations != null) {
             return Collections.unmodifiableList(presentations);
         }
@@ -301,7 +303,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
      * @param pid - строковое представление {@link Pid идентификатора сущности}
      */
     @Override
-    public void setEntityPid(String pid) {
+    public final void setEntityPid(String pid) {
         if (model != null && !close(false)) {
             return;
         }
@@ -315,7 +317,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
      * Получить строковое представление {@link Pid идентификатора сущности} для режима бесконтекстного редактирования в указанной презентации.
      */
     @Override
-    public String getEntityPid() {
+    public final String getEntityPid() {
         return pid;
     }
 
@@ -327,7 +329,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
      * @param classId - идентификатор класса новой сущности
      */
     @Override
-    public void setClassOfNewEntity(final Id classId) {
+    public final void setClassOfNewEntity(final Id classId) {
         if (model != null && !close(false)) {
             return;
         }
@@ -337,7 +339,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
     }
 
     @Override
-    public void setExplorerItem(Model parentModel, final Id explorerItemId) {
+    public final void setExplorerItem(Model parentModel, final Id explorerItemId) {
         super.setExplorerItem(parentModel, explorerItemId);
         presentations = null;
         entityClassId = null;
@@ -346,18 +348,18 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
     }
 
     @Override
-    protected Model createModel() throws ServiceClientException, InterruptedException {
+    protected final Model createModel() throws ServiceClientException, InterruptedException {
         boolean needForRead = false;
         EntityModel entityModel;
         if (property != null) {
-            if (property instanceof PropertyObject && property.getVal()==null){
-                final IContext.ObjectPropCreating context = new IContext.ObjectPropCreating((EntityModel) property.getOwner(), property.getDefinition().getId());
-                final RadParentRefPropertyDef propertyDef = (RadParentRefPropertyDef)property.getDefinition();
-                final RadEditorPresentationDef epd = propertyDef.getObjectCreationPresentation();
-                entityModel = EntityModel.openPrepareCreateModel(epd, entityClassId, null, propertyDef.getObjectCreationPresentationIds(), context);
+            if (property instanceof PropertyObject 
+                && property.getVal()==null
+                && ((EntityModel)property.getOwner()).isNew()){
+                entityModel = ((PropertyObject)property).initPrepareCreateModel(entityClassId, null, null);
             }else{
                 entityModel = property.openEntityModel();
             }
+            setObjectName("rx_embedded_editor_by_prop_#"+property.getId().toString());
         } else if (presentations != null && !presentations.isEmpty() && ownerClassId != null) {
             final RadEditorPresentationDef pres = getEnvironment().getApplication().getDefManager().getEditorPresentationDef(presentations.get(0));
             final Model holderModel = WidgetUtils.findNearestModel(this);
@@ -370,6 +372,9 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
             } else {
                 entityModel = 
                     EntityModel.openContextlessModel(getEnvironment(), new Pid(pres.getTableId(), pid), ownerClassId, pres.getId(), holderModel);
+            }
+            if (entityModel!=null){
+                setObjectName("rx_embedded_editor_#"+entityModel.getDefinition().getId().toString());
             }
         } else if (selector != null) {
             final GroupModel groupModel = selector.getGroupModel();
@@ -394,6 +399,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
             }else{
                 needForRead = true;
             }
+            setObjectName("rx_embedded_editor_for_selector_#"+selector.getModel().getDefinition().getId());
         } else {
             entityModel = (EntityModel)super.createModel();
         }
@@ -427,7 +433,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
     }
     
     @Override
-    protected RadPresentationDef getExpectedPresentation(){
+    protected final RadPresentationDef getExpectedPresentation(){
         if (property != null) {
             final List<Id> presentationIds = 
                 ((RadParentRefPropertyDef)property.getDefinition()).getObjectEditorPresentationIds();
@@ -454,7 +460,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
      */
     @Override
     public void bind() {
-        if (property != null) {
+        if (property != null) {            
             property.subscribe(this);
             refresh(property);
         }
@@ -464,7 +470,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
     }
 
     @Override
-    protected void closeEvent(final QCloseEvent event) {
+    protected final void closeEvent(final QCloseEvent event) {
         disconnectSignals();
         if (property != null) {
             property.unsubscribe(this);
@@ -479,31 +485,61 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
      */
     @Override
     @SuppressWarnings("UseSpecificCatch")
-    public void refresh(ModelItem changedItem) {
-        if (changedItem != null && property != null && changedItem.getId().equals(property.getId())) {
-            final Pid value = property.getVal()==null ? null : property.getVal().getPid();
-            if (model == null && property.canOpenEntityModel()) {
-                try {
-                    open();
-                } catch (Exception ex) {
-                    processExceptionOnOpen(ex);
-                }
-            } else if (model != null && !((EntityModel) model).getPid().equals(value)) {
-                setUpdatesEnabled(false);
-                if (close(false) && property.canOpenEntityModel()) {
+    public final void refresh(final ModelItem changedItem) {
+        if (changedItem != null && property != null && changedItem.getId().equals(property.getId()) && !doingRefresh) {
+            doingRefresh = true;
+            try{
+                final Pid value = property.getVal()==null ? null : property.getVal().getPid();
+                if (model == null && canOpenEntityModel()) {
                     try {
                         open();
                     } catch (Exception ex) {
                         processExceptionOnOpen(ex);
-                    } finally {
+                    }
+                } else if (model != null && !Objects.equals(((EntityModel) model).getPid(),value)) {
+                    setUpdatesEnabled(false);
+                    if (close(false) && canOpenEntityModel()) {
+                        try {
+                            open();
+                        } catch (Exception ex) {
+                            processExceptionOnOpen(ex);
+                        } finally {
+                            setUpdatesEnabled(true);
+                        }
+                    } else {
                         setUpdatesEnabled(true);
                     }
-                } else {
-                    setUpdatesEnabled(true);
                 }
+            }finally{
+                doingRefresh = false;
             }
         }
     }
+    
+    private boolean canOpenEntityModel(){
+        if (property instanceof PropertyObject){
+            final PropertyObject propObject = (PropertyObject)property;
+            if (propObject.getVal()==null){
+                return propObject.canCreate();
+            }else{
+                if (((EntityModel)property.getOwner()).isNew()){
+                    return propObject.canModifyEntityObject();
+                }else{
+                    return property.canOpenEntityModel();
+                }
+            }
+        }else{            
+            return property.canOpenEntityModel();
+        }
+    }
+    
+    @Override
+    protected void onModifiedStateChanged() {
+        super.onModifiedStateChanged();
+        if (property instanceof PropertyObject && ((EntityModel)property.getOwner()).isNew()){
+            property.setValEdited(inModifiedStateNow());
+        }
+    }    
 
     @Override
     protected void onViewCreated() {
@@ -533,7 +569,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
     }
 
     @SuppressWarnings("unused")
-    private void afterOpened(final QWidget content) {
+    protected void afterOpened(final QWidget content) {
         final EntityModel entity = (EntityModel) model;
         if (entity.isNew()) {
             getView().setToolBarHidden(true);
@@ -545,7 +581,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
      * Возвращает открытый редактор
      */
     @Override
-    public Editor getView() {
+    public final Editor getView() {
         return super.getView() == null ? null : (Editor)super.getView();
     }
 
@@ -557,7 +593,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
      */
     @Override
     @SuppressWarnings("UseSpecificCatch")
-    public EntityModel getModel() {
+    public final EntityModel getModel() {
         if (model == null) {
             try {
                 createModelAndPrepareView();
@@ -568,7 +604,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
         return model != null ? (EntityModel) model : null;
     }
 
-    public RequestHandle rereadAsync() {
+    public final RequestHandle rereadAsync() {
         if (model == null) {
             return null;
         } else {
@@ -577,7 +613,7 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
     }
 
     @Override
-    public EntityModel onChangePresentation(final RawEntityModelData rawData,
+    public final EntityModel onChangePresentation(final RawEntityModelData rawData,
                                             Id newPresentationClassId, Id newPresentationId) {
         if (selector!=null) {
             entityFactory = new  EntityModelFactory(rawData);
@@ -595,11 +631,11 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
         }
     }
     
-    public void bindAsync() {
+    public final void bindAsync() {
         bindAsync(0);
     }
 
-    public void bindAsync(final int timeoutSec) {
+    public final void bindAsync(final int timeoutSec) {
         final IContext.Entity context;
         final Id classId;
         final Pid entityPid;
@@ -653,9 +689,9 @@ public final class EmbeddedEditor extends EmbeddedView implements IPresentationC
 
     @Override
     @SuppressWarnings("UseSpecificCatch")
-    public void onResponseReceived(XmlObject response, RequestHandle handle) {
+    public final void onResponseReceived(XmlObject response, RequestHandle handle) {
         final ReadRs rs = (ReadRs) response;
-        final Id presentationId = rs.getPresentation().getId();
+        final Id presentationId = rs.getData().getPresentation().getId();
         final RadEditorPresentationDef presentation = getEnvironment().getApplication().getDefManager().getEditorPresentationDef(presentationId);
         final IContext.Entity context = (IContext.Entity) handle.getUserData();
         final EntityModel entity = presentation.createModel(context);

@@ -22,6 +22,7 @@ import static org.radixware.kernel.common.builder.check.common.RadixObjectChecke
 import org.radixware.kernel.common.builder.check.common.RadixObjectCheckerRegistration;
 import org.radixware.kernel.common.check.IProblemHandler;
 import org.radixware.kernel.common.check.RadixProblem;
+import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.RadixObjects;
 import org.radixware.kernel.common.defs.ads.AdsDefinitionProblems;
@@ -39,6 +40,7 @@ import org.radixware.kernel.common.defs.ads.clazz.presentation.CreatePresentatio
 import org.radixware.kernel.common.defs.ads.clazz.presentation.IAdsPresentableProperty;
 import org.radixware.kernel.common.defs.ads.clazz.presentation.SelectorAddons;
 import org.radixware.kernel.common.defs.ads.common.AdsUtils;
+import org.radixware.kernel.common.defs.ads.common.ReleaseUtils;
 import org.radixware.kernel.common.enums.EPropNature;
 import org.radixware.kernel.common.enums.ERestriction;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
@@ -83,8 +85,8 @@ public class AdsSelectorPresentationChecker extends PresentationChecker<AdsSelec
                 AdsUtils.checkAccessibility(presentation, cc, false, problemHandler);
                 CheckUtils.checkExportedApiDatails(presentation, cc, problemHandler);
             }
-        } else {  
-            
+        } else {
+
         }
         List<AdsEditorPresentationDef> accChecked = new ArrayList<>();
         List<AdsEditorPresentationDef> allUsedPresentations = new LinkedList<>();
@@ -204,16 +206,21 @@ public class AdsSelectorPresentationChecker extends PresentationChecker<AdsSelec
 
             AdsPropertyDef prop = c.findProperty();
             if (prop == null) {
+                // not found
                 error(c, problemHandler, MessageFormat.format("Cannot find property referenced from selector column #{0}", counter));
             } else {
+                ReleaseUtils.checkExprationRelease(columns, prop, problemHandler);
+                // dublicate
                 if (usedProps.contains(prop)) {
                     error(c, problemHandler, MessageFormat.format("Duplicated property #{0} in selector columns list", prop.getQualifiedName(presentation)));
                 }
                 usedProps.add(prop);
                 AdsUtils.checkAccessibility(presentation, prop, false, problemHandler);
 
+                // export
                 CheckUtils.checkExportedApiDatails(c, prop, problemHandler);
 
+                //
                 AdsPropertyDef tp = prop;
                 while (tp != null && tp.getNature() == EPropNature.PARENT_PROP) {
                     AdsParentPropertyDef pp = (AdsParentPropertyDef) tp;
@@ -223,6 +230,7 @@ public class AdsSelectorPresentationChecker extends PresentationChecker<AdsSelec
                     error(c, problemHandler, MessageFormat.format("Cannot determine final property referenced from selector column #{0}", counter));
                 }
 
+                // presentable
                 if (prop instanceof IAdsPresentableProperty) {
                     ServerPresentationSupport support = ((IAdsPresentableProperty) prop).getPresentationSupport();
                     if (support != null && support.getPresentation() != null && support.getPresentation().isPresentable()) {
@@ -239,6 +247,11 @@ public class AdsSelectorPresentationChecker extends PresentationChecker<AdsSelec
                     }
                 } else {
                     error(c, problemHandler, "Non-presentation property in selector column list: " + prop.getQualifiedName());
+                }
+
+                // published
+                if (presentation.isPublished() && !prop.isPublished()) {
+                    warning(c, problemHandler, MessageFormat.format("The published presentation has unpublished property #{0}", prop.getQualifiedName(presentation)));
                 }
             }
             counter++;

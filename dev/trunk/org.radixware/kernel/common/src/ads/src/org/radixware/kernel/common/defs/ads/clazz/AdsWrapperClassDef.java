@@ -18,17 +18,17 @@ import java.util.Set;
 import org.radixware.kernel.common.defs.ExtendableDefinitions;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
-import org.radixware.kernel.common.defs.ads.clazz.members.AdsSystemMethodDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.MethodParameter;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportClassDef;
-import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.RadixObjectWriter;
 import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
+import org.radixware.kernel.common.enums.EAccess;
 import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EDefinitionIdPrefix;
+import org.radixware.kernel.common.enums.EDocGroup;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.enums.EValType;
 import org.radixware.kernel.common.scml.CodePrinter;
@@ -81,6 +81,11 @@ public class AdsWrapperClassDef extends AdsSqlClassDef {
     @Override
     public EClassType getClassDefType() {
         return EClassType.DYNAMIC;
+    }
+
+    @Override
+    public EDocGroup getDocGroup() {
+        return EDocGroup.NONE;
     }
 
     @Override
@@ -175,17 +180,6 @@ public class AdsWrapperClassDef extends AdsSqlClassDef {
 
             if (def.srcClassType == EClassType.REPORT) {
                 //write wrapper for open and execute methods
-                List<AdsReportClassDef.ReportUtils.ParamInfo> info = AdsReportClassDef.ReportUtils.getExecuteMethodProfile(def);
-                writeMethodDeclaration(printer, "execute", info, null);
-                printer.println('{');
-                writeMethodInvocation(printer, AdsSystemMethodDef.ID_REPORT_EXECUTE.toString(), info, null);
-                printer.println('}');
-                info = AdsReportClassDef.ReportUtils.getOpenMethodProfile(def);
-                writeMethodDeclaration(printer, "open", info, null);
-                printer.println('{');
-                writeMethodInvocation(printer, AdsSystemMethodDef.ID_REPORT_OPEN.toString(), info, null);
-                printer.println('}');
-
                 printer.println("public org.radixware.kernel.common.types.Id getId(){");
                 writeMethodInvocation(printer, "getId", null, AdsTypeDeclaration.Factory.newPlatformClass("org.radixware.kernel.common.types.Id"));
                 printer.println('}');
@@ -210,15 +204,20 @@ public class AdsWrapperClassDef extends AdsSqlClassDef {
                 writeMethodInvocation(printer, "createForm", null, AdsTypeDeclaration.Factory.newPlatformClass("org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm"));
                 printer.println('}');
             }
-
-            for (AdsMethodDef method : def.getMethods().get(ExtendableDefinitions.EScope.LOCAL)) {
+            
+            List<AdsMethodDef> local = def.getMethods().get(ExtendableDefinitions.EScope.LOCAL);
+            for (AdsMethodDef method : def.getMethods().get(ExtendableDefinitions.EScope.ALL)) {
+                if (method.getAccessFlags().getAccessMode() != EAccess.PUBLIC) {
+                    continue;
+                }
                 List<AdsReportClassDef.ReportUtils.ParamInfo> info = new LinkedList<>();
                 for (MethodParameter p : method.getProfile().getParametersList()) {
                     info.add(new AdsReportClassDef.ReportUtils.ParamInfo(p.getName(), p.getType()));
                 }
-                writeMethodDeclaration(printer, method.getId().toString(), info, method.getProfile().getReturnValue().getType());
+                writeMethodDeclaration(printer, method.getName(), info, method.getProfile().getReturnValue().getType());
                 printer.println('{');
-                writeMethodInvocation(printer, method.getId().toString(), info, method.getProfile().getReturnValue().getType());
+                String mthName = local.contains(method) ? method.getId().toString() : method.getName();
+                writeMethodInvocation(printer, mthName, info, method.getProfile().getReturnValue().getType());
                 printer.println('}');
             }
 
@@ -269,13 +268,13 @@ public class AdsWrapperClassDef extends AdsSqlClassDef {
                 printer.print(") ");
 
             }
-            printer.print("wrappedInstance.getClass().getDeclaredMethod(\"" + methodName + "\"");
+            printer.print("wrappedInstance.getClass().getMethod(\"" + methodName + "\"");
 
             if (params != null && params.size() > 0) {
                 for (AdsReportClassDef.ReportUtils.ParamInfo a : params) {
                     printer.printComma();
                     if (a.type.getTypeId() == EValType.ARR_REF) {
-                        CodePrinter type = CodePrinter.Factory.newJavaPrinter();
+                        CodePrinter type = CodePrinter.Factory.newJavaPrinter(printer);
                         a.type.getJavaSourceSupport().getCodeWriter(usagePurpose).writeCode(type, a.type, def);
                         String strType = type.toString();
                         int index = strType.indexOf("<");

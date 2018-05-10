@@ -231,16 +231,19 @@ public class RadParagraphDef extends RadExplorerItemDef implements IExplorerItem
         return contextlessCommandIds.indexOf(id) > -1;
     }
     private List<RadCommandDef> contextlessCommands;
+    private final Object commandsSemaphore = new Object();
 
     @Override
     public List<RadCommandDef> getEnabledCommands() {
-        if (contextlessCommands == null) {
-            contextlessCommands = new ArrayList<>();
-            for (Id commandId : contextlessCommandIds) {
-                contextlessCommands.add(getDefManager().getContextlessCommandDef(commandId));
+        synchronized(commandsSemaphore){
+            if (contextlessCommands == null) {
+                contextlessCommands = new ArrayList<>();
+                for (Id commandId : contextlessCommandIds) {
+                    contextlessCommands.add(getDefManager().getContextlessCommandDef(commandId));
+                }
             }
-        }
-        return contextlessCommands;
+            return contextlessCommands;
+        }        
     }
 
     /**

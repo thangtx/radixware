@@ -89,7 +89,7 @@ public class PreprocessSQLScriptAction extends AbstractRadixContextAwareAction {
             }
             final SQLPreprocessor sqlPreprocessor = new SQLPreprocessor(scriptProvider.getScript(), name, new DesignerVariablesProvider(connection, connectionParameters));
             try {
-                final String preprocessedScript = sqlPreprocessor.preprocess(SQLPreprocessor.PreprocessBehavior.PT_REPLACE_UNUSED_BLOCKS_TO_COMMENT);
+                final String preprocessedScript = sqlPreprocessor.preprocess(SQLPreprocessor.PreprocessBehavior.PT_REPLACE_UNUSED_BLOCKS_TO_COMMENT, null);
                 if (preprocessedScript != null) {
                     DialogUtils.showText(preprocessedScript, "Preprocessed " + name, "sql");
                 }

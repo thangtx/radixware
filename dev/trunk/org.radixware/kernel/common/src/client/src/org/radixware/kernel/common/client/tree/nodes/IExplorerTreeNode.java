@@ -21,6 +21,8 @@ public interface IExplorerTreeNode {
     public IExplorerTreeNode getParentNode();
 
     public List<IExplorerTreeNode> getChildNodes();
+    
+    public boolean isChildNodesInited();
 
     public List<IExplorerTreeNode> getChildNodesRecursively();
 
@@ -40,5 +42,7 @@ public interface IExplorerTreeNode {
 
     public String getPath();
 
-  
+    public String getName();
+    
+    public org.radixware.schemas.clientstate.ExplorerTreeNode writeToXml(final org.radixware.schemas.clientstate.ExplorerTreeNode node);
 }

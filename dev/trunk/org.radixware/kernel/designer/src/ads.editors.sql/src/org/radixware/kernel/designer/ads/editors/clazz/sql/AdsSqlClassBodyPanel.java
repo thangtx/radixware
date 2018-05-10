@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.JSplitPane;
 import org.radixware.kernel.common.defs.ads.clazz.sql.AdsSqlClassDef;
+import org.radixware.kernel.common.defs.dds.utils.ISqlDef;
 import org.radixware.kernel.designer.common.dialogs.utils.EditorOpenInfo;
 
 
@@ -46,7 +47,7 @@ public class AdsSqlClassBodyPanel extends javax.swing.JPanel {
         treePanel.update();
     }
 
-    public void open(AdsSqlClassDef radixObject, EditorOpenInfo info) {
+    public void open(ISqlDef radixObject, EditorOpenInfo info) {
         codeEditor.open(radixObject, info);
         treePanel.open(radixObject, info);
         update();

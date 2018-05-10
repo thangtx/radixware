@@ -12,6 +12,7 @@
 package org.radixware.kernel.explorer.editors.monitoring.tree;
 
 import com.trolltech.qt.core.Qt.ItemDataRole;
+import com.trolltech.qt.gui.QTreeWidgetItem;
 import java.text.DecimalFormat;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.explorer.editors.monitoring.UnitsWidget;
@@ -21,8 +22,8 @@ import org.radixware.kernel.explorer.env.Application;
 
 public class UnitJobExecTreeItem extends UnitTreeItem {    
 
-    public UnitJobExecTreeItem( UnitsWidget.IdsGetter idsGetter,MetricInfoGetter.UnitInfo unitInfo, final boolean isInstanceStarted,final Model groupModel) {
-        super( idsGetter, unitInfo, isInstanceStarted,groupModel);
+    public UnitJobExecTreeItem( UnitsWidget.IdsGetter idsGetter,MetricInfoGetter.UnitInfo unitInfo, final boolean isInstanceStarted, final Model groupModel, QTreeWidgetItem parent) {
+        super(idsGetter, unitInfo, isInstanceStarted, groupModel, parent);
     }
     
     @Override

@@ -14,9 +14,7 @@ package org.radixware.wps.settings;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.radixware.kernel.common.client.env.SettingNames;
 import org.radixware.wps.WpsEnvironment;
 import org.radixware.wps.WpsSettings;
@@ -28,7 +26,7 @@ import org.radixware.wps.rwt.UIObject;
 import org.radixware.wps.text.WpsTextOptions;
 
 
-public class PropertySettingsWidget extends SettingsWidget {
+final class PropertySettingsWidget extends SettingsWidget {
 
     private final List<SettingsWidget> settingsArrayList = new ArrayList<>();
     private final ColorSettingsWidget bgrnd, fgrn;
@@ -38,15 +36,12 @@ public class PropertySettingsWidget extends SettingsWidget {
             final String sub,
             final String n,
             final String title,
-            final boolean showBgrnColor, Map<String, String> map) {
-        super(environment, parent, gr, sub, n, null);
+            final boolean showBgrnColor) {
+        super(environment, parent, gr, sub, n);
         TableLayout table = new TableLayout();
         if (showBgrnColor) {
-            bgrnd = new ColorSettingsWidget(environment, parent, gr, sub, n + "/" + SettingNames.TextOptions.BCOLOR, null);
-            if (map != null) {
-                bgrnd.setDefaultValue(map.get(SettingNames.TextOptions.BCOLOR));
-            }
-            Label l1 = new Label(e.getMessageProvider().translate("Settings Dialog", "Background color"));
+            bgrnd = new ColorSettingsWidget(environment, parent, gr, sub, n + "/" + SettingNames.TextOptions.BCOLOR);
+            Label l1 = new Label(getWpsEnvironment().getMessageProvider().translate("Settings Dialog", "Background color"));
 
             TableLayout.Row row0 = table.addRow();
             TableLayout.Row.Cell cell = row0.addCell();
@@ -59,11 +54,8 @@ public class PropertySettingsWidget extends SettingsWidget {
             bgrnd = null;
         }
 
-        fgrn = new ColorSettingsWidget(environment, parent, gr, sub, n + "/" + SettingNames.TextOptions.FCOLOR, null);
-        if (map != null) {
-            fgrn.setDefaultValue(map.get(SettingNames.TextOptions.FCOLOR));
-        }
-        Label l2 = new Label(e.getMessageProvider().translate("Settings Dialog", "Foreground color"));
+        fgrn = new ColorSettingsWidget(environment, parent, gr, sub, n + "/" + SettingNames.TextOptions.FCOLOR);
+        Label l2 = new Label(getEnvironment().getMessageProvider().translate("Settings Dialog", "Foreground color"));
         TableLayout.Row row1 = table.addRow();
         TableLayout.Row.Cell cell = row1.addCell();
         cell.getHtml().addClass("rwt-table-cell-label");
@@ -97,19 +89,6 @@ public class PropertySettingsWidget extends SettingsWidget {
         }
     }
 
-    @Override    
-    @SuppressWarnings("unchecked")
-    protected void setDefaultValue(Object val) {
-        super.setDefaultValue(val);
-        if (val != null) {
-            HashMap<String, String> map = (HashMap<String, String>) val;
-            if (!map.isEmpty()) {
-                fgrn.setDefaultValue(map.get(SettingNames.TextOptions.FCOLOR));
-                bgrnd.setDefaultValue(map.get(SettingNames.TextOptions.BCOLOR));
-            }
-        }
-    }
-
     @Override
     public void writeSettings(WpsSettings dst) {
         for (SettingsWidget w : settingsArrayList) {
@@ -122,11 +101,11 @@ public class PropertySettingsWidget extends SettingsWidget {
     }
 
     public String getBackgroundColor() {
-        return bgrnd != null ? (bgrnd.getColor() == null ? (String) bgrnd.defaultValue : bgrnd.getColor()) : "#FFFFFF";
+        return bgrnd != null ? (bgrnd.getColor() == null ? bgrnd.getDefaultValue() : bgrnd.getColor()) : "#FFFFFF";
     }
 
     public String getForegroundColor() {
-        return fgrn != null ? (fgrn.getColor() == null ? (String) fgrn.defaultValue : fgrn.getColor()) : "#FFFFFF";
+        return fgrn != null ? (fgrn.getColor() == null ? bgrnd.getDefaultValue() : fgrn.getColor()) : "#FFFFFF";
     }
 
     public void setBackgroundColor(String color) {

@@ -277,10 +277,14 @@ public class SqmlCompletionProviderText implements ScmlCompletionProvider {
 
         @Override
         public Item[] getNewItems() {
+            AdsFilterDef.Parameter filterParamDef = null;
             if (definition instanceof AdsFilterDef.Parameter) {
-                final AdsFilterDef.Parameter filterParamDef = (AdsFilterDef.Parameter) definition;
-                if (filterParamDef.getType().getTypeId() == EValType.PARENT_REF || filterParamDef.getType().getTypeId() == EValType.OBJECT) {
+                filterParamDef = (AdsFilterDef.Parameter) definition;
+                if (filterParamDef.getType().getTypeId() == EValType.PARENT_REF || filterParamDef.getType().getTypeId() == EValType.OBJECT || filterParamDef.getType().getTypeId() == EValType.ARR_REF) {
                     final EntityRefParameterTag tag = EntityRefParameterTag.Factory.newInstance();
+                    if (filterParamDef.getType().getTypeId().isArrayType()){
+                        tag.setExpressionList(true);
+                    }
                     final AdsType type = filterParamDef.getType().resolve(filterParamDef).get();
                     if (type instanceof EntityObjectType) {
                         tag.setReferencedTableId(((EntityObjectType) type).getSourceEntityId());
@@ -293,6 +297,11 @@ public class SqmlCompletionProviderText implements ScmlCompletionProvider {
             }
             final ParameterTag tag = ParameterTag.Factory.newInstance();
             tag.setParameterId(definition.getId());
+            if (filterParamDef != null) {
+                if (filterParamDef.getType().getTypeId().isArrayType()){
+                    tag.setExpressionList(true);
+                }
+            }
             return new Item[]{tag};
         }
 

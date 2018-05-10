@@ -35,7 +35,10 @@ import org.radixware.kernel.common.utils.events.IRadixEventListener;
 import org.radixware.kernel.common.utils.events.RadixEvent;
 import org.radixware.kernel.common.utils.events.RadixEventSource;
 import org.radixware.kernel.common.components.FilteredTreeView;
+import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
+import org.radixware.kernel.common.defs.dds.DdsModelDef;
+import org.radixware.kernel.common.defs.dds.DdsModule;
 import org.radixware.kernel.designer.common.dialogs.results.ResultsTree;
 import org.radixware.kernel.designer.common.dialogs.usages.FindUsages;
 import org.radixware.kernel.designer.common.dialogs.usages.FindUsagesCfg;
@@ -467,6 +470,14 @@ class CheckResultsTree extends ResultsTree {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            Module m = src.getModule();
+            if (m != null && m instanceof DdsModule) {
+                final DdsModelDef modifiedModel = ((DdsModule) m).getModelManager().getModifiedModelIfLoaded();
+                if (modifiedModel == null || !modifiedModel.getModifierInfo().isOwn()) {
+                    DialogUtils.messageInformation("Please capture DDS module '" + m.getQualifiedName() + "' to suppress this warning");
+                    return;
+                }
+            }
             RadixProblem.WarningSuppressionSupport s = src.getWarningSuppressionSupport(true);
             if (s != null && s.canSuppressWarning(code)) {
                 s.suppressWarnings(code, true);

@@ -33,6 +33,7 @@ import org.radixware.kernel.common.defs.uds.module.UdsModule;
 import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitionCfg;
 import org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel;
 import org.radixware.kernel.designer.common.dialogs.components.TabManager;
+import org.radixware.kernel.designer.common.dialogs.components.description.DescriptionEditor;
 
 final class GeneralTab extends TabManager.TabAdapter {
 
@@ -48,7 +49,8 @@ final class GeneralTab extends TabManager.TabAdapter {
         }
     }
     // members
-    private final JTextArea descriptionEditor;
+    private final DescriptionEditor descriptionEditor = new DescriptionEditor();
+    private final JTextArea descriptionTextArea = new JTextArea();
     private final JCheckBox isTestEditor;
     private final JCheckBox chbIsDeprecated;
     private final JCheckBox chbNeedsDoc;
@@ -78,7 +80,7 @@ final class GeneralTab extends TabManager.TabAdapter {
         @Override
         public void changedUpdate(DocumentEvent e) {
             final Module module = getModule();
-            module.setDescription(descriptionEditor.getText());
+            module.setDescription(descriptionTextArea.getText());
         }
 
         @Override
@@ -124,14 +126,13 @@ final class GeneralTab extends TabManager.TabAdapter {
 
     public GeneralTab(Module module) {
         this.module = module;
-        //
         panel.setLayout(new MigLayout("fill, nogrid"));
-        panel.add(new JLabel("Description:"), "height min, wrap");
-        descriptionEditor = new JTextArea();
+        descriptionEditor.open(module);
         if (BuildOptions.UserModeHandlerLookup.getUserModeHandler() != null || (module instanceof UdsModule)) {
-            panel.add(new JScrollPane(descriptionEditor), "width max, height max, wrap");
+            panel.add(new JLabel("Description:"), "height min, wrap");
+            panel.add(new JScrollPane(descriptionTextArea), "width max, height max, wrap");
         } else {
-            panel.add(new JScrollPane(descriptionEditor), "width max, height 20%, wrap");
+            panel.add(descriptionEditor, "width max, height 20%, wrap");
         }
         isTestEditor = new JCheckBox("Test module");
 
@@ -209,10 +210,12 @@ final class GeneralTab extends TabManager.TabAdapter {
     }
 
     private void updateDescriptionEditor() {
-        final String description = getModule().getDescription();
-        descriptionEditor.getDocument().removeDocumentListener(descriptionListener);
-        descriptionEditor.setText(description);
-        descriptionEditor.getDocument().addDocumentListener(descriptionListener);
+        if (BuildOptions.UserModeHandlerLookup.getUserModeHandler() != null || (module instanceof UdsModule)) {
+            final String description = getModule().getDescription();
+            descriptionTextArea.getDocument().removeDocumentListener(descriptionListener);
+            descriptionTextArea.setText(description);
+            descriptionTextArea.getDocument().addDocumentListener(descriptionListener);
+        }
     }
 
     private void updateIsTestEditor() {
@@ -263,7 +266,8 @@ final class GeneralTab extends TabManager.TabAdapter {
 
     private void updateState() {
         boolean enabled = !getModule().isReadOnly();
-        descriptionEditor.setEditable(enabled);
+        descriptionTextArea.setEditable(enabled);
+        descriptionEditor.setReadonly(!enabled);
         dependenciesPanel.updateState();
         isTestEditor.setEnabled(enabled);
         if (companionEditor != null) {

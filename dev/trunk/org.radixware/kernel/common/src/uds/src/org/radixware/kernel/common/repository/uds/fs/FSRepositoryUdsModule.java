@@ -18,6 +18,7 @@ import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.ads.module.AdsModule;
 import org.radixware.kernel.common.defs.uds.UdsDefinition;
 import org.radixware.kernel.common.defs.uds.module.UdsModule;
+import static org.radixware.kernel.common.defs.uds.module.UdsModule.ETC_DIR_NAME;
 import org.radixware.kernel.common.repository.ads.fs.FSRepositoryAdsModule;
 import org.radixware.kernel.common.repository.ads.fs.IRepositoryAdsDefinition;
 import org.radixware.kernel.common.repository.uds.IRepositoryUdsModule;
@@ -56,6 +57,32 @@ public class FSRepositoryUdsModule extends FSRepositoryAdsModule implements IRep
             }
         });
     }
+    
+    @Override
+    public IRepositoryAdsDefinition[] getListFiles(){
+        final File moduleDir = getDirectory();
+        if (moduleDir == null) {
+            return null; // module removed before definitions loaded
+        }
+        final HashMap<String, FSRepositoryUdsDefinition> loadedFiles = new HashMap<String, FSRepositoryUdsDefinition>();
+        File etcDir = new File(moduleDir, ETC_DIR_NAME);
+        if (etcDir.isDirectory()) {
+
+            File[] definitionFiles = etcDir.listFiles();
+
+            if (definitionFiles != null) {
+                for (File file : definitionFiles) {
+                    loadedFiles.put(file.getName(), new FSRepositoryUdsDefinition(file));
+                }
+            }
+        }
+        
+        if (loadedFiles.isEmpty()){
+            return new IRepositoryAdsDefinition[0];
+        }
+        
+        return loadedFiles.values().toArray(new IRepositoryAdsDefinition[loadedFiles.size()]);
+    }
 
     @Override
     public IRepositoryAdsDefinition[] listDefinitions() {
@@ -65,21 +92,21 @@ public class FSRepositoryUdsModule extends FSRepositoryAdsModule implements IRep
         }
         File srcDir = new File(moduleDir, AdsModule.SOURCES_DIR_NAME);
 
-        if (srcDir.isDirectory()) {
-
-            final HashMap<String, FSRepositoryUdsDefinition> loadedFiles = new HashMap<String, FSRepositoryUdsDefinition>();
-
-            File[] definitionFiles = listFiles(srcDir);
-
-            if (definitionFiles != null) {
-                for (File file : definitionFiles) {
-                    loadedFiles.put(file.getName(), new FSRepositoryUdsDefinition(file));
-                }
-            }
-            return loadedFiles.values().toArray(new IRepositoryAdsDefinition[loadedFiles.size()]);
-        } else {
+//        if (srcDir.isDirectory()) {
+//
+//            final HashMap<String, FSRepositoryUdsDefinition> loadedFiles = new HashMap<String, FSRepositoryUdsDefinition>();
+//
+//            File[] definitionFiles = listFiles(srcDir);
+//
+//            if (definitionFiles != null) {
+//                for (File file : definitionFiles) {
+//                    loadedFiles.put(file.getName(), new FSRepositoryUdsDefinition(file));
+//                }
+//            }
+//            return loadedFiles.values().toArray(new IRepositoryAdsDefinition[loadedFiles.size()]);
+//        } else {
             return new IRepositoryAdsDefinition[0];
-        }
+//        }
     }
 
     @Override
@@ -100,4 +127,7 @@ public class FSRepositoryUdsModule extends FSRepositoryAdsModule implements IRep
         return super.getDefinitionRepository(def);
     }
     
+    @Override
+    public void setModule(AdsModule module) {
+    }
 }

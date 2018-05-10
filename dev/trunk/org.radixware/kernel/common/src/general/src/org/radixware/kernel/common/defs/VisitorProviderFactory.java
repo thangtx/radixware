@@ -8,10 +8,10 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.common.defs;
 
 import org.radixware.kernel.common.scml.Scml;
+import org.radixware.kernel.common.types.Id;
 
 /**
  * Factory for {@linkplain VisitorProvider}. Defines some standard visitor
@@ -57,6 +57,27 @@ public class VisitorProviderFactory {
      */
     public static VisitorProvider createDefaultVisitorProvider() {
         return new DefaultVisitorProvider();
+    }
+
+    public static VisitorProvider createDefinitionVisitorProvider() {
+        return new VisitorProvider() {
+            @Override
+            public boolean isTarget(RadixObject radixObject) {
+                return radixObject instanceof Definition;
+            }
+        };
+    }
+
+    public static VisitorProvider createDefinitionVisitorProvider(final Id id) {
+        return new VisitorProvider() {
+            @Override
+            public boolean isTarget(RadixObject radixObject) {
+                if (radixObject instanceof Definition) {
+                    return ((Definition) radixObject).getId().equals(id);
+                }
+                return false;
+            }
+        };
     }
 
     public static VisitorProvider createCheckVisitorProvider() {

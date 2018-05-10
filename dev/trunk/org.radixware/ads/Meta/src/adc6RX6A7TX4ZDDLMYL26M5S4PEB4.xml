@@ -1,287 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="adc6RX6A7TX4ZDDLMYL26M5S4PEB4" Name="InstallationOptions" Type="3" Environment="common-client">
-    <AccessRules>
-      <Transparence Extendable="false"/>
+    <AccessRules IsFinal="true">
+      <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.env.ProductInstallationOptions"/>
     </AccessRules>
     <Headers>
       <Src Name="Headeradc6RX6A7TX4ZDDLMYL26M5S4PEB4"/>
     </Headers>
     <Bodies>
-      <Src Name="Bodyadc6RX6A7TX4ZDDLMYL26M5S4PEB4">
-        <xsc:Item>
-          <xsc:Java>private final static Object SEMAPHORE = new Object();</xsc:Java>
-        </xsc:Item>
-      </Src>
+      <Src Name="Bodyadc6RX6A7TX4ZDDLMYL26M5S4PEB4"/>
     </Bodies>
-    <MethodGroup Id="cmg7BKBPP47MFEYFOJS7LRIZCLRG4" Name="Root">
-      <Group Id="cmg4C3CMPBEJJGPZENV3EQ5JPOJLI" Name="private" Members="mthK2N7DGIU3FF4TEYPO4FIGAOKLM mth67CPKPTRVBCIDMOMV2E5ISRNXQ"/>
-      <Group Id="cmgQYH3Q2O2BJHZ3HYFX2YS4MSLD4" Name="public" Members="mthMG4INJDVUBESJBL26K6PI6HORQ mthUE3GQ562SZEPDNRJW6HDKLWEWE mthQQILRCCIAVG7LGV6S6CAMUHLOY mthXG654VLFEFHA3DZQO4GYZ6XOSE mthSFFDVLFVUVHQPMAE3Q66KGFVXY mthP6UE5V2AQFGNLBTRJXB3ECO3X4"/>
-    </MethodGroup>
-    <PropertyGroup Id="cpgKZMRD6J3VNHINJNWNHM6QAF4AQ" Name="Root">
-      <Group Id="cpgFJD7KQK22FCMTCTRZLQQDSPKIM" Name="static" Members="prdC576FXBBD5FDPIIUDBWXKVABMY prdG5P6UTUXDVG73P5M6WMFWIWFHQ"/>
-    </PropertyGroup>
-    <Properties>
-      <Property Id="prd3IDXUREDA5C2XNHG5SDUMQXYP4" Name="options" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
-        <AccessRules Access="2" IsPublished="false"/>
-        <Type TypeId="400" extStr="java.util.Map">
-          <xsc:GenericArguments>
-            <xsc:Argument Alias="?">
-              <xsc:Type TypeId="21"/>
-            </xsc:Argument>
-            <xsc:Argument Alias="?">
-              <xsc:Type TypeId="21"/>
-            </xsc:Argument>
-          </xsc:GenericArguments>
-        </Type>
-        <InitialValue>
-          <Jml>
-            <xsc:Item>
-              <xsc:Java>new java.util.HashMap&lt;String,String>();</xsc:Java>
-            </xsc:Item>
-          </Jml>
-        </InitialValue>
-      </Property>
-      <Property Id="prdC576FXBBD5FDPIIUDBWXKVABMY" Name="INSTANCE" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
-        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
-        <Type TypeId="411" Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4"/>
-      </Property>
-      <Property Id="prdG5P6UTUXDVG73P5M6WMFWIWFHQ" Name="version" Nature="2" IsConst="false" IsOverride="false" isDescriptionInherited="false">
-        <AccessRules Access="2" IsPublished="false" IsStatic="true"/>
-        <Type TypeId="2"/>
-      </Property>
-    </Properties>
+    <MethodGroup Id="cmg7BKBPP47MFEYFOJS7LRIZCLRG4" Name="Root"/>
+    <PropertyGroup Id="cpgKZMRD6J3VNHINJNWNHM6QAF4AQ" Name="Root"/>
+    <Properties/>
     <Methods>
-      <Method Id="mth67CPKPTRVBCIDMOMV2E5ISRNXQ" Name="InstallationOptions" Nature="0" IsConstructor="true" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+      <Method Id="mthMG4INJDVUBESJBL26K6PI6HORQ" Name="loadOptions" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true" IsDeprecated="true">
+          <Transparence Extendable="false" PublishedName="loadOptions(Lorg.radixware.kernel.common.client.IClientEnvironment;)Lorg.radixware.kernel.common.client.env.ProductInstallationOptions;"/>
+        </AccessRules>
         <Parameters>
-          <Parameter Name="environment" Id="mprV7BL4OUHXVDMXBROXAN3VWEJQU">
-            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          <Parameter Name="environment" Id="mprHQPS5U7YQNAQXJUBK2YIGLBO7E">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
           </Parameter>
         </Parameters>
+        <ReturnType TypeId="400" extStr="org.radixware.kernel.common.client.env.ProductInstallationOptions"/>
         <ThrownExceptions>
-          <Exception TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
-          <Exception TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
         </ThrownExceptions>
-        <Sources>
-          <Src>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 mthK2N7DGIU3FF4TEYPO4FIGAOKLM" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(environment);</xsc:Java>
-            </xsc:Item>
-          </Src>
-        </Sources>
       </Method>
-      <Method Id="mthK2N7DGIU3FF4TEYPO4FIGAOKLM" Name="load" Nature="0" IsOverride="false">
-        <AccessRules Access="2" IsPublished="false"/>
+      <Method Id="mthUE3GQ562SZEPDNRJW6HDKLWEWE" Name="isAccessible" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsStatic="true">
+          <Transparence Extendable="false" PublishedName="isAccessible(Lorg.radixware.kernel.common.client.IClientEnvironment;)Z"/>
+        </AccessRules>
         <Parameters>
-          <Parameter Name="environment" Id="mpr45WPDWEFWVEW3OTUBDXNJBVR7Q">
-            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
-          </Parameter>
-        </Parameters>
-        <ThrownExceptions>
-          <Exception TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
-          <Exception TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
-        </ThrownExceptions>
-        <Sources>
-          <Src>
-            <xsc:Item>
-              <xsc:Java>final </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> optionsInXml = 
-    (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>)environment.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRKLGSF7BNFDPXMXNAQP6UIV3GU" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>().</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aicLRZ7XIGZKRHTPC55UBYRMASNMU mthBSX6P4OE4JB43PN6JQGUGR2AGM" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="clc3VZP57ZKQBGDFNWMTJHK6BZR34"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>,null,</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStrDocument"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.class);
-if (optionsInXml!=null &amp;&amp; optionsInXml.getMapStrStr()!=null &amp;&amp; optionsInXml.getMapStrStr().getEntryList()!=null){
-    for (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:TypeDeclaration TypeId="451" Path="xsd3CHHLDEWMTPBDJHBAAN7YHKUNI" extStr="MapStrStr.Entry"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> entry: optionsInXml.getMapStrStr().getEntryList()){
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prd3IDXUREDA5C2XNHG5SDUMQXYP4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.put(entry.getKey(),entry.getValue());
-    }
-}</xsc:Java>
-            </xsc:Item>
-          </Src>
-        </Sources>
-      </Method>
-      <Method Id="mthMG4INJDVUBESJBL26K6PI6HORQ" Name="loadOptions" Nature="0" IsOverride="false">
-        <AccessRules IsStatic="true"/>
-        <Parameters>
-          <Parameter Name="environment" Id="mpr6O2ZVUMRYREEXI2FO7JZO6BCK4">
-            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
-          </Parameter>
-        </Parameters>
-        <ReturnType TypeId="411" Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4"/>
-        <ThrownExceptions>
-          <Exception TypeId="411" Path="axcRXVJYKJJKZAJHEP4D4632RQPKM"/>
-          <Exception TypeId="411" Path="axcWSBFK4LYMVHTXL55MVC44THTGE"/>
-        </ThrownExceptions>
-        <Sources>
-          <Src>
-            <xsc:Item>
-              <xsc:Java>if (environment==null){
-    throw new java.lang.IllegalArgumentException("environment must be defined");
-}
-synchronized(SEMAPHORE){
-    final long currentVersion = environment.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthRFQCEXJDNJDINHW32QFZAVEBV4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>().getAdsVersion().getNumber();
-    if (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prdC576FXBBD5FDPIIUDBWXKVABMY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>==null || </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prdG5P6UTUXDVG73P5M6WMFWIWFHQ" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.longValue()!=currentVersion){
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prdC576FXBBD5FDPIIUDBWXKVABMY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> = new </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 mth67CPKPTRVBCIDMOMV2E5ISRNXQ" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(environment);
-        </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prdG5P6UTUXDVG73P5M6WMFWIWFHQ" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java> = currentVersion;
-    }
-    return </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prdC576FXBBD5FDPIIUDBWXKVABMY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>;
-}</xsc:Java>
-            </xsc:Item>
-          </Src>
-        </Sources>
-      </Method>
-      <Method Id="mthUE3GQ562SZEPDNRJW6HDKLWEWE" Name="isAccessible" Nature="0" IsOverride="false">
-        <AccessRules IsStatic="true"/>
-        <Parameters>
-          <Parameter Name="environment" Id="mprXVVXVWST6RFUBICCH3UD7OHW34">
-            <Type TypeId="411" Path="aicFECOVQGBKZESNDPM6WAA6RXIMU"/>
+          <Parameter Name="environment" Id="mpr37K46WBCQBEWVLNR6P2KMOWQ6I">
+            <Type TypeId="400" extStr="org.radixware.kernel.common.client.IClientEnvironment"/>
           </Parameter>
         </Parameters>
         <ReturnType TypeId="401" extStr="boolean"/>
-        <Sources>
-          <Src>
-            <xsc:Item>
-              <xsc:Java>synchronized(SEMAPHORE){
-    if (</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prdC576FXBBD5FDPIIUDBWXKVABMY" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>!=null){
-        return true;
-    }
-}
-return environment.</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="aicFECOVQGBKZESNDPM6WAA6RXIMU mthTCLGC64JWZHTXPEOXNHDRC6Z64" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="clc3VZP57ZKQBGDFNWMTJHK6BZR34"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>);</xsc:Java>
-            </xsc:Item>
-          </Src>
-        </Sources>
       </Method>
-      <Method Id="mthQQILRCCIAVG7LGV6S6CAMUHLOY" Name="isOptionDefined" Nature="0" IsOverride="false">
-        <AccessRules/>
-        <Parameters>
-          <Parameter Name="name" Id="mpr2XWZTKC6GVDU3PC4EW7JPNAQTU">
-            <Type TypeId="21"/>
-          </Parameter>
-        </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
-        <Sources>
-          <Src>
-            <xsc:Item>
-              <xsc:Java>return </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prd3IDXUREDA5C2XNHG5SDUMQXYP4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.containsKey(name);</xsc:Java>
-            </xsc:Item>
-          </Src>
-        </Sources>
-      </Method>
-      <Method Id="mthXG654VLFEFHA3DZQO4GYZ6XOSE" Name="getOptionNames" Nature="0" IsOverride="false">
-        <AccessRules/>
+      <Method Id="mthXG654VLFEFHA3DZQO4GYZ6XOSE" Name="getOptionNames" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOptionNames()Ljava.util.Set&lt;Ljava.lang.String;>;"/>
+        </AccessRules>
         <ReturnType TypeId="400" extStr="java.util.Set">
           <xsc:GenericArguments>
             <xsc:Argument Alias="?">
@@ -289,63 +51,39 @@ return environment.</xsc:Java>
             </xsc:Argument>
           </xsc:GenericArguments>
         </ReturnType>
-        <Sources>
-          <Src>
-            <xsc:Item>
-              <xsc:Java>return </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prd3IDXUREDA5C2XNHG5SDUMQXYP4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.keySet();</xsc:Java>
-            </xsc:Item>
-          </Src>
-        </Sources>
       </Method>
-      <Method Id="mthSFFDVLFVUVHQPMAE3Q66KGFVXY" Name="isOptionEnabled" Nature="0" IsOverride="false">
-        <AccessRules/>
+      <Method Id="mthP6UE5V2AQFGNLBTRJXB3ECO3X4" Name="getOptionValue" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="getOptionValue(Ljava.lang.String;)Ljava.lang.String;"/>
+        </AccessRules>
         <Parameters>
-          <Parameter Name="name" Id="mprI5K3OHBQAVFHTM5YXW37AGRZME">
-            <Type TypeId="21"/>
-          </Parameter>
-        </Parameters>
-        <ReturnType TypeId="401" extStr="boolean"/>
-        <Sources>
-          <Src>
-            <xsc:Item>
-              <xsc:Java>return "ENABLED".equalsIgnoreCase(</xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prd3IDXUREDA5C2XNHG5SDUMQXYP4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.get(name));</xsc:Java>
-            </xsc:Item>
-          </Src>
-        </Sources>
-      </Method>
-      <Method Id="mthP6UE5V2AQFGNLBTRJXB3ECO3X4" Name="getOptionValue" Nature="0" IsOverride="false">
-        <AccessRules/>
-        <Parameters>
-          <Parameter Name="name" Id="mpr2HYQ53FQWBBSBGUOB2A5GPHHAQ">
+          <Parameter Name="name" Id="mprOK6RRHI7RFAYLNET7Z2NIZIAQU">
             <Type TypeId="21"/>
           </Parameter>
         </Parameters>
         <ReturnType TypeId="21"/>
-        <Sources>
-          <Src>
-            <xsc:Item>
-              <xsc:Java>return </xsc:Java>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:IdReference Path="adc6RX6A7TX4ZDDLMYL26M5S4PEB4 prd3IDXUREDA5C2XNHG5SDUMQXYP4" Invoke="true"/>
-            </xsc:Item>
-            <xsc:Item>
-              <xsc:Java>.get(name);</xsc:Java>
-            </xsc:Item>
-          </Src>
-        </Sources>
+      </Method>
+      <Method Id="mthQQILRCCIAVG7LGV6S6CAMUHLOY" Name="isOptionDefined" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isOptionDefined(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprJ4NUBYTD25BP3F3LD6LNFXZIXA">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
+      </Method>
+      <Method Id="mthSFFDVLFVUVHQPMAE3Q66KGFVXY" Name="isOptionEnabled" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules>
+          <Transparence Extendable="false" PublishedName="isOptionEnabled(Ljava.lang.String;)Z"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="name" Id="mprSJ4CBJIYTRHJJE6WMSHHLFF5W4">
+            <Type TypeId="21"/>
+          </Parameter>
+        </Parameters>
+        <ReturnType TypeId="401" extStr="boolean"/>
       </Method>
     </Methods>
   </AdsClassDefinition>

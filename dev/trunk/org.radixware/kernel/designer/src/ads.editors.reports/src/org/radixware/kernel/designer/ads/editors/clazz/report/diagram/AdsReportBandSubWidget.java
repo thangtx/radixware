@@ -36,7 +36,7 @@ public class AdsReportBandSubWidget extends AdsReportBaseContainer {
     @Override
     protected void paintComponent(final Graphics g) {
         super.paintComponent(g);
-        AdsReportCellWidget.paintBorder(((AdsReportBand) widgetContainer).getBorder(), g, getWidth(), getHeight());
+        paintBorder(((AdsReportBand) widgetContainer).getBorder(), g, getWidth(), getHeight());
         final Graphics2D g2 = (Graphics2D) g;
         hightlinghInsertionPlaceRect(g2);
     }
@@ -46,5 +46,17 @@ public class AdsReportBandSubWidget extends AdsReportBaseContainer {
      super.paintChildren(g);
      //Graphics2D g2=(Graphics2D)g;
      //hightlinghInsertionPlaceRect(g2);
-     } */
+     } */    
+    
+    @Override
+    public void removeNotify() {
+        getDiagram().detachFromSelectionWidget(this);
+        super.removeNotify();
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        getDiagram().attachToSelectionWidget(this);
+    }
 }

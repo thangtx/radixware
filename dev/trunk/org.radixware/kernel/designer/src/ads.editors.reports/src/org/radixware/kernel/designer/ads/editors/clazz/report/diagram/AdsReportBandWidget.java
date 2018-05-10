@@ -17,17 +17,17 @@ import org.radixware.kernel.common.defs.RadixObjects.ContainerChangedEvent;
 import org.radixware.kernel.common.defs.RadixObjects.ContainerChangesListener;
 import org.radixware.kernel.common.defs.RadixObjects.EChangeType;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportBand;
-import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportCell;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportForm;
+import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportWidget;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsSubReport;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.IReportWidgetContainer;
 import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.Splitter.DragEvent;
+import org.radixware.kernel.designer.ads.editors.clazz.report.diagram.selection.SelectionEvent;
 
-public class AdsReportBandWidget extends AbstractAdsReportWidget implements IReportCellContainer {
+public class AdsReportBandWidget extends AdsReportAbstractSelectableWidget implements IReportCellContainer {
 
     private final AdsReportBand band;
     final AdsReportBandSubWidget bandSubWidget;
-    private boolean selected = false;
 
     private final Ruler ruler;
 
@@ -40,13 +40,14 @@ public class AdsReportBandWidget extends AbstractAdsReportWidget implements IRep
                 if (getDiagram().getMode() == AdsReportForm.Mode.GRAPHICS) {
                     double dYMm = MmUtils.px2mm(e.getdY());
                     final double bandHeightMm = band.getHeightMm();
-                    final double newHeightMm = MmUtils.roundToTenth(Math.max(AdsReportBand.GRID_SIZE_MM, bandHeightMm + dYMm));
+                    final AdsReportForm form = band.getOwnerForm();
+                    final double gridSizeMm = form != null? form.getGridSizeMm() : AdsReportForm.DEFAULT_GRID_SIZE_MM;
+                    final double newHeightMm = MmUtils.roundToTenth(Math.max(gridSizeMm, bandHeightMm + dYMm));
                     band.setHeightMm(newHeightMm);
                 } else {
                     int dYRows = TxtUtils.px2Rows(e.getdY());
                     final int bandHeightRows = band.getHeightRows();
                     final int newHeightRows = Math.max(AdsReportBand.GRID_SIZE_SYMBOLS, bandHeightRows + dYRows);
-                    System.out.println(newHeightRows);
                     band.setHeightRows(newHeightRows);
                 }
                 bandSubWidget.getReportLayout().justifyLayout();
@@ -69,7 +70,7 @@ public class AdsReportBandWidget extends AbstractAdsReportWidget implements IRep
                         final AdsSubReport subReport = (AdsSubReport) e.object;
                         final AdsSubReportWidget subReportWidget = findSubReportWidget(subReport);
                         if (subReportWidget != null) {
-                            AdsReportWidgetUtils.selectSubReport(subReportWidget);
+                            fireSelectionChanged(new SelectionEvent(subReportWidget, true));
                         }
                     }
                     repaint();
@@ -77,7 +78,7 @@ public class AdsReportBandWidget extends AbstractAdsReportWidget implements IRep
             });
         }
     };
-
+   
     @Override
     public void updateLayout() {
         bandSubWidget.updateLayout();
@@ -87,12 +88,10 @@ public class AdsReportBandWidget extends AbstractAdsReportWidget implements IRep
         super(diagram, band);
         this.band = band;
 
-        final AdsReportSelectionWidget selectionWidget = new AdsReportSelectionWidget();
         bandSubWidget = new AdsReportBandSubWidget(diagram, band);
         ruler = new Ruler(diagram, Ruler.EDirection.VERTICAL);
         splitter = new Splitter();
 
-        add(selectionWidget);
         add(bandSubWidget);
         add(ruler);
         add(splitter);
@@ -107,18 +106,16 @@ public class AdsReportBandWidget extends AbstractAdsReportWidget implements IRep
         band.getPreReports().getContainerChangesSupport().addEventListener(containerChangeListener);
         band.getPostReports().getContainerChangesSupport().addEventListener(containerChangeListener);
 
-        selectionWidget.attachTo(this);
-        selectionWidget.attachTo(bandSubWidget);
     }
 
     private void removeOldSubReports() {
         for (AdsSubReport subReport : new HashSet<>(subReport2Widget.keySet())) {
             if (!band.getPreReports().contains(subReport) && !band.getPostReports().contains(subReport)) {
                 final AdsSubReportWidget subReportWidget = subReport2Widget.remove(subReport);
-                remove(subReportWidget);
                 if (subReportWidget.isSelected()) {
-                    fireSelectionChanged();
+                    fireSelectionChanged(new SelectionEvent(subReportWidget, false));
                 }
+                remove(subReportWidget);
             }
         }
     }
@@ -139,10 +136,13 @@ public class AdsReportBandWidget extends AbstractAdsReportWidget implements IRep
 
     private void updateBandSubWidgets() {
         final AdsReportForm form = band.getOwnerForm();
+        if (form == null){
+            return;
+        }
         AdsReportForm.Mode mode = getDiagram().getMode();
         final int pageWidthPx = mode == AdsReportForm.Mode.GRAPHICS ? MmUtils.mm2px(form.getPageWidthMm()) : TxtUtils.columns2Px(form.getPageWidthCols());
-        final int leftMarginPx = mode == AdsReportForm.Mode.GRAPHICS ? MmUtils.mm2px(form.getMargin().getLeftMm()) : TxtUtils.columns2Px(form.getMargin().getLeftCols());
-        final int rightMarginPx = mode == AdsReportForm.Mode.GRAPHICS ? MmUtils.mm2px(form.getMargin().getRightMm()) : TxtUtils.columns2Px(form.getMargin().getRightCols());
+        final int leftMarginPx = mode == AdsReportForm.Mode.GRAPHICS ? MmUtils.mm2px(form.getMargin().getLeftMm()) : TxtUtils.columns2Px(form.getMarginTxt().getLeftCols());
+        final int rightMarginPx = mode == AdsReportForm.Mode.GRAPHICS ? MmUtils.mm2px(form.getMargin().getRightMm()) : TxtUtils.columns2Px(form.getMarginTxt().getRightCols());
         final int leftPx = Ruler.THICKNESS_PX + leftMarginPx;
         final int widthPx = pageWidthPx - leftMarginPx - rightMarginPx;
 
@@ -150,9 +150,7 @@ public class AdsReportBandWidget extends AbstractAdsReportWidget implements IRep
 
         int yPx = 0;
         for (AdsSubReport subReport : band.getPreReports()) {
-            final AdsSubReportWidget subReportWidget = findOrCreateSubReportWidget(subReport);
-            subReportWidget.setLocation(leftPx, yPx);
-            subReportWidget.setSize(widthPx, subReportHeightPx);
+            updateSubReportWidget(subReport, mode, pageWidthPx, widthPx, subReportHeightPx, leftPx, yPx);
             yPx += subReportHeightPx;
         }
 
@@ -164,13 +162,21 @@ public class AdsReportBandWidget extends AbstractAdsReportWidget implements IRep
         yPx += bandSubWidgetHeightPx;
 
         for (AdsSubReport subReport : band.getPostReports()) {
-            final AdsSubReportWidget subReportWidget = findOrCreateSubReportWidget(subReport);
-            subReportWidget.setLocation(leftPx, yPx);
-            subReportWidget.setSize(widthPx, subReportHeightPx);
+            updateSubReportWidget(subReport, mode, pageWidthPx, widthPx, subReportHeightPx, leftPx, yPx);
             yPx += subReportHeightPx;
         }
 
         ruler.setSize(Ruler.THICKNESS_PX, yPx);
+    }
+    
+    private void updateSubReportWidget(AdsSubReport subReport, AdsReportForm.Mode mode, final int pageWidthPx, final int widthPx, final int subReportHeightPx, final int leftPx, int yPx){
+        final AdsSubReportWidget subReportWidget = findOrCreateSubReportWidget(subReport);
+        int left = mode == AdsReportForm.Mode.GRAPHICS ? MmUtils.mm2px(subReport.getMarginMm().getLeftMm()) : TxtUtils.columns2Px(subReport.getMarginTxt().getLeftCols());
+        int right = mode == AdsReportForm.Mode.GRAPHICS ? MmUtils.mm2px(subReport.getMarginMm().getRightMm()) : TxtUtils.columns2Px(subReport.getMarginTxt().getRightCols());;
+        int width = pageWidthPx - left - right;
+        left += Ruler.THICKNESS_PX;
+        subReportWidget.setLocation(left, yPx);
+        subReportWidget.setSize(width, subReportHeightPx);
     }
 
     private void updateSplitter() {
@@ -187,28 +193,19 @@ public class AdsReportBandWidget extends AbstractAdsReportWidget implements IRep
         updateSplitter();
     }
 
-    public boolean isSelected() {
-        return selected;
-    }
     private static final Color RULER_SELECTED_COLOR = new Color(176, 214, 225);
 
-    public void setSelected(final boolean selected) {
-        if (this.selected != selected) {
-            this.selected = selected;
-            ruler.setBgColor(selected ? RULER_SELECTED_COLOR : Color.WHITE);
-            if (selected) {
-                requestFocus();
-            }
-            fireSelectionChanged();
-        }
+    @Override
+    protected void onSelected(boolean selected) {
+        ruler.setBgColor(selected ? RULER_SELECTED_COLOR : Color.WHITE);
     }
-
+    
     public AdsReportFormDiagram getOwnerFormDiagram() {
         return (AdsReportFormDiagram) getParent();
     }
 
-    public AdsReportSelectableWidget findCellWidget(final AdsReportCell cell) {
-        return bandSubWidget.findCellWidget(cell);
+    public AdsReportSelectableWidget findCellWidget(final AdsReportWidget cell) {
+        return bandSubWidget.findCellWidget(cell, true);
     }
 
     @Override
@@ -243,4 +240,8 @@ public class AdsReportBandWidget extends AbstractAdsReportWidget implements IRep
     public ReportLayoutProcessor getReportLayout() {
         return bandSubWidget.getReportLayout();
     }
+
+    public AdsReportBandSubWidget getBandSubWidget() {
+        return bandSubWidget;
+    }    
 }

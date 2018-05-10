@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.enumeration.AdsEnumDef;
+import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.UsagePurpose;
 import org.radixware.kernel.common.defs.ads.src.WriterUtils;
 import org.radixware.kernel.common.defs.ads.type.AdsType;
@@ -27,9 +28,11 @@ import org.radixware.kernel.common.defs.ads.ui.enums.EArrayClassName;
 import org.radixware.kernel.common.defs.ads.ui.enums.EOrientation;
 import org.radixware.kernel.common.defs.ads.ui.enums.EStandardButton;
 import org.radixware.kernel.common.defs.ads.ui.enums.UIEnum;
+import org.radixware.kernel.common.defs.ads.ui.generation.AdsUIWriter;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtCustomDialogDef;
 import org.radixware.kernel.common.defs.ads.ui.rwt.AdsRwtWidgetDef;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
 import org.radixware.kernel.common.types.Id;
 
 public class RwtWidgetWriter {
@@ -136,12 +139,12 @@ public class RwtWidgetWriter {
     private static void writeCustomType(CodePrinter printer, AdsAbstractUIDef ui) {
         WriterUtils.writePackage(printer, ui, UsagePurpose.WEB_EXECUTABLE);
         printer.print(".");
-        printer.print(ui.getId());
+        printer.print(JavaSourceSupport.getName(ui, printer instanceof IHumanReadablePrinter, true));
     }
 
     public static boolean writeWidgetType(AdsRwtWidgetDef widget, CodePrinter printer) {
         if (isValEditorController(widget.getClassName())) {
-            String widgetClassName = getValEditorClassName(widget.getClassName(), widget);
+            String widgetClassName = getValEditorClassName(widget.getClassName(), widget, printer);
             if (widgetClassName == null) {
                 return false;
             }
@@ -156,7 +159,19 @@ public class RwtWidgetWriter {
             } else if (AdsMetaInfo.RWT_PROP_EDITOR.equals(widget.getClassName())) {
                 printer.print("org.radixware.wps.views.editor.property.AbstractPropEditor");//RADIX-8121
             } else {
-                printer.print(widget.getClassName());
+                if (printer instanceof IHumanReadablePrinter) {
+                    RadixObject ro = widget.getContainer();
+                    String name;
+                    if (ro instanceof AdsAbstractUIDef) {
+                        name = ro.getName();
+                        name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                    } else {
+                        name = widget.getClassName();
+                    }
+                    printer.print(name);
+                } else {
+                    printer.print(widget.getClassName());
+                }
             }
         }
         return true;
@@ -169,17 +184,20 @@ public class RwtWidgetWriter {
             return false;
         }
         printer.printSpace();
-        printer.print(widget.getId());
+        final char[] varName = JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter);
+        printer.print(varName);
         printer.printlnSemicolon();
         if (AdsMetaInfo.RWT_TAB_SET.equals(widget.getClassName())) {
             for (AdsRwtWidgetDef tab : widget.getWidgets()) {
+                final char[] tabClassName = JavaSourceSupport.getName(tab, printer instanceof IHumanReadablePrinter, true);
+                final char[] tabName = JavaSourceSupport.getName(tab, printer instanceof IHumanReadablePrinter);
                 printer.print("public ");
                 //printer.print(tab.getClassName());
                 if (!writeWidgetType(tab, printer)) {
                     return false;
                 }
                 printer.printSpace();
-                printer.print(tab.getId());
+                printer.print(tabClassName);
                 printer.printlnSemicolon();
 
                 if (!writeWidgetType(tab, printer)) {
@@ -187,9 +205,9 @@ public class RwtWidgetWriter {
                 }
                 printer.printSpace();
                 printer.print("get");
-                printer.print(tab.getId());
+                printer.print(tabClassName);
                 printer.print("(){ return  ");
-                printer.print(tab.getId());
+                printer.print(tabName);
                 printer.println(";}");
             }
         }
@@ -202,15 +220,16 @@ public class RwtWidgetWriter {
         }
         printer.printSpace();
         printer.print("get");
-        printer.print(widget.getId());
+        printer.print(JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter, true));
         printer.print("(){ return  ");
-        printer.print(widget.getId());
+        printer.print(varName);
         printer.println(";}");
 
         return true;
     }
 
     private void writePanelGridInitialization(final CodePrinter printer) {
+        final char[] varName = JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter);
         if (widget.isGridPanel()) {
             printer.println("//============ " + widget.getQualifiedName() + "  child setup ==============");
             AdsRwtWidgetDef.PanelGrid grid = widget.getPanelGrid();
@@ -222,7 +241,7 @@ public class RwtWidgetWriter {
                 printer.print(".Table.Row ");
                 printer.print("_row_");
                 printer.print(" = this.");
-                printer.print(widget.getId());
+                printer.print(varName);
                 if (widget.getClassName().equals(AdsMetaInfo.RWT_UI_GROUP_BOX)) {
                     printer.print(".getPanel()");
                 }
@@ -238,7 +257,7 @@ public class RwtWidgetWriter {
 
                         printer.print("_cell_.setComponent(");
                         printer.print("this.");
-                        printer.print(target.getId());
+                        printer.print(JavaSourceSupport.getName(target, printer instanceof IHumanReadablePrinter));
                         printer.println(");");
                     }
                     printer.leaveBlock();
@@ -253,15 +272,16 @@ public class RwtWidgetWriter {
             int index = 0;
             float tw = 0;
             for (AdsRwtWidgetDef w : widget.getWidgets()) {
-                printer.print(w.getId());
+                final char[] childName = JavaSourceSupport.getName(w, printer instanceof IHumanReadablePrinter);
+                printer.print(childName);
                 printer.println(".setTop(0);");
-                printer.print(w.getId());
+                printer.print(childName);
                 printer.println(".setLeft(0);");
-                printer.print(w.getId());
+                printer.print(childName);
                 printer.println(".setVCoverage(100);");
-                printer.print(w.getId());
+                printer.print(childName);
                 printer.println(".setHCoverage(100);");
-                printer.print(widget.getId());
+                printer.print(varName);
                 tw += w.getWeight();
                 printer.print(".setPart(");
                 printer.print(index);
@@ -274,18 +294,19 @@ public class RwtWidgetWriter {
     }
 
     private boolean writeInitialization(final CodePrinter printer, Map<AdsRwtWidgetDef, AdsUIProperty.AnchorProperty> defferedAnchors) {
-
+        final char[] varName = JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter);
         printer.println("//============ " + widget.getQualifiedName() + " ==============");
         AdsRwtWidgetDef ownerWidget = widget.getOwnerWidget();
+        final char[] ownerName = ownerWidget == null? null : JavaSourceSupport.getName(ownerWidget, printer instanceof IHumanReadablePrinter);
         printer.print("this.");
-        printer.print(widget.getId());
+        printer.print(varName);
         boolean cast = false;
         if (widget == AdsUIUtil.getUiDef(widget).getWidget()) {
             printer.println(" = this;");
         } else {
 
             if (isValEditorController(widget.getClassName())) {
-                String controllerClassName = getEditorControllerClassName(widget.getClassName(), widget);
+                String controllerClassName = getEditorControllerClassName(widget.getClassName(), widget, printer);
                 if (controllerClassName == null) {
                     printer.println("");
                     return false;
@@ -295,7 +316,7 @@ public class RwtWidgetWriter {
                 printer.print(controllerClassName);
                 if (AdsMetaInfo.RWT_VAL_ARR_EDITOR.equals(widget.getClassName())) {
 
-                    AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, "arrayType");
+                    AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.ARRAY_TYPE);
                     if (prop instanceof AdsUIProperty.EnumValueProperty) {
                         EArrayClassName arrTypeName = (EArrayClassName) ((AdsUIProperty.EnumValueProperty) prop).value;
                         if (arrTypeName == null) {
@@ -311,7 +332,7 @@ public class RwtWidgetWriter {
 
                 } else {
                     if (widget.getClassName().equals(AdsMetaInfo.RWT_VAL_ENUM_EDITOR)) {
-                        AdsUIProperty enumerationProp = AdsUIUtil.getUiProperty(widget, "enumeration");
+                        AdsUIProperty enumerationProp = AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.ENUMERATION);
                         if (enumerationProp != null && enumerationProp instanceof AdsUIProperty.EnumRefProperty) {
                             AdsEnumDef enumeration = ((AdsUIProperty.EnumRefProperty) enumerationProp).findEnum();
                             if (enumeration != null) {
@@ -330,23 +351,23 @@ public class RwtWidgetWriter {
                     }
                 }
             } else if (AdsMetaInfo.RWT_PROP_EDITOR.equals(widget.getClassName())) {
-                AdsUIProperty.PropertyRefProperty prop = (AdsUIProperty.PropertyRefProperty) AdsUIUtil.getUiProperty(widget, "property");
+                AdsUIProperty.PropertyRefProperty prop = (AdsUIProperty.PropertyRefProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.PROPERTY);
                 if (prop != null) {
                     if (AdsMetaInfo.RWT_PROPERTIES_GRID.equals(ownerWidget.getClassName())) {
 
                         //public final void addEditor(UIObject editor, int col, int row) {
                         int col = 0;
-                        AdsUIProperty.IntProperty cp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, "gridColumn");
+                        AdsUIProperty.IntProperty cp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.GRID_COLUMN);
                         if (cp != null) {
                             col = cp.value;
                         }
                         int row = -1;
-                        AdsUIProperty.IntProperty rp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, "gridRow");
+                        AdsUIProperty.IntProperty rp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.GRID_ROW);
                         if (rp != null) {
                             row = rp.value;
                         }
                         int span = -1;
-                        AdsUIProperty.IntProperty sp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, "colSpan");
+                        AdsUIProperty.IntProperty sp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.COL_SPAN);
                         if (sp != null) {
                             span = sp.value;
                         }
@@ -355,7 +376,7 @@ public class RwtWidgetWriter {
                         //stick to left is requred when empty space above property editor is required
                         printer.print(" = ");
                         printer.print("this.");
-                        printer.print(ownerWidget.getId());
+                        printer.print(ownerName);
                         printer.print(".addProperty(");
                         writePropValue(printer, prop);
                         printer.printComma();
@@ -403,11 +424,11 @@ public class RwtWidgetWriter {
                 printer.printlnSemicolon();
 
                 if (AdsMetaInfo.RWT_EMBEDDED_EDITOR.equals(widget.getClassName())) {
-                    final AdsUIProperty.EmbeddedEditorOpenParamsProperty prop = (AdsUIProperty.EmbeddedEditorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, "openParams");
+                    final AdsUIProperty.EmbeddedEditorOpenParamsProperty prop = (AdsUIProperty.EmbeddedEditorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.OPEN_PARAMS);
 
                     if (prop.getExplorerItemId() != null) {
                         printer.print("this.");
-                        printer.print(widget.getId());
+                        printer.print(varName);
                         printer.print(".setExplorerItem(model, ");
                         WriterUtils.writeIdUsage(printer, prop.getExplorerItemId());
                         printer.println(");");
@@ -415,27 +436,12 @@ public class RwtWidgetWriter {
                 }
 
                 if (AdsMetaInfo.RWT_EDITOR_PAGE.equals(widget.getClassName())) {
-                    printer.print(widget.getId());
+                    printer.print(varName);
                     printer.print(".setParent(");
-                    printer.print(widget.getOwnerWidget().getId());
+                    printer.print(ownerName);
                     printer.println(");");
                 }
 
-                boolean writeBind = false;
-                if (AdsMetaInfo.RWT_COMMAND_PUSH_BUTTON.equals(widget.getClassName())) {
-                    writeBind = true;
-                } else if (AdsMetaInfo.RWT_EMBEDDED_EDITOR.equals(widget.getClassName())) {
-                    AdsUIProperty.EmbeddedEditorOpenParamsProperty prop = (AdsUIProperty.EmbeddedEditorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, "openParams");
-                    writeBind = prop != null && !prop.isEmpty();
-                } else if (AdsMetaInfo.RWT_EDITOR_PAGE.equals(widget.getClassName())) {
-                    writeBind = true;
-                }
-
-                if (writeBind) {
-                    printer.print("this.");
-                    printer.print(widget.getId());
-                    printer.println(".bind();");
-                }
             }
         }
 
@@ -449,19 +455,19 @@ public class RwtWidgetWriter {
 
                 //public final void addEditor(UIObject editor, int col, int row) {
                 int col = 0;
-                AdsUIProperty.IntProperty cp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, "gridColumn");
+                AdsUIProperty.IntProperty cp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.GRID_COLUMN);
                 if (cp != null) {
                     col = cp.value;
                 }
                 int row = -1;
-                AdsUIProperty.IntProperty rp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, "gridRow");
+                AdsUIProperty.IntProperty rp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.GRID_ROW);
                 if (rp != null) {
                     row = rp.value;
                 }
                 printer.print("this.");
-                printer.print(ownerWidget.getId());
+                printer.print(ownerName);
                 printer.print(".addEditor(");
-                writeWidgetWithCast(printer, "this." + widget.getId(), cast);
+                writeWidgetWithCast(printer, "this." + new String(varName), cast);
                 printer.printComma();
                 printer.print(col);
                 printer.printComma();
@@ -477,22 +483,22 @@ public class RwtWidgetWriter {
                     int rs = 1;
                     int cs = 1;
 
-                    AdsUIProperty.IntProperty cp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, "col");
+                    AdsUIProperty.IntProperty cp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.COL);
                     if (cp != null) {
                         col = cp.value;
                     }
 
-                    AdsUIProperty.IntProperty rp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, "row");
+                    AdsUIProperty.IntProperty rp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.ROW);
                     if (rp != null) {
                         row = rp.value;
                     }
 
-                    AdsUIProperty.IntProperty rsp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, "rowSpan");
+                    AdsUIProperty.IntProperty rsp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.ROW_SPAN);
                     if (rsp != null) {
                         rs = rsp.value;
                     }
 
-                    AdsUIProperty.IntProperty csp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, "colSpan");
+                    AdsUIProperty.IntProperty csp = (AdsUIProperty.IntProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.COL_SPAN);
                     if (csp != null) {
                         cs = csp.value;
                     }
@@ -500,9 +506,9 @@ public class RwtWidgetWriter {
                     cast = true;
 
                     printer.print("this.");
-                    printer.print(ownerWidget.getId());
+                    printer.print(ownerName);
                     printer.print(".add(");
-                    writeWidgetWithCast(printer, "this." + widget.getId(), cast);
+                    writeWidgetWithCast(printer, "this." + new String(varName), cast);
                     printer.printComma();
                     printer.print(row);
                     printer.printComma();
@@ -511,7 +517,7 @@ public class RwtWidgetWriter {
 
                     if (cs > 1) {
                         printer.print("this.");
-                        printer.print(ownerWidget.getId());
+                        printer.print(ownerName);
                         printer.print(".setColSpan(");
                         printer.print(row);
                         printer.printComma();
@@ -523,7 +529,7 @@ public class RwtWidgetWriter {
 
                     if (rs > 1) {
                         printer.print("this.");
-                        printer.print(ownerWidget.getId());
+                        printer.print(ownerName);
                         printer.print(".setRowSpan(");
                         printer.print(row);
                         printer.printComma();
@@ -536,26 +542,26 @@ public class RwtWidgetWriter {
                     return true;
                 } else {
                     printer.print("this.");
-                    printer.print(widget.getOwnerDef().getId());
+                    printer.print(ownerName);
                     printer.print(".add(");
                     if (cast) {
                         printer.print("(" + AdsMetaInfo.RWT_UI_OBJECT + ")");
                     }
                     printer.print("this.");
-                    printer.print(widget.getId());
+                    printer.print(varName);
                     printer.println(");");
 
                     if (AdsMetaInfo.RWT_VERTICAL_BOX_CONTAINER.equals(ownerWidget.getClassName()) || AdsMetaInfo.RWT_HORIZONTAL_BOX_CONTAINER.equals(ownerWidget.getClassName())) {
-                        AdsUIProperty.BooleanProperty expand = (AdsUIProperty.BooleanProperty) widget.getProperties().getByName("expand");
+                        AdsUIProperty.BooleanProperty expand = (AdsUIProperty.BooleanProperty) widget.getProperties().getByName(AdsWidgetProperties.EXPAND);
                         if (expand != null && expand.value) {
                             printer.print("this.");
-                            printer.print(ownerWidget.getId());
+                            printer.print(ownerName);
                             printer.print(".setAutoSize(");
                             if (cast) {
                                 printer.print("(" + AdsMetaInfo.RWT_UI_OBJECT + ")");
                             }
                             printer.print("this.");
-                            printer.print(widget.getId());
+                            printer.print(varName);
                             printer.println(",true);");
                         }
                     }
@@ -566,11 +572,11 @@ public class RwtWidgetWriter {
             if (AdsMetaInfo.RWT_TAB_SET.equals(widget.getClassName())) {
                 for (AdsRwtWidgetDef tab : widget.getWidgets()) {
                     printer.print("this.");
-                    printer.print(tab.getId());
+                    printer.print(JavaSourceSupport.getName(tab, printer instanceof IHumanReadablePrinter));
                     printer.print(" = ");
-                    printer.print(widget.getId());
+                    printer.print(varName);
                     printer.print(".addTab(");
-                    AdsUIProperty prop = tab.getProperties().getByName("title");
+                    AdsUIProperty prop = tab.getProperties().getByName(AdsWidgetProperties.TITLE);
                     if (prop instanceof AdsUIProperty.LocalizedStringRefProperty) {
                         writePropValue(printer, prop);
                     } else {
@@ -581,6 +587,27 @@ public class RwtWidgetWriter {
             }
 
         }
+        
+        
+        boolean writeBind = false;
+        if (AdsMetaInfo.RWT_COMMAND_PUSH_BUTTON.equals(widget.getClassName())) {
+            writeBind = true;
+        } else if (AdsMetaInfo.RWT_EMBEDDED_EDITOR.equals(widget.getClassName())) {
+            AdsUIProperty.EmbeddedEditorOpenParamsProperty prop = (AdsUIProperty.EmbeddedEditorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.OPEN_PARAMS);
+            writeBind = prop != null && !prop.isEmpty();
+        } else if (AdsMetaInfo.RWT_EMBEDDED_SELECTOR.equals(widget.getClassName())) {
+            AdsUIProperty.EmbeddedSelectorOpenParamsProperty prop = (AdsUIProperty.EmbeddedSelectorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.OPEN_PARAMS);
+            writeBind = prop != null && !prop.isEmpty();
+        } else if (AdsMetaInfo.RWT_EDITOR_PAGE.equals(widget.getClassName())) {
+            writeBind = true;
+        }
+
+        if (writeBind) {
+            printer.print("this.");
+            printer.print(varName);
+            printer.println(".bind();");
+        }
+        
         return true;
 
     }
@@ -589,14 +616,23 @@ public class RwtWidgetWriter {
         boolean cast = isValEditorController(widget.getClassName());
         for (AdsUIProperty prop : widget.getProperties()) {
             String propName = prop.getName();
-            if ("editorPage".equals(propName) || "label".equals(propName) || "gridColumn".equals(propName) || "gridRow".equals(propName) || "property".equals(propName) || "expand".equals(propName) || "command".equals(propName) || "openParams".equals(propName) || "colSpan".equals(propName) || "enumeration".equals(propName) || "itemType".equals(propName) || "arrayType".equals(propName) || "row".equals(propName) || "col".equals(propName) || "rowSpan".equals(propName) || "rowNum".equals(propName) || "colNum".equals(propName)) {
+            if (AdsWidgetProperties.AUTO_HEIGHT.equals(propName) || AdsWidgetProperties.AUTO_WIDTH.equals(propName) 
+                    || AdsWidgetProperties.EDITOR_PAGE.equals(propName) || AdsWidgetProperties.LABEL.equals(propName) 
+                    || AdsWidgetProperties.GRID_COLUMN.equals(propName) || AdsWidgetProperties.GRID_ROW.equals(propName) 
+                    || AdsWidgetProperties.PROPERTY.equals(propName) || AdsWidgetProperties.EXPAND.equals(propName) 
+                    || AdsWidgetProperties.COMMAND.equals(propName) || AdsWidgetProperties.OPEN_PARAMS.equals(propName) 
+                    || AdsWidgetProperties.COL_SPAN.equals(propName) || AdsWidgetProperties.ENUMERATION.equals(propName) 
+                    || AdsWidgetProperties.ITEM_TYPE.equals(propName) || AdsWidgetProperties.ARRAY_TYPE.equals(propName) 
+                    || AdsWidgetProperties.ROW.equals(propName) || AdsWidgetProperties.COL.equals(propName) 
+                    || AdsWidgetProperties.ROW_SPAN.equals(propName) || "rowNum".equals(propName) 
+                    || "colNum".equals(propName)) {
                 continue;
-            } else if ("windowTitle".equals(propName)) {
+            } else if (AdsWidgetProperties.WINDOW_TITLE.equals(propName)) {
                 AdsAbstractUIDef ui = widget.getOwnerUIDef();
                 if (ui instanceof AdsRwtCustomDialogDef) {
                     continue;
                 }
-            } else if ("geometry".equals(propName)) {
+            } else if (AdsWidgetProperties.GEOMETRY.equals(propName)) {
                 if (widget.isActionWidget()) {
                     continue;
                 }
@@ -611,7 +647,8 @@ public class RwtWidgetWriter {
                         writePropertySet(printer, "setLeft", String.valueOf(rect.x), cast);
                     }
 //                    if (!useHCoverage()) {
-                    if (!ownerIsGrid) {
+                    AdsUIProperty.BooleanProperty autoWidth = (AdsUIProperty.BooleanProperty) widget.getProperties().getByName(AdsWidgetProperties.AUTO_WIDTH);
+                    if (!ownerIsGrid && (autoWidth == null || !autoWidth.value)) {
                         writePropertySet(printer, "setWidth", String.valueOf(rect.width), cast);
                     }
 //                    } else {
@@ -619,14 +656,17 @@ public class RwtWidgetWriter {
 //                        writePropertySet(printer, "setHCoverage", "(float)" + String.valueOf(hc));
 //                    }
 //                    if (!useVCoverage()) {
-                    writePropertySet(printer, "setHeight", String.valueOf(rect.height), cast);
+                    AdsUIProperty.BooleanProperty autoHeight = (AdsUIProperty.BooleanProperty) widget.getProperties().getByName(AdsWidgetProperties.AUTO_HEIGHT);
+                    if (autoHeight == null || !autoHeight.value) {
+                        writePropertySet(printer, "setHeight", String.valueOf(rect.height), cast);
+                    }
 //                    } else {
 //                        float vc = ((AdsUIProperty.FloatProperty) AdsUIUtil.getUiProperty(widget, "hCoverage")).value;
 //                        writePropertySet(printer, "setVCoverage", "(float)" + String.valueOf(vc));
 //                    }
                 }
                 continue;
-            } else if ("standardButtons".equals(propName)) {
+            } else if (AdsWidgetProperties.STANDARD_BUTTONS.equals(propName)) {
                 UIEnum[] buttonSet = ((AdsUIProperty.SetProperty) prop).getValues();
                 StringBuilder sb = new StringBuilder();
                 sb.append("java.util.EnumSet.of(");
@@ -643,7 +683,7 @@ public class RwtWidgetWriter {
                 sb.append(")");
                 writePropertySet(printer, "setStandardButtons", sb.toString(), cast);
                 continue;
-            } else if ("anchor".equals(propName)) {
+            } else if (AdsWidgetProperties.ANCHOR.equals(propName)) {
                 if (widget.isActionWidget()) {
                     continue;
                 }
@@ -654,21 +694,28 @@ public class RwtWidgetWriter {
                 continue;
             } else if ("hCoverage".equals(propName) || "vCoverage".equals(propName) || "useHCoverage".equals(propName) || "useVCoverage".equals(propName)) {
                 continue;
-            } else if ("buttonBoxVisible".equals(propName)) {
+            } else if (AdsWidgetProperties.BUTTON_BOX_VISIBLE.equals(propName)) {
                 boolean bb = ((AdsUIProperty.BooleanProperty) prop).value;
                 String str = String.valueOf(bb);
                 writePropertySet(printer, "setButtonBoxVisible", str, cast);
                 continue;
-            } else if (widget.getClassName().equals(AdsMetaInfo.RWT_TOOL_BAR) && "orientation".equals(propName)) {
+            } else if (widget.getClassName().equals(AdsMetaInfo.RWT_TOOL_BAR) && AdsWidgetProperties.ORIENTATION.equals(propName)) {
                 AdsUIProperty.EnumValueProperty p = (AdsUIProperty.EnumValueProperty) prop;
                 EOrientation or = (EOrientation) p.value;
-
+                final char[] varName = JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter);
                 if (or == EOrientation.Horizontal) {
-                    printer.print(widget.getId().toString() + ".setHorizontal()");
+                    printer.print(varName).print(".setHorizontal()");
                     printer.printlnSemicolon();
                 } else {
-                    printer.print(widget.getId().toString() + ".setVertical()");
+                    printer.print(varName).print(".setVertical()");
                     printer.printlnSemicolon();
+                }
+                continue;
+            } else if (AdsWidgetProperties.AUTO_RESIZE.equals(propName)) {
+                boolean bb = ((AdsUIProperty.BooleanProperty) prop).value;
+                if (bb == false) {
+                    String str = String.valueOf(bb);
+                    writePropertySet(printer, "setAdjustSizeEnabled", str, cast);
                 }
                 continue;
             }
@@ -685,9 +732,17 @@ public class RwtWidgetWriter {
     private void writeAnchorProperty(CodePrinter printer, AdsUIProperty.AnchorProperty.Anchor anchor, String name, boolean cast) {
         if (anchor != null) {
             if (anchor.refId != null) {
+                String ref = anchor.refId.toString();
+                if (printer instanceof IHumanReadablePrinter) {
+                    AdsRwtWidgetDef adsRwtWidgetDef = widget.getOwnerWidget().findWidgetById(anchor.refId);
+                    if (adsRwtWidgetDef != null) {
+                        ref = adsRwtWidgetDef.getName();
+                    }
+                }
+                
                 writePropertySet(printer, "getAnchors().set" + name, "new org.radixware.wps.rwt.UIObject.Anchors.Anchor(" + anchor.part + "f," + anchor.offset + ",("
                         + AdsMetaInfo.RWT_UI_OBJECT
-                        + ")" + anchor.refId.toString() + ")", cast);
+                        + ")" + ref + ")", cast);
             } else {
                 writePropertySet(printer, "getAnchors().set" + name, "new org.radixware.wps.rwt.UIObject.Anchors.Anchor(" + anchor.part + "f," + anchor.offset + ")", cast);
             }
@@ -695,7 +750,7 @@ public class RwtWidgetWriter {
     }
 
     private void writePropertySet(final CodePrinter printer, String methodName, String propertyValue, boolean cast) {
-        writeWidgetWithCast(printer, widget.getId().toString(), cast);
+        writeWidgetWithCast(printer, new String(JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter)), cast);
 
         printer.print('.');
         printer.print(methodName);
@@ -706,7 +761,7 @@ public class RwtWidgetWriter {
     }
 
     private void writePropertySet(final CodePrinter printer, String methodName, AdsUIProperty prop, boolean cast) {
-        writeWidgetWithCast(printer, widget.getId().toString(), cast);
+        writeWidgetWithCast(printer, new String(JavaSourceSupport.getName(widget, printer instanceof IHumanReadablePrinter)), cast);
 
         printer.print('.');
         printer.print(methodName);
@@ -742,7 +797,7 @@ public class RwtWidgetWriter {
     }
 
     private void writeEmbeddedEditorConstructorParams(CodePrinter printer) {
-        AdsUIProperty.EmbeddedEditorOpenParamsProperty prop = (AdsUIProperty.EmbeddedEditorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, "openParams");
+        AdsUIProperty.EmbeddedEditorOpenParamsProperty prop = (AdsUIProperty.EmbeddedEditorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.OPEN_PARAMS);
         if (prop.getPropertyId() != null) {
             printer.print("model.getEnvironment(), (");
             printer.print(PROPERTY_REFERENCE);
@@ -763,7 +818,7 @@ public class RwtWidgetWriter {
     }
 
     private void writeEmbeddedSelectorConstructorParams(CodePrinter printer) {
-        AdsUIProperty.EmbeddedSelectorOpenParamsProperty prop = (AdsUIProperty.EmbeddedSelectorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, "openParams");
+        AdsUIProperty.EmbeddedSelectorOpenParamsProperty prop = (AdsUIProperty.EmbeddedSelectorOpenParamsProperty) AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.OPEN_PARAMS);
         if (prop.getPropertyId() != null) {
             printer.print("(org.radixware.wps.WpsEnvironment) model.getEnvironment(), (");
             printer.print(PROPERTY_REF);
@@ -799,7 +854,7 @@ public class RwtWidgetWriter {
                     printer.print("else ");
                 }
 
-                AdsUIProperty.LocalizedStringRefProperty prop = (AdsUIProperty.LocalizedStringRefProperty) AdsUIUtil.getUiProperty(w, "label");
+                AdsUIProperty.LocalizedStringRefProperty prop = (AdsUIProperty.LocalizedStringRefProperty) AdsUIUtil.getUiProperty(w, AdsWidgetProperties.LABEL);
                 if (prop != null) {
                     printer.println("if(editorComponent==" + w.getId().toString() + ")");
                     printer.enterBlock();
@@ -820,7 +875,7 @@ public class RwtWidgetWriter {
             printer.leaveBlock();
             printer.print("}");
         } else if (AdsMetaInfo.RWT_COMMAND_PUSH_BUTTON.equals(widget.getClassName())) {
-            AdsUIProperty.CommandRefProperty command = (AdsUIProperty.CommandRefProperty) widget.getProperties().getByName("command");
+            AdsUIProperty.CommandRefProperty command = (AdsUIProperty.CommandRefProperty) widget.getProperties().getByName(AdsWidgetProperties.COMMAND);
             if (command != null) {
                 writePropValue(printer, command);
             } else {
@@ -828,7 +883,7 @@ public class RwtWidgetWriter {
             }
 
         } else if (AdsMetaInfo.RWT_PROP_LABEL.equals(widget.getClassName())) {
-            AdsUIProperty.PropertyRefProperty prop = (AdsUIProperty.PropertyRefProperty) widget.getProperties().getByName("property");
+            AdsUIProperty.PropertyRefProperty prop = (AdsUIProperty.PropertyRefProperty) widget.getProperties().getByName(AdsWidgetProperties.PROPERTY);
             if (prop != null) {
                 writePropValue(printer, prop);
             } else {
@@ -836,13 +891,11 @@ public class RwtWidgetWriter {
             }
         } else if (AdsMetaInfo.RWT_EDITOR_PAGE.equals(widget.getClassName())) {
 
-            AdsUIProperty.EditorPageRefProperty prop = (AdsUIProperty.EditorPageRefProperty) widget.getProperties().getByName("editorPage");
+            AdsUIProperty.EditorPageRefProperty prop = (AdsUIProperty.EditorPageRefProperty) widget.getProperties().getByName(AdsWidgetProperties.EDITOR_PAGE);
             if (prop != null && prop.getEditorPageId() != null) {
                 printer.print(getViewModel() + ".getEditorPage(");
                 WriterUtils.writeIdUsage(printer, prop.getEditorPageId());
                 printer.println(")");
-            } else {
-                throw new IllegalArgumentException("Page model for editor page is not defined.");
             }
         }
     }
@@ -892,7 +945,7 @@ public class RwtWidgetWriter {
         //        }
         else if (prop instanceof AdsUIProperty.EnumValueProperty) {
             AdsUIProperty.EnumValueProperty p = (AdsUIProperty.EnumValueProperty) prop;
-            if (widget.getClassName().equals(AdsMetaInfo.RWT_SPLITTER) && "orientation".equals(p.getName())) {
+            if (widget.getClassName().equals(AdsMetaInfo.RWT_SPLITTER) && AdsWidgetProperties.ORIENTATION.equals(p.getName())) {
                 EOrientation or = (EOrientation) p.value;
                 if (or == EOrientation.Horizontal) {
                     printer.print(AdsMetaInfo.RWT_SPLITTER + ".Orientation.HORIZONTAL");
@@ -984,7 +1037,7 @@ public class RwtWidgetWriter {
                     printer.printComma();
                 }
                 printer.print("this.");
-                printer.print(id);
+                printer.print(AdsUIWriter.getListItemName(widget, id, printer instanceof IHumanReadablePrinter));
             }
             printer.print('}');
         } else if (prop instanceof AdsUIProperty.PropertyRefProperty) {
@@ -1037,18 +1090,18 @@ public class RwtWidgetWriter {
                 || AdsMetaInfo.RWT_VAL_TIME_INTERVAL_EDITOR.equals(className);
     }
 
-    private String getEditorControllerClassName(String className, AdsRwtWidgetDef widget) {
+    private String getEditorControllerClassName(String className, AdsRwtWidgetDef widget, final CodePrinter cp) {
         if (AdsMetaInfo.RWT_VAL_BIN_EDITOR.equals(className)) {
             return "org.radixware.wps.views.editors.valeditors.ValBinEditorController";
         } else if (AdsMetaInfo.RWT_VAL_ENUM_EDITOR.equals(className)) {
-            AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, "enumeration");
+            AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.ENUMERATION);
             if (prop instanceof AdsUIProperty.EnumRefProperty) {
                 AdsEnumDef enumeration = ((AdsUIProperty.EnumRefProperty) prop).findEnum();
                 if (enumeration == null) {
                     return null;
                 }
                 AdsType type = enumeration.getType(enumeration.getItemType(), null);
-                CodePrinter printer = CodePrinter.Factory.newJavaPrinter();
+                CodePrinter printer = CodePrinter.Factory.newJavaPrinter(cp);
                 type.getJavaSourceSupport().getCodeWriter(UsagePurpose.WEB_EXECUTABLE).writeCode(printer);
                 return "org.radixware.wps.views.editors.valeditors.ValEnumEditorController<" + printer.toString() + ">";
             } else {
@@ -1058,14 +1111,14 @@ public class RwtWidgetWriter {
             return "org.radixware.wps.views.editors.valeditors.ValIntEditorController";
         } else if (AdsMetaInfo.RWT_VAL_LIST_EDITOR.equals(className)) {
 
-            AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, "itemType");
+            AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.ITEM_TYPE);
             if (prop instanceof AdsUIProperty.TypeDeclarationProperty) {
                 AdsType type = ((AdsUIProperty.TypeDeclarationProperty) prop).getType().resolve(widget).get();
                 if (type == null) {
                     return null;
                 }
 
-                CodePrinter printer = CodePrinter.Factory.newJavaPrinter();
+                CodePrinter printer = CodePrinter.Factory.newJavaPrinter(cp);
                 type.getJavaSourceSupport().getCodeWriter(UsagePurpose.WEB_EXECUTABLE).writeCode(printer);
                 return "org.radixware.wps.views.editors.valeditors.ValListEditorController<" + printer.toString() + ">";
             } else {
@@ -1090,7 +1143,7 @@ public class RwtWidgetWriter {
             return "org.radixware.wps.views.editors.valeditors.ValBoolEditorController";
         } else if (AdsMetaInfo.RWT_VAL_ARR_EDITOR.equals(className)) {
 
-            AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, "arrayType");
+            AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.ARRAY_TYPE);
             if (prop instanceof AdsUIProperty.EnumValueProperty) {
                 EArrayClassName arrTypeName = (EArrayClassName) ((AdsUIProperty.EnumValueProperty) prop).value;
                 if (arrTypeName == null) {
@@ -1107,16 +1160,16 @@ public class RwtWidgetWriter {
         return null;
     }
 
-    private static String getValEditorClassName(String className, AdsRwtWidgetDef widget) {
+    private static String getValEditorClassName(String className, AdsRwtWidgetDef widget, final CodePrinter cp) {
         if (AdsMetaInfo.RWT_VAL_ENUM_EDITOR.equals(className)) {
-            final AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, "enumeration");
+            final AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.ENUMERATION);
             if (prop instanceof AdsUIProperty.EnumRefProperty && ((AdsUIProperty.EnumRefProperty) prop).findEnum() != null) {
                 final AdsEnumDef enumeration = ((AdsUIProperty.EnumRefProperty) prop).findEnum();
                 if (enumeration == null) {
                     return null;
                 }
                 final AdsType type = enumeration.getType(enumeration.getItemType(), null);
-                final CodePrinter printer = CodePrinter.Factory.newJavaPrinter();
+                final CodePrinter printer = CodePrinter.Factory.newJavaPrinter(cp);
                 type.getJavaSourceSupport().getCodeWriter(UsagePurpose.WEB_EXECUTABLE).writeCode(printer);
                 return className.replace("<T,", "<" + printer.toString() + ",");
             } else {
@@ -1124,14 +1177,14 @@ public class RwtWidgetWriter {
             }
         } else if (AdsMetaInfo.RWT_VAL_LIST_EDITOR.equals(className)) {
 
-            final AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, "itemType");
+            final AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.ITEM_TYPE);
             if (prop instanceof AdsUIProperty.TypeDeclarationProperty) {
                 final AdsType type = ((AdsUIProperty.TypeDeclarationProperty) prop).getType().resolve(widget).get();
                 if (type == null) {
                     return null;
                 }
 
-                final CodePrinter printer = CodePrinter.Factory.newJavaPrinter();
+                final CodePrinter printer = CodePrinter.Factory.newJavaPrinter(cp);
                 type.getJavaSourceSupport().getCodeWriter(UsagePurpose.WEB_EXECUTABLE).writeCode(printer);
                 return className.replace("<T,", "<" + printer.toString() + ",");
             } else {
@@ -1139,7 +1192,7 @@ public class RwtWidgetWriter {
             }
 
         } else if (AdsMetaInfo.RWT_VAL_ARR_EDITOR.equals(className)) {
-            final AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, "arrayType");
+            final AdsUIProperty prop = AdsUIUtil.getUiProperty(widget, AdsWidgetProperties.ARRAY_TYPE);
             if (prop instanceof AdsUIProperty.EnumValueProperty) {
                 final EArrayClassName arrTypeName = (EArrayClassName) ((AdsUIProperty.EnumValueProperty) prop).value;
                 if (arrTypeName == null) {

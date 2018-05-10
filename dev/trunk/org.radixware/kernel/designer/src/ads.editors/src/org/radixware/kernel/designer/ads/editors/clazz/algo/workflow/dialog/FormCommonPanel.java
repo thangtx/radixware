@@ -8,7 +8,6 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * Mozilla Public License, v. 2.0. for more details.
  */
-
 package org.radixware.kernel.designer.ads.editors.clazz.algo.workflow.dialog;
 
 import java.awt.event.ActionEvent;
@@ -16,7 +15,6 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import org.openide.util.NbBundle;
 import org.radixware.kernel.common.components.ExtendableTextField;
 import org.radixware.kernel.common.components.ExtendableTextField.ExtendableTextChangeEvent;
 import org.radixware.kernel.common.components.ExtendableTextField.ExtendableTextChangeListener;
@@ -24,10 +22,11 @@ import org.radixware.kernel.common.defs.Definition;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.algo.object.*;
+import org.radixware.kernel.common.defs.ads.clazz.algo.object.AdsAppObject.Prop;
 import org.radixware.kernel.common.defs.ads.common.AdsVisitorProvider;
-import org.radixware.kernel.common.defs.ads.localization.AdsMultilingualStringDef;
 import org.radixware.kernel.common.defs.ads.module.AdsSearcher;
 import org.radixware.kernel.common.defs.ads.rights.AdsRoleDef;
+import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.defs.localization.IMultilingualStringDef;
 import org.radixware.kernel.common.defs.value.ValAsStr;
 import org.radixware.kernel.common.enums.EDwfFormClerkAutoSelect;
@@ -43,7 +42,6 @@ import org.radixware.kernel.designer.common.dialogs.chooseobject.ChooseDefinitio
 import org.radixware.kernel.designer.common.dialogs.components.localizing.HandleInfo;
 import org.radixware.kernel.common.resources.RadixWareIcons;
 
-
 public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
 
     public FormCommonPanel(AdsAppObject node) {
@@ -51,14 +49,17 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
         initComponents();
 
         final AdsAppObject.Prop t = node.getPropByName("title");
-        if (t != null)
-            t.setValue((String)null);
+        if (t != null) {
+            t.setValue((String) null);
+        }
         final AdsAppObject.Prop ht = node.getPropByName("headerTitle");
-        if (ht != null)
-            ht.setValue((String)null);
+        if (ht != null) {
+            ht.setValue((String) null);
+        }
         final AdsAppObject.Prop ft = node.getPropByName("footerTitle");
-        if (ft != null)
-            ft.setValue((String)null);
+        if (ft != null) {
+            ft.setValue((String) null);
+        }
 
         clerkAutoSelect = node.getPropByName("clerkAutoSelect");
         clerk = node.getPropByName("clerk");
@@ -72,6 +73,9 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
         priority = node.getPropByName("priority");
         clerkRoles = node.getPropByName("clerkRoleGuids");
         adminRoles = node.getPropByName("adminRoleGuids");
+
+        forbidForProcessCreator = node.getPropByName("forbidForProcessCreator");
+        forbidRedirection = node.getPropByName("forbidRedirection");
 
         comboClerkAutoSelect.setEditorType(ExtendableTextField.EDITOR_COMBO);
         comboClerkAutoSelect.setComboBoxModel(new javax.swing.DefaultComboBoxModel(EDwfFormClerkAutoSelect.values()));
@@ -95,18 +99,20 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
                     @Override
                     public boolean isTarget(RadixObject object) {
                         return object instanceof AdsRoleDef;
-                    };
+                    }
+                ;
                 };
                 ChooseDefinitionCfg cfg = ChooseDefinitionCfg.Factory.newInstance(obj, provider);
                 List<Definition> roleDefs = ChooseDefinition.chooseDefinitions(cfg);
                 if (roleDefs != null) {
                     String[] guids = new String[roleDefs.size()];
-                    for (int i=0; i<roleDefs.size(); i++) {
+                    for (int i = 0; i < roleDefs.size(); i++) {
                         guids[i] = String.valueOf(roleDefs.get(i).getId());
                     }
                     clerkRoles.setValue(new ArrStr(guids).toString());
-                } else
-                    clerkRoles.setValue((ValAsStr)null);
+                } else {
+                    clerkRoles.setValue((ValAsStr) null);
+                }
                 setRolesTitle(textClerkRoles, clerkRoles.getValue());
             }
         });
@@ -114,7 +120,7 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
         textClerkRoles.addResetButton(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                clerkRoles.setValue((ValAsStr)null);
+                clerkRoles.setValue((ValAsStr) null);
                 setRolesTitle(textClerkRoles, clerkRoles.getValue());
             }
         });
@@ -127,18 +133,20 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
                     @Override
                     public boolean isTarget(RadixObject object) {
                         return object instanceof AdsRoleDef;
-                    };
+                    }
+                ;
                 };
                 ChooseDefinitionCfg cfg = ChooseDefinitionCfg.Factory.newInstance(obj, provider);
                 List<Definition> roleDefs = ChooseDefinition.chooseDefinitions(cfg);
                 if (roleDefs != null) {
                     String[] guids = new String[roleDefs.size()];
-                    for (int i=0; i<roleDefs.size(); i++) {
+                    for (int i = 0; i < roleDefs.size(); i++) {
                         guids[i] = String.valueOf(roleDefs.get(i).getId());
                     }
                     adminRoles.setValue(new ArrStr(guids).toString());
-                } else
-                    adminRoles.setValue((ValAsStr)null);
+                } else {
+                    adminRoles.setValue((ValAsStr) null);
+                }
                 setRolesTitle(textAdminRoles, adminRoles.getValue());
             }
         });
@@ -146,7 +154,7 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
         textAdminRoles.addResetButton(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                adminRoles.setValue((ValAsStr)null);
+                adminRoles.setValue((ValAsStr) null);
                 setRolesTitle(textAdminRoles, adminRoles.getValue());
             }
         });
@@ -160,12 +168,14 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
         comboPriority.setEnabled(!node.isReadOnly());
         textClerkRoles.setEnabled(!node.isReadOnly());
         textAdminRoles.setEnabled(!node.isReadOnly());
+        cbForbidForProcessCreator.setEnabled(!node.isReadOnly());
+        cbForbidRedirection.setEnabled(!node.isReadOnly());
     }
 
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -181,6 +191,8 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
         comboClerkAutoSelect = new org.radixware.kernel.designer.ads.editors.clazz.algo.workflow.dialog.ExtTextField();
         textClerkRoles = new org.radixware.kernel.designer.ads.editors.clazz.algo.workflow.dialog.ExtTextField();
         labelWorkerRole = new javax.swing.JLabel();
+        cbForbidForProcessCreator = new javax.swing.JCheckBox();
+        cbForbidRedirection = new javax.swing.JCheckBox();
         panel2 = new javax.swing.JPanel();
         chkCaptureProcess = new javax.swing.JCheckBox();
         comboPriority = new org.radixware.kernel.designer.ads.editors.clazz.algo.workflow.dialog.ExtTextField();
@@ -200,21 +212,40 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
 
         labelWorkerRole.setText(RadixResourceBundle.getMessage(FormCommonPanel.class, "FormCommonPanel.labelWorkerRole.text")); // NOI18N
 
+        cbForbidForProcessCreator.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+        cbForbidForProcessCreator.setLabel(org.openide.util.NbBundle.getMessage(FormCommonPanel.class, "FormCommonPanel.cbForbidForProcessCreator.label")); // NOI18N
+        cbForbidForProcessCreator.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbForbidForProcessCreatorActionPerformed(evt);
+            }
+        });
+
+        cbForbidRedirection.setText(org.openide.util.NbBundle.getMessage(FormCommonPanel.class, "FormCommonPanel.cbForbidRedirection.text")); // NOI18N
+        cbForbidRedirection.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        cbForbidRedirection.setHorizontalTextPosition(javax.swing.SwingConstants.LEADING);
+
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(labelClerkAutoSelect)
-                    .addComponent(labelClerk)
-                    .addComponent(labelWorkerRole))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(textClerk, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-                    .addComponent(comboClerkAutoSelect, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
-                    .addComponent(textClerkRoles, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
+                    .addGroup(panel1Layout.createSequentialGroup()
+                        .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(labelClerkAutoSelect)
+                            .addComponent(labelClerk)
+                            .addComponent(labelWorkerRole))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(textClerk, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(comboClerkAutoSelect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(textClerkRoles, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                        .addGap(0, 29, Short.MAX_VALUE)
+                        .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(cbForbidForProcessCreator, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cbForbidRedirection, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         panel1Layout.setVerticalGroup(
@@ -232,7 +263,10 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textClerkRoles, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labelWorkerRole))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cbForbidForProcessCreator)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cbForbidRedirection))
         );
 
         chkCaptureProcess.setText(RadixResourceBundle.getMessage(FormCommonPanel.class, "FormCommonPanel.chkCaptureProcess.text")); // NOI18N
@@ -268,8 +302,8 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
                             .addComponent(labelAdminRole))
                         .addGap(4, 4, 4)
                         .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(textAdminRoles, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)
-                            .addComponent(comboPriority, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE)))
+                            .addComponent(textAdminRoles, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                            .addComponent(comboPriority, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel2Layout.createSequentialGroup()
                         .addComponent(chkContentSaving)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -301,9 +335,9 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(panelTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
-                    .addComponent(panelHeaderTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
-                    .addComponent(panelFooterTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
+                    .addComponent(panelTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelHeaderTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelFooterTitle, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -314,16 +348,15 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                .addComponent(panelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelHeaderTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
+                .addComponent(panelHeaderTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panelFooterTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
+                .addComponent(panelFooterTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5))
+                    .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -335,7 +368,13 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
         // TODO add your handling code here:
     }//GEN-LAST:event_chkContentSavingActionPerformed
 
+    private void cbForbidForProcessCreatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbForbidForProcessCreatorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbForbidForProcessCreatorActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox cbForbidForProcessCreator;
+    private javax.swing.JCheckBox cbForbidRedirection;
     private javax.swing.JCheckBox chkCaptureProcess;
     private javax.swing.JCheckBox chkContentSaving;
     private org.radixware.kernel.designer.ads.editors.clazz.algo.workflow.dialog.ExtTextField comboClerkAutoSelect;
@@ -367,10 +406,11 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
     private AdsAppObject.Prop priority;
     private AdsAppObject.Prop clerkRoles;
     private AdsAppObject.Prop adminRoles;
+    private AdsAppObject.Prop forbidForProcessCreator;
+    private AdsAppObject.Prop forbidRedirection;
 
     //private AdsRoleDef workerRoleDef = null;
     //private AdsRoleDef adminRoleDef = null;
-
     private Id titleId;
     private Id headerTitleId;
     private Id footerTitleId;
@@ -383,14 +423,17 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
             public AdsDefinition getAdsDefinition() {
                 return obj.getOwnerClass();
             }
+
             @Override
             public Id getTitleId() {
                 return titleId;
             }
+
             @Override
             protected void onAdsMultilingualStringDefChange(IMultilingualStringDef stringDef) {
                 titleId = stringDef != null ? stringDef.getId() : null;
             }
+
             @Override
             protected void onLanguagesPatternChange(EIsoLanguage language, String newStringValue) {
                 getAdsMultilingualStringDef().setValue(language, newStringValue);
@@ -402,14 +445,17 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
             public AdsDefinition getAdsDefinition() {
                 return obj.getOwnerClass();
             }
+
             @Override
             public Id getTitleId() {
                 return headerTitleId;
             }
+
             @Override
             protected void onAdsMultilingualStringDefChange(IMultilingualStringDef stringDef) {
                 headerTitleId = stringDef != null ? stringDef.getId() : null;
             }
+
             @Override
             protected void onLanguagesPatternChange(EIsoLanguage language, String newStringValue) {
                 getAdsMultilingualStringDef().setValue(language, newStringValue);
@@ -421,36 +467,42 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
             public AdsDefinition getAdsDefinition() {
                 return obj.getOwnerClass();
             }
+
             @Override
             public Id getTitleId() {
                 return footerTitleId;
             }
+
             @Override
             protected void onAdsMultilingualStringDefChange(IMultilingualStringDef stringDef) {
                 footerTitleId = stringDef != null ? stringDef.getId() : null;
             }
+
             @Override
             protected void onLanguagesPatternChange(EIsoLanguage language, String newStringValue) {
                 getAdsMultilingualStringDef().setValue(language, newStringValue);
             }
         });
 
-        final EDwfFormClerkAutoSelect cas = EDwfFormClerkAutoSelect.getForValue((Long)clerkAutoSelect.getValue().toObject(EValType.INT));
+        final EDwfFormClerkAutoSelect cas = EDwfFormClerkAutoSelect.getForValue((Long) clerkAutoSelect.getValue().toObject(EValType.INT));
         comboClerkAutoSelect.setComboBoxSelectedItem(cas);
         comboClerkAutoSelect.addChangeListener(new ExtendableTextChangeListener() {
             @Override
             public void onEvent(ExtendableTextChangeEvent e) {
-                final EDwfFormClerkAutoSelect cas = (EDwfFormClerkAutoSelect)comboClerkAutoSelect.getComboBoxSelectedItem();
+                final EDwfFormClerkAutoSelect cas = (EDwfFormClerkAutoSelect) comboClerkAutoSelect.getComboBoxSelectedItem();
                 textClerk.setEnabled(EDwfFormClerkAutoSelect.NONE.equals(cas));
             }
         });
 
-        chkContentSaving.setSelected((Boolean)contentSaving.getValue().toObject(EValType.BOOL));
-        chkCaptureProcess.setSelected((Boolean)captureProcess.getValue().toObject(EValType.BOOL));
+        chkContentSaving.setSelected((Boolean) contentSaving.getValue().toObject(EValType.BOOL));
+        chkCaptureProcess.setSelected((Boolean) captureProcess.getValue().toObject(EValType.BOOL));
         textClerk.setEnabled(EDwfFormClerkAutoSelect.NONE.equals(cas));
 
         textClerk.setTextFieldValue(clerk.getValue() != null ? String.valueOf(clerk.getValue()) : null);
-        comboPriority.setComboBoxSelectedItem(EDwfFormPriority.getForValue((Long)priority.getValue().toObject(EValType.INT)));
+        comboPriority.setComboBoxSelectedItem(EDwfFormPriority.getForValue((Long) priority.getValue().toObject(EValType.INT)));
+
+        cbForbidForProcessCreator.setSelected(forbidForProcessCreator != null && ((Boolean) forbidForProcessCreator.getValue().toObject(EValType.BOOL)));
+        cbForbidRedirection.setSelected(forbidRedirection != null && ((Boolean) forbidRedirection.getValue().toObject(EValType.BOOL)));
 
         setRolesTitle(textClerkRoles, clerkRoles.getValue());
         setRolesTitle(textAdminRoles, adminRoles.getValue());
@@ -463,12 +515,13 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
         }
         String fieldValue = "";
         final ArrStr arr = ArrStr.fromValAsStr(value.toString());
-        for (String guid: arr) {
-            AdsRoleDef roleDef = (AdsRoleDef)AdsSearcher.Factory.newAdsDefinitionSearcher(obj).findById(Id.Factory.loadFrom(guid)).get();
+        for (String guid : arr) {
+            AdsRoleDef roleDef = (AdsRoleDef) AdsSearcher.Factory.newAdsDefinitionSearcher(obj).findById(Id.Factory.loadFrom(guid)).get();
             if (roleDef != null) {
                 fieldValue += roleDef.getName();
-                if (arr.indexOf(guid) != arr.size()-1)
+                if (arr.indexOf(guid) != arr.size() - 1) {
                     fieldValue += ", ";
+                }
             }
         }
         field.setTextFieldValue(fieldValue);
@@ -480,16 +533,33 @@ public class FormCommonPanel extends EditorDialog.EditorPanel<AdsAppObject> {
         headerTitle.setValue(headerTitleId != null ? headerTitleId.toString() : null);
         footerTitle.setValue(footerTitleId != null ? footerTitleId.toString() : null);
 
-        final EDwfFormClerkAutoSelect cas = (EDwfFormClerkAutoSelect)comboClerkAutoSelect.getComboBoxSelectedItem();
+        final EDwfFormClerkAutoSelect cas = (EDwfFormClerkAutoSelect) comboClerkAutoSelect.getComboBoxSelectedItem();
         clerkAutoSelect.setValue(String.valueOf(cas.getValue()));
 
         contentSaving.setValue(chkContentSaving.isSelected() ? "1" : "0");
         captureProcess.setValue(chkCaptureProcess.isSelected() ? "1" : "0");
+        final String forbidForProcessCreatorVal = cbForbidForProcessCreator.isSelected() ? "1" : "0";
+        if (forbidForProcessCreator == null) {
+            if (forbidForProcessCreatorVal.equals("1")) {
+                obj.registerProp(new Prop("forbidForProcessCreator", null, Prop.PUBLIC | Prop.SETTING, AdsTypeDeclaration.Factory.newInstance(EValType.BOOL), true, forbidForProcessCreatorVal));
+            }
+        } else {
+            forbidForProcessCreator.setValue(forbidForProcessCreatorVal);
+        }
+        
+        final String forbidRedirectionVal = cbForbidRedirection.isSelected() ? "1" : "0";
+        if (forbidRedirection == null) {
+            if (forbidRedirectionVal.equals("1")) {
+                obj.registerProp(new Prop("forbidRedirection", null, Prop.PUBLIC | Prop.SETTING, AdsTypeDeclaration.Factory.newInstance(EValType.BOOL), true, forbidRedirectionVal));
+            }
+        } else {
+            forbidRedirection.setValue(forbidRedirectionVal);
+        }
 
         String cl = String.valueOf(textClerk.getValue()).trim();
         clerk.setValue(cl.isEmpty() ? null : cl);
 
-        EDwfFormPriority p = (EDwfFormPriority)comboPriority.getComboBoxSelectedItem();
+        EDwfFormPriority p = (EDwfFormPriority) comboPriority.getComboBoxSelectedItem();
         priority.setValue(String.valueOf(p.getValue()));
 
         //clerkRoles.setValue(workerRoleDef != null ? String.valueOf(workerRoleDef.getId()) : null);

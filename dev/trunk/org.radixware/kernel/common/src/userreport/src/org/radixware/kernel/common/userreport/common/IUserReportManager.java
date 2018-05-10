@@ -19,17 +19,17 @@ import org.radixware.kernel.common.userreport.repository.UserReport.ReportVersio
 import org.radixware.kernel.common.userreport.repository.UserReport.ReportVersions;
 
 
-public interface IUserReportManager extends IUserReportModuleManager{
+public interface IUserReportManager extends IUserReportModuleManager {
+
+    void save(final AdsTypeDeclaration contextParamType, final UserReport report);
+
+    boolean deleteReport(final List<String> deletedPubs, final Throwable[] exceptions, final Id reportId);
+
+    void openEditor(final UserReport report);
     
-    //void importReport(final ReportsModule context,final InputStream input) throws IOException;    
-    //Id importExistReport(final UserReport existingReport,final  AdsUserReportExchangeDocument xDoc) throws IOException;
-    //UserReport createReport(final ReportsModule module, final String name, final Id reportId, final AdsReportClassDef initialReport);       
-    //boolean removeVersion(final UserReport.ReportVersion version, final Id reportId);     
-    //UserReport.ReportVersion createVersionImpl(final AdsUserReportDefinitionDocument xDoc,final Id reportId,final UserReport userReport);     
-    void save(final AdsTypeDeclaration contextParamType,final UserReport report);  
-    //boolean makeCurrent(final boolean interactive,final UserReport.ReportVersion version,final UserReport handle);      
-    boolean deleteReport(final List<String> deletedPubs,final Throwable[] exceptions, final Id reportId);    
-    void openEditor(final UserReport report);      
-    IUserDefChangeSuppert createVersionChangeSuppert(ReportVersion reportVersion);    
+    void closeEditor(final UserReport report);
+
+    IUserDefChangeSuppert createVersionChangeSuppert(ReportVersion reportVersion);
+
     IUserDefChangeSuppert createVersionsChangeSuppert(ReportVersions reportVersions);
 }

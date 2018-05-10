@@ -11,6 +11,7 @@
 
 package org.radixware.kernel.explorer.widgets.propeditors;
 
+import org.radixware.kernel.common.client.enums.EWidgetMarker;
 import org.radixware.kernel.common.client.models.items.properties.Property;
 import org.radixware.kernel.explorer.editors.valeditors.ValEditorFactory;
 
@@ -29,4 +30,8 @@ public class PropBinEditor extends PropEditor {
         return ValEditorFactory.getDefault();
     }
 
+    @Override
+    public final EWidgetMarker getWidgetMarker() {
+        return EWidgetMarker.BIN_PROP_EDITOR;
+    }    
 }

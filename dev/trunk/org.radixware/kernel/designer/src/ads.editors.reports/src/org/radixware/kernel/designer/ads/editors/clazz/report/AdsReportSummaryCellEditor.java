@@ -15,6 +15,8 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -25,7 +27,9 @@ import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
 import org.radixware.kernel.common.defs.ads.clazz.sql.report.AdsReportSummaryCell;
 import org.radixware.kernel.common.defs.ads.type.AdsTypeDeclaration;
 import org.radixware.kernel.common.enums.EValType;
+import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.common.utils.RadixObjectsUtils;
+import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.designer.ads.common.sql.AdsSqlClassVisitorProviderFactory;
 import org.radixware.kernel.designer.common.dialogs.components.DefinitionLinkEditPanel;
 
@@ -81,6 +85,13 @@ class AdsReportSummaryCellEditor extends JPanel {
         this.cell = cell;
         initComponents();
         summaryPanel=new SummaryPanel(cell);
+        summaryPanel.addPropertyChangeListener(AdsReportWidgetNamePanel.CHANGE_NAME, new PropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                firePropertyChange(AdsReportWidgetNamePanel.CHANGE_NAME, false, true);
+            }
+        });
         //summaryTypeComboBox.setModel(new DefaultComboBoxModel(EReportSummaryCellType.values()));
         fieldEditor.setComboMode();
         final List<AdsPropertyDef> list = cell.getOwnerBand().getOwnerForm().getOwnerReport().getProperties().get(
@@ -93,7 +104,9 @@ class AdsReportSummaryCellEditor extends JPanel {
             public void stateChanged(final ChangeEvent e) {
                 if (!updating) {
                     final AdsReportSummaryCell sumCell=AdsReportSummaryCellEditor.this.cell;
-                    sumCell.setPropertyId(fieldEditor.getDefinitionId());
+                    Id id = sumCell.getPropertyId();
+                    Id newId = fieldEditor.getDefinitionId();
+                    sumCell.setPropertyId(newId);
                     final AdsPropertyDef propertyDef = sumCell.findProperty();
                     AdsTypeDeclaration type=null;
                     if (propertyDef != null) {
@@ -102,6 +115,9 @@ class AdsReportSummaryCellEditor extends JPanel {
                     if(type!=null){
                         sumCell.getFormat().setUseDefaultFormat(true);
                         AdsReportSummaryCellEditor.this.formatPanel.open(sumCell.getFormat(),type.getTypeId());
+                    }
+                    if (!Utils.equals(id, newId)){
+                        firePropertyChange(AdsReportWidgetNamePanel.CHANGE_NAME, false, true);
                     }
                 }
             }

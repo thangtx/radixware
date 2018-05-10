@@ -96,6 +96,7 @@ public abstract class PropertyReference extends Property {
             final Reference newVal = new Reference(currentVal);
             newVal.setTitle(title);            
             setInternalVal(newVal);
+            afterModify();
         }
     }
 

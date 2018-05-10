@@ -11,12 +11,14 @@
 
 package org.radixware.kernel.common.defs.ads.type;
 
+import org.radixware.kernel.common.defs.DefinitionLink;
 import org.radixware.kernel.common.defs.Module;
 import org.radixware.kernel.common.defs.RadixObject;
 import org.radixware.kernel.common.defs.ads.AdsDefinition;
 import org.radixware.kernel.common.defs.ads.clazz.*;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsMethodDef;
 import org.radixware.kernel.common.defs.ads.clazz.members.AdsPropertyDef;
+import org.radixware.kernel.common.defs.ads.common.AdsUtils;
 import org.radixware.kernel.common.defs.ads.src.IJavaSource;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport;
 import org.radixware.kernel.common.defs.ads.src.JavaSourceSupport.CodeWriter;
@@ -26,6 +28,8 @@ import org.radixware.kernel.common.enums.EClassType;
 import org.radixware.kernel.common.enums.EPropNature;
 import org.radixware.kernel.common.enums.ERuntimeEnvironmentType;
 import org.radixware.kernel.common.scml.CodePrinter;
+import org.radixware.kernel.common.scml.IHumanReadablePrinter;
+import org.radixware.kernel.common.utils.Utils;
 import org.radixware.kernel.common.utils.events.RadixEvent;
 import org.radixware.kernel.common.utils.events.RadixEventSource;
 import org.radixware.schemas.adsdef.AccessRules;
@@ -50,11 +54,11 @@ public class AdsAccessFlags extends RadixObject implements IJavaSource {
          * модификатором public
          */
         public static AdsAccessFlags newInstance(final AdsDefinition context) {
-            return new AdsAccessFlags(context, false, false, false);
+            return new AdsAccessFlags(context, false, false, null, false);
         }
 
         public static AdsAccessFlags newCopy(final AdsDefinition context, final AdsAccessFlags source) {
-            return new AdsAccessFlags(context, source.isStatic, source.isDeprecated, source.isAbstract);
+            return new AdsAccessFlags(context, source.isStatic, source.isDeprecated, source.expirationRelease, source.isAbstract);
         }
 
         /**
@@ -62,7 +66,7 @@ public class AdsAccessFlags extends RadixObject implements IJavaSource {
          * модификатором доступа {@code access}
          */
         public static AdsAccessFlags newCopy(final AdsDefinition context, final AdsAccessFlags source, final EAccess access) {
-            return new AdsAccessFlags(context, source.isStatic, source.isDeprecated, source.isAbstract) {
+            return new AdsAccessFlags(context, source.isStatic, source.isDeprecated, source.expirationRelease, source.isAbstract) {
 
                 @Override
                 public EAccess getAccessMode() {
@@ -81,19 +85,27 @@ public class AdsAccessFlags extends RadixObject implements IJavaSource {
             if (xDef == null) {
                 return newInstance(context);
             }
-            return new AdsAccessFlags(context, xDef.isSetIsStatic() ? xDef.getIsStatic() : false, xDef.isSetIsDeprecated() ? xDef.getIsDeprecated() : false, xDef.isSetIsAbstract() ? xDef.getIsAbstract() : false);
+            return new AdsAccessFlags(context, xDef.isSetIsStatic() ? xDef.getIsStatic() : false, 
+                    xDef.isSetIsDeprecated() ? xDef.getIsDeprecated() : false, 
+                    xDef.isSetExpirationRelease()? xDef.getExpirationRelease(): null, 
+                    xDef.isSetIsAbstract() ? xDef.getIsAbstract() : false);
         }
     }
     private RadixEventSource modifiersChangesSupport = null;
     private boolean isStatic;
     private boolean isDeprecated;
+    private String expirationRelease;
     private boolean isAbstract;
+    private final DeprecatedOwner deprecatedOwner = new DeprecatedOwner();
 
-    private AdsAccessFlags(AdsDefinition context, boolean isStatic, boolean isDeprecated, boolean isAbstract) {
+    private AdsAccessFlags(AdsDefinition context, boolean isStatic, boolean isDeprecated, String expirationRelease, boolean isAbstract) {
         setContainer(context);
         this.isDeprecated = isDeprecated;
         this.isStatic = isStatic;
         this.isAbstract = isAbstract;
+        if (isDeprecated) {
+            this.expirationRelease = expirationRelease;
+        }
     }
 
     public RadixEventSource getAccessFlagsChangesSupport() {
@@ -160,8 +172,8 @@ public class AdsAccessFlags extends RadixObject implements IJavaSource {
 
         return isAbstract;
     }
-
-    public boolean isDeprecated() {
+    
+    public boolean isDefaultDeprecated() {
         // RADIX-7460
         final Module module = getModule();
         if (module != null && module.isDeprecated()) {
@@ -182,6 +194,18 @@ public class AdsAccessFlags extends RadixObject implements IJavaSource {
         } else {
             return true;
         }
+    }
+
+    public boolean isDeprecated() {
+        boolean result = isDefaultDeprecated();
+       
+        if (!result) {
+            if (!canChangeDeprecated()) {
+                AdsDefinition def = deprecatedOwner.find();
+                result = def instanceof IDeprecatedInheritable ? ((IDeprecatedInheritable) def).getAccessFlags().isDeprecated : def.isDeprecated();
+            }
+        }
+        return result;
     }
 
     public boolean isPublic() {
@@ -207,7 +231,14 @@ public class AdsAccessFlags extends RadixObject implements IJavaSource {
         if (isStatic) {
             xDef.setIsStatic(isStatic);
         }
-        if (isDeprecated) {
+        String expirated = getExpirationRelease();
+        if (expirated != null && !expirated.isEmpty()) {
+            boolean isRealDeprecated = isDeprecated();
+            if (isRealDeprecated) {
+                xDef.setIsDeprecated(isRealDeprecated);
+                xDef.setExpirationRelease(expirated);
+            }
+        } else if (isDeprecated) {
             xDef.setIsDeprecated(isDeprecated);
         }
     }
@@ -219,8 +250,20 @@ public class AdsAccessFlags extends RadixObject implements IJavaSource {
             notifyModified();
         }
     }
+    
+    public boolean canChangeDeprecated() {
+        AdsDefinition owner = getOwnerDef();
+        if (owner instanceof IDeprecatedInheritable) {
+            AdsDefinition def = deprecatedOwner.find();
+            return owner == def;
+        }
+        return true;
+    }
 
     public void setDeprecated(boolean isDeprecated) {
+        if (!canChangeDeprecated()) {
+            return;
+        }
         if (this.isDeprecated != isDeprecated) {
             this.isDeprecated = isDeprecated;
             setEditState(EEditState.MODIFIED);
@@ -351,6 +394,12 @@ public class AdsAccessFlags extends RadixObject implements IJavaSource {
             if (af.isFinal()) {
                 printer.print("final ");
             }
+            
+            if (printer instanceof IHumanReadablePrinter) {
+                if (af.isPublished()) {
+                    printer.print("published ");
+                }
+            }
             return true;
         }
 
@@ -373,6 +422,10 @@ public class AdsAccessFlags extends RadixObject implements IJavaSource {
 
     public String getRadixdocPresentation() {
         StringBuilder sb = new StringBuilder();
+        if (isPublic()) {
+            sb.append("public ");
+        }
+        
         if (isProtected()) {
             sb.append("protected ");
         }
@@ -387,7 +440,38 @@ public class AdsAccessFlags extends RadixObject implements IJavaSource {
 
         if (isAbstract()) {
             sb.append("abstract ");
-        }
+        }        
         return sb.toString();
+    }
+
+    public String getExpirationRelease() {
+        if (!canChangeDeprecated()) {
+            AdsDefinition def = deprecatedOwner.find();
+            if (def instanceof IDeprecatedInheritable) {
+                return ((IDeprecatedInheritable)def).getAccessFlags().getExpirationRelease();
+            }
+        }
+        return expirationRelease;
+    }
+
+    public void setExpirationRelease(String exprationRelease) {
+        if (isDeprecated() && !Utils.equals(this.expirationRelease, exprationRelease)) {
+            this.expirationRelease = exprationRelease;
+            setEditState(EEditState.MODIFIED);
+            notifyModified();
+        }
+    }
+    
+    private class DeprecatedOwner extends DefinitionLink<AdsDefinition> {
+
+        @Override
+        protected AdsDefinition search() {
+            AdsDefinition owner = getOwnerDef();
+            if (owner instanceof IDeprecatedInheritable) {
+                return AdsUtils.getDeprecatedOwner(owner);
+            }
+            return owner;
+        }
+        
     }
 }

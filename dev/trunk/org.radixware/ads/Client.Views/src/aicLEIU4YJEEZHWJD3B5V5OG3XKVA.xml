@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" FormatVersion="0">
+<AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsClassDefinition Id="aicLEIU4YJEEZHWJD3B5V5OG3XKVA" Name="ISelectorWidget" Type="5" Environment="common-client">
     <AccessRules>
       <Transparence Extendable="false" PublishedName="org.radixware.kernel.common.client.widgets.selector.ISelectorWidget"/>
@@ -96,6 +96,26 @@
         <AccessRules>
           <Transparence Extendable="false" PublishedName="finishEdit()V"/>
         </AccessRules>
+      </Method>
+      <Method Id="mthYJPNJJAANNHHPJ7VPLC2N7PFHU" Name="rereadAndSetCurrent" Nature="0" IsOverride="false" isDescriptionInherited="false">
+        <AccessRules IsAbstract="true">
+          <Transparence Extendable="false" PublishedName="rereadAndSetCurrent(Ljava.util.Collection&lt;Lorg.radixware.kernel.common.client.types.Pid;>;)V"/>
+        </AccessRules>
+        <Parameters>
+          <Parameter Name="pids" Id="mpr2WY4KHZKORDPDJH6PBCUIGQW44">
+            <Type TypeId="400" extStr="java.util.Collection">
+              <xsc:GenericArguments>
+                <xsc:Argument Alias="?">
+                  <xsc:Type TypeId="400" extStr="org.radixware.kernel.common.client.types.Pid"/>
+                </xsc:Argument>
+              </xsc:GenericArguments>
+            </Type>
+          </Parameter>
+        </Parameters>
+        <ThrownExceptions>
+          <Exception TypeId="400" extStr="java.lang.InterruptedException"/>
+          <Exception TypeId="400" extStr="org.radixware.kernel.common.exceptions.ServiceClientException"/>
+        </ThrownExceptions>
       </Method>
     </Methods>
   </AdsClassDefinition>

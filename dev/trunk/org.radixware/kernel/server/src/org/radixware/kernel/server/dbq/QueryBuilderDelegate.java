@@ -12,13 +12,14 @@
 package org.radixware.kernel.server.dbq;
 
 import org.radixware.kernel.common.enums.EOrder;
+import org.radixware.kernel.common.enums.EPaginationMethod;
 import org.radixware.kernel.common.types.Id;
 import org.radixware.kernel.server.meta.presentations.RadConditionDef;
 
 
 public class QueryBuilderDelegate {
 
-    public boolean appendOrdColDirective(final StringBuilder query, final SqlBuilder builder, final Id propId, final boolean bForSelectParent, final EOrder order) {
+    public boolean appendOrdColDirective(final StringBuilder query, final SqlBuilder builder, final Id propId, final boolean bForSelectParent, final EOrder order, final GroupQuerySqlBuilder.ESortingColumnPurpose purpose) {
         return false;
     }
     

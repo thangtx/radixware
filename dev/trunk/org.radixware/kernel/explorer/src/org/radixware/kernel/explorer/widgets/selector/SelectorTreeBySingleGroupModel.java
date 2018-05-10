@@ -44,12 +44,35 @@ public class SelectorTreeBySingleGroupModel extends SelectorTree {
     
     private final static String EXPANDED_ITEMS_SETTING_NAME = "expandedItems";
     private final static String EXPANDED_ITEM_SETTING_NAME = "items";
+    
+    private static interface ISelectorModelDelegate{
+        void afterCreateChildGroupModel(EntityModel parent, GroupModel child);        
+        boolean hasChildren(EntityModel parent, GroupModel child);        
+    }
+    
+    private final class SelectorModelDelegate implements ISelectorModelDelegate{                
+
+        @Override
+        public void afterCreateChildGroupModel(final EntityModel parent, final GroupModel child) {
+            SelectorTreeBySingleGroupModel.this.afterCreateChildGroupModel(parent, child);
+        }
+
+        @Override
+        public boolean hasChildren(final EntityModel parent, final GroupModel child) {
+            return SelectorTreeBySingleGroupModel.this.hasChildren(parent, child);
+        }        
+    }
 
     private static class SelectorModelImpl extends SelectorModel {
 
-        private final Map<Pid, GroupModel> childGroups = new HashMap<>();
+        private final Map<Pid, FilteredByPropertiesGroupModel> childGroups = new HashMap<>();
         private final GroupModel sourceGroup;
         private final Id keyPropertyId, refPropertyId;
+        private ISelectorModelDelegate delegate;
+        
+        public void setDelegate(final ISelectorModelDelegate delegate){
+            this.delegate = delegate;
+        }
 
         public SelectorModelImpl(final GroupModel sourceGroup, final Id keyPropertyId, final Id refPropertyId, final Object keyPropertyValue) {
             super(new FilteredByPropertiesGroupModel(sourceGroup));
@@ -68,6 +91,7 @@ public class SelectorTreeBySingleGroupModel extends SelectorTree {
                 final FilteredByPropertiesGroupModel group = new FilteredByPropertiesGroupModel(sourceGroup);
                 group.setPropertyFilter(refPropertyId, parent.getProperty(keyPropertyId).getValueObject());
                 childGroups.put(parent.getPid(), group);
+                delegate.afterCreateChildGroupModel(parent, group);
                 return group;
             }
             return childGroups.get(parent.getPid());
@@ -79,21 +103,25 @@ public class SelectorTreeBySingleGroupModel extends SelectorTree {
         }
 
         @Override
-        public boolean canCreateChild(EntityModel parentEntity) {
-            return !getRootGroupModel().getRestrictions().getIsCreateRestricted();
+        protected void prepareChildGroupFilter(GroupModel parentGroup, GroupModel childGroup) {
+            //do not set filter to child group
+        }                
+
+        @Override
+        protected boolean hasChildren(final EntityModel parent) {
+            final GroupModel childGroup = getChildGroup(parent);
+            return delegate.hasChildren(parent, childGroup);
         }
 
         @Override
-        protected boolean hasChildren(EntityModel parent) {
-            try {
-                return new GroupModelReader(getChildGroup(parent)).getFirstEntityModel() != null;
-            } catch (ServiceClientException ex) {
-                getRootGroupModel().getEnvironment().getTracer().put(ex);
-                return false;
-            } catch (InterruptedException ex) {
-                return false;
+        protected GroupModel getOwnerGroupModel(final EntityModel entityModel) {
+            for (FilteredByPropertiesGroupModel groupModel: childGroups.values()){
+                if (groupModel.contains(entityModel)){
+                    return groupModel;
+                }
             }
-        }
+            return getRootGroupModel();
+        }        
 
         @Override
         protected void clear(QModelIndex parent) {
@@ -175,7 +203,7 @@ public class SelectorTreeBySingleGroupModel extends SelectorTree {
 
         public void resetModel() {
             reset();
-        }
+        }   
     }
     
     private final GroupModel sourceGroupModel;
@@ -185,6 +213,7 @@ public class SelectorTreeBySingleGroupModel extends SelectorTree {
 
     public SelectorTreeBySingleGroupModel(final Selector selector, final Id keyPropertyId, final Id parentRefPropertyId) {
         super(selector, new SelectorModelImpl(selector.getGroupModel(), keyPropertyId, parentRefPropertyId, null));
+        ((SelectorModelImpl)controller.model).setDelegate(new SelectorModelDelegate());
         sourceGroupModel = selector.getGroupModel();
         this.keyPropertyId = keyPropertyId;
         this.refPropertyId = parentRefPropertyId;
@@ -192,6 +221,7 @@ public class SelectorTreeBySingleGroupModel extends SelectorTree {
 
     public SelectorTreeBySingleGroupModel(final Selector selector, final GroupModel group, final Id keyPropertyId, final Id parentRefPropertyId) {
         super(selector, new SelectorModelImpl(group, keyPropertyId, parentRefPropertyId, null));
+        ((SelectorModelImpl)controller.model).setDelegate(new SelectorModelDelegate());
         sourceGroupModel = group;
         this.keyPropertyId = keyPropertyId;
         this.refPropertyId = parentRefPropertyId;
@@ -199,6 +229,7 @@ public class SelectorTreeBySingleGroupModel extends SelectorTree {
 
     public SelectorTreeBySingleGroupModel(final Selector selector, final GroupModel group, final Id keyPropertyId, final Id parentRefPropertyId, final Object keyPropertyValue) {
         super(selector, new SelectorModelImpl(group, keyPropertyId, parentRefPropertyId, keyPropertyValue));
+        ((SelectorModelImpl)controller.model).setDelegate(new SelectorModelDelegate());
         sourceGroupModel = group;
         this.keyPropertyId = keyPropertyId;
         this.refPropertyId = parentRefPropertyId;
@@ -226,9 +257,7 @@ public class SelectorTreeBySingleGroupModel extends SelectorTree {
         }
         super.closeEvent(event);
     }
-    
-    
-
+        
     @Override
     public void afterPrepareCreate(EntityModel entity) {
         final SelectorModel model = (SelectorModel) model();
@@ -257,9 +286,12 @@ public class SelectorTreeBySingleGroupModel extends SelectorTree {
             } else {
                 throw new IllegalUsageError("Cannot find parent entity");
             }
-        } else if (action == actions.createSiblingAction || action == selector.getActions().getCreateAction()) {
+        } else if (action == actions.createSiblingAction 
+                      || action == selector.getActions().getCreateAction()
+                      || action == actions.pasteSiblingAction
+                      || action == selector.getActions().getPasteAction()) {
             parentEntity = model.getEntity(parentIndex);
-        } else if (action == actions.createChildAction) {
+        } else if (action == actions.createChildAction || action == actions.pasteChildAction) {
             parentEntity = model.getEntity(currentIndex);
         } else//action==null or unknown action
         {
@@ -412,6 +444,20 @@ public class SelectorTreeBySingleGroupModel extends SelectorTree {
             }catch(ServiceClientException | InterruptedException exception){
                 //All data loaded at this moment - never thrown
             }
+        }
+    }
+    
+    protected void afterCreateChildGroupModel(final EntityModel parent, final GroupModel child){        
+    }
+    
+    protected boolean hasChildren(final EntityModel parent, final GroupModel child) {
+        try {
+            return new GroupModelReader(child).getFirstEntityModel() != null;
+        } catch (ServiceClientException ex) {
+            selector.getEnvironment().getTracer().put(ex);
+            return false;
+        } catch (InterruptedException ex) {
+            return false;
         }
     }
 }

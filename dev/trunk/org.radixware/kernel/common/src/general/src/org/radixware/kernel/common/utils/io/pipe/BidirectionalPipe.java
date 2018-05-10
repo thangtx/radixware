@@ -126,7 +126,7 @@ public class BidirectionalPipe extends AbstractSelectableChannel implements Pipe
         return isConnected();
     }
 
-    void onConnect() {
+    public void onConnect() {
         connectCountDownLatch.countDown();
         notifyOperationAvailable(SelectionKey.OP_CONNECT);
     }

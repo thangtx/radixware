@@ -63,7 +63,7 @@ abstract class AbstractDateTimeEditor<T> extends ValEditor<T> {
                 final String input,
                 final int position) {                                   
             try {
-                editMask.getValueForInputText(input, environment.getLocale());
+                editMask.getValueForInputText(input, environment);
             } catch(WrongAmPmFieldValue ex){
                 return ValidationResult.Factory.newInvalidResult(InvalidValueReason.WRONG_FORMAT);
             } catch (WrongFormatException ex) {
@@ -145,14 +145,14 @@ abstract class AbstractDateTimeEditor<T> extends ValEditor<T> {
     }
     
     protected Timestamp getValueFromInputText(final String inputText) throws WrongFormatException{
-        return ((EditMaskDateTime) getEditMask()).getValueForInputText(inputText, getEnvironment().getLocale());
+        return ((EditMaskDateTime) getEditMask()).getValueForInputText(inputText, getEnvironment());
     }
 
     @Override
     protected ValidationResult validateInputText(final String text) {
         final EditMaskDateTime editMask = (EditMaskDateTime) getEditMask();        
         try {
-            editMask.getValueForInputText(text, getEnvironment().getLocale());
+            editMask.getValueForInputText(text, getEnvironment());
         } catch (WrongFormatException ex) {
             final String reason;
             if (ex instanceof IClientError){//NOPMD
@@ -193,7 +193,7 @@ abstract class AbstractDateTimeEditor<T> extends ValEditor<T> {
     }
     
     protected String getInputMask(){
-        return ((EditMaskDateTime) getEditMask()).getInputMask(getEnvironment().getLocale());
+        return ((EditMaskDateTime) getEditMask()).getInputMask(getEnvironment());
     }
 
     @Override
@@ -256,7 +256,7 @@ abstract class AbstractDateTimeEditor<T> extends ValEditor<T> {
             }else{                
                 final EditMaskDateTime editMask = (EditMaskDateTime)getEditMask();            
                 try{
-                    value = editMask.getValueForInputText(text, getEnvironment().getLocale());
+                    value = editMask.getValueForInputText(text, getEnvironment());
                 }catch(WrongFormatException exception){
                     return super.beforeCopyToClipboard(text);
                 }
@@ -276,7 +276,7 @@ abstract class AbstractDateTimeEditor<T> extends ValEditor<T> {
     @Override
     protected boolean beforePasteFromClipboard(final String text) {
         final EditMaskDateTime editMask = (EditMaskDateTime)getEditMask();        
-        final Locale locale = getEnvironment().getLocale();
+        final IClientEnvironment environmnet = getEnvironment();        
         final QMimeData mimeData = QApplication.clipboard().mimeData();
         final QByteArray binaryData =  mimeData.data("timestamp");
         if (binaryData!=null && binaryData.size()==8){
@@ -294,14 +294,14 @@ abstract class AbstractDateTimeEditor<T> extends ValEditor<T> {
         }
         try{
             final Timestamp value = 
-                editMask.getValueForInputText(text, locale);
+                editMask.getValueForInputText(text,  environmnet);
             setValue(getValueFromTimestamp(value));
             return false;
         }catch(WrongFormatException exception){//NOPMD
             //ignoring exception            
         }
-        final String pattern = editMask.getDisplayFormat(locale);
-        final SimpleDateFormat format = new SimpleDateFormat(pattern, locale);
+        final String pattern = editMask.getDisplayFormat(environmnet);
+        final SimpleDateFormat format = new SimpleDateFormat(pattern,  environmnet.getLocale());
         format.setLenient(false);
         final Date date;
         try{

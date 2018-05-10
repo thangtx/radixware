@@ -43,7 +43,8 @@ import org.radixware.kernel.common.client.models.IContext;
 import org.radixware.kernel.common.client.models.Model;
 import org.radixware.kernel.common.client.models.PropEditorModel;
 import org.radixware.kernel.common.client.models.ReportParamDialogModel;
-import org.radixware.kernel.common.client.models.items.ModelItem;
+import org.radixware.kernel.common.client.models.items.EditorPageModelItem;
+import org.radixware.kernel.common.client.models.items.ModelItemInEditorPage;
 import org.radixware.kernel.common.client.text.CachedTextOptionsProvider;
 import org.radixware.kernel.common.client.text.CustomTextOptions;
 import org.radixware.kernel.common.client.text.ITextOptionsProvider;
@@ -51,6 +52,7 @@ import org.radixware.kernel.common.client.types.EntityRestrictions;
 import org.radixware.kernel.common.client.text.ITextOptions;
 import org.radixware.kernel.common.client.text.ITextOptionsManager;
 import org.radixware.kernel.common.client.text.MergedTextOptionsProvider;
+import org.radixware.kernel.common.client.types.Icon;
 import org.radixware.kernel.common.client.types.MatchOptions;
 import org.radixware.kernel.common.client.types.Reference;
 import org.radixware.kernel.common.client.types.UnacceptableInput;
@@ -62,13 +64,14 @@ import org.radixware.kernel.common.client.views.IPropEditorDialog;
 import org.radixware.kernel.common.client.views.IPropLabel;
 import org.radixware.kernel.common.client.views.IView;
 import org.radixware.kernel.common.client.widgets.IModelWidget;
+import org.radixware.kernel.common.defs.value.ValAsStr;
 
 import org.radixware.kernel.common.enums.*;
 import org.radixware.kernel.common.exceptions.IllegalUsageError;
 import org.radixware.kernel.common.exceptions.ServiceClientException;
 import org.radixware.kernel.common.types.Id;
 
-public abstract class Property extends ModelItem {
+public abstract class Property extends ModelItemInEditorPage {
 
     public final class PropertyTextOptions implements ITextOptionsProvider {
 
@@ -196,15 +199,20 @@ public abstract class Property extends ModelItem {
     private List<Id> commandIds;
     protected PropertyValue serverValue, initialValue, internalValue;
     private List<Object> predefinedValues;
+    private int maxPredefinedValuesInPopup = -1;
     private boolean valEdited = false; // значение изменено по сравнению с сервером    
     private boolean valEditedByParentRef = false;//значение изменено, вследствие изменения значения свойства-ссылки
-    private Property synchronizedProp = null;    
+    private Property synchronizedProp = null;
    
     private final PropertyTextOptions valueTextOptions;
     private final PropertyTextOptions titleTextOptions;
-    private boolean canModifyValue = true;
+    private boolean canModifyValue = true;    
     private EPropertyValueStorePossibility storePossiblity;
     private UnacceptableInput unacceptableInput;
+    private Icon propEditorDlgBtnIcon;
+    private boolean cancellingChanges;
+    private boolean inSynchronizationState;
+    private boolean isReadOnly;
 
     // published property
     @SuppressWarnings("LeakingThisInConstructor")
@@ -239,7 +247,7 @@ public abstract class Property extends ModelItem {
             presentationAttributes = null;
         }
         if (presentationAttributes == null) {
-            title = def.getTitle();
+            title = def.getTitle(owner.getEnvironment());
             visibility = EPropertyVisibility.ALWAYS;
             if (def.getNature()==EPropNature.PARENT_PROP &&
                 (owner instanceof FormModel || owner instanceof ReportParamDialogModel)
@@ -251,7 +259,7 @@ public abstract class Property extends ModelItem {
                 mandatory = def.isMandatory();
             }
         } else {
-            title = presentationAttributes.getTitle();
+            title = presentationAttributes.getTitle(owner.getEnvironment());
             visibility = presentationAttributes.getVisibility();
             editPossibility = presentationAttributes.getEditPossibility();
             mandatory = presentationAttributes.isMandatory();
@@ -333,7 +341,7 @@ public abstract class Property extends ModelItem {
         } else {
             internalValue.setValue(internalValObject);
         }
-        setValEdited(!wasActivated || !initialValue.hasSameValue(internalValue));
+        setValEditedInternal(!wasActivated || !initialValue.hasSameValue(internalValue));
         unacceptableInput = null;
         afterModify();
     }
@@ -363,6 +371,10 @@ public abstract class Property extends ModelItem {
     private boolean inSelectorRow() {
         return owner.getContext() instanceof IContext.SelectorRow;
     }
+    
+    private boolean inNewEntityObject(){
+        return owner instanceof EntityModel && ((EntityModel)owner).isNew();
+    }
 
     public void setServerValue(final PropertyValue value) {
         if (isLocal()) {
@@ -391,35 +403,42 @@ public abstract class Property extends ModelItem {
         final boolean wasForcedlyActivated = isActivated() && serverValue==null;
         serverValue = new PropertyValue(value);
         unacceptableInput = null;
-        if (!wasForcedlyActivated){
+        if (!wasForcedlyActivated || inNewEntityObject()){
             final boolean internalReadonly = internalValue.isReadonly();
-            internalValue = new PropertyValue(value);            
-            internalValue.setReadonly(internalReadonly);            
+            internalValue = new PropertyValue(value); 
+            internalValue.setReadonly(internalReadonly);
         }
         afterModify();
         if (wasForcedlyActivated){
-            setValEdited(!serverValue.hasSameValue(internalValue));
+            setValEditedInternal(!serverValue.hasSameValue(internalValue));
         }else{
-            setValEdited(false);
+            setValEditedInternal(false);
         }
         doSynchronization();
     }
 
     public void cancelChanges() {
-        if (isValEdited() || isValInheritanceChanged()) {
-            if (isLocal()) {
-                internalValue = new PropertyValue(initialValue);
-            } else {
-                internalValue = serverValue != null ? new PropertyValue(serverValue) : new NoValue(def);
+        if (!cancellingChanges){
+            cancellingChanges = true;
+            try{
+                if (isValEdited() || isValInheritanceChanged()) {
+                    if (isLocal()) {
+                        internalValue = new PropertyValue(initialValue);
+                    } else {
+                        internalValue = serverValue != null ? new PropertyValue(serverValue) : new NoValue(def);
+                    }
+                    setValEditedInternal(false);
+                    unacceptableInput = null;
+                    afterModify();
+                    if (synchronizedProp != null) {
+                        synchronizedProp.cancelChanges();
+                    }
+                }else{
+                    removeUnacceptableInputRegistration();
+                }
+            }finally{
+                cancellingChanges = false;
             }
-            setValEdited(false);
-            unacceptableInput = null;
-            afterModify();
-            if (synchronizedProp != null) {
-                synchronizedProp.cancelChanges();
-            }
-        }else{
-            removeUnacceptableInputRegistration();
         }
     }
 
@@ -476,8 +495,15 @@ public abstract class Property extends ModelItem {
     }
 
     protected final void doSynchronization() {
-        if (synchronizedProp != null) {
-            synchronizedProp.setServerValue(serverValue);
+        if (synchronizedProp != null && !inSynchronizationState) {
+            inSynchronizationState = true;
+            synchronizedProp.inSynchronizationState = true;
+            try{
+                synchronizedProp.setServerValue(serverValue);
+            }finally{
+                inSynchronizationState = false;
+                synchronizedProp.inSynchronizationState = false;
+            }
         }
     }
 
@@ -576,8 +602,8 @@ public abstract class Property extends ModelItem {
     private boolean isInUnmodifiableState() {
         return !canModifyValue;
     }
-
-    public void setValEdited(final boolean wasChanged) {
+    
+    private void setValEditedInternal(final boolean wasChanged){
         if (wasChanged && isInUnmodifiableState()) {
             final String message = "Value of property '%s' (#%s)\ncannot be modified";
             throw new IllegalStateException(String.format(message, getTitle(), getDefinition().getId().toString()));
@@ -601,6 +627,13 @@ public abstract class Property extends ModelItem {
             } else if (f.getEditedProperties().isEmpty()) {
                 f.setIsPropertyValueEdited(false);
             }
+        }        
+    }
+
+    public void setValEdited(final boolean wasChanged) {
+        setValEditedInternal(wasChanged);
+        if (synchronizedProp!=null){
+            synchronizedProp.setValEditedInternal(wasChanged);
         }
     }
 
@@ -612,9 +645,9 @@ public abstract class Property extends ModelItem {
     }
 
     public boolean isVisible() {
-        if (def.getType() == EValType.OBJECT && !((EntityModel) owner).isExists()) {
+        /*if (def.getType() == EValType.OBJECT && !((EntityModel) owner).isExists()) {
             return false;
-        }
+        }*/
         if (visible == null) {
             switch (visibility) {
                 case ALWAYS:
@@ -635,10 +668,14 @@ public abstract class Property extends ModelItem {
         if (this.visible == Boolean.valueOf(visible)) {
             return;
         }
-        final boolean currentVisible = isVisible();
+        final boolean currentVisible = isVisible();        
         this.visible = Boolean.valueOf(visible);
         if (currentVisible != visible) {
             afterModify();
+            final List<EditorPageModelItem> dependentPages = findDependentEditorPages();
+            for (EditorPageModelItem page: dependentPages){
+                page.afterModify();
+            }
         }
         if (synchronizedProp != null) {
             synchronizedProp.setVisible(visible);
@@ -679,7 +716,7 @@ public abstract class Property extends ModelItem {
     }
 
     public boolean isReadonly() {
-        if (isEditingForbidden() || (internalValue != null && internalValue.isReadonly())) {
+        if (isEditingForbidden() || isReadOnly || (internalValue != null && internalValue.isReadonly())) {
             return true;
         }
 
@@ -749,11 +786,12 @@ public abstract class Property extends ModelItem {
     }
 
     public void setReadonly(boolean readonly) {
-        if (internalValue.isReadonly() == readonly) {
+        if (isReadOnly == readonly) {
             return;
         }
         boolean wasReadonly = isReadonly();
         internalValue.setReadonly(readonly);
+        isReadOnly = readonly;
         if (wasReadonly != isReadonly()) {
             afterModify();
         }
@@ -790,7 +828,11 @@ public abstract class Property extends ModelItem {
         }
         if (isOwn && !internalValue.isDefined()) {
             // Делаем свойство собственным и значения не было
-            if (this instanceof PropertyRef) {
+            if (isCustomEditOnly()
+                && getDefinition().customDialog()){
+                execPropEditorDialog();
+                return;                            
+            }else if (this instanceof PropertyRef) {
                 final PropertyRef propertyRef = (PropertyRef) this;
                 final Reference ref = propertyRef.selectParent();
                 if (ref == null) {
@@ -813,13 +855,6 @@ public abstract class Property extends ModelItem {
                 return;
             } else if (this instanceof PropertyArr) {
                 PropertyArr property = (PropertyArr) this;
-                /*				final Arr initVal;
-                 if (def.getInitialVal() != null
-                 && !def.getInitialVal().isEmpty())
-                 initVal = (Arr) DbpValueConverter.valAsStr2ObjVal(def
-                 .getInitialVal(), def.getType());
-                 else
-                 initVal = null;*/
                 final IArrayEditorDialog dialog = property.getEditorDialog(null, null);
                 if (dialog.execDialog() == DialogResult.ACCEPTED) {
                     property.setValueObject(dialog.getCurrentValue());
@@ -827,17 +862,19 @@ public abstract class Property extends ModelItem {
                     return;
                 }
             } else {
-                setValueObject(def.getInitialVal().toObject(def.getType()));
+                setValueObject(ValAsStr.fromStr(def.getInitialVal(), def.getType()));
             }
 
             internalValue.setOwn(true);
-            setValEdited(true);
+            setValEditedInternal(true);
             if (synchronizedProp != null) {
                 synchronizedProp.internalValue.setOwn(true);
-                synchronizedProp.setValEdited(true);
+                synchronizedProp.setValEditedInternal(true);
                 synchronizedProp.afterModify();
             }
-        } else if (serverValue.isOwn() == isOwn && serverValue.getInheritedValue() != null) {
+        } else if (serverValue.isOwn() == isOwn 
+                    && serverValue.getInheritedValue() != null                     
+                    && Objects.equals(serverValue.getInheritedValue(), internalValue.getInheritedValue())) {
             // Признак наследования совпадает с последним полученным с сервера
             cancelChanges();
         } else {
@@ -861,14 +898,16 @@ public abstract class Property extends ModelItem {
                         setValueObject(null);
                     }
                 } else {
-                    setValueObject(getServerValObject());
+                    final PropertyValue.InheritableValue inheritableValue = getInheritableValue();
+                    final Object inheritedValue = inheritableValue==null ? getServerValObject() : inheritableValue.getInheritedValue();
+                    setValueObject(inheritedValue);                    
                 }
             }
             internalValue.setOwn(isOwn);
-            setValEdited(true);
+            setValEditedInternal(true);
             if (synchronizedProp != null) {
                 synchronizedProp.internalValue.setOwn(isOwn);
-                synchronizedProp.setValEdited(true);
+                synchronizedProp.setValEditedInternal(true);
                 synchronizedProp.afterModify();
             }
         }
@@ -964,6 +1003,25 @@ public abstract class Property extends ModelItem {
             return Collections.unmodifiableList(result);
         }
     }
+    
+    public final void setMaxPredefinedValuesInDropDownList(final int max){
+        if (RadPropertyDef.isPredefinedValuesSupported(getType(), getEditMask().getType())) {
+            if (maxPredefinedValuesInPopup != max){
+                maxPredefinedValuesInPopup = max;
+                afterModify();
+                if (synchronizedProp != null){
+                    synchronizedProp.maxPredefinedValuesInPopup = max;
+                    synchronizedProp.afterModify();
+                }
+            }            
+        }else{
+            throw new UnsupportedOperationException("Predefined values is not supported for this property");            
+        }
+    }
+    
+    public final int getMaxPredefinedValuesInDropDownList(){
+        return maxPredefinedValuesInPopup;
+    }
 
     public abstract IPropEditor createPropertyEditor();
 
@@ -989,8 +1047,23 @@ public abstract class Property extends ModelItem {
             }
         }
     }
+    
+    public Icon getPropEditorDialogButtonIcon(){
+        return canOpenPropEditorDialog() ? propEditorDlgBtnIcon : null;
+    }
+    
+    public void setPropEditorDialogButtonIcon(final Icon icon){
+        if (icon!=propEditorDlgBtnIcon){//NOPMD
+            propEditorDlgBtnIcon = icon;
+            afterModify();
+            if (synchronizedProp != null){
+                synchronizedProp.propEditorDlgBtnIcon = icon;
+                synchronizedProp.afterModify();;
+            }
+        }
+    }
 
-    public final boolean isOwnValueAcceptable(final Object value) {
+    public boolean isOwnValueAcceptable(final Object value) {
         if (getDefinition().isInheritable()
                 && !getDefinition().isDefineable()
                 && getInheritableValue() != null) {//RADIX-6710
@@ -1068,7 +1141,7 @@ public abstract class Property extends ModelItem {
 
     public EnumSet<ETextOptionsMarker> getTextOptionsMarkers() {
         EnumSet<ETextOptionsMarker> markers = EnumSet.noneOf(ETextOptionsMarker.class);
-        if (isReadonly()) {
+        if (isReadonly() || !isEnabled()) {
             markers.add(ETextOptionsMarker.READONLY_VALUE);
         }
         if (getValueObject() == null) {
@@ -1082,9 +1155,10 @@ public abstract class Property extends ModelItem {
             markers.add(ETextOptionsMarker.INVALID_VALUE);
         }
         if (getOwner() instanceof EntityModel
-                && (getDefinition().isInheritable() && getInheritableValue() != null)) {
-            markers.add(hasOwnValue() ? ETextOptionsMarker.OVERRIDDEN_VALUE : ETextOptionsMarker.INHERITED_VALUE);
+            && (getDefinition().isInheritable() && getInheritableValue() != null)) {
+            markers.add(hasOwnValue() ? ETextOptionsMarker.OVERRIDDEN_VALUE : ETextOptionsMarker.INHERITED_VALUE);            
         }
+        
         if (inSelectorRow()){
             final IContext.SelectorRow context = (IContext.SelectorRow)owner.getContext();
             if (context.parentGroupModel.getSelection().isObjectSelected((EntityModel)owner)){
@@ -1173,7 +1247,17 @@ public abstract class Property extends ModelItem {
     }
 
     public boolean hasValidMandatoryValue() {//RADIX-4803
-        return !isMandatory() || getValueObject() != null;
+        if (isMandatory() && getValueObject()==null){
+            return false;
+        }
+        if (getOwner() instanceof EntityModel 
+            && getDefinition().isInheritable() 
+            && hasOwnValue()
+            && getValueObject()==null
+            && !isOwnValueAcceptable(null)){
+            return false;
+        }
+        return true;
     }
     
     public final void registerUnacceptableInput(final UnacceptableInput input){
@@ -1220,5 +1304,5 @@ public abstract class Property extends ModelItem {
     
     public boolean valueMatchesToSearchString(final String displayString, final String searchString, final MatchOptions options){
         return options.matchToSearchString(displayString, searchString);
-    }
+    }    
 }

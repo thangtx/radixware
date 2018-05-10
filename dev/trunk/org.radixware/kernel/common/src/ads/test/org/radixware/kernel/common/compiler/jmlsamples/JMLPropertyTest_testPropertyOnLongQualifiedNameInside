@@ -1,0 +1,31 @@
+
+class TestProperty1 {
+
+    public String field;
+}
+
+class TestProperty2 {
+
+    public TestProperty1 field;
+}
+
+class TestProperty3 {
+
+    public TestProperty2 getProp2() {
+	return null;
+    }
+}
+
+class Test {
+
+    public TestProperty3 getProp() {
+	return null;
+    }
+
+    void f() {
+	int l = Prop.Prop2.field.field.length();
+    }
+
+    static public void main(String[] args) {
+    }
+}

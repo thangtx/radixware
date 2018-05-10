@@ -29,9 +29,9 @@ import org.radixware.kernel.common.enums.EEventSeverity;
 import org.radixware.kernel.common.enums.EEventSource;
 import org.radixware.kernel.explorer.dialogs.EnterPasswordDialog;
 import org.radixware.kernel.explorer.iad.AbstractIadBackend;
-import org.radixware.kernel.explorer.iad.EImageAcquaringDeviceType;
+import org.radixware.kernel.explorer.iad.EImageAcquiringDeviceType;
 import org.radixware.kernel.explorer.iad.IadException;
-import org.radixware.kernel.explorer.iad.ImageAcquaringDevice;
+import org.radixware.kernel.explorer.iad.ImageAcquiringDevice;
 import org.radixware.kernel.explorer.utils.QtJambiExecutor;
 
 
@@ -97,8 +97,8 @@ public class IadUnixBackend extends AbstractIadBackend{
     }    
         
     @Override
-    protected Collection<ImageAcquaringDevice> enumDevicesImpl(final IClientEnvironment environment,
-                                                        final EImageAcquaringDeviceType type){
+    protected Collection<ImageAcquiringDevice> enumDevicesImpl(final IClientEnvironment environment,
+                                                        final EImageAcquiringDeviceType type){
         final com.tuneology.sane.SaneDevice[] devices;
         try{
             devices = Sane.getDevices(false);
@@ -106,7 +106,7 @@ public class IadUnixBackend extends AbstractIadBackend{
             environment.processException(exception);
             return Collections.emptySet();
         }
-        final List<ImageAcquaringDevice> saneDevices = new LinkedList<>();
+        final List<ImageAcquiringDevice> saneDevices = new LinkedList<>();
         for (com.tuneology.sane.SaneDevice device: devices){
             saneDevices.add(new SaneDevice(device, environment));
         }

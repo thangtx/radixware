@@ -1,66 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <AdsDefinition xmlns="http://schemas.radixware.org/adsdef.xsd" xmlns:xsc="http://schemas.radixware.org/xscml.xsd" FormatVersion="0">
   <AdsContextlessCommandDefinition Id="clcKSO5V2NYCBG5ZHN7OVM6K77PY4" Name="ListUserReportsCmd" Nature="2" IsVisible="true" IsConfirmationRequired="true">
-    <AccessRules IsPublished="false"/>
+    <AccessRules IsFinal="true" IsPublished="false"/>
     <OutType TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRsDocument"/>
     <Source>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="accFC5VMZE37VE7NJUBTXKFXJCZTE"/>
+        <xsc:Java>int reportsCount = 0;
+</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:Java> modulesCursor = </xsc:Java>
+        <xsc:TypeDeclaration TypeId="411" Path="acc4WZGQU5QHZAOFDHJGD47FPAJVY">
+          <xsc:Presentation>UserReportsCountCursor</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="accFC5VMZE37VE7NJUBTXKFXJCZTE"/>
+        <xsc:Java> userReportsCountCursor = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="acc4WZGQU5QHZAOFDHJGD47FPAJVY">
+          <xsc:Presentation>UserReportsCountCursor</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accFC5VMZE37VE7NJUBTXKFXJCZTE mth_stmt_execute_____________" Invoke="true"/>
+        <xsc:IdReference Path="acc4WZGQU5QHZAOFDHJGD47FPAJVY mth_stmt_execute_____________" Invoke="true">
+          <xsc:Presentation>open</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
-
-class ModuleInfo {
-
-    String title;
-    String id;
-
-    public ModuleInfo(String id, String title) {
-        this.id = id;
-        this.title = title;
-    }
-}
-
-java.util.List&lt;ModuleInfo> modules = new java.util.LinkedList&lt;ModuleInfo>();
 try {
-    while (modulesCursor.</xsc:Java>
+    if (userReportsCountCursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+          <xsc:Presentation>next</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>()) {
-        modules.add(new ModuleInfo(modulesCursor.</xsc:Java>
+        reportsCount = userReportsCountCursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accFC5VMZE37VE7NJUBTXKFXJCZTE prfAI4AO2NAYFBXNEXQN6EG32YAAI" Invoke="true"/>
+        <xsc:IdReference Path="acc4WZGQU5QHZAOFDHJGD47FPAJVY prfVGHEZ5VKZNFTZFG7XJO5X5ZTWA" Invoke="true">
+          <xsc:Presentation>userReportsCount</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
-        <xsc:Java>, modulesCursor.</xsc:Java>
-      </xsc:Item>
-      <xsc:Item>
-        <xsc:IdReference Path="accFC5VMZE37VE7NJUBTXKFXJCZTE prfOWZP22DDGRDH3JHX7WKPTVNM4M" Invoke="true"/>
-      </xsc:Item>
-      <xsc:Item>
-        <xsc:Java>));
+        <xsc:Java>.intValue();
     }
 } finally {
-    modulesCursor.</xsc:Java>
+    userReportsCountCursor.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true">
+          <xsc:Presentation>close</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
@@ -69,270 +66,550 @@ try {
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRsDocument"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRsDocument">
+          <xsc:Presentation>ReportsXsd:UserReportHeaderListRsDocument</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> xDoc = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRsDocument"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRsDocument">
+          <xsc:Presentation>ReportsXsd:UserReportHeaderListRsDocument</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.Factory.newInstance();
 </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRs"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRs">
+          <xsc:Presentation>ReportsXsd:UserReportHeaderListRs</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> xRs = xDoc.addNewUserReportHeaderListRs();
 
-for (ModuleInfo info : modules) {
+final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcProgressDialogResource____">
+          <xsc:Presentation>Client.Resources::ProgressDialogResource</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> processDialog = new </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcProgressDialogResource____ mthC5IM4X76VRD6XN4BV3ALQXGFYU" Invoke="true">
+          <xsc:Presentation>ProgressDialogResource</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcArte______________________">
+          <xsc:Presentation>Arte::Arte</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcArte______________________ mthX22GMFYBKNC6RGIHJSGRQQ7K2A" Invoke="true">
+          <xsc:Presentation>getInstance</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(), null, false);
+try {
+    final </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcProgressDialogResourceProc">
+          <xsc:Presentation>Client.Resources::ProgressDialogProcessResource</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> process = processDialog.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcProgressDialogResource____ mthODOXK22HZJBINCRNIGWLD5DJGY" Invoke="true">
+          <xsc:Presentation>startNewProcess</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:LocalizedString StringId="mlsFLZOTECAFBCJTLCFH6EKXWNUUE"/>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>, true, true);
+    int currentReportNumber = 1;
+
     </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y"/>
+        <xsc:TypeDeclaration TypeId="411" Path="accFC5VMZE37VE7NJUBTXKFXJCZTE">
+          <xsc:Presentation>ListUserReportModulesCursor</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> modulesCursor = </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accFC5VMZE37VE7NJUBTXKFXJCZTE">
+          <xsc:Presentation>ListUserReportModulesCursor</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accFC5VMZE37VE7NJUBTXKFXJCZTE mth_stmt_execute_____________" Invoke="true">
+          <xsc:Presentation>open</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+
+    class ModuleInfo {
+
+        String title;
+        String id;
+
+        public ModuleInfo(String id, String title) {
+            this.id = id;
+            this.title = title;
+        }
+    }
+
+    java.util.List&lt;ModuleInfo> modules = new java.util.LinkedList&lt;ModuleInfo>();
+    try {
+        while (modulesCursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+          <xsc:Presentation>next</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>()) {
+            modules.add(new ModuleInfo(modulesCursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accFC5VMZE37VE7NJUBTXKFXJCZTE prfAI4AO2NAYFBXNEXQN6EG32YAAI" Invoke="true">
+          <xsc:Presentation>Id</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>, modulesCursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="accFC5VMZE37VE7NJUBTXKFXJCZTE prfOWZP22DDGRDH3JHX7WKPTVNM4M" Invoke="true">
+          <xsc:Presentation>Title</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>));
+        }
+    } finally {
+        modulesCursor.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true">
+          <xsc:Presentation>close</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>();
+    }
+
+    for (ModuleInfo info : modules) {
+        </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y">
+          <xsc:Presentation>ListUserReportsCursor</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> c = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y"/>
+        <xsc:TypeDeclaration TypeId="411" Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y">
+          <xsc:Presentation>ListUserReportsCursor</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y mth_stmt_execute_____________" Invoke="true"/>
+        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y mth_stmt_execute_____________" Invoke="true">
+          <xsc:Presentation>open</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>(info.id);
-    try {
-        </xsc:Java>
-      </xsc:Item>
-      <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRs.Module"/>
-      </xsc:Item>
-      <xsc:Item>
-        <xsc:Java> xModule = null;
-        while (c.</xsc:Java>
-      </xsc:Item>
-      <xsc:Item>
-        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true"/>
-      </xsc:Item>
-      <xsc:Item>
-        <xsc:Java>()) {
-            if (xModule == null) {
-                xModule = xRs.addNewModule();
-                xModule.Title = info.title;
-            }
-
+        try {
             </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="27"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRs.Module">
+          <xsc:Presentation>ReportsXsd:UserReportHeaderListRs.Module</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> xModule = null;
+            while (c.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mthBNNDZ4NDINDL3IT3X6TOSIN7TQ" Invoke="true">
+          <xsc:Presentation>next</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>()) {
+                if (process.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcProgressDialogResourceProc mthOO36ZLGAUFACFAOZH2H5IPXNJM" Invoke="true">
+          <xsc:Presentation>checkIsCancelled</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>()) {
+                    return xDoc;
+                }
+                
+                java.lang.Float progress = currentReportNumber++ / (float) reportsCount * 100;                                
+                process.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcProgressDialogResourceProc mthAE7I7CG6LRCUTPDSXDSOB7YV2I" Invoke="true">
+          <xsc:Presentation>set</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(null, progress, true);
+
+                if (xModule == null) {
+                    xModule = xRs.addNewModule();
+                    xModule.Title = info.title;
+                }
+
+                </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="27">
+          <xsc:Presentation>Clob</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> contextParamType = c.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfX2S6DYVATNHIRH6JKSD2IPROV4" Invoke="true"/>
+        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfX2S6DYVATNHIRH6JKSD2IPROV4" Invoke="true">
+          <xsc:Presentation>contextParamType</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>;
-            </xsc:Java>
+                </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+          <xsc:Presentation>Types::Id</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java><![CDATA[ contextParamClassId = null;
-            if (contextParamType != null) {
-                try {
-                    org.radixware.schemas.xscml.TypeDeclarationDocument xDecl = org.radixware.schemas.xscml.TypeDeclarationDocument.Factory.parse(contextParamType.getCharacterStream(1, contextParamType.length()));
-                    if (xDecl != null && xDecl.TypeDeclaration != null && xDecl.TypeDeclaration.Path != null && xDecl.TypeDeclaration.Path.size() > 0) {
-                        contextParamClassId = xDecl.TypeDeclaration.Path.get(0);
+                if (contextParamType != null) {
+                    try {
+                        org.radixware.schemas.xscml.TypeDeclarationDocument xDecl = org.radixware.schemas.xscml.TypeDeclarationDocument.Factory.parse(contextParamType.getCharacterStream(1, contextParamType.length()));
+                        if (xDecl != null && xDecl.TypeDeclaration != null && xDecl.TypeDeclaration.Path != null && xDecl.TypeDeclaration.Path.size() > 0) {
+                            contextParamClassId = xDecl.TypeDeclaration.Path.get(0);
+                        }
+                    } catch (Exception e) {
                     }
-                } catch (Exception e) {
                 }
-            }
-            ]]></xsc:Java>
+                ]]></xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="27"/>
+        <xsc:TypeDeclaration TypeId="27">
+          <xsc:Presentation>Clob</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> src = c.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfJXLAVYHUTFGARIWLDK5LVJ4BOA" Invoke="true"/>
+        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfJXLAVYHUTFGARIWLDK5LVJ4BOA" Invoke="true">
+          <xsc:Presentation>reportSource</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>;
-            java.util.List&lt;</xsc:Java>
+                java.util.List&lt;</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+          <xsc:Presentation>Types::Id</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>> interfaces = new java.util.LinkedList&lt;</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+          <xsc:Presentation>Types::Id</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java><![CDATA[>();
-            if (src != null) {
-                try {
-                    org.radixware.schemas.adsdef.AdsUserReportDefinitionDocument xRep = org.radixware.schemas.adsdef.AdsUserReportDefinitionDocument.Factory.parse(src.getCharacterStream(1, src.length()));
-                    if (xRep != null && xRep.AdsUserReportDefinition != null && xRep.AdsUserReportDefinition.Report != null) {
+                if (src != null) {
+                    try {
+                        org.radixware.schemas.adsdef.AdsUserReportDefinitionDocument xRep = org.radixware.schemas.adsdef.AdsUserReportDefinitionDocument.Factory.parse(src.getCharacterStream(1, src.length()));
+                        if (xRep != null && xRep.AdsUserReportDefinition != null && xRep.AdsUserReportDefinition.Report != null) {
 
-                        org.radixware.schemas.adsdef.ClassDefinition.Implements xImpl = xRep.AdsUserReportDefinition.Report.Implements;
+                            org.radixware.schemas.adsdef.ClassDefinition.Implements xImpl = xRep.AdsUserReportDefinition.Report.Implements;
 
-                        if (xImpl != null && xImpl.InterfaceList != null) {
-                            for (org.radixware.schemas.xscml.TypeDeclaration xType : xImpl.InterfaceList) {
-                                if (xType.Path != null && xType.Path.size() == 1) {
-                                    ]]></xsc:Java>
+                            if (xImpl != null && xImpl.InterfaceList != null) {
+                                for (org.radixware.schemas.xscml.TypeDeclaration xType : xImpl.InterfaceList) {
+                                    if (xType.Path != null && xType.Path.size() == 1) {
+                                        ]]></xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+          <xsc:Presentation>Types::Id</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> id = xType.Path.get(0);
-                                    if (id != null) {
-                                        interfaces.add(id);
+                                        if (id != null) {
+                                            interfaces.add(id);
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }
 
-                } catch (Exception e) {
+                            org.radixware.schemas.adsdef.Report xRepRep = xRep.AdsUserReportDefinition.Report.Report;
+                            if (xRepRep != null &amp;&amp; xRepRep.IsSubreport) {
+                                continue;
+                            }
+                        }
+
+                    } catch (Exception e) {
+                    }
                 }
-            }
-            </xsc:Java>
+                </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U"/>
+        <xsc:TypeDeclaration TypeId="411" Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U">
+          <xsc:Presentation>Reports.User::UserReport</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java> reportPtr = c.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfSIDIRJ6RKJBUPG4PVA776OROKQ" Invoke="true"/>
+        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfSIDIRJ6RKJBUPG4PVA776OROKQ" Invoke="true">
+          <xsc:Presentation>report</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>;
-            if (reportPtr == null) {
-                continue;
-            }
-            
-            String validationResult = reportPtr.</xsc:Java>
+                if (reportPtr == null) {
+                    continue;
+                }
+
+                String validationResult = reportPtr.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U mthLOETVQ4NTZEIZDENY7DMQEXTVA" Invoke="true"/>
+        <xsc:IdReference Path="aecRHH7SYO5I5EFRGYIBOSVUXKD7U mthLOETVQ4NTZEIZDENY7DMQEXTVA" Invoke="true">
+          <xsc:Presentation>validate</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
-            
-            if (validationResult != null &amp;&amp; !validationResult.isEmpty()) {
-                </xsc:Java>
+
+                if (validationResult != null &amp;&amp; !validationResult.isEmpty()) {
+                    </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________"/>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+          <xsc:Presentation>Arte::Trace</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true"/>
+        <xsc:IdReference Path="pdcTrace_____________________ mthS7A5F7KSRPNRDCISABIFNQAABA" Invoke="true">
+          <xsc:Presentation>debug</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>("User-defined report skipped. Current version is invalid: " + c.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfIYTTILFBCZF67F34B4R5HAYEMA" Invoke="true"/>
+        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfIYTTILFBCZF67F34B4R5HAYEMA" Invoke="true">
+          <xsc:Presentation>id</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
-        <xsc:Java>,</xsc:Java>
+        <xsc:Java>, </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true"/>
+        <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciVHTSMNFUNNBTJFRXGWTPCZA2FI" Invoke="true">
+          <xsc:Presentation>Arte::EventSource:UserFunc</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>);
-                continue;
-            }
+                    continue;
+                }
 
-            </xsc:Java>
+                </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRs.Module"/>
+        <xsc:TypeDeclaration TypeId="451" Path="xsdPYPQ5263TRFAVOUN4WRU4ZOPQ4" extStr="UserReportHeaderListRs.Module">
+          <xsc:Presentation>ReportsXsd:UserReportHeaderListRs.Module</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.Report report = xModule.addNewReport();
-            report.Id = </xsc:Java>
+                report.Id = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU"/>
+        <xsc:TypeDeclaration TypeId="411" Path="adcELH54EKVCJAATNTLFHHCSVHPZU">
+          <xsc:Presentation>Types::Id</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.Factory.loadFrom(c.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfIYTTILFBCZF67F34B4R5HAYEMA" Invoke="true"/>
+        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfIYTTILFBCZF67F34B4R5HAYEMA" Invoke="true">
+          <xsc:Presentation>id</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>);
-            if (!interfaces.isEmpty()) {
-                report.SuperInterfaces = interfaces;
-            }
-            String title = </xsc:Java>
+                if (!interfaces.isEmpty()) {
+                    report.SuperInterfaces = interfaces;
+                }
+                String title = </xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:TypeDeclaration TypeId="411" Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA"/>
+        <xsc:TypeDeclaration TypeId="411" Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA">
+          <xsc:Presentation>Meta::Utils</xsc:Presentation>
+        </xsc:TypeDeclaration>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA mthFAQ6TNXPORCFLLLXKIIRJ3ULAA" Invoke="true"/>
+        <xsc:IdReference Path="adcKXBE5RCT2DNRDISQAAAAAAAAAA mthFAQ6TNXPORCFLLLXKIIRJ3ULAA" Invoke="true">
+          <xsc:Presentation>getDefinitionTitle</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>(c.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfIYTTILFBCZF67F34B4R5HAYEMA" Invoke="true"/>
+        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prfIYTTILFBCZF67F34B4R5HAYEMA" Invoke="true">
+          <xsc:Presentation>id</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>);
-            if (title == null)
-                title = c.</xsc:Java>
+                if (title == null || title.isEmpty())
+                    title = c.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prf5Z7F7XNUOJDK7C777VOF22Y6PU" Invoke="true"/>
-      </xsc:Item>
-      <xsc:Item>
-        <xsc:Java>;
-            report.Title = title;
-            report.FullName = info.title + "::" + c.</xsc:Java>
-      </xsc:Item>
-      <xsc:Item>
-        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prf5Z7F7XNUOJDK7C777VOF22Y6PU" Invoke="true"/>
+        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prf5Z7F7XNUOJDK7C777VOF22Y6PU" Invoke="true">
+          <xsc:Presentation>title</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>;
-            report.ContextClassId = contextParamClassId;
-        }
-    } finally {
-        c.</xsc:Java>
+                report.Title = title;
+                report.FullName = info.title + "::" + c.</xsc:Java>
       </xsc:Item>
       <xsc:Item>
-        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true"/>
+        <xsc:IdReference Path="accVO3EYZKN3VFVPN6O56J3CTBO3Y prf5Z7F7XNUOJDK7C777VOF22Y6PU" Invoke="true">
+          <xsc:Presentation>title</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>;
+                report.ContextClassId = contextParamClassId;               
+            }
+        } finally {
+            c.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcCursor____________________ mth_stmt_close_______________" Invoke="true">
+          <xsc:Presentation>close</xsc:Presentation>
+        </xsc:IdReference>
       </xsc:Item>
       <xsc:Item>
         <xsc:Java>();
+        }
     }
+} catch (</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="axcVN3PK4FIINBOLIFTWXCBTA6UHI">
+          <xsc:Presentation>Exceptions::Exception</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java> e) {
+    </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+          <xsc:Presentation>Arte::Trace</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcTrace_____________________ mthD6XIGP2SRPNRDCISABIFNQAABA" Invoke="true">
+          <xsc:Presentation>error</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:TypeDeclaration TypeId="411" Path="pdcTrace_____________________">
+          <xsc:Presentation>Arte::Trace</xsc:Presentation>
+        </xsc:TypeDeclaration>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>.</xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="pdcTrace_____________________ mthI2EAXRIFRTNRDCISABIFNQAABA" Invoke="true">
+          <xsc:Presentation>exceptionStackToString</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>(e), </xsc:Java>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:IdReference Path="acsTNLJBZADHTNRDIPGABQAQNO6EY aciA5UFXOQYZVGD3HR3MME5ZDOC5U" Invoke="true">
+          <xsc:Presentation>Arte::EventSource:ArteReports</xsc:Presentation>
+        </xsc:IdReference>
+      </xsc:Item>
+      <xsc:Item>
+        <xsc:Java>);
 }
 
 return xDoc;</xsc:Java>
